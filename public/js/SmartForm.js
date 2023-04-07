@@ -36,21 +36,36 @@ function onActionClick(ev) {
 };
 
 
-export class SmartForm {
-
-    constructor(//{{{
+export class SmartComponent {
+    constructor(
         target
         , {
-            property_name = "smart",
             parent = null,
         } = {}
     ) {
         const me = this;
         me.parent = parent;
         me.target = target;
-        me.property_name = property_name;
-        me.selector = `[data-${me.property_name}]`;
+
         me.childs = {};
+    };
+
+};
+
+
+
+export class SmartForm extends SmartComponent {
+
+    constructor(
+        target
+        , {
+            property_name = "smart",
+            ...options
+        } = {}
+    ) {
+        super(target, options);
+        const me = this;
+        me.property_name = property_name;
 
         me.render();
 
@@ -62,17 +77,18 @@ export class SmartForm {
             , true
         );
 
-    };//}}}
+    };
 
     async render() {//{{{
         const me = this;
-
         const templates = [];
         const actions = {};
 
+        const selector = `[data-${me.property_name}]`;
+
         for (
             const node
-            of getRoots(me.target, me.selector)
+            of getRoots(me.target, selector)
         ) {
 
             // Sanityze and store options:{{{
