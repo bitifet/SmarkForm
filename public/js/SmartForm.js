@@ -4,15 +4,13 @@ const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 
 import {getRoots, validName} from "./lib/helpers.js";
 import {components as controllers} from "./components/index.js";
-import {SmartComponent} from "./lib/component.js";
+import {SmartComponent, createComponent} from "./lib/component.js";
 
 function onActionClick(ev) {
     const me = this;
 
     console.log("clicked!!", ev);
 };
-
-
 
 
 
@@ -130,4 +128,5 @@ export class SmartForm extends SmartComponent {
 };
 
 
+createComponent("form", SmartForm);
 
