@@ -1,0 +1,35 @@
+doctype html
+html
+  head
+    title=title
+    link(rel="stylesheet", href="/stylesheets/style.css")
+  body
+    h1=message
+    p Welcome to the future 🔮
+    fieldset
+        button(data-smart = {
+            action: "add",
+            for: "users",
+        }) +
+        div(data-smart = {
+            type: "list",
+            name: "users",
+            max_items: 3,
+            min_items: 1,
+        })
+            p
+                label(for='name') Nom:
+                input(name='name', data-smart="text")
+            p
+                label(for='surname') Llinatges:
+                input(name='surname', data-smart="text")
+            button(data-smart = {
+                action: "remove",
+            }) -
+
+    script(
+        type="module",
+        src="./js/app.js",
+    )
+
+
