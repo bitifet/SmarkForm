@@ -2,32 +2,9 @@
 const sym_options = Symbol("Options");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 
+import {getRoots, validName} from "./lib/helpers.js";
 import {components as controllers} from "./components/index.js";
-
-function getRoots(target, selector){//{{{
-    const parent = target.parentNode;
-    const isTop = (
-        parent === null ? n => n === null
-        : n=>(n===null)||n.isSameNode(target)
-      );
-    return [
-        ...target.querySelectorAll(selector)
-    ].filter(
-        e=>isTop(e.parentNode.closest(selector))
-    );
-};//}}}
-
-const validName = (function nameGenerator() {//{{{
-    let counter = 0;
-    return function(n0){
-        if (typeof n0 == "string") {
-            n0 = n0.trim();
-            if (n0.length) return n0;
-        };
-        return 'UNNAMED'+(++counter);
-    };
-})();//}}}
-
+import {SmartComponent} from "./lib/component.js";
 
 function onActionClick(ev) {
     const me = this;
@@ -36,21 +13,6 @@ function onActionClick(ev) {
 };
 
 
-export class SmartComponent {
-    constructor(
-        target
-        , {
-            parent = null,
-        } = {}
-    ) {
-        const me = this;
-        me.parent = parent;
-        me.target = target;
-
-        me.childs = {};
-    };
-
-};
 
 
 
