@@ -1,7 +1,8 @@
 // lib/component.js
 // ================
 const componentTypes = {};
-export class SmartComponent {
+
+export class SmartComponent {//{{{
     constructor(
         target
         , {
@@ -14,18 +15,21 @@ export class SmartComponent {
         me.property_name = property_name;
         me.typeName = me.constructor.name;
         me.components = componentTypes;
-
         me.target = target;
         me.options = options;
         me.parent = parent;
-
         me.childs = {};
-
         me.render();
-
     };
-
-};
+    find(path="") { // (Still in draft state...)
+        const me=this;
+        console.log(me.childs);
+        return path.split(".").reduce(
+            (current, name)=>current.childs[name]
+            , me
+        );
+    };
+};//}}}
 
 export function createComponent(name, controller) {//{{{
     if (componentTypes[name] !== undefined) throw new Error(
@@ -36,3 +40,4 @@ export function createComponent(name, controller) {//{{{
     );
     componentTypes[name] = controller;
 };//}}}
+

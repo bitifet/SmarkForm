@@ -1,7 +1,6 @@
 // components/form.component.js
 // ============================
 
-
 import {SmartComponent} from "../lib/component.js";
 import {getRoots, validName} from "../lib/helpers.js";
 
@@ -9,15 +8,12 @@ const sym_options = Symbol("Options");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 
 export class form extends SmartComponent {
-    render() {//{{{
+    render() {
         const me = this;
         const templates = [];
         const actions = {};
 
         const selector = `[data-${me.property_name}]`;
-
-            console.log(selector);
-            console.log(getRoots(me.target, selector));
 
         for (
             const node
@@ -58,7 +54,7 @@ export class form extends SmartComponent {
 
         };
 
-        // Enhance components:
+        // Enhance components:{{{
         for (const tpl of templates) {
             const options = tpl[sym_options];
             const ctrl = me.components[options.type];
@@ -66,23 +62,12 @@ export class form extends SmartComponent {
                 "Unimplemented SmartForm component controller:",
                 options.type,
             ].join(" "));
-
-            console.log("******", options.name, ctrl);
             me.childs[options.name] = new ctrl (
                 tpl
                 , options
                 , me
             );
+        };//}}}
 
-        };
-
-        console.log("===========================");
-        console.log(me.childs);
-        console.log("===========================");
-
-        // Enhance actions:
-        // TO DO... 💡💡💡💡💡💡💡💡💡 
-
-
-    };//}}}
+    };
 };
