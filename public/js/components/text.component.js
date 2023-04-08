@@ -1,6 +1,6 @@
-
+// components/text.component.js
+// ============================
 import {SmartComponent} from "../lib/component.js";
-
 export class text extends SmartComponent {
     render () {
         const me = this;
