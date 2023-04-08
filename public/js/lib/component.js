@@ -5,21 +5,33 @@ export class SmartComponent {
     constructor(
         target
         , {
-            parent = null,
+            property_name = "smart",
+            ...options
         } = {}
+        , parent = null
     ) {
         const me = this;
-        me.typeName = 
+        me.property_name = property_name;
+        //me.typeName = me.constructor.name;
+        me.components = componentTypes;
+
+        me.target = target;
+        me.options = options;
+        me.parent = parent;
 
         console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@");
         console.log(me.constructor.name);
         console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
 
-        me.parent = parent;
-        me.target = target;
 
         me.childs = {};
+
+        console.log("-rrr----------------------");
+
+        me.render();
+        console.log("-rrr----------------------");
+
     };
     // createChild(target, options) {
     //     const child = new SmartForm(
@@ -37,11 +49,11 @@ export class SmartComponent {
 };
 
 export function createComponent(name, controller) {//{{{
-    if (componentTypes[name] !== undefined) throw new Error(
-        `Duplicate component type definition: ${name}`
-    );
-    if (! (controller.prototype instanceof SmartComponent)) throw new Error(
-        `Bad component type implementation for: ${name}`
-    );
+    // if (componentTypes[name] !== undefined) throw new Error(
+    //     `Duplicate component type definition: ${name}`
+    // );
+    // if (! (controller.prototype instanceof SmartComponent)) throw new Error(
+    //     `Bad component type implementation for: ${name}`
+    // );
     componentTypes[name] = controller;
 };//}}}

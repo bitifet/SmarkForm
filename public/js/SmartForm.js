@@ -3,8 +3,14 @@ const sym_options = Symbol("Options");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 
 import {getRoots, validName} from "./lib/helpers.js";
-import {components as controllers} from "./components/index.js";
+import {components} from "./components/index.js";
 import {SmartComponent, createComponent} from "./lib/component.js";
+
+
+for (const [name, controller] of Object.entries(components)) {
+    createComponent(name,controller);
+};
+
 
 function onActionClick(ev) {
     const me = this;
@@ -18,16 +24,10 @@ export class SmartForm extends SmartComponent {
 
     constructor(
         target
-        , {
-            property_name = "smart",
-            ...options
-        } = {}
+        , options = {}
     ) {
         super(target, options);
         const me = this;
-        me.property_name = property_name;
-
-        me.render();
 
         console.log("Parent:", me.parent);
 
@@ -39,12 +39,15 @@ export class SmartForm extends SmartComponent {
 
     };
 
-    async render() {//{{{
+    render() {//{{{
         const me = this;
         const templates = [];
         const actions = {};
 
         const selector = `[data-${me.property_name}]`;
+
+            console.log(selector);
+            console.log(getRoots(me.target, selector));
 
         for (
             const node
@@ -88,29 +91,17 @@ export class SmartForm extends SmartComponent {
         // Enhance components:
         for (const tpl of templates) {
             const options = tpl[sym_options];
-            const ctrl = controllers[options.type];
+            const ctrl = me.components[options.type];
             if (! ctrl) throw new Error([
-                "Unimplemented SmartForm controller:",
+                "Unimplemented SmartForm component controller:",
                 options.type,
             ].join(" "));
-            me.childs[options.name] = await ctrl (
+
+            console.log("******", options.name, ctrl);
+            me.childs[options.name] = new ctrl (
                 tpl
                 , options
-                , {
-                    parent: me,
-                    createChild(target, options) {
-                        const child = new SmartForm(
-                            target
-                            , {
-                                parent: me,
-                            }
-                        );
-                        console.log ("CHILD NAME:", child.name);
-
-
-                        return child;
-                    },
-                }
+                , me
             );
 
         };
@@ -124,6 +115,19 @@ export class SmartForm extends SmartComponent {
 
 
     };//}}}
+
+    // createChild(target, options) {
+    //     const child = new SmartForm(
+    //         target
+    //         , {
+    //             parent: me,
+    //         }
+    //     );
+    //     console.log ("CHILD NAME:", child.name);
+    //
+    //
+    //     return child;
+    // };
 
 };
 
