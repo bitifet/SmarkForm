@@ -13,11 +13,9 @@ export class form extends SmartComponent {
         const templates = [];
         const actions = {};
 
-        const selector = `[data-${me.property_name}]`;
-
         for (
             const node
-            of getRoots(me.target, selector)
+            of getRoots(me.target, me.selector)
         ) {
 
             // Sanityze and store options:{{{
@@ -28,7 +26,10 @@ export class form extends SmartComponent {
                 // Otherwise it must be a valid JSON:
                 : JSON.parse(options)
             );
-            const name = validName(options.name);
+            const name = validName(
+                options.name
+                , node.getAttribute("name")
+            );
             options.name = name;
             options.parent = me;
             node[sym_options] = options;
@@ -62,6 +63,9 @@ export class form extends SmartComponent {
                 "Unimplemented SmartForm component controller:",
                 options.type,
             ].join(" "));
+            ///////////////////////////////////////////////////////////
+            console.log("Creating child for " + me.options.name + " with name: " + options.name);
+            ///////////////////////////////////////////////////////////
             me.childs[options.name] = new ctrl (
                 tpl
                 , options

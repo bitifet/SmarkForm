@@ -2,7 +2,11 @@
 // ================
 const componentTypes = {};
 
-export class SmartComponent {//{{{
+import {Events} from "./events.js";
+
+const sym_smart = Symbol("smart_component");
+
+export class SmartComponent extends Events {//{{{
     constructor(
         target
         , {
@@ -11,23 +15,45 @@ export class SmartComponent {//{{{
         } = {}
         , parent = null
     ) {
+        super();
         const me = this;
         me.property_name = property_name;
+        me.selector = `[data-${me.property_name}]`;
         me.typeName = me.constructor.name;
         me.components = componentTypes;
         me.target = target;
         me.options = options;
         me.parent = parent;
         me.childs = {};
+        console.log("tttttttt", target);
+        if (target) /// FIXME!!!!
+        target[sym_smart] = me;
         me.render();
+    };
+    getComponent(target) {
+        const me = this;
+
+        console.log("//////////////////");
+        console.log(target);
+        console.log("//////////////////");
+
+
+        return (
+            target[sym_smart]
+            || target.parentElement.closest(me.selector)[sym_smart]
+            || null
+        );
     };
     find(path="") { // (Still in draft state...)
         const me=this;
-        console.log(me.childs);
-        return path.split(".").reduce(
-            (current, name)=>current.childs[name]
-            , me
-        );
+        return path
+            .split(".")
+            .filter(x=>x)
+            .reduce(
+                ((current, name)=>current.childs[name])
+                , me
+            )
+        ;
     };
 };//}}}
 
