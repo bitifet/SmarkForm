@@ -26,6 +26,7 @@ export class list extends SmartComponent {
             target: me.target,
             parent: me.parent,
             options: me.options,
+            path: me.path,
         });
 
         me.addItem();

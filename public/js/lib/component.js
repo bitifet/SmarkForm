@@ -24,6 +24,12 @@ export class SmartComponent extends Events {//{{{
         me.target = target;
         me.options = options;
         me.parent = parent;
+        me.path = (
+            me.parent === null ? ""
+            : me.parent.path + "." + me.options.name
+        ).replace(/^\./, "");
+
+
         me.childs = {};
         console.log("tttttttt", target);
         if (target) /// FIXME!!!!
