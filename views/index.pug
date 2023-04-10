@@ -20,15 +20,16 @@ html
             max_items: 3,
             min_items: 1,
         })
-            p
-                label(for='name') Nom:
-                input(name='name', data-smart="text")
-            p
-                label(for='surname') Llinatges:
-                input(name='surname', data-smart="text")
-            button(data-smart = {
-                action: "remove",
-            }) -
+            div
+                p
+                    label(for='name') Nom:
+                    input(name='name', data-smart="text")
+                p
+                    label(for='surname') Llinatges:
+                    input(name='surname', data-smart="text")
+                button(data-smart = {
+                    action: "remove",
+                }) -
 
     script(
         type="module",

@@ -59,7 +59,7 @@ export class form extends SmartComponent {
                 options.type,
             ].join(" "));
             ///////////////////////////////////////////////////////////
-            console.log("Creating child for " + me.options.name + " with name: " + options.name);
+            console.log("Creating child for " + me.options.name + " with name: " + options.name, tpl, options);
             ///////////////////////////////////////////////////////////
             me.childs[options.name] = new ctrl (
                 tpl
