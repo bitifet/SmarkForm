@@ -11,7 +11,6 @@ export class form extends SmartComponent {
     render() {
         const me = this;
         const templates = [];
-        const actions = {};
 
         for (
             const node
@@ -36,21 +35,17 @@ export class form extends SmartComponent {
             //}}}
 
             // Classify:{{{
-            if (typeof options.type == "string") {
-                if (options.action) throw new Error ([
-                    "Invalid SmartForm item options:",
-                    "type and action are not allowed for same element."
-                ].join(" "));
-                templates.push(node);
-            } else if (typeof options.action == "string") {
-                if (! actions[name]) actions[name] = [];
-                actions[name].push(node);
-            } else {
-                if (options.action) throw new Error ([
-                    "Invalid SmartForm item options:",
-                    "no type or action specified for this element."
-                ].join(" "));
+            if (options.action) {
+                options.type ||= "action"; // Make type optional for actions.
+                if (options.type != "action") throw new Error(
+                    `Actions must be of type "action" but "${options.type}" given.`
+                );
+            } else if (typeof options.type != "string") {
+                throw new Error(
+                    `Invalid SmartFom item: type is mandatory for non action elements.`
+                );
             };
+            templates.push(node);
             //}}}
 
         };

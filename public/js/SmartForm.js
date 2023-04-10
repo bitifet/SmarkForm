@@ -2,6 +2,7 @@
 // ============
 
 import {form} from "./components/form.component.js";
+import {action} from "./components/action.component.js";
 import {list} from "./components/list.component.js";
 import {text} from "./components/text.component.js";
 
@@ -9,6 +10,7 @@ import {createComponent} from "./lib/component.js";
 
 for (const [name, controller] of Object.entries({
     form,
+    action,
     list,
     text,
 })) createComponent(name,controller);
