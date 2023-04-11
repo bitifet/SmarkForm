@@ -18,18 +18,27 @@ for (const [name, controller] of Object.entries({
 
 function onActionClick(ev) {
     const me = this;
+    const {options, parent} = me.getComponent(ev.originalTarget);
+    const { action, for: path} = options;
+
+    if (! action) return; // Not an action component.
+
+    const target = (
+        path ? parent.childs[path]
+        : parent
+    );
+
+    console.log("TARGET:", target);
 
 
-    const options = ev.target.dataset[me.property_name] || {};
-
-    const context = me.getComponent(ev.target);
-        // FIXME: For removeItem button this returns null!!!??
-
+    if (typeof target[action] != "function") throw me.Error(
+        `Unimplemented action ${action} for ${target.options.type}`
+    );
+    console.log("####", options.action, {target});
     console.log("clicked!!", ev);
-    console.log(context.options);
+    console.log(options);
     
-        // Enhance actions:
-        // TO DO... 💡💡💡💡💡💡💡💡💡 
+    target[action](options);
 
 };
 
