@@ -9,7 +9,7 @@ export class list extends SmartComponent {
         if (numChilds != 1) throw new Error(
             `List components must contain exactly 1 direct childs, but ${numChilds} given.`
         );
-        me.itemTpl = me.target.children[0]; ///.cloneNode(true);
+        me.itemTpl = me.target.children[0];
         if (
             me.itemTpl.querySelector("[id]") !== null // Contains IDs
         ) throw new Error(
@@ -33,5 +33,10 @@ export class list extends SmartComponent {
         me.target.appendChild(newItem);
         const newChild = me.enhance(newItem, {type: "form"});
         me.childs.push(newChild);
+    };
+    removeItem() {
+        const me = this;
+        const lastChild = me.childs.pop();
+        lastChild.target.remove();
     };
 };
