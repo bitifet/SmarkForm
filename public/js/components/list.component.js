@@ -2,13 +2,9 @@
 // ============================
 import {SmartComponent} from "../lib/component.js";
 export class list extends SmartComponent {
-    constructor(...args) {
-        super(...args);
-        const me = this;
-        me.childs = [];
-    };
     render () {
         const me = this;
+        me.childs = [];
         const numChilds = me.target.children.length;
         if (numChilds != 1) throw new Error(
             `List components must contain exactly 1 direct childs, but ${numChilds} given.`
@@ -29,13 +25,13 @@ export class list extends SmartComponent {
             path: me.path,
         });
 
-        me.addItem();
-        me.addItem();
         return;
     };
     addItem() {
         const me = this;
         const newItem = me.itemTpl.cloneNode(true);
         me.target.appendChild(newItem);
+        const newChild = me.enhance(newItem, {type: "form"});
+        me.childs.push(newChild);
     };
 };

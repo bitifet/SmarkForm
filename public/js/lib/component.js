@@ -32,25 +32,35 @@ export class SmartComponent extends Events {//{{{
             me.parent === null ? ""
             : me.parent.path + "." + me.options.name
         ).replace(/^\./, "");
-
-
         me.childs = {};
-        console.log("tttttttt", target);
-        if (target) /// FIXME!!!!
         target[sym_smart] = me;
+
+
         me.render();
     };
-    enhance(node) {
+    enhance(node, defaultOptions = null) {
         const me = this;
 
         // Sanityze and store options:{{{
-        let options = (node.dataset[me.property_name] || "").trim();
-        options = (
-            // Accept 'str' as shorthand for '{type: "str"}':
-            options.match(re_valid_typename_chars) ? {type: options}
-            // Otherwise it must be a valid JSON:
-            : JSON.parse(options)
-        );
+        let options = (
+            node.dataset[me.property_name] || ""
+        ).trim() || null;
+
+        try {
+            options = (
+                // Accept 'str' as shorthand for '{type: "str"}':
+                options.match(re_valid_typename_chars) ? {type: options}
+                // Otherwise it must be a valid JSON:
+                : JSON.parse(options)
+            );
+        } catch(err) {
+            if (typeof defaultOptions != "object") throw me.Error(
+                `No options object provided`
+            );
+            options = {};
+        };
+        options = {...defaultOptions, ...options};
+
         const name = validName(
             options.name
             , node.getAttribute("name")
@@ -62,12 +72,12 @@ export class SmartComponent extends Events {//{{{
         // Classify:{{{
         if (options.action) {
             options.type ||= "action"; // Make type optional for actions.
-            if (options.type != "action") throw new Error(
+            if (options.type != "action") throw me.Error(
                 `Actions must be of type "action" but "${options.type}" given.`
             );
             delete options.name; // Actions are always unnamed.
         } else if (typeof options.type != "string") {
-            throw new Error(
+            throw me.Error(
                 `Invalid SmartFom item: type is mandatory for non action elements.`
             );
         } else {
@@ -77,7 +87,7 @@ export class SmartComponent extends Events {//{{{
 
         // Enhance:{{{
         const ctrl = me.components[options.type];
-        if (! ctrl) throw new Error([
+        if (! ctrl) throw me.Error([
             "Unimplemented SmartForm component controller:",
             options.type,
         ].join(" "));
@@ -118,6 +128,13 @@ export class SmartComponent extends Events {//{{{
             )
         ;
     };
+    Error(message) {
+        const me = this;
+        return new Error(
+            `RenderError(${me.path}): ${message}`
+        );
+    };
+
 };//}}}
 
 export function createComponent(name, controller) {//{{{
