@@ -6,15 +6,25 @@ export class list extends SmartComponent {
         const me = this;
         me.childs = [];
         const numChilds = me.target.children.length;
-        if (numChilds != 1) throw new Error(
+        if (numChilds != 1) throw me.Error(
             `List components must contain exactly 1 direct childs, but ${numChilds} given.`
         );
         me.itemTpl = me.target.children[0];
         if (
             me.itemTpl.querySelector("[id]") !== null // Contains IDs
-        ) throw new Error(
+        ) throw me.Error(
             `List components are not allowed to contain elements with 'id' attribute.`
         );
+        const tplOptions = {
+            type: me.options.of,
+            ...me.getNodeOptions(me.itemTpl),
+        };
+        if (tplOptions.type != me.options.of) throw me.Error(
+            `List item type missmatch.`
+        );
+        if (! tplOptions.type) tplOptions.type = "form"; // Use form as default.
+        me.setNodeOptions(me.itemTpl, tplOptions);
+
 
         me.itemTpl.remove();
 

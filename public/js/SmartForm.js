@@ -23,22 +23,22 @@ function onActionClick(ev) {
 
     if (! action) return; // Not an action component.
 
-    const target = (
+    const context = (
         path ? parent.childs[path]
-        : parent
+        : parent.parent
+    );         // ^____ Cut here!!!! (context vs target);
+
+    console.log("TARGET:", context);
+
+
+    if (typeof context[action] != "function") throw me.Error(
+        `Unimplemented action ${action} for ${context.options.type}`
     );
-
-    console.log("TARGET:", target);
-
-
-    if (typeof target[action] != "function") throw me.Error(
-        `Unimplemented action ${action} for ${target.options.type}`
-    );
-    console.log("####", options.action, {target});
+    console.log("####", options.action, {context});
     console.log("clicked!!", ev);
     console.log(options);
     
-    target[action](options);
+    context[action](options);
 
 };
 

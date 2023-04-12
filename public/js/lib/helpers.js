@@ -4,7 +4,7 @@ export function getRoots(target, selector){//{{{
     const isTop = (
         parent === null ? n => n === null
         : n=>(n===null)||n.isSameNode(target)
-      );
+    );
     return [
         ...target.querySelectorAll(selector)
     ].filter(

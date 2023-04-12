@@ -33,18 +33,32 @@ export class SmartComponent extends Events {//{{{
             : me.parent.path + "." + me.options.name
         ).replace(/^\./, "");
         me.childs = {};
-        target[sym_smart] = me;
 
+
+
+        me.target[sym_smart] = me;
+
+        console.log("ooooooooo", options, me.target);
 
         me.render();
+    };
+    getNodeOptions(node) {
+        const me = this;
+        return (
+            node.dataset[me.property_name] || ""
+        ).trim() || null;
+    };
+    setNodeOptions(node, options) {
+        const me = this;
+        node.dataset[me.property_name] = options;
     };
     enhance(node, defaultOptions = null) {
         const me = this;
 
+        console.log("enhance()", node, defaultOptions);
+
         // Sanityze and store options:{{{
-        let options = (
-            node.dataset[me.property_name] || ""
-        ).trim() || null;
+        let options = me.getNodeOptions(node);
 
         try {
             options = (
@@ -91,9 +105,6 @@ export class SmartComponent extends Events {//{{{
             "Unimplemented SmartForm component controller:",
             options.type,
         ].join(" "));
-        ///////////////////////////////////////////////////////////
-        console.log("Creating child for " + me.options.name + " with name: " + options.name, node, options);
-        ///////////////////////////////////////////////////////////
         return new ctrl (
             node
             , options
@@ -108,6 +119,7 @@ export class SmartComponent extends Events {//{{{
 
         console.log("//////////////////");
         console.log(target);
+        console.log(target[sym_smart]);
         console.log("//////////////////");
 
 
