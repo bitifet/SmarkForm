@@ -130,13 +130,18 @@ export class SmartComponent extends Events {//{{{
         );
     };
     find(path="") { // (Still in draft state...)
-        const me=this;
+        let base=this;
+        if (path[0] == "/") while (base.parent) base = base.parent;
         return path
-            .split(".")
+            .split("/")
             .filter(x=>x)
             .reduce(
-                ((current, name)=>current.childs[name])
-                , me
+                ((current, name)=>(
+                    current === undefined ? null
+                    : name == ".." ? current.parent
+                    : current.childs[name]
+                ))
+                , base
             )
         ;
     };
