@@ -34,12 +34,16 @@ export class SmartComponent extends Events {//{{{
         ).replace(/^\./, "");
         me.childs = {};
 
-
-
+        // Parents iterator:
+        me.parents = {};
+        me.parents[Symbol.iterator] = function* () {
+            let current = me;
+            while (current) {
+                yield current;
+                current = current.parent;
+            };
+        };
         me.target[sym_smart] = me;
-
-        console.log("ooooooooo", options, me.target);
-
         me.render();
     };
     getNodeOptions(node) {
@@ -54,8 +58,6 @@ export class SmartComponent extends Events {//{{{
     };
     enhance(node, defaultOptions = null) {
         const me = this;
-
-        console.log("enhance()", node, defaultOptions);
 
         // Sanityze and store options:{{{
         let options = me.getNodeOptions(node);
@@ -116,13 +118,6 @@ export class SmartComponent extends Events {//{{{
     };
     getComponent(target) {
         const me = this;
-
-        console.log("//////////////////");
-        console.log(target);
-        console.log(target[sym_smart]);
-        console.log("//////////////////");
-
-
         return (
             target[sym_smart]
             || target.parentElement.closest(me.selector)[sym_smart]

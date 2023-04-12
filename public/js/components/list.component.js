@@ -24,17 +24,7 @@ export class list extends SmartComponent {
         );
         if (! tplOptions.type) tplOptions.type = "form"; // Use form as default.
         me.setNodeOptions(me.itemTpl, tplOptions);
-
-
         me.itemTpl.remove();
-
-        console.log("New list!!!!", {
-            target: me.target,
-            parent: me.parent,
-            options: me.options,
-            path: me.path,
-        });
-
         return;
     };
     addItem() {
@@ -44,9 +34,14 @@ export class list extends SmartComponent {
         const newChild = me.enhance(newItem, {type: "form"});
         me.childs.push(newChild);
     };
-    removeItem() {
+    removeItem({target}) {
         const me = this;
-        const lastChild = me.childs.pop();
-        lastChild.target.remove();
+        me.childs = me.childs.filter(child=>{
+            if (child.target.isSameNode(target.target)) {
+                child.target.remove();
+                return false;
+            };
+            return true;
+        });
     };
 };

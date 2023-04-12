@@ -18,27 +18,41 @@ for (const [name, controller] of Object.entries({
 
 function onActionClick(ev) {
     const me = this;
-    const {options, parent} = me.getComponent(ev.originalTarget);
+    const actionTarget = me.getComponent(ev.originalTarget);
+    const {options, parent} = actionTarget;
+    const parents = [...actionTarget.parents];
     const { action, for: path} = options;
 
     if (! action) return; // Not an action component.
 
+    // Allow binding actions to specific component types:
+    // (Syntax "type:action")
+    let [targetAction, targetType] = action.split(":").reverse();
+
     const context = (
-        path ? parent.childs[path]
-        : parent.parent
-    );         // ^____ Cut here!!!! (context vs target);
+        path ? parent.find(path)
+        : parents.find(p=>{
+            if (targetType && p.typeName != targetType) return false;
+            if (typeof p[targetAction] != "function") return false;
+            return true;
+        })
+    );
 
-    console.log("TARGET:", context);
-
+    const target = (
+        path ? null
+        : parents.find(p=>p.parent.target.isSameNode(context.target))
+    );
 
     if (typeof context[action] != "function") throw me.Error(
-        `Unimplemented action ${action} for ${context.options.type}`
+        `Unimplemented action ${action}`
+        + (context ? ` for ${context.options.type}` : "")
     );
-    console.log("####", options.action, {context});
-    console.log("clicked!!", ev);
-    console.log(options);
-    
-    context[action](options);
+
+    context[action]({
+        context,
+        target,
+        ...options
+    });
 
 };
 

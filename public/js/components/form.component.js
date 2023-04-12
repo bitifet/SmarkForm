@@ -7,7 +7,6 @@ import {getRoots} from "../lib/helpers.js";
 export class form extends SmartComponent {
     render() {
         const me = this;
-
         for (
             const node
             of getRoots(me.target, me.selector)
@@ -16,6 +15,5 @@ export class form extends SmartComponent {
             const {name} = newChild.options;
             if (name) me.childs[name] = newChild;
         };
-
     };
 };
