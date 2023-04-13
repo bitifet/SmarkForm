@@ -10,8 +10,8 @@ const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 
 
-export class SmartComponent extends Events {//{{{
-    constructor(
+export class SmartComponent extends Events {
+    constructor(//{{{
         target
         , {
             property_name = "smart",
@@ -45,18 +45,18 @@ export class SmartComponent extends Events {//{{{
         };
         me.target[sym_smart] = me;
         me.render();
-    };
-    getNodeOptions(node) {
+    };//}}}
+    getNodeOptions(node) {//{{{
         const me = this;
         return (
             node.dataset[me.property_name] || ""
         ).trim() || null;
-    };
-    setNodeOptions(node, options) {
+    };//}}}
+    setNodeOptions(node, options) {//{{{
         const me = this;
         node.dataset[me.property_name] = options;
-    };
-    enhance(node, defaultOptions = null) {
+    };//}}}
+    enhance(node, defaultOptions = null) {//{{{
         const me = this;
 
         // Sanityze and store options:{{{
@@ -115,16 +115,16 @@ export class SmartComponent extends Events {//{{{
         //}}}
 
 
-    };
-    getComponent(target) {
+    };//}}}
+    getComponent(target) {//{{{
         const me = this;
         return (
             target[sym_smart]
             || target.parentElement.closest(me.selector)[sym_smart]
             || null
         );
-    };
-    find(path="") { // (Still in draft state...)
+    };//}}}
+    find(path="") { // (Still in draft state...){{{
         let base=this;
         if (path[0] == "/") while (base.parent) base = base.parent;
         return path
@@ -139,15 +139,15 @@ export class SmartComponent extends Events {//{{{
                 , base
             )
         ;
-    };
-    Error(message) {
+    };//}}}
+    Error(message) {//{{{
         const me = this;
         return new Error(
             `RenderError(${me.path}): ${message}`
         );
-    };
+    };//}}}
 
-};//}}}
+};
 
 export function createComponent(name, controller) {//{{{
     if (componentTypes[name] !== undefined) throw new Error(
