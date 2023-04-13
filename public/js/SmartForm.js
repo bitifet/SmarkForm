@@ -43,12 +43,12 @@ function onActionClick(ev) {
         : parents.find(p=>p.parent.target.isSameNode(context.target))
     );
 
-    if (typeof context[action] != "function") throw me.Error(
+    if (typeof context[targetAction] != "function") throw me.Error(
         `Unimplemented action ${action}`
         + (context ? ` for ${context.options.type}` : "")
     );
 
-    context[action]({
+    context[targetAction]({
         context,
         target,
         ...options

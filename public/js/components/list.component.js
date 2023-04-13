@@ -31,17 +31,20 @@ export class list extends SmartComponent {
         const me = this;
         const newItem = me.itemTpl.cloneNode(true);
         me.target.appendChild(newItem);
-        const newChild = me.enhance(newItem, {type: "form"});
+        const newChild = me.enhance(newItem, {type: "form", name: me.childs.length});
         me.childs.push(newChild);
     };
     removeItem({target}) {
         const me = this;
-        me.childs = me.childs.filter(child=>{
-            if (child.target.isSameNode(target.target)) {
-                child.target.remove();
-                return false;
-            };
-            return true;
-        });
+        me.childs = me.childs
+            .filter(child=>{
+                if (child.target.isSameNode(target.target)) {
+                    child.target.remove();
+                    return false;
+                };
+                return true;
+            })
+            .map((c,i)=>(c.name = i, c))
+        ;
     };
 };
