@@ -2,6 +2,10 @@ doctype html
 html
   head
     title=title
+    meta(
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    )
     link(rel="stylesheet", href="/css/style.css")
   body
     h1=message
@@ -9,7 +13,7 @@ html
     fieldset
         p
             label(for='title') Títol:
-            input(name='title', data-smart="text")
+            input(name='title', data-smart="input")
         button(data-smart = {
             action: "addItem",
             for: "users",
@@ -23,10 +27,28 @@ html
             div
                 p
                     label(for='name') Nom:
-                    input(name='name', data-smart="text")
+                    input(name='name', data-smart="input")
                 p
                     label(for='surname') Llinatges:
-                    input(name='surname', data-smart="text")
+                    input(name='surname', data-smart="input")
+                p
+                    button(data-smart = {
+                        action: "addItem",
+                        for: "phones",
+                    }) +
+                    label(for='phones') Telèfons:
+                    ul(data-smart = {
+                        type: "list",
+                        of: "input",
+                        name: "phones",
+                        max_items: 3,
+                        min_items: 1,
+                    })
+                        li
+                            input(name='phone', data-smart="input" type="phone")
+                            button(data-smart = {
+                                action: "removeItem",
+                            }) -
                 button(data-smart = {
                     action: "removeItem",
                 }) -
