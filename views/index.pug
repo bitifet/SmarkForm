@@ -1,57 +1,102 @@
 doctype html
 html
-  head
-    title=title
-    meta(
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    )
-    link(rel="stylesheet", href="/css/style.css")
-  body
-    h1=message
-    p Welcome to the future 🔮
-    fieldset
-        p
-            label(for='title') Títol:
-            input(name='title', data-smart="input")
-        button(data-smart = {
-            action: "addItem",
-            for: "users",
-        }) +
-        div(data-smart = {
-            type: "list",
-            name: "users",
-            max_items: 3,
-            min_items: 1,
-        })
+    head
+        title SmartForm Demo
+        link(rel="stylesheet", href="/css/style.css")
+        link(rel="stylesheet", href="/css/form.css")
+    body
+        fieldset.main-content
+            header
+                h1 SmartForm Example
+                small
+                    p.
+                      
+                        This example demonstrates how to create a simple form layout that can almost responsively expand and stack depending on the width of the page.
+                      
+                    p  
+            .form-group
+                label Company
+                input.input-control(data-smart="input" value='West Wind')
+            .form-group
+                label Address
+                textarea.input-control 32 North End
+            .form-group
+                label City,State,Zip
+                input.input-control(data-smart="input" value='Walnut Creek' placeholder='City' style='flex: 6')
+                input.input-control(data-smart="input" value='CA' placeholder='State' style='flex:1')
+                input.input-control(data-smart="input" value='94152' placeholder='Postal Code' style='flex:2')
             div
-                p
-                    label(for='name') Nom:
-                    input(name='name', data-smart="input")
-                p
-                    label(for='surname') Llinatges:
-                    input(name='surname', data-smart="input")
-                p
-                    button(data-smart = {
-                        action: "addItem",
-                        for: "phones",
-                    }) +
-                    label(for='phones') Telèfons:
-                    ul(data-smart = {
+                .form-group
+                    label
+                        button(data-smart = {
+                            action: "addItem",
+                            for: "employee",
+                        }) +
+                        b Employee
+                    div(data-smart = {
                         type: "list",
-                        of: "input",
-                        name: "phones",
+                        name: "employee",
                         max_items: 3,
                         min_items: 1,
                     })
-                        li
-                            input(name='phone', data-smart="input" type="phone")
-                            button(data-smart = {
-                                action: "removeItem",
-                            }) -
-                button(data-smart = {
-                    action: "removeItem",
-                }) -
+                        div
+                            .form-group
+                                label
+                                    button.input-control(data-smart = {
+                                        action: "removeItem",
+                                    }) -
+                                label
+                                    First Name
+                                input.input-control(data-smart="input" value='Rick')
+                                label.right-inline Last Name
+                                input.input-control(data-smart="input" value='Strahl')
+                            .form-group
+                                label
+                                label
+                                    button(data-smart = {
+                                        action: "addItem",
+                                        for: "phones",
+                                    }) +
+                                    b Phones
+                                div(data-smart = {
+                                    name: "phones",
+                                    type: "list",
+                                    of: "input",
+                                    min_items: 1,
+                                    max_items: 3,
+                                })
+                                    .form-group
+                                        label
+                                        input.input-control(data-smart="input" type='tel')
+                                        label
+                                            button.input-control(data-smart = {
+                                                action: "removeItem",
+                                            }) -
+
+                                label
+                                    button(data-smart = {
+                                        action: "addItem",
+                                        for: "emails",
+                                    }) +
+                                    b Emails
+                                div(data-smart = {
+                                    name: "emails",
+                                    type: "list",
+                                    of: "input",
+                                    min_items: 1,
+                                    max_items: 3,
+                                })
+                                    .form-group
+                                        label
+                                        input.input-control(data-smart="input" type='email')
+                                        label
+                                            button.input-control(data-smart = {
+                                                action: "removeItem",
+                                            }) -
+            .form-group
+                label  
+                button Save
+                button Cancel
 
     script(
         type="module",

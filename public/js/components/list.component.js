@@ -1,5 +1,19 @@
 // components/list.component.js
 // ============================
+
+// TODO:
+// =====
+//
+// 👉 Keep first item in place:
+//    -------------------------
+//     
+//    For lists allowing 0 items, make first element disabled and not visible
+//    instead of completely removing from DOM.
+//
+//    This would avoid lots of visual layout issues.
+
+
+
 import {SmartComponent} from "../lib/component.js";
 export class list extends SmartComponent {
     render () {
