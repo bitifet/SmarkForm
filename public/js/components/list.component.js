@@ -29,10 +29,10 @@ export class list extends SmartComponent {
         ) throw me.Error(
             `List components are not allowed to contain elements with 'id' attribute.`
         );
-        const tplOptions = {
-            type: me.options.of,
-            ...me.getNodeOptions(me.itemTpl),
-        };
+        const tplOptions = me.getNodeOptions(
+            me.itemTpl
+            , {type: me.options.of}
+        );
         if (tplOptions.type != me.options.of) throw me.Error(
             `List item type missmatch.`
         );

@@ -9,22 +9,22 @@ html
             header
                 h1 SmartForm Example
                 small
-                    p.
-                      
-                        This example demonstrates how to create a simple form layout that can almost responsively expand and stack depending on the width of the page.
-                      
+                    p
+                      | This example demonstrates how to create a simple form
+                      | layout that can almost responsively expand and stack
+                      | depending on the width of the page.
                     p  
             .form-group
                 label Company
-                input.input-control(data-smart="input" value='West Wind')
+                input.input-control(data-smart="input")
             .form-group
                 label Address
-                textarea.input-control 32 North End
+                textarea.input-control
             .form-group
                 label City,State,Zip
-                input.input-control(data-smart="input" value='Walnut Creek' placeholder='City' style='flex: 6')
-                input.input-control(data-smart="input" value='CA' placeholder='State' style='flex:1')
-                input.input-control(data-smart="input" value='94152' placeholder='Postal Code' style='flex:2')
+                input.input-control(data-smart="input" placeholder='City' style='flex: 6')
+                input.input-control(data-smart="input" placeholder='State' style='flex:1')
+                input.input-control(data-smart="input" placeholder='Postal Code' style='flex:2')
             div
                 .form-group
                     label
@@ -47,9 +47,9 @@ html
                                     }) -
                                 label
                                     First Name
-                                input.input-control(data-smart="input" value='Rick')
+                                input.input-control(data-smart="input")
                                 label.right-inline Last Name
-                                input.input-control(data-smart="input" value='Strahl')
+                                input.input-control(data-smart="input")
                             .form-group
                                 label
                                 label
@@ -61,7 +61,7 @@ html
                                 div(data-smart = {
                                     name: "phones",
                                     type: "list",
-                                    of: "input",
+                                    of: "singleton",
                                     min_items: 1,
                                     max_items: 3,
                                 })
@@ -82,7 +82,7 @@ html
                                 div(data-smart = {
                                     name: "emails",
                                     type: "list",
-                                    of: "input",
+                                    of: "singleton",
                                     min_items: 1,
                                     max_items: 3,
                                 })

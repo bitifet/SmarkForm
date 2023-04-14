@@ -2,6 +2,7 @@
 // ============
 
 import {form} from "./components/form.component.js";
+import {singleton} from "./components/singleton.component.js";
 import {action} from "./components/action.component.js";
 import {list} from "./components/list.component.js";
 import {input} from "./components/input.component.js";
@@ -10,6 +11,7 @@ import {createComponent} from "./lib/component.js";
 
 for (const [name, controller] of Object.entries({
     form,
+    singleton,
     action,
     list,
     input,

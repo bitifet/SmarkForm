@@ -20,6 +20,7 @@ export class SmartComponent extends Events {
         , parent = null
     ) {
         super();
+
         const me = this;
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;
@@ -27,6 +28,7 @@ export class SmartComponent extends Events {
         me.components = componentTypes;
         me.target = target;
         me.options = options;
+        me.setNodeOptions(me.target, me.options);
         me.parent = parent;
         me.path = (
             me.parent === null ? ""
@@ -46,21 +48,11 @@ export class SmartComponent extends Events {
         me.target[sym_smart] = me;
         me.render();
     };//}}}
-    getNodeOptions(node) {//{{{
+    getNodeOptions(node, defaultOptions) {//{{{
         const me = this;
-        return (
+        let options = (
             node.dataset[me.property_name] || ""
         ).trim() || null;
-    };//}}}
-    setNodeOptions(node, options) {//{{{
-        const me = this;
-        node.dataset[me.property_name] = options;
-    };//}}}
-    enhance(node, defaultOptions = null) {//{{{
-        const me = this;
-
-        // Sanityze and store options:{{{
-        let options = me.getNodeOptions(node);
 
         try {
             options = (
@@ -75,13 +67,25 @@ export class SmartComponent extends Events {
             );
             options = {};
         };
-        options = {...defaultOptions, ...options};
+        if (typeof defaultOptions == "object") {
+            options = {...defaultOptions, ...options};
+            me.setNodeOptions(node, options);
+        };
+        return options;
+    };//}}}
+    setNodeOptions(node, options) {//{{{
+        const me = this;
+        node.dataset[me.property_name] = JSON.stringify(options);
+    };//}}}
+    enhance(node, defaultOptions) {//{{{
+        const me = this;
 
+        // Sanityze and store options:{{{
+        let options = me.getNodeOptions(node, defaultOptions);
         const name = validName(
             options.name
             , node.getAttribute("name")
         );
-        options.parent = me;
         ////node[sym_options] = options;
         //}}}
 
@@ -113,7 +117,6 @@ export class SmartComponent extends Events {
             , me
         );
         //}}}
-
 
     };//}}}
     getComponent(target) {//{{{
