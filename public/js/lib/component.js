@@ -6,7 +6,6 @@ import {Events} from "./events.js";
 import {validName} from "../lib/helpers.js";
 
 const sym_smart = Symbol("smart_component");
-////const sym_options = Symbol("Options");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 
 
@@ -86,7 +85,6 @@ export class SmartComponent extends Events {
             options.name
             , node.getAttribute("name")
         );
-        ////node[sym_options] = options;
         //}}}
 
         // Classify:{{{

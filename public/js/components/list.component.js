@@ -41,6 +41,10 @@ export class list extends SmartComponent {
         me.itemTpl.remove();
         return;
     };
+    export() {
+        const me = this;
+        return me.childs.map(ch=>ch.export());
+    };
     addItem() {
         const me = this;
         const newItem = me.itemTpl.cloneNode(true);

@@ -13,5 +13,8 @@ export class singleton extends form {
             + ` data field but ${numFields} found.`
         );
     };
+    export() {
+        return Object.values(super.export())[0];
+    };
 };
 

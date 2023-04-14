@@ -16,15 +16,37 @@ html
                     p  
             .form-group
                 label Company
-                input.input-control(data-smart="input")
+                input.input-control(
+                    data-smart="input"
+                    name="company"
+                    type="text"
+                )
             .form-group
                 label Address
-                textarea.input-control
+                textarea.input-control(
+                    data-smart="input"
+                    name="address"
+                )
             .form-group
                 label City,State,Zip
-                input.input-control(data-smart="input" placeholder='City' style='flex: 6')
-                input.input-control(data-smart="input" placeholder='State' style='flex:1')
-                input.input-control(data-smart="input" placeholder='Postal Code' style='flex:2')
+                input.input-control(
+                    data-smart="input"
+                    name="city"
+                    placeholder='City'
+                    style='flex: 6'
+                )
+                input.input-control(
+                    data-smart="input"
+                    name="state"
+                    placeholder='State'
+                    style='flex:1'
+                )
+                input.input-control(
+                    data-smart="input"
+                    name=postCode
+                    placeholder='Postal Code'
+                    style='flex:2'
+                )
             div
                 .form-group
                     label
@@ -47,9 +69,15 @@ html
                                     }) -
                                 label
                                     First Name
-                                input.input-control(data-smart="input")
+                                input.input-control(
+                                    data-smart="input"
+                                    name="name"
+                                )
                                 label.right-inline Last Name
-                                input.input-control(data-smart="input")
+                                input.input-control(
+                                    data-smart="input"
+                                    name="lastName"
+                                )
                             .form-group
                                 label
                                 label

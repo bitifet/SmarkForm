@@ -16,4 +16,12 @@ export class form extends SmartComponent {
             if (name) me.childs[name] = newChild;
         };
     };
+    export() {
+        const me = this;
+        return Object.fromEntries(
+            Object.entries(me.childs).map(
+                ([key, child])=>[key, child.export()]
+            )
+        );
+    };
 };
