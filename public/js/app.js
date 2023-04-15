@@ -1,10 +1,11 @@
 
 import {SmartForm} from "./SmartForm.js";
 
-const myForm = new SmartForm(
+window.form = new SmartForm(
     document.querySelector("fieldset")
 );
 
 console.log("💡💡💡💡💡💡💡💡💡💡");
-console.log(myForm);
+console.log("form =", window.form);
 console.log("💡💡💡💡💡💡💡💡💡💡");
+
