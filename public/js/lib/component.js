@@ -125,21 +125,41 @@ export class SmartComponent extends Events {
             || null
         );
     };//}}}
-    find(path="") { // (Still in draft state...){{{
+    find(path="") { // {{{
         let base=this;
         if (path[0] == "/") while (base.parent) base = base.parent;
-        return path
+        if (! path.split) console.log("path.split:", path.split, typeof path.split);
+        const parts = path
             .split("/")
             .filter(x=>x)
-            .reduce(
-                ((current, name)=>(
-                    current === undefined ? null
-                    : name == ".." ? current.parent
-                    : current.childs[name]
-                ))
-                , base
-            )
         ;
+
+        // (Recursive) Multi-match search (path with '*' wilcards):
+        // (Returns array of components)
+        const firstWildcardPos = parts.findIndex(p=>p=="*");
+        if (firstWildcardPos >= 0) {
+            const pivotPath = parts.slice(0, firstWildcardPos).join("/");
+            const restPath = parts.slice(firstWildcardPos + 1).join("/");
+            const pivot = base.find(pivotPath);
+            const pivotChilds = Object.values(pivot.childs);
+            return pivotChilds
+                .filter(x=>x)
+                .map(child=>child.find(restPath))
+                .flat(Infinity)
+            ;
+        };
+
+        // Straight search (wilcardless path)
+        // (Returns single component)
+        return parts.reduce(
+            ((current, name)=>(
+                current === undefined ? null
+                : name == ".." ? current.parent
+                : current.childs[name]
+            ))
+            , base
+        )
+    ;
     };//}}}
     Error(message) {//{{{
         const me = this;
