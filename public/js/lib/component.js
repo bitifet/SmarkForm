@@ -7,6 +7,14 @@ import {validName} from "../lib/helpers.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
+const re_has_wildcards = /[\*\?]/;
+const wild2regex = wname => new RegExp(
+    "^"
+    + wname
+        .replace(/\*+/g, ".*")
+        .replace(/\?/g, ".")
+    + "$"
+);
 
 
 export class SmartComponent extends Events {
@@ -134,22 +142,24 @@ export class SmartComponent extends Events {
             .filter(x=>x)
         ;
 
-        // (Recursive) Multi-match search (path with '*' wilcards):
+        // (Recursive) Multi-match search (path with '*' wildcards):
         // (Returns array of components)
-        const firstWildcardPos = parts.findIndex(p=>p=="*");
+        const firstWildcardPos = parts.findIndex(p=>p.match(re_has_wildcards));
         if (firstWildcardPos >= 0) {
+            const re_pattern = wild2regex(parts[firstWildcardPos]);
+            console.log(re_pattern);
             const pivotPath = parts.slice(0, firstWildcardPos).join("/");
             const restPath = parts.slice(firstWildcardPos + 1).join("/");
             const pivot = base.find(pivotPath);
-            const pivotChilds = Object.values(pivot.childs);
+            const pivotChilds = Object.entries(pivot.childs);
             return pivotChilds
-                .filter(x=>x)
-                .map(child=>child.find(restPath))
+                .filter(([name,child])=>child && name.match(re_pattern))
+                .map(([,child])=>child.find(restPath))
                 .flat(Infinity)
             ;
         };
 
-        // Straight search (wilcardless path)
+        // Straight search (wildcardless path)
         // (Returns single component)
         return parts.reduce(
             ((current, name)=>(
