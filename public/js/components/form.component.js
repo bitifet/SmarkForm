@@ -5,7 +5,7 @@ import {SmartComponent} from "../lib/component.js";
 import {getRoots} from "../lib/helpers.js";
 
 export class form extends SmartComponent {
-    render() {
+    render() {//{{{
         const me = this;
         for (
             const node
@@ -13,15 +13,15 @@ export class form extends SmartComponent {
         ) {
             const newChild = me.enhance(node);
             const {name} = newChild.options;
-            if (name) me.childs[name] = newChild;
+            if (name) me.children[name] = newChild;
         };
-    };
-    export() {
+    };//}}}
+    export() {//{{{
         const me = this;
         return Object.fromEntries(
-            Object.entries(me.childs).map(
+            Object.entries(me.children).map(
                 ([key, child])=>[key, child.export()]
             )
         );
-    };
+    };//}}}
 };

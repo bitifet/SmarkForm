@@ -41,7 +41,7 @@ export class SmartComponent extends Events {
             me.parent === null ? ""
             : me.parent.path + "." + me.options.name
         ).replace(/^\./, "");
-        me.childs = {};
+        me.children = {};
 
         // Parents iterator:
         me.parents = {};
@@ -151,7 +151,7 @@ export class SmartComponent extends Events {
             const pivotPath = parts.slice(0, firstWildcardPos).join("/");
             const restPath = parts.slice(firstWildcardPos + 1).join("/");
             const pivot = base.find(pivotPath);
-            const pivotChilds = Object.entries(pivot.childs);
+            const pivotChilds = Object.entries(pivot.children);
             return pivotChilds
                 .filter(([name,child])=>child && name.match(re_pattern))
                 .map(([,child])=>child.find(restPath))
@@ -165,7 +165,7 @@ export class SmartComponent extends Events {
             ((current, name)=>(
                 current === undefined ? null
                 : name == ".." ? current.parent
-                : current.childs[name]
+                : current.children[name]
             ))
             , base
         )
@@ -177,7 +177,6 @@ export class SmartComponent extends Events {
             `RenderError(${me.path}): ${message}`
         );
     };//}}}
-
 };
 
 export function createComponent(name, controller) {//{{{

@@ -13,15 +13,14 @@
 //    This would avoid lots of visual layout issues.
 
 
-
 import {SmartComponent} from "../lib/component.js";
 export class list extends SmartComponent {
-    render () {
+    render () {//{{{
         const me = this;
-        me.childs = [];
+        me.children = [];
         const numChilds = me.target.children.length;
         if (numChilds != 1) throw me.Error(
-            `List components must contain exactly 1 direct childs, but ${numChilds} given.`
+            `List components must contain exactly 1 direct children, but ${numChilds} given.`
         );
         me.itemTpl = me.target.children[0];
         if (
@@ -40,21 +39,22 @@ export class list extends SmartComponent {
         me.setNodeOptions(me.itemTpl, tplOptions);
         me.itemTpl.remove();
         return;
-    };
-    export() {
+    };//}}}
+    export() {//{{{
         const me = this;
-        return me.childs.map(ch=>ch.export());
-    };
-    addItem() {
+        return me.children.map(ch=>ch.export());
+    };//}}}
+    addItem() {//{{{
         const me = this;
         const newItem = me.itemTpl.cloneNode(true);
         me.target.appendChild(newItem);
-        const newChild = me.enhance(newItem, {type: "form", name: me.childs.length});
-        me.childs.push(newChild);
-    };
-    removeItem({target}) {
+        const newChild = me.enhance(newItem, {type: "form", name: me.children.length});
+        me.children.push(newChild);
+    };//}}}
+    removeItem({target}) {//{{{
+        console.log({target});
         const me = this;
-        me.childs = me.childs
+        me.children = me.children
             .filter(child=>{
                 if (child.target.isSameNode(target.target)) {
                     child.target.remove();
@@ -64,5 +64,5 @@ export class list extends SmartComponent {
             })
             .map((c,i)=>(c.name = i, c))
         ;
-    };
+    };//}}}
 };
