@@ -23,7 +23,7 @@ function onActionClick(ev) {
     const actionTarget = me.getComponent(ev.originalTarget);
     const {options, parent} = actionTarget;
     const parents = [...actionTarget.parents];
-    const { action, for: path} = options;
+    const { action, for: path, to: toTarget} = options;
 
     if (! action) return; // Not an action component.
 
@@ -41,7 +41,8 @@ function onActionClick(ev) {
     );
 
     const target = (
-        path ? null
+        toTarget ? context.find(toTarget) // Explicit target (context relative)
+        : path ? null // Explicit context path => don't mind component position
         : parents.find(p=>p.parent.target.isSameNode(context.target))
     );
 

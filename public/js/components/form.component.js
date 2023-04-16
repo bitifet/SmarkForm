@@ -24,4 +24,13 @@ export class form extends SmartComponent {
             )
         );
     };//}}}
+    isEmpty() {//{{{
+        const me = this;
+        return (
+            0 > Object.values(me.children)
+                .findIndex(
+                    child=>!child.isEmpty()
+                )
+        );
+    };//}}}
 };

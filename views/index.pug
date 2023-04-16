@@ -87,6 +87,12 @@ html
                                         for: "phones",
                                     }) +
                                     b Phones
+                                    button(data-smart = {
+                                        action: "removeItem",
+                                        for: "phones",
+                                        to: "*",
+                                        keep_non_empty: true,
+                                    }) X
                                 div(data-smart = {
                                     name: "phones",
                                     type: "list",
@@ -108,6 +114,12 @@ html
                                         for: "emails",
                                     }) +
                                     b Emails
+                                    button(data-smart = {
+                                        action: "removeItem",
+                                        for: "emails",
+                                        to: "*",
+                                        keep_non_empty: true,
+                                    }) X
                                 div(data-smart = {
                                     name: "emails",
                                     type: "list",

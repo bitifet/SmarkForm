@@ -51,9 +51,13 @@ export class list extends SmartComponent {
         const newChild = me.enhance(newItem, {type: "form", name: me.children.length});
         me.children.push(newChild);
     };//}}}
-    removeItem({target}) {//{{{
-        console.log({target});
+    removeItem({//{{{
+        target,
+        ...options
+    }) {
         const me = this;
+        if (target instanceof Array) return target.map(t=>me.removeItem({target: t, ...options}));
+        if (options.keep_non_empty && ! target.isEmpty()) return;
         me.children = me.children
             .filter(child=>{
                 if (child.target.isSameNode(target.target)) {
@@ -64,5 +68,13 @@ export class list extends SmartComponent {
             })
             .map((c,i)=>(c.name = i, c))
         ;
+    };//}}}
+    isEmpty() {//{{{
+        const me = this;
+        return (
+            0 > me.children.findIndex(
+                child=>!child.isEmpty()
+            )
+        );
     };//}}}
 };

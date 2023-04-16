@@ -136,7 +136,6 @@ export class SmartComponent extends Events {
     find(path="") { // {{{
         let base=this;
         if (path[0] == "/") while (base.parent) base = base.parent;
-        if (! path.split) console.log("path.split:", path.split, typeof path.split);
         const parts = path
             .split("/")
             .filter(x=>x)
@@ -147,7 +146,6 @@ export class SmartComponent extends Events {
         const firstWildcardPos = parts.findIndex(p=>p.match(re_has_wildcards));
         if (firstWildcardPos >= 0) {
             const re_pattern = wild2regex(parts[firstWildcardPos]);
-            console.log(re_pattern);
             const pivotPath = parts.slice(0, firstWildcardPos).join("/");
             const restPath = parts.slice(firstWildcardPos + 1).join("/");
             const pivot = base.find(pivotPath);
