@@ -59,8 +59,7 @@ html
                     div(data-smart = {
                         type: "list",
                         name: "employee",
-                        max_items: 3,
-                        min_items: 1,
+                        min_items: 0,
                     })
                         div
                             .form-group
@@ -97,7 +96,6 @@ html
                                     name: "phones",
                                     type: "list",
                                     of: "singleton",
-                                    min_items: 1,
                                     max_items: 3,
                                 })
                                     .form-group
@@ -124,7 +122,6 @@ html
                                     name: "emails",
                                     type: "list",
                                     of: "singleton",
-                                    min_items: 1,
                                     max_items: 3,
                                 })
                                     .form-group
