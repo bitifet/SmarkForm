@@ -68,11 +68,12 @@ export class list extends SmartComponent {
     removeItem({//{{{
         target,
         ...options
-    }) {
+    } = {}) {
         const me = this;
         if (me.children.length <= me.min_items) throw me.Error(
             `Cannot remove items under min_items boundary`
         );
+        if (target === undefined) target = me.children[me.children.length - 1];
         if (target instanceof Array) return target.map(t=>me.removeItem({target: t, ...options}));
         if (options.keep_non_empty && ! target.isEmpty()) return;
         me.children = me.children

@@ -10,7 +10,7 @@ const exportButton = document.querySelector("#exportButton")
 const textarea = document.querySelector("#inoutJson")
 
 
-importButton.addEventListener("click", ()=>form.import(JSON.parse(textarea.valpue)));
+importButton.addEventListener("click", ()=>form.import(JSON.parse(textarea.value)));
 exportButton.addEventListener("click", ()=>textarea.value = (
     JSON.stringify(form.export(), null, 4)
     + "\n\n\n\n\n\n\n\n" // CSS laziness ;-)
