@@ -57,10 +57,13 @@ block mainForm
                 b Employee
             div(data-smart = {
                 type: "list",
+                exportEmpties: true,
                 name: "employee",
                 min_items: 0,
             })
-                div
+                div(data-smart={
+                    exportEmpties: false
+                })
                     .form-group
                         label
                             button.input-control(data-smart = {

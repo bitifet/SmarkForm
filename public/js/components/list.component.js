@@ -67,7 +67,11 @@ export class list extends SmartComponent {
     };//}}}
     export() {//{{{
         const me = this;
-        return me.children.map(ch=>ch.export());
+        const targettedChildren = (
+            me.inherittedOption("exportEmpties", false) ? me.children
+            : me.children.filter(ch=>!ch.isEmpty())
+        );
+        return targettedChildren.map(ch=>ch.export());
     };//}}}
     import(data = []) {//{{{
         const me = this;
@@ -80,7 +84,7 @@ export class list extends SmartComponent {
             (value, i) => me.children[i].import(value)
         );
     };//}}}
-    addItem({
+    addItem({//{{{
         target,
         position = "after"
     } = {}) {
@@ -93,9 +97,7 @@ export class list extends SmartComponent {
             'LIST_MAX_ITEMS_REACHED'
             , `Cannot add items over max_items boundary`
         );
-
         const newItem = me.itemTpl.cloneNode(true);
-
         if (! me.children.length) {
             me.target.appendChild(newItem);
             const newChild = me.enhance(newItem, {type: "form", name: 0});
@@ -122,8 +124,7 @@ export class list extends SmartComponent {
                 .map((c,i)=>(c.name = i, c))
             ;
         };
-
-    };
+    };//}}}
     removeItem({//{{{
         target,
         ...options
