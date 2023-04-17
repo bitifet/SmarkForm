@@ -185,6 +185,15 @@ export class SmartComponent extends Events {
         )
     ;
     };//}}}
+    inherittedOption(optName, defaultValue) {//{{{
+        const me = this;
+        for (
+            const p of me.parents
+        ) if (
+            p.options[optName] !== undefined
+        ) return p.options[optName];
+        return defaultValue;
+    };//}}}
     renderError(code, message) {//{{{
         const me = this;
         return new errors.renderError(code, message, me.path);
