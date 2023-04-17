@@ -38,21 +38,24 @@ export class list extends SmartComponent {
         );
         me.children = [];
         const numChilds = me.target.children.length;
-        if (numChilds != 1) throw me.Error(
-            `List components must contain exactly 1 direct children, but ${numChilds} given.`
+        if (numChilds != 1) throw me.renderError(
+            'LIST_WRONG_NUM_CHILDREN'
+            , `List components must contain exactly 1 direct children, but ${numChilds} given`
         );
         me.itemTpl = me.target.children[0];
         if (
             me.itemTpl.querySelector("[id]") !== null // Contains IDs
-        ) throw me.Error(
-            `List components are not allowed to contain elements with 'id' attribute.`
+        ) throw me.renderError(
+            'LIST_CONTAINS_ID'
+            , `List components are not allowed to contain elements with 'id' attribute`
         );
         const tplOptions = me.getNodeOptions(
             me.itemTpl
             , {type: me.options.of}
         );
-        if (tplOptions.type != me.options.of) throw me.Error(
-            `List item type missmatch.`
+        if (tplOptions.type != me.options.of) throw me.renderError(
+            'LIST_ITEM_TYPE_MISSMATCH'
+            , `List item type missmatch`
         );
         if (! tplOptions.type) tplOptions.type = "form"; // Use form as default.
         me.setNodeOptions(me.itemTpl, tplOptions);
@@ -79,8 +82,9 @@ export class list extends SmartComponent {
     };//}}}
     addItem() {//{{{
         const me = this;
-        if (me.children.length >= me.max_items) throw me.Error(
-            `Cannot add items over max_items boundary`
+        if (me.children.length >= me.max_items) throw me.ruleError(
+            'LIST_MAX_ITEMS_REACHED'
+            , `Cannot add items over max_items boundary`
         );
         const newItem = me.itemTpl.cloneNode(true);
         me.target.appendChild(newItem);
@@ -92,8 +96,9 @@ export class list extends SmartComponent {
         ...options
     } = {}) {
         const me = this;
-        if (me.children.length <= me.min_items) throw me.Error(
-            `Cannot remove items under min_items boundary`
+        if (me.children.length <= me.min_items) throw me.ruleError(
+            'LIST_MIN_ITEMS_REACHED'
+            , `Cannot remove items under min_items boundary`
         );
         if (target === undefined) target = me.children[me.children.length - 1];
         if (target instanceof Array) return target.map(t=>me.removeItem({target: t, ...options}));

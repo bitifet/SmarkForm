@@ -8,8 +8,9 @@ export class singleton extends form {
         super.render();
         const me = this;
         const numFields = Object.keys(me.children).length;
-        if (numFields != 1) throw me.Error(
-            `Singleton forms are only allowed to contain exactly one`
+        if (numFields != 1) throw me.renderError(
+            'NOT_A_SINGLETON'
+            , `Singleton forms are only allowed to contain exactly one`
             + ` data field but ${numFields} found.`
         );
     };//}}}

@@ -16,6 +16,22 @@ const wild2regex = wname => new RegExp(
     + "$"
 );
 
+const errors = {
+    renderError: class renderError extends Error {
+        constructor(code, message, path) {
+            super(`RenderError(${path}): ${message}`);
+            this.code = code;
+            this.path = path;
+        };
+    },
+    ruleError: class ruleError extends Error {
+        constructor(code, message, path) {
+            super(`RuleError(${path}): ${message}`);
+            this.code = code;
+            this.path = path;
+        };
+    },
+};
 
 export class SmartComponent extends Events {
     constructor(//{{{
@@ -69,7 +85,7 @@ export class SmartComponent extends Events {
                 : JSON.parse(options)
             );
         } catch(err) {
-            if (typeof defaultOptions != "object") throw me.Error(
+            if (typeof defaultOptions != "object") throw me.renderError(
                 `No options object provided`
             );
             options = {};
@@ -98,12 +114,12 @@ export class SmartComponent extends Events {
         // Classify:{{{
         if (options.action) {
             options.type ||= "action"; // Make type optional for actions.
-            if (options.type != "action") throw me.Error(
+            if (options.type != "action") throw me.renderError(
                 `Actions must be of type "action" but "${options.type}" given.`
             );
             delete options.name; // Actions are always unnamed.
         } else if (typeof options.type != "string") {
-            throw me.Error(
+            throw me.renderError(
                 `Invalid SmartFom item: type is mandatory for non action elements.`
             );
         } else {
@@ -113,7 +129,7 @@ export class SmartComponent extends Events {
 
         // Enhance:{{{
         const ctrl = me.components[options.type];
-        if (! ctrl) throw me.Error([
+        if (! ctrl) throw me.renderError([
             "Unimplemented SmartForm component controller:",
             options.type,
         ].join(" "));
@@ -169,11 +185,13 @@ export class SmartComponent extends Events {
         )
     ;
     };//}}}
-    Error(message) {//{{{
+    renderError(code, message) {//{{{
         const me = this;
-        return new Error(
-            `RenderError(${me.path}): ${message}`
-        );
+        return new errors.renderError(code, message, me.path);
+    };//}}}
+    ruleError(code, message) {//{{{
+        const me = this;
+        return new errors.ruleError(code, message, me.path);
     };//}}}
 };
 
