@@ -1,0 +1,21 @@
+doctype html
+html
+    head
+        title SmartForm Demo
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        link(rel="stylesheet", href="/css/style.css")
+        link(rel="stylesheet", href="/css/form.css")
+    body
+        fieldset#main-content
+            block mainForm
+        #test-tools 
+            button#importButton Import
+            button#exportButton Export
+            textarea#inoutJson
+
+    script(
+        type="module",
+        src="./js/app.js",
+    )
+
+

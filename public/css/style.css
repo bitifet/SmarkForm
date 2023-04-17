@@ -1,7 +1,54 @@
- html,
- body {
-   height: 100%;
-   padding: 20px;
-   margin: 0;
-   font-family: Arial, Helvetica, sans-serif;
- }
+*, *::after, *::before {
+    box-sizing: content-box;
+}
+
+html,
+body {
+    height: 100vh;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    position: fixed;
+}
+
+body>* {
+    position: relative;
+    margin: 0px;
+    padding: 20px;
+    overflow: scroll;
+}
+
+@media (max-width: 768px) {
+    body>* {
+        padding: 20px 8px;
+    }
+}
+
+
+#main-content {
+    height: 70vh;
+}
+
+#test-tools {
+    position: relative;
+    height: 30vh;
+    text-align: right;
+}
+
+#test-tools button {
+    position: relative;
+    z-index: 2;
+}
+#test-tools textarea {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    margin: 0px;
+    width: 100%;
+    height: 55%;
+    resize: none;
+    z-index: 1;
+}
+
+ 
