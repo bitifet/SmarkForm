@@ -45,6 +45,12 @@ block mainForm
         .form-group
             label
                 button(data-smart = {
+                    action: "removeItem",
+                    for: "employee",
+                    to: "*",
+                    keep_non_empty: true,
+                }) X
+                button(data-smart = {
                     action: "addItem",
                     for: "employee",
                 }) +
@@ -79,12 +85,6 @@ block mainForm
                                 for: "phones",
                             }) +
                             b Phones
-                            button(data-smart = {
-                                action: "removeItem",
-                                for: "phones",
-                                to: "*",
-                                keep_non_empty: true,
-                            }) X
                         div(data-smart = {
                             name: "phones",
                             type: "list",
@@ -92,12 +92,13 @@ block mainForm
                             max_items: 3,
                         })
                             .form-group
-                                label
+                                button(data-smart = {
+                                    action: "addItem",
+                                }) +
                                 input.input-control(data-smart="input" type='tel')
-                                label
-                                    button.input-control(data-smart = {
-                                        action: "removeItem",
-                                    }) -
+                                button.input-control(data-smart = {
+                                    action: "removeItem",
+                                }) -
 
                         label
                             button(data-smart = {
@@ -105,12 +106,6 @@ block mainForm
                                 for: "emails",
                             }) +
                             b Emails
-                            button(data-smart = {
-                                action: "removeItem",
-                                for: "emails",
-                                to: "*",
-                                keep_non_empty: true,
-                            }) X
                         div(data-smart = {
                             name: "emails",
                             type: "list",
@@ -118,9 +113,10 @@ block mainForm
                             max_items: 3,
                         })
                             .form-group
-                                label
+                                button(data-smart = {
+                                    action: "addItem",
+                                }) +
                                 input.input-control(data-smart="input" type='email')
-                                label
-                                    button.input-control(data-smart = {
-                                        action: "removeItem",
-                                    }) -
+                                button.input-control(data-smart = {
+                                    action: "removeItem",
+                                }) -

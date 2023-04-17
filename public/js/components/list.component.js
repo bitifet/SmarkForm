@@ -80,17 +80,50 @@ export class list extends SmartComponent {
             (value, i) => me.children[i].import(value)
         );
     };//}}}
-    addItem() {//{{{
+    addItem({
+        target,
+        position = "after"
+    } = {}) {
         const me = this;
+        if (position != "after" && position != "before") throw me.renderError(
+            'LIST_WRONG_ADDITEM_POSITION'
+            , `Invalid value for addItem() position property: ${position}`
+        );
         if (me.children.length >= me.max_items) throw me.ruleError(
             'LIST_MAX_ITEMS_REACHED'
             , `Cannot add items over max_items boundary`
         );
+
         const newItem = me.itemTpl.cloneNode(true);
-        me.target.appendChild(newItem);
-        const newChild = me.enhance(newItem, {type: "form", name: me.children.length});
-        me.children.push(newChild);
-    };//}}}
+
+        if (! me.children.length) {
+            me.target.appendChild(newItem);
+            const newChild = me.enhance(newItem, {type: "form", name: 0});
+            me.children.push(newChild);
+        } else {
+            if (! target) target = (
+                position == "before" ?  me.children[0] // Insert at the beginning
+                : me.children[me.children.length - 1]  // Append at the end
+            );
+            me.children = me.children
+                .map((child, i)=>{
+                    if (! child.target.isSameNode(target.target)) return child;
+                    if (position == "after") {
+                        child.target.after(newItem);
+                        const newChild = me.enhance(newItem, {type: "form"});
+                        return [child, newChild]; // Right order, flatted later...
+                    } else {
+                        child.target.before(newItem);
+                        const newChild = me.enhance(newItem, {type: "form"});
+                        return [newChild, child]; // Right order, flatted later...
+                    };
+                })
+                .flat()
+                .map((c,i)=>(c.name = i, c))
+            ;
+        };
+
+    };
     removeItem({//{{{
         target,
         ...options
