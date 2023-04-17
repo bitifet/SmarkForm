@@ -24,6 +24,18 @@ export class form extends SmartComponent {
             )
         );
     };//}}}
+    import(data = {}) {
+        const me = this;
+        const dataConstructor = Object(data).constructor;
+        if (dataConstructor !== {}.constructor) throw me.Error(
+            `Expected plain object for form import, ${dataConstructor.name} given.`
+        );
+        return Object.fromEntries(
+            Object.entries(me.children).map(
+                ([key, target]) => [key, target.import(data[key])]
+            )
+        );
+    };
     isEmpty() {//{{{
         const me = this;
         return (

@@ -11,6 +11,17 @@
 //    instead of completely removing from DOM.
 //
 //    This would avoid lots of visual layout issues.
+//
+//
+// 👉 Make removeItem() to clear non removable items:
+//    -----------------------------------------------
+//
+//    If children.length reaches minItems (so removing items is not allowed)
+//    make removeItem() to clear its value instead.
+//
+//    This would requiere a kind of "resetValue()" in components to correctly
+//    handle the value to set as "empty".
+//
 
 
 import {SmartComponent} from "../lib/component.js";
@@ -54,6 +65,17 @@ export class list extends SmartComponent {
     export() {//{{{
         const me = this;
         return me.children.map(ch=>ch.export());
+    };//}}}
+    import(data = []) {//{{{
+        const me = this;
+        // Auto-update in case of scalar to array template upgrade:
+        if (! data instanceof Array) data = [data];
+        const countDiff = data.length - me.children.length;
+        for (let i = 0; i < countDiff; i++) me.addItem();
+        for (let i = 0; i < - countDiff; i++) me.removeItem();
+        return data.map(
+            (value, i) => me.children[i].import(value)
+        );
     };//}}}
     addItem() {//{{{
         const me = this;
