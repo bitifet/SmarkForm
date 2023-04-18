@@ -46,4 +46,8 @@ export class form extends SmartComponent {
                 )
         );
     };//}}}
+    empty() {
+        const me = this;
+        return me.import({});
+    };
 };

@@ -23,5 +23,9 @@ export class singleton extends form {
             [[Object.keys(me.children)[0], value]]
         ));
     };//}}}
+    empty() {//{{{
+        const me = this;
+        me.import("");
+    };//}}}
 };
 

@@ -27,10 +27,11 @@ export class input extends SmartComponent {
     isEmpty() {//{{{
         const me = this;
         const value = me.export();
-        switch (typeof value) {
-            case "string": return ! value.trim().length;
-            case "number": return ! value;
-            default: return false;
-        };
+        return ! value.trim().length;
+            // Native input's value type is always a string.
     };//}}}
+    empty() {
+        const me = this;
+        me.import("");
+    };
 };

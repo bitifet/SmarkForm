@@ -77,12 +77,28 @@ export class list extends SmartComponent {
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
         if (! data instanceof Array) data = [data];
-        const countDiff = data.length - me.children.length;
-        for (let i = 0; i < countDiff; i++) me.addItem();
-        for (let i = 0; i < - countDiff; i++) me.removeItem();
-        return data.map(
-            (value, i) => me.children[i].import(value)
-        );
+        // Load data:
+        for (
+            let i = 0;
+            i < Math.min(data.length, me.max_items); // Limit to allowed items
+            i++
+        ) {
+            if (me.children.length <= i) me.addItem(); // Make room on demand
+            me.children[i].import(data[i]);
+        };
+        // Complete (empty unused items) to min_items if needed:
+        for (
+            let i = me.children.length;
+            i < me.min_items;
+            i++
+        ) me.chldren[i].empty();
+        // Report if data doesn't fit:
+        if (data.length > me.max_items) {
+            console.error(`Max of ${me.max_items} items exceeded by ${data.length - me.max_items} while data loadig`);
+            // FIXME: Improve handling of this situation having it implies
+            // data loss.
+        };
+        return me.export();
     };//}}}
     addItem({//{{{
         target,
@@ -155,5 +171,9 @@ export class list extends SmartComponent {
                 child=>!child.isEmpty()
             )
         );
+    };//}}}
+    empty() {//{{{
+        const me = this;
+        me.import([]);
     };//}}}
 };
