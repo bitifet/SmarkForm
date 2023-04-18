@@ -86,6 +86,11 @@ export class list extends SmartComponent {
             if (me.children.length <= i) me.addItem(); // Make room on demand
             me.children[i].import(data[i]);
         };
+        // Remove extra items if possible (over min_items):
+        for (
+            let i = Math.max(data.length, me.min_items);
+            i < me.children.length;
+        ) me.removeItem();
         // Complete (empty unused items) to min_items if needed:
         for (
             let i = me.children.length;
