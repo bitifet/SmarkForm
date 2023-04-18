@@ -2,7 +2,7 @@
 import {SmartForm} from "./SmartForm.js";
 
 window.form = new SmartForm(
-    document.querySelector("fieldset")
+    document.querySelector("#main-form")
 );
 
 const importButton = document.querySelector("#importButton")

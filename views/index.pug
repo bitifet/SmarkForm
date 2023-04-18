@@ -1,60 +1,55 @@
 extends layout.pug
 block mainForm
-    header
-        h1 SmartForm Example
-        small
-            p
-                | This example demonstrates how to create a simple form
-                | layout that can almost responsively expand and stack
-                | depending on the width of the page.
-            p  
-    h2 Company
-    .form-group
-        label Corporate Name
-        input.input-control(
-            data-smart="input"
-            name="company"
-            type="text"
-        )
-    .form-group
-        label Address
-        textarea.input-control(
-            data-smart="input"
-            name="address"
-        )
-    .form-group
-        label City,State,Zip
-        input.input-control(
-            data-smart="input"
-            name="city"
-            placeholder='City'
-            style='flex: 6'
-        )
-        input.input-control(
-            data-smart="input"
-            name="state"
-            placeholder='State'
-            style='flex:1'
-        )
-        input.input-control(
-            data-smart="input"
-            name="postCode"
-            placeholder='Postal Code'
-            style='flex:2'
-        )
-    div
+    .section
+        .form-group.h1
+            label Company
         .form-group
+            label Corporate Name
+            input(
+                data-smart="input"
+                name="company"
+                type="text"
+            )
+        .form-group
+            label Address
+            textarea(
+                data-smart="input"
+                name="address"
+            )
+        .form-group
+            label City,State,Zip
+            input(
+                data-smart="input"
+                name="city"
+                placeholder='City'
+                style='flex: 6'
+            )
+            input(
+                data-smart="input"
+                name="state"
+                placeholder='State'
+                style='flex:1'
+            )
+            input(
+                data-smart="input"
+                name="postCode"
+                placeholder='Postal Code'
+                style='flex:2'
+            )
+    .section
+        .form-group.h2.nowrap
+            label Employee
+            .spacer
             button(data-smart = {
                 action: "addItem",
                 for: "employee",
-            }) +
-            h2 Employee
+            }) ➕
             button(data-smart = {
                 action: "removeItem",
                 for: "employee",
                 to: "*",
                 keep_non_empty: true,
-            }) X
+            }, title="Clear all empty employee") 🧹
         .form-group
             div(data-smart = {
                 type: "list",
@@ -65,53 +60,55 @@ block mainForm
                 .form-group(data-smart={
                     exportEmpties: false
                 })
-                    .form-group
+                    fieldset.form-group
                         label
-                            button.input-control(data-smart = {
+                            button(data-smart = {
                                 action: "removeItem",
-                            }) -
-                        label
-                            First Name
-                        input.input-control(
-                            data-smart="input"
-                            name="name"
-                        )
-                        label.right-inline Last Name
-                        input.input-control(
-                            data-smart="input"
-                            name="lastName"
-                        )
-                    .form-group
-                        label
-                            b Phones
-                        div(data-smart = {
-                            name: "phones",
-                            type: "list",
-                            of: "singleton",
-                            max_items: 3,
-                        })
+                            }) ➖
+                        .form-group
                             .form-group
-                                button(data-smart = {
-                                    action: "addItem",
-                                }) +
-                                input.input-control(data-smart="input" type='tel')
-                                button.input-control(data-smart = {
-                                    action: "removeItem",
-                                }) -
+                                label First Name
+                                input(
+                                    data-smart="input"
+                                    name="name"
+                                )
+                            .form-group
+                                label Last Name
+                                input(
+                                    data-smart="input"
+                                    name="lastName"
+                                )
+                        .form-group
+                            .form-group
+                                label Phones
+                                div(data-smart = {
+                                    name: "phones",
+                                    type: "list",
+                                    of: "singleton",
+                                    max_items: 3,
+                                })
+                                    .form-group.no-wrap
+                                        button(data-smart = {
+                                            action: "addItem",
+                                        }) ➕
+                                        input(data-smart="input" type='tel')
+                                        button(data-smart = {
+                                            action: "removeItem",
+                                        }) ➖
 
-                        label
-                            b Emails
-                        div(data-smart = {
-                            name: "emails",
-                            type: "list",
-                            of: "singleton",
-                            max_items: 3,
-                        })
                             .form-group
-                                button(data-smart = {
-                                    action: "addItem",
-                                }) +
-                                input.input-control(data-smart="input" type='email')
-                                button.input-control(data-smart = {
-                                    action: "removeItem",
-                                }) -
+                                label Emails
+                                div(data-smart = {
+                                    name: "emails",
+                                    type: "list",
+                                    of: "singleton",
+                                    max_items: 3,
+                                })
+                                    .form-group.no-wrap
+                                        button(data-smart = {
+                                            action: "addItem",
+                                        }) ➕
+                                        input(data-smart="input" type='email')
+                                        button(data-smart = {
+                                            action: "removeItem",
+                                        }) ➖
