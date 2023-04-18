@@ -1,21 +1,37 @@
 textarea {
    font-family: Arial, Helvetica, sans-serif;
+   resize: none;
 }
  
+
+
+
+
 
 /* form specific formatting */
 .form-group {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
 }
 
+.form-group input,
+.form-group textarea,
+.form-group select,
+.form-group h2,
+.form-group h3,
+.form-group h4,
+.form-group h5
+{
+    flex-grow: 1;
+}
+
+
 .form-group label {
-  flex: none;
-  display: block;
-  width: 125px;
   font-weight: bold;
   font-size: 1em;
+  margin: 0px .5em;
 }
+
 .form-group label.right-inline {
   text-align: right;  
   padding-right: 8px;
@@ -23,9 +39,8 @@ textarea {
   width: auto;
 }
 
+
 .form-group .input-control {
-  flex: 1 1 auto;
-  display: block;
   margin-bottom: 10px;
   margin-right: 8px;
   padding: 4px;
@@ -35,13 +50,15 @@ textarea {
 button {
     padding: 0px .5em;
     margin: .1em .3em .3em .3em;
-    transform: translatey(-.2em);
+    /* transform: translatey(-.2em); */
 }
-button.big {
-  padding: 5px 15px;
-  margin: 5px;
-  min-width: 100px
-}
+
+
+
+
+/*
+
+
 
 @media (max-width: 768px) {
   .form-group {
@@ -56,3 +73,4 @@ button.big {
     padding-left: 0;   
   }
 }
+*/

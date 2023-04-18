@@ -8,8 +8,9 @@ block mainForm
                 | layout that can almost responsively expand and stack
                 | depending on the width of the page.
             p  
+    h2 Company
     .form-group
-        label Company
+        label Corporate Name
         input.input-control(
             data-smart="input"
             name="company"
@@ -43,25 +44,25 @@ block mainForm
         )
     div
         .form-group
-            label
-                button(data-smart = {
-                    action: "removeItem",
-                    for: "employee",
-                    to: "*",
-                    keep_non_empty: true,
-                }) X
-                button(data-smart = {
-                    action: "addItem",
-                    for: "employee",
-                }) +
-                b Employee
+            button(data-smart = {
+                action: "addItem",
+                for: "employee",
+            }) +
+            h2 Employee
+            button(data-smart = {
+                action: "removeItem",
+                for: "employee",
+                to: "*",
+                keep_non_empty: true,
+            }) X
+        .form-group
             div(data-smart = {
                 type: "list",
                 exportEmpties: true,
                 name: "employee",
                 min_items: 0,
             })
-                div(data-smart={
+                .form-group(data-smart={
                     exportEmpties: false
                 })
                     .form-group
