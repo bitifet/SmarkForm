@@ -1,0 +1,22 @@
+
+TO-DO List
+==========
+
+  👉 Implement anchor components (not exportable field) with path-based default
+     "name" attribute and make addItem action find targettedItem closest one to
+     redirect location to its hash tag.
+
+  💣 Fix (wrong) name attribute in lists' singleton input nodes.
+
+  💣 Fix (wrong) type="input" attribute in lists' singleton input nodes.
+
+  💡 Implement UNDO component.
+    - Contains single component (form, list, input...).
+    - Acts as a "man in the middle".
+    - Listen to the (future) component's "change" events to capture (export)
+      and store changes.
+    - Make its own changes' events distinguishable from regular ones (to avoid
+      re-caching).
+    - Provide additional "undo" and "redo" actions.
+    - Etc...
+

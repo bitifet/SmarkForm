@@ -9,12 +9,14 @@ block mainForm
                 data-smart="input"
                 name="company"
                 type="text"
+                placeholder="Company Name"
             )
         .form-group
             label Address
             textarea(
                 data-smart="input"
                 name="address"
+                placeholder="Address"
             )
         .form-group
             label City,State,Zip
@@ -61,54 +63,61 @@ block mainForm
                     exportEmpties: false
                 })
                     fieldset.form-group
-                        .form-group.spacer
+                        .form-group.spacer.no-wrap
                             .form-group
-                                label First Name
-                                input(
-                                    data-smart="input"
-                                    name="name"
-                                )
-                            .form-group
-                                label Last Name
-                                input(
-                                    data-smart="input"
-                                    name="lastName"
-                                )
+                                .form-group
+                                    label First Name
+                                    input(
+                                        data-smart="input"
+                                        name="name"
+                                        placeholder="Name"
+                                    )
+                                .form-group
+                                    label Last Name
+                                    input(
+                                        data-smart="input"
+                                        name="lastName"
+                                        placeholder="Surnme"
+                                    )
                             .spacer
                             button(data-smart = {
                                 action: "removeItem",
                             }) ➖
                         .form-group
-                            .form-group
-                                label Phones
-                                div(data-smart = {
-                                    name: "phones",
-                                    type: "list",
-                                    of: "singleton",
-                                    max_items: 3,
-                                })
-                                    .form-group.no-wrap
-                                        button(data-smart = {
-                                            action: "addItem",
-                                        }) ➕
-                                        input(data-smart="input" type='tel')
-                                        button(data-smart = {
-                                            action: "removeItem",
-                                        }) ➖
-
-                            .form-group
-                                label Emails
-                                div(data-smart = {
-                                    name: "emails",
-                                    type: "list",
-                                    of: "singleton",
-                                    max_items: 3,
-                                })
-                                    .form-group.no-wrap
-                                        button(data-smart = {
-                                            action: "addItem",
-                                        }) ➕
-                                        input(data-smart="input" type='email')
-                                        button(data-smart = {
-                                            action: "removeItem",
-                                        }) ➖
+                            +inputlist("Telephones")(
+                                name="phones"
+                                type="tel",
+                                max_items=4,
+                                placeholder="Telephone",
+                            )
+                            +inputlist("Emails")(
+                                type="email",
+                                max_items=4,
+                                placeholder="Email",
+                            )
+mixin inputlist(label="Annonymous")
+    .form-group
+        -
+            //- Acccepted attributes:
+            const {
+                name=label.toLowerCase(),
+                min_items,
+                max_items,
+                ...atts // Extra attributes for inputs (placeholder, etc...)
+            } = attributes;
+        label= label
+        div(data-smart = {
+            name: name,
+            type: "list",
+            of: "singleton",
+            min_items,
+            max_items,
+        })
+            .form-group.no-wrap
+                button(data-smart = {
+                    action: "addItem",
+                }) ➕
+                input(data-smart="input")&attributes(atts)
+                button(data-smart = {
+                    action: "removeItem",
+                }) ➖

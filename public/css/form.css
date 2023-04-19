@@ -1,14 +1,9 @@
-textarea {
-   font-family: Arial, Helvetica, sans-serif;
-   resize: none;
+
+/*
+#main-form:hover .form-group {
+  outline: lightblue solid 1px;
 }
- 
-
-
-
-
-
-/* form specific formatting */
+*/
 
 .section {
     margin-top: 1em;
@@ -16,35 +11,17 @@ textarea {
 
 .form-group {
   display: flex;
-  gap: .3em;
   flex-wrap: wrap;
+  gap: .3em;
   align-items: flex-start;
   align-content: stretch;
   justify-content: flex-start;
+  font-size: 1rem;
 }
 
 .form-group.no-wrap {
     flex-wrap: nowrap;
 }
-
-/*
-@media (max-width: 768px) {
-  .form-group.input,
-  .form-group.textarea,
-  .form-group.select
-  {
-    width: 10%;
-    background-color: yellow !important;
-  }
-}
-*/
-
-
-/*
-#main-form:hover .form-group {
-  outline: lightblue solid 1px;
-}
-*/
 
 .form-group input,
 .form-group textarea,
@@ -54,7 +31,6 @@ textarea {
     flex-grow: 5;
 }
 
-
 .form-group input,
 .form-group textarea,
 .form-group select
@@ -63,28 +39,14 @@ textarea {
   padding: .2em;
 }
 
-
+.form-group textarea {
+   font-family: Arial, Helvetica, sans-serif;
+   resize: none;
+}
 
 .form-group button {
     transform: scale(1.1, 1.1);
 }
-.form-group>button {
-    align-self: flex-start;
-}
-.form-group label button {
-}
-.form-group button:hover {
-        transform: translate(3px, 3px);
-}
-
-@media (orientation: portrait) {
-    .form-group button {
-        font-size: 1.1rem !important;
-    }
-}
-
-
-
 
 .form-group fieldset {
     margin: 1em 0px;
@@ -105,16 +67,11 @@ textarea {
     z-index: -100;
 }
 
-
-
 .form-group label {
   font-weight: bold;
   align-items: baseline;
 }
 
-.form-group {
-  font-size: 1rem;
-}
 .form-group.h1 {
     font-size: 2rem;
     font-weight: bold;
@@ -130,29 +87,19 @@ textarea {
     margin-bottom: .8rem;
 }
 
-
-.form-group .input-control {
+.form-group>button {
+    align-self: flex-start;
 }
 
-
-
-
-
-/*
-
-
-
-@media (max-width: 768px) {
-  .form-group {
-    flex-direction: column;
-  }
-  .form-group .input-control {
-    margin-top: 2px;
-  }
-  .form-group label.right-inline {
-    text-align: left;  
-    padding-right: 0;
-    padding-left: 0;   
-  }
+@media (hover:hover) {
+    .form-group button:hover {
+            transform: translate(3px, 3px);
+    }
 }
-*/
+
+@media (orientation: portrait) {
+    .form-group button {
+        font-size: 1.1rem !important;
+    }
+}
+
