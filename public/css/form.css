@@ -52,7 +52,6 @@ textarea {
 .form-group>.spacer
 {
     flex-grow: 5;
-    margin: .5em;
 }
 
 
@@ -71,7 +70,6 @@ textarea {
 }
 .form-group>button {
     align-self: flex-start;
-    margin: .5em .2em;
 }
 .form-group label button {
 }
@@ -89,7 +87,7 @@ textarea {
 
 
 .form-group fieldset {
-    margin: 1em;
+    margin: 1em 0px;
     padding: .5em;
     border-radius: .5em;
     position: relative;
@@ -111,7 +109,6 @@ textarea {
 
 .form-group label {
   font-weight: bold;
-  margin-left: 1em;
   align-items: baseline;
 }
 

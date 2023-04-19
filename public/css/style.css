@@ -25,8 +25,7 @@ body>* {
 }
 
 .container {
-    margin: 1em;
-    padding: 0px;
+    padding: 1em;
     height: 80vh;
     overflow: auto;
 }
