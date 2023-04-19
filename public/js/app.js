@@ -11,7 +11,9 @@ const clearButton = document.querySelector("#clearButton")
 const textarea = document.querySelector("#inoutJson")
 
 
-importButton.addEventListener("click", ()=>form.import(JSON.parse(textarea.value)));
+importButton.addEventListener("click", ()=>form.import(
+    JSON.parse(textarea.value.trim() || '{}'))
+);
 exportButton.addEventListener("click", ()=>textarea.value = (
     JSON.stringify(form.export(), null, 4)
     + "\n\n\n\n\n\n\n\n" // CSS laziness ;-)
