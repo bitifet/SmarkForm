@@ -12,16 +12,6 @@
 //
 //    This would avoid lots of visual layout issues.
 //
-//
-// 👉 Make removeItem() to clear non removable items:
-//    -----------------------------------------------
-//
-//    If children.length reaches minItems (so removing items is not allowed)
-//    make removeItem() to clear its value instead.
-//
-//    This would requiere a kind of "resetValue()" in components to correctly
-//    handle the value to set as "empty".
-//
 
 
 import {SmartComponent} from "../lib/component.js";
@@ -151,12 +141,23 @@ export class list extends SmartComponent {
         ...options
     } = {}) {
         const me = this;
-        if (me.children.length <= me.min_items) throw me.ruleError(
-            'LIST_MIN_ITEMS_REACHED'
-            , `Cannot remove items under min_items boundary`
-        );
         if (target === undefined) target = me.children[me.children.length - 1];
         if (target instanceof Array) return target.map(t=>me.removeItem({target: t, ...options}));
+        if (me.children.length <= me.min_items) {
+            switch (options.failback) {
+                case "none":
+                    break;
+                case "clear":
+                    target.empty();
+                    return;
+                case "throw":
+                default:
+                    throw me.ruleError(
+                        'LIST_MIN_ITEMS_REACHED'
+                        , `Cannot remove items under min_items boundary`
+                    )
+            };
+        };
         if (options.keep_non_empty && ! target.isEmpty()) return;
         me.children = me.children
             .filter(child=>{

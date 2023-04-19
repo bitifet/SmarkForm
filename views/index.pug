@@ -89,11 +89,13 @@ block mainForm
                                 type="tel",
                                 max_items=4,
                                 placeholder="Telephone",
+                                removeFailback="clear"
                             )
                             +inputlist("Emails")(
                                 type="email",
                                 max_items=4,
                                 placeholder="Email",
+                                removeFailback="clear"
                             )
 mixin inputlist(label="Annonymous")
     .form-group
@@ -103,6 +105,7 @@ mixin inputlist(label="Annonymous")
                 name=label.toLowerCase(),
                 min_items,
                 max_items,
+                removeFailback, // none / clear / throw
                 ...atts // Extra attributes for inputs (placeholder, etc...)
             } = attributes;
         label= label
@@ -120,4 +123,5 @@ mixin inputlist(label="Annonymous")
                 input(data-smart="input")&attributes(atts)
                 button(data-smart = {
                     action: "removeItem",
+                    failback: removeFailback,
                 }) ➖
