@@ -7,6 +7,7 @@ window.form = new SmartForm(
 
 const importButton = document.querySelector("#importButton")
 const exportButton = document.querySelector("#exportButton")
+const clearButton = document.querySelector("#clearButton")
 const textarea = document.querySelector("#inoutJson")
 
 
@@ -15,6 +16,7 @@ exportButton.addEventListener("click", ()=>textarea.value = (
     JSON.stringify(form.export(), null, 4)
     + "\n\n\n\n\n\n\n\n" // CSS laziness ;-)
 ));
+clearButton.addEventListener("click", ()=>textarea.value = "");
 
 console.log("💡💡💡💡💡💡💡💡💡💡");
 console.log("form =", window.form);

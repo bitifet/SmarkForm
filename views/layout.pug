@@ -18,9 +18,11 @@ html
                                 | depending on the width of the page.
                     block mainForm
                 #test-tools 
-                    button#importButton Import
-                    button#exportButton Export
-                    textarea#inoutJson
+                    .buttons
+                        button#importButton ⬆️  Import
+                        button#exportButton ⬇️  Export
+                        button#clearButton ❌ Clear
+                    textarea#inoutJson {}
 
     script(
         type="module",
