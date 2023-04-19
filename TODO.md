@@ -10,6 +10,11 @@ TO-DO List
 
   💣 Fix (wrong) type="input" attribute in lists' singleton input nodes.
 
+  💡 Implement Focus subsystem. Let's say:
+    - AddItem send focus to added Item.
+    - This item (type) in turn, may re-send it to inner parts (i.e.: first
+      input for forms, etc...)
+
   💡 Implement UNDO component.
     - Contains single component (form, list, input...).
     - Acts as a "man in the middle".
