@@ -18,19 +18,26 @@ body {
 body>* {
     position: relative;
     margin: 0px;
-    padding: 20px;
     overflow: scroll;
+    display: flex;
+    gap: 0px;
+    justify-content: center;
 }
 
-@media (max-width: 768px) {
-    body>* {
-        padding: 20px 8px;
-    }
+.container {
+    margin: 1em;
 }
+
+/* @media (max-width: 768px) { */
+/*     body>* { */
+/*         padding: 20px 8px; */
+/*     } */
+/* } */
 
 
 #main-form {
     height: 70vh;
+    overflow: auto;
 }
 
 #test-tools {
@@ -43,6 +50,8 @@ body>* {
     position: relative;
     z-index: 2;
 }
+
+
 #test-tools textarea {
     position: absolute;
     top: 0px;

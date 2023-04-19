@@ -16,7 +16,7 @@ textarea {
 
 .form-group {
   display: flex;
-  gap: .6em;
+  gap: .1em;
   flex-wrap: wrap;
   align-items: flex-start;
   align-content: stretch;
@@ -25,7 +25,7 @@ textarea {
 
 .form-group.no-wrap {
     flex-wrap: nowrap;
-};
+}
 
 /*
 @media (max-width: 768px) {
@@ -49,10 +49,10 @@ textarea {
 .form-group input,
 .form-group textarea,
 .form-group select,
-.form-group .spacer
+.form-group>.spacer
 {
     flex-grow: 5;
-    margin: .5em
+    margin: .5em;
 }
 
 
@@ -70,15 +70,23 @@ textarea {
     transform: scale(1.1, 1.1);
 }
 .form-group>button {
-    align-self: stretch;
-    margin: .5em;
-    aspect-ratio: 1 / 1;
+    align-self: flex-start;
+    margin: .5em .2em;
 }
 .form-group label button {
 }
 .form-group button:hover {
         transform: translate(3px, 3px);
 }
+
+@media (orientation: portrait) {
+    .form-group button {
+        font-size: 1.1rem !important;
+    }
+}
+
+
+
 
 .form-group fieldset {
     margin: 1em;
@@ -103,22 +111,26 @@ textarea {
 
 .form-group label {
   font-weight: bold;
+  margin-left: 1em;
+  align-items: baseline;
 }
 
 .form-group {
-  font-size: 1em;
+  font-size: 1rem;
 }
 .form-group.h1 {
-    font-size: 2em;
+    font-size: 2rem;
+    font-weight: bold;
     border-bottom: solid 3px;
-    margin-top: 1.5em;
-    margin-bottom: .8em;
+    margin-top: 1.5rem;
+    margin-bottom: .8rem;
 }
 .form-group.h2 {
-    font-size: 1.8em;
+    font-size: 1.8rem;
+    font-weight: bold;
     border-bottom: solid 3px;
-    margin-top: 1.5em;
-    margin-bottom: .8em;
+    margin-top: 1.5rem;
+    margin-bottom: .8rem;
 }
 
 

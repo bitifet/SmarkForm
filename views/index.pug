@@ -2,7 +2,7 @@ extends layout.pug
 block mainForm
     .section
         .form-group.h1
-            label Company
+            span Company
         .form-group
             label Corporate Name
             input(
@@ -38,7 +38,7 @@ block mainForm
             )
     .section
         .form-group.h2.nowrap
-            label Employee
+            span Employee
             .spacer
             button(data-smart = {
                 action: "addItem",
@@ -50,8 +50,8 @@ block mainForm
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
-        .form-group
-            div(data-smart = {
+        .form-group.nowrap
+            .form-group(data-smart = {
                 type: "list",
                 exportEmpties: true,
                 name: "employee",
@@ -61,11 +61,7 @@ block mainForm
                     exportEmpties: false
                 })
                     fieldset.form-group
-                        label
-                            button(data-smart = {
-                                action: "removeItem",
-                            }) ➖
-                        .form-group
+                        .form-group.spacer
                             .form-group
                                 label First Name
                                 input(
@@ -78,6 +74,10 @@ block mainForm
                                     data-smart="input"
                                     name="lastName"
                                 )
+                            .spacer
+                            button(data-smart = {
+                                action: "removeItem",
+                            }) ➖
                         .form-group
                             .form-group
                                 label Phones
