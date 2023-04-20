@@ -40,15 +40,20 @@ block mainForm
             )
     .section
         .form-group.h2.nowrap
-            span Employee
+            span Employees
             .spacer
             button(data-smart = {
                 action: "addItem",
-                for: "employee",
+                for: "employees",
             }) ➕
             button(data-smart = {
                 action: "removeItem",
-                for: "employee",
+                for: "employees",
+                keep_non_empty: true,
+            }, title="Remove last non-empty employee") ➖
+            button(data-smart = {
+                action: "removeItem",
+                for: "employees",
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
@@ -56,7 +61,7 @@ block mainForm
             .form-group(data-smart = {
                 type: "list",
                 exportEmpties: true,
-                name: "employee",
+                name: "employees",
                 min_items: 0,
             })
                 .form-group(data-smart={

@@ -141,7 +141,22 @@ export class list extends SmartComponent {
         ...options
     } = {}) {
         const me = this;
-        if (target === undefined) target = me.children[me.children.length - 1];
+        let {keep_non_empty} = options;
+        if (! target) {
+            target = [...me.children]
+                .reverse()
+                .find((t, i)=>(
+                    ! keep_non_empty // Pick last (reversed => first)
+                    || t.isEmpty()
+                ))
+            ;
+            if (! target) {
+                target = me.children[me.children.length - 1];
+                keep_non_empty = false;
+                // Allow non empty removal as last chance if no target
+                // specified.
+            };
+        };
         if (target instanceof Array) return target.map(t=>me.removeItem({target: t, ...options}));
         if (me.children.length <= me.min_items) {
             switch (options.failback) {
@@ -158,7 +173,7 @@ export class list extends SmartComponent {
                     )
             };
         };
-        if (options.keep_non_empty && ! target.isEmpty()) return;
+        if (keep_non_empty && ! target.isEmpty()) return;
         me.children = me.children
             .filter(child=>{
                 if (child.target.isSameNode(target.target)) {
