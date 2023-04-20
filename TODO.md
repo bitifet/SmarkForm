@@ -25,3 +25,12 @@ TO-DO List
     - Provide additional "undo" and "redo" actions.
     - Etc...
 
+  👉 Improve auto-generated Ids.
+    - Allow for (optional) wide creation (not only when needed by .moveTo()
+      method).
+    - Allow for customisable prefix to avoid (maybe rare but not fully
+      impossible) external id collision.
+    - Prevent id collision (on auto-creation) by detecting previous duplicates
+      and appending incremental suffix on demand.
+
+

@@ -206,6 +206,11 @@ export class SmartComponent extends Events {
         const me = this;
         return new errors.ruleError(code, message, me.getPath());
     };//}}}
+    moveTo(){
+        const me = this;
+        if (! me.target.id) me.target.id = me.getPath();
+        document.location.hash = me.target.id;
+    };
 };
 
 export function createComponent(name, controller) {//{{{

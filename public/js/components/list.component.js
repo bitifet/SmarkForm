@@ -97,7 +97,8 @@ export class list extends SmartComponent {
     };//}}}
     addItem({//{{{
         target,
-        position = "after"
+        position = "after",
+        autoscroll,   // "self" / "parent" / (falsy)
     } = {}) {
         const me = this;
         if (position != "after" && position != "before") throw me.renderError(
@@ -109,9 +110,10 @@ export class list extends SmartComponent {
             , `Cannot add items over max_items boundary`
         );
         const newItem = me.itemTpl.cloneNode(true);
+        let newChild;
         if (! me.children.length) {
             me.target.appendChild(newItem);
-            const newChild = me.enhance(newItem, {type: "form", name: 0});
+            newChild = me.enhance(newItem, {type: "form", name: 0});
             me.children.push(newChild);
         } else {
             if (! target) target = (
@@ -123,11 +125,11 @@ export class list extends SmartComponent {
                     if (! child.target.isSameNode(target.target)) return child;
                     if (position == "after") {
                         child.target.after(newItem);
-                        const newChild = me.enhance(newItem, {type: "form"});
+                        newChild = me.enhance(newItem, {type: "form"});
                         return [child, newChild]; // Right order, flatted later...
                     } else {
                         child.target.before(newItem);
-                        const newChild = me.enhance(newItem, {type: "form"});
+                        newChild = me.enhance(newItem, {type: "form"});
                         return [newChild, child]; // Right order, flatted later...
                     };
                 })
@@ -135,6 +137,13 @@ export class list extends SmartComponent {
                 .map((c,i)=>(c.name = i, c))
             ;
         };
+        const moveTarget = (
+            ! newChild ? null
+            : autoscroll == "self" ? newChild
+            : autoscroll == "parent" ? newChild.parent
+            : null
+        );
+        if (moveTarget) moveTarget.moveTo();
     };//}}}
     removeItem({//{{{
         target,

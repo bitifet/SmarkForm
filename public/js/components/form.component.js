@@ -24,7 +24,7 @@ export class form extends SmartComponent {
             )
         );
     };//}}}
-    import(data = {}) {
+    import(data = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (dataConstructor !== {}.constructor) throw me.renderError(
@@ -36,7 +36,7 @@ export class form extends SmartComponent {
                 ([key, target]) => [key, target.import(data[key])]
             )
         );
-    };
+    };//}}}
     isEmpty() {//{{{
         const me = this;
         return (
@@ -46,8 +46,8 @@ export class form extends SmartComponent {
                 )
         );
     };//}}}
-    empty() {
+    empty() {//{{{
         const me = this;
         return me.import({});
-    };
+    };//}}}
 };
