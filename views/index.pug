@@ -45,7 +45,6 @@ block mainForm
             button(data-smart = {
                 action: "addItem",
                 for: "employees",
-                autoscroll: "self",
             }) ➕
             button(data-smart = {
                 action: "removeItem",
@@ -103,6 +102,24 @@ block mainForm
                                 placeholder="Email",
                                 removeFailback="clear"
                             )
+        .form-group.f2.nowrap
+            .spacer
+            button(data-smart = {
+                action: "addItem",
+                for: "employees",
+                autoscroll: "self",
+            }) ➕
+            button(data-smart = {
+                action: "removeItem",
+                for: "employees",
+                keep_non_empty: true,
+            }, title="Remove last non-empty employee") ➖
+            button(data-smart = {
+                action: "removeItem",
+                for: "employees",
+                to: "*",
+                keep_non_empty: true,
+            }, title="Clear all empty employee") 🧹
 mixin inputlist(label="Annonymous")
     .form-group
         -

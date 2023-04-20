@@ -72,20 +72,40 @@
   align-items: baseline;
 }
 
-.form-group.h1 {
+/* Headers and Footers */
+.form-group.h1, .form-group.f1 {
     font-size: 2rem;
     font-weight: bold;
+}
+.form-group.h1 {
     border-bottom: solid 3px;
     margin-top: 1.5rem;
     margin-bottom: .8rem;
 }
-.form-group.h2 {
+.form-group.f1 {
+    border-top: solid 3px;
+    margin-bottom: 1.5rem;
+    margin-top: .8rem;
+    padding-top: .2em;
+}
+.form-group.h2, .form-group.f2 {
     font-size: 1.8rem;
     font-weight: bold;
+}
+.form-group.h2 {
     border-bottom: solid 3px;
     margin-top: 1.5rem;
     margin-bottom: .8rem;
 }
+.form-group.f2 {
+    border-top: solid 3px;
+    margin-bottom: 1.5rem;
+    margin-top: .8rem;
+    padding-top: .2em;
+}
+
+
+
 
 .form-group>button {
     align-self: flex-start;
