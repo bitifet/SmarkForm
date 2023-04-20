@@ -39,7 +39,7 @@ block mainForm
                 style='flex:2'
             )
     .section
-        .form-group.h2.nowrap
+        .form-group.h2.no-wrap
             span Employees
             .spacer
             button(data-smart = {
@@ -57,7 +57,7 @@ block mainForm
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
-        .form-group.nowrap
+        .form-group.no-wrap
             .form-group(data-smart = {
                 type: "list",
                 exportEmpties: true,
@@ -102,7 +102,7 @@ block mainForm
                                 placeholder="Email",
                                 removeFailback="clear"
                             )
-        .form-group.f2.nowrap
+        .form-group.f2.no-wrap
             .spacer
             button(data-smart = {
                 action: "addItem",
