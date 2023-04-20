@@ -66,7 +66,7 @@ export class SmartForm extends form {
     constructor(target, formOptions, ...args) {
         const options = {
             ...formOptions,
-            name: "[root]",
+            name: "",
             type: "form",
         };
         super(

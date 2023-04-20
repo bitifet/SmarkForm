@@ -53,10 +53,6 @@ export class SmartComponent extends Events {
         me.options = options;
         me.setNodeOptions(me.target, me.options);
         me.parent = parent;
-        me.path = (
-            me.parent === null ? ""
-            : me.parent.path + "." + me.options.name
-        ).replace(/^\./, "");
         me.children = {};
 
         // Parents iterator:
@@ -149,6 +145,14 @@ export class SmartComponent extends Events {
             || null
         );
     };//}}}
+    getPath() {//{{{
+        const me = this;
+        return (
+            [...me.parents].map(p=>p.options.name)
+            .reverse()
+            .join("/")
+        );
+    };//}}}
     find(path="") { // {{{
         let base=this;
         if (path[0] == "/") while (base.parent) base = base.parent;
@@ -196,11 +200,11 @@ export class SmartComponent extends Events {
     };//}}}
     renderError(code, message) {//{{{
         const me = this;
-        return new errors.renderError(code, message, me.path);
+        return new errors.renderError(code, message, me.getPath());
     };//}}}
     ruleError(code, message) {//{{{
         const me = this;
-        return new errors.ruleError(code, message, me.path);
+        return new errors.ruleError(code, message, me.getPath());
     };//}}}
 };
 
