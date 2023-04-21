@@ -38,14 +38,27 @@ body>* {
     max-width: 1024px;
 }
 
+:root {
+    --tbMargin: 5px;
+    --tbPadding: .3rem;
+    --tbFontSize: 1.5rem;
+    --ttBottom: calc(
+        4 * (
+            var(--tbMargin)
+            + var(--tbPadding)
+        )
+        + var(--tbFontSize)
+    );
+}
+
 
 #testButton {
     position: fixed;
     z-index: 10;
-    bottom: 5px;
-    right: 5px;
-    padding: .3rem;
-    font-size: 1.5rem;
+    bottom: var(--tbMargin);
+    right: var(--tbMargin);
+    padding: var(--tbPadding);
+    font-size: var(--tbFontSize);
 }
 
 #test-tools.hidden {
@@ -56,8 +69,8 @@ body>* {
     position: fixed;
     top: 5vh;
     left: 10vw;
-    width: 80vw;
-    height: 70vh;
+    right: 10vw;
+    bottom: var(--ttBottom);
     text-align: right;
     display: flex;
     flex-direction: column;
@@ -67,7 +80,7 @@ body>* {
     position: relative;
     margin: 0px;
     padding: 0px;
-    height: 80%;
+    height: 90%;
     resize: none;
 }
 
