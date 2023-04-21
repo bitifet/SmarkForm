@@ -41,14 +41,17 @@ export class list extends SmartComponent {
         );
         const tplOptions = me.getNodeOptions(
             me.itemTpl
-            , {type: me.options.of}
+            , {
+                type: me.options.of || "form", // Use form as default.
+            }
         );
-        if (tplOptions.type != me.options.of) throw me.renderError(
+        if (
+            me.options.of
+            && tplOptions.type != me.options.of
+        ) throw me.renderError(
             'LIST_ITEM_TYPE_MISSMATCH'
             , `List item type missmatch`
         );
-        if (! tplOptions.type) tplOptions.type = "form"; // Use form as default.
-        me.setNodeOptions(me.itemTpl, tplOptions);
         me.itemTpl.remove();
 
         for(let i=0; i<me.min_items; i++) me.addItem();

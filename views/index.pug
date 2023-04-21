@@ -6,7 +6,7 @@ block mainForm
         .form-group
             label Corporate Name
             input(
-                data-smart="input"
+                data-smart
                 name="company"
                 type="text"
                 placeholder="Company Name"
@@ -14,26 +14,26 @@ block mainForm
         .form-group
             label Address
             textarea(
-                data-smart="input"
+                data-smart
                 name="address"
                 placeholder="Address"
             )
         .form-group
             label City,State,Zip
             input(
-                data-smart="input"
+                data-smart
                 name="city"
                 placeholder='City'
                 style='flex: 6'
             )
             input(
-                data-smart="input"
+                data-smart
                 name="state"
                 placeholder='State'
                 style='flex:1'
             )
             input(
-                data-smart="input"
+                data-smart
                 name="postCode"
                 placeholder='Postal Code'
                 style='flex:2'
@@ -143,7 +143,7 @@ mixin inputlist(label="Annonymous")
                 button(data-smart = {
                     action: "addItem",
                 }) ➕
-                input(data-smart="input")&attributes(atts)
+                input(data-smart)&attributes(atts)
                 button(data-smart = {
                     action: "removeItem",
                     failback: removeFailback,

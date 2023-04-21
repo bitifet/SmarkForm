@@ -43,6 +43,11 @@ const errors = {
     },
 };
 
+function inferType(node) {
+    return "input";
+    // Future components may be infered for some input types.
+};
+
 export class SmartComponent extends Events {
     constructor(//{{{
         target
@@ -79,27 +84,26 @@ export class SmartComponent extends Events {
     };//}}}
     getNodeOptions(node, defaultOptions) {//{{{
         const me = this;
-        let options = (
+        const optionsSrc = (
             node.dataset[me.property_name] || ""
         ).trim() || null;
-        try {
-            options = (
-                // Accept 'str' as shorthand for '{type: "str"}':
-                options.match(re_valid_typename_chars) ? {type: options}
-                // Otherwise it must be a valid JSON:
-                : JSON.parse(options)
-            );
-        } catch(err) {
-            if (typeof defaultOptions != "object") throw me.renderError(
-                "INVALID_SMART_OPTIONS"
-                , `Bad or no options object provided`
-            );
-            options = {};
+        const options = {
+            ...defaultOptions,
+            ...(()=>{
+                try {
+                    const opt = JSON.parse(optionsSrc);
+                    if (typeof opt != "object") throw new Error("NO_OBJECT");
+                    return opt;
+                } catch (err) {
+                    return (
+                        optionsSrc.match(re_valid_typename_chars) ? {type: optionsSrc}
+                        : {}
+                    );
+                };
+            })(),
         };
-        if (typeof defaultOptions == "object") {
-            options = {...defaultOptions, ...options};
-            me.setNodeOptions(node, options);
-        };
+        if (! options.action && ! options.type) options.type = inferType(node);
+        me.setNodeOptions(node, options);
         return options;
     };//}}}
     setNodeOptions(node, options) {//{{{
