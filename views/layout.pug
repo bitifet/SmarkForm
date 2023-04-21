@@ -17,12 +17,13 @@ html
                                 | layout that can almost responsively expand and stack
                                 | depending on the width of the page.
                     block mainForm
-                #test-tools 
+                #test-tools.hidden
+                    textarea#inoutJson {}
                     .buttons
                         button#importButton ⬆️  Import
                         button#exportButton ⬇️  Export
                         button#clearButton ❌ Clear
-                    textarea#inoutJson {}
+                button#testButton(title="Import/Export test...") 🔧
 
     script(
         type="module",

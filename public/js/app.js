@@ -5,11 +5,16 @@ window.form = new SmartForm(
     document.querySelector("#main-form")
 );
 
-const importButton = document.querySelector("#importButton")
-const exportButton = document.querySelector("#exportButton")
-const clearButton = document.querySelector("#clearButton")
-const textarea = document.querySelector("#inoutJson")
 
+const testTools = document.querySelector("#test-tools");
+const testButton = document.querySelector("#testButton");
+const importButton = document.querySelector("#importButton");
+const exportButton = document.querySelector("#exportButton");
+const clearButton = document.querySelector("#clearButton");
+const textarea = document.querySelector("#inoutJson");
+
+
+testButton.addEventListener("click", ()=>testTools.classList.toggle("hidden"));
 
 importButton.addEventListener("click", ()=>form.import(
     JSON.parse(textarea.value.trim() || '{}'))

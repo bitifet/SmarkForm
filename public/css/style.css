@@ -26,62 +26,67 @@ body>* {
 
 .container {
     padding: 1em;
-    height: 80vh;
+    height: 100vh;
     overflow: auto;
 }
 
 #main-form {
-    margin-bottom: 10em;
+    margin-bottom: 10rem;
 }
 
 .container>* {
     max-width: 1024px;
 }
 
-/* @media (max-width: 768px) { */
-/*     body>* { */
-/*         padding: 20px 8px; */
-/*     } */
-/* } */
 
+#testButton {
+    position: fixed;
+    z-index: 10;
+    bottom: 5px;
+    right: 5px;
+    padding: .3rem;
+    font-size: 1.5rem;
+}
 
+#test-tools.hidden {
+    display: none;
+}
 
 #test-tools {
     position: fixed;
-    height: 20vh;
-    width: 100vw;
+    top: 5vh;
+    left: 10vw;
+    width: 80vw;
+    height: 70vh;
     text-align: right;
-    bottom: 0px;
-    left: 0px;
+    display: flex;
+    flex-direction: column;
+}
+
+#test-tools textarea {
+    position: relative;
     margin: 0px;
+    padding: 0px;
+    height: 80%;
+    resize: none;
 }
 
 #test-tools .buttons {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
     display: flex;
-    flex-direction: column;
-    width: 25%;
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 3px;
     pointer-events: none;
 }
 #test-tools .buttons>* {
     pointer-events: all;
     padding: .3rem;
-    font-size: .8rem;
+    font-size: 1.2rem;
 }
 
 
-#test-tools textarea {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    margin: 0px;
-    width: 75%;
-    height: 100%;
-    resize: none;
-    z-index: 1;
-}
 
  
