@@ -33,4 +33,11 @@ TO-DO List
     - Prevent id collision (on auto-creation) by detecting previous duplicates
       and appending incremental suffix on demand.
 
+  💡 Implement Table Of Contents component.
+    - Scan targetted component recursively.
+    - Refresh on every change (add or remove items).
+    - Show only components with a "toc-section" property.
+    - Allow navigating to every secton through their (full path) id's.
+    - Implement a "return to TOC" actions.
+    - Stop scanning on compoenents containing a self-targetted TOC.
 
