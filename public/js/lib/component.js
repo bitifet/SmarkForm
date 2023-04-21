@@ -22,6 +22,11 @@ const errors = {
             super(`RenderError(${path}): ${message}`);
             this.code = code;
             this.path = path;
+            this.stack = this.stack
+                .split("\n")
+                .slice(2)
+                .join("\n")
+            ;
         };
     },
     ruleError: class ruleError extends Error {
@@ -29,6 +34,11 @@ const errors = {
             super(`RuleError(${path}): ${message}`);
             this.code = code;
             this.path = path;
+            this.stack = this.stack
+                .split("\n")
+                .slice(2)
+                .join("\n")
+            ;
         };
     },
 };
@@ -72,7 +82,6 @@ export class SmartComponent extends Events {
         let options = (
             node.dataset[me.property_name] || ""
         ).trim() || null;
-
         try {
             options = (
                 // Accept 'str' as shorthand for '{type: "str"}':
@@ -82,7 +91,8 @@ export class SmartComponent extends Events {
             );
         } catch(err) {
             if (typeof defaultOptions != "object") throw me.renderError(
-                `No options object provided`
+                "INVALID_SMART_OPTIONS"
+                , `Bad or no options object provided`
             );
             options = {};
         };
@@ -111,12 +121,14 @@ export class SmartComponent extends Events {
         if (options.action) {
             options.type ||= "action"; // Make type optional for actions.
             if (options.type != "action") throw me.renderError(
-                `Actions must be of type "action" but "${options.type}" given.`
+                "WRONG_ACTION_TYPE"
+                , `Actions must be of type "action" but "${options.type}" given.`
             );
             delete options.name; // Actions are always unnamed.
         } else if (typeof options.type != "string") {
             throw me.renderError(
-                `Invalid SmartFom item: type is mandatory for non action elements.`
+                "NO_TYPE_PROVIDED"
+                , `Invalid SmartFom item: type is mandatory for non action elements.`
             );
         } else {
             options.name = name;
@@ -125,10 +137,10 @@ export class SmartComponent extends Events {
 
         // Enhance:{{{
         const ctrl = me.components[options.type];
-        if (! ctrl) throw me.renderError([
-            "Unimplemented SmartForm component controller:",
-            options.type,
-        ].join(" "));
+        if (! ctrl) throw me.renderError(
+            "UNKNOWN_TYPE"
+            , `Unimplemented SmartForm component controller: ${options.type}`,
+        );
         return new ctrl (
             node
             , options
@@ -150,7 +162,8 @@ export class SmartComponent extends Events {
         return (
             [...me.parents].map(p=>p.options.name)
             .reverse()
-            .join("/")
+            .join("/") // Root parent being "" => Starting "/".
+            || "/" // No join (0 parents => root node)
         );
     };//}}}
     find(path="") { // {{{
