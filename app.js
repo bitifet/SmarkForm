@@ -6,7 +6,7 @@ import cookieParser  from 'cookie-parser';
 import cors  from 'cors';
 import logger  from 'morgan';
 
-import usersRouter  from './routes/users.js';
+import apiRouter  from './routes/mock-api.js';
 
 const app = express();
 app.set("view engine", "pug");
@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.get('/', (req, res) => {
   res.render('index', { title: 'Hey', message: 'Hello there!' })
 })
-app.use('/users', usersRouter);
+app.use('/api', apiRouter);
 
 app.use(function (req, res, next) {
   res.status(404).json({message: "We couldn't find what you were looking for 😞"})
