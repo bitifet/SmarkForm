@@ -7,6 +7,7 @@ import {getRoots} from "../lib/helpers.js";
 export class form extends SmartComponent {
     render() {//{{{
         const me = this;
+        me.originalDisplayProp = me.target.style.display;
         for (
             const node
             of getRoots(me.target, me.selector)
@@ -50,4 +51,19 @@ export class form extends SmartComponent {
         const me = this;
         return me.import({});
     };//}}}
+    fold({
+        operation = "toggle", // Values: "fold" / "unfold" / "toggle"
+    } = {}) {
+        const me = this;
+        const isFolded = me.target.style.display == "none";
+        const mustBeFolded = (
+            operation == "fold" ? true
+            : operation == "unfold" ? false
+            : ! isFolded
+        );
+        me.target.style.display = (
+            mustBeFolded ? "none"
+            : me.originalDisplayProp
+        );
+    };
 };
