@@ -20,7 +20,8 @@ for (const [name, controller] of Object.entries({
 
 function onActionClick(ev) {
     const me = this;
-    const actionTarget = me.getComponent(ev.originalTarget);
+
+    const actionTarget = me.getComponent(ev.target);
     const {options, parent} = actionTarget;
     const parents = [...actionTarget.parents];
     const { action, for: path, to: toTarget} = options;

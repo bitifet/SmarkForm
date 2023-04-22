@@ -8,16 +8,16 @@ import {validName} from "../lib/helpers.js";
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 const re_has_wildcards = /[\*\?]/;
-const wild2regex = wname => new RegExp(
+const wild2regex = wname => new RegExp(//{{{
     "^"
     + wname
         .replace(/\*+/g, ".*")
         .replace(/\?/g, ".")
     + "$"
-);
+);//}}}
 
 const errors = {
-    renderError: class renderError extends Error {
+    renderError: class renderError extends Error {//{{{
         constructor(code, message, path) {
             super(`RenderError(${path}): ${message}`);
             this.code = code;
@@ -28,8 +28,8 @@ const errors = {
                 .join("\n")
             ;
         };
-    },
-    ruleError: class ruleError extends Error {
+    },//}}}
+    ruleError: class ruleError extends Error {//{{{
         constructor(code, message, path) {
             super(`RuleError(${path}): ${message}`);
             this.code = code;
@@ -40,13 +40,13 @@ const errors = {
                 .join("\n")
             ;
         };
-    },
+    },//}}}
 };
 
-function inferType(node) {
+function inferType(node) {//{{{
     return "input";
     // Future components may be infered for some input types.
-};
+};//}}}
 
 export class SmartComponent extends Events {
     constructor(//{{{
@@ -223,11 +223,11 @@ export class SmartComponent extends Events {
         const me = this;
         return new errors.ruleError(code, message, me.getPath());
     };//}}}
-    moveTo(){
+    moveTo(){//{{{
         const me = this;
         if (! me.target.id) me.target.id = me.getPath();
         document.location.hash = me.target.id;
-    };
+    };//}}}
 };
 
 export function createComponent(name, controller) {//{{{
