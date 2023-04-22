@@ -8,6 +8,7 @@ export class form extends SmartComponent {
     render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
+        if (me.options.folded) me.fold();
         for (
             const node
             of getRoots(me.target, me.selector)
@@ -53,17 +54,27 @@ export class form extends SmartComponent {
     };//}}}
     fold({
         operation = "toggle", // Values: "fold" / "unfold" / "toggle"
+        origin,
+        foldedClass,
     } = {}) {
         const me = this;
-        const isFolded = me.target.style.display == "none";
-        const mustBeFolded = (
+        const wasFolded = me.target.style.display == "none";
+        const isFolded = (
             operation == "fold" ? true
             : operation == "unfold" ? false
-            : ! isFolded
+            : ! wasFolded
         );
         me.target.style.display = (
-            mustBeFolded ? "none"
+            isFolded ? "none"
             : me.originalDisplayProp
         );
+        if (foldedClass && origin) {
+            origin.target.classList[
+                isFolded ? "add"
+                : "remove"
+            ](foldedClass)
+        };
+
+
     };
 };

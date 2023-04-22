@@ -2,17 +2,19 @@ extends layout.pug
 block mainForm
     .section
         .form-group.h1
-            button(
+            button.foldButton.folded(
                 data-smart={
                     action: "fold",
                     for: "company",
+                    foldedClass: "folded",
                 }
-            ) ⬇️
+            )
             span Company
         div(
             data-smart={
                 type: "form",
                 name: "company",
+                folded: true,
             }
         )
             .form-group
