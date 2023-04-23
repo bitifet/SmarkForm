@@ -54,6 +54,13 @@ block mainForm
                 )
     .section
         .form-group.h2.no-wrap
+            button.foldButton(
+                data-smart={
+                    action: "fold",
+                    for: "employees",
+                    foldedClass: "folded",
+                }
+            )
             span Employees
             .spacer
             button(data-smart = {

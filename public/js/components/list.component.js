@@ -18,6 +18,9 @@ import {SmartComponent} from "../lib/component.js";
 export class list extends SmartComponent {
     render () {//{{{
         const me = this;
+        me.originalDisplayProp = me.target.style.display;
+        if (!! me.options.folded) me.fold();
+
         me.min_items = Math.max(0,
             typeof me.options.min_items == "number" ? me.options.min_items
             : 1
@@ -207,6 +210,29 @@ export class list extends SmartComponent {
     };//}}}
     empty() {//{{{
         const me = this;
-        me.import([]);
+        return me.import([]);
     };//}}}
+    fold({
+        operation = "toggle", // Values: "fold" / "unfold" / "toggle"
+        origin,
+        foldedClass,
+    } = {}) {
+        const me = this;
+        const wasFolded = me.target.style.display == "none";
+        const isFolded = (
+            operation == "fold" ? true
+            : operation == "unfold" ? false
+            : ! wasFolded
+        );
+        me.target.style.display = (
+            isFolded ? "none"
+            : me.originalDisplayProp
+        );
+        if (foldedClass && origin) {
+            origin.target.classList[
+                isFolded ? "add"
+                : "remove"
+            ](foldedClass)
+        };
+    };
 };
