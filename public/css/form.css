@@ -115,13 +115,21 @@
   padding: .3em;
   background: none;
 }
-.foldButton:not(.folded), .foldButton.folded:hover {
+.foldButton:not(.folded) {
   transform: translateY(.5em) rotate(45deg);
 }
-
-.foldButton.folded, .foldButton:not(.folded):hover {
+.foldButton.folded {
   transform: translateY(.5em) rotate(-135deg);
 }
+@media (hover:hover) {
+    .foldButton.folded:hover {
+        transform: translateY(.5em) rotate(45deg);
+    }
+    .foldButton:not(.folded):hover {
+        transform: translateY(.5em) rotate(-135deg);
+    }
+}
+
 
 @media (hover:hover) {
     .form-group button:hover {
