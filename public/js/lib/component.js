@@ -55,7 +55,7 @@ export class SmartComponent extends Events {
             property_name = "smart",
             ...options
         } = {}
-        , parent = null
+        , parent
     ) {
         super();
 

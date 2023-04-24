@@ -76,6 +76,7 @@
 .form-group.h1, .form-group.f1 {
     font-size: 2rem;
     font-weight: bold;
+    user-select: none;
 }
 .form-group.h1 {
     border-bottom: solid 3px;
@@ -91,6 +92,7 @@
 .form-group.h2, .form-group.f2 {
     font-size: 1.8rem;
     font-weight: bold;
+    user-select: none;
 }
 .form-group.h2 {
     border-bottom: solid 3px;
