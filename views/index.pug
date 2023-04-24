@@ -54,7 +54,7 @@ block mainForm
                 )
     .section
         .form-group.h2.no-wrap
-            button.foldButton(
+            button.foldButton.folded(
                 data-smart={
                     action: "fold",
                     for: "employees",
@@ -84,6 +84,7 @@ block mainForm
                 exportEmpties: true,
                 name: "employees",
                 min_items: 0,
+            folded: true,
             })
                 .form-group(data-smart={
                     exportEmpties: false

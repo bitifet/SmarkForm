@@ -134,7 +134,7 @@
 
 
 @media (hover:hover) {
-    .form-group button:hover {
+    .form-group button:not([disabled]):hover {
             transform: translate(3px, 3px);
     }
 }

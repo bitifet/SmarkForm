@@ -8,7 +8,7 @@ export class form extends SmartComponent {
     render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
-        if (me.options.folded) me.fold();
+        if (!! me.options.folded) me.root.onRendered(()=>me.fold());
         for (
             const node
             of getRoots(me.target, me.selector)
@@ -74,7 +74,5 @@ export class form extends SmartComponent {
                 : "remove"
             ](foldedClass)
         };
-
-
     };
 };

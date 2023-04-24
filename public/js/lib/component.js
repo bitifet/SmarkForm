@@ -88,9 +88,21 @@ export class SmartComponent extends Events {
             };
         };
 
+        me.onRenderedTasks = [];
+
         me.children = {};
         me.target[sym_smart] = me;
         me.render();
+        me.onRenderedTasks.forEach(task=>task());
+        me.onRenderedTasks = null;
+    };//}}}
+    onRendered(cbk) {//{{{
+        const me = this;
+        if (me.onRenderedTasks) {
+            me.onRenderedTasks.push(cbk);
+        } else {
+            cbk();
+        };
     };//}}}
     getNodeOptions(node, defaultOptions) {//{{{
         const me = this;
@@ -238,7 +250,7 @@ export class SmartComponent extends Events {
         if (! me.target.id) me.target.id = me.getPath();
         document.location.hash = me.target.id;
     };//}}}
-    getActions(actionName = null) {//{{{
+    getActions(actionNames = null) {//{{{
         const me = this;
         const myCurrentActions = [];
         for (
@@ -249,7 +261,10 @@ export class SmartComponent extends Events {
             const options = acc.getActionArgs()
             if (! options) continue; // Not an action.
             if (! Object.is(options.context, me)) continue;
-            if (actionName && options.action != actionName) continue;
+            if ( // Matches actionName string or any in actionName array:
+                actionNames
+                && ! (1 + [actionNames].flat().findIndex(n=>n==options.action))
+            ) continue;
             myCurrentActions.push(acc);
         };
         return myCurrentActions;

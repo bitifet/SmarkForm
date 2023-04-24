@@ -3,6 +3,14 @@
 import {SmartComponent} from "../lib/component.js";
 export class action extends SmartComponent {
     render(){};
+    disable() {//{{{
+        const me = this;
+        me.target.disabled = true;
+    };//}}}
+    enable() {//{{{
+        const me = this;
+        me.target.disabled = false;
+    };//}}}
     getActionArgs() {//{{{
         const me = this;
         const parents = [...me.parents];
