@@ -67,8 +67,16 @@ export class SmartComponent extends Events {
         me.target = target;
         me.options = options;
         me.setNodeOptions(me.target, me.options);
+
         me.parent = parent;
-        me.children = {};
+        if (! me.parent instanceof SmartComponent) throw me.renderError(
+            'INVALID_PARENT'
+            , `Smart Components must have valid Smart Component parent.`
+        );
+        me.root = (
+            me.parent === null ? me
+            : me.parent
+        );
 
         // Parents iterator:
         me.parents = {};
@@ -79,6 +87,8 @@ export class SmartComponent extends Events {
                 current = current.parent;
             };
         };
+
+        me.children = {};
         me.target[sym_smart] = me;
         me.render();
     };//}}}
@@ -228,6 +238,23 @@ export class SmartComponent extends Events {
         if (! me.target.id) me.target.id = me.getPath();
         document.location.hash = me.target.id;
     };//}}}
+    getActions(actionName = null) {//{{{
+        const me = this;
+        const myCurrentActions = [];
+        for (
+            const acc
+            of [...me.root.target.querySelectorAll(me.selector)]
+                .map(target=>target[sym_smart])
+        ) {
+            const options = acc.getActionArgs()
+            if (! options) continue; // Not an action.
+            if (! Object.is(options.context, me)) continue;
+            if (actionName && options.action != actionName) continue;
+            myCurrentActions.push(acc);
+        };
+        return myCurrentActions;
+    };//}}}
+    getActionArgs() {}; // Let's easily filter out non action compoenents.
 };
 
 export function createComponent(name, controller) {//{{{
