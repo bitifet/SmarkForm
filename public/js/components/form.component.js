@@ -8,7 +8,6 @@ export class form extends SmartComponent {
     render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
-        if (!! me.options.folded) me.root.onRendered(()=>me.fold());
         for (
             const node
             of getRoots(me.target, me.selector)
@@ -17,6 +16,13 @@ export class form extends SmartComponent {
             const {name} = newChild.options;
             if (name) me.children[name] = newChild;
         };
+        // onRendered tweaks:
+        me.root.onRendered(()=>{
+            me.fold({operation: (
+                !! me.options.folded ? "fold"
+                : "unfold"
+            )});
+        });
     };//}}}
     export() {//{{{
         const me = this;
@@ -54,8 +60,6 @@ export class form extends SmartComponent {
     };//}}}
     fold({
         operation = "toggle", // Values: "fold" / "unfold" / "toggle"
-        origin,
-        foldedClass,
     } = {}) {
         const me = this;
         const wasFolded = me.target.style.display == "none";
@@ -68,11 +72,16 @@ export class form extends SmartComponent {
             isFolded ? "none"
             : me.originalDisplayProp
         );
-        if (foldedClass && origin) {
-            origin.target.classList[
+        me.getActions("fold").forEach(acc => {
+            const {foldedClass, unfoldedClass} = acc.options;
+            if (foldedClass) acc.target.classList[
                 isFolded ? "add"
                 : "remove"
-            ](foldedClass)
-        };
+            ](foldedClass);
+            if (unfoldedClass) acc.target.classList[
+                isFolded ? "remove"
+                : "add"
+            ](unfoldedClass);
+        });
     };
 };

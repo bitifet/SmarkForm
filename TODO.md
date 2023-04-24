@@ -3,16 +3,6 @@ TO-DO List
 ==========
 
 
-  💡 Implement "fold" action to form type to make them become "foldable sections".
-    - Read initial .style.display (to prevent malfunction in case of markup
-      providding it).
-    - Test switching .style.display between "none" and initial value /
-      "inherit" (or just leave blank) checking that stylesheet is respected...
-
-  👉 Implement anchor components (not exportable field) with path-based default
-     "name" attribute and make addItem action find targettedItem closest one to
-     redirect location to its hash tag.
-
   💣 Fix (wrong) name attribute in lists' singleton input nodes.
 
   💣 Fix (wrong) type="input" attribute in lists' singleton input nodes.

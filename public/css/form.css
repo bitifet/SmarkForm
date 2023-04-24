@@ -73,8 +73,13 @@
 }
 
 /* Headers and Footers */
+
+h1 {
+    user-select: none;
+}
+
 .form-group.h1, .form-group.f1 {
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: bold;
     user-select: none;
 }
@@ -90,7 +95,7 @@
     padding-top: .2em;
 }
 .form-group.h2, .form-group.f2 {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: bold;
     user-select: none;
 }
@@ -114,8 +119,9 @@
   border: solid black;
   border-width: 0 3px 3px 0;
   display: inline-block;
-  padding: .3em;
+  padding: .2em;
   background: none;
+  transition: transform .5s;
 }
 .foldButton:not(.folded) {
   transform: translateY(.5em) rotate(45deg);
@@ -134,7 +140,7 @@
 
 
 @media (hover:hover) {
-    .form-group button:not([disabled]):hover {
+    .form-group button:not(.foldButton):not([disabled]):hover {
             transform: translate(3px, 3px);
     }
 }

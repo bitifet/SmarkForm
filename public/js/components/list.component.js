@@ -57,13 +57,16 @@ export class list extends SmartComponent {
         me.itemTpl.remove();
         // onRendered tweaks:
         me.root.onRendered(()=>{
-            if (!! me.options.folded) me.fold();
+            me.fold({operation: (
+                !! me.options.folded ? "fold"
+                : "unfold"
+            )});
             for(let i=0; i<me.min_items; i++) me.addItem();
             if (me.min_items == 0) {
                 // Update "count" actions in case of not already updated by
                 // me.addItem:
                 me.getActions("count").forEach(
-                    ac=>ac.target.innerText = String(me.children.length)
+                    acc=>acc.target.innerText = String(me.children.length)
                 );
             };
         });
@@ -152,7 +155,7 @@ export class list extends SmartComponent {
             ;
         };
         me.getActions("count").forEach(
-            ac=>ac.target.innerText = String(me.children.length)
+            acc=>acc.target.innerText = String(me.children.length)
         );
         const moveTarget = (
             ! newChild ? null
@@ -211,7 +214,7 @@ export class list extends SmartComponent {
             .map((c,i)=>(c.name = i, c))
         ;
         me.getActions("count").forEach(
-            ac=>ac.target.innerText = String(me.children.length)
+            acc=>acc.target.innerText = String(me.children.length)
         );
     };//}}}
     isEmpty() {//{{{
@@ -228,8 +231,6 @@ export class list extends SmartComponent {
     };//}}}
     fold({//{{{
         operation = "toggle", // Values: "fold" / "unfold" / "toggle"
-        origin,
-        foldedClass,
     } = {}) {
         const me = this;
         const wasFolded = me.target.style.display == "none";
@@ -242,15 +243,23 @@ export class list extends SmartComponent {
             isFolded ? "none"
             : me.originalDisplayProp
         );
-        if (foldedClass && origin) {
-            origin.target.classList[
+
+        me.getActions("fold").forEach(acc => {
+            const {foldedClass, unfoldedClass} = acc.options;
+            if (foldedClass) acc.target.classList[
                 isFolded ? "add"
                 : "remove"
-            ](foldedClass)
-        };
+            ](foldedClass);
+            if (unfoldedClass) acc.target.classList[
+                isFolded ? "remove"
+                : "add"
+            ](unfoldedClass);
+        });
+
+        ///};
         me.getActions(["addItem", "removeItem"]).map(
-            isFolded ? ac => ac.disable()
-            : ac => ac.enable()
+            isFolded ? acc => acc.disable()
+            : acc => acc.enable()
         );
     };//}}}
     count() {}; // Does nothing. Just allow reinject contents to it.
