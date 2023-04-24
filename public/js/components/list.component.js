@@ -19,7 +19,6 @@ export class list extends SmartComponent {
     render () {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
-        if (!! me.options.folded) me.root.onRendered(()=>me.fold());
 
         me.min_items = Math.max(0,
             typeof me.options.min_items == "number" ? me.options.min_items
@@ -56,9 +55,18 @@ export class list extends SmartComponent {
             , `List item type missmatch`
         );
         me.itemTpl.remove();
-
-        for(let i=0; i<me.min_items; i++) me.addItem();
-
+        // onRendered tweaks:
+        me.root.onRendered(()=>{
+            if (!! me.options.folded) me.fold();
+            for(let i=0; i<me.min_items; i++) me.addItem();
+            if (me.min_items == 0) {
+                // Update "count" actions in case of not already updated by
+                // me.addItem:
+                me.getActions("count").forEach(
+                    ac=>ac.target.innerText = String(me.children.length)
+                );
+            };
+        });
         return;
     };//}}}
     export() {//{{{
@@ -143,6 +151,9 @@ export class list extends SmartComponent {
                 .map((c,i)=>(c.name = i, c))
             ;
         };
+        me.getActions("count").forEach(
+            ac=>ac.target.innerText = String(me.children.length)
+        );
         const moveTarget = (
             ! newChild ? null
             : autoscroll == "self" ? newChild
@@ -199,6 +210,9 @@ export class list extends SmartComponent {
             })
             .map((c,i)=>(c.name = i, c))
         ;
+        me.getActions("count").forEach(
+            ac=>ac.target.innerText = String(me.children.length)
+        );
     };//}}}
     isEmpty() {//{{{
         const me = this;
@@ -239,4 +253,5 @@ export class list extends SmartComponent {
             : ac => ac.enable()
         );
     };//}}}
+    count() {}; // Does nothing. Just allow reinject contents to it.
 };

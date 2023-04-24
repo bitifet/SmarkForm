@@ -61,7 +61,12 @@ block mainForm
                     foldedClass: "folded",
                 }
             )
-            span Employees
+            span Employees (
+            span(data-smart={
+                action: "count",
+                for: "employees",
+            })
+            span )
             .spacer
             button(data-smart = {
                 action: "addItem",
