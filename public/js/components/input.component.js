@@ -16,22 +16,22 @@ export class input extends SmartComponent {
         const me = this;
         return me.target.value;
     };//}}}
-    import(value = "") {
+    import(value = "") {//{{{
         const me = this;
         me.target.value = value;
         // me.target.dispatchEvent(
         //     new customEvent("change", {})
         // );
         return me.target.value;
-    };
+    };//}}}
     isEmpty() {//{{{
         const me = this;
         const value = me.export();
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
-    empty() {
+    empty() {//{{{
         const me = this;
         me.import("");
-    };
+    };//}}}
 };

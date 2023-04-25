@@ -152,10 +152,6 @@ export class SmartComponent extends Events {
 
         // Sanityze and store options:{{{
         let options = me.getNodeOptions(node, defaultOptions);
-        const name = me.validName(
-            options.name
-            , node.getAttribute("name")
-        );
         //}}}
 
         // Classify:{{{
@@ -171,8 +167,6 @@ export class SmartComponent extends Events {
                 "NO_TYPE_PROVIDED"
                 , `Invalid SmartFom item: type is mandatory for non action elements.`
             );
-        } else {
-            options.name = name;
         };
         //}}}
 
@@ -201,7 +195,7 @@ export class SmartComponent extends Events {
     getPath() {//{{{
         const me = this;
         return (
-            [...me.parents].map(p=>p.options.name)
+            [...me.parents].map(p=>p.name)
             .reverse()
             .join("/") // Root parent being "" => Starting "/".
             || "/" // No join (0 parents => root node)
@@ -252,14 +246,6 @@ export class SmartComponent extends Events {
         ) return p.options[optName];
         return defaultValue;
     };//}}}
-    renderError(code, message) {//{{{
-        const me = this;
-        return new errors.renderError(code, message, me.getPath());
-    };//}}}
-    ruleError(code, message) {//{{{
-        const me = this;
-        return new errors.ruleError(code, message, me.getPath());
-    };//}}}
     moveTo(){//{{{
         const me = this;
         if (! me.target.id) me.target.id = me.getPath();
@@ -285,6 +271,16 @@ export class SmartComponent extends Events {
         return myCurrentActions;
     };//}}}
     getActionArgs() {}; // Let's easily filter out non action compoenents.
+
+    // Error types:
+    renderError(code, message) {//{{{
+        const me = this;
+        return new errors.renderError(code, message, me.getPath());
+    };//}}}
+    ruleError(code, message) {//{{{
+        const me = this;
+        return new errors.ruleError(code, message, me.getPath());
+    };//}}}
 };
 
 export function createComponent(name, controller) {//{{{

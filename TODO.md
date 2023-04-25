@@ -2,9 +2,6 @@
 TO-DO List
 ==========
 
-
-  💣 Fix (wrong) name attribute in lists' singleton input nodes.
-
   💣 Fix (wrong) type="input" attribute in lists' singleton input nodes.
 
   💡 Implement Focus subsystem. Let's say:

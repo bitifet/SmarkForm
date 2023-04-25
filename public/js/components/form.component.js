@@ -13,8 +13,13 @@ export class form extends SmartComponent {
             of getRoots(me.target, me.selector)
         ) {
             const newChild = me.enhance(node);
-            const {name} = newChild.options;
-            if (name) me.children[name] = newChild;
+            if (newChild.options.type != "action") {
+                newChild.name = me.validName(
+                    newChild.options.name
+                    , node.getAttribute("name")
+                );
+                me.children[newChild.name] = newChild;
+            };
         };
         // onRendered tweaks:
         me.root.onRendered(()=>{
