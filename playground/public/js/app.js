@@ -1,5 +1,5 @@
 
-import {SmartForm} from "./SmartForm.js";
+import {SmartForm} from "./SmartForm.esm.js";
 
 window.form = new SmartForm(
     document.querySelector("#main-form")

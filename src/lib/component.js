@@ -156,7 +156,7 @@ export class SmartComponent extends Events {
 
         // Classify:{{{
         if (options.action) {
-            options.type ||= "action"; // Make type optional for actions.
+            if (! options.type) options.type = "action"; // Make type optional for actions.
             if (options.type != "action") throw me.renderError(
                 "WRONG_ACTION_TYPE"
                 , `Actions must be of type "action" but "${options.type}" given.`
