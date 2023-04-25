@@ -40,6 +40,42 @@ Index
 <!-- vim-markdown-toc -->
 
 
+
+------------
+
+For regular components...
+
+type            | 🔒 action | form | list | input |
+----------------|-----------|------|------|-------|
+action          | [☑️ ](#action-property) | ❌ | ❌ | ❌ |
+name            | ✖️      | [✅]() 
+for             | [✅]() | 🔗      | 🔗   | 🔗    |
+to              | [✅]() | 🔗      | 🔗   | 🔗    |
+
+(Legend to be continued...)
+
+
+For actions...
+
+type            | 🔒 action | form | list | input |
+----------------|-----------|------|------|-------|
+foldedClass     | [❓]() | [🔗]() | [🔗]() | ✖️  |
+unfoldedClass   | [❓]() | [🔗]() | [🔗]() | ✖️  |
+keep_non_empty  | [❓]() |        | [🔗]() | ✖️  |
+autoscroll      | [❓]() |        | [🔗]() | ✖️  |
+failback        | [❓]() |        | [🔗]() | ✖️  |
+
+------------
+
+✅ Optional option.
+☑️  Mandatory option.
+❓ Depends on targetted component type.
+🔗 Have actions supporting it.
+✖️  Unused/Ignored option.
+❌ Forbidden (not allowed for that type)
+🔒 Forcibly set to when [action property](#action-property) is defined.
+
+
 data-smart (options) object
 ===========================
 
