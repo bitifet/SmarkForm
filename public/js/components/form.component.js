@@ -58,7 +58,7 @@ export class form extends SmartComponent {
         const me = this;
         return me.import({});
     };//}}}
-    fold({
+    fold({//{{{
         operation = "toggle", // Values: "fold" / "unfold" / "toggle"
     } = {}) {
         const me = this;
@@ -83,5 +83,5 @@ export class form extends SmartComponent {
                 : "add"
             ](unfoldedClass);
         });
-    };
+    };//}}}
 };

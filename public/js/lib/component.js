@@ -3,7 +3,6 @@
 const componentTypes = {};
 
 import {Events} from "./events.js";
-import {validName} from "../lib/helpers.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
@@ -60,6 +59,22 @@ export class SmartComponent extends Events {
         super();
 
         const me = this;
+
+        me.validName = (function nameGenerator() {//{{{
+            let counter = 0;
+            return function(...names){
+                for (
+                    let n0 of names
+                ) if (
+                    typeof n0 == "string"
+                ) {
+                    n0 = n0.trim();
+                    if (n0.length) return n0;
+                };
+                return 'UNNAMED'+(++counter);
+            };
+        })();//}}}
+
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;
         me.typeName = me.constructor.name;
@@ -137,7 +152,7 @@ export class SmartComponent extends Events {
 
         // Sanityze and store options:{{{
         let options = me.getNodeOptions(node, defaultOptions);
-        const name = validName(
+        const name = me.validName(
             options.name
             , node.getAttribute("name")
         );
