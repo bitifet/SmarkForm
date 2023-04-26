@@ -3,8 +3,7 @@
   "version": "0.0.1",
   "private": false,
   "type": "module",
-  "main": "dist/SmartForm.cjs.js",
-  "module": "dist/SmartForm.esm.js",
+  "main": "dist/SmartForm.esm.js",
   "browser": "dist/SmartForm.umd.js",
   "scripts": {
     "build": "rollup -c",
@@ -16,15 +15,16 @@
   "devDependencies": {
     "@babel/preset-env": "^7.21.4",
     "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-node-resolve": "^7.0.0",
+    "babel-minify": "^0.5.2",
+    "babel-preset-minify": "^0.5.2",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "^4.18.2",
     "morgan": "~1.9.1",
     "pug": "^3.0.2",
-    "rollup": "^1.29.0"
+    "rollup": "^2.79.1",
+    "rollup-plugin-cleanup": "^3.2.1"
   },
   "browserslist": "> 0.25%, not dead",
   "files": [

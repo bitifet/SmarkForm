@@ -1,9 +1,6 @@
 # Vim
 **.sw*
 
-# Dist
-dist
-
 # Logs
 logs
 *.log
