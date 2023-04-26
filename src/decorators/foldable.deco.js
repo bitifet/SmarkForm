@@ -1,5 +1,7 @@
 
-export function foldable(target, {kind, ...options}) {
+import {action} from "../types/action.type.js";
+
+export const foldable = function foldable_decorator(target, {kind}) {
     if (kind == "class") {
         return class foldableTarget extends target {
             render(...args) {
@@ -13,6 +15,7 @@ export function foldable(target, {kind, ...options}) {
                 });
                 return retv;
             };
+            @action
             fold({
                 operation = "toggle", // Values: "fold" / "unfold" / "toggle"
             } = {}) {

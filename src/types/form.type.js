@@ -4,6 +4,7 @@
 import {SmartComponent} from "../lib/component.js";
 import {getRoots} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
+import {action} from "./action.type.js";
 
 @foldable
 export class form extends SmartComponent {
@@ -54,6 +55,7 @@ export class form extends SmartComponent {
                 )
         );
     };//}}}
+    @action
     empty() {//{{{
         const me = this;
         return me.import({});

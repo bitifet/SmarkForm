@@ -2,6 +2,7 @@
 // =======================
 
 import {form} from "./form.type.js";
+import {action} from "./action.type.js";
 
 export class singleton extends form {
     render() {//{{{
@@ -23,6 +24,7 @@ export class singleton extends form {
             [[Object.keys(me.children)[0], value]]
         ));
     };//}}}
+    @action
     empty() {//{{{
         const me = this;
         me.import("");

@@ -1,7 +1,16 @@
 // types/action.type.js
 // ====================
 import {SmartComponent} from "../lib/component.js";
-export class action extends SmartComponent {
+
+
+export const action = function action_decorator(targetMtd, {kind, name, addInitializer}) {
+    if (kind == "method") addInitializer(function registerAction() {
+        this.actions[name] = targetMtd.bind(this);
+    });
+};
+
+
+export class action_type extends SmartComponent {
     render(){};
     disable() {//{{{
         const me = this;
@@ -59,7 +68,12 @@ export function onActionClick(ev) {
     const options = actionComponent.getActionArgs();
     if (! options) return; // Not an action.
     const {context, action} = options;
-    context[action](options);
+    const mtd = context.actions[action]
+    if (! mtd) throw me.renderError(
+        "UNKNOWN_ACTION"
+        , `Unknown action ${action} for ${context.options.type}.`
+    );
+    mtd(options);
 };
 
 

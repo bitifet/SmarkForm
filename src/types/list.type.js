@@ -16,6 +16,7 @@
 
 import {SmartComponent} from "../lib/component.js";
 import {foldable} from "../decorators/foldable.deco.js";
+import {action} from "./action.type.js";
 
 
 @foldable
@@ -112,6 +113,7 @@ export class list extends SmartComponent {
         };
         return me.export();
     };//}}}
+    @action
     addItem({//{{{
         target,
         position = "after",
@@ -165,6 +167,7 @@ export class list extends SmartComponent {
         );
         if (moveTarget) moveTarget.moveTo();
     };//}}}
+    @action
     removeItem({//{{{
         target,
         ...options
@@ -225,9 +228,11 @@ export class list extends SmartComponent {
             )
         );
     };//}}}
+    @action
     empty() {//{{{
         const me = this;
         return me.import([]);
     };//}}}
+    @action
     count() {}; // Does nothing. Just allow reinject contents to it.
 };

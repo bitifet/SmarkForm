@@ -1,6 +1,7 @@
 // types/input.type.js
 // ===================
 import {SmartComponent} from "../lib/component.js";
+import {action} from "./action.type.js";
 export class input extends SmartComponent {
     render() {//{{{
         const me = this;
@@ -30,6 +31,7 @@ export class input extends SmartComponent {
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
+    @action
     empty() {//{{{
         const me = this;
         me.import("");
