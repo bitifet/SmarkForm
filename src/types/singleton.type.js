@@ -1,7 +1,7 @@
-// components/singleton.component.js
-// =================================
+// types/singleton.type.js
+// =======================
 
-import {form} from "./form.component.js";
+import {form} from "./form.type.js";
 
 export class singleton extends form {
     render() {//{{{

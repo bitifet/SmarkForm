@@ -44,7 +44,7 @@ const errors = {
 
 function inferType(node) {//{{{
     return "input";
-    // Future components may be infered for some input types.
+    // Future component types may be infered for some input types.
 };//}}}
 
 export class SmartComponent extends Events {
@@ -78,7 +78,7 @@ export class SmartComponent extends Events {
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;
         me.typeName = me.constructor.name;
-        me.components = componentTypes;
+        me.types = componentTypes;
         me.target = target;
         me.options = options;
         me.setNodeOptions(me.target, me.options);
@@ -171,7 +171,7 @@ export class SmartComponent extends Events {
         //}}}
 
         // Enhance:{{{
-        const ctrl = me.components[options.type];
+        const ctrl = me.types[options.type];
         if (! ctrl) throw me.renderError(
             "UNKNOWN_TYPE"
             , `Unimplemented SmartForm component controller: ${options.type}`,
@@ -283,7 +283,7 @@ export class SmartComponent extends Events {
     };//}}}
 };
 
-export function createComponent(name, controller) {//{{{
+export function createType(name, controller) {//{{{
     if (componentTypes[name] !== undefined) throw new Error(
         `Duplicate component type definition: ${name}`
     );

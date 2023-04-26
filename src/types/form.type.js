@@ -1,5 +1,5 @@
-// components/form.component.js
-// ============================
+// types/form.type.js
+// ==================
 
 import {SmartComponent} from "../lib/component.js";
 import {getRoots} from "../lib/helpers.js";

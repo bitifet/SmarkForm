@@ -1,5 +1,5 @@
-// components/input.component.js
-// =============================
+// types/input.type.js
+// ===================
 import {SmartComponent} from "../lib/component.js";
 export class input extends SmartComponent {
     render() {//{{{

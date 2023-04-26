@@ -1,5 +1,5 @@
-// components/list.component.js
-// ============================
+// types/list.type.js
+// ==================
 
 // TODO:
 // =====

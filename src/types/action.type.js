@@ -1,5 +1,5 @@
-// components/action.component.js
-// ==============================
+// types/action.type.js
+// ====================
 import {SmartComponent} from "../lib/component.js";
 export class action extends SmartComponent {
     render(){};

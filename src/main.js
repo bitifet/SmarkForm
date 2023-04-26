@@ -1,26 +1,26 @@
 // SmartForm.js
 // ============
 
-import {createComponent} from "./lib/component.js";
+import {createType} from "./lib/component.js";
 
-// Import core components and event handlers:
-import {form} from "./components/form.component.js";
-import {singleton} from "./components/singleton.component.js";
-import {list} from "./components/list.component.js";
-import {input} from "./components/input.component.js";
-import {action, onActionClick} from "./components/action.component.js";
+// Import core component types and event handlers:
+import {form} from "./types/form.type.js";
+import {singleton} from "./types/singleton.type.js";
+import {list} from "./types/list.type.js";
+import {input} from "./types/input.type.js";
+import {action, onActionClick} from "./types/action.type.js";
 
-// Load core components:
+// Load core component types:
 for (const [name, controller] of Object.entries({
     form,
     singleton,
     action,
     list,
     input,
-})) createComponent(name,controller);
+})) createType(name,controller);
 
 
-export {createComponent};
+export {createType};
 
 export class SmartForm extends form {
     constructor(target, formOptions) {
