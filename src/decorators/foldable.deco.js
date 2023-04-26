@@ -3,6 +3,7 @@ export function foldable(target, {kind, ...options}) {
     if (kind == "class") {
         return class foldableTarget extends target {
             render(...args) {
+                const retv = super.render(...args);
                 const me = this;
                 me.root.onRendered(()=>{
                     me.fold({operation: (
@@ -10,7 +11,7 @@ export function foldable(target, {kind, ...options}) {
                         : "unfold"
                     )});
                 });
-                return super.render(...args);
+                return retv;
             };
             fold({
                 operation = "toggle", // Values: "fold" / "unfold" / "toggle"
