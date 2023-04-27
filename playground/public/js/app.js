@@ -9,9 +9,9 @@ window.form = new SmartForm(
         },
         cancel({context}) {
             if (
-                ! context.isEmpty()
-                && confirm("Are you sure?")
-            )  context.import();
+                context.isEmpty()
+                || confirm("Are you sure?")
+            )  context.empty();
         },
     }
 );

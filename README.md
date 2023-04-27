@@ -17,6 +17,11 @@ Index
 
 <!-- vim-markdown-toc GitLab -->
 
+* [SmartForm form](#smartform-form)
+* [Components and Actions](#components-and-actions)
+        * [Components](#components)
+        * [Actions](#actions)
+* [Component Options](#component-options)
 * [data-smart (options) object](#data-smart-options-object)
     * [type property](#type-property)
         * [Common properties for components](#common-properties-for-components)
@@ -77,9 +82,9 @@ To build a simple SmartForm form you could start with simple html page:
               },
               cancel({context}) {
                   if (
-                      ! context.isEmpty()
-                      && confirm("Are you sure?")
-                  )  context.import();
+                      context.isEmpty()
+                      || confirm("Are you sure?")
+                  )  context.empty();
               },
           }
       );
