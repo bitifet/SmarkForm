@@ -4,7 +4,7 @@ import {action} from "../types/action.type.js";
 export const foldable = function foldable_decorator(target, {kind}) {
     if (kind == "class") {
         return class foldableTarget extends target {
-            render(...args) {
+            render(...args) {//{{{
                 const retv = super.render(...args);
                 const me = this;
                 me.root.onRendered(()=>{
@@ -14,9 +14,9 @@ export const foldable = function foldable_decorator(target, {kind}) {
                     )});
                 });
                 return retv;
-            };
+            };//}}}
             @action
-            fold({
+            fold({//{{{
                 operation = "toggle", // Values: "fold" / "unfold" / "toggle"
             } = {}) {
                 const me = this;
@@ -47,7 +47,7 @@ export const foldable = function foldable_decorator(target, {kind}) {
                     isFolded ? acc => acc.disable()
                     : acc => acc.enable()
                 );
-            };
+            };//}}}
         };
     };
 };

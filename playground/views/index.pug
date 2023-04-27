@@ -133,17 +133,19 @@ block mainForm
             button(data-smart = {
                 action: "addItem",
                 for: "employees",
-                autoscroll: "self",
+                autoscroll: "elegant",
             }) ➕
             button(data-smart = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
+                autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
             button(data-smart = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
+                autoscroll: "elegant",
                 keep_non_empty: true,
             }, title="Clear all empty employees") 🧹
         .form-group.f1.no-wrap

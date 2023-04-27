@@ -15,6 +15,7 @@
 
 
 import {SmartComponent} from "../lib/component.js";
+import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {action} from "./action.type.js";
 
@@ -159,17 +160,22 @@ export class list extends SmartComponent {
         me.getActions("count").forEach(
             acc=>acc.target.innerText = String(me.children.length)
         );
-        const moveTarget = (
-            ! newChild ? null
-            : autoscroll == "self" ? newChild
-            : autoscroll == "parent" ? newChild.parent
-            : null
-        );
-        if (moveTarget) moveTarget.moveTo();
+        if (autoscroll == "elegant" && !! newChild) {
+            makeRoom(newChild.target, - newChild.offsetHeight);
+        } else {
+            const moveTarget = (
+                ! newChild ? null
+                : autoscroll == "self" ? newChild
+                : autoscroll == "parent" ? newChild.parent
+                : null
+            );
+            if (moveTarget) moveTarget.moveTo();
+        };
     };//}}}
     @action
     removeItem({//{{{
         target,
+        autoscroll,
         ...options
     } = {}) {
         const me = this;
@@ -209,6 +215,16 @@ export class list extends SmartComponent {
         me.children = me.children
             .filter(child=>{
                 if (child.target.isSameNode(target.target)) {
+                    if (autoscroll == "elegant") {
+                        makeRoom(child.target, child.target.offsetHeight);
+                    } else {
+                        const moveTarget = (
+                            autoscroll == "self" ? child
+                            : autoscroll == "parent" ? child.parent
+                            : null
+                        );
+                        if (moveTarget) moveTarget.moveTo();
+                    };
                     child.target.remove();
                     return false;
                 };
