@@ -75,7 +75,7 @@ export class SmartComponent extends Events {
             };
         })();//}}}
 
-        me.actions = [];
+        me.actions = {};
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;
         me.typeName = me.constructor.name;

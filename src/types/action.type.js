@@ -34,7 +34,7 @@ export class action_type extends SmartComponent {
             path ? me.parent.find(path)
             : parents.find(p=>{
                 if (targetType && p.typeName != targetType) return false;
-                if (typeof p[actionName] != "function") return false;
+                if (typeof p.actions[actionName] != "function") return false;
                 return true;
             })
         );
@@ -42,13 +42,7 @@ export class action_type extends SmartComponent {
         const target = (
             toTarget ? context.find(toTarget) // Explicit target (context relative)
             : path ? null // Explicit context path => don't mind component position
-            : parents.find(p=>p.parent.target.isSameNode(context.target))
-        );
-
-        if (typeof context[actionName] != "function") throw me.renderError(
-            'UNKNOWN_ACTION'
-            , `Unimplemented action ${actionSpec}`
-            + (context ? ` for ${context.options.type}` : "")
+            : parents.find(p=>p.parent?.target.isSameNode(context?.target))
         );
 
         return {
@@ -68,10 +62,13 @@ export function onActionClick(ev) {
     const options = actionComponent.getActionArgs();
     if (! options) return; // Not an action.
     const {context, action} = options;
-    const mtd = context.actions[action]
-    if (! mtd) throw me.renderError(
+    const mtd = context?.actions[action]
+    if (
+        typeof mtd != "function"
+    ) throw me.renderError(
         "UNKNOWN_ACTION"
-        , `Unknown action ${action} for ${context.options.type}.`
+        , `Unknown action ${action}`
+        + (context ? ` for ${context.options.type}` : "")
     );
     mtd(options);
 };
