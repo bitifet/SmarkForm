@@ -130,8 +130,8 @@ html
                 label(for="surname") Surname
                 input(data-smart name="surname", type="text")
             hr
-            button(data-smart='{action: "cancel"}') Cancel
-            button(data-smart='{action: "submit"}') Submit
+            button(data-smart={action: "cancel"}) Cancel
+            button(data-smart={action: "submit"}) Submit
         script(src="path/to/SmartForm.umd.js")
         script.
             const myForm = new SmartForm(
