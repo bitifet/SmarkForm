@@ -42,29 +42,6 @@ Index
 
 
 
-SmartForm Component
-===================
-
-A SmartForm component is just a DOM element (HTML tag) which as a "data-smart"
-property.
-
-It simplest form looks as follows:
-
-```html
-<input data-smart="data-smart"/>
-```
-
-This is equivalent to:
-
-```html
-<input data-smart='input'/>
-```
-
-...or:
-
-```html
-<input data-smart='{type: "input"}'/>
-```
 
 SmartForm form
 ==============
@@ -87,8 +64,8 @@ To build a simple SmartForm form you could start with simple html page:
         <input data-smart="data-smart" name="surname" type="text"/>
       </p>
       <hr/>
-      <button data-smart="{action: &quot;cancel&quot;}">Cancel</button>
-      <button data-smart="{action: &quot;submit&quot;}">Submit</button>
+      <button data-smart='{action: "cancel"}'>Cancel</button>
+      <button data-smart='{action: "submit"}'>Submit</button>
     </div>
     <script src="path/to/SmartForm.umd.js"></script>
     <script>
@@ -111,46 +88,47 @@ To build a simple SmartForm form you could start with simple html page:
 </html>
 ```
 
-For the sake of simplicity, from now on, in the rest of this document we'll be
-using [Pug templates](https://pugjs.org) since they're way more readable than
-bare HTML and quite easy to understand even if you are'nt used to them.
+Components and Actions
+======================
 
-Just as an example, previous snipped would hav look like this:
+### Components
 
-```pugjs
-html
-    head
-        title My first SmartForm form
-    body
-        div#myForm
-            p
-                label(for="name") Name
-                input(data-smart name="name", type="text")
-            p
-                label(for="surname") Surname
-                input(data-smart name="surname", type="text")
-            hr
-            button(data-smart={action: "cancel"}) Cancel
-            button(data-smart={action: "submit"}) Submit
-        script(src="path/to/SmartForm.umd.js")
-        script.
-            const myForm = new SmartForm(
-                document.querySelector("#myForm")
-                , {
-                    submit({context}) {
-                        alert (JSON.stringify(context.export()));
-                    },
-                    cancel({context}) {
-                        if (
-                            ! context.isEmpty()
-                            && confirm("Are you sure?")
-                        )  context.import();
-                    },
-                }
-            );
+A SmartForm *component* is just a DOM element (HTML tag) which as a "data-smart"
+property providding a JSON-formatted *options* object.
+
+It looks like as follows:
+
+```html
+<input data-smart='{type: "input"}'/>
 ```
 
+> 📌 If only type option is specified, it can be simplified as:
+> ```html
+> <input data-smart='input'/>
+> ```
+> ...or just leave it empty to let SmartForm engine to figure out its type:
+> ```html
+> <input data-smart="data-smart"/>
+> ```
 
+### Actions
+
+A SmartForm *action* is a *component* of type "action" and a (mandatory)
+property "action" pointing to the actual action to be taken when clicked.
+
+For actions the *type* property can be omitted (since is infered by the
+presence of the *action* property itself) but, it present, it must be "action".
+
+**Example:**
+
+```html
+<button data-smart='{action: "removeItem"}'></button>
+```
+
+Component Options
+=================
+
+...
 
 ------------
 
