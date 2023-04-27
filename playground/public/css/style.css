@@ -10,7 +10,10 @@ body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     position: fixed;
-    background-image: url("/img/background.jpg");
+    background:
+        url("https://picsum.photos/800")
+        , #888888
+    ;
     background-position: center;
     background-size: cover;
 }
@@ -25,6 +28,7 @@ body>* {
 }
 
 .container {
+    background: rgba(255, 255, 255, .6);
     padding: 1em;
     height: 100vh;
     overflow: auto;
