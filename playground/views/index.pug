@@ -146,6 +146,14 @@ block mainForm
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employees") 🧹
+        .form-group.f1.no-wrap
+            .spacer
+            button(data-smart = {
+                action: "cancel",
+            }) ❌ Cancel
+            button(data-smart = {
+                action: "submit",
+            }) 💾 Submit
 mixin inputlist(label="Annonymous")
     .form-group
         -

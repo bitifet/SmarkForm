@@ -2,6 +2,14 @@
 TO-DO List
 ==========
 
+  👉 Complete documentation.
+
+  👉 Publish NPM package.
+
+  👉 Try SkyPack to create a CDN.
+
+  👉 Update documentation examples using CDN and linking to CodePen versions.
+
   💡 Implement Focus subsystem. Let's say:
     - AddItem send focus to added Item.
     - This item (type) in turn, may re-send it to inner parts (i.e.: first

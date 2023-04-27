@@ -23,7 +23,11 @@ for (const [name, controller] of Object.entries({
 export {createType};
 
 export class SmartForm extends form {
-    constructor(target, formOptions) {
+    constructor(
+        target
+        , rootActions = {}
+        , formOptions = {}
+    ) {
         const options = {
             ...formOptions,
             name: "",
@@ -36,6 +40,13 @@ export class SmartForm extends form {
         );
         const me = this;
         me.target.dataset[me.property_name] = options;
+        me.actions = {
+            ...me.actions,
+            ...Object.fromEntries(
+                Object.entries(rootActions)
+                    .map(([name, ctrl])=>[name, ctrl.bind(me)])
+            ),
+        };
         me.target.addEventListener(
             "click"
             , onActionClick.bind(me)

@@ -3,6 +3,17 @@ import {SmartForm} from "./SmartForm.esm.js";
 
 window.form = new SmartForm(
     document.querySelector("#main-form")
+    , {
+        submit({context}) {
+            alert (JSON.stringify(context.export()));
+        },
+        cancel({context}) {
+            if (
+                ! context.isEmpty()
+                && confirm("Are you sure?")
+            )  context.import();
+        },
+    }
 );
 
 
