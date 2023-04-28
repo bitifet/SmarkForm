@@ -15,12 +15,6 @@ export class Events {
     };
     emit(evType, evData) {
         const me = this;
-        if (! me[sym_events].has(evType)) {
-            console.error(
-                `${me.constructor.name} has no handler for ${evType} action`
-            );
-            return;
-        };
         for (const handler of me[sym_events].get(evType)) {
             handler(evData);
         };
