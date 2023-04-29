@@ -139,10 +139,10 @@ export class list extends SmartComponent {
         // DOM element creation:{{{
         const newItem = me.itemTpl.cloneNode(true);
         //}}}
-        // newItem event emitting:{{{
+        // addItem event emitting:{{{
         const onRenderedCbks = [];
             // Allow for handy callback instead of two separate event handlers
-        await me.emit("newItem", {
+        await me.emit("addItem", {
                 newItem,
                 options,
                 onRendered: cbk => onRenderedCbks.push(cbk),
@@ -191,16 +191,12 @@ export class list extends SmartComponent {
             if (moveTarget) moveTarget.moveTo();
         };
         //}}}
-        // Execute "onRendered" callbacks and emit newChild event:{{{
+        // Execute "onRendered" callbacks:{{{
         onRenderedCbks.forEach(cbk=>cbk(newChild));
-        me.emit("newChild", {
-            child: newChild,
-            originalOptions: options,
-        });
         //}}}
     };
     @action
-    removeItem(options = {}) {//{{{
+    async removeItem(options = {}) {//{{{
         const me = this;
         let {
             target,
@@ -223,7 +219,10 @@ export class list extends SmartComponent {
                 // specified.
             };
         };
-        if (target instanceof Array) return target.map(t=>me.removeItem({...options, target: t}));
+        if (target instanceof Array) {
+            for (const t of target) await me.removeItem({...options, target: t});
+            return;
+        };
         if (me.children.length <= me.min_items) {
             switch (failback) {
                 case "none":
@@ -240,7 +239,8 @@ export class list extends SmartComponent {
             };
         };
         if (keep_non_empty && ! target.isEmpty()) return;
-        me.children = me.children
+        let oldChild = null;
+        const newChildren = me.children
             .filter(child=>{
                 if (child.target.isSameNode(target.target)) {
                     if (autoscroll == "elegant") {
@@ -253,16 +253,36 @@ export class list extends SmartComponent {
                         );
                         if (moveTarget) moveTarget.moveTo();
                     };
-                    child.target.remove();
+
+                    oldChild = child;
                     return false;
                 };
                 return true;
             })
             .map((c,i)=>(c.name = i, c))
         ;
+        // removeItem event emitting:{{{
+        const onRemovedCbks = [];
+            // Allow for handy callback instead of two separate event handlers
+        await me.emit("removeItem", {
+            oldChild,                 // Child going to be removed.
+            oldItem: oldChild.target, // Its target (analogous to addItem event).
+            options,
+            onRemoved: cbk => onRemovedCbks.push(cbk),
+        });
+        //}}}
+
+        oldChild.target.remove();
+        me.children = newChildren;
+
         me.getActions("count").forEach(
             acc=>acc.target.innerText = String(me.children.length)
         );
+
+        // Execute "onRendered" callbacks:{{{
+        onRemovedCbks.forEach(cbk=>cbk());
+        //}}}
+
     };//}}}
     isEmpty() {//{{{
         const me = this;
