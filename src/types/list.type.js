@@ -115,12 +115,14 @@ export class list extends SmartComponent {
         return me.export();
     };//}}}
     @action
-    addItem({//{{{
-        target,
-        position = "after",
-        autoscroll,   // "self" / "parent" / (falsy)
-    } = {}) {
+    async addItem(options = {}) {
         const me = this;
+        // Parameters checking and resolution:{{{
+        let {
+            target,
+            position = "after",
+            autoscroll,   // "self" / "parent" / (falsy)
+        } = options;
         if (position != "after" && position != "before") throw me.renderError(
             'LIST_WRONG_ADDITEM_POSITION'
             , `Invalid value for addItem() position property: ${position}`
@@ -129,17 +131,30 @@ export class list extends SmartComponent {
             'LIST_MAX_ITEMS_REACHED'
             , `Cannot add items over max_items boundary`
         );
+        if (me.children.length && ! target) target = (
+            position == "before" ?  me.children[0] // Insert at the beginning
+            : me.children[me.children.length - 1]  // Append at the end
+        );
+        //}}}
+        // DOM element creation:{{{
         const newItem = me.itemTpl.cloneNode(true);
+        //}}}
+        // newItem event emitting:{{{
+        const onRenderedCbks = [];
+            // Allow for handy callback instead of two separate event handlers
+        await me.emit("newItem", {
+                newItem,
+                options,
+                onRendered: cbk => onRenderedCbks.push(cbk),
+        });
+        //}}}
+        // Child component creation and insertion:{{{
         let newChild;
         if (! me.children.length) {
             me.target.appendChild(newItem);
             newChild = me.enhance(newItem, {type: "form", name: 0});
             me.children.push(newChild);
         } else {
-            if (! target) target = (
-                position == "before" ?  me.children[0] // Insert at the beginning
-                : me.children[me.children.length - 1]  // Append at the end
-            );
             me.children = me.children
                 .map((child, i)=>{
                     if (! child.target.isSameNode(target.target)) return child;
@@ -157,9 +172,13 @@ export class list extends SmartComponent {
                 .map((c,i)=>(c.name = i, c))
             ;
         };
+        //}}}
+        // Update counter actions (if any):{{{
         me.getActions("count").forEach(
             acc=>acc.target.innerText = String(me.children.length)
         );
+        //}}}
+        // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newChild) {
             makeRoom(newChild.target, - newChild.offsetHeight);
         } else {
@@ -171,15 +190,24 @@ export class list extends SmartComponent {
             );
             if (moveTarget) moveTarget.moveTo();
         };
-    };//}}}
+        //}}}
+        // Execute "onRendered" callbacks and emit newChild event:{{{
+        onRenderedCbks.forEach(cbk=>cbk(newChild));
+        me.emit("newChild", {
+            child: newChild,
+            originalOptions: options,
+        });
+        //}}}
+    };
     @action
-    removeItem({//{{{
-        target,
-        autoscroll,
-        ...options
-    } = {}) {
+    removeItem(options = {}) {//{{{
         const me = this;
-        let {keep_non_empty} = options;
+        let {
+            target,
+            autoscroll,
+            keep_non_empty,
+            failback,
+        } = options;
         if (! target) {
             target = [...me.children]
                 .reverse()
@@ -195,9 +223,9 @@ export class list extends SmartComponent {
                 // specified.
             };
         };
-        if (target instanceof Array) return target.map(t=>me.removeItem({target: t, ...options}));
+        if (target instanceof Array) return target.map(t=>me.removeItem({...options, target: t}));
         if (me.children.length <= me.min_items) {
-            switch (options.failback) {
+            switch (failback) {
                 case "none":
                     break;
                 case "clear":
