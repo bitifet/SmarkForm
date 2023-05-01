@@ -91,7 +91,7 @@ export class SmartComponent extends Events {
         );
         me.root = (
             me.parent === null ? me
-            : me.parent
+            : me.parent.root
         );
 
         // Parents iterator:
@@ -108,9 +108,11 @@ export class SmartComponent extends Events {
 
         me.children = {};
         me.target[sym_smart] = me;
-        me.render();
-        me.onRenderedTasks.forEach(task=>task());
-        me.onRenderedTasks = null;
+        setTimeout(()=>{
+            me.render();
+            me.onRenderedTasks.forEach(task=>task());
+            me.onRenderedTasks = null;
+        }, 0);
     };//}}}
     onRendered(cbk) {//{{{
         const me = this;
@@ -259,6 +261,7 @@ export class SmartComponent extends Events {
             const acc
             of [...me.root.target.querySelectorAll(me.selector)]
                 .map(target=>target[sym_smart])
+                .filter(x=>x) // Ignore not yet rendered.
         ) {
             const options = acc.getActionArgs()
             if (! options) continue; // Not an action.
