@@ -2,7 +2,7 @@
 // ================
 const componentTypes = {};
 
-import {Events} from "./events.js";
+import {events} from "./events.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
@@ -47,7 +47,8 @@ function inferType(node) {//{{{
     // Future component types may be infered for some input types.
 };//}}}
 
-export class SmartComponent extends Events {
+@events
+export class SmartComponent {
     constructor(//{{{
         target
         , {
@@ -56,8 +57,6 @@ export class SmartComponent extends Events {
         } = {}
         , parent
     ) {
-        super();
-
         const me = this;
 
         me.validName = (function nameGenerator() {//{{{
