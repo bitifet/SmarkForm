@@ -36,12 +36,12 @@ export const events = function events_decorator(target, {kind}) {
                     function preventDefault(reason) {
                         throw new Error(`Default prevented${reason ? ": "+reason : ""}.`);
                     };
-                    handlers.forEach(
-                        handler => handler({
+                    for (const handler of handlers) {
+                        await handler({
                             ...evData,
                             preventDefault,
-                        })
-                    )
+                        });
+                    };
                 };
                 // Resolve (undefined) no matter which errors could have happened in
                 // event handlers UNLESS preventDefault() were called.

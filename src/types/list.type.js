@@ -120,8 +120,8 @@ export class list extends SmartComponent {
         // Parameters checking and resolution:{{{
         let {
             action,
-            origin,
-            context,
+            origin = null, // (Internal call)
+            context = me,  // (Internal call)
             target,
             position = "after",
             autoscroll,   // "self" / "parent" / (falsy)
@@ -208,8 +208,8 @@ export class list extends SmartComponent {
         const me = this;
         let {
             action,
-            origin,
-            context,
+            origin = null, // (Internal call)
+            context = me,  // (Internal call)
             target,
             position = "after",
             autoscroll,   // "self" / "parent" / (falsy)
