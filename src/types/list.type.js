@@ -115,10 +115,13 @@ export class list extends SmartComponent {
         return me.export();
     };//}}}
     @action
-    async addItem(options = {}) {
+    async addItem(options = {}) {//{{{
         const me = this;
         // Parameters checking and resolution:{{{
         let {
+            action,
+            origin,
+            context,
             target,
             position = "after",
             autoscroll,   // "self" / "parent" / (falsy)
@@ -143,8 +146,13 @@ export class list extends SmartComponent {
         const onRenderedCbks = [];
             // Allow for handy callback instead of two separate event handlers
         await me.emit("addItem", {
+                action,
+                origin,
+                context,
+                target,  // <--- Effective target.
+                position,
                 newItem,
-                options,
+                options, // <- Original options (including target)
                 onRendered: cbk => onRenderedCbks.push(cbk),
         });
         //}}}
@@ -194,13 +202,17 @@ export class list extends SmartComponent {
         // Execute "onRendered" callbacks:{{{
         onRenderedCbks.forEach(cbk=>cbk(newChild));
         //}}}
-    };
+    };//}}}
     @action
     async removeItem(options = {}) {//{{{
         const me = this;
         let {
+            action,
+            origin,
+            context,
             target,
-            autoscroll,
+            position = "after",
+            autoscroll,   // "self" / "parent" / (falsy)
             keep_non_empty,
             failback,
         } = options;
@@ -265,6 +277,11 @@ export class list extends SmartComponent {
         const onRemovedCbks = [];
             // Allow for handy callback instead of two separate event handlers
         await me.emit("removeItem", {
+            action,
+            origin,
+            context,
+            target,  // <--- Effective target.
+            position,
             oldChild,                 // Child going to be removed.
             oldItem: oldChild.target, // Its target (analogous to addItem event).
             options,
