@@ -234,74 +234,77 @@ export class list extends SmartComponent {
                 // specified.
             };
         };
-        if (target instanceof Array) {
-            for (const t of target) await me.removeItem({...options, target: t});
-            return;
-        };
-        if (me.children.length <= me.min_items) {
-            switch (failback) {
-                case "none":
-                    break;
-                case "clear":
-                    target.empty();
-                    return;
-                case "throw":
-                default:
-                    throw me.ruleError(
-                        'LIST_MIN_ITEMS_REACHED'
-                        , `Cannot remove items under min_items boundary`
-                    )
-            };
-        };
-        if (keep_non_empty && ! target.isEmpty()) return;
-        let oldChild = null;
-        const newChildren = me.children
-            .filter(child=>{
-                if (child.target.isSameNode(target.target)) {
-                    if (autoscroll == "elegant") {
-                        makeRoom(child.target, child.target.offsetHeight);
-                    } else {
-                        const moveTarget = (
-                            autoscroll == "self" ? child
-                            : autoscroll == "parent" ? child.parent
-                            : null
-                        );
-                        if (moveTarget) moveTarget.moveTo();
-                    };
-
-                    oldChild = child;
-                    return false;
-                };
-                return true;
-            })
-            .map((c,i)=>(c.name = i, c))
-        ;
-        // removeItem event emitting:{{{
-        const onRemovedCbks = [];
-            // Allow for handy callback instead of two separate event handlers
-        await me.emit("removeItem", {
-            action,
-            origin,
-            context,
-            target,  // <--- Effective target.
-            position,
-            oldChild,                 // Child going to be removed.
-            oldItem: oldChild.target, // Its target (analogous to addItem event).
-            options,
-            onRemoved: cbk => onRemovedCbks.push(cbk),
-        });
-        //}}}
-
-        oldChild.target.remove();
-        me.children = newChildren;
-
-        me.getActions("count").forEach(
-            acc=>acc.target.innerText = String(me.children.length)
+        const targets = (
+            target instanceof Array ? target
+            : [target]
         );
+        for (const currentTarget of targets) {
+            if (me.children.length <= me.min_items) {
+                switch (failback) {
+                    case "none":
+                        break;
+                    case "clear":
+                        currentTarget.empty();
+                        return;
+                    case "throw":
+                    default:
+                        throw me.ruleError(
+                            'LIST_MIN_ITEMS_REACHED'
+                            , `Cannot remove items under min_items boundary`
+                        )
+                };
+            };
+            if (keep_non_empty && ! currentTarget.isEmpty()) continue;
+            let oldChild = null;
+            const newChildren = me.children
+                .filter(child=>{
+                    if (child.target.isSameNode(currentTarget.target)) {
+                        if (autoscroll == "elegant") {
+                            makeRoom(child.target, child.target.offsetHeight);
+                        } else {
+                            const moveTarget = (
+                                autoscroll == "self" ? child
+                                : autoscroll == "parent" ? child.parent
+                                : null
+                            );
+                            if (moveTarget) moveTarget.moveTo();
+                        };
 
-        // Execute "onRendered" callbacks:{{{
-        onRemovedCbks.forEach(cbk=>cbk());
-        //}}}
+                        oldChild = child;
+                        return false;
+                    };
+                    return true;
+                })
+                .map((c,i)=>(c.name = i, c))
+            ;
+            // removeItem event emitting:{{{
+            const onRemovedCbks = [];
+                // Allow for handy callback instead of two separate event handlers
+            await me.emit("removeItem", {
+                action,
+                origin,
+                context,
+                target: currentTarget,  // <--- Effective target.
+                position,
+                oldChild,                 // Child going to be removed.
+                oldItem: oldChild.target, // Its target (analogous to addItem event).
+                options,
+                onRemoved: cbk => onRemovedCbks.push(cbk),
+            });
+            //}}}
+
+            oldChild.target.remove();
+            me.children = newChildren;
+
+            me.getActions("count").forEach(
+                acc=>acc.target.innerText = String(me.children.length)
+            );
+
+            // Execute "onRendered" callbacks:{{{
+            onRemovedCbks.forEach(cbk=>cbk());
+            //}}}
+
+        };
 
     };//}}}
     isEmpty() {//{{{
