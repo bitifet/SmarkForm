@@ -238,7 +238,7 @@ export class list extends SmartComponent {
             target instanceof Array ? target
             : [target]
         );
-        for (const currentTarget of targets) {
+        for (const currentTarget of [...targets].reverse()) {
             if (me.children.length <= me.min_items) {
                 switch (failback) {
                     case "none":
