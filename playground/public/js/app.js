@@ -17,6 +17,26 @@ window.form = new SmartForm(
 );
 
 
+form.on("addItem", function({
+    newItem,
+    onRendered,
+}) {
+    newItem.classList.add("hidden");
+    onRendered(()=>{
+        newItem.classList.remove("hidden")
+    });
+});
+
+form.on("removeItem", async function({
+    oldItem,
+    onRemmoved,
+}) {
+    oldItem.classList.add("hidden");
+    await new Promise(resolve=>setTimeout(resolve, 500));
+});
+
+
+
 const testTools = document.querySelector("#test-tools");
 const testButton = document.querySelector("#testButton");
 const importButton = document.querySelector("#importButton");
