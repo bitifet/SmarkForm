@@ -18,6 +18,7 @@ import {SmartComponent} from "../lib/component.js";
 import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {action} from "./action.type.js";
+import {mutex} from "../decorators/mutex.deco.js";
 
 
 @foldable
@@ -115,6 +116,7 @@ export class list extends SmartComponent {
         return me.export();
     };//}}}
     @action
+    @mutex("add_or_remove_item")
     async addItem(options = {}) {//{{{
         const me = this;
         // Parameters checking and resolution:{{{
@@ -204,6 +206,7 @@ export class list extends SmartComponent {
         //}}}
     };//}}}
     @action
+    @mutex("add_or_remove_item")
     async removeItem(options = {}) {//{{{
         const me = this;
         let {
