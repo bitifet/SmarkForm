@@ -252,6 +252,10 @@ export class SmartComponent {
         const me = this;
         if (! me.target.id) me.target.id = me.getPath();
         document.location.hash = me.target.id;
+        // Avoid noisy url hash "randomish" effect:
+        window.history.pushState({}, undefined,window.location.pathname);
+            // Like 'document.location.hash = ""' but without leaving leading
+            // hash character.
     };//}}}
     getActions(actionNames = null) {//{{{
         const me = this;
