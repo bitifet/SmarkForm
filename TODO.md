@@ -41,3 +41,19 @@ TO-DO List
     - Implement a "return to TOC" actions.
     - Stop scanning on compoenents containing a self-targetted TOC.
 
+  💡 Implement a "multiform" compoennt.
+    - Multiple subform templates (every direct child) internally stored (like
+      in lists...).
+    - Only one actually inserted in DOM (interchangeably).
+    - import() and export() methods work always over currently selected subform.
+    - Each subform must include a <select> (or any other input smart type) tag
+      whose name should match some "selector" field in the options object
+      passed to mulitform component (data-smart property) and whose value
+      should decide wich template is actually used (making imports and exports
+      consistent thanks to this field).
+    - Consider using an special action instead of that <select> tag so that it
+      can freely placed inside or outside multiform component subtemplates (in
+      this case, the "selector" field sholuld be maintained "maically" by
+      compoenent's internals).
+
+
