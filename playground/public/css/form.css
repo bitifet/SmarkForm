@@ -128,21 +128,19 @@ h1 {
 }
 
 
-.form-group .hidden {
-    background: orange !important;
-    height: 0px;
+.form-group .ingoing {
     transform: scaleY(0) translateY(-50%);
+}
+
+.form-group .ongoing {
     transition:
-        height .05s ease-out,
-        transform .05s ease-out
+        transform .05s ease-in
     ;
 }
 
-.form-group :not(.hidden) {
-    transform: scaleY(1) translateY(0);
-    height: initial;
+.form-group .outgoing {
+    transform: scaleY(0) translateY(-50%);
     transition:
-        height .05s ease-in,
         transform .05s ease-in
     ;
 }

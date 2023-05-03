@@ -21,9 +21,10 @@ form.on("addItem", function({
     newItem,
     onRendered,
 }) {
-    newItem.classList.add("hidden");
+    newItem.classList.add("ingoing");
     onRendered(()=>{
-        newItem.classList.remove("hidden")
+        newItem.classList.remove("ingoing")
+        newItem.classList.add("ongoing");
     });
 });
 
@@ -31,8 +32,9 @@ form.on("removeItem", async function({
     oldItem,
     onRemmoved,
 }) {
-    oldItem.classList.add("hidden");
-    await new Promise(resolve=>setTimeout(resolve, 500));
+    oldItem.classList.remove("ongoing");
+    oldItem.classList.add("outgoing");
+    await new Promise(resolve=>setTimeout(resolve, 50));
 });
 
 
