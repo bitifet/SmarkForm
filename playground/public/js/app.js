@@ -34,7 +34,18 @@ form.on("removeItem", async function({
 }) {
     oldItem.classList.remove("ongoing");
     oldItem.classList.add("outgoing");
-    await new Promise(resolve=>setTimeout(resolve, 50));
+
+    // Await for transition to be finished before item removal:
+    const [duration, multiplier = 1000] = window.getComputedStyle(oldItem)
+        .getPropertyValue('transition-duration')
+        .slice(0,-1).replace("m","/1")
+        .split("/")
+        .map(Number)
+    ;
+    await new Promise(resolve=>setTimeout(
+        resolve
+        , duration * multiplier
+    ));
 });
 
 

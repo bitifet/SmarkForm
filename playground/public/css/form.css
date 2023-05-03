@@ -134,14 +134,14 @@ h1 {
 
 .form-group .ongoing {
     transition:
-        transform .05s ease-in
+        transform 70ms ease-in
     ;
 }
 
 .form-group .outgoing {
     transform: scaleY(0) translateY(-50%);
     transition:
-        transform .05s ease-in
+        transform 70ms ease-out
     ;
 }
 
