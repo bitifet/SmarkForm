@@ -1,3 +1,5 @@
 *action* Component Type
 =======================
 
+Actions
+-------

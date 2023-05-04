@@ -125,14 +125,14 @@ presence of the *action* property itself) but, it present, it must be "action".
 Core Component Types
 ====================
 
+| Type | Description                     | Shared Capabilities              |
+|------|---------------------------------|----------------------------------|
 
-  * [Form](doc/type_form.md)
-    - [foldable](doc/deco_foldable.md)
-  * [Input](doc/type_input.md)
-  * [List](doc/type_list.md)
-    - [foldable](doc/deco_foldable.md)
-  * [Singleton](doc/type_singleton.md)
-  * [Action](doc/type_action.md)
+| [Form](doc/type_form.md)           |   | [foldable](doc/deco_foldable.md) |
+| [Input](doc/type_input.md)         |   |                                  |
+| [List](doc/type_list.md)           |   | [foldable](doc/deco_foldable.md) |
+| [Singleton](doc/type_singleton.md) |   |                                  |
+| [Action](doc/type_action.md)       |                                      |
 
 
 
