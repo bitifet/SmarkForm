@@ -21,6 +21,7 @@ Index
 * [Components and Actions](#components-and-actions)
         * [Components](#components)
         * [Actions](#actions)
+* [Core Component Types](#core-component-types)
 * [Component Options](#component-options)
 * [data-smart (options) object](#data-smart-options-object)
     * [type property](#type-property)
@@ -30,16 +31,6 @@ Index
         * [Common properties for actions](#common-properties-for-actions)
             * [for](#for)
             * [to](#to)
-* [Core Component Types](#core-component-types)
-    * [form](#form)
-    * [input](#input)
-    * [list](#list)
-        * [List actions](#list-actions)
-            * [addItem](#additem)
-                * [addItem properties](#additem-properties)
-            * [removeItem](#removeitem)
-    * [singleton](#singleton)
-    * [action](#action)
 * [Data Import and Export methods](#data-import-and-export-methods)
 
 <!-- vim-markdown-toc -->
@@ -130,6 +121,22 @@ presence of the *action* property itself) but, it present, it must be "action".
 <button data-smart='{action: "removeItem"}'></button>
 ```
 
+
+Core Component Types
+====================
+
+
+  * [Form](doc/type_form.md)
+    - [foldable](doc/deco_foldable.md)
+  * [Input](doc/type_input.md)
+  * [List](doc/type_list.md)
+    - [foldable](doc/deco_foldable.md)
+  * [Singleton](doc/type_singleton.md)
+  * [Action](doc/type_action.md)
+
+
+
+
 Component Options
 =================
 
@@ -195,39 +202,6 @@ action property
 
 
 
-
-Core Component Types
-====================
-
-form
-----
-
-input
------
-
-list
-----
-
-### List actions
-
-
-#### addItem
-
-
-##### addItem properties
-
-
-#### removeItem
-
-  * target
-  * keep_non_empty
-
-
-singleton
----------
-
-action
-------
 
 
 
