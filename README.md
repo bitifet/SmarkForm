@@ -131,7 +131,7 @@ Core Component Types
 | [Input](doc/type_input.md)         |   |                                  |
 | [List](doc/type_list.md)           |   | [foldable](doc/deco_foldable.md) |
 | [Singleton](doc/type_singleton.md) |   |                                  |
-| [Action](doc/type_action.md)       |                                      |
+| [Action](doc/type_action.md)       |   |                                  |
 
 
 
