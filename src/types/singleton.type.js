@@ -18,7 +18,7 @@ export class singleton extends form {
     export() {//{{{
         return Object.values(super.export())[0];
     };//}}}
-    import(value = "") {//{{{
+    async import(value = "") {//{{{
         const me = this;
         return super.import(Object.fromEntries(
             [[Object.keys(me.children)[0], value]]

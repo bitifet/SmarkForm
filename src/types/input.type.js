@@ -17,7 +17,7 @@ export class input extends SmartComponent {
         const me = this;
         return me.target.value;
     };//}}}
-    import(value = "") {//{{{
+    async import(value = "") {//{{{
         const me = this;
         me.target.value = value;
         // me.target.dispatchEvent(

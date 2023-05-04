@@ -33,7 +33,7 @@ export class form extends SmartComponent {
             )
         );
     };//}}}
-    import(data = {}) {//{{{
+    async import(data = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (dataConstructor !== {}.constructor) throw me.renderError(
@@ -41,8 +41,20 @@ export class form extends SmartComponent {
             , `Expected plain object for form import, ${dataConstructor.name} given.`
         );
         return Object.fromEntries(
-            Object.entries(me.children).map(
-                ([key, target]) => [key, target.import(data[key])]
+            await Promise.all(
+                Object.entries(me.children).map(
+                    async ([key, target]) => {
+                        // Could have used target.then(...) but, event
+                        // components' export() method SHOULD be async, it
+                        // would have failed in case it's not.
+                        // Forcing it to be async is not possible because
+                        // transpilers would break this check.
+                        // ...and, IMHO, this approach is better than a dirty
+                        // Promise.resolve(...)
+                        const value = await target.import(data[key]);
+                        return [key, value];
+                    }
+                )
             )
         );
     };//}}}
