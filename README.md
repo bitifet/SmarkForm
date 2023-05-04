@@ -127,7 +127,6 @@ Core Component Types
 
 | Type | Description                     | Shared Capabilities              |
 |------|---------------------------------|----------------------------------|
-
 | [Form](doc/type_form.md)           |   | [foldable](doc/deco_foldable.md) |
 | [Input](doc/type_input.md)         |   |                                  |
 | [List](doc/type_list.md)           |   | [foldable](doc/deco_foldable.md) |
