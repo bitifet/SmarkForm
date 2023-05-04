@@ -83,7 +83,7 @@ export class list extends SmartComponent {
         );
         return targettedChildren.map(ch=>ch.export());
     };//}}}
-    import(data = []) {//{{{
+    async import(data = []) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
         if (! data instanceof Array) data = [data];
@@ -93,14 +93,14 @@ export class list extends SmartComponent {
             i < Math.min(data.length, me.max_items); // Limit to allowed items
             i++
         ) {
-            if (me.children.length <= i) me.addItem(); // Make room on demand
+            if (me.children.length <= i) await me.addItem(); // Make room on demand
             me.children[i].import(data[i]);
         };
         // Remove extra items if possible (over min_items):
         for (
             let i = Math.max(data.length, me.min_items);
             i < me.children.length;
-        ) me.removeItem();
+        ) await me.removeItem();
         // Complete (empty unused items) to min_items if needed:
         for (
             let i = me.children.length;
