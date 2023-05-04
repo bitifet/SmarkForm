@@ -94,7 +94,7 @@ export class list extends SmartComponent {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(); // Make room on demand
-            me.children[i].import(data[i]);
+            await me.children[i].import(data[i]);
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -316,9 +316,9 @@ export class list extends SmartComponent {
         );
     };//}}}
     @action
-    empty() {//{{{
+    async empty() {//{{{
         const me = this;
-        return me.import([]);
+        return await me.import([]);
     };//}}}
     @action
     count() {}; // Does nothing. Just allow reinject contents to it.
