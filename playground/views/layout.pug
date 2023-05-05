@@ -7,30 +7,29 @@ html
         link(rel="stylesheet", href="/css/form.css")
     body
         div.container
-            div
-                div#main-form
-                    header
-                        h1 SmartForm Example
-                        small
-                            p
-                                | This example demonstrates how to create a simple form
-                                | layout that can almost responsively expand and stack
-                                | depending on the width of the page.
-                            p
-                                span Background image courtesy of 
-                                a(
-                                    href="https://picsum.photos/"
-                                    target="_blank"
-                                ) https://picsum.photos/
+            div#main-form
+                header
+                    h1 SmartForm Example
+                    small
+                        p
+                            | This example demonstrates how to create a simple form
+                            | layout that can almost responsively expand and stack
+                            | depending on the width of the page.
+                        p
+                            span Background image courtesy of 
+                            a(
+                                href="https://picsum.photos/"
+                                target="_blank"
+                            ) https://picsum.photos/
 
-                    block mainForm
-                #test-tools.hidden
-                    textarea#inoutJson {}
-                    .buttons
-                        button#importButton ⬆️  Import
-                        button#exportButton ⬇️  Export
-                        button#clearButton ❌ Clear
-                button#testButton(title="Import/Export test...") 🔧
+                block mainForm
+            #test-tools.hidden
+                textarea#inoutJson {}
+                .buttons
+                    button#importButton ⬆️  Import
+                    button#exportButton ⬇️  Export
+                    button#clearButton ❌ Clear
+            button#testButton(title="Import/Export test...") 🔧
 
     script(
         type="module",
