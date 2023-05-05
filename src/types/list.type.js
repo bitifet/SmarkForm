@@ -75,14 +75,19 @@ export class list extends SmartComponent {
         });
         return;
     };//}}}
-    export() {//{{{
+    exportSync() {//{{{
         const me = this;
         const targettedChildren = (
             me.inherittedOption("exportEmpties", false) ? me.children
             : me.children.filter(ch=>!ch.isEmpty())
         );
-        return targettedChildren.map(ch=>ch.export());
+        return targettedChildren.map(ch=>ch.exportSync());
     };//}}}
+    @mutex("list_mutating")
+    async export() {
+        const me = this;
+        return me.exportSync();
+    };
     async import(data = []) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
@@ -113,10 +118,10 @@ export class list extends SmartComponent {
             // FIXME: Improve handling of this situation having it implies
             // data loss.
         };
-        return me.export();
+        return; // await me.export();
     };//}}}
     @action
-    @mutex("add_or_remove_item")
+    @mutex("list_mutating")
     async addItem(options = {}) {//{{{
         const me = this;
         // Parameters checking and resolution:{{{
@@ -163,6 +168,7 @@ export class list extends SmartComponent {
         if (! me.children.length) {
             me.target.appendChild(newItem);
             newChild = me.enhance(newItem, {type: "form", name: 0});
+            await newChild.rendered;
             me.children.push(newChild);
         } else {
             me.children = me.children
@@ -206,7 +212,7 @@ export class list extends SmartComponent {
         //}}}
     };//}}}
     @action
-    @mutex("add_or_remove_item")
+    @mutex("list_mutating")
     async removeItem(options = {}) {//{{{
         const me = this;
         let {

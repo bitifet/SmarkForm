@@ -105,12 +105,16 @@ export class SmartComponent {
 
         me.onRenderedTasks = [];
 
+        let setRendered;
+        me.rendered = new Promise(resolve => setRendered = resolve);
+
         me.children = {};
         me.target[sym_smart] = me;
         setTimeout(()=>{
             me.render();
             me.onRenderedTasks.forEach(task=>task());
             me.onRenderedTasks = null;
+            setRendered(true);
         }, 0);
     };//}}}
     onRendered(cbk) {//{{{
@@ -278,7 +282,10 @@ export class SmartComponent {
         return myCurrentActions;
     };//}}}
     getActionArgs() {}; // Let's easily filter out non action compoenents.
-
+    async export() {//{{{
+        const me = this;
+        return me.exportSync();
+    };//}}}
     // Error types:
     renderError(code, message) {//{{{
         const me = this;

@@ -4,8 +4,8 @@ import {SmartForm} from "./SmartForm.esm.js";
 window.form = new SmartForm(
     document.querySelector("#main-form")
     , {
-        submit({context}) {
-            alert (JSON.stringify(context.export()));
+        async submit({context}) {
+            alert (JSON.stringify(await context.export()));
         },
         cancel({context}) {
             if (
@@ -63,9 +63,8 @@ testButton.addEventListener("click", ()=>testTools.classList.toggle("hidden"));
 importButton.addEventListener("click", ()=>form.import(
     JSON.parse(textarea.value.trim() || '{}'))
 );
-exportButton.addEventListener("click", ()=>textarea.value = (
-    JSON.stringify(form.export(), null, 4)
-    + "\n\n\n\n\n\n\n\n" // CSS laziness ;-)
+exportButton.addEventListener("click", async ()=>textarea.value = (
+    JSON.stringify(await form.export(), null, 4)
 ));
 clearButton.addEventListener("click", ()=>textarea.value = "");
 

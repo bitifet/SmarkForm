@@ -25,11 +25,11 @@ export class form extends SmartComponent {
             };
         };
     };//}}}
-    export() {//{{{
+    exportSync() {//{{{
         const me = this;
         return Object.fromEntries(
             Object.entries(me.children).map(
-                ([key, child])=>[key, child.export()]
+                ([key, child])=>[key, child.exportSync()]
             )
         );
     };//}}}
@@ -45,7 +45,7 @@ export class form extends SmartComponent {
                 Object.entries(me.children).map(
                     async ([key, target]) => {
                         // Could have used target.then(...) but, event
-                        // components' export() method SHOULD be async, it
+                        // components' import() method SHOULD be async, it
                         // would have failed in case it's not.
                         // Forcing it to be async is not possible because
                         // transpilers would break this check.

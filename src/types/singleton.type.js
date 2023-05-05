@@ -15,8 +15,8 @@ export class singleton extends form {
             + ` data field but ${numFields} found.`
         );
     };//}}}
-    export() {//{{{
-        return Object.values(super.export())[0];
+    exportSync() {//{{{
+        return Object.values(super.exportSync())[0];
     };//}}}
     async import(value = "") {//{{{
         const me = this;

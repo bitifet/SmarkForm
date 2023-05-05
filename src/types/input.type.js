@@ -13,7 +13,7 @@ export class input extends SmartComponent {
         // });
         return;
     };//}}}
-    export() {//{{{
+    exportSync() {//{{{
         const me = this;
         return me.target.value;
     };//}}}
@@ -27,7 +27,7 @@ export class input extends SmartComponent {
     };//}}}
     isEmpty() {//{{{
         const me = this;
-        const value = me.export();
+        const value = me.exportSync();
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
