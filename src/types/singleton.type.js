@@ -5,8 +5,8 @@ import {form} from "./form.type.js";
 import {action} from "./action.type.js";
 
 export class singleton extends form {
-    render() {//{{{
-        super.render();
+    async render() {//{{{
+        await super.render();
         const me = this;
         const numFields = Object.keys(me.children).length;
         if (numFields != 1) throw me.renderError(

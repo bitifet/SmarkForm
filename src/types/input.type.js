@@ -27,7 +27,7 @@ export class input extends SmartComponent {
     };//}}}
     async isEmpty() {//{{{
         const me = this;
-        const value = me.export();
+        const value = await me.export();
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}

@@ -155,7 +155,7 @@ export class SmartComponent {
         const me = this;
         node.dataset[me.property_name] = JSON.stringify(options);
     };//}}}
-    enhance(node, defaultOptions) {//{{{
+    async enhance(node, defaultOptions) {//{{{
         const me = this;
 
         // Sanityze and store options:{{{

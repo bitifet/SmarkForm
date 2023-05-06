@@ -8,14 +8,14 @@ import {action} from "./action.type.js";
 
 @foldable
 export class form extends SmartComponent {
-    render() {//{{{
+    async render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
         for (
             const node
             of getRoots(me.target, me.selector)
         ) {
-            const newChild = me.enhance(node);
+            const newChild = await me.enhance(node);
             if (newChild.options.type != "action") {
                 newChild.name = me.validName(
                     newChild.options.name
