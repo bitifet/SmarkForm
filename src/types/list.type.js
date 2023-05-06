@@ -63,8 +63,8 @@ export class list extends SmartComponent {
         );
         me.itemTpl.remove();
         // onRendered tweaks:
-        me.root.onRendered(()=>{
-            for(let i=0; i<me.min_items; i++) me.addItem();
+        me.root.onRendered(async ()=>{
+            for(let i=0; i<me.min_items; i++) await me.addItem();
             if (me.min_items == 0) {
                 // Update "count" actions in case of not already updated by
                 // me.addItem:
@@ -93,14 +93,21 @@ export class list extends SmartComponent {
         // Auto-update in case of scalar to array template upgrade:
         if (! data instanceof Array) data = [data];
         // Load data:
+        console.log("Adding items...", me.getPath());
         for (
             let i = 0;
             i < Math.min(data.length, me.max_items); // Limit to allowed items
             i++
         ) {
             if (me.children.length <= i) await me.addItem(); // Make room on demand
+
+            // ************************************** //
+            await new Promise(resolve=>setTimeout(resolve, 10));
+            // ************************************** //
+
             await me.children[i].import(data[i]);
         };
+        console.log("Items added!!");
         // Remove extra items if possible (over min_items):
         for (
             let i = Math.max(data.length, me.min_items);
@@ -167,32 +174,30 @@ export class list extends SmartComponent {
         let newChild;
         if (! me.children.length) {
             me.target.appendChild(newItem);
-            newChild = me.enhance(newItem, {type: "form", name: 0});
+            newChild = await me.enhance(newItem, {type: "form", name: 0});
             await newChild.rendered;
             me.children.push(newChild);
         } else {
-            me.children = me.children
-                .map((child, i)=>{
+            me.children = (await Promise.all(
+                me.children.map(async (child, i)=>{
                     if (! child.target.isSameNode(target.target)) return child;
                     if (position == "after") {
                         child.target.after(newItem);
-                        newChild = me.enhance(newItem, {type: "form"});
+                        newChild = await me.enhance(newItem, {type: "form"});
+                        await newChild.rendered;
                         return [child, newChild]; // Right order, flatted later...
                     } else {
                         child.target.before(newItem);
-                        newChild = me.enhance(newItem, {type: "form"});
+                        newChild = await me.enhance(newItem, {type: "form"});
+                        await newChild.rendered;
                         return [newChild, child]; // Right order, flatted later...
                     };
                 })
+            ))
                 .flat()
                 .map((c,i)=>(c.name = i, c))
             ;
         };
-        //}}}
-        // Update counter actions (if any):{{{
-        me.getActions("count").forEach(
-            acc=>acc.target.innerText = String(me.children.length)
-        );
         //}}}
         // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newChild) {

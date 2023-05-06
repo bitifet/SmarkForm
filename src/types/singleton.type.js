@@ -20,14 +20,14 @@ export class singleton extends form {
     };//}}}
     async import(value = "") {//{{{
         const me = this;
-        return super.import(Object.fromEntries(
+        return await super.import(Object.fromEntries(
             [[Object.keys(me.children)[0], value]]
         ));
     };//}}}
     @action
-    empty() {//{{{
+    async empty() {//{{{
         const me = this;
-        me.import("");
+        await me.import("");
     };//}}}
 };
 

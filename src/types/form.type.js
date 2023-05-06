@@ -68,8 +68,8 @@ export class form extends SmartComponent {
         );
     };//}}}
     @action
-    empty() {//{{{
+    async empty() {//{{{
         const me = this;
-        return me.import({});
+        return await me.import({});
     };//}}}
 };

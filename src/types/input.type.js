@@ -25,15 +25,15 @@ export class input extends SmartComponent {
         // );
         return me.target.value;
     };//}}}
-    isEmpty() {//{{{
+    async isEmpty() {//{{{
         const me = this;
-        const value = me.exportSync();
+        const value = me.export();
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
     @action
-    empty() {//{{{
+    async empty() {//{{{
         const me = this;
-        me.import("");
+        await me.import("");
     };//}}}
 };

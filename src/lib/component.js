@@ -110,9 +110,11 @@ export class SmartComponent {
 
         me.children = {};
         me.target[sym_smart] = me;
-        setTimeout(()=>{
+        setTimeout(async ()=>{
             me.render();
-            me.onRenderedTasks.forEach(task=>task());
+            for (const task of me.onRenderedTasks) {
+                await task();
+            };
             me.onRenderedTasks = null;
             setRendered(true);
         }, 0);
