@@ -98,11 +98,6 @@ export class list extends SmartComponent {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(); // Make room on demand
-
-            // ************************************** //
-            await new Promise(resolve=>setTimeout(resolve, 10));
-            // ************************************** //
-
             await me.children[i].import(data[i]);
         };
         console.log("Items added!!");

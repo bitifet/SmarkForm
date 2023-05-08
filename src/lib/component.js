@@ -110,14 +110,16 @@ export class SmartComponent {
 
         me.children = {};
         me.target[sym_smart] = me;
-        setTimeout(async ()=>{
-            me.render();
-            for (const task of me.onRenderedTasks) {
-                await task();
-            };
+
+        (async ()=>{
+            await me.render();
+            for (
+                const task of me.onRenderedTasks
+            ) await task();
             me.onRenderedTasks = null;
             setRendered(true);
-        }, 0);
+        })();
+
     };//}}}
     onRendered(cbk) {//{{{
         const me = this;

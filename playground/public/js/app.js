@@ -7,10 +7,10 @@ window.form = new SmartForm(
         async submit({context}) {
             alert (JSON.stringify(await context.export()));
         },
-        cancel({context}) {
+        async cancel({context}) {
             if (
-                context.isEmpty()
-                || confirm("Are you sure?")
+                ! await context.isEmpty()
+                && confirm("Are you sure?")
             )  context.empty();
         },
     }
