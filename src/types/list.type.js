@@ -75,19 +75,17 @@ export class list extends SmartComponent {
         });
         return;
     };//}}}
-    exportSync() {//{{{
-        const me = this;
-        const targettedChildren = (
-            me.inherittedOption("exportEmpties", false) ? me.children
-            : me.children.filter(ch=>!ch.isEmpty())
-        );
-        return targettedChildren.map(ch=>ch.exportSync());
-    };//}}}
     @mutex("list_mutating")
-    async export() {
+    async export() {//{{{
         const me = this;
-        return me.exportSync();
-    };
+        const list = [];
+        const stripEmpties = ! me.inherittedOption("exportEmpties", false);
+        for (const child of me.children) {
+            if (stripEmpties && await child.isEmpty()) continue;
+            list.push(await child.export())
+        };
+        return list;
+    };//}}}
     async import(data = []) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
@@ -318,13 +316,14 @@ export class list extends SmartComponent {
         };
 
     };//}}}
-    isEmpty() {//{{{
+    async isEmpty() {//{{{
         const me = this;
-        return (
-            0 > me.children.findIndex(
-                child=>!child.isEmpty()
-            )
-        );
+        for (
+            const child of me.children
+        ) if (
+            ! await child.isEmpty()
+        ) return false;
+        return true;
     };//}}}
     @action
     async empty() {//{{{

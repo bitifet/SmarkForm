@@ -25,12 +25,12 @@ export class form extends SmartComponent {
             };
         };
     };//}}}
-    exportSync() {//{{{
+    async export() {//{{{
         const me = this;
         return Object.fromEntries(
-            Object.entries(me.children).map(
-                ([key, child])=>[key, child.exportSync()]
-            )
+            await Promise.all(Object.entries(me.children).map(
+                async ([key, child])=>[key, await child.export()]
+            ))
         );
     };//}}}
     async import(data = {}) {//{{{
@@ -58,14 +58,14 @@ export class form extends SmartComponent {
             )
         );
     };//}}}
-    isEmpty() {//{{{
+    async isEmpty() {//{{{
         const me = this;
-        return (
-            0 > Object.values(me.children)
-                .findIndex(
-                    child=>!child.isEmpty()
-                )
-        );
+        for (
+            const child of Object.values(me.children)
+        ) if (
+            ! await child.isEmpty()
+        ) return false;
+        return true;
     };//}}}
     @action
     async empty() {//{{{

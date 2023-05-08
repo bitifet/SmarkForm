@@ -13,7 +13,7 @@ export class input extends SmartComponent {
         // });
         return;
     };//}}}
-    exportSync() {//{{{
+    async export() {//{{{
         const me = this;
         return me.target.value;
     };//}}}

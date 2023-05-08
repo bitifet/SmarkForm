@@ -284,10 +284,6 @@ export class SmartComponent {
         return myCurrentActions;
     };//}}}
     getActionArgs() {}; // Let's easily filter out non action compoenents.
-    async export() {//{{{
-        const me = this;
-        return me.exportSync();
-    };//}}}
     // Error types:
     renderError(code, message) {//{{{
         const me = this;
