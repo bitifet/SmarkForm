@@ -224,13 +224,13 @@ export class list extends SmartComponent {
             failback,
         } = options;
         if (! target) {
-            target = [...me.children]
-                .reverse()
-                .find((t, i)=>(
-                    ! keep_non_empty // Pick last (reversed => first)
-                    || t.isEmpty()
-                ))
-            ;
+            if (keep_non_empty) for (
+                const t of [...me.children]
+                .reverse() // Pick last first
+            ) if (await t.isEmpty()) {
+                target = t;
+                brek;
+            };
             if (! target) {
                 target = me.children[me.children.length - 1];
                 keep_non_empty = false;
@@ -258,7 +258,7 @@ export class list extends SmartComponent {
                         )
                 };
             };
-            if (keep_non_empty && ! currentTarget.isEmpty()) continue;
+            if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
             let oldChild = null;
             const newChildren = me.children
                 .filter(child=>{
