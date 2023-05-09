@@ -91,7 +91,6 @@ export class list extends SmartComponent {
         // Auto-update in case of scalar to array template upgrade:
         if (! data instanceof Array) data = [data];
         // Load data:
-        console.log("Adding items...", me.getPath());
         for (
             let i = 0;
             i < Math.min(data.length, me.max_items); // Limit to allowed items
@@ -100,7 +99,6 @@ export class list extends SmartComponent {
             if (me.children.length <= i) await me.addItem(); // Make room on demand
             await me.children[i].import(data[i]);
         };
-        console.log("Items added!!");
         // Remove extra items if possible (over min_items):
         for (
             let i = Math.max(data.length, me.min_items);
