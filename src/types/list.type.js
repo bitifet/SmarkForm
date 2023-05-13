@@ -104,12 +104,6 @@ export class list extends SmartComponent {
             let i = Math.max(data.length, me.min_items);
             i < me.children.length;
         ) await me.removeItem();
-        // Complete (empty unused items) to min_items if needed:
-        for (
-            let i = me.children.length;
-            i < me.min_items;
-            i++
-        ) me.chldren[i].empty();
         // Report if data doesn't fit:
         if (data.length > me.max_items) {
             console.error(`Max of ${me.max_items} items exceeded by ${data.length - me.max_items} while data loadig`);
@@ -227,7 +221,7 @@ export class list extends SmartComponent {
                 .reverse() // Pick last first
             ) if (await t.isEmpty()) {
                 target = t;
-                brek;
+                break;
             };
             if (! target) {
                 target = me.children[me.children.length - 1];
@@ -246,7 +240,7 @@ export class list extends SmartComponent {
                     case "none":
                         break;
                     case "clear":
-                        currentTarget.empty();
+                        await currentTarget.empty();
                         return;
                     case "throw":
                     default:
