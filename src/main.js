@@ -20,9 +20,8 @@ for (const [name, controller] of Object.entries({
 })) createType(name,controller);
 
 
-export {createType};
 
-export class SmartForm extends form {
+class SmartForm extends form {
     constructor(
         target
         , rootActions = {}
@@ -54,4 +53,8 @@ export class SmartForm extends form {
         );
     };
 };
+
+SmartForm.createType = createType;
+
+export default SmartForm;
 

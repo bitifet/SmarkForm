@@ -1,0 +1,217 @@
+*, *::after, *::before {
+  box-sizing: border-box; }
+
+html,
+body {
+  height: 100vh;
+  height: 100svh;
+  width: 100vw;
+  padding: 0;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  position: fixed;
+  background: url("https://picsum.photos/800"), #888888;
+  background-position: center;
+  background-size: cover; }
+
+body > * {
+  position: relative;
+  margin: 0px;
+  overflow: scroll;
+  display: flex;
+  gap: 0px;
+  justify-content: center; }
+
+.container {
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1em;
+  height: 100vh;
+  height: 100svh;
+  overflow: auto; }
+
+#main-form {
+  margin-bottom: 10rem; }
+
+.container > * {
+  max-width: 1024px; }
+
+:root {
+  --tbMargin: 5px;
+  --tbPadding: .3rem;
+  --tbFontSize: 1.5rem;
+  --ttBottom: calc(
+        4 * (
+            var(--tbMargin)
+            + var(--tbPadding)
+        )
+        + var(--tbFontSize)
+    ); }
+
+#testButton {
+  position: fixed;
+  z-index: 10;
+  bottom: var(--tbMargin);
+  left: var(--tbMargin);
+  padding: var(--tbPadding);
+  font-size: var(--tbFontSize); }
+
+#test-tools.hidden {
+  display: none; }
+
+#test-tools {
+  position: fixed;
+  top: 5vh;
+  left: 10vw;
+  right: 10vw;
+  bottom: var(--ttBottom);
+  text-align: right;
+  display: flex;
+  flex-direction: column; }
+
+#test-tools textarea {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  height: 90%;
+  resize: none; }
+
+#test-tools .buttons {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 3px;
+  pointer-events: none; }
+
+#test-tools .buttons > * {
+  pointer-events: all;
+  padding: .3rem;
+  font-size: 1.2rem; }
+
+/*
+#main-form:hover .form-group {
+  outline: lightblue solid 1px;
+}
+*/
+.section {
+  margin-top: 1em; }
+
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3em;
+  align-items: flex-start;
+  align-content: stretch;
+  justify-content: flex-start;
+  font-size: 1rem; }
+
+.form-group.no-wrap {
+  flex-wrap: nowrap; }
+
+.form-group input,
+.form-group textarea,
+.form-group select,
+.form-group > .spacer {
+  flex-grow: 5; }
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  background-color: #f0f0f0;
+  padding: .2em; }
+
+.form-group textarea {
+  font-family: Arial, Helvetica, sans-serif;
+  resize: none; }
+
+.form-group button {
+  transform: scale(1.1, 1.1); }
+
+.form-group fieldset {
+  margin: 1em 0px;
+  padding: .5em;
+  border-radius: .5em;
+  position: relative;
+  background: rgba(205, 204, 214, 0.7); }
+
+.form-group label {
+  font-weight: bold;
+  align-items: baseline; }
+
+/* Headers and Footers */
+h1 {
+  user-select: none; }
+
+.form-group.h1, .form-group.f1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  user-select: none; }
+
+.form-group.h1 {
+  border-bottom: solid 3px;
+  margin-top: 1.5rem;
+  margin-bottom: .8rem; }
+
+.form-group.f1 {
+  border-top: solid 3px;
+  margin-bottom: 1.5rem;
+  margin-top: .8rem;
+  padding-top: .2em; }
+
+.form-group.h2, .form-group.f2 {
+  font-size: 1.4rem;
+  user-select: none; }
+
+.form-group.h2 {
+  border-bottom: solid 2px;
+  margin-top: 1.5rem;
+  margin-bottom: .8rem; }
+
+.form-group.f2 {
+  border-top: solid 2px;
+  margin-bottom: 1.5rem;
+  margin-top: .8rem;
+  padding-top: .2em; }
+
+.form-group > button {
+  align-self: flex-start; }
+
+.foldButton {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: .2em;
+  background: none;
+  transition: transform .5s; }
+
+.foldButton:not(.folded) {
+  transform: translateY(0.5em) rotate(45deg); }
+
+.foldButton.folded {
+  transform: translateY(0.5em) rotate(-135deg); }
+
+@media (hover: hover) {
+  .foldButton.folded:hover {
+    transform: translateY(0.5em) rotate(45deg); }
+  .foldButton:not(.folded):hover {
+    transform: translateY(0.5em) rotate(-135deg); } }
+
+.form-group .ingoing {
+  transform: scaleY(0) translateY(-50%); }
+
+.form-group .ongoing {
+  transition: transform 70ms ease-in; }
+
+.form-group .outgoing {
+  transform: scaleY(0) translateY(-50%);
+  transition: transform 70ms ease-out; }
+
+@media (hover: hover) {
+  .form-group button:not(.foldButton):not([disabled]):hover {
+    transform: translate(3px, 3px); } }
+
+@media (orientation: portrait) {
+  .form-group button {
+    font-size: 1.1rem !important; } }

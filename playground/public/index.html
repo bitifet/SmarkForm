@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SmartForm Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+  </head>
+  <body>
+    <div class="container">
+      <div id="main-form">
+        <header>
+          <h1>SmartForm Example</h1><small>
+            <p>
+              This example demonstrates how to create a simple form
+              layout that can almost responsively expand and stack
+              depending on the width of the page.
+            </p>
+            <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
+        </header>
+        <div class="section">
+          <div class="form-group h1">
+            <button class="foldButton" data-smart="{&quot;action&quot;:&quot;fold&quot;,&quot;for&quot;:&quot;company&quot;,&quot;foldedClass&quot;:&quot;folded&quot;}"></button><span>Company</span>
+          </div>
+          <div data-smart="{&quot;type&quot;:&quot;form&quot;,&quot;name&quot;:&quot;company&quot;}">
+            <div class="form-group">
+              <label>Corporate Name</label>
+              <input data-smart name="company" type="text" placeholder="Company Name">
+            </div>
+            <div class="form-group">
+              <label>Address</label>
+              <textarea data-smart name="address" placeholder="Address"></textarea>
+            </div>
+            <div class="form-group">
+              <label>City,State,Zip</label>
+              <input data-smart name="city" placeholder="City" style="flex: 6">
+              <input data-smart name="state" placeholder="State" style="flex:1">
+              <input data-smart name="postCode" placeholder="Postal Code" style="flex:2">
+            </div>
+          </div>
+        </div>
+        <div class="section">
+          <div class="form-group h2 no-wrap">
+            <button class="foldButton" data-smart="{&quot;action&quot;:&quot;fold&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;foldedClass&quot;:&quot;folded&quot;}"></button><span><span>Employees (</span><span data-smart="{&quot;action&quot;:&quot;count&quot;,&quot;for&quot;:&quot;employees&quot;}"></span><span>)</span></span>
+            <div class="spacer"></div>
+            <button data-smart="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;self&quot;}">➕</button>
+            <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true}" title="Remove last non-empty employee">➖</button>
+            <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employee">🧹</button>
+          </div>
+          <div class="form-group no-wrap">
+            <div class="form-group" data-smart="{&quot;type&quot;:&quot;list&quot;,&quot;exportEmpties&quot;:true,&quot;name&quot;:&quot;employees&quot;,&quot;min_items&quot;:0}">
+              <div class="form-group" data-smart="{&quot;exportEmpties&quot;:false}">
+                <fieldset class="form-group">
+                  <div class="form-group spacer no-wrap">
+                    <div class="form-group">
+                      <div class="form-group">
+                        <label>First Name</label>
+                        <input data-smart="input" name="name" placeholder="Name">
+                      </div>
+                      <div class="form-group">
+                        <label>Last Name</label>
+                        <input data-smart="input" name="lastName" placeholder="Surnme">
+                      </div>
+                    </div>
+                    <div class="spacer"></div>
+                    <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
+                  </div>
+                  <div class="form-group">
+                    <div class="form-group">
+                      <label>Telephones</label>
+                      <div data-smart="{&quot;name&quot;:&quot;phones&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
+                        <div class="form-group no-wrap">
+                          <button data-smart="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+                          <input data-smart="data-smart" type="tel" placeholder="Telephone"/>
+                          <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Emails</label>
+                      <div data-smart="{&quot;name&quot;:&quot;emails&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
+                        <div class="form-group no-wrap">
+                          <button data-smart="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+                          <input data-smart="data-smart" type="email" placeholder="Email"/>
+                          <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+          <div class="form-group f2 no-wrap">
+            <div class="spacer"></div>
+            <button data-smart="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}">➕</button>
+            <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Remove last non-empty employee">➖</button>
+            <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
+          </div>
+          <div class="form-group f1 no-wrap">
+            <div class="spacer"></div>
+            <button data-smart="{&quot;action&quot;:&quot;cancel&quot;}">❌ Cancel</button>
+            <button data-smart="{&quot;action&quot;:&quot;submit&quot;}">💾 Submit</button>
+          </div>
+        </div>
+      </div>
+      <div class="hidden" id="test-tools">
+        <textarea id="inoutJson">{}</textarea>
+        <div class="buttons">
+          <button id="importButton">⬆️  Import</button>
+          <button id="exportButton">⬇️  Export</button>
+          <button id="clearButton">❌ Clear</button>
+        </div>
+      </div>
+      <button id="testButton" title="Import/Export test...">🔧</button>
+    </div>
+    <script src="../../dist/SmartForm.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

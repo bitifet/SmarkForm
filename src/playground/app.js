@@ -1,5 +1,7 @@
+import './styles.scss';
+import './form.scss';
+import './index.pug';
 
-import {SmartForm} from "./SmartForm.esm.js";
 
 window.form = new SmartForm(
     document.querySelector("#main-form")
