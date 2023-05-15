@@ -200,6 +200,9 @@ export class list extends SmartComponent {
         // Execute "onRendered" callbacks:{{{
         onRenderedCbks.forEach(cbk=>cbk(newChild));
         //}}}
+        me.getActions("count").forEach(
+            acc=>acc.target.innerText = String(me.children.length)
+        );
     };//}}}
     @action
     @mutex("list_mutating")
@@ -318,5 +321,10 @@ export class list extends SmartComponent {
         return await me.import([]);
     };//}}}
     @action
-    count() {}; // Does nothing. Just allow reinject contents to it.
+    count() {
+        // Return number of children.
+        // But also it's sole existence allow reinjecting contents to it.
+        const me = this;
+        return me.children.length;
+    };
 };
