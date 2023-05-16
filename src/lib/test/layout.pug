@@ -1,0 +1,16 @@
+doctype html
+html
+    head
+        title=self.title
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+        style#Styles!=self.css
+    body
+        div.container
+            div#main-form
+                header
+                    h1 SmartForm Test
+                    h2=self.title
+                block mainForm
+        script(src="../../dist/SmartForm.js")
+        script#TestStuff!=self.js
+
