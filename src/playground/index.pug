@@ -91,44 +91,43 @@ block mainForm
                 name: "employees",
                 min_items: 0,
             })
-                .form-group(data-smart={
+                fieldset.form-group(data-smart={
                     exportEmpties: false
                 })
-                    fieldset.form-group
-                        .form-group.spacer.no-wrap
-                            .form-group
-                                .form-group
-                                    label First Name
-                                    input(
-                                        data-smart="input"
-                                        name="name"
-                                        placeholder="Name"
-                                    )
-                                .form-group
-                                    label Last Name
-                                    input(
-                                        data-smart="input"
-                                        name="lastName"
-                                        placeholder="Surnme"
-                                    )
-                            .spacer
-                            button(data-smart = {
-                                action: "removeItem",
-                            }) ➖
+                    .form-group.spacer.no-wrap
                         .form-group
-                            +inputlist("Telephones")(
-                                name="phones"
-                                type="tel",
-                                max_items=4,
-                                placeholder="Telephone",
-                                removeFailback="clear"
-                            )
-                            +inputlist("Emails")(
-                                type="email",
-                                max_items=4,
-                                placeholder="Email",
-                                removeFailback="clear"
-                            )
+                            .form-group
+                                label First Name
+                                input(
+                                    data-smart="input"
+                                    name="name"
+                                    placeholder="Name"
+                                )
+                            .form-group
+                                label Last Name
+                                input(
+                                    data-smart="input"
+                                    name="lastName"
+                                    placeholder="Surnme"
+                                )
+                        .spacer
+                        button(data-smart = {
+                            action: "removeItem",
+                        }) ➖
+                    .form-group
+                        +inputlist("Telephones")(
+                            name="phones"
+                            type="tel",
+                            max_items=4,
+                            placeholder="Telephone",
+                            removeFailback="clear"
+                        )
+                        +inputlist("Emails")(
+                            type="email",
+                            max_items=4,
+                            placeholder="Email",
+                            removeFailback="clear"
+                        )
         .form-group.f2.no-wrap
             .spacer
             button(data-smart = {

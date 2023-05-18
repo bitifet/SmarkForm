@@ -48,46 +48,44 @@
           </div>
           <div class="form-group no-wrap">
             <div class="form-group" data-smart="{&quot;type&quot;:&quot;list&quot;,&quot;exportEmpties&quot;:true,&quot;name&quot;:&quot;employees&quot;,&quot;min_items&quot;:0}">
-              <div class="form-group" data-smart="{&quot;exportEmpties&quot;:false}">
-                <fieldset class="form-group">
-                  <div class="form-group spacer no-wrap">
-                    <div class="form-group">
-                      <div class="form-group">
-                        <label>First Name</label>
-                        <input data-smart="input" name="name" placeholder="Name">
-                      </div>
-                      <div class="form-group">
-                        <label>Last Name</label>
-                        <input data-smart="input" name="lastName" placeholder="Surnme">
-                      </div>
-                    </div>
-                    <div class="spacer"></div>
-                    <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
-                  </div>
+              <fieldset class="form-group" data-smart="{&quot;exportEmpties&quot;:false}">
+                <div class="form-group spacer no-wrap">
                   <div class="form-group">
                     <div class="form-group">
-                      <label>Telephones</label>
-                      <div data-smart="{&quot;name&quot;:&quot;phones&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
-                        <div class="form-group no-wrap">
-                          <button data-smart="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
-                          <input data-smart="data-smart" type="tel" placeholder="Telephone"/>
-                          <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
-                        </div>
-                      </div>
+                      <label>First Name</label>
+                      <input data-smart="input" name="name" placeholder="Name">
                     </div>
                     <div class="form-group">
-                      <label>Emails</label>
-                      <div data-smart="{&quot;name&quot;:&quot;emails&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
-                        <div class="form-group no-wrap">
-                          <button data-smart="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
-                          <input data-smart="data-smart" type="email" placeholder="Email"/>
-                          <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
-                        </div>
+                      <label>Last Name</label>
+                      <input data-smart="input" name="lastName" placeholder="Surnme">
+                    </div>
+                  </div>
+                  <div class="spacer"></div>
+                  <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
+                </div>
+                <div class="form-group">
+                  <div class="form-group">
+                    <label>Telephones</label>
+                    <div data-smart="{&quot;name&quot;:&quot;phones&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
+                      <div class="form-group no-wrap">
+                        <button data-smart="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+                        <input data-smart="data-smart" type="tel" placeholder="Telephone"/>
+                        <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
                       </div>
                     </div>
                   </div>
-                </fieldset>
-              </div>
+                  <div class="form-group">
+                    <label>Emails</label>
+                    <div data-smart="{&quot;name&quot;:&quot;emails&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
+                      <div class="form-group no-wrap">
+                        <button data-smart="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+                        <input data-smart="data-smart" type="email" placeholder="Email"/>
+                        <button data-smart="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
             </div>
           </div>
           <div class="form-group f2 no-wrap">

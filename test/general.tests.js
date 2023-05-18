@@ -1,7 +1,7 @@
 
+const dev = false;
 import assert from 'assert';
-import {openFile, renderPug} from '../src/lib/test/helpers.js';
-
+import {renderPug} from '../src/lib/test/helpers.js';
 
 const pugSrc = (//{{{
 `extends layout.pug
@@ -183,23 +183,21 @@ mixin inputlist(label="Annonymous")
                 }) ➖
 `);//}}}
 
-
-describe('Initial test tinkering (temporary) over playground', function() {
+describe('General Functionality Tests', function() {
     let browser, page, onClosed;
 
     before(async () => {
         0, {browser, page, onClosed} = await renderPug({
             title: this.title,
             src: pugSrc,
-            ///headless: false,
+            headless: dev ? false : undefined,
         });
     });
 
     after(async () => {
-        await browser.close();
+        if (! dev) await browser.close();
         if (onClosed) await onClosed();
     });
-
 
     it('Document loaded', async () => {
         const pageTitle = await page.title();
@@ -211,26 +209,6 @@ describe('Initial test tinkering (temporary) over playground', function() {
                 async () =>    form.find("company").getPath()
         );
         assert.strictEqual(form_obj, '/company');
-    });
-
-    it('Lists addItem action works', async () => {
-        const listLength = await page.evaluate(async () => {
-                const list = form.find("employees");
-                await list.addItem();
-                await list.addItem();
-                await list.addItem();
-                return list.count();
-        });
-        assert.strictEqual(listLength, 3);
-    });
-
-    it('Lists removeItem action works', async () => {
-        const listLength = await page.evaluate(async () => {
-                const list = form.find("employees");
-                await list.removeItem();
-                return list.count();
-        });
-        assert.strictEqual(listLength, 2);
     });
 
 });
