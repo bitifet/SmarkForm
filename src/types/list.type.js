@@ -162,6 +162,8 @@ export class list extends SmartComponent {
             newChild = await me.enhance(newItem, {type: "form", name: 0});
             await newChild.rendered;
             me.children.push(newChild);
+            newChild.name = 0;
+            newChild.updateId();
         } else {
             me.children = (await Promise.all(
                 me.children.map(async (child, i)=>{
@@ -180,7 +182,11 @@ export class list extends SmartComponent {
                 })
             ))
                 .flat()
-                .map((c,i)=>(c.name = i, c))
+                .map((c,i)=>{
+                    c.name = i;
+                    c.updateId();
+                    return c;
+                })
             ;
         };
         //}}}
@@ -274,7 +280,11 @@ export class list extends SmartComponent {
                     };
                     return true;
                 })
-                .map((c,i)=>(c.name = i, c))
+                .map((c,i)=>{
+                    c.name = i;
+                    c.updateId();
+                    return c;
+                })
             ;
             // removeItem event emitting:{{{
             const onRemovedCbks = [];

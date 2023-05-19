@@ -22,6 +22,7 @@ export class form extends SmartComponent {
                     , node.getAttribute("name")
                 );
                 me.children[newChild.name] = newChild;
+                newChild.updateId();
             };
         };
     };//}}}

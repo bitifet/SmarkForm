@@ -103,6 +103,21 @@ export class SmartComponent {
             };
         };
 
+        // Calculate prefix or disable autoId:
+        const autoId = me.inherittedOption("autoId", false);
+        me.genId = (
+            autoId === false ? false
+                // Do not auto-generate IDs.
+            : autoId === true ? p => p.replace(/\//g, "_")
+                // Use "_path_in_underscore_style".
+            : typeof autoId == "string" ? p => autoId+p.replace(/\//g, "_")
+                // Use "prefix" + "_path_in_underscore_style".
+            : typeof autoId == "function" ? autoId
+                // Use fn(path) custom style.
+            : false
+                // Failback to disabled.
+        );
+
         me.onRenderedTasks = [];
 
         let setRendered;
@@ -284,6 +299,19 @@ export class SmartComponent {
             myCurrentActions.push(acc);
         };
         return myCurrentActions;
+    };//}}}
+    updateId() {//{{{
+        const me = this;
+        if (me.genId === false) return; // Abort if disabled.
+        const newId = me.genId(me.getPath());
+        if (me.target.id != newId) {
+            me.target.id = newId;
+            for (
+                const child
+                of Object.values(me.children)
+            ) child.updateId();
+        };
+        return me.target.id
     };//}}}
     getActionArgs() {}; // Let's easily filter out non action compoenents.
     // Error types:

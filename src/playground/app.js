@@ -16,6 +16,7 @@ window.form = new SmartForm(
             )  context.empty();
         },
     }
+    , {autoId: true}
 );
 
 
