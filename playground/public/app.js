@@ -11,8 +11,8 @@
             },
             async cancel({context}) {
                 if (
-                    ! await context.isEmpty()
-                    && confirm("Are you sure?")
+                    await context.isEmpty()
+                    || confirm("Are you sure?")
                 )  context.empty();
             },
         }
