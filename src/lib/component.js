@@ -28,18 +28,6 @@ const errors = {
             ;
         };
     },//}}}
-    ruleError: class ruleError extends Error {//{{{
-        constructor(code, message, path) {
-            super(`RuleError(${path}): ${message}`);
-            this.code = code;
-            this.path = path;
-            this.stack = this.stack
-                .split("\n")
-                .slice(2)
-                .join("\n")
-            ;
-        };
-    },//}}}
 };
 
 function inferType(node) {//{{{
@@ -318,10 +306,6 @@ export class SmartComponent {
     renderError(code, message) {//{{{
         const me = this;
         return new errors.renderError(code, message, me.getPath());
-    };//}}}
-    ruleError(code, message) {//{{{
-        const me = this;
-        return new errors.ruleError(code, message, me.getPath());
     };//}}}
 };
 

@@ -129,10 +129,14 @@ export class list extends SmartComponent {
             'LIST_WRONG_ADDITEM_POSITION'
             , `Invalid value for addItem() position property: ${position}`
         );
-        if (me.children.length >= me.max_items) throw me.ruleError(
-            'LIST_MAX_ITEMS_REACHED'
-            , `Cannot add items over max_items boundary`
-        );
+        if (me.children.length >= me.max_items) {
+            me.emit("error", {
+                code: 'LIST_MAX_ITEMS_REACHED',
+                message: `Cannot add items over max_items boundary`,
+                options,
+            });
+            return;
+        };
         if (me.children.length && ! target) target = (
             position == "before" ?  me.children[0] // Insert at the beginning
             : me.children[me.children.length - 1]  // Append at the end
@@ -253,10 +257,12 @@ export class list extends SmartComponent {
                         return;
                     case "throw":
                     default:
-                        throw me.ruleError(
-                            'LIST_MIN_ITEMS_REACHED'
-                            , `Cannot remove items under min_items boundary`
-                        )
+                        me.emit("error", {
+                            code: 'LIST_MIN_ITEMS_REACHED',
+                            message: `Cannot remove items under min_items boundary`,
+                            options,
+                        });
+                        return;
                 };
             };
             if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
