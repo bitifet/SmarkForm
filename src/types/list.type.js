@@ -123,7 +123,7 @@ export class list extends SmartComponent {
             context = me,  // (Internal call)
             target,
             position = "after",
-            autoscroll,   // "self" / "parent" / (falsy)
+            autoscroll,   // "elegant" / "self" / "parent" / (falsy)
         } = options;
         if (position != "after" && position != "before") throw me.renderError(
             'LIST_WRONG_ADDITEM_POSITION'
@@ -224,7 +224,7 @@ export class list extends SmartComponent {
             context = me,  // (Internal call)
             target,
             position = "after",
-            autoscroll,   // "self" / "parent" / (falsy)
+            autoscroll,   // "elegant" / "self" / "parent" / (falsy)
             keep_non_empty,
             failback,
         } = options;

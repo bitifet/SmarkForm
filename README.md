@@ -1,16 +1,47 @@
-SmartForm
-=========
 
-> Powerful and Extendable HTML Form Enhancer.
+ ⠉⠉ ⠉⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉⠉
+ ⢎⡑ ⣀⣀  ⢀⣀ ⡀⣀ ⣰⡀ ⣏⡉ ⢀⡀ ⡀⣀ ⣀⣀ 
+ ⠢⠜ ⠇⠇⠇ ⠣⠼ ⠏  ⠘⠤ ⠇  ⠣⠜ ⠏  ⠇⠇⠇
 
-------------------------------
+ ⠉⠉ ⠉⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉⠉
 
-#      WORK IN PROGRESS      #
+**Effortless creation of Powerful and Extendable forms.**
 
-------------------------------
+SmartForm simplifies the creation of interactive forms in web applications,
+empowering designers to utilize custom templates and seamlessly incorporate
+interaction through contextual actions.
+
+Designers can enhance their templates by using their own HTML and CSS, without
+the need to deal with complex JavaScript code. SmartForm enables advanced
+capabilities, such as adding or removing items from a list and dynamically
+loading options for select dropdowns, even if they depend on the values of any
+other field in the form. This can be achieved simply by adding the 'data-smart'
+property to relevant tags.
+
+Developers can leverage these templates as views to import and manipulate
+complex data in JSON format. They also have the flexibility to access any
+component in the form tree using simple path-style addresses or develop their
+own custom component types.
+
+> 🚧 **Please note** that select dropdowns are not yet implemented in the
+> current version, but they are planned for inclusion in the upcoming 1.0.0
+> release.
+
+👍 We welcome any feedback, suggestions, or improvements as we continue to
+enhance and expand the functionality of SmartForm.
 
 
-This document is still in draft stage.
+
+
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+－       🚧   ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧        －
+－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+
+
+This documentation is still in draft stage.
+
+All information may be incomplete, inaccurate or even outdated.
+
 
 Index
 =====
@@ -121,15 +152,18 @@ presence of the *action* property itself) but, it present, it must be "action".
 <button data-smart='{action: "removeItem"}'></button>
 ```
 
+> 📖 For detailed information see [Action Type
+> Documentation](doc/type_action.md).
+
 
 Core Component Types
 ====================
 
 | Type | Description                     | Shared Capabilities              |
 |------|---------------------------------|----------------------------------|
-| [Form](doc/type_form.md)           |   | [foldable](doc/deco_foldable.md) |
+| [Form](doc/type_form.md)           |   | [foldable](doc/capabilities.md#foldable) |
 | [Input](doc/type_input.md)         |   |                                  |
-| [List](doc/type_list.md)           |   | [foldable](doc/deco_foldable.md) |
+| [List](doc/type_list.md)           |   | [foldable](doc/capabilities.md#foldable) |
 | [Singleton](doc/type_singleton.md) |   |                                  |
 | [Action](doc/type_action.md)       |   |                                  |
 
