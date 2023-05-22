@@ -13,6 +13,10 @@ SmartForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
 interaction through contextual actions.
 
+<video width="320" height="240" style="float:right" controls>
+  <source src="doc/SmartForm_demo_small.mp4" type="video/mp4">
+</video>
+
 Designers can enhance their templates by using their own HTML and CSS, without
 the need to deal with complex JavaScript code. SmartForm enables advanced
 capabilities, such as adding or removing items from a list and dynamically
