@@ -11,6 +11,7 @@ export class form extends SmartComponent {
     async render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
+        // Enhance childs:
         for (
             const node
             of getRoots(me.target, me.selector)

@@ -1,56 +1,42 @@
 extends layout.pug
 block mainForm
     .section
-        .form-group.h1
-            button.foldButton(
-                data-smart={
-                    action: "fold",
-                    for: "company",
-                    foldedClass: "folded",
-                }
+        .form-group.h1 Company
+        .form-group
+            label Corporate Name
+            input(
+                data-smart
+                name="company"
+                type="text"
+                placeholder="Company Name"
             )
-            span Company
-        div(
-            data-smart={
-                type: "form",
-                name: "company",
-            }
-        )
-            .form-group
-                label Corporate Name
-                input(
-                    data-smart
-                    name="company"
-                    type="text"
-                    placeholder="Company Name"
-                )
-            .form-group
-                label Address
-                textarea(
-                    data-smart
-                    name="address"
-                    placeholder="Address"
-                )
-            .form-group
-                label City,State,Zip
-                input(
-                    data-smart
-                    name="city"
-                    placeholder='City'
-                    style='flex: 6'
-                )
-                input(
-                    data-smart
-                    name="state"
-                    placeholder='State'
-                    style='flex:1'
-                )
-                input(
-                    data-smart
-                    name="postCode"
-                    placeholder='Postal Code'
-                    style='flex:2'
-                )
+        .form-group
+            label Address
+            textarea(
+                data-smart
+                name="address"
+                placeholder="Address"
+            )
+        .form-group
+            label City,State,Zip
+            input(
+                data-smart
+                name="city"
+                placeholder='City'
+                style='flex: 6'
+            )
+            input(
+                data-smart
+                name="state"
+                placeholder='State'
+                style='flex:1'
+            )
+            input(
+                data-smart
+                name="postCode"
+                placeholder='Postal Code'
+                style='flex:2'
+            )
     .section
         .form-group.h2.no-wrap
             button.foldButton(

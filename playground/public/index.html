@@ -18,24 +18,20 @@
             <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
         </header>
         <div class="section">
-          <div class="form-group h1">
-            <button class="foldButton" data-smart="{&quot;action&quot;:&quot;fold&quot;,&quot;for&quot;:&quot;company&quot;,&quot;foldedClass&quot;:&quot;folded&quot;}"></button><span>Company</span>
+          <div class="form-group h1">Company</div>
+          <div class="form-group">
+            <label>Corporate Name</label>
+            <input data-smart name="company" type="text" placeholder="Company Name">
           </div>
-          <div data-smart="{&quot;type&quot;:&quot;form&quot;,&quot;name&quot;:&quot;company&quot;}">
-            <div class="form-group">
-              <label>Corporate Name</label>
-              <input data-smart name="company" type="text" placeholder="Company Name">
-            </div>
-            <div class="form-group">
-              <label>Address</label>
-              <textarea data-smart name="address" placeholder="Address"></textarea>
-            </div>
-            <div class="form-group">
-              <label>City,State,Zip</label>
-              <input data-smart name="city" placeholder="City" style="flex: 6">
-              <input data-smart name="state" placeholder="State" style="flex:1">
-              <input data-smart name="postCode" placeholder="Postal Code" style="flex:2">
-            </div>
+          <div class="form-group">
+            <label>Address</label>
+            <textarea data-smart name="address" placeholder="Address"></textarea>
+          </div>
+          <div class="form-group">
+            <label>City,State,Zip</label>
+            <input data-smart name="city" placeholder="City" style="flex: 6">
+            <input data-smart name="state" placeholder="State" style="flex:1">
+            <input data-smart name="postCode" placeholder="Postal Code" style="flex:2">
           </div>
         </div>
         <div class="section">

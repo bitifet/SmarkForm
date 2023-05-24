@@ -2,6 +2,8 @@
 =====================
 
 
+Options
+-------
 
 
 Actions
@@ -12,5 +14,11 @@ Actions
 
 Other Methods
 -------------
+
+
+
+Events
+------
+
 
 
