@@ -10,7 +10,7 @@ block mainForm
         p
              .form-group.h1
                  button.foldButton(
-                     data-smart={
+                     data-smark={
                          action: "fold",
                          for: "company",
                          foldedClass: "folded",
@@ -18,7 +18,7 @@ block mainForm
                  )
                  span Company
         div(
-            data-smart={
+            data-smark={
                 type: "form",
                 name: "company",
             }
@@ -26,7 +26,7 @@ block mainForm
             p
                 label Corporate Name
                 input(
-                    data-smart
+                    data-smark
                     name="company"
                     type="text"
                     placeholder="Company Name"
@@ -34,26 +34,26 @@ block mainForm
             p
                 label Address
                 textarea(
-                    data-smart
+                    data-smark
                     name="address"
                     placeholder="Address"
                 )
             p
                 label City,State,Zip
                 input(
-                    data-smart
+                    data-smark
                     name="city"
                     placeholder='City'
                     style='flex: 6'
                 )
                 input(
-                    data-smart
+                    data-smark
                     name="state"
                     placeholder='State'
                     style='flex:1'
                 )
                 input(
-                    data-smart
+                    data-smark
                     name="postCode"
                     placeholder='Postal Code'
                     style='flex:2'
@@ -61,7 +61,7 @@ block mainForm
     .section
         div
             button.foldButton(
-                data-smart={
+                data-smark={
                     action: "fold",
                     for: "employees",
                     foldedClass: "folded",
@@ -69,35 +69,35 @@ block mainForm
             )
             span
                 span Employees (
-                span(data-smart={
+                span(data-smark={
                     action: "count",
                     for: "employees",
                 })
                 span )
-            button(data-smart = {
+            button(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "self",
             }) ➕
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
             }, title="Remove last non-empty employee") ➖
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
         div
-            .form-group(data-smart = {
+            .form-group(data-smark = {
                 type: "list",
                 exportEmpties: true,
                 name: "employees",
                 min_items: 0,
             })
-                .form-group(data-smart={
+                .form-group(data-smark={
                     exportEmpties: false
                 })
                     fieldset.form-group
@@ -106,18 +106,18 @@ block mainForm
                                 .form-group
                                     label First Name
                                     input(
-                                        data-smart="input"
+                                        data-smark="input"
                                         name="name"
                                         placeholder="Name"
                                     )
                                 .form-group
                                     label Last Name
                                     input(
-                                        data-smart="input"
+                                        data-smark="input"
                                         name="lastName"
                                         placeholder="Surnme"
                                     )
-                            button(data-smart = {
+                            button(data-smark = {
                                 action: "removeItem",
                             }) ➖
                         .form-group
@@ -135,18 +135,18 @@ block mainForm
                                 removeFailback="clear"
                             )
         div
-            button(data-smart = {
+            button(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "elegant",
             }) ➕
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
@@ -165,7 +165,7 @@ mixin inputlist(label="Annonymous")
                 ...atts // Extra attributes for inputs (placeholder, etc...)
             } = attributes;
         label= label
-        div(data-smart = {
+        div(data-smark = {
             name: name,
             type: "list",
             of: "singleton",
@@ -173,11 +173,11 @@ mixin inputlist(label="Annonymous")
             max_items,
         })
             .form-group.no-wrap
-                button(data-smart = {
+                button(data-smark = {
                     action: "addItem",
                 }) ➕
-                input(data-smart)&attributes(atts)
-                button(data-smart = {
+                input(data-smark)&attributes(atts)
+                button(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
                 }) ➖

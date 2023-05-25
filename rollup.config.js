@@ -16,19 +16,18 @@ export default [
                 compact: true,
             },
             {   // UMD module
-                name: 'SmartForm',
+                name: 'SmarkForm',
                 file: pkg.umd,
                 format: 'umd',
                 compact: true,
             },
-            {   // Browser-frindly script (exports SmartForm as global var)
-                name: 'SmartForm',
+            {   // Browser-frindly script (exports SmarkForm as global var)
+                name: 'SmarkForm',
                 file: pkg.browser,
                 format: 'iife',
                 compact: false,
                 globals: {
-                    SmartForm: "SmartForm",
-                    SmartForm: "CreateType",
+                    SmarkForm: "SmarkForm",
                 },
             },
         ],

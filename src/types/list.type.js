@@ -14,7 +14,7 @@
 //
 
 
-import {SmartComponent} from "../lib/component.js";
+import {SmarkComponent} from "../lib/component.js";
 import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {action} from "./action.type.js";
@@ -22,7 +22,7 @@ import {mutex} from "../decorators/mutex.deco.js";
 
 
 @foldable
-export class list extends SmartComponent {
+export class list extends SmarkComponent {
     render () {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;

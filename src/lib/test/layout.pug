@@ -6,12 +6,12 @@ html
         style#Styles!=self.css
     body
         header
-            h1 SmartForm Test
+            h1 SmarkForm Test
             h2=self.title
         block mainForm
-        script(src="../../dist/SmartForm.js")
+        script(src="../../dist/SmarkForm.js")
         script.
-            window.form = new SmartForm(
+            window.form = new SmarkForm(
                 document.querySelector("body")
                 , !{self.actions || '{}'}
             );

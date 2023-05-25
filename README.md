@@ -1,25 +1,19 @@
+💡 ＳｍａｒｋＦｏｒｍ
+=====================
 
-```
- ⠉⠉ ⠉⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉⠉
- ⢎⡑ ⣀⣀  ⢀⣀ ⡀⣀ ⣰⡀ ⣏⡉ ⢀⡀ ⡀⣀ ⣀⣀ 
- ⠢⠜ ⠇⠇⠇ ⠣⠼ ⠏  ⠘⠤ ⠇  ⠣⠜ ⠏  ⠇⠇⠇
+**Powerful while effortless Markup-driven and Extendable forms.**
 
- ⠉⠉ ⠉⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉ ⠉⠉⠉
-```
-
-**Effortless creation of Powerful and Extendable forms.**
-
-SmartForm simplifies the creation of interactive forms in web applications,
+SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
 interaction through contextual actions.
 
-![Video](doc/SmartForm_demo_small.gif)
+![Video](doc/SmarkForm_demo_small.gif)
 
 Designers can enhance their templates by using their own HTML and CSS, without
-the need to deal with complex JavaScript code. SmartForm enables advanced
+the need to deal with complex JavaScript code. SmarkForm enables advanced
 capabilities, such as adding or removing items from a list and dynamically
 loading options for select dropdowns, even if they depend on the values of any
-other field in the form. This can be achieved simply by adding the 'data-smart'
+other field in the form. This can be achieved simply by adding the 'data-smark'
 property to relevant tags.
 
 Developers can leverage these templates as views to import and manipulate
@@ -32,7 +26,7 @@ own custom component types.
 > release.
 
 👍 We welcome any feedback, suggestions, or improvements as we continue to
-enhance and expand the functionality of SmartForm.
+enhance and expand the functionality of SmarkForm.
 
 
 
@@ -54,13 +48,13 @@ Index
 
 <!-- vim-markdown-toc GitLab -->
 
-* [SmartForm form](#smartform-form)
+* [SmarkForm form](#smarkform-form)
 * [Components and Actions](#components-and-actions)
         * [Components](#components)
         * [Actions](#actions)
 * [Core Component Types](#core-component-types)
 * [Component Options](#component-options)
-* [data-smart (options) object](#data-smart-options-object)
+* [data-smark (options) object](#data-smark-options-object)
     * [type property](#type-property)
         * [Common properties for components](#common-properties-for-components)
             * [name](#name)
@@ -76,33 +70,33 @@ Index
 
 
 
-SmartForm form
+SmarkForm form
 ==============
 
-To build a simple SmartForm form you could start with simple html page:
+To build a simple SmarkForm form you could start with simple html page:
 
 ```html
 <html>
   <head>
-    <title>My first SmartForm form</title>
+    <title>My first SmarkForm form</title>
   </head>
   <body>
     <div id="myForm">
       <p>
         <label for="name">Name</label>
-        <input data-smart="data-smart" name="name" type="text"/>
+        <input data-smark="data-smark" name="name" type="text"/>
       </p>
       <p>
         <label for="surname">Surname</label>
-        <input data-smart="data-smart" name="surname" type="text"/>
+        <input data-smark="data-smark" name="surname" type="text"/>
       </p>
       <hr/>
-      <button data-smart='{action: "cancel"}'>Cancel</button>
-      <button data-smart='{action: "submit"}'>Submit</button>
+      <button data-smark='{action: "cancel"}'>Cancel</button>
+      <button data-smark='{action: "submit"}'>Submit</button>
     </div>
-    <script src="path/to/SmartForm.umd.js"></script>
+    <script src="path/to/SmarkForm.umd.js"></script>
     <script>
-      const myForm = new SmartForm(
+      const myForm = new SmarkForm(
           document.querySelector("#myForm")
           , {
               submit({context}) {
@@ -126,27 +120,27 @@ Components and Actions
 
 ### Components
 
-A SmartForm *component* is just a DOM element (HTML tag) which as a "data-smart"
+A SmarkForm *component* is just a DOM element (HTML tag) which as a "data-smark"
 property providding a JSON-formatted *options* object.
 
 It looks like as follows:
 
 ```html
-<input data-smart='{type: "input"}'/>
+<input data-smark='{type: "input"}'/>
 ```
 
 > 📌 If only type option is specified, it can be simplified as:
 > ```html
-> <input data-smart='input'/>
+> <input data-smark='input'/>
 > ```
-> ...or just leave it empty to let SmartForm engine to figure out its type:
+> ...or just leave it empty to let SmarkForm engine to figure out its type:
 > ```html
-> <input data-smart="data-smart"/>
+> <input data-smark/>
 > ```
 
 ### Actions
 
-A SmartForm *action* is a *component* of type "action" and a (mandatory)
+A SmarkForm *action* is a *component* of type "action" and a (mandatory)
 property "action" pointing to the actual action to be taken when clicked.
 
 For actions the *type* property can be omitted (since is infered by the
@@ -155,7 +149,7 @@ presence of the *action* property itself) but, it present, it must be "action".
 **Example:**
 
 ```html
-<button data-smart='{action: "removeItem"}'></button>
+<button data-smark='{action: "removeItem"}'></button>
 ```
 
 > 📖 For detailed information see [Action Type
@@ -216,7 +210,7 @@ failback        | [❓]() |        | [🔗]() | ✖️  |
 🔒 Forcibly set to when [action property](#action-property) is defined.
 
 
-data-smart (options) object
+data-smark (options) object
 ===========================
 
 type property

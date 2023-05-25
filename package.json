@@ -1,11 +1,11 @@
 {
-  "name": "smartform",
+  "name": "smarkform",
   "version": "0.0.1",
   "private": false,
   "type": "module",
-  "main": "dist/SmartForm.esm.js",
-  "umd": "dist/SmartForm.umd.js",
-  "browser": "dist/SmartForm.js",
+  "main": "dist/SmarkForm.esm.js",
+  "umd": "dist/SmarkForm.umd.js",
+  "browser": "dist/SmarkForm.js",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",

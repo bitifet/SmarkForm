@@ -1,4 +1,4 @@
-// SmartForm.js
+// SmarkForm.js
 // ============
 
 import {createType} from "./lib/component.js";
@@ -21,7 +21,7 @@ for (const [name, controller] of Object.entries({
 
 
 
-class SmartForm extends form {
+class SmarkForm extends form {
     constructor(
         target
         , rootActions = {}
@@ -54,7 +54,7 @@ class SmartForm extends form {
     };
 };
 
-SmartForm.createType = createType;
+SmarkForm.createType = createType;
 
-export default SmartForm;
+export default SmarkForm;
 

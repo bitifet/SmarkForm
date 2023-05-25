@@ -10,50 +10,50 @@ block mainForm
         div
             span
                 span Employees (
-                span(data-smart={
+                span(data-smark={
                     action: "count",
                     for: "employees",
                 })
                 span )
-            button(data-smart = {
+            button(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "self",
             }) ➕
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
             }, title="Remove last non-empty employee") ➖
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
-        div(data-smart = {
+        div(data-smark = {
             type: "list",
             exportEmpties: true,
             name: "employees",
             min_items: 0,
         })
-            fieldset(data-smart={
+            fieldset(data-smark={
                 exportEmpties: false
             })
-                button(data-smart = {
+                button(data-smark = {
                     action: "removeItem",
                 }) ➖
                 p
                     label First Name
                     input(
-                        data-smart="input"
+                        data-smark="input"
                         name="name"
                         placeholder="Name"
                     )
                 p
                     label Last Name
                     input(
-                        data-smart="input"
+                        data-smark="input"
                         name="lastName"
                         placeholder="Surnme"
                     )
@@ -71,18 +71,18 @@ block mainForm
                     removeFailback="clear"
                 )
         div
-            button(data-smart = {
+            button(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "elegant",
             }) ➕
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
-            button(data-smart = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
@@ -101,7 +101,7 @@ mixin inputlist(label="Annonymous")
                 ...atts // Extra attributes for inputs (placeholder, etc...)
             } = attributes;
         label= label
-        ul(data-smart = {
+        ul(data-smark = {
             name: name,
             type: "list",
             of: "singleton",
@@ -109,11 +109,11 @@ mixin inputlist(label="Annonymous")
             max_items,
         })
             li
-                button(data-smart = {
+                button(data-smark = {
                     action: "addItem",
                 }) ➕
-                input(data-smart)&attributes(atts)
-                button(data-smart = {
+                input(data-smark)&attributes(atts)
+                button(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
                 }) ➖

@@ -1,8 +1,8 @@
 // types/input.type.js
 // ===================
-import {SmartComponent} from "../lib/component.js";
+import {SmarkComponent} from "../lib/component.js";
 import {action} from "./action.type.js";
-export class input extends SmartComponent {
+export class input extends SmarkComponent {
     render() {//{{{
         const me = this;
         // console.log("New input!!!!", {

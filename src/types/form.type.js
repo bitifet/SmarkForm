@@ -1,13 +1,13 @@
 // types/form.type.js
 // ==================
 
-import {SmartComponent} from "../lib/component.js";
+import {SmarkComponent} from "../lib/component.js";
 import {getRoots} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {action} from "./action.type.js";
 
 @foldable
-export class form extends SmartComponent {
+export class form extends SmarkComponent {
     async render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;

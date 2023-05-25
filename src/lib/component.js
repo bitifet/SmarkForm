@@ -36,11 +36,11 @@ function inferType(node) {//{{{
 };//}}}
 
 @events
-export class SmartComponent {
+export class SmarkComponent {
     constructor(//{{{
         target
         , {
-            property_name = "smart",
+            property_name = "smark",
             ...options
         } = {}
         , parent
@@ -72,9 +72,9 @@ export class SmartComponent {
         me.setNodeOptions(me.target, me.options);
 
         me.parent = parent;
-        if (! me.parent instanceof SmartComponent) throw me.renderError(
+        if (! me.parent instanceof SmarkComponent) throw me.renderError(
             'INVALID_PARENT'
-            , `Smart Components must have valid Smart Component parent.`
+            , `Smark Components must have valid Smark Component parent.`
         );
         me.root = (
             me.parent === null ? me
@@ -178,7 +178,7 @@ export class SmartComponent {
         } else if (typeof options.type != "string") {
             throw me.renderError(
                 "NO_TYPE_PROVIDED"
-                , `Invalid SmartFom item: type is mandatory for non action elements.`
+                , `Invalid SmarkForm item: type is mandatory for non action elements.`
             );
         };
         //}}}
@@ -187,7 +187,7 @@ export class SmartComponent {
         const ctrl = me.types[options.type];
         if (! ctrl) throw me.renderError(
             "UNKNOWN_TYPE"
-            , `Unimplemented SmartForm component controller: ${options.type}`,
+            , `Unimplemented SmarkForm component controller: ${options.type}`,
         );
         return new ctrl (
             node
@@ -313,7 +313,7 @@ export function createType(name, controller) {//{{{
     if (componentTypes[name] !== undefined) throw new Error(
         `Duplicate component type definition: ${name}`
     );
-    if (! (controller.prototype instanceof SmartComponent)) throw new Error(
+    if (! (controller.prototype instanceof SmarkComponent)) throw new Error(
         `Bad component type implementation for: ${name}`
     );
     componentTypes[name] = controller;

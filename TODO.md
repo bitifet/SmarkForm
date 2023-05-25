@@ -40,7 +40,7 @@ TO-DO List
     - import() and export() methods work always over currently selected subform.
     - Each subform must include a <select> (or any other input smart type) tag
       whose name should match some "selector" field in the options object
-      passed to mulitform component (data-smart property) and whose value
+      passed to mulitform component (data-smark property) and whose value
       should decide wich template is actually used (making imports and exports
       consistent thanks to this field).
     - Consider using an special action instead of that <select> tag so that it

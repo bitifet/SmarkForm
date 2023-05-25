@@ -3,7 +3,7 @@ import './form.scss';
 import './index.pug';
 
 
-window.form = new SmartForm(
+window.form = new SmarkForm(
     document.querySelector("#main-form")
     , {
         async submit({context}) {

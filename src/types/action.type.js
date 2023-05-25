@@ -1,6 +1,6 @@
 // types/action.type.js
 // ====================
-import {SmartComponent} from "../lib/component.js";
+import {SmarkComponent} from "../lib/component.js";
 
 
 export const action = function action_decorator(targetMtd, {kind, name, addInitializer}) {
@@ -10,7 +10,7 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
 };
 
 
-export class action_type extends SmartComponent {
+export class action_type extends SmarkComponent {
     render(){};
     disable() {//{{{
         const me = this;
