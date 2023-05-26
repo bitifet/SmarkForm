@@ -1,5 +1,5 @@
-💡 ＳｍａｒｋＦｏｒｍ
-=====================
+💡 ＳmarkＦorm
+==============
 
 **Powerful while effortless Markup-driven and Extendable forms.**
 
@@ -7,7 +7,7 @@ SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
 interaction through contextual actions.
 
-![Video](doc/SmarkForm_demo_small.gif)
+![Preview](https://github.com/bitifet/SmarkForm/blob/main/README.md)
 
 Designers can enhance their templates by using their own HTML and CSS, without
 the need to deal with complex JavaScript code. SmarkForm enables advanced
