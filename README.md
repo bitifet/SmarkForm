@@ -1,248 +1,128 @@
-💡 SmarkForm
-============
+# 💡 SmarkForm
 
-**Powerful while effortless Markup-driven and Extendable forms.**
+[![License](https://img.shields.io/badge/license-GPL--v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-SmarkForm simplifies the creation of interactive forms in web applications,
-empowering designers to utilize custom templates and seamlessly incorporate
-interaction through contextual actions.
+SmarkForm is a powerful and effortless library for creating markup-driven and
+extendable forms in web applications. It empowers designers to enhance their
+form templates with advanced capabilities, such as dynamic list manipulation
+and context-based interactions, without the need for complex JavaScript code.
+
+## Features
+
+- **Markup-driven**: Create powerful interactive forms with plain HTML (or your preferred template engine) by just adding the `data-smark` attribute to relevant tags.
+- **Advanced capabilities**: Add or remove items from lists, dynamic (and reactive) options loading for dropdowns, and perform context-based actions easily.
+- **Easy to use**: Leverage your existing HTML and CSS knowledge to create powerful forms without the need for extensive JavaScript coding.
+- **Flexible and extendable**: Import and exports complex forms in JSON format, and develop your own component types to suit your specific needs.
+- **Intuitive API**: Access every component in the form tree with simple path-style addresses or utilize built-in methods for seamless form manipulation.
+- **MVC Enabled**: Complete separation between View and Controller logic.
+
+## Try it yourself!!
+
+You can see **SmarkForm** in action in this complete CodePen example and even
+fork and play with all SmarkForm features: 
 
 [![Test it in Codepen](doc/CodePen_preview.jpg)](https://codepen.io/bitifet/full/LYgvobZ)
 
-Designers can enhance their templates by using their own HTML and CSS, without
-the need to deal with complex JavaScript code. SmarkForm enables advanced
-capabilities, such as adding or removing items from a list and dynamically
-loading options for select dropdowns, even if they depend on the values of any
-other field in the form. This can be achieved simply by adding the 'data-smark'
-property to relevant tags.
+## Installation
 
-Developers can leverage these templates as views to import and manipulate
-complex data in JSON format. They also have the flexibility to access any
-component in the form tree using simple path-style addresses or develop their
-own custom component types.
+To incorporate **SmarkForm** to your project you have several alternatives:
 
-> 🚧 **Please note** that select dropdowns are not yet implemented in the
-> current version, but they are planned for inclusion in the upcoming 1.0.0
-> release.
-
-👍 We welcome any feedback, suggestions, or improvements as we continue to
-enhance and expand the functionality of SmarkForm.
+<details>
+<summary>Directly import from SkyPack CDN **(Easiest approach)**</summary>
 
 
+👉 As ES module:
 
-
-```
-－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
-－       🚧   ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧        －
-－－－－－－－－－－－－－－－－－－－－－－－－－－－－－－
+```javascript
+import SmarkForm from "https://cdn.skypack.dev/smarkform";
 ```
 
-
-This documentation is still in draft stage.
-
-All information may be incomplete, inaccurate or even outdated.
+</details>
 
 
-Index
-=====
-
-<!-- vim-markdown-toc GitLab -->
-
-* [SmarkForm form](#smarkform-form)
-* [Components and Actions](#components-and-actions)
-        * [Components](#components)
-        * [Actions](#actions)
-* [Core Component Types](#core-component-types)
-* [Component Options](#component-options)
-* [data-smark (options) object](#data-smark-options-object)
-    * [type property](#type-property)
-        * [Common properties for components](#common-properties-for-components)
-            * [name](#name)
-    * [action property](#action-property)
-        * [Common properties for actions](#common-properties-for-actions)
-            * [for](#for)
-            * [to](#to)
-* [Data Import and Export methods](#data-import-and-export-methods)
-
-<!-- vim-markdown-toc -->
+<details>
+<summary>Installing it from NPM</summary>
 
 
+👉 Execute:
 
-
-
-SmarkForm form
-==============
-
-To build a simple SmarkForm form you could start with simple html page:
-
-```html
-<html>
-  <head>
-    <title>My first SmarkForm form</title>
-  </head>
-  <body>
-    <div id="myForm">
-      <p>
-        <label for="name">Name</label>
-        <input data-smark="data-smark" name="name" type="text"/>
-      </p>
-      <p>
-        <label for="surname">Surname</label>
-        <input data-smark="data-smark" name="surname" type="text"/>
-      </p>
-      <hr/>
-      <button data-smark='{action: "cancel"}'>Cancel</button>
-      <button data-smark='{action: "submit"}'>Submit</button>
-    </div>
-    <script src="path/to/SmarkForm.umd.js"></script>
-    <script>
-      const myForm = new SmarkForm(
-          document.querySelector("#myForm")
-          , {
-              submit({context}) {
-                  alert (JSON.stringify(context.export()));
-              },
-              cancel({context}) {
-                  if (
-                      context.isEmpty()
-                      || confirm("Are you sure?")
-                  )  context.empty();
-              },
-          }
-      );
-    </script>
-  </body>
-</html>
+```shell
+npm install smarkform
 ```
 
-Components and Actions
-======================
+👉  Then you can use it with your favourite bundler or pick it in your preferred
+format:
 
-### Components
-
-A SmarkForm *component* is just a DOM element (HTML tag) which as a "data-smark"
-property providding a JSON-formatted *options* object.
-
-It looks like as follows:
-
-```html
-<input data-smark='{type: "input"}'/>
+```
+node_modules
+└── smarkform
+    └── dist
+        ├── SmarkForm.esm.js
+        ├── SmarkForm.umd.js
+        └── SmarkForm.js
 ```
 
-> 📌 If only type option is specified, it can be simplified as:
-> ```html
-> <input data-smark='input'/>
-> ```
-> ...or just leave it empty to let SmarkForm engine to figure out its type:
-> ```html
-> <input data-smark/>
-> ```
+> 📌 *SmarkForm.js* can be loaded from regular ``<script>`` tag and will export
+> ``SmarkForm`` class as global variable.
 
-### Actions
+</details>
 
-A SmarkForm *action* is a *component* of type "action" and a (mandatory)
-property "action" pointing to the actual action to be taken when clicked.
 
-For actions the *type* property can be omitted (since is infered by the
-presence of the *action* property itself) but, it present, it must be "action".
+<details>
+<summary>Clone from GitHub</summary>
 
-**Example:**
+👉 Execute:
 
-```html
-<button data-smark='{action: "removeItem"}'></button>
+```shell
+git clone git@github.com:bitifet/SmarkForm.git
 ```
 
-> 📖 For detailed information see [Action Type
-> Documentation](doc/type_action.md).
+👉 Then, like with NPM package, you will find it under *dist* directory:
+
+```
+dist
+├── SmarkForm.esm.js
+├── SmarkForm.umd.js
+└── SmarkForm.js
+```
+
+👍 ...but you can also install dev dependencies by running ``npm install`` and then
 
 
-Core Component Types
-====================
-
-| Type | Description                     | Shared Capabilities              |
-|------|---------------------------------|----------------------------------|
-| [Form](doc/type_form.md)           |   | [foldable](doc/capabilities.md#foldable) |
-| [Input](doc/type_input.md)         |   |                                  |
-| [List](doc/type_list.md)           |   | [foldable](doc/capabilities.md#foldable) |
-| [Singleton](doc/type_singleton.md) |   |                                  |
-| [Action](doc/type_action.md)       |   |                                  |
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "mocha",
+    "pretest": "npm run build",
+    "start": "node ./playground/bin/www.js"
 
 
+- ``npm run build``: To build after doing some change.
+- ``npm run dev``: To build and watch for any source file change and auto rebuild as needed.
+- ``npm run test``: To run automated tests.
+- ``npm start``: To run Express server with the playground environment.
+
+</details>
 
 
-Component Options
-=================
+## Usage
 
-...
-
-------------
-
-For regular components...
-
-type            | 🔒 action | form | list | input |
-----------------|-----------|------|------|-------|
-action          | [☑️ ](#action-property) | ❌ | ❌ | ❌ |
-name            | ✖️      | [✅]() 
-for             | [✅]() | 🔗      | 🔗   | 🔗    |
-to              | [✅]() | 🔗      | 🔗   | 🔗    |
-
-(Legend to be continued...)
+Check out the documentation for detailed [usage instructions](doc/index.md), examples, and API references.
 
 
-For actions...
+## Contributing
 
-type            | 🔒 action | form | list | input |
-----------------|-----------|------|------|-------|
-foldedClass     | [❓]() | [🔗]() | [🔗]() | ✖️  |
-unfoldedClass   | [❓]() | [🔗]() | [🔗]() | ✖️  |
-keep_non_empty  | [❓]() |        | [🔗]() | ✖️  |
-autoscroll      | [❓]() |        | [🔗]() | ✖️  |
-failback        | [❓]() |        | [🔗]() | ✖️  |
+Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-------------
-
-✅ Optional option.
-☑️  Mandatory option.
-❓ Depends on targetted component type.
-🔗 Have actions supporting it.
-✖️  Unused/Ignored option.
-❌ Forbidden (not allowed for that type)
-🔒 Forcibly set to when [action property](#action-property) is defined.
+Before contributing, make sure to read our [contribution guidelines](doc/contributing.md).
 
 
-data-smark (options) object
-===========================
+## License
 
-type property
--------------
-
-### Common properties for components
-
-#### name
+SmartKup is licensed under the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html).
 
 
-action property
----------------
+# Acknowledgements
 
-
-### Common properties for actions
-
-#### for
-
-#### to
-
-
-
-
-
-
-
-
-Data Import and Export methods
-==============================
-
-
-
-
+We would like to express our gratitude to the open source community for their valuable contributions and feedback.
 
 
