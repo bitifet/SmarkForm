@@ -7,12 +7,7 @@ SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
 interaction through contextual actions.
 
-<p class="codepen" data-height="300" data-default-tab="html,result" data-slug-hash="LYgvobZ" data-user="bitifet" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
-  <span>See the Pen <a href="https://codepen.io/bitifet/pen/LYgvobZ">
-  SmarkForm Example</a> by Joan Miquel Torres (<a href="https://codepen.io/bitifet">@bitifet</a>)
-  on <a href="https://codepen.io">CodePen</a>.</span>
-</p>
-<script async src="https://cpwebassets.codepen.io/assets/embed/ei.js"></script
+[![Test it in Codepen](doc/CodePen_preview.jpg)](https://codepen.io/bitifet/full/LYgvobZ)
 
 Designers can enhance their templates by using their own HTML and CSS, without
 the need to deal with complex JavaScript code. SmarkForm enables advanced
