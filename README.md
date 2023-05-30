@@ -1,11 +1,13 @@
-# 💡 SmarkForm
+[![SmarkForm Logo](doc/SmartForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
+
+Powerful while effortless Markup-driven and Extendable forms.
 
 [![License](https://img.shields.io/badge/license-GPL--v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
-SmarkForm is a powerful and effortless library for creating markup-driven and
-extendable forms in web applications. It empowers designers to enhance their
-form templates with advanced capabilities, such as dynamic list manipulation
-and context-based interactions, without the need for complex JavaScript code.
+SmarkForm is a powerful library for creating markup-driven and extendable forms
+in web applications. It empowers designers to enhance their form templates with
+advanced capabilities, such as dynamic list manipulation and context-based
+interactions, without the need for complex JavaScript code.
 
 ## Features
 
