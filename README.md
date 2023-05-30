@@ -46,7 +46,7 @@ import SmarkForm from "https://cdn.skypack.dev/smarkform";
 
 👉 Execute:
 
-```shell
+```sh
 npm install smarkform
 ```
 
@@ -73,7 +73,7 @@ node_modules
 
 👉 Execute:
 
-```shell
+```sh
 git clone git@github.com:bitifet/SmarkForm.git
 ```
 
