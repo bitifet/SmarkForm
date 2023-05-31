@@ -110,6 +110,12 @@ export class list extends SmarkComponent {
             // FIXME: Improve handling of this situation having it implies
             // data loss.
         };
+        // Clear items over imported data if min_items is greater:
+        for (
+            let i = data.length;
+            i < me.min_items;
+            i++
+        ) me.children[i].empty();
         return; // await me.export();
     };//}}}
     @action
