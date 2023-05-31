@@ -1,4 +1,4 @@
-[![SmarkForm Logo](doc/SmartForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
+[![SmarkForm Logo](doc/SmarkForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
 
 <details>
 <summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
