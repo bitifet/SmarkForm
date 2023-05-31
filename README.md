@@ -120,22 +120,25 @@ dist
 
 1. Write some HTML code such as this in your document:
    ```html
-   <div id="myForm">
-   <p><b>Activity:</b>
-   <input data-smark="data-smark" placeholder="Activity Description"/>
-   </p>
-   <p>
-   <button data-smark="list">+</button><span>Participants:</span>
-   </p>
-   <ul data-smark='{"type":"list","name":"participants"}'>
-   <li>
-   <input data-smark="data-smark" placeholder="Name"/>
-   <input data-nosmark="data-nosmark" type="tel" placeholder="Phone number"/>
-   <button data-smark='{"action":"removeItem"}'>-</button>
-   </li>
-   </ul>
-   </div>
+    <div id="myForm">
+    <p>
+        <b>Activity:</b>
+        <input data-smark name="activity" placeholder="Activity Description">
+    </p>
+    <p>
+        <button data-smark='{"action":"addItem","for":"participants"}'>+</button>
+        <span>Participants:</span>
+    </p>
+    <ul data-smark='{"type":"list","name":"participants"}'>
+        <li>
+        <input data-smark name="name" placeholder="Name">
+        <input data-smark name="phone" type="tel" placeholder="Phone number">
+        <button data-smark='{"action":"removeItem"}'>-</button>
+        </li>
+    </ul>
+    </div>
    ```
+
 2. Add a few JavaScript code to enhance it as SmarkForm:
    ```javascript
    import SmarkForm from "https://cdn.skypack.dev/smarkform";
@@ -143,6 +146,10 @@ dist
     const form = new SmarkForm(
         document.getElementById("myForm")
     );
+
+    console.log(form);
+        // Now you can capture form object from browser console and play with
+        // .export() and .import() methods...
     ```
 
 </details>
@@ -164,20 +171,23 @@ Bla bla bla...
     #myForm
         p
             b Activity:
-            input(data-smark name=activity placeholder="Activity Description")
+            input(data-smark name="activity" placeholder="Activity Description")
         p
-            button(data-smark="list") +
+            button(data-smark={
+                action: "addItem",
+                for: "participants",
+            }) +
             span Participants:
         ul(data-smark={
             type: "list",
             name: "participants",
         })
             li
-            input(data-smark placeholder="Name")
-            input(data-nosmark type="tel" placeholder="Phone number")
-            button(data-smark={
-                action: "removeItem"
-            }) -
+                input(data-smark name="name" placeholder="Name")
+                input(data-smark name = "phone" type="tel" placeholder="Phone number")
+                button(data-smark={
+                    action: "removeItem"
+                }) -
     ```
 
 </details>
