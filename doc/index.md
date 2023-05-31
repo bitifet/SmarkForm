@@ -1,12 +1,49 @@
-## 💡 SmarkForm 
+<a href="https://www.npmjs.com/package/smarkform">
+<img alt="SmarkForm Logo" align="left" src="SmartForm_logo.jpg">
+</a>
+<h1>Reference Manual</h1>
+<strong>
+Powerful while effortless Markup-driven and Extendable forms
+</strong>
 
-### -- Powerful while effortless Markup-driven and Extendable forms --
 
-# Reference Manual
+<details>
+<summary>
+<h2>📖 Table of Contents</h2>
+</summary>
 
-------------------
+<!-- vim-markdown-toc GitLab -->
 
-# About SmarkForm
+* [📜 About SmarkForm](#-about-smarkform)
+* [👉 SmarkForm form](#-smarkform-form)
+* [👉 Components and Actions](#-components-and-actions)
+    * [Components](#components)
+    * [Actions](#actions)
+* [👉 Core Component Types](#-core-component-types)
+* [👉 Component Options](#-component-options)
+* [👉 data-smark (options) object](#-data-smark-options-object)
+    * [type property](#type-property)
+        * [Common properties for components](#common-properties-for-components)
+            * [name](#name)
+    * [action property](#action-property)
+        * [Common properties for actions](#common-properties-for-actions)
+            * [for](#for)
+            * [to](#to)
+* [👉 Data Import and Export methods](#-data-import-and-export-methods)
+* [💾 Code Snippets and Samples](#-code-snippets-and-samples)
+
+<!-- vim-markdown-toc -->
+
+</details>
+
+
+
+## 📜 About SmarkForm
+
+<details>
+<summary>
+<h2>👉 Introduction</h2>
+</summary>
 
 SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
@@ -28,58 +65,47 @@ own custom component types.
 > current version, but they are planned for inclusion in the upcoming 1.0.0
 > release.
 
-👍 We welcome any feedback, suggestions, or improvements as we continue to
-enhance and expand the functionality of SmarkForm.
+</details>
+
+<details>
+<summary>
+<h2>👉 Principles</h2>
+</summary>
+
+Bla bla bla...
+
+</details>
 
 
-## 🚧 Work in Progress 🚧 
+<details>
+<summary>
+<h2>👉 History and Motivation</h2>
+</summary>
 
+Bla bla bla...
 
-ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ
+</details>
 
-ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ
-
+<details>
+<summary>
+<h2>🚧 ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ 🚧</h2>
+</summary>
 
 This documentation is still in draft stage.
 
 All information may be incomplete, inaccurate, outdated or even **completely
 wrong**.
 
+👍 We welcome any feedback, suggestions, or improvements as we continue to
+enhance and expand the functionality of SmarkForm.
 
-ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ
-
-ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ
-
-
-Index
-=====
-
-<!-- vim-markdown-toc GitLab -->
-
-* [SmarkForm form](#smarkform-form)
-* [Components and Actions](#components-and-actions)
-        * [Components](#components)
-        * [Actions](#actions)
-* [Core Component Types](#core-component-types)
-* [Component Options](#component-options)
-* [data-smark (options) object](#data-smark-options-object)
-    * [type property](#type-property)
-        * [Common properties for components](#common-properties-for-components)
-            * [name](#name)
-    * [action property](#action-property)
-        * [Common properties for actions](#common-properties-for-actions)
-            * [for](#for)
-            * [to](#to)
-* [Data Import and Export methods](#data-import-and-export-methods)
-
-<!-- vim-markdown-toc -->
+</details>
 
 
 
 
 
-SmarkForm form
-==============
+## 👉 SmarkForm form
 
 To build a simple SmarkForm form you could start with simple html page:
 
@@ -123,8 +149,7 @@ To build a simple SmarkForm form you could start with simple html page:
 </html>
 ```
 
-Components and Actions
-======================
+## 👉 Components and Actions
 
 ### Components
 
@@ -164,8 +189,7 @@ presence of the *action* property itself) but, it present, it must be "action".
 > Documentation](doc/type_action.md).
 
 
-Core Component Types
-====================
+## 👉 Core Component Types
 
 | Type | Description                     | Shared Capabilities              |
 |------|---------------------------------|----------------------------------|
@@ -178,8 +202,7 @@ Core Component Types
 
 
 
-Component Options
-=================
+## 👉 Component Options
 
 ...
 
@@ -218,26 +241,23 @@ failback        | [❓]() |        | [🔗]() | ✖️  |
 🔒 Forcibly set to when [action property](#action-property) is defined.
 
 
-data-smark (options) object
-===========================
+## 👉 data-smark (options) object
 
-type property
--------------
+### type property
 
-### Common properties for components
+#### Common properties for components
 
-#### name
+##### name
 
 
-action property
----------------
+### action property
 
 
-### Common properties for actions
+#### Common properties for actions
 
-#### for
+##### for
 
-#### to
+##### to
 
 
 
@@ -246,11 +266,11 @@ action property
 
 
 
-Data Import and Export methods
-==============================
+## 👉 Data Import and Export methods
 
 
 
+## 💾 Code Snippets and Samples
 
 
 

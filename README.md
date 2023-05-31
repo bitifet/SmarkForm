@@ -1,13 +1,16 @@
 [![SmarkForm Logo](doc/SmartForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
 
-Powerful while effortless Markup-driven and Extendable forms.
-
-[![License](https://img.shields.io/badge/license-GPL--v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
+<details>
+<summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
 
 SmarkForm is a powerful library for creating markup-driven and extendable forms
 in web applications. It empowers designers to enhance their form templates with
 advanced capabilities, such as dynamic list manipulation and context-based
 interactions, without the need for complex JavaScript code.
+
+</details>
+
+[![License](https://img.shields.io/badge/license-GPL--v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.html)
 
 ## Features
 
@@ -108,8 +111,50 @@ dist
 
 ## Usage
 
-Check out the documentation for detailed [usage instructions](doc/index.md), examples, and API references.
+> 📌 For detailed usage instructions and API reference check out [SmarkForm
+> Manual](doc/index.md).
 
+
+<details>
+<summary>Start with a simple example...</summary>
+
+1. Write some HTML code such as this in your document:
+   ```html
+   <div id="myForm">
+   <p><b>Activity:</b>
+   <input data-smark="data-smark" placeholder="Activity Description"/>
+   </p>
+   <p>
+   <button data-smark="list">+</button><span>Participants:</span>
+   </p>
+   <ul data-smark='{"type":"list","name":"participants"}'>
+   <li>
+   <input data-smark="data-smark" placeholder="Name"/>
+   <input data-nosmark="data-nosmark" type="tel" placeholder="Phone number"/>
+   <button data-smark='{"action":"removeItem"}'>-</button>
+   </li>
+   </ul>
+   </div>
+   ```
+2. Add a few JavaScript code to enhance it as SmarkForm:
+   ```javascript
+   import SmarkForm from "https://cdn.skypack.dev/smarkform";
+    
+    const form = new SmarkForm(
+        document.getElementById("myForm")
+    );
+    ```
+
+</details>
+
+
+
+<details>
+<summary>See Also</summary>
+
+  * [💾 Code Snippets and Samples](doc/index.md#-code-snippets-and-samples)
+
+</details>
 
 ## Contributing
 
