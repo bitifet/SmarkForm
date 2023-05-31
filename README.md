@@ -147,7 +147,40 @@ dist
 
 </details>
 
+<details>
+<summary>Extend it with all SmarkForm power</summary>
 
+Bla bla bla...
+
+</details>
+
+<details>
+<summary>Recommendations</summary>
+
+  * Using some template engine such as [PugJS](https://pugjs.org) to generate
+    html is advised to avoid eventual chararacter interpolation issues.
+    - Previous html snippet would look like as follows with as Pug template:
+    ```javascript
+    #myForm
+        p
+            b Activity:
+            input(data-smark name=activity placeholder="Activity Description")
+        p
+            button(data-smark="list") +
+            span Participants:
+        ul(data-smark={
+            type: "list",
+            name: "participants",
+        })
+            li
+            input(data-smark placeholder="Name")
+            input(data-nosmark type="tel" placeholder="Phone number")
+            button(data-smark={
+                action: "removeItem"
+            }) -
+    ```
+
+</details>
 
 <details>
 <summary>See Also</summary>
