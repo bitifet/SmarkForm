@@ -181,18 +181,18 @@ presence of the *action* property itself) but, it present, it must be "action".
 ```
 
 > 📖 For detailed information see [Action Type
-> Documentation](doc/type_action.md).
+> Documentation](type_action.md).
 
 
 ## 👉 Core Component Types
 
-| Type | Description                     | Shared Capabilities              |
-|------|---------------------------------|----------------------------------|
-| [Form](doc/type_form.md)           |   | [foldable](doc/capabilities.md#foldable) |
-| [Input](doc/type_input.md)         |   |                                  |
-| [List](doc/type_list.md)           |   | [foldable](doc/capabilities.md#foldable) |
-| [Singleton](doc/type_singleton.md) |   |                                  |
-| [Action](doc/type_action.md)       |   |                                  |
+| Type | Description                 | Shared Capabilities                  |
+|------|-----------------------------|--------------------------------------|
+| [Form](type_form.md)           |   | [foldable](capabilities.md#foldable) |
+| [Input](type_input.md)         |   |                                      |
+| [List](type_list.md)           |   | [foldable](capabilities.md#foldable) |
+| [Singleton](type_singleton.md) |   |                                      |
+| [Action](type_action.md)       |   |                                      |
 
 
 

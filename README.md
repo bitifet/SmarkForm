@@ -26,6 +26,14 @@ interactions, with no need to deal with complex JavaScript code.
 </details>
 
 <details>
+<summary>✔️  <b>Easy to use</b></summary>
+<ul>
+  <li>👉 Leverage your existing HTML and CSS knowledge to create powerful forms.</li>
+  <li>👉 No need for extensive JavaScript coding.</li>
+</ul>
+</details>
+
+<details>
 <summary>✔️  <b>Advanced capabilities</b></summary>
 <ul>
   <li>👉 Add or remove items from lists with optional lower and upper limits.</li>
@@ -35,18 +43,9 @@ interactions, with no need to deal with complex JavaScript code.
 </details>
 
 <details>
-<summary>✔️  <b>Easy to use</b></summary>
-<ul>
-  <li>👉 Leverage your existing HTML and CSS knowledge to create powerful forms.</li>
-  <li>👉 No need for extensive JavaScript coding.</li>
-  <li>👉 </li>
-</ul>
-</details>
-
-<details>
 <summary>✔️  <b>Flexible and extendable</b></summary>
 <ul>
-  <li>👉 Import and exports complex forms in JSON format.</li>
+  <li>👉 Import and export complex forms in JSON format.</li>
   <li>👉 You can even import/export any subform instead of the whole one</li>
   <li>👉 Develop your own component types to suit your specific needs.</li>
 </ul>
@@ -55,7 +54,12 @@ interactions, with no need to deal with complex JavaScript code.
 <details>
 <summary>✔️  <b>Intuitive API</b></summary>
 <ul>
-  <li>👉 Intuitive option names.</li>
+  <li>👉 Intuitive option names.<ul>
+    <li>
+      <b>Ex.:</b>
+      <code>&lt;button data-smark='{action: "addItem", for: "myList"&gt;</code>
+    </li>
+  </ul></li>
   <li>👉 Addressable elements by easy-to-read path-style relative or absolute addresses.</li>
 <ul>
 </details>
