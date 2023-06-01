@@ -1,5 +1,5 @@
 <a href="https://www.npmjs.com/package/smarkform">
-<img alt="SmarkForm Logo" align="left" src="./SmarkForm_logo.jpg">
+<img alt="SmarkForm Logo" align="left" src="SmarkForm_logo.jpg">
 </a>
 <h1>Reference Manual</h1>
 <strong>

@@ -4,9 +4,11 @@
 <summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
 
 SmarkForm is a powerful library for creating markup-driven and extendable forms
-in web applications. It empowers designers to enhance their form templates with
+in web applications.
+
+SmarkForm empowers designers to enhance their form templates with
 advanced capabilities, such as dynamic list manipulation and context-based
-interactions, without the need for complex JavaScript code.
+interactions, with no need to deal with complex JavaScript code.
 
 </details>
 
@@ -14,12 +16,49 @@ interactions, without the need for complex JavaScript code.
 
 ## Features
 
-- **Markup-driven**: Create powerful interactive forms with plain HTML (or your preferred template engine) by just adding the `data-smark` attribute to relevant tags.
-- **Advanced capabilities**: Add or remove items from lists, dynamic (and reactive) options loading for dropdowns, and perform context-based actions easily.
-- **Easy to use**: Leverage your existing HTML and CSS knowledge to create powerful forms without the need for extensive JavaScript coding.
-- **Flexible and extendable**: Import and exports complex forms in JSON format, and develop your own component types to suit your specific needs.
-- **Intuitive API**: Access every component in the form tree with simple path-style addresses or utilize built-in methods for seamless form manipulation.
-- **MVC Enabled**: Complete separation between View and Controller logic.
+<details>
+<summary>✔️  <b>Markup-driven</b></summary>
+Create powerful interactive forms with plain HTML (or your preferred template
+engine) by just adding the `data-smark` attribute to relevant tags.
+</details>
+
+<details>
+<summary>✔️  <b>Advanced capabilities</b></summary>
+<ul>
+  <li>✅ Add or remove items from lists with optional lower and upper limits.</li>
+  <li>✅ Context-based actions (no need to hard-wire context and/or target)..</li>
+  <li>🚧 Dynamic and reactive options loading for dropdowns (comming soon).</li>
+</ul>
+</details>
+
+<details>
+<summary>✔️  <b>Easy to use</b></summary>
+Leverage your existing HTML and CSS knowledge to create powerful forms without
+the need for extensive JavaScript coding.
+</details>
+
+<details>
+<summary>✔️  <b>Flexible and extendable</b></summary>
+<ul>
+  <li>✅ Import and exports complex forms in JSON format.</li>
+  <li>✅ You can even import/export any subform instead of the whole one</li>
+  <li>✅ Develop your own component types to suit your specific needs.</li>
+</ul>
+</details>
+
+<details>
+<summary>✔️  <b>Intuitive API</b></summary>
+<ul>
+  <li>✅ Intuitive option names.</li>
+  <li>✅ Addressable elements by easy-to-read path-style relative or absolute addresses.</li>
+<ul>
+</details>
+
+<details>
+<summary>✔️  <b>MVC Enabled</b></summary>
+Complete separation between View and Controller logic.
+</details>
+
 
 ## Try it yourself!!
 
@@ -28,12 +67,18 @@ fork and play with all SmarkForm features:
 
 [![Test it in Codepen](doc/CodePen_preview.jpg)](https://codepen.io/bitifet/full/LYgvobZ)
 
+> 👉 See also [SmarkForm Examples
+> collection](https://codepen.io/collection/YyvbPz) from bare minimal to more
+> complex examples in CodePen.
+
+
+
 ## Installation
 
 To incorporate **SmarkForm** to your project you have several alternatives:
 
 <details>
-<summary>Directly import from SkyPack CDN **(Easiest approach)**</summary>
+<summary>Directly import from SkyPack CDN <b>(Easiest approach)</b></summary>
 
 
 👉 As ES module:
@@ -193,9 +238,11 @@ Bla bla bla...
 </details>
 
 <details>
-<summary>See Also</summary>
+<summary>✅ See Also</summary>
 
   * [💾 Code Snippets and Samples](doc/index.md#-code-snippets-and-samples)
+
+  * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 
 </details>
 
