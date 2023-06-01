@@ -1,5 +1,18 @@
 [![SmarkForm Logo](doc/SmarkForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
 
+
+<!-- vim-markdown-toc GFM -->
+
+    * [Features](#features)
+    * [Try it yourself!!](#try-it-yourself)
+    * [Installation](#installation)
+    * [Usage](#usage)
+    * [Contributing](#contributing)
+    * [License](#license)
+* [Acknowledgements](#acknowledgements)
+
+<!-- vim-markdown-toc -->
+
 <details>
 <summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
 
@@ -20,43 +33,53 @@ interactions, with no need to deal with complex JavaScript code.
 <summary>✔️  <b>Markup-driven</b></summary>
 Create powerful interactive forms with plain HTML (or your preferred template
 engine) by just adding the `data-smark` attribute to relevant tags.
+<ul>
+  <li>👉 Create powerful interactive forms with just plain HTML.</li>
+  <li>👉 ...or ([advised](#summ_recommendations)) use your preferred template engine.</li>
+  <li>👉 Just add <code>data-smark</code> attribute to relevant tags and see the magic.</li>
+</ul>
 </details>
 
 <details>
 <summary>✔️  <b>Advanced capabilities</b></summary>
 <ul>
-  <li>✅ Add or remove items from lists with optional lower and upper limits.</li>
-  <li>✅ Context-based actions (no need to hard-wire context and/or target)..</li>
+  <li>👉 Add or remove items from lists with optional lower and upper limits.</li>
+  <li>👉 Context-based actions (no need to hard-wire context and/or target).</li>
   <li>🚧 Dynamic and reactive options loading for dropdowns (comming soon).</li>
 </ul>
 </details>
 
 <details>
 <summary>✔️  <b>Easy to use</b></summary>
-Leverage your existing HTML and CSS knowledge to create powerful forms without
-the need for extensive JavaScript coding.
+<ul>
+  <li>👉 Leverage your existing HTML and CSS knowledge to create powerful forms.</li>
+  <li>👉 No need for extensive JavaScript coding.</li>
+  <li>👉 </li>
+</ul>
 </details>
 
 <details>
 <summary>✔️  <b>Flexible and extendable</b></summary>
 <ul>
-  <li>✅ Import and exports complex forms in JSON format.</li>
-  <li>✅ You can even import/export any subform instead of the whole one</li>
-  <li>✅ Develop your own component types to suit your specific needs.</li>
+  <li>👉 Import and exports complex forms in JSON format.</li>
+  <li>👉 You can even import/export any subform instead of the whole one</li>
+  <li>👉 Develop your own component types to suit your specific needs.</li>
 </ul>
 </details>
 
 <details>
 <summary>✔️  <b>Intuitive API</b></summary>
 <ul>
-  <li>✅ Intuitive option names.</li>
-  <li>✅ Addressable elements by easy-to-read path-style relative or absolute addresses.</li>
+  <li>👉 Intuitive option names.</li>
+  <li>👉 Addressable elements by easy-to-read path-style relative or absolute addresses.</li>
 <ul>
 </details>
 
 <details>
 <summary>✔️  <b>MVC Enabled</b></summary>
-Complete separation between View and Controller logic.
+<ul>
+  <li>👉 Complete separation between View and Controller logic.</li>
+<ul>
 </details>
 
 
@@ -207,7 +230,7 @@ Bla bla bla...
 </details>
 
 <details>
-<summary>Recommendations</summary>
+<summary id="summ_recommendations">Recommendations</summary>
 
   * Using some template engine such as [PugJS](https://pugjs.org) to generate
     html is advised to avoid eventual chararacter interpolation issues.

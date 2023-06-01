@@ -7,10 +7,7 @@ Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
 
-<details>
-<summary>
 <h2>📖 Table of Contents</h2>
-</summary>
 
 <!-- vim-markdown-toc GitLab -->
 
@@ -33,8 +30,6 @@ Powerful while effortless Markup-driven and Extendable forms
 * [💾 Code Snippets and Samples](#-code-snippets-and-samples)
 
 <!-- vim-markdown-toc -->
-
-</details>
 
 
 
