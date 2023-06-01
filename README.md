@@ -1,18 +1,5 @@
 [![SmarkForm Logo](doc/SmarkForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
 
-
-<!-- vim-markdown-toc GFM -->
-
-    * [Features](#features)
-    * [Try it yourself!!](#try-it-yourself)
-    * [Installation](#installation)
-    * [Usage](#usage)
-    * [Contributing](#contributing)
-    * [License](#license)
-* [Acknowledgements](#acknowledgements)
-
-<!-- vim-markdown-toc -->
-
 <details>
 <summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
 
