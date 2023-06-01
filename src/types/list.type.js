@@ -51,7 +51,7 @@ export class list extends SmarkComponent {
         const tplOptions = me.getNodeOptions(
             me.itemTpl
             , {
-                type: me.options.of || "form", // Use form as default.
+                type: me.options.of, // Allow to specify items type from list declaration.
             }
         );
         if (
@@ -117,7 +117,7 @@ export class list extends SmarkComponent {
         // Clear items over imported data if min_items is greater:
         for (
             let i = data.length;
-            i < me.min_items;
+            i < me.children.length; // (Due to min_items)
             i++
         ) me.children[i].empty();
         return; // await me.export();
