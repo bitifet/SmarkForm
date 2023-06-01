@@ -18,8 +18,6 @@ interactions, with no need to deal with complex JavaScript code.
 
 <details>
 <summary>✔️  <b>Markup-driven</b></summary>
-Create powerful interactive forms with plain HTML (or your preferred template
-engine) by just adding the `data-smark` attribute to relevant tags.
 <ul>
   <li>👉 Create powerful interactive forms with just plain HTML.</li>
   <li>👉 ...or ([advised](#summ_recommendations)) use your preferred template engine.</li>
