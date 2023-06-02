@@ -30,9 +30,23 @@ const errors = {
     },//}}}
 };
 
-function inferType(node) {//{{{
-    return "input";
-    // Future component types may be infered for some input types.
+function inferType(node, parentComponent) {//{{{
+    switch (node.tagName.toLowerCase()) {
+        case "ul":
+        case "ol":
+        case "table":
+        case "thead":
+        case "tbody":
+        case "tfoot":
+            return "list";
+        case "input":
+        case "textarea":
+        case "select":
+            return "input";
+        default:
+            //if (parentComponent.options.type == "list") return "form";
+            return "form";
+    };
 };//}}}
 
 @events
@@ -65,7 +79,6 @@ export class SmarkComponent {
         me.actions = {};
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;
-        me.typeName = me.constructor.name;
         me.types = componentTypes;
         me.target = target;
         me.options = options;
@@ -152,7 +165,7 @@ export class SmarkComponent {
                 };
             })(),
         };
-        if (! options.action && ! options.type) options.type = inferType(node);
+        if (! options.action && ! options.type) options.type = inferType(node, me);
         me.setNodeOptions(node, options);
         return options;
     };//}}}

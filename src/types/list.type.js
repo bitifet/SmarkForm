@@ -51,7 +51,7 @@ export class list extends SmarkComponent {
         const tplOptions = me.getNodeOptions(
             me.itemTpl
             , {
-                type: me.options.of || "form", // Use form as default.
+                type: me.options.of, // Allow to specify items type from list declaration.
             }
         );
         if (
@@ -106,10 +106,20 @@ export class list extends SmarkComponent {
         ) await me.removeItem();
         // Report if data doesn't fit:
         if (data.length > me.max_items) {
-            console.error(`Max of ${me.max_items} items exceeded by ${data.length - me.max_items} while data loadig`);
-            // FIXME: Improve handling of this situation having it implies
-            // data loss.
+            me.emit("error", {
+                code: 'LIST_IMPORT_OVERFLOW',
+                message: `Trying to import array greater than list's max_items. Data beyond max_items ignored.`,
+                context: me,
+                data,
+                options: me.options,
+            });
         };
+        // Clear items over imported data if min_items is greater:
+        for (
+            let i = data.length;
+            i < me.children.length; // (Due to min_items)
+            i++
+        ) me.children[i].empty();
         return; // await me.export();
     };//}}}
     @action

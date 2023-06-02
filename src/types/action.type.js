@@ -33,7 +33,7 @@ export class action_type extends SmarkComponent {
         const context = (
             path ? me.parent.find(path)
             : parents.find(p=>{
-                if (targetType && p.typeName != targetType) return false;
+                if (targetType && p.options.type != targetType) return false;
                 if (typeof p.actions[actionName] != "function") return false;
                 return true;
             })
