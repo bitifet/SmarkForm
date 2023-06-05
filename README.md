@@ -91,14 +91,15 @@ fork and play with all SmarkForm features:
 To incorporate **SmarkForm** to your project you have several alternatives:
 
 <details>
-<summary>Directly import from SkyPack CDN <b>(Easiest approach)</b></summary>
+<summary>Using CDN <b>(Easiest approach)</b></summary>
 
-
-👉 As ES module:
+👉 Import as ES module (no installation at all needed):
 
 ```javascript
 import SmarkForm from "https://cdn.skypack.dev/smarkform";
 ```
+
+> 🚀 Powered by [Skypack](https://www.skypack.dev/)
 
 </details>
 
