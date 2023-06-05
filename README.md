@@ -225,6 +225,7 @@ Bla bla bla...
 
   * Using some template engine such as [PugJS](https://pugjs.org) to generate
     html is advised to avoid eventual chararacter interpolation issues.
+    Specially with *data-smark* attribute JSON data.
     - Previous html snippet would look like as follows with as Pug template:
     ```javascript
     #myForm
