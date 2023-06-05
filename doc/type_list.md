@@ -117,24 +117,21 @@ To use the List component, follow these steps:
 
 3. Use the provided API methods to interact with the list:
 
-   - To add a new item programmatically, you can use the `addItem` method:
-
-     ```javascript
-     const myList = myForm.find("/myList");
-     myList.addItem(); // Adds an Item at the end.
-     myList.removeItem(); // Adds an Item at the end.
-     myList.import([ // Import some data.
-       {field1: "foo", field2: 5},
-       {field1: "bar", field2: 15},
-       {field1: "baz", field2: 75},
-     }];
-     const myData = await myList.export(); // Export list contents.
-     myList.find("2/field2").import(25); // Update third item field2's value.
-     ```
-
+   ```javascript
+   const myList = myForm.find("/myList");
+   myList.addItem(); // Adds an Item at the end.
+   myList.removeItem(); // Adds an Item at the end.
+   myList.import([ // Import some data.
+     {field1: "foo", field2: 5},
+     {field1: "bar", field2: 15},
+     {field1: "baz", field2: 75},
+   }];
+   const myData = await myList.export(); // Export list contents.
+   myList.find("2/field2").import(25); // Update third item field2's value.
    ```
 
-For more information on using the List component and its available methods, please refer to the [API Reference](api-reference.md).
+
+For more information on using the List component and its available methods, please refer to the [API Reference](#api-reference).
 
 Feel free to adjust the content and structure of the section to match the specific functionality and usage of the List component in your SmarkForm library.
 
