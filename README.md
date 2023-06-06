@@ -260,6 +260,158 @@ Bla bla bla...
 
 </details>
 
+
+## RoadMap
+
+
+### Overall
+
+<details>
+<summary><img src="https://progress-bar.dev/95/" alt="(95%)"> Core functionality.</summary>
+
+*SmarkForm* Core functionality is in mature state.
+
+Almost all initially planed features are implemented and working well.
+
+The only exception is the "API interface" which will allow future *select*
+component type to fetch its optinons dynamically depending on the value of
+other fields (See *Select Component* in [Core component
+types](#core-component-types) section).
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/35/" alt="(35%)"> Automated tests.</summary>
+
+A mature testing structure with mocha and puppetter is set up to easily
+implement tests over any SmarkForm feature.
+
+But only a few actual tests are implemented yet. More tests need to be
+developed to ensure all functionality keeps working while implementation
+advances.
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/45/" alt="(45%)"> Documentation.</summary>
+
+Introductory README file is quite mature. But usage and API documentation still
+needs a lot of work...
+
+</details>
+
+
+### Core component types and actions
+
+<details>
+<summary><img src="https://progress-bar.dev/100/" alt="(100%)"> Form Component Type </summary>
+
+Implementation complete.
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/100/" alt="(100%)"> List Component Type </summary>
+
+Implementation complete.
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/100/" alt="(100%)"> Singleton Component Type </summary>
+
+Implementation complete.
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/100/" alt="(100%)"> Input Component Type </summary>
+
+Implementation complete.
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/0/" alt="(0%)"> Select Component Type.</summary>
+
+Select component will be capable of loading its options from a remote API call
+by passing its *src* property to so called "API Interface".
+
+**Example:**
+
+```html
+<select data-smark='{
+    "src":[
+        "https/example.com/some/api",
+        {
+            "someConstant":"actual_value",
+            "@someField":"sibling_field_name",
+            "@someOtherField":"/absolute/path/to/field",
+            "@anotherField":"../relative/path/to/field"
+        },
+        "GET"
+    ]
+}'>
+</select>
+```
+
+**Where:**
+
+  * **src[0]:** Provides the endpoint url.
+    - If it is the only argument provided, *src* can be simplified as just that
+      url.
+  * **src[1]:** *(Optional)* Provides arguments to be passed.
+  * **src[2]:** *(Optional)* Specifies the HTTP method ('GET' by default).
+
+**About API Interface:**
+
+*API Interface* will be responsible for fetching the data based on the
+specified endpoint, arguments, and other parameters (such as the method), while
+also keeping track of changes in every field it depends on (those marked with
+initial '@') allowing the comsummer component (a *select* in this case, but it
+may be others in the future) to update its options every time relevant data
+changes.
+
+> 👉 One important feature here is the ability to perform the fetching process
+> through an interchangeable callback referred to as an 'adapter.'
+> 
+> By default, this adapter internally executes an HTTP request as explained earlier.
+> 
+> However, it can be easily substituted with a custom implementation tailored
+> to different types of APIs, ranging from GraphQL APIs to mock implementations
+> used for testing purposes.
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/0/" alt="(0%)"> Number Component Type </summary>
+
+Not yet implemented (but comming soon).
+
+It will just wrap input component to export as number instead of string (we
+will use a separate component to respect original ``<input>`` tag behaviour
+which returns text even if its *type* attribute is "number".
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/0/" alt="(0%)"> Date Component Type </summary>
+
+Not yet implemented (but comming soon).
+
+</details>
+
+<details>
+<summary><img src="https://progress-bar.dev/50/" alt="(50%)"> Action (Special) Component Type </summary>
+
+Fully functional but only for regular clicks.
+
+Special behaviours for right / middle / (other) cliks, keyboard events, etc...
+may be eventually implemented in the future. But not a priority yet.
+
+</details>
+
+
 ## Contributing
 
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
