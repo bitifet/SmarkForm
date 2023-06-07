@@ -131,9 +131,12 @@ To use the List component, follow these steps:
    ```
 
 
-For more information on using the List component and its available methods, please refer to the [API Reference](#api-reference).
+For more information on using the List component and its available methods,
+please refer to the [API Reference](#api-reference).
 
-Feel free to adjust the content and structure of the section to match the specific functionality and usage of the List component in your SmarkForm library.
+Feel free to adjust the content and structure of the section to match the
+specific functionality and usage of the List component in your SmarkForm
+library.
 
 
 
@@ -190,10 +193,122 @@ API Reference
   * **action:**: (= "count")
 
 
+
 ### Events
+
+The List component emits the following events:
 
 #### addItem (list Event)
 
+Triggered when a new item is going to be added to the list. This event occurs
+just **after** the new item node is created and **before** it is actually
+inserted in the DOM.
+
+Event data contains the properties received by the originating `addItem`
+action, plus the following properties:
+
+  * `newItem`: The new DOM element that is about to be inserted (not yet a
+    component).
+
+  * `onRendered`: A callback setter that allows executing code after the item
+    is actually inserted in the DOM and rendered as a new child component of
+    the list. The newly created child component is provided as an argument to
+    the callback.
+
+
+**Example:**
+
+```javascript
+myForm.on("addItem", function({
+    newItem,
+    onRendered,
+}) {
+    newItem.classList.add("ingoing");
+    onRendered((newChild) => {
+        newChild.target.classList.remove("ingoing");
+        newChild.target.classList.add("ongoing");
+        // Alternatively, we could have used just newItem instead of
+        // newChild.target here.
+    });
+});
+```
+
+In this example, we add the CSS class `ingoing` to the new item before it is
+rendered, and then change it by the class (`ongoing`) after it is rendered.
+
+This way we can animate the insertion of a new item with a few CSS lines such
+as follows:
+
+```css
+.form-group .ingoing {
+    transform: scaleY(0) translateY(-50%);
+}
+
+.form-group .ongoing {
+    transition:
+        transform 70ms ease-in
+    ;
+}
+```
 
 #### removeItem (list Event)
+
+Triggered when an item is going to be removed from the list. This event occurs
+just **before** removing the item from the DOM and the list itself.
+
+Event data contains the properties received by the originating `removeItem`
+action, plus the following properties:
+
+  * `oldChild`: The child component (Smark component) of the list that is about
+    to be removed.
+
+  * `oldItem`: The DOM element that is about to be removed from the DOM (the
+    target of `oldChild`).
+
+  * `onRemoved`: A callback setter that allows executing code after `oldItem`
+    is actually removed from the DOM and `oldChild` is removed from the list.
+    No arguments will be provided to this callback.
+
+
+**Example:**
+
+```javascript
+myForm.on("removeItem", async function({
+    oldItem,
+    onRemoved,
+}) {
+    oldItem.classList.remove("ongoing");
+    oldItem.classList.add("outgoing");
+
+    // Await transition to finish before removing the item:
+    const [duration, multiplier = 1000] = window.getComputedStyle(oldItem)
+        .getPropertyValue('transition-duration')
+        .slice(0,-1).replace("m","/1")
+        .split("/")
+        .map(Number)
+    ;
+    await new Promise(resolve => setTimeout(
+        resolve,
+        duration * multiplier
+    ));
+});
+```
+
+In this example, we add the `outgoing` CSS class to the item being removed so
+that it can be easily animated with a few CSS such as follows:
+
+```css
+.form-group .outgoing {
+    transform: scaleY(0) translateY(-50%);
+    transition:
+        transform 70ms ease-out
+    ;
+}
+```
+
+Then it wait for the specified transition duration to elapse preventing the
+item being actually removed from the DOM until animation finished.
+
+
+
 
