@@ -174,7 +174,6 @@ API Reference
   * **origin:**
   * **context:**
   * **target:**
-  * **position:** = "after" (default) / "before"
   * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
   * **keep_non_empty:**
   * **failback:**
