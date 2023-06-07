@@ -233,7 +233,6 @@ export class list extends SmarkComponent {
             origin = null, // (Internal call)
             context = me,  // (Internal call)
             target,
-            position = "after",
             autoscroll,   // "elegant" / "self" / "parent" / (falsy)
             keep_non_empty,
             failback,
@@ -310,7 +309,6 @@ export class list extends SmarkComponent {
                 origin,
                 context,
                 target: currentTarget,  // <--- Effective target.
-                position,
                 oldChild,                 // Child going to be removed.
                 oldItem: oldChild.target, // Its target (analogous to addItem event).
                 options,
