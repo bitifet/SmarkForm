@@ -34,7 +34,7 @@
     "template"
   ],
   "author": "Joan Miquel Torres <joanmi@bitifet.net>",
-  "license": "GPL-3.0",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/bitifet/SmarkForm/issues"
   },

@@ -412,7 +412,7 @@ Before contributing, make sure to read our [contribution guidelines](doc/contrib
 
 ## License
 
-SmartKup is licensed under the [GPL-v3 License](https://www.gnu.org/licenses/gpl-3.0.html).
+  [MIT](LICENSE)
 
 
 # Acknowledgements
