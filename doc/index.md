@@ -7,15 +7,17 @@ Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
 
+<details>
+<summary>
 <h2>📖 Table of Contents</h2>
+</summary>
 
 <!-- vim-markdown-toc GitLab -->
 
-* [📜 About SmarkForm](#-about-smarkform)
-* [👉 SmarkForm form](#-smarkform-form)
-* [👉 Components and Actions](#-components-and-actions)
-    * [Components](#components)
-    * [Actions](#actions)
+* [👉 The Basics](#-the-basics)
+    * [👉 Components and Actions](#-components-and-actions)
+        * [Components](#components)
+        * [Actions](#actions)
 * [👉 Core Component Types](#-core-component-types)
 * [👉 Component Options](#-component-options)
 * [👉 data-smark (options) object](#-data-smark-options-object)
@@ -31,14 +33,16 @@ Powerful while effortless Markup-driven and Extendable forms
 
 <!-- vim-markdown-toc -->
 
+</details>
 
 
-## 📜 About SmarkForm
 
 <details>
 <summary>
-<h2>👉 Introduction</h2>
+<h2>📜 About SmarkForm</h2>
 </summary>
+
+<h3>👉 Introduction</h2>
 
 SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
@@ -60,47 +64,36 @@ own custom component types.
 > current version, but they are planned for inclusion in the upcoming 1.0.0
 > release.
 
-</details>
+<h3>👉 Principles</h2>
 
-<details>
-<summary>
-<h2>👉 Principles</h2>
-</summary>
+Bla bla bla...
+
+
+
+<h3>👉 History and Motivation</h2>
 
 Bla bla bla...
 
 </details>
 
-
-<details>
-<summary>
-<h2>👉 History and Motivation</h2>
-</summary>
-
-Bla bla bla...
-
-</details>
-
-<details>
-<summary>
-<h2>🚧 ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ 🚧</h2>
-</summary>
-
-This documentation is still in draft stage.
-
-All information may be incomplete, inaccurate, outdated or even **completely
-wrong**.
-
-👍 We welcome any feedback, suggestions, or improvements as we continue to
-enhance and expand the functionality of SmarkForm.
-
-</details>
+> ------------------------------------------
+> ## 🚧 ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ 🚧
+> 
+> This documentation is still in draft stage.
+> 
+> All information may be incomplete, inaccurate, outdated or even **completely
+> wrong**.
+> 
+> 👍 We welcome any feedback, suggestions, or improvements as we continue to
+> enhance and expand the functionality of SmarkForm.
+> ------------------------------------------
 
 
 
 
 
-## 👉 SmarkForm form
+
+## 👉 The Basics
 
 To build a simple SmarkForm form you could start with simple html page:
 
@@ -144,12 +137,12 @@ To build a simple SmarkForm form you could start with simple html page:
 </html>
 ```
 
-## 👉 Components and Actions
+### 👉 Components and Actions
 
-### Components
+#### Components
 
-A SmarkForm *component* is just a DOM element (HTML tag) which as a "data-smark"
-property providding a JSON-formatted *options* object.
+A SmarkForm *component* is just a DOM element (HTML tag) which has a
+"data-smark" property providding a JSON-formatted *options* object.
 
 It looks like as follows:
 
@@ -166,13 +159,15 @@ It looks like as follows:
 > <input data-smark/>
 > ```
 
-### Actions
+
+#### Actions
 
 A SmarkForm *action* is a *component* of type "action" and a (mandatory)
 property "action" pointing to the actual action to be taken when clicked.
 
 For actions the *type* property can be omitted (since is infered by the
-presence of the *action* property itself) but, it present, it must be "action".
+presence of the *action* property itself) but, if present, its value must be
+"action".
 
 **Example:**
 
@@ -180,8 +175,9 @@ presence of the *action* property itself) but, it present, it must be "action".
 <button data-smark='{action: "removeItem"}'></button>
 ```
 
-> 📖 For detailed information see [Action Type
-> Documentation](type_action.md).
+> 📖 For detailed information see [Action Type Documentation](type_action.md).
+
+
 
 
 ## 👉 Core Component Types
