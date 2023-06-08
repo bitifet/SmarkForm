@@ -206,8 +206,8 @@ inserted in the DOM.
 Event data contains the properties received by the originating `addItem`
 action, plus the following properties:
 
-  * `newItem`: The new DOM element that is about to be inserted (not yet a
-    component).
+  * `newItemTarget`: The new DOM element that is about to be inserted (not yet
+    a component).
 
   * `onRendered`: A callback setter that allows executing code after the item
     is actually inserted in the DOM and rendered as a new child component of
@@ -219,15 +219,15 @@ action, plus the following properties:
 
 ```javascript
 myForm.on("addItem", function({
-    newItem,
+    newItemTarget,
     onRendered,
 }) {
-    newItem.classList.add("ingoing");
-    onRendered((newChild) => {
-        newChild.target.classList.remove("ingoing");
-        newChild.target.classList.add("ongoing");
-        // Alternatively, we could have used just newItem instead of
-        // newChild.target here.
+    newItemTarget.classList.add("ingoing");
+    onRendered((newItem) => {
+        newItem.target.classList.remove("ingoing");
+        newItem.target.classList.add("ongoing");
+        // Alternatively, we could have used just newItemTarget instead of
+        // newItem.target here.
     });
 });
 ```
@@ -258,29 +258,29 @@ just **before** removing the item from the DOM and the list itself.
 Event data contains the properties received by the originating `removeItem`
 action, plus the following properties:
 
-  * `oldChild`: The child component (Smark component) of the list that is about
+  * `oldItem`: The child component (Smark component) of the list that is about
     to be removed.
 
-  * `oldItem`: The DOM element that is about to be removed from the DOM (the
-    target of `oldChild`).
+  * `oldItemTarget`: The DOM element that is about to be removed from the DOM
+    (the target of `oldItem`).
 
-  * `onRemoved`: A callback setter that allows executing code after `oldItem`
-    is actually removed from the DOM and `oldChild` is removed from the list.
-    No arguments will be provided to this callback.
+  * `onRemoved`: A callback setter that allows executing code after
+    `oldItemTarget` is actually removed from the DOM and `oldItem` is removed
+    from the list.  No arguments will be provided to this callback.
 
 
 **Example:**
 
 ```javascript
 myForm.on("removeItem", async function({
-    oldItem,
+    oldItemTarget,
     onRemoved,
 }) {
-    oldItem.classList.remove("ongoing");
-    oldItem.classList.add("outgoing");
+    oldItemTarget.classList.remove("ongoing");
+    oldItemTarget.classList.add("outgoing");
 
     // Await transition to finish before removing the item:
-    const [duration, multiplier = 1000] = window.getComputedStyle(oldItem)
+    const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
         .getPropertyValue('transition-duration')
         .slice(0,-1).replace("m","/1")
         .split("/")

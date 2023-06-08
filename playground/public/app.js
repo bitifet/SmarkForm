@@ -21,25 +21,25 @@
 
 
     form.on("addItem", function({
-        newItem,
+        newItemTarget,
         onRendered,
     }) {
-        newItem.classList.add("ingoing");
+        newItemTarget.classList.add("ingoing");
         onRendered(()=>{
-            newItem.classList.remove("ingoing");
-            newItem.classList.add("ongoing");
+            newItemTarget.classList.remove("ingoing");
+            newItemTarget.classList.add("ongoing");
         });
     });
 
     form.on("removeItem", async function({
-        oldItem,
+        oldItemTarget,
         onRemmoved,
     }) {
-        oldItem.classList.remove("ongoing");
-        oldItem.classList.add("outgoing");
+        oldItemTarget.classList.remove("ongoing");
+        oldItemTarget.classList.add("outgoing");
 
         // Await for transition to be finished before item removal:
-        const [duration, multiplier = 1000] = window.getComputedStyle(oldItem)
+        const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
             .getPropertyValue('transition-duration')
             .slice(0,-1).replace("m","/1")
             .split("/")

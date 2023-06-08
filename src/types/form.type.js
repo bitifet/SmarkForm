@@ -16,14 +16,14 @@ export class form extends SmarkComponent {
             const node
             of getRoots(me.target, me.selector)
         ) {
-            const newChild = await me.enhance(node);
-            if (newChild.options.type != "action") {
-                newChild.name = me.validName(
-                    newChild.options.name
+            const newItem = await me.enhance(node);
+            if (newItem.options.type != "action") {
+                newItem.name = me.validName(
+                    newItem.options.name
                     , node.getAttribute("name")
                 );
-                me.children[newChild.name] = newChild;
-                newChild.updateId();
+                me.children[newItem.name] = newItem;
+                newItem.updateId();
             };
         };
     };//}}}

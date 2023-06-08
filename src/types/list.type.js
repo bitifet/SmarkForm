@@ -147,13 +147,13 @@ export class list extends SmarkComponent {
             });
             return;
         };
-        if (me.children.length && ! target) target = (
+        if (me.children.length && ! target) target = ( // Auto target:
             position == "before" ?  me.children[0] // Insert at the beginning
             : me.children[me.children.length - 1]  // Append at the end
         );
         //}}}
         // DOM element creation:{{{
-        const newItem = me.itemTpl.cloneNode(true);
+        const newItemTarget = me.itemTpl.cloneNode(true);
         //}}}
         // addItem event emitting:{{{
         const onRenderedCbks = [];
@@ -164,34 +164,34 @@ export class list extends SmarkComponent {
                 context,
                 target,  // <--- Effective target.
                 position,
-                newItem,
+                newItemTarget,
                 options, // <- Original options (including target)
                 onRendered: cbk => onRenderedCbks.push(cbk),
         });
         //}}}
         // Child component creation and insertion:{{{
-        let newChild;
+        let newItem;
         if (! me.children.length) {
-            me.target.appendChild(newItem);
-            newChild = await me.enhance(newItem, {type: "form", name: 0});
-            await newChild.rendered;
-            me.children.push(newChild);
-            newChild.name = 0;
-            newChild.updateId();
+            me.target.appendChild(newItemTarget);
+            newItem = await me.enhance(newItemTarget, {type: "form", name: 0});
+            await newItem.rendered;
+            me.children.push(newItem);
+            newItem.name = 0;
+            newItem.updateId();
         } else {
             me.children = (await Promise.all(
                 me.children.map(async (child, i)=>{
                     if (! child.target.isSameNode(target.target)) return child;
                     if (position == "after") {
-                        child.target.after(newItem);
-                        newChild = await me.enhance(newItem, {type: "form"});
-                        await newChild.rendered;
-                        return [child, newChild]; // Right order, flatted later...
+                        child.target.after(newItemTarget);
+                        newItem = await me.enhance(newItemTarget, {type: "form"});
+                        await newItem.rendered;
+                        return [child, newItem]; // Right order, flatted later...
                     } else {
-                        child.target.before(newItem);
-                        newChild = await me.enhance(newItem, {type: "form"});
-                        await newChild.rendered;
-                        return [newChild, child]; // Right order, flatted later...
+                        child.target.before(newItemTarget);
+                        newItem = await me.enhance(newItemTarget, {type: "form"});
+                        await newItem.rendered;
+                        return [newItem, child]; // Right order, flatted later...
                     };
                 })
             ))
@@ -205,20 +205,20 @@ export class list extends SmarkComponent {
         };
         //}}}
         // Autoscroll handling:{{{
-        if (autoscroll == "elegant" && !! newChild) {
-            makeRoom(newChild.target, - newChild.offsetHeight);
+        if (autoscroll == "elegant" && !! newItem) {
+            makeRoom(newItem.target, - newItem.offsetHeight);
         } else {
             const moveTarget = (
-                ! newChild ? null
-                : autoscroll == "self" ? newChild
-                : autoscroll == "parent" ? newChild.parent
+                ! newItem ? null
+                : autoscroll == "self" ? newItem
+                : autoscroll == "parent" ? newItem.parent
                 : null
             );
             if (moveTarget) moveTarget.moveTo();
         };
         //}}}
         // Execute "onRendered" callbacks:{{{
-        onRenderedCbks.forEach(cbk=>cbk(newChild));
+        onRenderedCbks.forEach(cbk=>cbk(newItem));
         //}}}
         me.getActions("count").forEach(
             acc=>acc.target.innerText = String(me.children.length)
@@ -275,7 +275,7 @@ export class list extends SmarkComponent {
                 };
             };
             if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
-            let oldChild = null;
+            let oldItem = null;
             const newChildren = me.children
                 .filter(child=>{
                     if (child.target.isSameNode(currentTarget.target)) {
@@ -290,7 +290,7 @@ export class list extends SmarkComponent {
                             if (moveTarget) moveTarget.moveTo();
                         };
 
-                        oldChild = child;
+                        oldItem = child;
                         return false;
                     };
                     return true;
@@ -309,21 +309,21 @@ export class list extends SmarkComponent {
                 origin,
                 context,
                 target: currentTarget,  // <--- Effective target.
-                oldChild,                 // Child going to be removed.
-                oldItem: oldChild.target, // Its target (analogous to addItem event).
+                oldItem,                 // Child going to be removed.
+                oldItemTarget: oldItem.target, // Its target (analogous to addItem event).
                 options,
                 onRemoved: cbk => onRemovedCbks.push(cbk),
             });
             //}}}
 
-            oldChild.target.remove();
+            oldItem.target.remove();
             me.children = newChildren;
 
             me.getActions("count").forEach(
                 acc=>acc.target.innerText = String(me.children.length)
             );
 
-            // Execute "onRendered" callbacks:{{{
+            // Execute "onRemoved" callbacks:{{{
             onRemovedCbks.forEach(cbk=>cbk());
             //}}}
 
