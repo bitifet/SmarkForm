@@ -18,25 +18,27 @@ interactions, with no need to deal with complex JavaScript code.
 ## Features
 
 <details>
-<summary>✔️  <b>Markup-driven</b></summary>
+<summary>✔️  <b>Markup-driven and Intuitive API</b></summary>
 <ul>
   <li>👉 Create powerful interactive forms with just plain htmL.</li>
   <li>👉 ...or (<a href="#summ_recommendations">advised</a>) use your preferred template engine.</li>
   <li>👉 Just add <code>data-smark</code> attribute to relevant tags and see the magic.</li>
+  <li>👉 Intuitive option names.<ul>
+    <li>
+      <b>Ex.:</b>
+      <code>&lt;button data-smark='{action: "addItem", for: "myList"&gt;</code>
+    </li>
+  </ul></li>
+  <li>👉 Addressable elements by easy-to-read path-style relative or absolute addresses.</li>
+  <li>👉 Complete separation between View and Controller logic.</li>
 </ul>
 </details>
 
 <details>
-<summary>✔️  <b>Easy to use</b></summary>
+<summary>✔️  <b>Easy to use and advanced capabilities</b></summary>
 <ul>
   <li>👉 Leverage your existing HTML and CSS knowledge to create powerful forms.</li>
   <li>👉 No need for extensive JavaScript coding.</li>
-</ul>
-</details>
-
-<details>
-<summary>✔️  <b>Advanced capabilities</b></summary>
-<ul>
   <li>👉 Add or remove items from lists with optional lower and upper limits.</li>
   <li>👉 Context-based actions (no need to hard-wire context and/or target).</li>
   <li>🚧 Dynamic and reactive options loading for dropdowns (comming soon).</li>
@@ -53,22 +55,11 @@ interactions, with no need to deal with complex JavaScript code.
 </details>
 
 <details>
-<summary>✔️  <b>Intuitive API</b></summary>
+<summary>✔️  <b>Lightweight yet highly compatible</b></summary>
 <ul>
-  <li>👉 Intuitive option names.<ul>
-    <li>
-      <b>Ex.:</b>
-      <code>&lt;button data-smark='{action: "addItem", for: "myList"&gt;</code>
-    </li>
-  </ul></li>
-  <li>👉 Addressable elements by easy-to-read path-style relative or absolute addresses.</li>
-<ul>
-</details>
-
-<details>
-<summary>✔️  <b>MVC Enabled</b></summary>
-<ul>
-  <li>👉 Complete separation between View and Controller logic.</li>
+  <li>👉 Bundled all three as ES Module, UMD and plain javascript file.</li>
+  <li>👉 All of them less than 20KB each!</li>
+  <li>👉 &gt; 0.25%, browser coverage through Babel</li>
 <ul>
 </details>
 

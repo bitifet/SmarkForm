@@ -18,6 +18,21 @@
     "type": "git",
     "url": "git+https://github.com/bitifet/SmarkForm.git"
   },
+  "keywords": [
+    "JavaScript",
+    "Markup-Driven",
+    "SmarkForm",
+    "lightweight",
+    "Form",
+    "Component",
+    "DOM",
+    "web",
+    "framework",
+    "Vanilla",
+    "html",
+    "css-agnostic",
+    "template"
+  ],
   "author": "Joan Miquel Torres <joanmi@bitifet.net>",
   "license": "GPL-3.0",
   "bugs": {
