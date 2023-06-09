@@ -15,19 +15,10 @@ Powerful while effortless Markup-driven and Extendable forms
 <!-- vim-markdown-toc GitLab -->
 
 * [👉 The Basics](#-the-basics)
-    * [👉 Components and Actions](#-components-and-actions)
-        * [Components](#components)
-        * [Actions](#actions)
-* [👉 Core Component Types](#-core-component-types)
-* [👉 Component Options](#-component-options)
-* [👉 data-smark (options) object](#-data-smark-options-object)
-    * [type property](#type-property)
-        * [Common properties for components](#common-properties-for-components)
-            * [name](#name)
-    * [action property](#action-property)
-        * [Common properties for actions](#common-properties-for-actions)
-            * [for](#for)
-            * [to](#to)
+    * [The `data-smark` attribute](#the-data-smark-attribute)
+    * [Components and Actions](#components-and-actions)
+    * [Components](#components)
+    * [Actions](#actions)
 * [👉 Data Import and Export methods](#-data-import-and-export-methods)
 * [💾 Code Snippets and Samples](#-code-snippets-and-samples)
 
@@ -76,70 +67,84 @@ Bla bla bla...
 
 </details>
 
-> ------------------------------------------
-> ## 🚧 ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ 🚧
-> 
-> This documentation is still in draft stage.
-> 
-> All information may be incomplete, inaccurate, outdated or even **completely
-> wrong**.
-> 
-> 👍 We welcome any feedback, suggestions, or improvements as we continue to
-> enhance and expand the functionality of SmarkForm.
-> ------------------------------------------
+------------------------------------------
 
 
+－－－－－－－－－－－－－－－－<br />
+🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ<br />
+－－－－－－－－－－－－－－－－<br />
 
+⛏️ This documentation is still in **draft** stage.
 
+⚠️  All information may be incomplete, inaccurate, outdated or even **completely
+wrong**.
 
+🙏 We welcome any feedback, suggestions, or improvements as we continue to
+enhance and expand the functionality of SmarkForm.
 
-## 👉 The Basics
+------------------------------------------
 
-To build a simple SmarkForm form you could start with simple html page:
+| [⏫](#-table-of-contents) |  |
+|--|--|
+##  👉 The Basics
 
-```html
-<html>
-  <head>
-    <title>My first SmarkForm form</title>
-  </head>
-  <body>
-    <div id="myForm">
-      <p>
-        <label for="name">Name</label>
-        <input data-smark="data-smark" name="name" type="text"/>
-      </p>
-      <p>
-        <label for="surname">Surname</label>
-        <input data-smark="data-smark" name="surname" type="text"/>
-      </p>
-      <hr/>
-      <button data-smark='{action: "cancel"}'>Cancel</button>
-      <button data-smark='{action: "submit"}'>Submit</button>
-    </div>
-    <script src="path/to/SmarkForm.umd.js"></script>
-    <script>
-      const myForm = new SmarkForm(
-          document.querySelector("#myForm")
-          , {
-              submit({context}) {
-                  alert (JSON.stringify(context.export()));
-              },
-              cancel({context}) {
-                  if (
-                      context.isEmpty()
-                      || confirm("Are you sure?")
-                  )  context.empty();
-              },
-          }
-      );
-    </script>
-  </body>
-</html>
-```
+| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
+|--|--|
+### The `data-smark` attribute
 
-### 👉 Components and Actions
+The `data-smark` attribute is used in SmarkForm to mark which DOM (HTML tags)
+elements are relevant to smarkform and, at the same time, **provide the
+required properties** for its enhancement as *SmarkForm* component.
 
-#### Components
+This way, those elements are enhanced as *SmarkForm components* while the rest
+are completely ignored by *SmarkForm*.
+
+> 📌 The only exceptions to that are:
+> 1. The DOM element passed to SmarkForm constructor is always a *SmarkForm*
+>    component.
+> 2. The item template of a list component (its only allowed direct child in
+>    HTML source before render) is always a *SmarkForm* component, by default
+>    of the 'form' type and, hence, the `data-smark` attribute can be ommited.
+
+**Syntax:**
+
+The `data-smark` attribute can be specified in three different ways:
+
+  1. Without any value (Ex.: `<textarea ... data-smark>`).
+    - This way the (mandatory) component type is infered in function of the
+      actual tag (in this case, it is infered as *input* type).
+
+  2. With a string value (Ex.: `<div ... data-smark="singleton">`).
+    - This is equivalent as `<div ... data-smark='{"type": "singleton"}'>`.
+
+  3. With a valid JSON string (Ex.: `<div data-smark='{"type"="list", "name":
+     "myList"}'>`).
+
+**Mandatory attributes:**
+
+  * The `type` attribute is always necessary to determine which component type
+    controller must be used to render the component. But many times it can be
+    contextually infered either by the actual tag name or for the presence of
+    the `action` property which forces the type to "action".
+
+  * The `name` attribute is necessary for all **non action** components.
+    - If not explicitly provided it can be infered by the presence of the
+      `name` property of the actual tag being enhanced. Ex.: `<input name="foo"
+      data-smark>`.
+    - If not provided and cannot be infered, a randomly generated name will be
+      used in place.
+
+**Other attributes:**
+
+...
+
+| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
+|--|--|
+### Components and Actions
+
+| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
+|--|--|
+### Components
 
 A SmarkForm *component* is just a DOM element (HTML tag) which has a
 "data-smark" property providding a JSON-formatted *options* object.
@@ -160,7 +165,9 @@ It looks like as follows:
 > ```
 
 
-#### Actions
+| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
+|--|--|
+### Actions
 
 A SmarkForm *action* is a *component* of type "action" and a (mandatory)
 property "action" pointing to the actual action to be taken when clicked.
@@ -180,88 +187,18 @@ presence of the *action* property itself) but, if present, its value must be
 
 
 
-## 👉 Core Component Types
-
-| Type | Description                 | Shared Capabilities                  |
-|------|-----------------------------|--------------------------------------|
-| [Form](type_form.md)           |   | [foldable](capabilities.md#foldable) |
-| [Input](type_input.md)         |   |                                      |
-| [List](type_list.md)           |   | [foldable](capabilities.md#foldable) |
-| [Singleton](type_singleton.md) |   |                                      |
-| [Action](type_action.md)       |   |                                      |
 
 
-
-
-## 👉 Component Options
-
-...
-
-------------
-
-For regular components...
-
-type            | 🔒 action | form | list | input |
-----------------|-----------|------|------|-------|
-action          | [☑️ ](#action-property) | ❌ | ❌ | ❌ |
-name            | ✖️      | [✅]() 
-for             | [✅]() | 🔗      | 🔗   | 🔗    |
-to              | [✅]() | 🔗      | 🔗   | 🔗    |
-
-(Legend to be continued...)
-
-
-For actions...
-
-type            | 🔒 action | form | list | input |
-----------------|-----------|------|------|-------|
-foldedClass     | [❓]() | [🔗]() | [🔗]() | ✖️  |
-unfoldedClass   | [❓]() | [🔗]() | [🔗]() | ✖️  |
-keep_non_empty  | [❓]() |        | [🔗]() | ✖️  |
-autoscroll      | [❓]() |        | [🔗]() | ✖️  |
-failback        | [❓]() |        | [🔗]() | ✖️  |
-
-------------
-
-✅ Optional option.
-☑️  Mandatory option.
-❓ Depends on targetted component type.
-🔗 Have actions supporting it.
-✖️  Unused/Ignored option.
-❌ Forbidden (not allowed for that type)
-🔒 Forcibly set to when [action property](#action-property) is defined.
-
-
-## 👉 data-smark (options) object
-
-### type property
-
-#### Common properties for components
-
-##### name
-
-
-### action property
-
-
-#### Common properties for actions
-
-##### for
-
-##### to
-
-
-
-
-
-
-
-
+| [⏫](#-table-of-contents) |  |
+|--|--|
 ## 👉 Data Import and Export methods
 
 
 
+| [⏫](#-table-of-contents) |  |
+|--|--|
 ## 💾 Code Snippets and Samples
 
+  * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 
 

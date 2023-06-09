@@ -161,8 +161,8 @@ dist
 
 ## Usage
 
-> 📌 For detailed usage instructions and API reference check out [SmarkForm
-> Manual](doc/index.md).
+> 📌 For detailed usage instructions and API reference check out [📔 SmarkForm
+> Reference Manual](doc/index.md).
 
 
 <details>
@@ -245,7 +245,7 @@ Bla bla bla...
 <details>
 <summary>✅ See Also</summary>
 
-  * [💾 Code Snippets and Samples](doc/index.md#-code-snippets-and-samples)
+  * [📔 SmarkForm Refernce Manual](doc/index.md)
 
   * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 
