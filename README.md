@@ -15,6 +15,10 @@ interactions, with no need to deal with complex JavaScript code.
 [![npm dependents](https://badgen.net/npm/dependents/smarkform)](https://www.npmjs.com/package/smarkform?activeTab=dependents)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
+<a href="doc/index.md">
+<img align="right" alt="Reference Manual" src="doc/ReferenceManual.png" />
+</a>
+
 ## Features
 
 <details>
