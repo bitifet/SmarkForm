@@ -7,16 +7,17 @@ Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
 
+<!-- Table of Contents {{{ -->
 
-
-## About SmarkForm
-
-<details>
+<table align="right"><tr><td>
+<details open>
 <summary>
-<h3>Introduction</h2>
+<strong>📖 Table of Contents</strong>
 </summary>
+
 <!-- vim-markdown-toc GitLab -->
 
+* [About SmarkForm](#about-smarkform)
 * [The Basics](#the-basics)
     * [The `data-smark` attribute](#the-data-smark-attribute)
     * [Components and Actions](#components-and-actions)
@@ -26,6 +27,19 @@ Powerful while effortless Markup-driven and Extendable forms
 * [Code Snippets and Samples](#code-snippets-and-samples)
 
 <!-- vim-markdown-toc -->
+
+</details>
+</td></tr></table>
+
+<!-- }}} -->
+
+
+## About SmarkForm
+
+<details>
+<summary>
+<h3>Introduction</h2>
+</summary>
 
 
 SmarkForm simplifies the creation of interactive forms in web applications,
