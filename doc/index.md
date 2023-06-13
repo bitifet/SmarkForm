@@ -7,25 +7,27 @@ Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
 
-<details>
+
+<table align="right"><tr><td>
+<details open>
 <summary>
-<h2>📖 Table of Contents</h2>
+<strong>📖 Table of Contents</strong>
 </summary>
 
 <!-- vim-markdown-toc GitLab -->
 
-* [👉 The Basics](#-the-basics)
+* [The Basics](#the-basics)
     * [The `data-smark` attribute](#the-data-smark-attribute)
     * [Components and Actions](#components-and-actions)
     * [Components](#components)
     * [Actions](#actions)
-* [👉 Data Import and Export methods](#-data-import-and-export-methods)
-* [💾 Code Snippets and Samples](#-code-snippets-and-samples)
+* [Data Import and Export methods](#data-import-and-export-methods)
+* [Code Snippets and Samples](#code-snippets-and-samples)
 
 <!-- vim-markdown-toc -->
 
 </details>
-
+</td></tr></table>
 
 
 <details>
@@ -33,7 +35,7 @@ Powerful while effortless Markup-driven and Extendable forms
 <h2>📜 About SmarkForm</h2>
 </summary>
 
-<h3>👉 Introduction</h2>
+<h3>Introduction</h2>
 
 SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
@@ -55,13 +57,13 @@ own custom component types.
 > current version, but they are planned for inclusion in the upcoming 1.0.0
 > release.
 
-<h3>👉 Principles</h2>
+<h3>Principles</h2>
 
 Bla bla bla...
 
 
 
-<h3>👉 History and Motivation</h2>
+<h3>History and Motivation</h2>
 
 Bla bla bla...
 
@@ -84,12 +86,8 @@ enhance and expand the functionality of SmarkForm.
 
 ------------------------------------------
 
-| [⏫](#-table-of-contents) |  |
-|--|--|
-##  👉 The Basics
+##  The Basics
 
-| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
-|--|--|
 ### The `data-smark` attribute
 
 The `data-smark` attribute is used in SmarkForm to mark which DOM (HTML tags)
@@ -138,12 +136,9 @@ The `data-smark` attribute can be specified in three different ways:
 
 ...
 
-| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
-|--|--|
+
 ### Components and Actions
 
-| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
-|--|--|
 ### Components
 
 A SmarkForm *component* is just a DOM element (HTML tag) which has a
@@ -165,8 +160,6 @@ It looks like as follows:
 > ```
 
 
-| [⏫](#-table-of-contents) | [🔼](#-the-basics) |
-|--|--|
 ### Actions
 
 A SmarkForm *action* is a *component* of type "action" and a (mandatory)
@@ -189,15 +182,11 @@ presence of the *action* property itself) but, if present, its value must be
 
 
 
-| [⏫](#-table-of-contents) |  |
-|--|--|
-## 👉 Data Import and Export methods
+## Data Import and Export methods
 
 
 
-| [⏫](#-table-of-contents) |  |
-|--|--|
-## 💾 Code Snippets and Samples
+## Code Snippets and Samples
 
   * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 
