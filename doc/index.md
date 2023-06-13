@@ -8,12 +8,13 @@ Powerful while effortless Markup-driven and Extendable forms
 
 
 
-<table align="right"><tr><td>
-<details open>
-<summary>
-<strong>📖 Table of Contents</strong>
-</summary>
 
+## About SmarkForm
+
+<details>
+<summary>
+<h3>Introduction</h2>
+</summary>
 <!-- vim-markdown-toc GitLab -->
 
 * [The Basics](#the-basics)
@@ -26,16 +27,6 @@ Powerful while effortless Markup-driven and Extendable forms
 
 <!-- vim-markdown-toc -->
 
-</details>
-</td></tr></table>
-
-
-<details>
-<summary>
-<h2>📜 About SmarkForm</h2>
-</summary>
-
-<h3>Introduction</h2>
 
 SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
@@ -57,34 +48,48 @@ own custom component types.
 > current version, but they are planned for inclusion in the upcoming 1.0.0
 > release.
 
+
+
+</details>
+
+
+<details>
+<summary>
 <h3>Principles</h2>
-
-Bla bla bla...
-
-
-
-<h3>History and Motivation</h2>
+</summary>
 
 Bla bla bla...
 
 </details>
 
-------------------------------------------
+
+<details>
+<summary>
+<h3>History and Motivation</h2>
+</summary>
+
+Bla bla bla...
+
+</details>
 
 
-－－－－－－－－－－－－－－－－<br />
-🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ<br />
-－－－－－－－－－－－－－－－－<br />
+<table>
+<tr><th>
+🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
+</h></tr>
+<tr><td>
 
-⛏️ This documentation is still in **draft** stage.
+This documentation is still in **draft** stage.
 
 ⚠️  All information may be incomplete, inaccurate, outdated or even **completely
 wrong**.
 
-🙏 We welcome any feedback, suggestions, or improvements as we continue to
+👍 We welcome any feedback, suggestions, or improvements as we continue to
 enhance and expand the functionality of SmarkForm.
 
-------------------------------------------
+</td></tr>
+</table>
+
 
 ##  The Basics
 
