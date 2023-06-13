@@ -7,31 +7,6 @@ Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
 
-<!-- Table of Contents {{{ -->
-
-<table align="right"><tr><td>
-<details open>
-<summary>
-<strong>📖 Table of Contents</strong>
-</summary>
-
-<!-- vim-markdown-toc GitLab -->
-
-* [About SmarkForm](#about-smarkform)
-* [The Basics](#the-basics)
-    * [The `data-smark` attribute](#the-data-smark-attribute)
-    * [Components and Actions](#components-and-actions)
-    * [Components](#components)
-    * [Actions](#actions)
-* [Data Import and Export methods](#data-import-and-export-methods)
-* [Code Snippets and Samples](#code-snippets-and-samples)
-
-<!-- vim-markdown-toc -->
-
-</details>
-</td></tr></table>
-
-<!-- }}} -->
 
 
 ## About SmarkForm
@@ -40,6 +15,17 @@ Powerful while effortless Markup-driven and Extendable forms
 <summary>
 <h3>Introduction</h2>
 </summary>
+<!-- vim-markdown-toc GitLab -->
+
+* [The Basics](#the-basics)
+    * [The `data-smark` Attribute](#the-data-smark-attribute)
+    * [Components and Actions](#components-and-actions)
+    * [Components](#components)
+    * [Actions](#actions)
+* [Data Import and Export methods](#data-import-and-export-methods)
+* [Code Snippets and Samples](#code-snippets-and-samples)
+
+<!-- vim-markdown-toc -->
 
 
 SmarkForm simplifies the creation of interactive forms in web applications,
@@ -61,8 +47,6 @@ own custom component types.
 > 🚧 **Please note** that select dropdowns are not yet implemented in the
 > current version, but they are planned for inclusion in the upcoming 1.0.0
 > release.
-
-
 
 </details>
 
@@ -91,7 +75,7 @@ Bla bla bla...
 <tr><th>
 🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
 </h></tr>
-<tr><td>
+<tr><td align="center">
 
 This documentation is still in **draft** stage.
 
@@ -104,52 +88,55 @@ enhance and expand the functionality of SmarkForm.
 </td></tr>
 </table>
 
+## The Basics
 
-##  The Basics
+### The `data-smark` Attribute
 
-### The `data-smark` attribute
+The `data-smark` attribute is used in SmarkForm to identify and enhance
+specific DOM elements (HTML tags) as SmarkForm components. It also provides the
+required properties for their enhancement.
 
-The `data-smark` attribute is used in SmarkForm to mark which DOM (HTML tags)
-elements are relevant to smarkform and, at the same time, **provide the
-required properties** for its enhancement as *SmarkForm* component.
+By using the `data-smark` attribute, you can mark elements to be transformed
+into SmarkForm components, while the remaining elements are ignored by
+SmarkForm.
 
-This way, those elements are enhanced as *SmarkForm components* while the rest
-are completely ignored by *SmarkForm*.
-
-> 📌 The only exceptions to that are:
-> 1. The DOM element passed to SmarkForm constructor is always a *SmarkForm*
->    component.
-> 2. The item template of a list component (its only allowed direct child in
->    HTML source before render) is always a *SmarkForm* component, by default
->    of the 'form' type and, hence, the `data-smark` attribute can be ommited.
+> 📌 The following are exceptions to this rule:
+>
+> 1. The DOM element passed to the SmarkForm constructor is always considered a
+>    SmarkForm component.
+> 2. The item template of a list component, which is the only allowed direct
+>    child in the HTML source before rendering, is always a SmarkForm component
+>    by default. In this case, the `data-smark` attribute can be omitted.
 
 **Syntax:**
 
 The `data-smark` attribute can be specified in three different ways:
 
-  1. Without any value (Ex.: `<textarea ... data-smark>`).
-    - This way the (mandatory) component type is infered in function of the
-      actual tag (in this case, it is infered as *input* type).
+1. Without any value (e.g., `<textarea ... data-smark>`).
+   - In this case, the component type is inferred based on the actual tag. For
+   example, it is inferred as an *input* type for `<textarea>`.
 
-  2. With a string value (Ex.: `<div ... data-smark="singleton">`).
-    - This is equivalent as `<div ... data-smark='{"type": "singleton"}'>`.
+2. With a string value (e.g., `<div ... data-smark="singleton">`).
+   - This is equivalent to `<div ... data-smark='{"type": "singleton"}'>`.
 
-  3. With a valid JSON string (Ex.: `<div data-smark='{"type"="list", "name":
-     "myList"}'>`).
+3. With a valid JSON string (e.g., `<div data-smark='{"type": "list", "name":
+   "myList"}'>`).
 
 **Mandatory attributes:**
 
-  * The `type` attribute is always necessary to determine which component type
-    controller must be used to render the component. But many times it can be
-    contextually infered either by the actual tag name or for the presence of
-    the `action` property which forces the type to "action".
+The following attributes are mandatory:
 
-  * The `name` attribute is necessary for all **non action** components.
-    - If not explicitly provided it can be infered by the presence of the
-      `name` property of the actual tag being enhanced. Ex.: `<input name="foo"
-      data-smark>`.
-    - If not provided and cannot be infered, a randomly generated name will be
-      used in place.
+- The `type` attribute is always necessary to determine which component type
+  controller should be used for rendering the component. In many cases, it can be
+  inferred based on the tag name or the presence of the `action` property, which
+  forces the type to be "action".
+
+- The `name` attribute is required for all non-action components.
+   - If not explicitly provided, it can be inferred from the `name` property of
+     the tag being enhanced. For example, `<input name="foo" data-smark>`.
+   - If not provided and cannot be inferred, a randomly generated name will be
+     used.
+
 
 **Other attributes:**
 
