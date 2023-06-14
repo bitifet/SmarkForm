@@ -82,12 +82,12 @@ designers lose control over the appearance of inner components.
 As a result, this approach leads to non-reusable and bespoke implementations
 for each form.
 
+
+### The SmarkForm Approach
+
 SmarkForm tackles these limitations by providing a powerful and flexible
 solution for building forms directly in the markup (view layer) that seamlessly
 handles deep JSON structures.
-
-
-### The SmarkForm Approach
 
 With SmarkForm, **designers** can create and modify reusable form components
 that effortlessly handle complex data structures, including lists (arrays) with
