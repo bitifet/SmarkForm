@@ -173,23 +173,23 @@ The `data-smark` attribute can be specified in three different ways:
 3. With a valid JSON string (e.g., `<div data-smark='{"type": "list", "name":
    "myList"}'>`).
 
-**Mandatory attributes:**
+**Mandatory properties:**
 
-The following attributes are mandatory:
+The following properties are mandatory:
 
-- The `type` attribute is always necessary to determine which component type
+- The `type` property is always necessary to determine which component type
   controller should be used for rendering the component. In many cases, it can be
   inferred based on the tag name or the presence of the `action` property, which
   forces the type to be "action".
 
-- The `name` attribute is required for all non-action components.
+- The `name` property is required for all non-action components.
    - If not explicitly provided, it can be inferred from the `name` property of
      the tag being enhanced. For example, `<input name="foo" data-smark>`.
    - If not provided and cannot be inferred, a randomly generated name will be
      used.
 
 
-**Other attributes:**
+**Other properties:**
 
 ...
 

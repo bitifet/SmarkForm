@@ -59,7 +59,7 @@ list outside of the actual list.
 ```
 
 For convenience context is passed to the action handler by a property of that
-name event it is always the class of its component type.
+name even it is always the class of its component type.
 
 For programatically triggered actions, context is (as expected) always the
 component to from wihch we call the action.
