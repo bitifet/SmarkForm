@@ -18,6 +18,10 @@ Powerful while effortless Markup-driven and Extendable forms
 <!-- vim-markdown-toc GitLab -->
 
 * [About SmarkForm](#about-smarkform)
+    * [Introduction](#introduction)
+    * [Why SmarkForm](#why-smarkform)
+    * [Principles](#principles)
+    * [History and Motivation](#history-and-motivation)
 * [The Basics](#the-basics)
     * [The `data-smark` Attribute](#the-data-smark-attribute)
     * [Components and Actions](#components-and-actions)
@@ -36,10 +40,7 @@ Powerful while effortless Markup-driven and Extendable forms
 
 ## About SmarkForm
 
-<details>
-<summary>
-<h3>Introduction</h3>
-</summary>
+### Introduction
 
 SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
@@ -61,13 +62,8 @@ own custom component types.
 > current version, but they are planned for inclusion in the upcoming 1.0.0
 > release.
 
-</details>
 
-
-<details>
-<summary>
-<h3>Why SmarkForm</h3>
-</summary>
+### Why SmarkForm
 
 Traditional HTML forms are limited in structure and lack flexibility.
 
@@ -95,31 +91,15 @@ predefined maximum and/or minimum number of items and many other nuances
 directly handled from the markup, allowing for greater flexibility and
 efficiency in form development.
 
-</details>
 
-
-
-
-
-
-<details>
-<summary>
-<h3>Principles</h3>
-</summary>
+### Principles
 
 Bla bla bla...
 
-</details>
 
-
-<details>
-<summary>
-<h3>History and Motivation</h3>
-</summary>
+### History and Motivation
 
 Bla bla bla...
-
-</details>
 
 
 <table>
