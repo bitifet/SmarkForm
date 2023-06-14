@@ -37,6 +37,24 @@ Powerful while effortless Markup-driven and Extendable forms
 <!-- }}} -->
 
 
+<table align="left">
+<tr><th>
+🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
+</th></tr>
+<tr><td align="center">
+
+This documentation is still in **draft** stage.
+
+⚠️  All information may be incomplete, inaccurate, outdated or even **completely
+wrong**.
+
+👍 We welcome any feedback, suggestions, or improvements as we continue to
+enhance and expand the functionality of SmarkForm.
+
+</td></tr>
+</table>
+
+
 ## About SmarkForm
 
 ### Introduction
@@ -98,23 +116,6 @@ and export JSON data from the controller layer.
 This approach allows for greater flexibility and efficiency in form development
 and maintenance.
 
-
-<table>
-<tr><th>
-🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
-</th></tr>
-<tr><td align="center">
-
-This documentation is still in **draft** stage.
-
-⚠️  All information may be incomplete, inaccurate, outdated or even **completely
-wrong**.
-
-👍 We welcome any feedback, suggestions, or improvements as we continue to
-enhance and expand the functionality of SmarkForm.
-
-</td></tr>
-</table>
 
 ## The Basics
 
