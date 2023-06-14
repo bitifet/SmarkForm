@@ -38,7 +38,7 @@ Powerful while effortless Markup-driven and Extendable forms
 
 <details>
 <summary>
-<h3>Introduction</h2>
+<h3>Introduction</h3>
 </summary>
 
 SmarkForm simplifies the creation of interactive forms in web applications,
@@ -66,7 +66,45 @@ own custom component types.
 
 <details>
 <summary>
-<h3>Principles</h2>
+<h3>Why SmarkForm</h3>
+</summary>
+
+Traditional HTML forms are limited in structure and lack flexibility.
+
+They only support a single level of discrete key-value pairs, limited to
+text-only values.
+
+However, modern applications often require complex JSON structures with nested
+objects and arrays, which cannot be directly accommodated by standard HTML
+forms.
+
+Web component libraries and frameworks circumvent this problem by moving
+templating and design logic from the view to the controller layer.
+
+As a result, developers are forced to manually implement custom behaviors by
+connecting multiple form components together. This approach leads to
+non-reusable and bespoke implementations for each form.
+
+SmarkForm addresses these limitations by providing a powerful and flexible
+solution for building forms directly in the markup (view layer) that can handle
+deep JSON structures seamlessly.
+
+With SmarkForm, developers can create reusable form components that
+effortlessly handle complex data structures, including lists (arrays) with
+predefined maximum and/or minimum number of items and many other nuances
+directly handled from the markup, allowing for greater flexibility and
+efficiency in form development.
+
+</details>
+
+
+
+
+
+
+<details>
+<summary>
+<h3>Principles</h3>
 </summary>
 
 Bla bla bla...
@@ -76,7 +114,7 @@ Bla bla bla...
 
 <details>
 <summary>
-<h3>History and Motivation</h2>
+<h3>History and Motivation</h3>
 </summary>
 
 Bla bla bla...
