@@ -20,8 +20,7 @@ Powerful while effortless Markup-driven and Extendable forms
 * [About SmarkForm](#about-smarkform)
     * [Introduction](#introduction)
     * [Why SmarkForm](#why-smarkform)
-    * [Principles](#principles)
-    * [History and Motivation](#history-and-motivation)
+    * [The SmarkForm Approach](#the-smarkform-approach)
 * [The Basics](#the-basics)
     * [The `data-smark` Attribute](#the-data-smark-attribute)
     * [Components and Actions](#components-and-actions)
@@ -46,14 +45,14 @@ SmarkForm simplifies the creation of interactive forms in web applications,
 empowering designers to utilize custom templates and seamlessly incorporate
 interaction through contextual actions.
 
-Designers can enhance their templates by using their own HTML and CSS, without
+**Designers** can enhance their templates by using their own HTML and CSS, without
 the need to deal with complex JavaScript code. SmarkForm enables advanced
 capabilities, such as adding or removing items from a list and dynamically
 loading options for select dropdowns, even if they depend on the values of any
 other field in the form. This can be achieved simply by adding the 'data-smark'
 property to relevant tags.
 
-Developers can leverage these templates as views to import and manipulate
+**Developers** can leverage these templates as views to import and manipulate
 complex data in JSON format. They also have the flexibility to access any
 component in the form tree using simple path-style addresses or develop their
 own custom component types.
@@ -65,41 +64,39 @@ own custom component types.
 
 ### Why SmarkForm
 
-Traditional HTML forms are limited in structure and lack flexibility.
+Traditional HTML forms are limited in structure and lack flexibility. They only
+support a single level of discrete key-value pairs, limited to text-only
+values.
 
-They only support a single level of discrete key-value pairs, limited to
-text-only values.
+However, **modern applications often require complex JSON structures** with
+nested objects and arrays, which cannot be directly accommodated by legacy
+HTML forms.
 
-However, modern applications often require complex JSON structures with nested
-objects and arrays, which cannot be directly accommodated by standard HTML
-forms.
+Web component libraries and frameworks address this issue by shifting
+templating and design logic from the view to the controller layer. However,
+this approach forces developers to manually implement custom behaviors by
+connecting multiple form components together. Additionally, it places the
+burden of dealing with templating and styling details on developers, while
+designers lose control over the appearance of inner components.
 
-Web component libraries and frameworks circumvent this problem by moving
-templating and design logic from the view to the controller layer.
+As a result, this approach leads to non-reusable and bespoke implementations
+for each form.
 
-As a result, developers are forced to manually implement custom behaviors by
-connecting multiple form components together. This approach leads to
-non-reusable and bespoke implementations for each form.
-
-SmarkForm addresses these limitations by providing a powerful and flexible
-solution for building forms directly in the markup (view layer) that can handle
-deep JSON structures seamlessly.
-
-With SmarkForm, developers can create reusable form components that
-effortlessly handle complex data structures, including lists (arrays) with
-predefined maximum and/or minimum number of items and many other nuances
-directly handled from the markup, allowing for greater flexibility and
-efficiency in form development.
+SmarkForm tackles these limitations by providing a powerful and flexible
+solution for building forms directly in the markup (view layer) that seamlessly
+handles deep JSON structures.
 
 
-### Principles
+### The SmarkForm Approach
 
-Bla bla bla...
+With SmarkForm, **designers** can create and modify reusable form components
+that effortlessly handle complex data structures, including lists (arrays) with
+predefined maximum and/or minimum number of items, and many other nuances
+directly handled from the markup. Meanwhile, **developers** can easily import
+and export JSON data from the controller layer.
 
-
-### History and Motivation
-
-Bla bla bla...
+This approach allows for greater flexibility and efficiency in form development
+and maintenance.
 
 
 <table>
