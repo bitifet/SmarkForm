@@ -1,3 +1,4 @@
+
 <a href="https://www.npmjs.com/package/smarkform">
 <img alt="SmarkForm Logo" align="left" src="SmarkForm_logo.jpg">
 </a>
@@ -6,14 +7,13 @@
 Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
+<!-- Table of Contents {{{ -->
 
-
-
-<table align="left">
-<tr><th>
-🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
-</th></tr>
-<tr><td align="center">
+<table align="right"><tr><td>
+<details open>
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
 
 <!-- vim-markdown-toc GitLab -->
 
@@ -30,6 +30,18 @@ Powerful while effortless Markup-driven and Extendable forms
 * [Code Snippets and Samples](#code-snippets-and-samples)
 
 <!-- vim-markdown-toc -->
+
+</details>
+</td></tr></table>
+
+<!-- }}} -->
+
+<table align="left">
+<tr><th>
+🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
+</th></tr>
+<tr><td align="center">
+
 This documentation is still in **draft** stage.
 
 ⚠️  All information may be incomplete, inaccurate, outdated or even **completely
