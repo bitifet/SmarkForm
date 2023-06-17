@@ -7,13 +7,13 @@ Powerful while effortless Markup-driven and Extendable forms
 </strong>
 
 
-<!-- Table of Contents {{{ -->
 
-<table align="right"><tr><td>
-<details open>
-<summary>
-<strong>📖 Table of Contents</strong>
-</summary>
+
+<table align="left">
+<tr><th>
+🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
+</th></tr>
+<tr><td align="center">
 
 <!-- vim-markdown-toc GitLab -->
 
@@ -30,19 +30,6 @@ Powerful while effortless Markup-driven and Extendable forms
 * [Code Snippets and Samples](#code-snippets-and-samples)
 
 <!-- vim-markdown-toc -->
-
-</details>
-</td></tr></table>
-
-<!-- }}} -->
-
-
-<table align="left">
-<tr><th>
-🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
-</th></tr>
-<tr><td align="center">
-
 This documentation is still in **draft** stage.
 
 ⚠️  All information may be incomplete, inaccurate, outdated or even **completely
@@ -169,7 +156,17 @@ The following properties are mandatory:
 
 **Other properties:**
 
-...
+Depending on actual componenta type other properties may be applicable.
+
+In case of *actions*, despite `type`and `name`, is worth to mention that,
+except for the `for` and `to` properties
+
+
+
+FIXME: To be continued...
+
+TODO: Link 'for' and 'to' to propper type_action.md section...
+
 
 
 ### Components and Actions
@@ -196,6 +193,62 @@ It looks like as follows:
 
 
 ### Actions
+
+*Actions* are operations that can be performed over components.
+
+Some of them such as `import`, `export` and `empty` are available for all
+components types while others are tied to secific types like `addItem` an d
+`removeItem` for lists, etc...
+
+
+----------------------------------------------------------------------------
+
+FIXME: Nowadays import() and export() are not declared as actions because we
+thought there was nowhere from/to import/export on user click.
+
+But this can (and should) change allowing to provide onImport() and onExport()
+callbacks.
+
+This way there will be no need for custom "submit" action (which will be just
+an "export" action button) in our playground example.
+
+Also in that example, "cancel" custom action relies in the "empty" action which
+we can evolve to handle the same small tweaks.
+
+
+**Proposal:**
+
+```javascript
+window.form = new SmarkForm(
+    document.querySelector("#main-form")
+    , {} // "root actions" which now I seriously consider to remove
+    , {
+        autoId: true,
+        async onExportAction({data}) {
+            alert (JSON.stringify(data)));
+        },
+        async onEmptyAction({context, isEmpty, preventDefault}) {
+            // "Legacy" approach:
+            if (
+                (await context.isEmpty())
+                || confirm("Are you sure?")
+            ) return;
+
+            // Approach with additional isEmpty property:
+            if (
+                isEmpty
+                || confirm("Are you sure?")
+            ) return;
+
+            // Abort otherwise:
+            preventDefault();
+        },
+    }
+);
+```
+
+----------------------------------------------------------------------------
+
 
 A SmarkForm *action* is a *component* of type "action" and a (mandatory)
 property "action" pointing to the actual action to be taken when clicked.

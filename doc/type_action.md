@@ -1,6 +1,32 @@
 *action* Component Type
 =======================
 
+
+<!-- Table of Contents {{{ -->
+
+<table align="right"><tr><td>
+<details open>
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+<!-- vim-markdown-toc GitLab -->
+
+* [Actions](#actions)
+    * [Interactions](#interactions)
+    * [Origin](#origin)
+    * [Context](#context)
+    * [Target](#target)
+* [Action Components](#action-components)
+
+<!-- vim-markdown-toc -->
+
+</details>
+</td></tr></table>
+
+<!-- }}} -->
+
+
 Actions
 -------
 
@@ -88,6 +114,11 @@ the item of the list that is going to be removed.
     <button data-smark='{"action":"removeItem"}'>
   </li>
 </ul>
+
+
+
+Action Components
+-----------------
 
 
 

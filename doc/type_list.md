@@ -1,10 +1,13 @@
 *list* Component Type
 =====================
 
+<!-- Table of Contents {{{ -->
 
-Índex
------
-
+<table align="right"><tr><td>
+<details open>
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
 
 <!-- vim-markdown-toc GitLab -->
 
@@ -30,6 +33,12 @@
         * [removeItem (list Event)](#removeitem-list-event)
 
 <!-- vim-markdown-toc -->
+
+</details>
+</td></tr></table>
+
+<!-- }}} -->
+
 
 
 Introduction
