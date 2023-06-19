@@ -20,9 +20,14 @@ window.form = new SmarkForm(
 );
 
 
-form.on("after_export_action", function({data}) {
+form.on("AfterAction_export", function({data}) {
     alert (JSON.stringify(data));
-});
+})
+// Chainability and prevention example:
+// .on("BeforeAction_addItem", function({preventDefault}) {
+//     if (! confirm("addItem?")) preventDefault();
+// })
+;
 
 
 

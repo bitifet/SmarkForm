@@ -8,6 +8,7 @@ function registerEvHandler(evList, evType, evHandler) {
     const me = this;
     if (! evList.has(evType)) evList.set(evType, []);
     evList.get(evType).push(evHandler.bind(me));
+    return me; // Make chainable.
 };
 
 export const events = function events_decorator(target, {kind}) {

@@ -8,8 +8,8 @@ const afterEvent = Symbol("afterEventName");
 export const action = function action_decorator(targetMtd, {kind, name, addInitializer}) {
     if (kind == "method") addInitializer(function registerAction() {
         this.actions[name] = targetMtd.bind(this);
-        this.actions[name][beforeEvent] = `before_${name}_action`;
-        this.actions[name][afterEvent] = `after_${name}_action`;
+        this.actions[name][beforeEvent] = `BeforeAction_${name}`;
+        this.actions[name][afterEvent] = `AfterAction_${name}`;
     });
 };
 
@@ -74,7 +74,7 @@ export async function onActionClick(ev) {
         , `Unknown action ${action}`
         + (context ? ` for ${context.options.type}` : "")
     );
-    if (me.emit(mtd[beforeEvent], options)) {
+    if (await me.emit(mtd[beforeEvent], options)) {
         const data = await mtd(options);
         me.emit(mtd[afterEvent], {...options, data});
     };
