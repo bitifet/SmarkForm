@@ -27,6 +27,7 @@ export class form extends SmarkComponent {
             };
         };
     };//}}}
+    @action
     async export() {//{{{
         const me = this;
         return Object.fromEntries(
@@ -35,6 +36,7 @@ export class form extends SmarkComponent {
             ))
         );
     };//}}}
+    @action
     async import(data = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;

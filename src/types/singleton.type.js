@@ -15,9 +15,11 @@ export class singleton extends form {
             + ` data field but ${numFields} found.`
         );
     };//}}}
+    @action
     async export() {//{{{
         return Object.values(await super.export())[0];
     };//}}}
+    @action
     async import(value = "") {//{{{
         const me = this;
         return await super.import(Object.fromEntries(

@@ -13,10 +13,12 @@ export class input extends SmarkComponent {
         // });
         return;
     };//}}}
+    @action
     async export() {//{{{
         const me = this;
         return me.target.value;
     };//}}}
+    @action
     async import(value = "") {//{{{
         const me = this;
         me.target.value = value;

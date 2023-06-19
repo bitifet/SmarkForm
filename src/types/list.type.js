@@ -76,6 +76,7 @@ export class list extends SmarkComponent {
         return;
     };//}}}
     @mutex("list_mutating")
+    @action
     async export() {//{{{
         const me = this;
         const list = [];
@@ -86,6 +87,7 @@ export class list extends SmarkComponent {
         };
         return list;
     };//}}}
+    @action
     async import(data = []) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:

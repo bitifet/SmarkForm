@@ -20,6 +20,12 @@
     );
 
 
+    form.on("after_export_action", function({data}) {
+        alert (JSON.stringify(data));
+    });
+
+
+
     form.on("addItem", function({
         newItemTarget,
         onRendered,

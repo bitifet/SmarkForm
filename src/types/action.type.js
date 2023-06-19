@@ -2,10 +2,14 @@
 // ====================
 import {SmarkComponent} from "../lib/component.js";
 
+const beforeEvent = Symbol("beforeEventName");
+const afterEvent = Symbol("afterEventName");
 
 export const action = function action_decorator(targetMtd, {kind, name, addInitializer}) {
     if (kind == "method") addInitializer(function registerAction() {
         this.actions[name] = targetMtd.bind(this);
+        this.actions[name][beforeEvent] = `before_${name}_action`;
+        this.actions[name][afterEvent] = `after_${name}_action`;
     });
 };
 
@@ -56,7 +60,7 @@ export class action_type extends SmarkComponent {
     };//}}}
 };
 
-export function onActionClick(ev) {
+export async function onActionClick(ev) {
     const me = this;
     const actionComponent = me.getComponent(ev.target);
     const options = actionComponent.getActionArgs();
@@ -70,7 +74,10 @@ export function onActionClick(ev) {
         , `Unknown action ${action}`
         + (context ? ` for ${context.options.type}` : "")
     );
-    mtd(options);
+    if (me.emit(mtd[beforeEvent], options)) {
+        const data = await mtd(options);
+        me.emit(mtd[afterEvent], {...options, data});
+    };
 };
 
 

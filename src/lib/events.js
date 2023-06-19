@@ -32,20 +32,21 @@ export const events = function events_decorator(target, {kind}) {
                     ...(me[sym_local_events].get(evType) || []),
                     ...(me.root[sym_all_events].get(evType) || []),
                 ];
+                let defaultPrevented = false;
                 if (handlers.length) {
-                    function preventDefault(reason) {
-                        throw new Error(`Default prevented${reason ? ": "+reason : ""}.`);
-                    };
+                    let propagationStopped = false;
+                    const preventDefault = () => defaultPrevented = true;
+                    const stopPropagation = () => propagationStopped = true;
                     for (const handler of handlers) {
+                        if (propagationStopped) break;
                         await handler({
                             ...evData,
                             preventDefault,
+                            stopPropagation,
                         });
                     };
                 };
-                // Resolve (undefined) no matter which errors could have happened in
-                // event handlers UNLESS preventDefault() were called.
-                return;
+                return ! defaultPrevented;
             };
         };
     };
