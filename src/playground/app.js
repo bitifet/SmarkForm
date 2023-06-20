@@ -7,6 +7,9 @@ window.form = new SmarkForm(
     document.querySelector("#main-form")
     , {
         autoId: true,
+        onAfterAction_export({data}) {
+            alert (JSON.stringify(data));
+        },
         customActions: {
             async cancel({context}) {
                 if (
@@ -19,14 +22,10 @@ window.form = new SmarkForm(
 );
 
 
-form.on("AfterAction_export", function({data}) {
-    alert (JSON.stringify(data));
-})
-// Chainability and prevention example:
-// .on("BeforeAction_addItem", function({preventDefault}) {
+// Prevention example:
+// form.on("BeforeAction_addItem", function({preventDefault}) {
 //     if (! confirm("addItem?")) preventDefault();
-// })
-;
+// });
 
 
 
