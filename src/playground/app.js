@@ -30,7 +30,7 @@ form.on("AfterAction_export", function({data}) {
 
 
 
-form.on("addItem", function({
+form.onAll("addItem", function({
     newItemTarget,
     onRendered,
 }) {
@@ -41,7 +41,7 @@ form.on("addItem", function({
     });
 });
 
-form.on("removeItem", async function({
+form.onAll("removeItem", async function({
     oldItemTarget,
     onRemmoved,
 }) {

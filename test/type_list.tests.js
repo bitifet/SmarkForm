@@ -209,9 +209,9 @@ describe('List Component Type Test', function() {
     it('min_items limit applies', async () => {//{{{
         const lengths = await page.evaluate(async () => {
             let error, bubbledError;
-            form.on("error", err=>bubbledError=err);
+            form.onAll("error", err=>bubbledError=err);
             const list = form.find("/employees/0/phones");
-            list.on("error", err=>error=err);
+            list.onAll("error", err=>error=err);
             const initial = list.count(); // Items after initial render.
             await list.removeItem();
             const final = list.count(); // Items after removal attempt.
@@ -242,9 +242,9 @@ describe('List Component Type Test', function() {
     it('max_items limit applies', async () => {//{{{
         const lengths = await page.evaluate(async () => {
             let error, bubbledError;
-            form.on("error", err=>bubbledError=err);
+            form.onAll("error", err=>bubbledError=err);
             const list = form.find("/employees/0/phones");
-            list.on("error", err=>error=err);
+            list.onAll("error", err=>error=err);
             const initial = list.count(); // Items after initial render.
             await list.addItem();
             await list.addItem();

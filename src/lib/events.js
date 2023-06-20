@@ -20,12 +20,8 @@ export const events = function events_decorator(target, {kind}) {
                 const ImRoot = Object.is(me, me.root);
                 me[sym_local_events] = new Map();
                 if (ImRoot) me.root[sym_all_events] = new Map();
-                me.onLocal = registerEvHandler.bind(me, me[sym_local_events]);
+                me.on = registerEvHandler.bind(me, me[sym_local_events]);
                 me.onAll = registerEvHandler.bind(me.root, me.root[sym_all_events]);
-                me.on = ( // Handy alias:
-                    ImRoot ? me.onAll
-                    : me.onLocal
-                );
             };
             async emit(evType, evData) {
                 const me = this;
