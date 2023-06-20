@@ -6,17 +6,16 @@
     window.form = new SmarkForm(
         document.querySelector("#main-form")
         , {
-            async submit({context}) {
-                alert (JSON.stringify(await context.export()));
-            },
-            async cancel({context}) {
-                if (
-                    await context.isEmpty()
-                    || confirm("Are you sure?")
-                )  context.empty();
+            autoId: true,
+            customActions: {
+                async cancel({context}) {
+                    if (
+                        await context.isEmpty()
+                        || confirm("Are you sure?")
+                    )  context.empty();
+                },
             },
         }
-        , {autoId: true}
     );
 
 

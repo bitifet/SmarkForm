@@ -24,8 +24,10 @@ for (const [name, controller] of Object.entries({
 class SmarkForm extends form {
     constructor(
         target
-        , rootActions = {}
-        , formOptions = {}
+        , {
+            customActions = {},
+            ...formOptions
+        } = {}
     ) {
         const options = {
             ...formOptions,
@@ -42,7 +44,7 @@ class SmarkForm extends form {
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(
-                Object.entries(rootActions)
+                Object.entries(customActions)
                     .map(([name, ctrl])=>[name, ctrl.bind(me)])
             ),
         };
