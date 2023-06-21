@@ -37,7 +37,7 @@ export class form extends SmarkComponent {
         );
     };//}}}
     @action
-    async import(data = {}) {//{{{
+    async import({data = {}}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (dataConstructor !== {}.constructor) throw me.renderError(
@@ -55,7 +55,7 @@ export class form extends SmarkComponent {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import(data[key]);
+                        const value = await target.import({data: data[key]});
                         return [key, value];
                     }
                 )
@@ -74,6 +74,6 @@ export class form extends SmarkComponent {
     @action
     async empty() {//{{{
         const me = this;
-        return await me.import({});
+        return await me.import({data: {}});
     };//}}}
 };

@@ -88,7 +88,7 @@ export class list extends SmarkComponent {
         return list;
     };//}}}
     @action
-    async import(data = []) {//{{{
+    async import({data = []}) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
         if (! data instanceof Array) data = [data];
@@ -99,7 +99,7 @@ export class list extends SmarkComponent {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(); // Make room on demand
-            await me.children[i].import(data[i]);
+            await me.children[i].import({data: data[i]});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -344,7 +344,7 @@ export class list extends SmarkComponent {
     @action
     async empty() {//{{{
         const me = this;
-        return await me.import([]);
+        return await me.import({data: []});
     };//}}}
     @action
     count() {

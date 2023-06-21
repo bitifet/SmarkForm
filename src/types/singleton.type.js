@@ -20,16 +20,16 @@ export class singleton extends form {
         return Object.values(await super.export())[0];
     };//}}}
     @action
-    async import(value = "") {//{{{
+    async import({data = ""}) {//{{{
         const me = this;
         return await super.import(Object.fromEntries(
-            [[Object.keys(me.children)[0], value]]
+            [[Object.keys(me.children)[0], data]]
         ));
     };//}}}
     @action
     async empty() {//{{{
         const me = this;
-        await me.import("");
+        await me.import({data: ""});
     };//}}}
 };
 

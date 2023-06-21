@@ -19,9 +19,9 @@ export class input extends SmarkComponent {
         return me.target.value;
     };//}}}
     @action
-    async import(value = "") {//{{{
+    async import({data = ""}) {//{{{
         const me = this;
-        me.target.value = value;
+        me.target.value = data;
         // me.target.dispatchEvent(
         //     new customEvent("change", {})
         // );
@@ -36,6 +36,6 @@ export class input extends SmarkComponent {
     @action
     async empty() {//{{{
         const me = this;
-        await me.import("");
+        await me.import({data: ""});
     };//}}}
 };
