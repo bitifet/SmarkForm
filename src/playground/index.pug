@@ -142,6 +142,17 @@ block mainForm
             button(data-smark = {
                 action: "export",
             }) 💾 Submit
+            button(data-smark = {
+                action: "import",
+                dataset: 1,
+            }) 💡 Load 1
+            button(data-smark = {
+                action: "import",
+                dataset: 2,
+            }) 💡 Load 2
+            button(data-smark = {
+                action: "import",
+            }) 💡 Unload
 mixin inputlist(label="Annonymous")
     .form-group
         -
