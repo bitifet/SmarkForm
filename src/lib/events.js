@@ -66,15 +66,11 @@ export const events = function events_decorator(target, {kind}) {
                 let defaultPrevented = false;
                 if (handlers.length) {
                     let propagationStopped = false;
-                    const preventDefault = () => defaultPrevented = true;
-                    const stopPropagation = () => propagationStopped = true;
+                    evData.preventDefault = () => defaultPrevented = true;
+                    evData.stopPropagation = () => propagationStopped = true;
                     for (const handler of handlers) {
                         if (propagationStopped) break;
-                        await handler({
-                            ...evData,
-                            preventDefault,
-                            stopPropagation,
-                        });
+                        await handler(evData);
                     };
                 };
                 return ! defaultPrevented;
