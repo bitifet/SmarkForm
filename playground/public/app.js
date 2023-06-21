@@ -18,21 +18,6 @@
                     && ! confirm("Are you sure?")
                 ) preventDefault();
             },
-            async onBeforeAction_import(evt) {
-
-                evt.data = await (async function DataLoaderMock() {
-                    
-                    // ... await fetch(shomething...)
-
-                    if (evt.dataset == 1) {
-                        return {company: "OmniCore Systems", employees: [{}, {}]};
-                    } else if (evt.dataset == 2) {
-                        return {company: "StellartWave"};
-                    }                // Else just leave blank (so form will be fully emptied).
-
-                })();
-
-            },
         }
     );
 
