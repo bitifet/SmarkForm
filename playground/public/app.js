@@ -3,6 +3,8 @@
     factory();
 })((function () { 'use strict';
 
+    // Form instantiation:
+    // -------------------
     window.form = new SmarkForm(
         document.querySelector("#main-form")
         , {
@@ -10,57 +12,61 @@
             onAfterAction_export({data}) {
                 alert (JSON.stringify(data));
             },
-            onAll_addItem({
-                newItemTarget,
-                onRendered,
-            }) {
-                newItemTarget.classList.add("ingoing");
-                onRendered(()=>{
-                    newItemTarget.classList.remove("ingoing");
-                    newItemTarget.classList.add("ongoing");
-                });
-            },
-            async onAll_removeItem({
-                oldItemTarget,
-                onRemmoved,
-            }) {
-                oldItemTarget.classList.remove("ongoing");
-                oldItemTarget.classList.add("outgoing");
-
-                // Await for transition to be finished before item removal:
-                const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
-                    .getPropertyValue('transition-duration')
-                    .slice(0,-1).replace("m","/1")
-                    .split("/")
-                    .map(Number)
-                ;
-                await new Promise(resolve=>setTimeout(
-                    resolve
-                    , duration * multiplier
-                ));
-            },
-            customActions: {
-                async cancel({context}) {
-                    if (
-                        await context.isEmpty()
-                        || confirm("Are you sure?")
-                    )  context.empty();
-                },
+            async onBeforeAction_empty({context, preventDefault}) {
+                if (
+                    ! await context.isEmpty()
+                    && ! confirm("Are you sure?")
+                ) preventDefault();
             },
         }
     );
 
 
-    // Prevention example:
+    // List items addition/removal animation:
+    // --------------------------------------
+    form
+        .onAll("addItem", function({
+            newItemTarget,
+            onRendered,
+        }) {
+            newItemTarget.classList.add("ingoing");
+            onRendered(()=>{
+                newItemTarget.classList.remove("ingoing");
+                newItemTarget.classList.add("ongoing");
+            });
+        })
+        .onAll("removeItem", async function({
+            oldItemTarget,
+            onRemmoved,
+        }) {
+            oldItemTarget.classList.remove("ongoing");
+            oldItemTarget.classList.add("outgoing");
+
+            // Await for transition to be finished before item removal:
+            const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                .getPropertyValue('transition-duration')
+                .slice(0,-1).replace("m","/1")
+                .split("/")
+                .map(Number)
+            ;
+            await new Promise(resolve=>setTimeout(
+                resolve
+                , duration * multiplier
+            ));
+        })
+    ;
+
+
+
+    // Default prevention example:
     // form.on("BeforeAction_addItem", function({preventDefault}) {
     //     if (! confirm("addItem?")) preventDefault();
     // });
 
 
 
-
-
-
+    // Unrelated playground/test backend:
+    // ----------------------------------
 
     const testTools = document.querySelector("#test-tools");
     const testButton = document.querySelector("#testButton");
