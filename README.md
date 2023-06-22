@@ -388,10 +388,6 @@ may be eventually implemented in the future. But not a priority yet.
 </details>
 
 
-> 📌 ...And many more amazing ideas in the [TODO list](./TODO.md).
-
-
-
 </details>
 
 </details>
@@ -415,6 +411,10 @@ Introductory README file is quite mature. But usage and API documentation still
 needs a lot of work...
 
 </details>
+
+
+> 📌 ...And many more amazing ideas in the [TODO list](./TODO.md).
+
 
 
 
