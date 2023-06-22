@@ -277,19 +277,19 @@ describe('List Component Type Test', function() {
     });//}}}
 
     it('Imports correctly', async () => {//{{{
-        const picks = await page.evaluate(async input => {
+        const picks = await page.evaluate(async data => {
 
             // Let's make some changes...
-            input.foo = "Some ignored data";
-            input.employees[2].emails.push(
+            data.foo = "Some ignored data";
+            data.employees[2].emails.push(
                 "bart@simpsons.home",
                 "barty@simpsons.home",
                 "bartisgreat@simpsons.home",
                 "onlybart@simpsons.home",
             );
-            input.employees[3].phones.push("", "");
+            data.employees[3].phones.push("", "");
 
-            await form.import(input);
+            await form.import({data});
 
             return {
                 overallLength: await form.find("/employees").count(),
