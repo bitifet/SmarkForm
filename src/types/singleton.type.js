@@ -22,9 +22,9 @@ export class singleton extends form {
     @action
     async import({data = ""}) {//{{{
         const me = this;
-        return await super.import(Object.fromEntries(
+        return await super.import({data: Object.fromEntries(
             [[Object.keys(me.children)[0], data]]
-        ));
+        )});
     };//}}}
     @action
     async empty() {//{{{
