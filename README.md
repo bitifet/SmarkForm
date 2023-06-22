@@ -259,7 +259,7 @@ Bla bla bla...
 ## RoadMap
 
 <details>
-<summary><img src="https://progress-bar.dev/65/" alt="(65%)"> <h2>Implementation.</h2></summary>
+<summary><img src="https://progress-bar.dev/65/" alt="(65%)"> <b>Implementation.</b></summary>
 
 <details>
 <summary><img src="https://progress-bar.dev/95/" alt="(95%)"> Core functionality.</summary>
@@ -388,6 +388,7 @@ may be eventually implemented in the future. But not a priority yet.
 </details>
 
 
+> 📌 ...And many more amazing ideas in the [TODO list](./TODO.md).
 
 
 
@@ -396,7 +397,7 @@ may be eventually implemented in the future. But not a priority yet.
 </details>
 
 <details>
-<summary><img src="https://progress-bar.dev/35/" alt="(35%)"> <h2>Automated tests.</h2></summary>
+<summary><img src="https://progress-bar.dev/35/" alt="(35%)"> <b>Automated tests.</b></summary>
 
 A mature testing structure with mocha and puppetter is set up to easily
 implement tests over any SmarkForm feature.
@@ -408,7 +409,7 @@ advances.
 </details>
 
 <details>
-<summary><img src="https://progress-bar.dev/45/" alt="(45%)"> <h2>Documentation.</h2></summary>
+<summary><img src="https://progress-bar.dev/45/" alt="(45%)"> <b>Documentation.</b></summary>
 
 Introductory README file is quite mature. But usage and API documentation still
 needs a lot of work...

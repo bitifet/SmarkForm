@@ -215,6 +215,9 @@ components types while others are tied to secific types like `addItem` an d
 
 ----------------------------------------------------------------------------
 
+**FIXME:** Fix the following "FIXME": It is already implemented and now it's only
+pending to update the documentation below:
+
 FIXME: Nowadays import() and export() are not declared as actions because we
 thought there was nowhere from/to import/export on user click.
 
