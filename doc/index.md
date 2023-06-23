@@ -22,10 +22,14 @@ Powerful while effortless Markup-driven and Extendable forms
     * [Why SmarkForm](#why-smarkform)
     * [The SmarkForm Approach](#the-smarkform-approach)
 * [The Basics](#the-basics)
+    * [Creating a simple SmarkForm form](#creating-a-simple-smarkform-form)
     * [The `data-smark` Attribute](#the-data-smark-attribute)
     * [Components and Actions](#components-and-actions)
-    * [Components](#components)
-    * [Actions](#actions)
+        * [Components](#components)
+        * [Actions](#actions)
+        * [Action Components](#action-components)
+    * [Accessing Components](#accessing-components)
+* [Core Component Types](#core-component-types)
 * [Data Import and Export methods](#data-import-and-export-methods)
 * [Code Snippets and Samples](#code-snippets-and-samples)
 
@@ -118,6 +122,75 @@ and maintenance.
 
 ## The Basics
 
+### Creating a simple SmarkForm form
+
+To create a SmarkForm form, you need to follow a few simple steps:
+
+1. Start by writing the form markup in HTML. For example, let's create a basic
+   login form:
+
+```html
+<div id="myForm">
+  <div>
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" data-smark="data-smark">
+  </div>
+  <div>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" data-smark="data-smark">
+  </div>
+  <button type="submit">Submit</button>
+</div>
+```
+
+> 📌 It is not (yet) advised to use the `<form>` tag for SmarkForm forms.
+> 
+> If you do so, they will be submit-prevented so they can act as kind of failback
+> behvaviours in case of JavaScript being disabled.
+> 
+> But it's not yet clear which could be a future enhancenment of native `<form>`
+> attributes, such as *action*, in successfully enhanced `<form>` tags.
+
+
+2. Next, include the SmarkForm library in your project. You can do this by
+   adding the script tag to your HTML file or by importing it using a module
+   bundler like Webpack or Parcel.
+
+```html
+<script src="path/to/SmarkForm.js"></script>
+```
+
+> 📌 Alternatively you can directly import it as ES module in your JavaScript
+> file:
+> 
+> ```javascript
+> import SmarkForm from "https://cdn.skypack.dev/smarkform";
+> ```
+> 
+> See [Installation Instructions](../README.md#installation) for more details.
+
+
+3. Initialize SmarkForm on your form element. In your JavaScript file, create a
+   new instance of the SmarkForm class and pass the form element as the
+   parameter:
+
+```javascript
+const form = new SmarkForm(document.querySelector("#myForm"));
+```
+
+That's it! You now have a SmarkForm-enhanced form. SmarkForm will automatically
+handle form submission, validation, and other interactions based on the
+provided markup and configuration.
+
+You can customize the behavior and appearance of your SmarkForm form by
+configuring options and adding event listeners. SmarkForm provides a wide range
+of features and capabilities to simplify form development and enhance user
+experience.
+
+Start exploring the SmarkForm documentation and examples to discover all the
+possibilities and unleash the power of markup-driven form development.
+
+
 ### The `data-smark` Attribute
 
 The `data-smark` attribute is used in SmarkForm to identify and enhance
@@ -152,7 +225,7 @@ The `data-smark` attribute can be specified in three different ways:
 
 **Mandatory properties:**
 
-The following properties are mandatory:
+The following properties are (nearly) mandatory:
 
 - The `type` property is always necessary to determine which component type
   controller should be used for rendering the component. In many cases, it can be
@@ -165,17 +238,22 @@ The following properties are mandatory:
    - If not provided and cannot be inferred, a randomly generated name will be
      used.
 
+- The `action` property is mandatory for all [components of the type
+  "action"](#action-components) to specify which [action](actions) they
+  actually trigger. In fact, the `type="action"` property itself is optional
+  here having it is implied by the presence of the `action` property.
+
 
 **Other properties:**
 
-Depending on actual componenta type other properties may be applicable.
+Depending on the actual component type other properties may be applicable.
 
 In case of *actions*, despite `type`and `name`, is worth to mention that,
 except for the `for` and `to` properties
 
 
-
 FIXME: To be continued...
+//// ** ... the rest of available properties depend on the type of its [context]()...
 
 TODO: Link 'for' and 'to' to propper type_action.md section...
 
@@ -183,7 +261,7 @@ TODO: Link 'for' and 'to' to propper type_action.md section...
 
 ### Components and Actions
 
-### Components
+#### Components
 
 A SmarkForm *component* is just a DOM element (HTML tag) which has a
 "data-smark" property providding a JSON-formatted *options* object.
@@ -204,7 +282,7 @@ It looks like as follows:
 > ```
 
 
-### Actions
+#### Actions
 
 *Actions* are operations that can be performed over components.
 
@@ -213,64 +291,14 @@ components types while others are tied to secific types like `addItem` an d
 `removeItem` for lists, etc...
 
 
-----------------------------------------------------------------------------
+#### Action Components
 
-**FIXME:** Fix the following "FIXME": It is already implemented and now it's only
-pending to update the documentation below:
+*Action Components* are a special type of *component* that serve to trigger
+actions on another compoenent which we refer to it as its "context".
 
-FIXME: Nowadays import() and export() are not declared as actions because we
-thought there was nowhere from/to import/export on user click.
-
-But this can (and should) change allowing to provide onImport() and onExport()
-callbacks.
-
-This way there will be no need for custom "submit" action (which will be just
-an "export" action button) in our playground example.
-
-Also in that example, "cancel" custom action relies in the "empty" action which
-we can evolve to handle the same small tweaks.
-
-
-**Proposal:**
-
-```javascript
-window.form = new SmarkForm(
-    document.querySelector("#main-form")
-    , {} // "root actions" which now I seriously consider to remove
-    , {
-        autoId: true,
-        async onExportAction({data}) {
-            alert (JSON.stringify(data)));
-        },
-        async onEmptyAction({context, isEmpty, preventDefault}) {
-            // "Legacy" approach:
-            if (
-                (await context.isEmpty())
-                || confirm("Are you sure?")
-            ) return;
-
-            // Approach with additional isEmpty property:
-            if (
-                isEmpty
-                || confirm("Are you sure?")
-            ) return;
-
-            // Abort otherwise:
-            preventDefault();
-        },
-    }
-);
-```
-
-----------------------------------------------------------------------------
-
-
-A SmarkForm *action* is a *component* of type "action" and a (mandatory)
-property "action" pointing to the actual action to be taken when clicked.
-
-For actions the *type* property can be omitted (since is infered by the
-presence of the *action* property itself) but, if present, its value must be
-"action".
+Any SmarkForm component whith an *action* property is an [Action
+Component](type_action.md) and for the sake of simplicity, its *type* property
+can be ommitted but it cannot take a different value than "action".
 
 **Example:**
 
@@ -282,7 +310,24 @@ presence of the *action* property itself) but, if present, its value must be
 
 
 
+### Accessing Components
 
+
+```javascript
+const form = new SmarkForm(
+    document.querySelector("#main-form")
+);
+```
+
+
+## Core Component Types
+
+
+  * [Form](type_form.md)
+  * [List](type_list.md)
+  * [Input](type_input.md)
+  * [Singleton](type_singleton.md)
+  * [Action](type_action.md)
 
 
 ## Data Import and Export methods

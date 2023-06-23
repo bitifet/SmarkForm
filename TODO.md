@@ -2,6 +2,36 @@
 TO-DO List
 ==========
 
+<!-- Table of Contents {{{ -->
+
+<table align="right"><tr><td>
+<details open>
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+<!-- vim-markdown-toc GitLab -->
+
+* [Pending core features](#pending-core-features)
+    * [👉 The API interface](#-the-api-interface)
+    * [👉 "src" property for import action](#-src-property-for-import-action)
+* [Pending core components](#pending-core-components)
+    * [👉 The "select" component](#-the-select-component)
+* [Other possible features](#other-possible-features)
+    * [💡 Implement Focus subsystem. Let's say:](#-implement-focus-subsystem-lets-say)
+* [New non-core components](#new-non-core-components)
+    * [💡 Implement UNDO component.](#-implement-undo-component)
+    * [💡 Implement Table Of Contents component.](#-implement-table-of-contents-component)
+    * [💡 Implement a "multiform" component type.](#-implement-a-multiform-component-type)
+
+<!-- vim-markdown-toc -->
+
+</details>
+</td></tr></table>
+
+<!-- }}} -->
+
+
   👉 Complete documentation.
 
 Pending core features

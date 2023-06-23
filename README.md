@@ -190,20 +190,49 @@ dist
         <button data-smark='{"action":"removeItem"}'>-</button>
         </li>
     </ul>
+    <p>
+        <button data-smark="{"action":"empty"}">❌ Cancel</button>
+        <button data-smark="{"action":"export"}">💾 Submit</button>
+    </p>
     </div>
    ```
 
 2. Add a few JavaScript code to enhance it as SmarkForm:
-   ```javascript
-   import SmarkForm from "https://cdn.skypack.dev/smarkform";
-    
+    ```javascript
+    import SmarkForm from "https://cdn.skypack.dev/smarkform";
+     
     const form = new SmarkForm(
-        document.getElementById("myForm")
+         document.getElementById("myForm")
+         // , {
+         //       ...options
+         // }
     );
-
+ 
     console.log(form);
         // Now you can capture form object from browser console and play with
         // .export() and .import() methods...
+    ```
+
+3. Fine tune action's behaviour:
+
+    ```javascript
+    /* ... */
+    const form = new SmarkForm(
+        document.querySelector("#myForm")
+        , {
+            onAfterAction_export({data}) {
+                // Show exported data:
+                alert (JSON.stringify(data));
+            },
+            async onBeforeAction_empty({context, preventDefault}) {
+                // Ask for confirmation unless form is already empty:
+                if (
+                    ! await context.isEmpty()
+                    && ! confirm("Are you sure?")
+                ) preventDefault();
+            },
+        }
+    );
     ```
 
 </details>
