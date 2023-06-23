@@ -3,6 +3,7 @@
 const componentTypes = {};
 
 import {events} from "./events.js";
+import legacy from "./legacy.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
@@ -45,6 +46,7 @@ function inferType(node, parentComponent) {//{{{
             return "input";
         default:
             //if (parentComponent.options.type == "list") return "form";
+        case "form":
             return "form";
     };
 };//}}}
@@ -178,6 +180,10 @@ export class SmarkComponent {
 
         // Sanityze and store options:{{{
         let options = me.getNodeOptions(node, defaultOptions);
+        //}}}
+
+        // Prevent default behaviours:{{{
+        legacy.disEnhance(me);
         //}}}
 
         // Classify:{{{
