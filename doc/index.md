@@ -326,6 +326,7 @@ const form = new SmarkForm(
   * [Form](type_form.md)
   * [List](type_list.md)
   * [Input](type_input.md)
+  * [Select](type_select.md)
   * [Singleton](type_singleton.md)
   * [Action](type_action.md)
 

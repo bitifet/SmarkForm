@@ -191,7 +191,7 @@ dist
         </li>
     </ul>
     <p>
-        <button data-smark="{"action":"empty"}">❌ Cancel</button>
+        <button data-smark="{"action":"empty"}">❌ Clear</button>
         <button data-smark="{"action":"export"}">💾 Submit</button>
     </p>
     </div>
@@ -342,49 +342,11 @@ Implementation complete.
 Select component will be capable of loading its options from a remote API call
 by passing its *src* property to so called "API Interface".
 
-**Example:**
+The *API Interface* will allow *select* (and other future components) to fetch
+their options dynamically from an external API and react to any change in any
+other fields whose value were used as argument to the API call.
 
-```html
-<select data-smark='{
-    "src":[
-        "https/example.com/some/api",
-        {
-            "someConstant":"actual_value",
-            "@someField":"sibling_field_name",
-            "@someOtherField":"/absolute/path/to/field",
-            "@anotherField":"../relative/path/to/field"
-        },
-        "GET"
-    ]
-}'>
-</select>
-```
-
-**Where:**
-
-  * **src[0]:** Provides the endpoint url.
-    - If it is the only argument provided, *src* can be simplified as just that
-      url.
-  * **src[1]:** *(Optional)* Provides arguments to be passed.
-  * **src[2]:** *(Optional)* Specifies the HTTP method ('GET' by default).
-
-**About API Interface:**
-
-*API Interface* will be responsible for fetching the data based on the
-specified endpoint, arguments, and other parameters (such as the method), while
-also keeping track of changes in every field it depends on (those marked with
-initial '@') allowing the comsummer component (a *select* in this case, but it
-may be others in the future) to update its options every time relevant data
-changes.
-
-> 👉 One important feature here is the ability to perform the fetching process
-> through an interchangeable callback referred to as an 'adapter.'
-> 
-> By default, this adapter internally executes an HTTP request as explained earlier.
-> 
-> However, it can be easily substituted with a custom implementation tailored
-> to different types of APIs, ranging from GraphQL APIs to mock implementations
-> used for testing purposes.
+For detailed explanation see: [Select Component Type](type_select.md).
 
 </details>
 

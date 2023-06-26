@@ -1,18 +1,16 @@
 *list* Component Type
 =====================
 
-<!-- Table of Contents {{{ -->
 
-<table align="right"><tr><td>
-<details open>
-<summary>
-<strong>📖 Table of Contents</strong>
-</summary>
+
+
+Introduction
+------------
+
+### List Component
 
 <!-- vim-markdown-toc GitLab -->
 
-* [Introduction](#introduction)
-    * [List Component](#list-component)
     * [Usage](#usage)
 * [API Reference](#api-reference)
     * [Options](#options)
@@ -33,19 +31,6 @@
         * [removeItem (list Event)](#removeitem-list-event)
 
 <!-- vim-markdown-toc -->
-
-</details>
-</td></tr></table>
-
-<!-- }}} -->
-
-
-
-Introduction
-------------
-
-### List Component
-
 The List component in SmarkForm allows you to dynamically manage a list of
 items within your form. It uses the content of the container element as the
 template for each item in the list.
@@ -64,6 +49,10 @@ To use the List component, follow these steps:
          <!-- Content of this list item will be used as a template for each item -->
        </li>
      </ul>
+     <p>
+       <button data-smark="{"action":"empty"}">❌ Clear</button>
+       <button data-smark="{"action":"export"}">💾 Submit</button>
+     </p>
    </div>
    ```
 
@@ -78,6 +67,19 @@ To use the List component, follow these steps:
    const myForm = new SmarkForm(document.getElementById("myForm"));
    ```
 
+   You may also want to do something with data:
+
+   ```javascript
+   const myForm = new SmarkForm(
+        document.getElementById("myForm")
+        , {
+            onAfterAction_export({data}) {
+                // Show exported data:
+                console.log(data);
+            },
+        }
+    );
+   ```
 
 3. Add a template for the list items:
 
@@ -119,25 +121,6 @@ To use the List component, follow these steps:
    > being outside of the list, uses the *for* property to specify the
    > (relative) path to its context. In this case, being target unspecified,
    > new items will be appended at the end of the list.
-
-
-5. At any time, you can capture the list and act over it programatically:
-
-
-3. Use the provided API methods to interact with the list:
-
-   ```javascript
-   const myList = myForm.find("/myList");
-   myList.addItem(); // Adds an Item at the end.
-   myList.removeItem(); // Adds an Item at the end.
-   myList.import([ // Import some data.
-     {field1: "foo", field2: 5},
-     {field1: "bar", field2: 15},
-     {field1: "baz", field2: 75},
-   }];
-   const myData = await myList.export(); // Export list contents.
-   myList.find("2/field2").import(25); // Update third item field2's value.
-   ```
 
 
 For more information on using the List component and its available methods,
