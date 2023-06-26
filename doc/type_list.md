@@ -67,19 +67,10 @@ To use the List component, follow these steps:
    const myForm = new SmarkForm(document.getElementById("myForm"));
    ```
 
-   You may also want to do something with data:
+   📌 This is just a simple example. For detailed explanation of how to build a
+      full-featured SmarkForm see [Creating a simple SmarkForm
+      form](./index.md#creating-a-simple-smarkform-form) section of this manual.
 
-   ```javascript
-   const myForm = new SmarkForm(
-        document.getElementById("myForm")
-        , {
-            onAfterAction_export({data}) {
-                // Show exported data:
-                console.log(data);
-            },
-        }
-    );
-   ```
 
 3. Add a template for the list items:
 

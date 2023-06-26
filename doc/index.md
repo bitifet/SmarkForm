@@ -139,7 +139,10 @@ To create a SmarkForm form, you need to follow a few simple steps:
     <label for="password">Password:</label>
     <input type="password" id="password" name="password" data-smark="data-smark">
   </div>
-  <button type="submit">Submit</button>
+  <p>
+    <button data-smark="{"action":"empty"}">❌ Clear</button>
+    <button data-smark="{"action":"export"}">💾 Submit</button>
+  </p>
 </div>
 ```
 
@@ -177,6 +180,42 @@ To create a SmarkForm form, you need to follow a few simple steps:
 ```javascript
 const form = new SmarkForm(document.querySelector("#myForm"));
 ```
+
+You may also want to do something with data:
+
+```javascript
+const myForm = new SmarkForm(
+    document.getElementById("myForm")
+    , {
+        onAfterAction_export({data}) {
+            // Show exported data:
+            console.log(data);
+        },
+    }
+);
+```
+
+Or even gently ask users for confirmation before they loose all their work:
+
+```javascript
+const form = new SmarkForm(
+    document.querySelector("#myForm")
+    , {
+        onAfterAction_export({data}) {
+            // Show exported data:
+            alert (JSON.stringify(data));
+        },
+        async onBeforeAction_empty({context, preventDefault}) {
+            // Ask for confirmation unless form is already empty:
+            if (
+                ! await context.isEmpty()
+                && ! confirm("Are you sure?")
+            ) preventDefault();
+        },
+    }
+);
+```
+
 
 That's it! You now have a SmarkForm-enhanced form. SmarkForm will automatically
 handle form submission, validation, and other interactions based on the

@@ -288,7 +288,7 @@ Bla bla bla...
 ## RoadMap
 
 <details>
-<summary><img src="https://progress-bar.dev/65/" alt="(65%)"> <b>Implementation.</b></summary>
+<summary><img src="https://progress-bar.dev/65/" alt="(70%)"> <b>Implementation.</b></summary>
 
 <details>
 <summary><img src="https://progress-bar.dev/95/" alt="(95%)"> Core functionality.</summary>
@@ -305,7 +305,7 @@ types](#core-component-types) section).
 </details>
 
 <details>
-<summary><img src="https://progress-bar.dev/60/" alt="(60%)"> Core component types and actions.</summary>
+<summary><img src="https://progress-bar.dev/60/" alt="(65%)"> Core component types and actions.</summary>
 
 
 <details>
@@ -405,8 +405,6 @@ needs a lot of work...
 
 
 > 📌 ...And many more amazing ideas in the [TODO list](./TODO.md).
-
-
 
 
 
