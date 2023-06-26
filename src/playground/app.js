@@ -78,9 +78,9 @@ const textarea = document.querySelector("#inoutJson");
 
 testButton.addEventListener("click", ()=>testTools.classList.toggle("hidden"));
 
-importButton.addEventListener("click", ()=>form.import(
-    JSON.parse(textarea.value.trim() || '{}'))
-);
+importButton.addEventListener("click", ()=>form.import({
+    data: JSON.parse(textarea.value.trim() || '{}')
+}));
 exportButton.addEventListener("click", async ()=>textarea.value = (
     JSON.stringify(await form.export(), null, 4)
 ));
