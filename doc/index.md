@@ -167,7 +167,7 @@ To create a SmarkForm form, you need to follow a few simple steps:
 > file:
 > 
 > ```javascript
-> import SmarkForm from "https://cdn.skypack.dev/smarkform";
+> import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
 > ```
 > 
 > See [Installation Instructions](../README.md#installation) for more details.

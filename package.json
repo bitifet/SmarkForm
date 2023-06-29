@@ -6,7 +6,6 @@
   "main": "dist/SmarkForm.esm.js",
   "module": "dist/SmarkForm.esm.js",
   "umd": "dist/SmarkForm.umd.js",
-  "browser": "dist/SmarkForm.js",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",

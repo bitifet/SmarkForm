@@ -88,13 +88,56 @@ To incorporate **SmarkForm** to your project you have several alternatives:
 <details>
 <summary>Using CDN <b>(Easiest approach)</b></summary>
 
-👉 Import as ES module (no installation at all needed):
 
-```javascript
-import SmarkForm from "https://cdn.skypack.dev/smarkform";
+### ES module
+
+👉 Import it as ES module:
+
+```html
+<script type="module">
+  import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
+  
+  // Use SmarkForm in your code
+</script>
 ```
 
-> 🚀 Powered by [Skypack](https://www.skypack.dev/)
+
+### Using UMD Module
+
+👉 Include it your HTML file using a `<script>` tag:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js"></script>
+<script>
+    // Now it is avalable as SmarkForm global variable.
+</script>
+```
+
+👉 Import as CommonJS module:
+
+```javascript
+const SmarkForm = require("smarkform");
+```
+
+👉 Import as AMD (RequireJS) module:
+
+```javascript
+require(['https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js'], function(SmarkForm) {
+  // Now it is avalable as SmarkForm local variable.
+});
+```
+
+
+> 📌 These examples will use the latest published version of SmarkForm from
+> NPM. If you prefer to use a specific version, you can specify the version
+> number in the CDN URLs. For example, if you want to use version 0.1.0, the
+> CDN URLs would be:
+>
+> - **ESM:** `https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.esm.js`
+> - **UMD:** `https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.umd.js`
+>
+> Make sure to replace `0.1.0` with the desired version number in the URLs.
+
 
 </details>
 
@@ -173,7 +216,7 @@ dist
 <summary>Start with a simple example...</summary>
 
 1. Write some HTML code such as this in your document:
-   ```html
+    ```html
     <div id="myForm">
     <p>
         <b>Activity:</b>
@@ -195,11 +238,19 @@ dist
         <button data-smark="{"action":"export"}">💾 Submit</button>
     </p>
     </div>
-   ```
+    ```
 
-2. Add a few JavaScript code to enhance it as SmarkForm:
+2. Import *SmarkForm* the way you want.
+    For example as ES Module.
     ```javascript
-    import SmarkForm from "https://cdn.skypack.dev/smarkform";
+    import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
+    ```
+    > 📌 See [Installation Section](#installation) for more options.
+
+
+3. Then add a few JavaScript code to enhance it as SmarkForm:
+    ```javascript
+    import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
      
     const form = new SmarkForm(
          document.getElementById("myForm")
@@ -221,8 +272,8 @@ dist
         document.querySelector("#myForm")
         , {
             onAfterAction_export({data}) {
-                // Show exported data:
-                alert (JSON.stringify(data));
+                // Do something with exported data:
+                console.log(data);
             },
             async onBeforeAction_empty({context, preventDefault}) {
                 // Ask for confirmation unless form is already empty:

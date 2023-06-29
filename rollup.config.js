@@ -21,15 +21,6 @@ export default [
                 format: 'umd',
                 compact: true,
             },
-            {   // Browser-frindly script (exports SmarkForm as global var)
-                name: 'SmarkForm',
-                file: pkg.browser,
-                format: 'iife',
-                compact: false,
-                globals: {
-                    SmarkForm: "SmarkForm",
-                },
-            },
         ],
         plugins: [
             babel({ babelHelpers: 'bundled' }),
