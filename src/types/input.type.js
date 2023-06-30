@@ -5,6 +5,7 @@ import {action} from "./action.type.js";
 export class input extends SmarkComponent {
     render() {//{{{
         const me = this;
+        me.isCheckbox = String(me.target.type).toLowerCase() == "checkbox";
         // console.log("New input!!!!", {
         //     target: me.target,
         //     parent: me.parent,
@@ -16,12 +17,19 @@ export class input extends SmarkComponent {
     @action
     async export() {//{{{
         const me = this;
-        return me.target.value;
+        return (
+            me.isCheckbox ? !!me.target.checked
+            : me.target.value
+        );
     };//}}}
     @action
     async import({data = ""}) {//{{{
         const me = this;
-        me.target.value = data;
+        if (me.isCheckbox) {
+            me.target.checked = !! data;
+        } else {
+            me.target.value = data;
+        };
         // me.target.dispatchEvent(
         //     new customEvent("change", {})
         // );
@@ -29,7 +37,10 @@ export class input extends SmarkComponent {
     };//}}}
     async isEmpty() {//{{{
         const me = this;
-        const value = await me.export();
+        const value = (
+            me.isCheckbox ? "" // Do not consider checkboxes.
+            : await me.export()
+        );
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
