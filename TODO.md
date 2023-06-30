@@ -23,6 +23,8 @@ TO-DO List
     * [💡 Implement UNDO component.](#-implement-undo-component)
     * [💡 Implement Table Of Contents component.](#-implement-table-of-contents-component)
     * [💡 Implement a "multiform" component type.](#-implement-a-multiform-component-type)
+* [Spare Ideas](#spare-ideas)
+    * [Implement download action](#implement-download-action)
 
 <!-- vim-markdown-toc -->
 
@@ -107,5 +109,36 @@ own repository.
     can freely placed inside or outside multiform component subtemplates (in
     this case, the "selector" field sholuld be maintained "maically" by
     compoenent's internals).
+
+
+
+Spare Ideas
+-----------
+
+### Implement download action
+
+  * Implement in lib/component.js.
+  * Rely on (each type)'s export action.
+  * Allow to specify file name (maybe even prompt...)
+
+
+**Sample code:**
+
+```javascript
+function descarregarText(text, nomFitxer) {
+    var elementA = document.createElement('a');
+    elementA.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    elementA.setAttribute('download', nomFitxer);
+    elementA.style.display = 'none';
+    document.body.appendChild(elementA);
+    elementA.click();
+    document.body.removeChild(elementA);
+}
+
+// Exemple d'ús
+var text = "Aquest és el contingut del fitxer.";
+var nomFitxer = "fitxer.txt";
+descarregarText(text, nomFitxer);
+```
 
 
