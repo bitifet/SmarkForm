@@ -25,6 +25,7 @@ TO-DO List
     * [💡 Implement a "multiform" component type.](#-implement-a-multiform-component-type)
 * [Spare Ideas](#spare-ideas)
     * [Implement download action](#implement-download-action)
+* [Documentation and advertising](#documentation-and-advertising)
 
 <!-- vim-markdown-toc -->
 
@@ -141,4 +142,9 @@ var nomFitxer = "fitxer.txt";
 descarregarText(text, nomFitxer);
 ```
 
+Documentation and advertising
+-----------------------------
+
+  * Build examples with daisyUI:
+    - https://daisyui.com/
 
