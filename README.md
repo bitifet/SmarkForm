@@ -160,11 +160,10 @@ node_modules
 └── smarkform
     └── dist
         ├── SmarkForm.esm.js
-        ├── SmarkForm.umd.js
-        └── SmarkForm.js
+        └── SmarkForm.umd.js
 ```
 
-> 📌 *SmarkForm.js* can be loaded from regular ``<script>`` tag and will export
+> 📌 *SmarkForm.umd.js* can be loaded from regular ``<script>`` tag and will export
 > ``SmarkForm`` class as global variable.
 
 </details>
@@ -184,8 +183,7 @@ git clone git@github.com:bitifet/SmarkForm.git
 ```
 dist
 ├── SmarkForm.esm.js
-├── SmarkForm.umd.js
-└── SmarkForm.js
+└── SmarkForm.umd.js
 ```
 
 👍 ...but you can also install dev dependencies by running ``npm install`` and then
