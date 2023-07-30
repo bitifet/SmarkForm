@@ -40,7 +40,7 @@ class SmarkForm extends form {
             , null // (Root has no parent)
         );
         const me = this;
-        me.target.dataset[me.property_name] = options;
+        me.setNodeOptions(me.target, options);
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(
