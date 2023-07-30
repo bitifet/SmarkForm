@@ -7,79 +7,83 @@
 
 
 
-.section, header {
+section, header {
     margin: 0px 1rem 1rem 1rem;
 }
 
 
-.section {
+section {
     background: var(--section-background);
     border: solid 1px grey;
     border-radius: .5em;
     padding: 1rem;
 }
 
-.form-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .3em;
-  align-items: flex-start;
-  align-content: stretch;
-  justify-content: flex-start;
-  font-size: 1rem;
-  //-flex-basis: 0;
-}
 
-.form-group.no-wrap {
-    flex-wrap: nowrap;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select,
-.form-group>.spacer
-{
-    flex-grow: 5;
-    ///flex-basis: 0;
-}
-
-.form-group input,
-.form-group textarea,
-.form-group select
-{
-  background-color : #ffffff; 
-  padding: .2em;
-  ///flex-basis: 0;
-}
-
-
-
-.form-group textarea {
-   font-family: Arial, Helvetica, sans-serif;
-   resize: none;
-}
-
-.form-group button {
-    transform: scale(1.1, 1.1);
-}
-
-.form-group fieldset {
+fieldset {
     margin: 1em 0px;
     padding: .5em;
     border-radius: .5em;
     position: relative;
     background: var(--fieldset-background);
+}
+
+
+.form-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3em;
+    align-items: flex-start;
+    align-content: stretch;
+    justify-content: flex-start;
+    font-size: 1rem;
+
+    &.no-wrap {
+        flex-wrap: nowrap;
+    }
+
+    input,
+    textarea,
+    select,
+    {
+        background-color : #ffffff; 
+        padding: .2em;
+        flex-grow: 5;
+    }
+
+    &>.spacer {
+        flex-grow: 5;
+    }
+
+    textarea {
+        resize: none;
+    }
+
+    button {
+        transform: scale(1.1, 1.1);
+    }
+
+    label {
+        font-weight: bold;
+        align-items: baseline;
+    }
+
+    &>button {
+        align-self: flex-start;
+    }
 
 }
 
-.form-group label {
-  font-weight: bold;
-  align-items: baseline;
-}
+
+
+
+
+
+
 
 /* Headers and Footers */
 
-h1 {
+h1, h2, h3, h4, h5, h6 {
     user-select: none;
 }
 
@@ -115,9 +119,6 @@ h1 {
     padding-top: .2em;
 }
 
-.form-group>button {
-    align-self: flex-start;
-}
 
 .foldButton {
   border: solid black;

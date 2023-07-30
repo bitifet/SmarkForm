@@ -88,14 +88,21 @@ body {
   --section-background: hsla(267, 11%, 82%, .3);
   --fieldset-background: hsla(247, 11%, 82%, .5); }
 
-.section, header {
+section, header {
   margin: 0px 1rem 1rem 1rem; }
 
-.section {
+section {
   background: var(--section-background);
   border: solid 1px grey;
   border-radius: .5em;
   padding: 1rem; }
+
+fieldset {
+  margin: 1em 0px;
+  padding: .5em;
+  border-radius: .5em;
+  position: relative;
+  background: var(--fieldset-background); }
 
 .form-group {
   display: flex;
@@ -105,42 +112,28 @@ body {
   align-content: stretch;
   justify-content: flex-start;
   font-size: 1rem; }
-
-.form-group.no-wrap {
-  flex-wrap: nowrap; }
-
-.form-group input,
-.form-group textarea,
-.form-group select,
-.form-group > .spacer {
-  flex-grow: 5; }
-
-.form-group input,
-.form-group textarea,
-.form-group select {
-  background-color: #ffffff;
-  padding: .2em; }
-
-.form-group textarea {
-  font-family: Arial, Helvetica, sans-serif;
-  resize: none; }
-
-.form-group button {
-  transform: scale(1.1, 1.1); }
-
-.form-group fieldset {
-  margin: 1em 0px;
-  padding: .5em;
-  border-radius: .5em;
-  position: relative;
-  background: var(--fieldset-background); }
-
-.form-group label {
-  font-weight: bold;
-  align-items: baseline; }
+  .form-group.no-wrap {
+    flex-wrap: nowrap; }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    background-color: #ffffff;
+    padding: .2em;
+    flex-grow: 5; }
+  .form-group > .spacer {
+    flex-grow: 5; }
+  .form-group textarea {
+    resize: none; }
+  .form-group button {
+    transform: scale(1.1, 1.1); }
+  .form-group label {
+    font-weight: bold;
+    align-items: baseline; }
+  .form-group > button {
+    align-self: flex-start; }
 
 /* Headers and Footers */
-h1 {
+h1, h2, h3, h4, h5, h6 {
   user-select: none; }
 
 .form-group.h1, .form-group.f1 {
@@ -173,9 +166,6 @@ h1 {
   margin-bottom: 1.5rem;
   margin-top: .8rem;
   padding-top: .2em; }
-
-.form-group > button {
-  align-self: flex-start; }
 
 .foldButton {
   border: solid black;
