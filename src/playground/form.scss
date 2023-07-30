@@ -1,12 +1,22 @@
 
-/*
-#main-form:hover .form-group {
-  outline: lightblue solid 1px;
+
+:root {
+    --section-background: hsla(267, 11%, 82%, .3);
+    --fieldset-background: hsla(247, 11%, 82%, .5);
 }
-*/
+
+
+
+.section, header {
+    margin: 0px 1rem 1rem 1rem;
+}
+
 
 .section {
-    margin-top: 1em;
+    background: var(--section-background);
+    border: solid 1px grey;
+    border-radius: .5em;
+    padding: 1rem;
 }
 
 .form-group {
@@ -17,6 +27,7 @@
   align-content: stretch;
   justify-content: flex-start;
   font-size: 1rem;
+  //-flex-basis: 0;
 }
 
 .form-group.no-wrap {
@@ -29,15 +40,19 @@
 .form-group>.spacer
 {
     flex-grow: 5;
+    ///flex-basis: 0;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select
 {
-  background-color : #f0f0f0; 
+  background-color : #ffffff; 
   padding: .2em;
+  ///flex-basis: 0;
 }
+
+
 
 .form-group textarea {
    font-family: Arial, Helvetica, sans-serif;
@@ -53,7 +68,7 @@
     padding: .5em;
     border-radius: .5em;
     position: relative;
-    background: hsla(247, 11%, 82%, .7);
+    background: var(--fieldset-background);
 
 }
 

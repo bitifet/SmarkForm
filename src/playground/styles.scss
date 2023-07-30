@@ -19,30 +19,24 @@ body {
     background-size: cover;
 }
 
-body>* {
-    position: relative;
-    margin: 0px;
-    overflow: scroll;
-    display: flex;
-    gap: 0px;
-    justify-content: center;
-}
-
 .container {
-    background: rgba(255, 255, 255, .6);
-    padding: 1em;
-    height: 100vh;
-    height: 100svh;
-    overflow: auto;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  min-width: 200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, .6);
+  overflow-y: auto;
 }
 
 #main-form {
-    margin-bottom: 10rem;
+  flex: 1;
+  max-width: 800px;
+  margin: 0 10px;
+  margin-bottom: 10rem;
 }
 
-.container>* {
-    max-width: 1024px;
-}
+
 
 :root {
     --tbMargin: 5px;

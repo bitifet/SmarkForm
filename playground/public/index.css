@@ -14,26 +14,20 @@ body {
   background-position: center;
   background-size: cover; }
 
-body > * {
-  position: relative;
-  margin: 0px;
-  overflow: scroll;
-  display: flex;
-  gap: 0px;
-  justify-content: center; }
-
 .container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  min-width: 200px;
+  margin: 0 auto;
   background: rgba(255, 255, 255, 0.6);
-  padding: 1em;
-  height: 100vh;
-  height: 100svh;
-  overflow: auto; }
+  overflow-y: auto; }
 
 #main-form {
+  flex: 1;
+  max-width: 800px;
+  margin: 0 10px;
   margin-bottom: 10rem; }
-
-.container > * {
-  max-width: 1024px; }
 
 :root {
   --tbMargin: 5px;
@@ -90,13 +84,18 @@ body > * {
   padding: .3rem;
   font-size: 1.2rem; }
 
-/*
-#main-form:hover .form-group {
-  outline: lightblue solid 1px;
-}
-*/
+:root {
+  --section-background: hsla(267, 11%, 82%, .3);
+  --fieldset-background: hsla(247, 11%, 82%, .5); }
+
+.section, header {
+  margin: 0px 1rem 1rem 1rem; }
+
 .section {
-  margin-top: 1em; }
+  background: var(--section-background);
+  border: solid 1px grey;
+  border-radius: .5em;
+  padding: 1rem; }
 
 .form-group {
   display: flex;
@@ -119,7 +118,7 @@ body > * {
 .form-group input,
 .form-group textarea,
 .form-group select {
-  background-color: #f0f0f0;
+  background-color: #ffffff;
   padding: .2em; }
 
 .form-group textarea {
@@ -134,7 +133,7 @@ body > * {
   padding: .5em;
   border-radius: .5em;
   position: relative;
-  background: rgba(205, 204, 214, 0.7); }
+  background: var(--fieldset-background); }
 
 .form-group label {
   font-weight: bold;
