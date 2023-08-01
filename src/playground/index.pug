@@ -38,7 +38,7 @@ block mainForm
                 style='flex:2'
             )
     section
-        .form-group.h2.no-wrap
+        .form-group.h2
             button.foldButton(
                 data-smark={
                     action: "fold",
@@ -53,24 +53,25 @@ block mainForm
                     for: "employees",
                 })
                 span )
-            .spacer
-            button(data-smark = {
-                action: "addItem",
-                for: "employees",
-                autoscroll: "self",
-            }) ➕
-            button(data-smark = {
-                action: "removeItem",
-                for: "employees",
-                keep_non_empty: true,
-            }, title="Remove last non-empty employee") ➖
-            button(data-smark = {
-                action: "removeItem",
-                for: "employees",
-                to: "*",
-                keep_non_empty: true,
-            }, title="Clear all empty employee") 🧹
-        .form-group.no-wrap
+            .form-group
+                .spacer
+                button.action(data-smark = {
+                    action: "addItem",
+                    for: "employees",
+                    autoscroll: "self",
+                }) ➕
+                button.action(data-smark = {
+                    action: "removeItem",
+                    for: "employees",
+                    keep_non_empty: true,
+                }, title="Remove last non-empty employee") ➖
+                button.action(data-smark = {
+                    action: "removeItem",
+                    for: "employees",
+                    to: "*",
+                    keep_non_empty: true,
+                }, title="Clear all empty employee") 🧹
+        .form-group
             .form-group(data-smark = {
                 type: "list",
                 exportEmpties: true,
@@ -80,7 +81,7 @@ block mainForm
                 fieldset.form-group(data-smark={
                     exportEmpties: false
                 })
-                    .form-group.spacer.no-wrap
+                    .form-group.spacer
                         .form-group
                             .form-group
                                 label First Name
@@ -97,7 +98,7 @@ block mainForm
                                     placeholder="Surnme"
                                 )
                         .spacer
-                        button(data-smark = {
+                        button.action(data-smark = {
                             action: "removeItem",
                         }) ➖
                     .form-group
@@ -114,32 +115,32 @@ block mainForm
                             placeholder="Email",
                             removeFailback="clear"
                         )
-        .form-group.f2.no-wrap
+        .form-group.f2
             .spacer
-            button(data-smark = {
+            button.action(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "elegant",
             }) ➕
-            button(data-smark = {
+            button.action(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
-            button(data-smark = {
+            button.action(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
                 autoscroll: "elegant",
                 keep_non_empty: true,
             }, title="Clear all empty employees") 🧹
-        .form-group.f1.no-wrap
+        .form-group.f1
             .spacer
-            button(data-smark = {
+            button.action(data-smark = {
                 action: "empty",
             }) ❌ Cancel
-            button(data-smark = {
+            button.action(data-smark = {
                 action: "export",
             }) 💾 Submit
 mixin inputlist(label="Annonymous")
@@ -161,12 +162,12 @@ mixin inputlist(label="Annonymous")
             min_items,
             max_items,
         })
-            .form-group.no-wrap
-                button(data-smark = {
+            .singleton
+                button.action(data-smark = {
                     action: "addItem",
                 }) ➕
                 input(data-smark)&attributes(atts)
-                button(data-smark = {
+                button.action(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
                 }) ➖

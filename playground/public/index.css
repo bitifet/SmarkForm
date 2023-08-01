@@ -25,9 +25,12 @@ body {
 
 #main-form {
   flex: 1;
-  max-width: 800px;
+  max-width: 100vw;
   margin: 0 10px;
   margin-bottom: 10rem; }
+  @media (min-width: 800px) {
+    #main-form {
+      max-width: 800px; } }
 
 :root {
   --tbMargin: 5px;
@@ -86,7 +89,9 @@ body {
 
 :root {
   --section-background: hsla(267, 11%, 82%, .3);
-  --fieldset-background: hsla(247, 11%, 82%, .5); }
+  --fieldset-background: hsla(247, 11%, 82%, .5);
+  --round-radius: .75rem;
+  --form-gap: .2rem; }
 
 section, header {
   margin: 0px 1rem 1rem 1rem; }
@@ -111,26 +116,42 @@ fieldset {
   align-items: flex-start;
   align-content: stretch;
   justify-content: flex-start;
-  font-size: 1rem; }
-  .form-group.no-wrap {
-    flex-wrap: nowrap; }
+  font-size: 1rem;
+  max-width: 100%;
+  flex-grow: 1; }
+  .form-group > .spacer {
+    flex-grow: 5; }
   .form-group input,
   .form-group textarea,
   .form-group select {
     background-color: #ffffff;
-    padding: .2em;
     flex-grow: 5; }
-  .form-group > .spacer {
-    flex-grow: 5; }
+  .form-group input, .form-group textarea, .form-group select, .form-group button.action {
+    margin: var(--form-gap);
+    padding: .5em .7em;
+    border-radius: var(--round-radius); }
   .form-group textarea {
     resize: none; }
-  .form-group button {
-    transform: scale(1.1, 1.1); }
   .form-group label {
     font-weight: bold;
     align-items: baseline; }
-  .form-group > button {
+  .form-group > button.action {
     align-self: flex-start; }
+
+.singleton {
+  display: flex;
+  align-items: stretch; }
+  .singleton input, .singleton textarea, .singleton select, .singleton button.action {
+    border-radius: 0px; }
+    .singleton input:first-child, .singleton textarea:first-child, .singleton select:first-child, .singleton button.action:first-child {
+      border-radius: var(--round-radius) 0px 0px var(--round-radius); }
+    .singleton input:last-child, .singleton textarea:last-child, .singleton select:last-child, .singleton button.action:last-child {
+      border-radius: 0px var(--round-radius) var(--round-radius) 0px; }
+  .singleton > * {
+    z-index: 2;
+    margin: 0px !important; }
+  .singleton > button.action {
+    z-index: 1; }
 
 /* Headers and Footers */
 h1, h2, h3, h4, h5, h6 {
@@ -198,9 +219,9 @@ h1, h2, h3, h4, h5, h6 {
   transition: transform 70ms ease-out; }
 
 @media (hover: hover) {
-  .form-group button:not(.foldButton):not([disabled]):hover {
-    transform: translate(3px, 3px); } }
+  .form-group button.action:not([disabled]):hover {
+    transform: translate(2px, 2px); } }
 
 @media (orientation: portrait) {
-  .form-group button {
+  .form-group button.action {
     font-size: 1.1rem !important; } }

@@ -35,17 +35,19 @@
           </div>
         </section>
         <section>
-          <div class="form-group h2 no-wrap">
+          <div class="form-group h2">
             <button class="foldButton" data-smark="{&quot;action&quot;:&quot;fold&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;foldedClass&quot;:&quot;folded&quot;}"></button><span><span>Employees (</span><span data-smark="{&quot;action&quot;:&quot;count&quot;,&quot;for&quot;:&quot;employees&quot;}"></span><span>)</span></span>
-            <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;self&quot;}">➕</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true}" title="Remove last non-empty employee">➖</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employee">🧹</button>
+            <div class="form-group">
+              <div class="spacer"></div>
+              <button class="action" data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;self&quot;}">➕</button>
+              <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true}" title="Remove last non-empty employee">➖</button>
+              <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employee">🧹</button>
+            </div>
           </div>
-          <div class="form-group no-wrap">
+          <div class="form-group">
             <div class="form-group" data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;exportEmpties&quot;:true,&quot;name&quot;:&quot;employees&quot;,&quot;min_items&quot;:0}">
               <fieldset class="form-group" data-smark="{&quot;exportEmpties&quot;:false}">
-                <div class="form-group spacer no-wrap">
+                <div class="form-group spacer">
                   <div class="form-group">
                     <div class="form-group">
                       <label>First Name</label>
@@ -57,26 +59,26 @@
                     </div>
                   </div>
                   <div class="spacer"></div>
-                  <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
+                  <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
                 </div>
                 <div class="form-group">
                   <div class="form-group">
                     <label>Telephones</label>
                     <div data-smark="{&quot;name&quot;:&quot;phones&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
-                      <div class="form-group no-wrap">
-                        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+                      <div class="singleton">
+                        <button class="action" data-smark="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
                         <input data-smark="data-smark" type="tel" placeholder="Telephone"/>
-                        <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
+                        <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
                       </div>
                     </div>
                   </div>
                   <div class="form-group">
                     <label>Emails</label>
                     <div data-smark="{&quot;name&quot;:&quot;emails&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
-                      <div class="form-group no-wrap">
-                        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+                      <div class="singleton">
+                        <button class="action" data-smark="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
                         <input data-smark="data-smark" type="email" placeholder="Email"/>
-                        <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
+                        <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}">➖</button>
                       </div>
                     </div>
                   </div>
@@ -84,16 +86,16 @@
               </fieldset>
             </div>
           </div>
-          <div class="form-group f2 no-wrap">
+          <div class="form-group f2">
             <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}">➕</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Remove last non-empty employee">➖</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
+            <button class="action" data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}">➕</button>
+            <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Remove last non-empty employee">➖</button>
+            <button class="action" data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
           </div>
-          <div class="form-group f1 no-wrap">
+          <div class="form-group f1">
             <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;empty&quot;}">❌ Cancel</button>
-            <button data-smark="{&quot;action&quot;:&quot;export&quot;}">💾 Submit</button>
+            <button class="action" data-smark="{&quot;action&quot;:&quot;empty&quot;}">❌ Cancel</button>
+            <button class="action" data-smark="{&quot;action&quot;:&quot;export&quot;}">💾 Submit</button>
           </div>
         </section>
       </div>

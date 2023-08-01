@@ -3,6 +3,8 @@
 :root {
     --section-background: hsla(267, 11%, 82%, .3);
     --fieldset-background: hsla(247, 11%, 82%, .5);
+    --round-radius: .75rem;
+    --form-gap: .2rem;
 }
 
 
@@ -37,9 +39,11 @@ fieldset {
     align-content: stretch;
     justify-content: flex-start;
     font-size: 1rem;
+    max-width: 100%;
+    flex-grow: 1;
 
-    &.no-wrap {
-        flex-wrap: nowrap;
+    &>.spacer {
+        flex-grow: 5;
     }
 
     input,
@@ -47,20 +51,18 @@ fieldset {
     select,
     {
         background-color : #ffffff; 
-        padding: .2em;
         flex-grow: 5;
     }
 
-    &>.spacer {
-        flex-grow: 5;
+    input, textarea, select, button.action {
+        margin: var(--form-gap);
+        padding: .5em .7em;
+        border-radius: var(--round-radius);
     }
+
 
     textarea {
         resize: none;
-    }
-
-    button {
-        transform: scale(1.1, 1.1);
     }
 
     label {
@@ -68,13 +70,37 @@ fieldset {
         align-items: baseline;
     }
 
-    &>button {
+    &>button.action {
         align-self: flex-start;
     }
 
 }
 
 
+.singleton {
+    display: flex;
+    align-items: stretch;
+    //margin: var(--form-gap);
+
+    input, textarea, select, button.action {
+        border-radius: 0px;
+        &:first-child {
+            border-radius: var(--round-radius) 0px 0px var(--round-radius);
+        }
+        &:last-child {
+            border-radius:  0px var(--round-radius) var(--round-radius) 0px;
+        }
+    }
+
+    &>* {
+        z-index: 2;
+        margin: 0px !important;
+    }
+
+    &>button.action {
+        z-index: 1;
+    }
+}
 
 
 
@@ -162,13 +188,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (hover:hover) {
-    .form-group button:not(.foldButton):not([disabled]):hover {
-            transform: translate(3px, 3px);
+    .form-group button.action:not([disabled]):hover {
+            transform: translate(2px, 2px);
     }
 }
 
 @media (orientation: portrait) {
-    .form-group button {
+    .form-group button.action {
         font-size: 1.1rem !important;
     }
 }
