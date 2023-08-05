@@ -1,6 +1,16 @@
 *, *::after, *::before {
   box-sizing: border-box; }
 
+:root {
+  --section-background: hsla(267, 11%, 82%, .3);
+  --fieldset-background: hsla(247, 11%, 82%, .5);
+  --round-radius: .75rem;
+  --form-gap: .2rem;
+  --layout-paddings: 1rem; }
+  @media (max-width: 400px) {
+    :root {
+      --layout-paddings: .2rem; } }
+
 html,
 body {
   height: 100vh;
@@ -25,12 +35,175 @@ body {
 
 #main-form {
   flex: 1;
-  max-width: 100vw;
-  margin: 0 10px;
-  margin-bottom: 10rem; }
-  @media (min-width: 800px) {
-    #main-form {
-      max-width: 800px; } }
+  margin: var(--layout-paddings); }
+
+section, header {
+  margin: var(--layout-paddings); }
+  section > h1, header > h1 {
+    margin-top: 0px; }
+
+section {
+  background: var(--section-background);
+  border: solid 1px grey;
+  border-radius: .5em;
+  padding: var(--layout-paddings); }
+
+fieldset {
+  margin: 1em 0px;
+  padding: calc(var(--layout-paddings) / 2);
+  border-radius: .5em;
+  position: relative;
+  background: var(--fieldset-background); }
+
+.aside {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between; }
+  .aside > :not(.inline) {
+    flex: 1; }
+  .aside > .inline {
+    display: inline-block; }
+
+.form-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--form-gap);
+  align-items: flex-start;
+  align-content: stretch;
+  justify-content: flex-start;
+  font-size: 1rem;
+  max-width: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto; }
+
+.spacer {
+  flex-grow: 5; }
+
+.input-group {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  gap: var(--form-gap);
+  align-items: flex-start; }
+  @media (max-width: 1024px) {
+    .input-group {
+      grid-template-columns: 1fr; } }
+
+.singleton {
+  display: flex;
+  align-items: stretch;
+  margin: var(--form-gap); }
+  .singleton input, .singleton textarea, .singleton select {
+    width: 140px; }
+  .singleton input, .singleton textarea, .singleton select, .singleton button {
+    border-radius: 0px; }
+    .singleton input:first-child, .singleton textarea:first-child, .singleton select:first-child, .singleton button:first-child {
+      border-radius: var(--round-radius) 0px 0px var(--round-radius); }
+    .singleton input:last-child, .singleton textarea:last-child, .singleton select:last-child, .singleton button:last-child {
+      border-radius: 0px var(--round-radius) var(--round-radius) 0px; }
+  .singleton > * {
+    z-index: 2;
+    margin: 0px !important; }
+  .singleton > button {
+    z-index: 1; }
+
+input,
+textarea,
+select {
+  background-color: #ffffff;
+  flex-grow: 5; }
+
+input, textarea, select, button {
+  margin: var(--form-gap);
+  border-radius: var(--round-radius);
+  padding: .5rem 1rem;
+  box-sizing: border-box;
+  width: auto; }
+
+button {
+  min-width: 2rem; }
+
+textarea {
+  resize: none; }
+
+label {
+  padding-top: .3rem;
+  font-weight: bold; }
+
+/* Headers and Footers */
+h1, h2, h3, h4, h5, h6 {
+  user-select: none; }
+
+.form-group.h1, .form-group.f1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  user-select: none; }
+
+.form-group.h1 {
+  border-bottom: solid 3px;
+  margin-top: 1.5rem;
+  margin-bottom: .8rem; }
+
+.form-group.f1 {
+  border-top: solid 3px;
+  margin-bottom: 1.5rem;
+  margin-top: .8rem;
+  padding-top: .2em; }
+
+.form-group.h2, .form-group.f2 {
+  font-size: 1.4rem;
+  user-select: none; }
+
+.form-group.h2 {
+  border-bottom: solid 2px;
+  margin-top: 1.5rem;
+  margin-bottom: .8rem; }
+
+.form-group.f2 {
+  border-top: solid 2px;
+  margin-bottom: 1.5rem;
+  margin-top: .8rem;
+  padding-top: .2em; }
+
+.foldButton {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: .2em;
+  background: none;
+  font-size: 1.3em;
+  transition: transform .5s;
+  transform: translateY(0.2em) rotate(45deg); }
+  .foldButton.folded {
+    transform: translateY(0.2em) rotate(-135deg); }
+  @media (hover: hover) {
+    .foldButton:hover {
+      opacity: .5; }
+      .foldButton:hover.folded {
+        transform: translateY(0.2em) rotate(45deg); }
+      .foldButton:hover:not(.folded) {
+        transform: translateY(0.2em) rotate(-135deg); } }
+
+.ingoing {
+  transform: scaleY(0) translateY(-50%); }
+
+.ongoing {
+  transition: transform 70ms ease-in; }
+
+.outgoing {
+  transform: scaleY(0) translateY(-50%);
+  transition: transform 70ms ease-out; }
+
+@media (hover: hover) {
+  .form-group button:not([disabled]):hover {
+    transform: translate(2px, 2px); } }
+
+@media (orientation: portrait) {
+  .form-group button {
+    font-size: 1.1rem !important; } }
+
+*, *::after, *::before {
+  box-sizing: border-box; }
 
 :root {
   --tbMargin: 5px;
@@ -87,149 +260,3 @@ body {
   pointer-events: all;
   padding: .3rem;
   font-size: 1.2rem; }
-
-:root {
-  --section-background: hsla(267, 11%, 82%, .3);
-  --fieldset-background: hsla(247, 11%, 82%, .5);
-  --round-radius: .75rem;
-  --form-gap: .2rem; }
-
-section, header {
-  margin: 0px 1rem 1rem 1rem; }
-
-section {
-  background: var(--section-background);
-  border: solid 1px grey;
-  border-radius: .5em;
-  padding: 1rem; }
-
-fieldset {
-  margin: 1em 0px;
-  padding: .5em;
-  border-radius: .5em;
-  position: relative;
-  background: var(--fieldset-background); }
-
-.form-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: .3em;
-  align-items: flex-start;
-  align-content: stretch;
-  justify-content: flex-start;
-  font-size: 1rem;
-  max-width: 100%;
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: auto; }
-  .form-group > .spacer {
-    flex-grow: 5; }
-  .form-group input,
-  .form-group textarea,
-  .form-group select {
-    background-color: #ffffff;
-    flex-grow: 5; }
-  .form-group input, .form-group textarea, .form-group select, .form-group button.action {
-    margin: var(--form-gap);
-    border-radius: var(--round-radius);
-    padding: .5rem 0px;
-    box-sizing: border-box;
-    width: auto; }
-  .form-group button.action {
-    min-width: 2rem; }
-  .form-group textarea {
-    resize: none; }
-  .form-group label {
-    padding-top: .3rem;
-    font-weight: bold;
-    align-items: baseline; }
-  .form-group > button.action {
-    align-self: flex-start; }
-
-.singleton {
-  display: flex;
-  align-items: stretch; }
-  .singleton input, .singleton textarea, .singleton select, .singleton button.action {
-    border-radius: 0px; }
-    .singleton input:first-child, .singleton textarea:first-child, .singleton select:first-child, .singleton button.action:first-child {
-      border-radius: var(--round-radius) 0px 0px var(--round-radius); }
-    .singleton input:last-child, .singleton textarea:last-child, .singleton select:last-child, .singleton button.action:last-child {
-      border-radius: 0px var(--round-radius) var(--round-radius) 0px; }
-  .singleton > * {
-    z-index: 2;
-    margin: 0px !important; }
-  .singleton > button.action {
-    z-index: 1; }
-
-/* Headers and Footers */
-h1, h2, h3, h4, h5, h6 {
-  user-select: none; }
-
-.form-group.h1, .form-group.f1 {
-  font-size: 1.6rem;
-  font-weight: bold;
-  user-select: none; }
-
-.form-group.h1 {
-  border-bottom: solid 3px;
-  margin-top: 1.5rem;
-  margin-bottom: .8rem; }
-
-.form-group.f1 {
-  border-top: solid 3px;
-  margin-bottom: 1.5rem;
-  margin-top: .8rem;
-  padding-top: .2em; }
-
-.form-group.h2, .form-group.f2 {
-  font-size: 1.4rem;
-  user-select: none; }
-
-.form-group.h2 {
-  border-bottom: solid 2px;
-  margin-top: 1.5rem;
-  margin-bottom: .8rem; }
-
-.form-group.f2 {
-  border-top: solid 2px;
-  margin-bottom: 1.5rem;
-  margin-top: .8rem;
-  padding-top: .2em; }
-
-.foldButton {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: .2em;
-  background: none;
-  transition: transform .5s; }
-
-.foldButton:not(.folded) {
-  transform: translateY(0.5em) rotate(45deg); }
-
-.foldButton.folded {
-  transform: translateY(0.5em) rotate(-135deg); }
-
-@media (hover: hover) {
-  .foldButton.folded:hover {
-    transform: translateY(0.5em) rotate(45deg); }
-  .foldButton:not(.folded):hover {
-    transform: translateY(0.5em) rotate(-135deg); } }
-
-.form-group .ingoing {
-  transform: scaleY(0) translateY(-50%); }
-
-.form-group .ongoing {
-  transition: transform 70ms ease-in; }
-
-.form-group .outgoing {
-  transform: scaleY(0) translateY(-50%);
-  transition: transform 70ms ease-out; }
-
-@media (hover: hover) {
-  .form-group button.action:not([disabled]):hover {
-    transform: translate(2px, 2px); } }
-
-@media (orientation: portrait) {
-  .form-group button.action {
-    font-size: 1.1rem !important; } }

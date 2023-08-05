@@ -1,40 +1,105 @@
-
+*, *::after, *::before {
+    box-sizing: border-box;
+}
 
 :root {
     --section-background: hsla(267, 11%, 82%, .3);
     --fieldset-background: hsla(247, 11%, 82%, .5);
     --round-radius: .75rem;
     --form-gap: .2rem;
+    --layout-paddings: 1rem;
+    @media (max-width: 400px) {
+        --layout-paddings: .2rem;
+    }
 }
 
 
+// General layout:
+// ===============
+
+html,
+body {
+    height: 100vh;
+    height: 100svh;
+    width: 100vw;
+    padding: 0;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    position: fixed;
+    background:
+        url("https://picsum.photos/800")
+        , #888888
+    ;
+    background-position: center;
+    background-size: cover;
+}
+
+.container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  min-width: 200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, .6);
+  overflow-y: auto;
+}
+
+#main-form {
+    flex: 1;
+    margin: var(--layout-paddings);
+}
+
+
+
+
+// Outer Layout:
+// =============
 
 section, header {
-    margin: 0px 1rem 1rem 1rem;
+    margin: var(--layout-paddings);
+    &>h1 {
+        margin-top: 0px;
+    }
 }
-
 
 section {
     background: var(--section-background);
     border: solid 1px grey;
     border-radius: .5em;
-    padding: 1rem;
+    padding: var(--layout-paddings);
 }
-
 
 fieldset {
     margin: 1em 0px;
-    padding: .5em;
+    padding: calc(var(--layout-paddings) / 2);
     border-radius: .5em;
     position: relative;
     background: var(--fieldset-background);
 }
 
 
+// Form organization classes:
+// ==========================
+
+// .aside - Put things aside.
+//          👉 Use .inline for non width-greedy childs such as buttons, etc...
+.aside {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    &>:not(.inline) {
+        flex: 1;
+    }
+    &>.inline {
+        display: inline-block;
+    }
+}
+
+
 .form-group {
     display: flex;
     flex-wrap: wrap;
-    gap: .3em;
+    gap: var(--form-gap);
     align-items: flex-start;
     align-content: stretch;
     justify-content: flex-start;
@@ -43,55 +108,31 @@ fieldset {
     flex-grow: 1;
     flex-shrink: 0;
     flex-basis: auto;
-
-    &>.spacer {
-        flex-grow: 5;
-    }
-
-    input,
-    textarea,
-    select,
-    {
-        background-color : #ffffff; 
-        flex-grow: 5;
-    }
-
-    input, textarea, select, button.action {
-        margin: var(--form-gap);
-        border-radius: var(--round-radius);
-        padding: .5rem 0px;
-        box-sizing: border-box;
-        width: auto;
-
-    }
-    button.action {
-        min-width:2rem;
-    }
-
-
-    textarea {
-        resize: none;
-    }
-
-    label {
-        padding-top: .3rem;
-        font-weight: bold;
-        align-items: baseline;
-    }
-
-    &>button.action {
-        align-self: flex-start;
-    }
-
 }
 
+.spacer {
+    flex-grow: 5;
+}
+
+.input-group {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    gap: var(--form-gap);
+    align-items: flex-start;
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+    }
+}
 
 .singleton {
     display: flex;
     align-items: stretch;
-    //margin: var(--form-gap);
+    margin: var(--form-gap);
 
-    input, textarea, select, button.action {
+    input, textarea, select {
+        width: 140px;
+    }
+    input, textarea, select, button {
         border-radius: 0px;
         &:first-child {
             border-radius: var(--round-radius) 0px 0px var(--round-radius);
@@ -106,13 +147,44 @@ fieldset {
         margin: 0px !important;
     }
 
-    &>button.action {
+    &>button {
         z-index: 1;
     }
 }
 
 
 
+
+
+input,
+textarea,
+select,
+{
+    background-color : #ffffff; 
+    flex-grow: 5;
+}
+
+input, textarea, select, button {
+    margin: var(--form-gap);
+    border-radius: var(--round-radius);
+    padding: .5rem 1rem;
+    box-sizing: border-box;
+    width: auto;
+
+}
+button {
+    min-width:2rem;
+}
+
+
+textarea {
+    resize: none;
+}
+
+label {
+    padding-top: .3rem;
+    font-weight: bold;
+}
 
 
 
@@ -156,40 +228,42 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .foldButton {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: .2em;
-  background: none;
-  transition: transform .5s;
-}
-.foldButton:not(.folded) {
-  transform: translateY(.5em) rotate(45deg);
-}
-.foldButton.folded {
-  transform: translateY(.5em) rotate(-135deg);
-}
-@media (hover:hover) {
-    .foldButton.folded:hover {
-        transform: translateY(.5em) rotate(45deg);
+    border: solid black;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: .2em;
+    background: none;
+    font-size: 1.3em;
+
+
+    transition: transform .5s;
+    transform: translateY(.2em) rotate(45deg);
+    &.folded {
+        transform: translateY(.2em) rotate(-135deg);
     }
-    .foldButton:not(.folded):hover {
-        transform: translateY(.5em) rotate(-135deg);
+    @media (hover:hover) {
+        &:hover {
+            opacity: .5;
+            &.folded {
+                transform: translateY(.2em) rotate(45deg);
+            }
+            &:not(.folded) {
+                transform: translateY(.2em) rotate(-135deg);
+            }
+        }
     }
 }
 
 
-.form-group .ingoing {
+.ingoing {
     transform: scaleY(0) translateY(-50%);
 }
-
-.form-group .ongoing {
+.ongoing {
     transition:
         transform 70ms ease-in
     ;
 }
-
-.form-group .outgoing {
+.outgoing {
     transform: scaleY(0) translateY(-50%);
     transition:
         transform 70ms ease-out
@@ -197,13 +271,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (hover:hover) {
-    .form-group button.action:not([disabled]):hover {
+    .form-group button:not([disabled]):hover {
             transform: translate(2px, 2px);
     }
 }
 
 @media (orientation: portrait) {
-    .form-group button.action {
+    .form-group button {
         font-size: 1.1rem !important;
     }
 }

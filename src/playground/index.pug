@@ -2,7 +2,7 @@ extends layout.pug
 block mainForm
     section
         .form-group.h1 Company
-        .form-group
+        .input-group
             label Corporate Name
             input(
                 data-smark
@@ -10,7 +10,7 @@ block mainForm
                 type="text"
                 placeholder="Company Name"
             )
-        .form-group
+        .input-group
             label Address
             textarea(
                 data-smark
@@ -39,7 +39,7 @@ block mainForm
             )
     section
         .form-group.h2
-            button.foldButton(
+            span.foldButton(
                 data-smark={
                     action: "fold",
                     for: "employees",
@@ -55,17 +55,17 @@ block mainForm
                 span )
             .form-group
                 .spacer
-                button.action(data-smark = {
+                button(data-smark = {
                     action: "addItem",
                     for: "employees",
                     autoscroll: "self",
                 }) ➕
-                button.action(data-smark = {
+                button(data-smark = {
                     action: "removeItem",
                     for: "employees",
                     keep_non_empty: true,
                 }, title="Remove last non-empty employee") ➖
-                button.action(data-smark = {
+                button(data-smark = {
                     action: "removeItem",
                     for: "employees",
                     to: "*",
@@ -78,57 +78,56 @@ block mainForm
                 name: "employees",
                 min_items: 0,
             })
-                fieldset.form-group(data-smark={
+                fieldset.form-group.aside(data-smark={
                     exportEmpties: false
                 })
                     .form-group.spacer
                         .form-group
-                            .form-group
+                            .input-group
                                 label First Name
                                 input(
                                     data-smark
                                     name="name"
                                     placeholder="Name"
                                 )
-                            .form-group
+                            .input-group
                                 label Last Name
                                 input(
                                     data-smark
                                     name="lastName"
                                     placeholder="Surnme"
                                 )
-                        .spacer
-                        button.action(data-smark = {
-                            action: "removeItem",
-                        }) ➖
-                    .form-group
-                        +inputlist("Telephones")(
-                            name="phones"
-                            type="tel",
-                            max_items=4,
-                            placeholder="Telephone",
-                            removeFailback="clear"
-                        )
-                        +inputlist("Emails")(
-                            type="email",
-                            max_items=4,
-                            placeholder="Email",
-                            removeFailback="clear"
-                        )
+                        .form-group
+                            +inputlist("Telephones")(
+                                name="phones"
+                                type="tel",
+                                max_items=4,
+                                placeholder="Telephone",
+                                removeFailback="clear"
+                            )
+                            +inputlist("Emails")(
+                                type="email",
+                                max_items=4,
+                                placeholder="Email",
+                                removeFailback="clear"
+                            )
+                    button.inline(data-smark = {
+                        action: "removeItem",
+                    }) ➖
         .form-group.f2
             .spacer
-            button.action(data-smark = {
+            button(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "elegant",
             }) ➕
-            button.action(data-smark = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
-            button.action(data-smark = {
+            button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 to: "*",
@@ -137,14 +136,14 @@ block mainForm
             }, title="Clear all empty employees") 🧹
         .form-group.f1
             .spacer
-            button.action(data-smark = {
+            button(data-smark = {
                 action: "empty",
             }) ❌ Cancel
-            button.action(data-smark = {
+            button(data-smark = {
                 action: "export",
             }) 💾 Submit
 mixin inputlist(label="Annonymous")
-    .form-group
+    .input-group
         -
             //- Acccepted attributes:
             const {
@@ -163,11 +162,11 @@ mixin inputlist(label="Annonymous")
             max_items,
         })
             .singleton
-                button.action(data-smark = {
+                button(data-smark = {
                     action: "addItem",
                 }) ➕
                 input(data-smark)&attributes(atts)
-                button.action(data-smark = {
+                button(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
                 }) ➖
