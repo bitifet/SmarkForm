@@ -82,6 +82,7 @@ fieldset {
 
 .input-group {
   display: grid;
+  flex-grow: 1;
   grid-template-columns: min-content 1fr;
   gap: var(--form-gap);
   align-items: flex-start; }
