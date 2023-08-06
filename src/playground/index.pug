@@ -59,18 +59,18 @@ block mainForm
                     action: "addItem",
                     for: "employees",
                     autoscroll: "self",
-                }) ➕
+                }, title="Add employee") ➕
                 button(data-smark = {
                     action: "removeItem",
                     for: "employees",
                     keep_non_empty: true,
-                }, title="Remove last non-empty employee") ➖
+                }, title="Remove employees from bottom priorizing empties") ➖
                 button(data-smark = {
                     action: "removeItem",
                     for: "employees",
                     to: "*",
                     keep_non_empty: true,
-                }, title="Clear all empty employee") 🧹
+                }, title="Clear all empty employees") 🧹
         .form-group
             .form-group(data-smark = {
                 type: "list",
@@ -113,20 +113,20 @@ block mainForm
                             )
                     button.inline(data-smark = {
                         action: "removeItem",
-                    }) ➖
+                    }, title="Remove this employee") ➖
         .form-group.f2
             .spacer
             button(data-smark = {
                 action: "addItem",
                 for: "employees",
                 autoscroll: "elegant",
-            }) ➕
+            }, title="Add employee") ➕
             button(data-smark = {
                 action: "removeItem",
                 for: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
-            }, title="Remove last non-empty employee") ➖
+            }, title="Remove employees from bottom priorizing empties") ➖
             button(data-smark = {
                 action: "removeItem",
                 for: "employees",
@@ -138,10 +138,10 @@ block mainForm
             .spacer
             button(data-smark = {
                 action: "empty",
-            }) ❌ Cancel
+            }, title="Clear form data") ❌ Cancel
             button(data-smark = {
                 action: "export",
-            }) 💾 Submit
+            }, title="Submit form data") 💾 Submit
 mixin inputlist(label="Annonymous")
     .input-group
         -
@@ -164,9 +164,9 @@ mixin inputlist(label="Annonymous")
             .singleton
                 button(data-smark = {
                     action: "addItem",
-                }) ➕
+                }, title="Add new item below") ➕
                 input(data-smark)&attributes(atts)
                 button(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
-                }) ➖
+                }, title="Remove this item") ➖
