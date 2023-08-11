@@ -93,6 +93,9 @@ fieldset {
     &>.inline {
         display: inline-block;
     }
+    &.reverse {
+        flex-direction: row-reverse;
+    }
 }
 
 

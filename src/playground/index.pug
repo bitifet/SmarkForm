@@ -78,9 +78,12 @@ block mainForm
                 name: "employees",
                 min_items: 0,
             })
-                fieldset.form-group.aside(data-smark={
+                fieldset.form-group.aside.reverse(data-smark={
                     exportEmpties: false
                 })
+                    button.inline(data-smark = {
+                        action: "removeItem",
+                    }, title="Remove this employee") ➖
                     .form-group.spacer
                         .form-group
                             .input-group
@@ -111,9 +114,6 @@ block mainForm
                                 placeholder="Email",
                                 removeFailback="clear"
                             )
-                    button.inline(data-smark = {
-                        action: "removeItem",
-                    }, title="Remove this employee") ➖
         .form-group.f2
             .spacer
             button(data-smark = {
