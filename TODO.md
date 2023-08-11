@@ -12,6 +12,8 @@ TO-DO List
 
 <!-- vim-markdown-toc GitLab -->
 
+* [UX Improvements](#ux-improvements)
+    * [👉 Keyboard Shortcuts](#-keyboard-shortcuts)
 * [Pending core features](#pending-core-features)
     * [👉 The API interface](#-the-api-interface)
     * [👉 "src" property for import action](#-src-property-for-import-action)
@@ -36,6 +38,17 @@ TO-DO List
 
 
   👉 Complete documentation.
+
+UX Improvements
+---------------
+
+### 👉 Keyboard Shortcuts
+  - Allow component types to capture keyboard events to trigger actions.
+  - I.e. Ctrl+"+" in list item may add new item below (trigger addItem action
+    with that item as target).
+  - I.e. Ctrl+"-" in list item may remove the item containing it (trigger
+    removeItem action with that item as target).
+
 
 Pending core features
 ---------------------

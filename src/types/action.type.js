@@ -15,7 +15,15 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
 
 
 export class action_type extends SmarkComponent {
-    render(){};
+    render(){
+        const me = this;
+        me.parent.onRendered(()=>{
+            const actionArgs = me.getActionArgs();
+            if (
+                typeof actionArgs.context?.onActionRender == "function"
+            ) actionArgs.context.onActionRender(actionArgs);
+        });
+    };
     disable() {//{{{
         const me = this;
         me.target.disabled = true;

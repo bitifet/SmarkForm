@@ -21,6 +21,22 @@ import {action} from "./action.type.js";
 import {mutex} from "../decorators/mutex.deco.js";
 
 
+// Helpers:
+// --------
+
+function makeNonNavigable(target) {//{{{
+    if (
+        // Tabindex not explicitly defined:
+        target.getAttribute("tabindex") === null
+    ) {
+        target.setAttribute("tabindex", "-1");
+    };
+};//}}}
+
+
+// List component type:
+// --------------------
+
 @foldable
 export class list extends SmarkComponent {
     render () {//{{{
@@ -75,6 +91,14 @@ export class list extends SmarkComponent {
         });
         return;
     };//}}}
+    onActionRender({action, origin}) {
+        switch (action) {
+            case "addItem":
+            case "removeItem":
+                makeNonNavigable(origin.target);
+                break;
+        };
+    };
     @mutex("list_mutating")
     @action
     async export() {//{{{
