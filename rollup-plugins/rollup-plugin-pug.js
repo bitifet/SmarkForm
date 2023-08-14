@@ -1,5 +1,31 @@
 
 import Pug from 'pug'
+
+const name = "pug";
+const inputExtension = "pug";
+const outputExtension = "html";
+
+function compile(fullPath, {
+    debug = false,
+    pretty = false,
+    locals = {},
+    ...options
+}) {
+    const render = Pug.compileFile(fullPath, {
+            inlineRuntimeFunctions: false,
+            compileDebug: !!debug,
+            debug: false,
+            pretty,
+            ...options
+    });
+    const {dependencies} = render;
+    const output = render(locals);
+    return {output, dependencies};
+};
+
+
+
+
 import Path from 'path'
 import {promises as Fs, exists} from 'fs'
 const fileExists = async path => new Promise(resolve=>exists(path, resolve));
@@ -7,24 +33,23 @@ const fileExists = async path => new Promise(resolve=>exists(path, resolve));
 const generators = new Map();
 
 
+
+
 export default function rollup_plugin_pug ({
-    locals = {},
-    debug = false,
-    pretty = false,
     outputDir = "",
     ...options
 } = {}) {
     return {
-        name: 'pug', // this name will show up in warnings and errors
+        name, // this name will show up in warnings and errors
         async resolveId ( id, callSitePath) {
-            if (id.endsWith(".pug")) {
+            if (id.endsWith(`.${inputExtension}`)) {
                 const callSiteDir = Path.dirname(callSitePath);
                 const fullPath = Path.join(callSiteDir, id);
 
 
                 const destPath = Path.join(
                     Path.resolve(outputDir)
-                    , id.substring(0, id.length - 3) + 'html'
+                    , id.substring(0, id.length - inputExtension.length) + outputExtension
                 );
 
                 generators.set(id, {
@@ -48,7 +73,7 @@ export default function rollup_plugin_pug ({
             }
         },
         async transform (code, id) {
-            if (! id.endsWith(".pug")) return;
+            if (! id.endsWith(`.${inputExtension}`)) return;
 
             const {
                 fullPath,
@@ -57,26 +82,20 @@ export default function rollup_plugin_pug ({
             if (! fullPath) return null;
             const destDirName = Path.dirname(destPath);
 
-            const render = Pug.compileFile(fullPath, {
-                    inlineRuntimeFunctions: false,
-                    compileDebug: !!debug,
-                    debug: false,
-                    pretty,
-                    ...options
-            });
-            this.addWatchFile(fullPath)
-            for(const dep of render.dependencies) {
-                    this.addWatchFile(dep)
-            };
+            const {output, dependencies} = compile(fullPath, options);
 
-            const html = render(locals);
+
+            // Add/refresh file watchers:
+            this.addWatchFile(fullPath)
+            for(const dep of dependencies) this.addWatchFile(dep);
+
 
             if (! await fileExists(destDirName)){
                  await Fs.mkdir(destDirName, { recursive: true });
             };
 
 
-            await Fs.writeFile(destPath, html);
+            await Fs.writeFile(destPath, output);
 
 
 
