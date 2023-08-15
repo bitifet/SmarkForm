@@ -1,6 +1,9 @@
 # Vim
 **.sw*
 
+# Temporary files
+tmp
+
 # Logs
 logs
 *.log

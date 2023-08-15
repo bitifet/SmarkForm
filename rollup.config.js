@@ -5,6 +5,7 @@ import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 import scss from 'rollup-plugin-scss';
 import pug from './rollup-plugins/rollup-plugin-pug';
+import sass from './rollup-plugins/rollup-plugin-sass';
 
 export default [
     {
@@ -28,6 +29,23 @@ export default [
             terser(),
         ]
     },
+    {
+        input: 'src/examples/index.js',
+        output: {
+            file: 'tmp/index.js',
+        },
+        plugins: [
+            sass({
+                outputStyle: "expanded",
+                outputDir: "examples",
+            }),
+            pug({
+                pretty: true,
+                outputDir: "examples",
+            }),
+        ],
+    },
+    // Old playground stuff:
     {
         input: 'src/playground/app.js',
         output: {

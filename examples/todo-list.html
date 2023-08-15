@@ -2,62 +2,60 @@
 <html>
   <head>
     <title>SmarkForm TODO-List example</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="./form.css">
   </head>
   <body>
     <h1>SmarkForm TODO-List example</h1>
-    <div id='myTODOlist'>
-      <div style='text-align: right'>
-        <button data-smark='{"action":"import","for":"tasklist"}'>📂 Import (JSON)</button>
-        <button data-smark='{"action":"export","for":"tasklist"}'>💾 Export (JSON)</button>
+    <div id="myTODOlist">
+      <div style="text-align: right">
+        <button data-smark="{&quot;action&quot;:&quot;import&quot;,&quot;for&quot;:&quot;tasklist&quot;}">📂 Import (JSON)</button>
+        <button data-smark="{&quot;action&quot;:&quot;export&quot;,&quot;for&quot;:&quot;tasklist&quot;}">💾 Export (JSON)</button>
       </div>
       <hr>
-      <ul data-smark='{"type":"list","name":"tasklist","exportEmpties":true,"min_items":0}'>
+      <ul data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;name&quot;:&quot;tasklist&quot;,&quot;exportEmpties&quot;:true,&quot;min_items&quot;:0}">
         <li>
-          <input data-smark name='title' type='text' placeholder='Task title'>
-          <button data-smark='{"action":"removeItem"}' title='Remove task'>❌</button>
-          <div data-smark='{"type":"list","min_items":1}'>
+          <input data-smark name="title" type="text" placeholder="Task title">
+          <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove task">❌</button>
+          <div data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;min_items&quot;:1}">
             <div>
-              <input data-smark name='done' type='checkbox'>
-              <button data-smark='{"action":"addItem"}'>➕</button>
-              <input data-smark name='description' type='text' placeholder='New goal...'>
-              <button data-smark='{"action":"removeItem"}'>➖</button>
+              <input data-smark name="done" type="checkbox">
+              <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
+              <input data-smark name="description" type="text" placeholder="New goal...">
+              <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
             </div>
           </div>
         </li>
       </ul>
       <hr>
-      <div style='text-align: right'>
-        <button data-smark='{"action":"addItem","for":"tasklist"}'>➕ Add new task</button>
+      <div style="text-align: right">
+        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;tasklist&quot;}">➕ Add new task</button>
       </div>
     </div>
-    <script src='https://cdn.jsdelivr.net/npm/smarkform@0.1.1/dist/SmarkForm.umd.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/smarkform@0.1.1/dist/SmarkForm.umd.js"></script>
     <script>
       window.form = new SmarkForm(
-          document.querySelector('body')
-          , {
-              onAfterAction_export({data}) {
-                  alert (JSON.stringify(data, null, 4));
-              },
-              onBeforeAction_import(options) {
-                  let data = prompt('Provide JSON data');
-                  try {
-                      options.data = JSON.parse(data);
-                  } catch (err) {
-                      if (data.length) {
-                          alert ('⚠️  Invalid JSON!!');
-                          data = null;
-                      } else {
-                          data = {}; // Drop form contents
-                      };
-                  };
-                  if (data === null) options.preventDefault();
-              },
-          }
-      );
+                document.querySelector('body')
+                , {
+                    onAfterAction_export({data}) {
+                        alert (JSON.stringify(data, null, 4));
+                    },
+                    onBeforeAction_import(options) {
+                        let data = prompt('Provide JSON data');
+                        try {
+                            options.data = JSON.parse(data);
+                        } catch (err) {
+                            if (data.length) {
+                                alert ('⚠️  Invalid JSON!!');
+                                data = null;
+                            } else {
+                                data = {}; // Drop form contents
+                            };
+                        };
+                        if (data === null) options.preventDefault();
+                    },
+                }
+            );
     </script>
   </body>
 </html>
-
-
-
