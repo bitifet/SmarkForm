@@ -160,7 +160,6 @@ input, textarea, select, button {
   margin: var(--form-gap);
   border-radius: var(--round-radius);
   padding: .5rem 1rem;
-  box-sizing: border-box;
   width: auto;
 }
 
