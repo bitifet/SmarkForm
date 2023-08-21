@@ -7,7 +7,7 @@
   "module": "dist/SmarkForm.esm.js",
   "umd": "dist/SmarkForm.umd.js",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c --environment BUILD:production",
     "dev": "rollup -c -w",
     "test": "mocha",
     "pretest": "npm run build",

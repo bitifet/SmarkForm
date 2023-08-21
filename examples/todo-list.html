@@ -1,61 +1,127 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SmarkForm TODO-List example</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <link rel="stylesheet" href="./form.css">
+    <title>SmarkForm TODO-List Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../examples/smarkform_layout_sample.css">
+    <link rel="stylesheet" href="../examples/smarkform_styles_sample.css">
   </head>
   <body>
-    <h1>SmarkForm TODO-List example</h1>
-    <div id="myTODOlist">
-      <div style="text-align: right">
-        <button data-smark="{&quot;action&quot;:&quot;import&quot;,&quot;for&quot;:&quot;tasklist&quot;}">📂 Import (JSON)</button>
-        <button data-smark="{&quot;action&quot;:&quot;export&quot;,&quot;for&quot;:&quot;tasklist&quot;}">💾 Export (JSON)</button>
-      </div>
-      <hr>
-      <ul data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;name&quot;:&quot;tasklist&quot;,&quot;exportEmpties&quot;:true,&quot;min_items&quot;:0}">
-        <li>
-          <input data-smark name="title" type="text" placeholder="Task title">
-          <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove task">❌</button>
-          <div data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;min_items&quot;:1}">
-            <div>
-              <input data-smark name="done" type="checkbox">
-              <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}">➕</button>
-              <input data-smark name="description" type="text" placeholder="New goal...">
-              <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;}">➖</button>
-            </div>
+    <div class="main-container">
+      <div class="smarkForm" id="main-form">
+        <header>
+          <h1>SmarkForm TODO-List Example</h1><small>
+            <p>
+              This example demonstrates how to create a simple form
+              layout that can almost responsively expand and stack
+              depending on the width of the page.
+            </p>
+            <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
+        </header>
+        <section>
+          <div class="form-group h1">
+            <div class="spacer"></div>
+            <button data-smark="{&quot;action&quot;:&quot;import&quot;,&quot;for&quot;:&quot;tasklist&quot;}">📂 Import (JSON)</button>
+            <button data-smark="{&quot;action&quot;:&quot;export&quot;,&quot;for&quot;:&quot;tasklist&quot;}">💾 Export (JSON)</button>
           </div>
-        </li>
-      </ul>
-      <hr>
-      <div style="text-align: right">
-        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;tasklist&quot;}">➕ Add new task</button>
+          <div class="form-group" data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;name&quot;:&quot;tasklist&quot;,&quot;exportEmpties&quot;:true,&quot;min_items&quot;:0}">
+            <fieldset class="form-group aside reverse" data-smark="{&quot;exportEmpties&quot;:false}">
+              <button class="inline" data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove task">❌</button>
+              <div class="form-group spacer">
+                <div class="form-group">
+                  <input data-smark name="title" type="text" placeholder="Task title">
+                </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <label>Goals</label>
+                    <div data-smark="{&quot;name&quot;:&quot;goals&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:100}">
+                      <div class="singleton">
+                        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
+                        <input data-smark="data-smark" type="text" placeholder="New goal..."/>
+                        <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="form-group f1" style="text-align: right">
+            <div class="spacer"></div>
+            <button data-smark="{&quot;action&quot;:&quot;empty&quot;,&quot;for&quot;:&quot;tasklist&quot;}" title="Clear form data">❌ Clear all</button>
+            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty tasks">🧹 Clear empty</button>
+            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;tasklist&quot;}">➕ Add new task</button>
+          </div>
+        </section>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/smarkform@0.1.1/dist/SmarkForm.umd.js"></script>
+    <script src="../dist/SmarkForm.umd.js"></script>
     <script>
+      // Form instantiation:
+      // -------------------
       window.form = new SmarkForm(
-                document.querySelector('body')
-                , {
-                    onAfterAction_export({data}) {
-                        alert (JSON.stringify(data, null, 4));
-                    },
-                    onBeforeAction_import(options) {
-                        let data = prompt('Provide JSON data');
-                        try {
-                            options.data = JSON.parse(data);
-                        } catch (err) {
-                            if (data.length) {
-                                alert ('⚠️  Invalid JSON!!');
-                                data = null;
-                            } else {
-                                data = {}; // Drop form contents
-                            };
-                        };
-                        if (data === null) options.preventDefault();
-                    },
-                }
-            );
+          document.querySelector("#main-form")
+          , {
+              autoId: true,
+              onAfterAction_export({data}) {
+                  alert (JSON.stringify(data, null, 4));
+              },
+              async onBeforeAction_empty({context, preventDefault}) {
+                  if (
+                      ! await context.isEmpty()
+                      && ! confirm("Are you sure?")
+                  ) preventDefault();
+              },
+              onBeforeAction_import(options) {
+                  let data = prompt('Provide JSON data');
+                  try {
+                      options.data = JSON.parse(data);
+                  } catch (err) {
+                      if (data.length) {
+                          alert ('⚠️  Invalid JSON!!');
+                          data = null;
+                      } else {
+                          data = {}; // Drop form contents
+                      };
+                  };
+                  if (data === null) options.preventDefault();
+              },
+          }
+      );
+      
+      // List items addition/removal animation:
+      // --------------------------------------
+      form
+          .onAll("addItem", function({
+              newItemTarget,
+              onRendered,
+          }) {
+              newItemTarget.classList.add("ingoing");
+              onRendered(()=>{
+                  newItemTarget.classList.remove("ingoing")
+                  newItemTarget.classList.add("ongoing");
+              });
+          })
+          .onAll("removeItem", async function({
+              oldItemTarget,
+              onRemmoved,
+          }) {
+              oldItemTarget.classList.remove("ongoing");
+              oldItemTarget.classList.add("outgoing");
+      
+              // Await for transition to be finished before item removal:
+              const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                  .getPropertyValue('transition-duration')
+                  .slice(0,-1).replace("m","/1")
+                  .split("/")
+                  .map(Number)
+              ;
+              await new Promise(resolve=>setTimeout(
+                  resolve
+                  , duration * multiplier
+              ));
+          })
+      ;
     </script>
   </body>
 </html>

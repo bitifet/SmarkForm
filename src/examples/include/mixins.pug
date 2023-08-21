@@ -1,0 +1,28 @@
+mixin inputlist(label="Annonymous")
+    .input-group
+        -
+            //- Acccepted attributes:
+            const {
+                name=label.toLowerCase(),
+                min_items,
+                max_items,
+                removeFailback, // none / clear / throw
+                ...atts // Extra attributes for inputs (placeholder, etc...)
+            } = attributes;
+        label= label
+        div(data-smark = {
+            name: name,
+            type: "list",
+            of: "singleton",
+            min_items,
+            max_items,
+        })
+            .singleton
+                button(data-smark = {
+                    action: "addItem",
+                }, title="Add new item below") ➕
+                input(data-smark)&attributes(atts)
+                button(data-smark = {
+                    action: "removeItem",
+                    failback: removeFailback,
+                }, title="Remove this item") ➖

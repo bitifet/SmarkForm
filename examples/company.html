@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SmarkForm Complete Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../examples/smarkform_layout_sample.css">
+    <link rel="stylesheet" href="../examples/smarkform_styles_sample.css">
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="smarkForm" id="main-form">
+        <header>
+          <h1>SmarkForm Complete Example</h1><small>
+            <p>
+              This example demonstrates how to create a simple form
+              layout that can almost responsively expand and stack
+              depending on the width of the page.
+            </p>
+            <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
+        </header>
+        <section>
+          <div class="form-group h1">Company</div>
+          <div class="input-group">
+            <label>Corporate Name</label>
+            <input data-smark name="company" type="text" placeholder="Company Name">
+          </div>
+          <div class="input-group">
+            <label>Address</label>
+            <textarea data-smark name="address" placeholder="Address"></textarea>
+          </div>
+          <div class="form-group">
+            <label>City,State,Zip</label>
+            <input data-smark name="city" placeholder="City" style="flex: 6">
+            <input data-smark name="state" placeholder="State" style="flex:1">
+            <input data-smark name="postCode" placeholder="Postal Code" style="flex:2">
+          </div>
+        </section>
+        <section>
+          <div class="form-group h2"><span class="foldButton" data-smark="{&quot;action&quot;:&quot;fold&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;foldedClass&quot;:&quot;folded&quot;}"></span><span><span>Employees (</span><span data-smark="{&quot;action&quot;:&quot;count&quot;,&quot;for&quot;:&quot;employees&quot;}"></span><span>)</span></span>
+            <div class="form-group">
+              <div class="spacer"></div>
+              <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;self&quot;}" title="Add employee">➕</button>
+              <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true}" title="Remove employees from bottom priorizing empties">➖</button>
+              <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-group" data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;exportEmpties&quot;:true,&quot;name&quot;:&quot;employees&quot;,&quot;min_items&quot;:0}">
+              <fieldset class="form-group aside reverse" data-smark="{&quot;exportEmpties&quot;:false}">
+                <button class="inline" data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove this employee">➖</button>
+                <div class="form-group spacer">
+                  <div class="form-group">
+                    <div class="input-group">
+                      <label>First Name</label>
+                      <input data-smark name="name" placeholder="Name">
+                    </div>
+                    <div class="input-group">
+                      <label>Last Name</label>
+                      <input data-smark name="lastName" placeholder="Surnme">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="input-group">
+                      <label>Telephones</label>
+                      <div data-smark="{&quot;name&quot;:&quot;phones&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
+                        <div class="singleton">
+                          <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
+                          <input data-smark="data-smark" type="tel" placeholder="Telephone"/>
+                          <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="input-group">
+                      <label>Emails</label>
+                      <div data-smark="{&quot;name&quot;:&quot;emails&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
+                        <div class="singleton">
+                          <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
+                          <input data-smark="data-smark" type="email" placeholder="Email"/>
+                          <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+          <div class="form-group f2">
+            <div class="spacer"></div>
+            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Add employee">➕</button>
+            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Remove employees from bottom priorizing empties">➖</button>
+            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
+          </div>
+        </section>
+        <section>
+          <div class="form-group">
+            <div class="spacer"></div>
+            <button data-smark="{&quot;action&quot;:&quot;empty&quot;}" title="Clear form data">❌ Cancel</button>
+            <button data-smark="{&quot;action&quot;:&quot;export&quot;}" title="Submit form data">💾 Submit</button>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="../dist/SmarkForm.umd.js"></script>
+    <script>
+      // Form instantiation:
+      // -------------------
+      window.form = new SmarkForm(
+          document.querySelector("#main-form")
+          , {
+              autoId: true,
+              onAfterAction_export({data}) {
+                  alert (JSON.stringify(data, null, 4));
+              },
+              async onBeforeAction_empty({context, preventDefault}) {
+                  if (
+                      ! await context.isEmpty()
+                      && ! confirm("Are you sure?")
+                  ) preventDefault();
+              },
+              onBeforeAction_import(options) {
+                  let data = prompt('Provide JSON data');
+                  try {
+                      options.data = JSON.parse(data);
+                  } catch (err) {
+                      if (data.length) {
+                          alert ('⚠️  Invalid JSON!!');
+                          data = null;
+                      } else {
+                          data = {}; // Drop form contents
+                      };
+                  };
+                  if (data === null) options.preventDefault();
+              },
+          }
+      );
+      
+      // List items addition/removal animation:
+      // --------------------------------------
+      form
+          .onAll("addItem", function({
+              newItemTarget,
+              onRendered,
+          }) {
+              newItemTarget.classList.add("ingoing");
+              onRendered(()=>{
+                  newItemTarget.classList.remove("ingoing")
+                  newItemTarget.classList.add("ongoing");
+              });
+          })
+          .onAll("removeItem", async function({
+              oldItemTarget,
+              onRemmoved,
+          }) {
+              oldItemTarget.classList.remove("ongoing");
+              oldItemTarget.classList.add("outgoing");
+      
+              // Await for transition to be finished before item removal:
+              const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                  .getPropertyValue('transition-duration')
+                  .slice(0,-1).replace("m","/1")
+                  .split("/")
+                  .map(Number)
+              ;
+              await new Promise(resolve=>setTimeout(
+                  resolve
+                  , duration * multiplier
+              ));
+          })
+      ;
+    </script>
+  </body>
+</html>

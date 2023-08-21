@@ -16,51 +16,28 @@
   }
 }
 
-html,
-body {
-  height: 100vh;
-  height: 100svh;
-  width: 100vw;
-  padding: 0;
-  margin: 0;
-  font-family: Arial, Helvetica, sans-serif;
-  position: fixed;
-  background: url("https://picsum.photos/800"), #888888;
-  background-position: center;
-  background-size: cover;
-}
-
-.container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  min-width: 200px;
-  margin: 0 auto;
-  background: rgba(255, 255, 255, 0.6);
-  overflow-y: auto;
-}
-
-#main-form {
+.smarkForm {
   flex: 1;
   margin: var(--layout-paddings);
+  /* Headers and Footers */
 }
 
-section, header {
+.smarkForm section, .smarkForm header {
   margin: var(--layout-paddings);
 }
 
-section > h1, header > h1 {
+.smarkForm section > h1, .smarkForm header > h1 {
   margin-top: 0px;
 }
 
-section {
+.smarkForm section {
   background: var(--section-background);
   border: solid 1px grey;
   border-radius: .5em;
   padding: var(--layout-paddings);
 }
 
-fieldset {
+.smarkForm fieldset {
   margin: 1em 0px;
   padding: calc(var(--layout-paddings) / 2);
   border-radius: .5em;
@@ -68,25 +45,25 @@ fieldset {
   background: var(--fieldset-background);
 }
 
-.aside {
+.smarkForm .aside {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
 }
 
-.aside > :not(.inline) {
+.smarkForm .aside > :not(.inline) {
   flex: 1;
 }
 
-.aside > .inline {
+.smarkForm .aside > .inline {
   display: inline-block;
 }
 
-.aside.reverse {
+.smarkForm .aside.reverse {
   flex-direction: row-reverse;
 }
 
-.form-group {
+.smarkForm .form-group {
   display: flex;
   flex-wrap: wrap;
   gap: var(--form-gap);
@@ -100,11 +77,11 @@ fieldset {
   flex-basis: auto;
 }
 
-.spacer {
+.smarkForm .spacer {
   flex-grow: 5;
 }
 
-.input-group {
+.smarkForm .input-group {
   display: grid;
   flex-grow: 1;
   grid-template-columns: min-content 1fr;
@@ -113,112 +90,111 @@ fieldset {
 }
 
 @media (max-width: 1024px) {
-  .input-group {
+  .smarkForm .input-group {
     grid-template-columns: 1fr;
   }
 }
 
-.singleton {
+.smarkForm .singleton {
   display: flex;
   align-items: stretch;
   margin: var(--form-gap);
 }
 
-.singleton input, .singleton textarea, .singleton select {
+.smarkForm .singleton input, .smarkForm .singleton textarea, .smarkForm .singleton select {
   width: 140px;
 }
 
-.singleton input, .singleton textarea, .singleton select, .singleton button {
+.smarkForm .singleton input, .smarkForm .singleton textarea, .smarkForm .singleton select, .smarkForm .singleton button {
   border-radius: 0px;
 }
 
-.singleton input:first-child, .singleton textarea:first-child, .singleton select:first-child, .singleton button:first-child {
+.smarkForm .singleton input:first-child, .smarkForm .singleton textarea:first-child, .smarkForm .singleton select:first-child, .smarkForm .singleton button:first-child {
   border-radius: var(--round-radius) 0px 0px var(--round-radius);
 }
 
-.singleton input:last-child, .singleton textarea:last-child, .singleton select:last-child, .singleton button:last-child {
+.smarkForm .singleton input:last-child, .smarkForm .singleton textarea:last-child, .smarkForm .singleton select:last-child, .smarkForm .singleton button:last-child {
   border-radius: 0px var(--round-radius) var(--round-radius) 0px;
 }
 
-.singleton > * {
+.smarkForm .singleton > * {
   z-index: 2;
   margin: 0px !important;
 }
 
-.singleton > button {
+.smarkForm .singleton > button {
   z-index: 1;
 }
 
-input,
-textarea,
-select {
+.smarkForm input,
+.smarkForm textarea,
+.smarkForm select {
   background-color: #ffffff;
   flex-grow: 5;
 }
 
-input, textarea, select, button {
+.smarkForm input, .smarkForm textarea, .smarkForm select, .smarkForm button {
   margin: var(--form-gap);
   border-radius: var(--round-radius);
   padding: .5rem 1rem;
   width: auto;
 }
 
-button {
+.smarkForm button {
   min-width: 2rem;
 }
 
-textarea {
+.smarkForm textarea {
   resize: none;
 }
 
-label {
+.smarkForm label {
   padding-top: .3rem;
   font-weight: bold;
 }
 
-/* Headers and Footers */
-h1, h2, h3, h4, h5, h6 {
+.smarkForm h1, .smarkForm h2, .smarkForm h3, .smarkForm h4, .smarkForm h5, .smarkForm h6 {
   user-select: none;
 }
 
-.form-group.h1, .form-group.f1 {
+.smarkForm .form-group.h1, .smarkForm .form-group.f1 {
   font-size: 1.6rem;
   font-weight: bold;
   user-select: none;
 }
 
-.form-group.h1 {
+.smarkForm .form-group.h1 {
   border-bottom: solid 3px;
   margin-top: 1.5rem;
   margin-bottom: .8rem;
 }
 
-.form-group.f1 {
+.smarkForm .form-group.f1 {
   border-top: solid 3px;
   margin-bottom: 1.5rem;
   margin-top: .8rem;
   padding-top: .2em;
 }
 
-.form-group.h2, .form-group.f2 {
+.smarkForm .form-group.h2, .smarkForm .form-group.f2 {
   font-size: 1.4rem;
   user-select: none;
 }
 
-.form-group.h2 {
+.smarkForm .form-group.h2 {
   border-bottom: solid 2px;
   margin-top: 1.5rem;
   margin-bottom: .8rem;
 }
 
-.form-group.f2 {
+.smarkForm .form-group.f2 {
   border-top: solid 2px;
   margin-bottom: 1.5rem;
   margin-top: .8rem;
   padding-top: .2em;
 }
 
-.foldButton {
+.smarkForm .foldButton {
   border: solid black;
   border-width: 0 3px 3px 0;
   display: inline-block;
@@ -229,43 +205,43 @@ h1, h2, h3, h4, h5, h6 {
   transform: translateY(0.2em) rotate(45deg);
 }
 
-.foldButton.folded {
+.smarkForm .foldButton.folded {
   transform: translateY(0.2em) rotate(-135deg);
 }
 
 @media (hover: hover) {
-  .foldButton:hover {
+  .smarkForm .foldButton:hover {
     opacity: .5;
   }
-  .foldButton:hover.folded {
+  .smarkForm .foldButton:hover.folded {
     transform: translateY(0.2em) rotate(45deg);
   }
-  .foldButton:hover:not(.folded) {
+  .smarkForm .foldButton:hover:not(.folded) {
     transform: translateY(0.2em) rotate(-135deg);
   }
 }
 
-.ingoing {
+.smarkForm .ingoing {
   transform: scaleY(0) translateY(-50%);
 }
 
-.ongoing {
+.smarkForm .ongoing {
   transition: transform 70ms ease-in;
 }
 
-.outgoing {
+.smarkForm .outgoing {
   transform: scaleY(0) translateY(-50%);
   transition: transform 70ms ease-out;
 }
 
 @media (hover: hover) {
-  .form-group button:not([disabled]):hover {
+  .smarkForm .form-group button:not([disabled]):hover {
     transform: translate(2px, 2px);
   }
 }
 
 @media (orientation: portrait) {
-  .form-group button {
+  .smarkForm .form-group button {
     font-size: 1.1rem !important;
   }
 }

@@ -1,0 +1,67 @@
+script.
+
+    // Form instantiation:
+    // -------------------
+    window.form = new SmarkForm(
+        document.querySelector("#main-form")
+        , {
+            autoId: true,
+            onAfterAction_export({data}) {
+                alert (JSON.stringify(data, null, 4));
+            },
+            async onBeforeAction_empty({context, preventDefault}) {
+                if (
+                    ! await context.isEmpty()
+                    && ! confirm("Are you sure?")
+                ) preventDefault();
+            },
+            onBeforeAction_import(options) {
+                let data = prompt('Provide JSON data');
+                try {
+                    options.data = JSON.parse(data);
+                } catch (err) {
+                    if (data.length) {
+                        alert ('⚠️  Invalid JSON!!');
+                        data = null;
+                    } else {
+                        data = {}; // Drop form contents
+                    };
+                };
+                if (data === null) options.preventDefault();
+            },
+        }
+    );
+
+    // List items addition/removal animation:
+    // --------------------------------------
+    form
+        .onAll("addItem", function({
+            newItemTarget,
+            onRendered,
+        }) {
+            newItemTarget.classList.add("ingoing");
+            onRendered(()=>{
+                newItemTarget.classList.remove("ingoing")
+                newItemTarget.classList.add("ongoing");
+            });
+        })
+        .onAll("removeItem", async function({
+            oldItemTarget,
+            onRemmoved,
+        }) {
+            oldItemTarget.classList.remove("ongoing");
+            oldItemTarget.classList.add("outgoing");
+
+            // Await for transition to be finished before item removal:
+            const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                .getPropertyValue('transition-duration')
+                .slice(0,-1).replace("m","/1")
+                .split("/")
+                .map(Number)
+            ;
+            await new Promise(resolve=>setTimeout(
+                resolve
+                , duration * multiplier
+            ));
+        })
+    ;

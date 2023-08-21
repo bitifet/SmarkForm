@@ -7,6 +7,8 @@ import scss from 'rollup-plugin-scss';
 import pug from './rollup-plugins/rollup-plugin-pug';
 import sass from './rollup-plugins/rollup-plugin-sass';
 
+const isProduction = process.env.BUILD === 'production';
+
 export default [
     {
         input: 'src/main.js',
@@ -42,6 +44,10 @@ export default [
             pug({
                 pretty: true,
                 outputDir: "examples",
+                locals: {
+                    isProduction,
+                    pkg,
+                },
             }),
         ],
     },
