@@ -156,6 +156,10 @@
   font-weight: bold;
 }
 
+.smarkForm label, .smarkForm button {
+  user-select: none;
+}
+
 .smarkForm a:focus,
 .smarkForm button:focus,
 .smarkForm input:focus,

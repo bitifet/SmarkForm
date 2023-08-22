@@ -2,6 +2,65 @@
   box-sizing: border-box; }
 
 :root {
+  --tbMargin: 5px;
+  --tbPadding: .3rem;
+  --tbFontSize: 1.5rem;
+  --ttBottom: calc(
+        4 * (
+            var(--tbMargin)
+            + var(--tbPadding)
+        )
+        + var(--tbFontSize)
+    ); }
+
+#testButton {
+  position: fixed;
+  z-index: 10;
+  bottom: var(--tbMargin);
+  left: var(--tbMargin);
+  padding: var(--tbPadding);
+  font-size: var(--tbFontSize); }
+
+#test-tools.hidden {
+  display: none; }
+
+#test-tools {
+  position: fixed;
+  top: 5vh;
+  left: 10vw;
+  right: 10vw;
+  bottom: var(--ttBottom);
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  z-index: 100; }
+
+#test-tools textarea {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  height: 90%;
+  resize: none; }
+
+#test-tools .buttons {
+  position: relative;
+  margin: 0px;
+  padding: 0px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 3px;
+  pointer-events: none; }
+
+#test-tools .buttons > * {
+  pointer-events: all;
+  padding: .3rem;
+  font-size: 1.2rem; }
+
+*, *::after, *::before {
+  box-sizing: border-box; }
+
+:root {
   --section-background: hsla(267, 11%, 82%, .3);
   --fieldset-background: hsla(247, 11%, 82%, .5);
   --round-radius: .75rem;
@@ -204,62 +263,3 @@ h1, h2, h3, h4, h5, h6 {
 @media (orientation: portrait) {
   .form-group button {
     font-size: 1.1rem !important; } }
-
-*, *::after, *::before {
-  box-sizing: border-box; }
-
-:root {
-  --tbMargin: 5px;
-  --tbPadding: .3rem;
-  --tbFontSize: 1.5rem;
-  --ttBottom: calc(
-        4 * (
-            var(--tbMargin)
-            + var(--tbPadding)
-        )
-        + var(--tbFontSize)
-    ); }
-
-#testButton {
-  position: fixed;
-  z-index: 10;
-  bottom: var(--tbMargin);
-  left: var(--tbMargin);
-  padding: var(--tbPadding);
-  font-size: var(--tbFontSize); }
-
-#test-tools.hidden {
-  display: none; }
-
-#test-tools {
-  position: fixed;
-  top: 5vh;
-  left: 10vw;
-  right: 10vw;
-  bottom: var(--ttBottom);
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  z-index: 100; }
-
-#test-tools textarea {
-  position: relative;
-  margin: 0px;
-  padding: 0px;
-  height: 90%;
-  resize: none; }
-
-#test-tools .buttons {
-  position: relative;
-  margin: 0px;
-  padding: 0px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  gap: 3px;
-  pointer-events: none; }
-
-#test-tools .buttons > * {
-  pointer-events: all;
-  padding: .3rem;
-  font-size: 1.2rem; }

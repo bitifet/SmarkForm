@@ -160,6 +160,10 @@
         font-weight: bold;
     }
 
+    label, button {
+        user-select: none;
+    }
+
     a:focus,
     button:focus,
     input:focus,

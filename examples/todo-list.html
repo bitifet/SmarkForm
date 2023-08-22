@@ -3,59 +3,9 @@
   <head>
     <title>SmarkForm TODO-List Example</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/examples/smarkform_layout_sample.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/examples/smarkform_styles_sample.css">
-    <script defer src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/dist/SmarkForm.umd.js"></script>
-  </head>
-  <body>
-    <div class="main-container">
-      <div class="smarkForm" id="main-form">
-        <header>
-          <h1>SmarkForm TODO-List Example</h1><small>
-            <p>
-              This example demonstrates how to create a simple form
-              layout that can almost responsively expand and stack
-              depending on the width of the page.
-            </p>
-            <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
-        </header>
-        <section>
-          <div class="form-group h1 nowrap">
-            <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;import&quot;,&quot;for&quot;:&quot;tasklist&quot;}">📂 Import (JSON)</button>
-            <button data-smark="{&quot;action&quot;:&quot;export&quot;,&quot;for&quot;:&quot;tasklist&quot;}">💾 Export (JSON)</button>
-          </div>
-          <div class="form-group" data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;name&quot;:&quot;tasklist&quot;,&quot;exportEmpties&quot;:true,&quot;min_items&quot;:0}">
-            <fieldset class="form-group aside reverse" data-smark="{&quot;exportEmpties&quot;:false}">
-              <button class="inline" data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove task">❌</button>
-              <div class="form-group spacer">
-                <div class="form-group">
-                  <input data-smark name="title" type="text" placeholder="Task title">
-                </div>
-                <div class="form-group">
-                  <div class="input-group">
-                    <label>Goals</label>
-                    <div data-smark="{&quot;name&quot;:&quot;goals&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:100}">
-                      <div class="singleton">
-                        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
-                        <input data-smark="data-smark" type="text" placeholder="New goal..."/>
-                        <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-          <div class="form-group f1 nowrap" style="text-align: right">
-            <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;empty&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Clear form data">❌ Clear all</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty tasks">🧹 Clear empty</button>
-            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;tasklist&quot;}">➕ Add new task</button>
-          </div>
-        </section>
-      </div>
-    </div>
+    <link rel="stylesheet" href="../examples/smarkform_layout_sample.css">
+    <link rel="stylesheet" href="../examples/smarkform_styles_sample.css">
+    <script defer src="../dist/SmarkForm.umd.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
       
@@ -127,5 +77,55 @@
       
       });
     </script>
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="smarkForm" id="main-form">
+        <header>
+          <h1>SmarkForm TODO-List Example</h1><small>
+            <p>
+              This example demonstrates how to create a simple form
+              layout that can almost responsively expand and stack
+              depending on the width of the page.
+            </p>
+            <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
+        </header>
+        <section>
+          <div class="form-group h1 nowrap">
+            <div class="spacer"></div>
+            <button data-smark="{&quot;action&quot;:&quot;import&quot;,&quot;for&quot;:&quot;tasklist&quot;}">📂 Import (JSON)</button>
+            <button data-smark="{&quot;action&quot;:&quot;export&quot;,&quot;for&quot;:&quot;tasklist&quot;}">💾 Export (JSON)</button>
+          </div>
+          <div class="form-group" data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;name&quot;:&quot;tasklist&quot;,&quot;exportEmpties&quot;:true,&quot;min_items&quot;:0}">
+            <fieldset class="form-group aside reverse" data-smark="{&quot;exportEmpties&quot;:false}">
+              <button class="inline" data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove task">❌</button>
+              <div class="form-group spacer">
+                <div class="form-group">
+                  <input data-smark name="title" type="text" placeholder="Task title">
+                </div>
+                <div class="form-group">
+                  <div class="input-group">
+                    <label>Goals</label>
+                    <div data-smark="{&quot;name&quot;:&quot;goals&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:100}">
+                      <div class="singleton">
+                        <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
+                        <input data-smark="data-smark" type="text" placeholder="New goal..."/>
+                        <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="form-group f1 nowrap" style="text-align: right">
+            <div class="spacer"></div>
+            <button data-smark="{&quot;action&quot;:&quot;empty&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Clear form data">❌ Clear all</button>
+            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty tasks">🧹 Clear empty</button>
+            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;tasklist&quot;}">➕ Add new task</button>
+          </div>
+        </section>
+      </div>
+    </div>
   </body>
 </html>
