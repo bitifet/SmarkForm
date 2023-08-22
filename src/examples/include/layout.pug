@@ -14,6 +14,7 @@ html
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href=css_layout)
         link(rel="stylesheet", href=css_styles)
+        script(defer src=js_smarkform)
     body
         div.main-container
             div#main-form.smarkForm
@@ -32,5 +33,4 @@ html
                             ) https://picsum.photos/
 
                 block mainForm
-        script(src=js_smarkform)
         include ./sample_controller.pug

@@ -65,16 +65,18 @@
 
 .smarkForm .form-group {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--form-gap);
   align-items: flex-start;
   align-content: stretch;
   justify-content: flex-start;
-  font-size: 1rem;
   max-width: 100%;
   flex-grow: 1;
   flex-shrink: 0;
   flex-basis: auto;
+}
+
+.smarkForm .form-group:not(.nowrap) {
+  flex-wrap: wrap;
 }
 
 .smarkForm .spacer {
@@ -138,6 +140,7 @@
   border-radius: var(--round-radius);
   padding: .5rem 1rem;
   width: auto;
+  font-size: inherit;
 }
 
 .smarkForm button {
@@ -151,6 +154,21 @@
 .smarkForm label {
   padding-top: .3rem;
   font-weight: bold;
+}
+
+.smarkForm a:focus,
+.smarkForm button:focus,
+.smarkForm input:focus,
+.smarkForm textarea:focus {
+  box-shadow: none;
+}
+
+.smarkForm a:focus:not([tabindex="-1"]),
+.smarkForm button:focus:not([tabindex="-1"]),
+.smarkForm input:focus:not([tabindex="-1"]),
+.smarkForm textarea:focus:not([tabindex="-1"]) {
+  outline: darkgray dotted 4px;
+  outline-offset: .05em;
 }
 
 .smarkForm h1, .smarkForm h2, .smarkForm h3, .smarkForm h4, .smarkForm h5, .smarkForm h6 {
@@ -237,11 +255,5 @@
 @media (hover: hover) {
   .smarkForm .form-group button:not([disabled]):hover {
     transform: translate(2px, 2px);
-  }
-}
-
-@media (orientation: portrait) {
-  .smarkForm .form-group button {
-    font-size: 1.1rem !important;
   }
 }

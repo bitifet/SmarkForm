@@ -1,34 +1,36 @@
 //- src/examples/smarkform_layout_sample.scss
 //- =========================================
 
-*, *::after, *::before {
+html {
     box-sizing: border-box;
 }
 
-:root {
-    --section-background: hsla(267, 11%, 82%, .3);
-    --fieldset-background: hsla(247, 11%, 82%, .5);
-    --round-radius: .75rem;
-    --form-gap: .2rem;
-    --layout-paddings: 1rem;
-    @media (max-width: 400px) {
-        --layout-paddings: .2rem;
-    }
-}
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+    margin: 0px;
+    padding: 0px;
+};
+
+
 
 
 // General layout:
 // ===============
+
+:root {
+    line-height: 1.5;
+    font-size: calc(.6vw + .6vh + .5vmin);
+}
 
 html,
 body {
     height: 100vh;
     height: 100svh;
     width: 100vw;
-    padding: 0;
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
     position: fixed;
+    font-family: 1rem/1.6 Arial, Helvetica, sans-serif;
     background:
         url("https://picsum.photos/800")
         , #888888

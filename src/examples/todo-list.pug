@@ -5,7 +5,7 @@ block append properties
         var title = "SmarkForm TODO-List Example";
 block mainForm
     section
-      .form-group.h1
+      .form-group.h1.nowrap
         .spacer
         button(data-smark='{"action":"import","for":"tasklist"}') 📂 Import (JSON)
         button(data-smark='{"action":"export","for":"tasklist"}') 💾 Export (JSON)
@@ -30,11 +30,12 @@ block mainForm
                     placeholder="New goal...",
                     removeFailback="clear"
                 )
-      .form-group.f1(style='text-align: right')
+      .form-group.f1.nowrap(style='text-align: right')
         .spacer
         button(data-smark = {
             action: "empty",
             for: "tasklist",
+            autoscroll: "elegant",
         }, title="Clear form data") ❌ Clear all
         button(data-smark = {
             action: "removeItem",

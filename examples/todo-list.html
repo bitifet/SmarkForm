@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/examples/smarkform_layout_sample.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/examples/smarkform_styles_sample.css">
+    <script defer src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/dist/SmarkForm.umd.js"></script>
   </head>
   <body>
     <div class="main-container">
@@ -19,7 +20,7 @@
             <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
         </header>
         <section>
-          <div class="form-group h1">
+          <div class="form-group h1 nowrap">
             <div class="spacer"></div>
             <button data-smark="{&quot;action&quot;:&quot;import&quot;,&quot;for&quot;:&quot;tasklist&quot;}">📂 Import (JSON)</button>
             <button data-smark="{&quot;action&quot;:&quot;export&quot;,&quot;for&quot;:&quot;tasklist&quot;}">💾 Export (JSON)</button>
@@ -46,82 +47,85 @@
               </div>
             </fieldset>
           </div>
-          <div class="form-group f1" style="text-align: right">
+          <div class="form-group f1 nowrap" style="text-align: right">
             <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;empty&quot;,&quot;for&quot;:&quot;tasklist&quot;}" title="Clear form data">❌ Clear all</button>
+            <button data-smark="{&quot;action&quot;:&quot;empty&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Clear form data">❌ Clear all</button>
             <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;tasklist&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty tasks">🧹 Clear empty</button>
             <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;tasklist&quot;}">➕ Add new task</button>
           </div>
         </section>
       </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.3/dist/SmarkForm.umd.js"></script>
     <script>
-      // Form instantiation:
-      // -------------------
-      window.form = new SmarkForm(
-          document.querySelector("#main-form")
-          , {
-              autoId: true,
-              onAfterAction_export({data}) {
-                  alert (JSON.stringify(data, null, 4));
-              },
-              async onBeforeAction_empty({context, preventDefault}) {
-                  if (
-                      ! await context.isEmpty()
-                      && ! confirm("Are you sure?")
-                  ) preventDefault();
-              },
-              onBeforeAction_import(options) {
-                  let data = prompt('Provide JSON data');
-                  try {
-                      options.data = JSON.parse(data);
-                  } catch (err) {
-                      if (data.length) {
-                          alert ('⚠️  Invalid JSON!!');
-                          data = null;
-                      } else {
-                          data = {}; // Drop form contents
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // Form instantiation:
+          // -------------------
+          window.form = new SmarkForm(
+              document.querySelector("#main-form")
+              , {
+                  autoId: true,
+                  onAfterAction_export({data}) {
+                      alert (JSON.stringify(data, null, 4));
+                  },
+                  async onBeforeAction_empty({context, preventDefault}) {
+                      if (
+                          ! await context.isEmpty()
+                          && ! confirm("Are you sure?")
+                      ) preventDefault();
+                  },
+                  onBeforeAction_import(options) {
+                      let data = prompt('Provide JSON data');
+                      try {
+                          options.data = JSON.parse(data);
+                      } catch (err) {
+                          if (data.length) {
+                              alert ('⚠️  Invalid JSON!!');
+                              data = null;
+                          } else {
+                              data = {}; // Drop form contents
+                          };
                       };
-                  };
-                  if (data === null) options.preventDefault();
-              },
-          }
-      );
+                      if (data === null) options.preventDefault();
+                  },
+              }
+          );
       
-      // List items addition/removal animation:
-      // --------------------------------------
-      form
-          .onAll("addItem", function({
-              newItemTarget,
-              onRendered,
-          }) {
-              newItemTarget.classList.add("ingoing");
-              onRendered(()=>{
-                  newItemTarget.classList.remove("ingoing")
-                  newItemTarget.classList.add("ongoing");
-              });
-          })
-          .onAll("removeItem", async function({
-              oldItemTarget,
-              onRemmoved,
-          }) {
-              oldItemTarget.classList.remove("ongoing");
-              oldItemTarget.classList.add("outgoing");
+          // List items addition/removal animation:
+          // --------------------------------------
+          form
+              .onAll("addItem", function({
+                  newItemTarget,
+                  onRendered,
+              }) {
+                  newItemTarget.classList.add("ingoing");
+                  onRendered(()=>{
+                      newItemTarget.classList.remove("ingoing")
+                      newItemTarget.classList.add("ongoing");
+                  });
+              })
+              .onAll("removeItem", async function({
+                  oldItemTarget,
+                  onRemmoved,
+              }) {
+                  oldItemTarget.classList.remove("ongoing");
+                  oldItemTarget.classList.add("outgoing");
       
-              // Await for transition to be finished before item removal:
-              const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
-                  .getPropertyValue('transition-duration')
-                  .slice(0,-1).replace("m","/1")
-                  .split("/")
-                  .map(Number)
-              ;
-              await new Promise(resolve=>setTimeout(
-                  resolve
-                  , duration * multiplier
-              ));
-          })
-      ;
+                  // Await for transition to be finished before item removal:
+                  const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                      .getPropertyValue('transition-duration')
+                      .slice(0,-1).replace("m","/1")
+                      .split("/")
+                      .map(Number)
+                  ;
+                  await new Promise(resolve=>setTimeout(
+                      resolve
+                      , duration * multiplier
+                  ));
+              })
+          ;
+      
+      });
     </script>
   </body>
 </html>
