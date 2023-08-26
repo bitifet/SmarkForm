@@ -6,6 +6,32 @@ const name = "pug";
 const inputExtension = "pug";
 const outputExtension = "html";
 
+const re_tag = /<([^>]+)>/g;
+
+function swapQuoting(html) {//{{{
+    // Make output samples' JSONs more readables.
+
+    // Parse all HTML tags:
+    html = html.replace(re_tag, function(match) {
+        // Extract tag contents:
+        var content = match.slice(1, -1);
+
+        // Encode single quotes:
+        content = content.replace(/'/g, "&apos;");
+
+        // Switch external quoting from dobule to single quotes.
+        content = content.replace(/"/g, "'");
+
+        // Decode encoded double quotes (&quot; -> ")
+        content = content.replace(/&quot;/g, '"');
+
+        // Rebuild tag with parsed content:
+        return '<' + content + '>';
+    });
+
+    return html;
+};//}}}
+
 function compiler(inputFilePath, {
     debug = false,
     pretty = false,
@@ -20,7 +46,9 @@ function compiler(inputFilePath, {
             ...options
     });
     const {dependencies} = render;
-    const output = render(locals);
+    const output = swapQuoting(
+        render(locals)
+    );
     return {output, dependencies};
 };
 
