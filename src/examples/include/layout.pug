@@ -14,6 +14,19 @@ html
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         link(rel="stylesheet", href=css_layout)
         link(rel="stylesheet", href=css_styles)
+        script.
+            const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+            document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+            document.addEventListener("DOMContentLoaded", function() {
+                const backgroundAnchor = document.getElementById("background-anchor");
+                if (backgroundAnchor) {
+                    backgroundAnchor.textContent = bgImg;
+                    backgroundAnchor.href = bgImg;
+                    backgroundAnchor.parentNode.classList.remove("hidden");
+                    console.log(backgroundAnchor, bgImg);
+                }
+
+            });
         script(defer src=js_smarkform)
         include ./sample_controller.pug
     body
@@ -32,5 +45,8 @@ html
                                 href="https://picsum.photos/"
                                 target="_blank"
                             ) https://picsum.photos/
+                        p.hidden
+                            b Url:
+                            a#background-anchor(href="")
 
                 block mainForm

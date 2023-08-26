@@ -24,19 +24,29 @@ html {
     font-size: calc(8px + .5vw + .5vh + .4vmin);
 }
 
+:root {
+    //--background-image-url: url("https://picsum.photos/800"); // Failback (random image)
+    --background-image-url: initial;
+}
 html,
 body {
+    background:
+        var(--background-image-url),
+        linear-gradient(120deg, #595b5d 0%, #f7f7f8 100%)
+    ;
+    background-position: center;
+    background-size: cover;
+    .hidden {
+        display: none;
+    }
+
     height: 100vh;
     height: 100svh;
     width: 100vw;
     position: fixed;
     font-family: 1rem/1.6 Arial, Helvetica, sans-serif;
-    background:
-        url("https://picsum.photos/800")
-        , #888888
-    ;
-    background-position: center;
-    background-size: cover;
+
+
 }
 
 .main-container {

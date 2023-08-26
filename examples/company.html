@@ -2,10 +2,24 @@
 <html>
   <head>
     <title>SmarkForm Complete Example</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../examples/smarkform_layout_sample.css">
-    <link rel="stylesheet" href="../examples/smarkform_styles_sample.css">
-    <script defer src="../dist/SmarkForm.umd.js"></script>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <link rel='stylesheet' href='../examples/smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='../examples/smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) {
+              backgroundAnchor.textContent = bgImg;
+              backgroundAnchor.href = bgImg;
+              backgroundAnchor.parentNode.classList.remove("hidden");
+              console.log(backgroundAnchor, bgImg);
+          }
+      
+      });
+    </script>
+    <script defer src='../dist/SmarkForm.umd.js'></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
       
@@ -79,8 +93,8 @@
     </script>
   </head>
   <body>
-    <div class="main-container">
-      <div class="smarkForm" id="main-form">
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
         <header>
           <h1>SmarkForm Complete Example</h1><small>
             <p>
@@ -88,67 +102,68 @@
               layout that can almost responsively expand and stack
               depending on the width of the page.
             </p>
-            <p><span>Background image courtesy of </span><a href="https://picsum.photos/" target="_blank">https://picsum.photos/</a></p></small>
+            <p><span>Background image courtesy of </span><a href='https://picsum.photos/' target='_blank'>https://picsum.photos/</a></p>
+            <p class='hidden'><b>Url:</b><a id='background-anchor' href=''></a></p></small>
         </header>
         <section>
-          <div class="form-group h1">Company</div>
-          <div class="input-group">
+          <div class='form-group h1'>Company</div>
+          <div class='input-group'>
             <label>Corporate Name</label>
-            <input data-smark name="company" type="text" placeholder="Company Name">
+            <input data-smark name='company' type='text' placeholder='Company Name'>
           </div>
-          <div class="input-group">
+          <div class='input-group'>
             <label>Address</label>
-            <textarea data-smark name="address" placeholder="Address"></textarea>
+            <textarea data-smark name='address' placeholder='Address'></textarea>
           </div>
-          <div class="form-group">
+          <div class='form-group'>
             <label>City,State,Zip</label>
-            <input data-smark name="city" placeholder="City" style="flex: 6">
-            <input data-smark name="state" placeholder="State" style="flex:1">
-            <input data-smark name="postCode" placeholder="Postal Code" style="flex:2">
+            <input data-smark name='city' placeholder='City' style='flex: 6'>
+            <input data-smark name='state' placeholder='State' style='flex:1'>
+            <input data-smark name='postCode' placeholder='Postal Code' style='flex:2'>
           </div>
         </section>
         <section>
-          <div class="form-group h2"><span class="foldButton" data-smark="{&quot;action&quot;:&quot;fold&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;foldedClass&quot;:&quot;folded&quot;}"></span><span><span>Employees (</span><span data-smark="{&quot;action&quot;:&quot;count&quot;,&quot;for&quot;:&quot;employees&quot;}"></span><span>)</span></span>
-            <div class="form-group">
-              <div class="spacer"></div>
-              <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;self&quot;}" title="Add employee">➕</button>
-              <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true}" title="Remove employees from bottom priorizing empties">➖</button>
-              <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
+          <div class='form-group h2'><span class='foldButton' data-smark='{"action":"fold","for":"employees","foldedClass":"folded"}'></span><span><span>Employees (</span><span data-smark='{"action":"count","for":"employees"}'></span><span>)</span></span>
+            <div class='form-group'>
+              <div class='spacer'></div>
+              <button data-smark='{"action":"addItem","for":"employees","autoscroll":"self"}' title='Add employee'>➕</button>
+              <button data-smark='{"action":"removeItem","for":"employees","keep_non_empty":true}' title='Remove employees from bottom priorizing empties'>➖</button>
+              <button data-smark='{"action":"removeItem","for":"employees","to":"*","keep_non_empty":true}' title='Clear all empty employees'>🧹</button>
             </div>
           </div>
-          <div class="form-group">
-            <div class="form-group" data-smark="{&quot;type&quot;:&quot;list&quot;,&quot;exportEmpties&quot;:true,&quot;name&quot;:&quot;employees&quot;,&quot;min_items&quot;:0}">
-              <fieldset class="form-group aside reverse" data-smark="{&quot;exportEmpties&quot;:false}">
-                <button class="inline" data-smark="{&quot;action&quot;:&quot;removeItem&quot;}" title="Remove this employee">➖</button>
-                <div class="form-group spacer">
-                  <div class="form-group">
-                    <div class="input-group">
+          <div class='form-group'>
+            <div class='form-group' data-smark='{"type":"list","exportEmpties":true,"name":"employees","min_items":0}'>
+              <fieldset class='form-group aside reverse' data-smark='{"exportEmpties":false}'>
+                <button class='inline' data-smark='{"action":"removeItem"}' title='Remove this employee'>➖</button>
+                <div class='form-group spacer'>
+                  <div class='form-group'>
+                    <div class='input-group'>
                       <label>First Name</label>
-                      <input data-smark name="name" placeholder="Name">
+                      <input data-smark name='name' placeholder='Name'>
                     </div>
-                    <div class="input-group">
+                    <div class='input-group'>
                       <label>Last Name</label>
-                      <input data-smark name="lastName" placeholder="Surnme">
+                      <input data-smark name='lastName' placeholder='Surnme'>
                     </div>
                   </div>
-                  <div class="form-group">
-                    <div class="input-group">
+                  <div class='form-group'>
+                    <div class='input-group'>
                       <label>Telephones</label>
-                      <div data-smark="{&quot;name&quot;:&quot;phones&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
-                        <div class="singleton">
-                          <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
-                          <input data-smark="data-smark" type="tel" placeholder="Telephone"/>
-                          <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
+                      <div data-smark='{"name":"phones","type":"list","of":"singleton","max_items":4}'>
+                        <div class='singleton'>
+                          <button data-smark='{"action":"addItem"}' title='Add new item below'>➕</button>
+                          <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
+                          <button data-smark='{"action":"removeItem","failback":"clear"}' title='Remove this item'>➖</button>
                         </div>
                       </div>
                     </div>
-                    <div class="input-group">
+                    <div class='input-group'>
                       <label>Emails</label>
-                      <div data-smark="{&quot;name&quot;:&quot;emails&quot;,&quot;type&quot;:&quot;list&quot;,&quot;of&quot;:&quot;singleton&quot;,&quot;max_items&quot;:4}">
-                        <div class="singleton">
-                          <button data-smark="{&quot;action&quot;:&quot;addItem&quot;}" title="Add new item below">➕</button>
-                          <input data-smark="data-smark" type="email" placeholder="Email"/>
-                          <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;failback&quot;:&quot;clear&quot;}" title="Remove this item">➖</button>
+                      <div data-smark='{"name":"emails","type":"list","of":"singleton","max_items":4}'>
+                        <div class='singleton'>
+                          <button data-smark='{"action":"addItem"}' title='Add new item below'>➕</button>
+                          <input data-smark='data-smark' type='email' placeholder='Email'/>
+                          <button data-smark='{"action":"removeItem","failback":"clear"}' title='Remove this item'>➖</button>
                         </div>
                       </div>
                     </div>
@@ -157,18 +172,18 @@
               </fieldset>
             </div>
           </div>
-          <div class="form-group f2">
-            <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;addItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Add employee">➕</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;keep_non_empty&quot;:true,&quot;autoscroll&quot;:&quot;elegant&quot;}" title="Remove employees from bottom priorizing empties">➖</button>
-            <button data-smark="{&quot;action&quot;:&quot;removeItem&quot;,&quot;for&quot;:&quot;employees&quot;,&quot;to&quot;:&quot;*&quot;,&quot;autoscroll&quot;:&quot;elegant&quot;,&quot;keep_non_empty&quot;:true}" title="Clear all empty employees">🧹</button>
+          <div class='form-group f2'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"addItem","for":"employees","autoscroll":"elegant"}' title='Add employee'>➕</button>
+            <button data-smark='{"action":"removeItem","for":"employees","keep_non_empty":true,"autoscroll":"elegant"}' title='Remove employees from bottom priorizing empties'>➖</button>
+            <button data-smark='{"action":"removeItem","for":"employees","to":"*","autoscroll":"elegant","keep_non_empty":true}' title='Clear all empty employees'>🧹</button>
           </div>
         </section>
         <section>
-          <div class="form-group">
-            <div class="spacer"></div>
-            <button data-smark="{&quot;action&quot;:&quot;empty&quot;}" title="Clear form data">❌ Cancel</button>
-            <button data-smark="{&quot;action&quot;:&quot;export&quot;}" title="Submit form data">💾 Submit</button>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"empty"}' title='Clear form data'>❌ Cancel</button>
+            <button data-smark='{"action":"export"}' title='Submit form data'>💾 Submit</button>
           </div>
         </section>
       </div>
