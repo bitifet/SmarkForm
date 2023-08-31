@@ -1,56 +1,17 @@
-doctype html
-html
-  head
-    meta(charset='UTF-8')
-    meta(name='viewport', content='width=device-width,initial-scale=1')
-    title My first SmarkForm form
-    link(href='https://cdn.jsdelivr.net/npm/daisyui@3.3.1/dist/full.css', rel='stylesheet', type='text/css')
-    script(src='https://cdn.tailwindcss.com')
-  body.bg-gray-100.p-4
-    .max-w-md.mx-auto.bg-white.p-6.rounded-md.shadow-md
-      h2.text-2xl.font-bold.mb-4 My first SmarkForm form
-      #myForm
-        .mb-4
-          label.block.font-medium.text-gray-700(for='name') Name:
-          input.form-input.mt-1.block.w-full#name(type='text', name='name', placeholder='Your name', required, data-smark)
-        .mb-4
-          label.block.font-medium.text-gray-700(for='email') Correu electrònic:
-          input.form-input.mt-1.block.w-full#email(type='email', name='email', placeholder='Your email', required, data-smark)
-        //  Frame amb Subformulari 
-        .grid.card.bg-base-300.rounded-box.place-items-center
-          input#toggle-form.hidden(type='checkbox')
-          label.frame-label.cursor-pointer.block.font-medium.text-gray-700(for='toggle-form') Detalls addicionals
-          .frame-content
-            .mb-4
-              label.block.font-medium.text-gray-700(for='phone') Telèfon:
-              input#phone.form-input.mt-1.block.w-full(type='text', name='phone', placeholder='Escriu el teu número de telèfon')
-            .mb-4
-              label.block.font-medium.text-gray-700(for='address') Adreça:
-              input#address.form-input.mt-1.block.w-full(type='text', name='address', placeholder='Escriu la teva adreça')
-        //  Fi del Frame 
-        .mb-4
-          label.block.font-medium.text-gray-700(for='message') Missatge:
-          textarea.form-textarea.mt-1.block.w-full#message(name='message', rows='4', placeholder='Tell us something...', required, data-smark)
-        .text-right
-          button.btn.btn-primary(data-smark='{"action":"empty"}') ❌ Clear
-          button.btn.btn-primary(data-smark='{"action":"export"}') 💾 Submit
-    script(src='https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.umd.js')
-    script.
-      const myForm = new SmarkForm(
-                            document.querySelector("#myForm")
-                            , {
-                                autoId: true,
-                                onAfterAction_export({data}) {
-                                    console.log(data);
-                                },
-                                async onBeforeAction_empty({context, preventDefault}) {
-                                    if (
-                                        ! await context.isEmpty()
-                                        && ! confirm("Are you sure?")
-                                    ) preventDefault();
-                                },
-                            }
-                        );
-      
-      
-      
+extends include/layout.pug
+include include/mixins.pug
+block append properties
+    -
+        var title = "SmarkForm Empty Template";
+block mainForm
+    section
+        div Do your magic here... 😉
+    section
+        .form-group
+            .spacer
+            button(data-smark = {
+                action: "empty",
+            }, title="Clear form data") ❌ Cancel
+            button(data-smark = {
+                action: "export",
+            }, title="Submit form data") 💾 Submit

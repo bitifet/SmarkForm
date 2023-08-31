@@ -1,67 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
   <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width,initial-scale=1'>
-    <title>My first SmarkForm form</title>
-    <link href='https://cdn.jsdelivr.net/npm/daisyui@3.3.1/dist/full.css' rel='stylesheet' type='text/css'>
-    <script src='https://cdn.tailwindcss.com'></script>
+    <title>SmarkForm Empty Template</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='../examples/smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='../examples/smarkform_styles_sample.css'>
+    <script defer src='../dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // Form instantiation:
+          // -------------------
+          window.form = new SmarkForm(
+              document.querySelector("#main-form")
+              , {
+                  autoId: true,
+                  onAfterAction_export({data}) {
+                      alert (JSON.stringify(data, null, 4));
+                  },
+                  async onBeforeAction_empty({context, preventDefault}) {
+                      if (
+                          ! await context.isEmpty()
+                          && ! confirm("Are you sure?")
+                      ) preventDefault();
+                  },
+                  onBeforeAction_import(options) {
+                      let data = prompt('Provide JSON data');
+                      try {
+                          options.data = JSON.parse(data);
+                      } catch (err) {
+                          if (data.length) {
+                              alert ('⚠️  Invalid JSON!!');
+                              data = null;
+                          } else {
+                              data = {}; // Drop form contents
+                          };
+                      };
+                      if (data === null) options.preventDefault();
+                  },
+              }
+          );
+      
+          // List items addition/removal animation:
+          // --------------------------------------
+          form
+              .onAll("addItem", function({
+                  newItemTarget,
+                  onRendered,
+              }) {
+                  newItemTarget.classList.add("ingoing");
+                  onRendered(()=>{
+                      newItemTarget.classList.remove("ingoing")
+                      newItemTarget.classList.add("ongoing");
+                  });
+              })
+              .onAll("removeItem", async function({
+                  oldItemTarget,
+                  onRemmoved,
+              }) {
+                  oldItemTarget.classList.remove("ongoing");
+                  oldItemTarget.classList.add("outgoing");
+      
+                  // Await for transition to be finished before item removal:
+                  const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                      .getPropertyValue('transition-duration')
+                      .slice(0,-1).replace("m","/1")
+                      .split("/")
+                      .map(Number)
+                  ;
+                  await new Promise(resolve=>setTimeout(
+                      resolve
+                      , duration * multiplier
+                  ));
+              })
+          ;
+      
+      });
+    </script>
   </head>
-  <body class='bg-gray-100 p-4'>
-    <div class='max-w-md mx-auto bg-white p-6 rounded-md shadow-md'>
-      <h2 class='text-2xl font-bold mb-4'>My first SmarkForm form</h2>
-      <div id='myForm'>
-        <div class='mb-4'>
-          <label class='block font-medium text-gray-700' for='name'>Name:</label>
-          <input class='form-input mt-1 block w-full' id='name' type='text' name='name' placeholder='Your name' required data-smark>
-        </div>
-        <div class='mb-4'>
-          <label class='block font-medium text-gray-700' for='email'>Correu electrònic:</label>
-          <input class='form-input mt-1 block w-full' id='email' type='email' name='email' placeholder='Your email' required data-smark>
-        </div>
-        <!--  Frame amb Subformulari -->
-        <div class='grid card bg-base-300 rounded-box place-items-center'>
-          <input class='hidden' id='toggle-form' type='checkbox'>
-          <label class='frame-label cursor-pointer block font-medium text-gray-700' for='toggle-form'>Detalls addicionals</label>
-          <div class='frame-content'>
-            <div class='mb-4'>
-              <label class='block font-medium text-gray-700' for='phone'>Telèfon:</label>
-              <input class='form-input mt-1 block w-full' id='phone' type='text' name='phone' placeholder='Escriu el teu número de telèfon'>
-            </div>
-            <div class='mb-4'>
-              <label class='block font-medium text-gray-700' for='address'>Adreça:</label>
-              <input class='form-input mt-1 block w-full' id='address' type='text' name='address' placeholder='Escriu la teva adreça'>
-            </div>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>SmarkForm Empty Template</h1>
+        </header>
+        <section>
+          <div>Do your magic here... 😉</div>
+        </section>
+        <section>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"empty"}' title='Clear form data'>❌ Cancel</button>
+            <button data-smark='{"action":"export"}' title='Submit form data'>💾 Submit</button>
           </div>
-        </div>
-        <!--  Fi del Frame -->
-        <div class='mb-4'>
-          <label class='block font-medium text-gray-700' for='message'>Missatge:</label>
-          <textarea class='form-textarea mt-1 block w-full' id='message' name='message' rows='4' placeholder='Tell us something...' required data-smark></textarea>
-        </div>
-        <div class='text-right'>
-          <button class='btn btn-primary' data-smark='{"action":"empty"}'>❌ Clear</button>
-          <button class='btn btn-primary' data-smark='{"action":"export"}'>💾 Submit</button>
-        </div>
+        </section>
       </div>
     </div>
-    <script src='https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.umd.js'></script>
-    <script>
-      const myForm = new SmarkForm(
-                            document.querySelector("#myForm")
-                            , {
-                                autoId: true,
-                                onAfterAction_export({data}) {
-                                    console.log(data);
-                                },
-                                async onBeforeAction_empty({context, preventDefault}) {
-                                    if (
-                                        ! await context.isEmpty()
-                                        && ! confirm("Are you sure?")
-                                    ) preventDefault();
-                                },
-                            }
-                        );
-    </script>
   </body>
 </html>
