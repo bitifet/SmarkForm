@@ -3,9 +3,6 @@
 <img alt="SmarkForm Logo" align="left" src="SmarkForm_logo.jpg">
 </a>
 <h1>Reference Manual</h1>
-<strong>
-Powerful while effortless Markup-driven and Extendable forms
-</strong>
 
 
 <table align="left">
@@ -53,24 +50,28 @@ enhance and expand the functionality of SmarkForm.
 
 ### Introduction
 
-SmarkForm simplifies the creation of interactive forms in web applications,
-empowering designers to utilize custom templates and seamlessly incorporate
-interaction through contextual actions.
+<b>Smarkform</b> is a powerful while effortless Markup-driven and Extendable forms.
+   
+It simplifies the creation of interactive forms in web applications, empowering designers to utilize custom templates and seamlessly incorporate interaction through contextual actions.
 
 **Designers** can enhance their templates by using their own HTML and CSS, without
-the need to deal with complex JavaScript code. SmarkForm enables advanced
-capabilities, such as adding or removing items from a list and dynamically
-loading options for select dropdowns, even if they depend on the values of any
-other field in the form. This can be achieved simply by adding the 'data-smark'
+the need to deal with complex JavaScript code.
+
+SmarkForm enables advanced
+capabilities, such as adding or removing items from a list and dynamically loading options for select dropdowns, even if they depend on the values of any
+other field in the form.
+
+This is achieved simply by means of adding the 'data-smark'
 property to relevant tags.
 
-**Developers** can leverage these templates as views to import and manipulate
-complex data in JSON format. They also have the flexibility to access any
-component in the form tree using simple path-style addresses or develop their
-own custom component types.
+**Developers** can leverage these templates as views to import and manipulate complex data in JSON format.
 
-> 🚧 **Please note** that select dropdowns are not yet implemented in the
-> current version, but they are planned for inclusion in the upcoming 1.0.0
+They also have the flexibility to access any component in the form tree using simple path-style addresses being able to import/export subforms, react to change events and a lot more…
+
+They are able to develop custom component types as well which designers can then place wherever they want.
+
+> 🚧 **Please note** that select dropdowns (as explained before) are not yet implemented in the
+> current version (but they are planned for inclusion in the upcoming 1.0.0). Of course, for regular behaviour you can simply use a `<select>` tag in a regular *type = input* component.
 > release.
 
 
