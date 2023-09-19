@@ -1,4 +1,4 @@
-[![SmarkForm Logo](doc/SmarkForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
+[![SmarkForm Logo](docs/SmarkForm_logo.jpg)](https://www.npmjs.com/package/smarkform)
 
 <details>
 <summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
@@ -15,8 +15,8 @@ interactions, with no need to deal with complex JavaScript code.
 [![npm dependents](https://badgen.net/npm/dependents/smarkform)](https://www.npmjs.com/package/smarkform?activeTab=dependents)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-<a href="doc/index.md">
-<img align="right" alt="Reference Manual" src="doc/ReferenceManual.png" />
+<a href="docs/index.md">
+<img align="right" alt="Reference Manual" src="docs/ReferenceManual.png" />
 </a>
 
 ## Features
@@ -73,7 +73,7 @@ interactions, with no need to deal with complex JavaScript code.
 You can see **SmarkForm** in action in this complete CodePen example and even
 fork and play with all SmarkForm features: 
 
-[![Test it in Codepen](doc/CodePen_preview.jpg)](https://codepen.io/bitifet/full/LYgvobZ)
+[![Test it in Codepen](docs/CodePen_preview.jpg)](https://codepen.io/bitifet/full/LYgvobZ)
 
 > 👉 See also [SmarkForm Examples
 > collection](https://codepen.io/collection/YyvbPz) from bare minimal to more
@@ -207,7 +207,7 @@ dist
 ## Usage
 
 > 📌 For detailed usage instructions and API reference check out [📔 SmarkForm
-> Reference Manual](doc/index.md).
+> Reference Manual](docs/index.md).
 
 
 <details>
@@ -327,7 +327,7 @@ Bla bla bla...
 <details>
 <summary>✅ See Also</summary>
 
-  * [📔 SmarkForm Refernce Manual](doc/index.md)
+  * [📔 SmarkForm Refernce Manual](docs/index.md)
 
   * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 
@@ -462,7 +462,7 @@ needs a lot of work...
 
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-Before contributing, make sure to read our [contribution guidelines](doc/contributing.md).
+Before contributing, make sure to read our [contribution guidelines](docs/contributing.md).
 
 
 ## License
