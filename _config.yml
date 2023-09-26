@@ -7,6 +7,7 @@ url: ""
 logo: "/assets/SmarkForm_logo.png"
 favicon_ico: "/assets/SmarkForm_favicon.png"
 
+collections_dir: docs
 collections:
   about:
     permalink: "/:collection/:path/"
