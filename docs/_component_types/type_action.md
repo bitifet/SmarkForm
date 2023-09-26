@@ -1,6 +1,7 @@
 ---
 title: «action» Component Type
 layout: default
+permalink: /component_types/type_action
 
 ---
 

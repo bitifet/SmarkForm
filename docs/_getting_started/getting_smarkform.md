@@ -1,6 +1,7 @@
 ---
 title: Getting SmarkForm
 layout: default
+permalink: /getting_started/getting_smarkform
 nav_order: 2
 
 ---

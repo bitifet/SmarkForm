@@ -1,6 +1,7 @@
 ---
 title: «singleton» Component Type
 layout: default
+permalink: /component_types/type_singleton
 
 ---
 

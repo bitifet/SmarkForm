@@ -1,6 +1,7 @@
 ---
 title: «input» Component Type
 layout: default
+permalink: /component_types/type_input
 
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: First Steps
 layout: default
+permalink: /getting_started/first_steps
 nav_order: 3
 
 ---

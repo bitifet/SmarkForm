@@ -1,6 +1,7 @@
 ---
 title: About SmarkForm
 layout: default
+permalink: /about/about_smarkform
 nav_order: 1
 
 ---

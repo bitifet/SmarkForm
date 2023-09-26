@@ -1,6 +1,7 @@
 ---
 title: Core Concepts
 layout: default
+permalink: /getting_started/core_concepts
 nav_order: 4
 
 ---

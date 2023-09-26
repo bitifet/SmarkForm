@@ -1,6 +1,9 @@
 # Vim
 **.sw*
 
+# Jekyll
+_site/
+
 # Temporary files
 tmp
 

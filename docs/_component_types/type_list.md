@@ -1,6 +1,7 @@
 ---
 title: «list» Component Type
 layout: default
+permalink: /component_types/type_list
 
 ---
 

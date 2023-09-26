@@ -1,6 +1,7 @@
 ---
 title: «form» Component Type
 layout: default
+permalink: /component_types/type_form
 
 ---
 
@@ -17,7 +18,7 @@ layout: default
 
 * [Options](#options)
 * [Actions](#actions)
-    * [Action "empty":](#action-empty)
+    * [Action «empty»](#action-empty)
 * [Other Methods](#other-methods)
 * [Events](#events)
 
@@ -26,6 +27,9 @@ layout: default
 
 </details>
 
+
+
+
 Options
 -------
 
@@ -33,7 +37,8 @@ Options
 Actions
 -------
 
-### Action "empty":
+
+### Action «empty»
 
 
 Other Methods

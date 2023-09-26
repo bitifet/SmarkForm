@@ -1,6 +1,7 @@
 ---
 title: Examples
 layout: default
+permalink: /examples/examples
 
 ---
 

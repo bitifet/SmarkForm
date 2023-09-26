@@ -4,8 +4,8 @@ theme: just-the-docs
 
 #url: https://just-the-docs.github.io
 url: ""
-logo: "/assets/SmarkForm_logo.png"
-favicon_ico: "/assets/SmarkForm_favicon.png"
+logo: "/docs/assets/SmarkForm_logo.png"
+favicon_ico: "/docs/assets/SmarkForm_favicon.png"
 
 collections_dir: docs
 collections:
@@ -96,7 +96,7 @@ enable_copy_code_button: true
 
 aux_links:
   Home: /
-  Getting Started: /getting_started/getting_started
+  Quick Start: /getting_started/quick_start
   Examples: /examples/examples
 aux_links_new_tab: false
 

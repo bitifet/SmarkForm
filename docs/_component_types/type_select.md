@@ -1,6 +1,7 @@
 ---
 title: «select» Component Type
 layout: default
+permalink: /component_types/type_select
 
 ---
 

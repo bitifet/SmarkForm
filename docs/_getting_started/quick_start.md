@@ -1,6 +1,7 @@
 ---
 title: Quick Start
 layout: default
+permalink: /getting_started/quick_start
 nav_order: 1
 
 ---

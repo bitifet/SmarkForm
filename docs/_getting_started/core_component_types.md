@@ -1,6 +1,7 @@
 ---
 title: Core Component Types
 layout: default
+permalink: /getting_started/core_component_types
 nav_order: 5
 
 ---

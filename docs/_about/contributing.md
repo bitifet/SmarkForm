@@ -1,6 +1,7 @@
 ---
 title: Contributing
 layout: default
+permalink: /about/contributing
 nav_order: 2
 
 ---
