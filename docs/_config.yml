@@ -1,13 +1,12 @@
-title: Just the Docs Template
-description: A starter template for a Jeykll site using the Just the Docs theme!
+title: SmarkForm
+description: Powerful while effortless Markup-driven and Extendable forms.
 theme: just-the-docs
 
 #url: https://just-the-docs.github.io
 url: ""
-logo: "/docs/assets/SmarkForm_logo.png"
-favicon_ico: "/docs/assets/SmarkForm_favicon.png"
+logo: "/assets/SmarkForm_logo.png"
+favicon_ico: "/assets/SmarkForm_favicon.png"
 
-collections_dir: docs
 collections:
   about:
     permalink: "/:collection/:path/"
