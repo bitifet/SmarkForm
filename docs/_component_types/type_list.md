@@ -1,16 +1,22 @@
+---
+title: «list» Component Type
+layout: default
+
+---
+
 *list* Component Type
 =====================
 
+<details>
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
 
-
-
-Introduction
-------------
-
-### List Component
-
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
+* [Introduction](#introduction)
+    * [List Component](#list-component)
     * [Usage](#usage)
 * [API Reference](#api-reference)
     * [Options](#options)
@@ -31,6 +37,17 @@ Introduction
         * [removeItem (list Event)](#removeitem-list-event)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
+
+
+Introduction
+------------
+
+### List Component
+
 The List component in SmarkForm allows you to dynamically manage a list of
 items within your form. It uses the content of the container element as the
 template for each item in the list.

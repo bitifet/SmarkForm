@@ -1,15 +1,18 @@
+---
+title: «action» Component Type
+layout: default
+
+---
+
 *action* Component Type
 =======================
 
-
-<!-- Table of Contents {{{ -->
-
-<table align="right"><tr><td>
-<details open>
+<details>
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>
 
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 * [Actions](#actions)
@@ -20,11 +23,10 @@
 * [Action Components](#action-components)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
 
 </details>
-</td></tr></table>
 
-<!-- }}} -->
 
 
 Actions
@@ -33,6 +35,15 @@ Actions
 Every component type may have its own special methods called *actions* to
 interact with it.
 
+<!-- vim-markdown-toc GitLab -->
+
+    * [Interactions](#interactions)
+    * [Origin](#origin)
+    * [Context](#context)
+    * [Target](#target)
+* [Action Components](#action-components)
+
+<!-- vim-markdown-toc -->
 For example, *list* components are provided with *addItem* and *removeItem*
 actions to add or remove items from the list.
 

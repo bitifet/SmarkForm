@@ -15,8 +15,8 @@ interactions, with no need to deal with complex JavaScript code.
 [![npm dependents](https://badgen.net/npm/dependents/smarkform)](https://www.npmjs.com/package/smarkform?activeTab=dependents)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-<a href="docs/index.md">
-<img align="right" alt="Reference Manual" src="docs/ReferenceManual.png" />
+<a href="https://bitifet.github.io/SmarkForm/">
+<img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
 ## Features
@@ -64,7 +64,7 @@ interactions, with no need to deal with complex JavaScript code.
   <li>👉 Bundled all three as ES Module, UMD and plain javascript file.</li>
   <li>👉 All of them less than 20KB each!</li>
   <li>👉 &gt; 0.25%, browser coverage through Babel</li>
-<ul>
+</ul>
 </details>
 
 
@@ -207,7 +207,7 @@ dist
 ## Usage
 
 > 📌 For detailed usage instructions and API reference check out [📔 SmarkForm
-> Reference Manual](docs/index.md).
+> Reference Manual](https://bitifet.github.io/SmarkForm/).
 
 
 <details>
@@ -327,7 +327,7 @@ Bla bla bla...
 <details>
 <summary>✅ See Also</summary>
 
-  * [📔 SmarkForm Refernce Manual](docs/index.md)
+  * [📔 SmarkForm Refernce Manual](https://bitifet.github.io/SmarkForm/)
 
   * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 

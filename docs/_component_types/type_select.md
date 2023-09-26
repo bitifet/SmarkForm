@@ -1,47 +1,31 @@
+---
+title: «select» Component Type
+layout: default
+
+---
+
 *select* Component Type
 =======================
 
-<!-- Table of Contents {{{ -->
-
-<table align="right"><tr><td>
-<details open>
+<details>
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>
 
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
 
 </details>
-</td></tr></table>
-
-<!-- }}} -->
 
 
-<table align="left">
-<tr><th>
-🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
-</th></tr>
-<tr><td align="center">
+{: .info}
+> 🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
 
-This component is not yet implemented.
-
-  👍 It will b before SmarkForm 1.0.0 release.
-
-  🔧 Meanwhile, this document tries to explain what it will be capable of and,
-     at the same time, serve as a base for its future documentation.
-
-  ⚠️  As always, all information may be incomplete, inaccurate, outdated or even
-     **completely wrong**.
-
-👍 We welcome any feedback, suggestions, or improvements as we continue to
-enhance and expand the functionality of SmarkForm.
-
-</td></tr>
-</table>
 
 
 
@@ -86,6 +70,7 @@ initial '@') allowing the comsummer component (a *select* in this case, but it
 may be others in the future) to update its options every time relevant data
 changes.
 
+{: .info}
 > 👉 One important feature here is the ability to perform the fetching process
 > through an interchangeable callback referred to as an 'adapter.'
 > 

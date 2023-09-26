@@ -1,20 +1,21 @@
+---
+title: «singleton» Component Type
+layout: default
+
+---
+
 *singleton* Component Type
 ==========================
 
-<!-- Table of Contents {{{ -->
-
-<table align="right"><tr><td>
-<details open>
+<details>
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>
 
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
 
 </details>
-</td></tr></table>
-
-<!-- }}} -->
-

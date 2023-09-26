@@ -1,14 +1,18 @@
+---
+title: «form» Component Type
+layout: default
+
+---
+
 *form* Component Type
 =====================
 
-<!-- Table of Contents {{{ -->
-
-<table align="right"><tr><td>
-<details open>
+<details>
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>
 
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 * [Options](#options)
@@ -18,11 +22,9 @@
 * [Events](#events)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
 
 </details>
-</td></tr></table>
-
-<!-- }}} -->
 
 Options
 -------

@@ -1,0 +1,422 @@
+{"0": {
+    "doc": "Home",
+    "title": "Features",
+    "content": "✔️ Markup-driven and Intuitive API . | 👉 Create powerful interactive forms with just plain htmL. | 👉 ...or (advised) use your preferred template engine. | 👉 Just add data-smark attribute to relevant tags and see the magic. | 👉 Intuitive option names. | Ex.: &lt;button data-smark='{action: \"addItem\", for: \"myList\"&gt; | . | 👉 Addressable elements by easy-to-read path-style relative or absolute addresses. | 👉 Complete separation between View and Controller logic. | . ✔️ Easy to use and advanced capabilities . | 👉 Leverage your existing HTML and CSS knowledge to create powerful forms. | 👉 No need for extensive JavaScript coding. | 👉 Add or remove items from lists with optional lower and upper limits. | 👉 Context-based actions (no need to hard-wire context and/or target). | 🚧 Dynamic and reactive options loading for dropdowns (comming soon). | . ✔️ Flexible and extendable . | 👉 Import and export complex forms in JSON format. | 👉 You can even import/export any subform instead of the whole one | 👉 Develop your own component types to suit your specific needs. | . ✔️ Lightweight yet highly compatible . | 👉 Bundled all three as ES Module, UMD and plain javascript file. | 👉 All of them less than 20KB each! | 👉 &gt; 0.25%, browser coverage through Babel | . ",
+    "url": "/#features",
+    
+    "relUrl": "/#features"
+  },"1": {
+    "doc": "Home",
+    "title": "Try it yourself!!",
+    "content": "See the Examples Section for CodePen examples and other resources… . ",
+    "url": "/#try-it-yourself",
+    
+    "relUrl": "/#try-it-yourself"
+  },"2": {
+    "doc": "Home",
+    "title": "Home",
+    "content": "SmarkForm is a powerful while effortless Markup-driven library that allows to create powerful and Extendable forms with just HTML markup and a few properties. You can see it in action in the following example (among others you can find in CodePen): . SmarkForm empowers designers to enhance their form templates with advanced capabilities, such as dynamic list manipulation and context-based interactions, with no need to deal with complex JavaScript code. 🚧 ＷＯＲＫ ＩＮ ＰＲＯＧＲＥＳＳ 🚧 . This documentation is still in draft stage. All information may be incomplete, inaccurate, outdated or even completely wrong. We welcome any feedback, suggestions, or improvements as we continue to enhance and expand the functionality of SmarkForm. ",
+    "url": "/",
+    
+    "relUrl": "/"
+  },"3": {
+    "doc": "About SmarkForm",
+    "title": "About SmarkForm",
+    "content": "📖 Table of Contents . | Introduction | Why SmarkForm | The SmarkForm Approach | . ",
+    "url": "/about/about_smarkform/",
+    
+    "relUrl": "/about/about_smarkform/"
+  },"4": {
+    "doc": "About SmarkForm",
+    "title": "Introduction",
+    "content": "Smarkform is a powerful while effortless Markup-driven and Extendable forms. It simplifies the creation of interactive forms in web applications, empowering designers to utilize custom templates and seamlessly incorporate interaction through contextual actions. Designers can enhance their templates by using their own HTML and CSS, without the need to deal with complex JavaScript code. SmarkForm enables advanced capabilities, such as adding or removing items from a list and dynamically loading options for select dropdowns, even if they depend on the values of any other field in the form. This is achieved simply by means of adding the ‘data-smark’ property to relevant tags. Developers can leverage these templates as views to import and manipulate complex data in JSON format. They also have the flexibility to access any component in the form tree using simple path-style addresses being able to import/export subforms, react to change events and a lot more… . They are able to develop custom component types as well which designers can then place wherever they want. 🚧 Please note that select dropdowns (as explained before) are not yet implemented in the current version (but they are planned for inclusion in the upcoming 1.0.0). Of course, for regular behaviour you can simply use a &lt;select&gt; tag in a regular type = input component. release. ",
+    "url": "/about/about_smarkform/#introduction",
+    
+    "relUrl": "/about/about_smarkform/#introduction"
+  },"5": {
+    "doc": "About SmarkForm",
+    "title": "Why SmarkForm",
+    "content": "Traditional HTML forms are limited in structure and lack flexibility. They only support a single level of discrete key-value pairs, limited to text-only values. However, modern applications often require complex JSON structures with nested objects and arrays, which cannot be directly accommodated by legacy HTML forms. Web component libraries and frameworks address this issue by shifting templating and design logic from the view to the controller layer. However, this approach forces developers to manually implement custom behaviors by connecting multiple form components together. Additionally, it places the burden of dealing with templating and styling details on developers, while designers lose control over the appearance of inner components. As a result, this approach leads to non-reusable and bespoke implementations for each form. ",
+    "url": "/about/about_smarkform/#why-smarkform",
+    
+    "relUrl": "/about/about_smarkform/#why-smarkform"
+  },"6": {
+    "doc": "About SmarkForm",
+    "title": "The SmarkForm Approach",
+    "content": "SmarkForm tackles these limitations by providing a powerful and flexible solution for building forms directly in the markup (view layer) that seamlessly handles deep JSON structures. With SmarkForm, designers can create and modify reusable form components that effortlessly handle complex data structures, including lists (arrays) with predefined maximum and/or minimum number of items, and many other nuances directly handled from the markup. Meanwhile, developers can easily import and export JSON data from the controller layer. This approach allows for greater flexibility and efficiency in form development and maintenance. ",
+    "url": "/about/about_smarkform/#the-smarkform-approach",
+    
+    "relUrl": "/about/about_smarkform/#the-smarkform-approach"
+  },"7": {
+    "doc": "Contributing",
+    "title": "Contributing",
+    "content": " ",
+    "url": "/about/contributing/",
+    
+    "relUrl": "/about/contributing/"
+  },"8": {
+    "doc": "Contributing",
+    "title": "Welcome!!",
+    "content": "No contributing guidelines yet since I’m still the only contributor. But if you are interested in contributing to this project in any matter, please contact me and for sure we will get along. ",
+    "url": "/about/contributing/#welcome",
+    
+    "relUrl": "/about/contributing/#welcome"
+  },"9": {
+    "doc": "Core Component Types",
+    "title": "Core Component Types",
+    "content": "📖 Table of Contents . | Form | List | Input | Select | Singleton | Action | . ",
+    "url": "/getting_started/core_component_types/",
+    
+    "relUrl": "/getting_started/core_component_types/"
+  },"10": {
+    "doc": "Core Component Types",
+    "title": "Form",
+    "content": "See also: Form Component Type . ",
+    "url": "/getting_started/core_component_types/#form",
+    
+    "relUrl": "/getting_started/core_component_types/#form"
+  },"11": {
+    "doc": "Core Component Types",
+    "title": "List",
+    "content": "See also: List Component Type . ",
+    "url": "/getting_started/core_component_types/#list",
+    
+    "relUrl": "/getting_started/core_component_types/#list"
+  },"12": {
+    "doc": "Core Component Types",
+    "title": "Input",
+    "content": "See also: Input Component Type . ",
+    "url": "/getting_started/core_component_types/#input",
+    
+    "relUrl": "/getting_started/core_component_types/#input"
+  },"13": {
+    "doc": "Core Component Types",
+    "title": "Select",
+    "content": "See also: Select Component Type . ",
+    "url": "/getting_started/core_component_types/#select",
+    
+    "relUrl": "/getting_started/core_component_types/#select"
+  },"14": {
+    "doc": "Core Component Types",
+    "title": "Singleton",
+    "content": "See also: Singleton Component Type . ",
+    "url": "/getting_started/core_component_types/#singleton",
+    
+    "relUrl": "/getting_started/core_component_types/#singleton"
+  },"15": {
+    "doc": "Core Component Types",
+    "title": "Action",
+    "content": "See also: Action Component Type . ",
+    "url": "/getting_started/core_component_types/#action",
+    
+    "relUrl": "/getting_started/core_component_types/#action"
+  },"16": {
+    "doc": "Core Concepts",
+    "title": "Core Concepts",
+    "content": "📖 Table of Contents . | The data-smark Attribute | Components and Actions . | Components | Actions | Action Components | . | Accessing Components | . ",
+    "url": "/getting_started/core_concepts/",
+    
+    "relUrl": "/getting_started/core_concepts/"
+  },"17": {
+    "doc": "Core Concepts",
+    "title": "The data-smark Attribute",
+    "content": "The data-smark attribute is used in SmarkForm to identify and enhance specific DOM elements (HTML tags) as SmarkForm components. It also provides the required properties for their enhancement. By using the data-smark attribute, you can mark elements to be transformed into SmarkForm components, while the remaining elements are ignored by SmarkForm. 📌 The following are exceptions to this rule: . | The DOM element passed to the SmarkForm constructor is always considered a SmarkForm component. | The item template of a list component, which is the only allowed direct child in the HTML source before rendering, is always a SmarkForm component by default. In this case, the data-smark attribute can be omitted. | . Syntax: . The data-smark attribute can be specified in three different ways: . | Without any value (e.g., &lt;textarea ... data-smark&gt;). | In this case, the component type is inferred based on the actual tag. For example, it is inferred as an input type for &lt;textarea&gt;. | . | With a string value (e.g., &lt;div ... data-smark=\"singleton\"&gt;). | This is equivalent to &lt;div ... data-smark='{\"type\": \"singleton\"}'&gt;. | . | With a valid JSON string (e.g., &lt;div data-smark='{\"type\": \"list\", \"name\": \"myList\"}'&gt;). | . Mandatory properties: . The following properties are (nearly) mandatory: . | The type property is always necessary to determine which component type controller should be used for rendering the component. In many cases, it can be inferred based on the tag name or the presence of the action property, which forces the type to be “action”. | The name property is required for all non-action components. | If not explicitly provided, it can be inferred from the name property of the tag being enhanced. For example, &lt;input name=\"foo\" data-smark&gt;. | If not provided and cannot be inferred, a randomly generated name will be used. | . | The action property is mandatory for all components of the type “action” to specify which action they actually trigger. In fact, the type=\"action\" property itself is optional here having it is implied by the presence of the action property. | . Other properties: . Depending on the actual component type other properties may be applicable. In case of actions, despite typeand name, is worth to mention that, except for the for and to properties . FIXME: To be continued… //// ** … the rest of available properties depend on the type of its context… . TODO: Link ‘for’ and ‘to’ to propper type_action.md section… . ",
+    "url": "/getting_started/core_concepts/#the-data-smark-attribute",
+    
+    "relUrl": "/getting_started/core_concepts/#the-data-smark-attribute"
+  },"18": {
+    "doc": "Core Concepts",
+    "title": "Components and Actions",
+    "content": " ",
+    "url": "/getting_started/core_concepts/#components-and-actions",
+    
+    "relUrl": "/getting_started/core_concepts/#components-and-actions"
+  },"19": {
+    "doc": "Core Concepts",
+    "title": "Components",
+    "content": "A SmarkForm component is just a DOM element (HTML tag) which has a “data-smark” property providding a JSON-formatted options object. It looks like as follows: . &lt;input data-smark='{type: \"input\"}'/&gt; . 📌 If only type option is specified, it can be simplified as: . &lt;input data-smark='input'/&gt; . …or just leave it empty to let SmarkForm engine to figure out its type: . &lt;input data-smark/&gt; . ",
+    "url": "/getting_started/core_concepts/#components",
+    
+    "relUrl": "/getting_started/core_concepts/#components"
+  },"20": {
+    "doc": "Core Concepts",
+    "title": "Actions",
+    "content": "Actions are operations that can be performed over components. Some of them such as import, export and empty are available for all components types while others are tied to secific types like addItem an d removeItem for lists, etc… . ",
+    "url": "/getting_started/core_concepts/#actions",
+    
+    "relUrl": "/getting_started/core_concepts/#actions"
+  },"21": {
+    "doc": "Core Concepts",
+    "title": "Action Components",
+    "content": "Action Components are a special type of component that serve to trigger actions on another compoenent which we refer to it as its “context”. Any SmarkForm component whith an action property is an Action Component and for the sake of simplicity, its type property can be ommitted but it cannot take a different value than “action”. Example: . &lt;button data-smark='{action: \"removeItem\"}'&gt;&lt;/button&gt; . 📖 For detailed information see Action Type Documentation. ",
+    "url": "/getting_started/core_concepts/#action-components",
+    
+    "relUrl": "/getting_started/core_concepts/#action-components"
+  },"22": {
+    "doc": "Core Concepts",
+    "title": "Accessing Components",
+    "content": "const form = new SmarkForm( document.querySelector(\"#main-form\") ); . ",
+    "url": "/getting_started/core_concepts/#accessing-components",
+    
+    "relUrl": "/getting_started/core_concepts/#accessing-components"
+  },"23": {
+    "doc": "First Steps",
+    "title": "First Steps",
+    "content": "📖 Table of Contents . | Creating and Customizing SmarkForm form | . ",
+    "url": "/getting_started/first_steps/",
+    
+    "relUrl": "/getting_started/first_steps/"
+  },"24": {
+    "doc": "First Steps",
+    "title": "Creating and Customizing SmarkForm form",
+    "content": "To create a SmarkForm form, you need to follow a few simple steps: . | Start by writing the form markup in HTML. For example, let’s create a basic login form: | . &lt;div id=\"myForm\"&gt; &lt;div&gt; &lt;label for=\"username\"&gt;Username:&lt;/label&gt; &lt;input type=\"text\" id=\"username\" name=\"username\" data-smark=\"data-smark\"&gt; &lt;/div&gt; &lt;div&gt; &lt;label for=\"password\"&gt;Password:&lt;/label&gt; &lt;input type=\"password\" id=\"password\" name=\"password\" data-smark=\"data-smark\"&gt; &lt;/div&gt; &lt;p&gt; &lt;button data-smark='{\"action\":\"empty\"}'&gt;❌ Clear&lt;/button&gt; &lt;button data-smark='{\"action\":\"export\"}'&gt;💾 Submit&lt;/button&gt; &lt;/p&gt; &lt;/div&gt; . 📌 It is not (yet) advised to use the &lt;form&gt; tag for SmarkForm forms. If you do so, they will be submit-prevented so they can act as kind of failback behvaviours in case of JavaScript being disabled. But it’s not yet clear which could be a future enhancenment of native &lt;form&gt; attributes, such as action, in successfully enhanced &lt;form&gt; tags. | Next, include the SmarkForm library in your project. You can do this by adding the script tag to your HTML file or by importing it using a module bundler like Webpack or Parcel. | . &lt;script src=\"path/to/SmarkForm.js\"&gt;&lt;/script&gt; . 📌 Alternatively you can directly import it as ES module in your JavaScript file: . import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js'; . See [Installation Instructions](../README.md#installation) for more details. | Initialize SmarkForm on your form element. In your JavaScript file, create a new instance of the SmarkForm class and pass the form element as the parameter: | . const form = new SmarkForm(document.querySelector(\"#myForm\")); . You may also want to do something with data: . const myForm = new SmarkForm( document.getElementById(\"myForm\") , { onAfterAction_export({data}) { // Show exported data: console.log(data); }, } ); . Or even gently ask users for confirmation before they loose all their work: . const form = new SmarkForm( document.querySelector(\"#myForm\") , { onAfterAction_export({data}) { // Show exported data: alert (JSON.stringify(data)); }, async onBeforeAction_empty({context, preventDefault}) { // Ask for confirmation unless form is already empty: if ( ! await context.isEmpty() &amp;&amp; ! confirm(\"Are you sure?\") ) preventDefault(); }, } ); . That’s it! You now have a SmarkForm-enhanced form. SmarkForm will automatically handle form submission, validation, and other interactions based on the provided markup and configuration. You can customize the behavior and appearance of your SmarkForm form by configuring options and adding event listeners. SmarkForm provides a wide range of features and capabilities to simplify form development and enhance user experience. Start exploring the SmarkForm documentation and examples to discover all the possibilities and unleash the power of markup-driven form development. ",
+    "url": "/getting_started/first_steps/#creating-and-customizing-smarkform-form",
+    
+    "relUrl": "/getting_started/first_steps/#creating-and-customizing-smarkform-form"
+  },"25": {
+    "doc": "Getting SmarkForm",
+    "title": "Getting SmarkForm",
+    "content": "📖 Table of Contents . | Using a CDN (Esiest approach) . | ES module | UMD Module | . | . To incorporate SmarkForm to your project you have several alternatives: . ",
+    "url": "/getting_started/getting_smarkform/",
+    
+    "relUrl": "/getting_started/getting_smarkform/"
+  },"26": {
+    "doc": "Getting SmarkForm",
+    "title": "Using a CDN (Esiest approach)",
+    "content": "ES module . 👉 Import it as ES module: . &lt;script type=\"module\"&gt; import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js'; // Use SmarkForm in your code &lt;/script&gt; . UMD Module . 👉 Include it your HTML file using a &lt;script&gt; tag: . &lt;script src=\"https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js\"&gt;&lt;/script&gt; &lt;script&gt; // Now it is avalable as SmarkForm global variable. &lt;/script&gt; . 👉 Import as CommonJS module: . const SmarkForm = require(\"smarkform\"); . 👉 Import as AMD (RequireJS) module: . require(['https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js'], function(SmarkForm) { // Now it is avalable as SmarkForm local variable. }); . 📌 These examples will use the latest published version of SmarkForm from NPM. If you prefer to use a specific version, you can specify the version number in the CDN URLs. For example, if you want to use version 0.1.0, the CDN URLs would be: . | ESM: https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.esm.js | UMD: https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.umd.js | . Make sure to replace 0.1.0 with the desired version number in the URLs. ",
+    "url": "/getting_started/getting_smarkform/#using-a-cdn-esiest-approach",
+    
+    "relUrl": "/getting_started/getting_smarkform/#using-a-cdn-esiest-approach"
+  },"27": {
+    "doc": "Quick Start",
+    "title": "Quick Start",
+    "content": "📖 Table of Contents Start with a simple snippet. &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First SmarkForm Form&lt;/title&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;My First SmarkForm Form&lt;/h1&gt; &lt;div id='myForm'&gt; &lt;p&gt;Some form here...&lt;/p&gt; &lt;/div&gt; &lt;/body&gt; &lt;/html&gt; . Add SmarkForm capabilities: . &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First SmarkForm Form&lt;/title&gt; &lt;script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/dist/SmarkForm.umd.js'&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;My First SmarkForm Form&lt;/h1&gt; &lt;div id='myForm'&gt; &lt;p&gt;Some form here...&lt;/p&gt; &lt;/div&gt; &lt;script&gt; const myForm = new SmarkForm( document.querySelector(\"#myForm\") ); &lt;/script&gt; &lt;/body&gt; &lt;/html&gt; . Add a few form inputs: . &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First SmarkForm Form&lt;/title&gt; &lt;script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/dist/SmarkForm.umd.js'&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;My First SmarkForm Form&lt;/h1&gt; &lt;div id='myForm'&gt; &lt;p&gt;Some form here...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;/div&gt; &lt;script&gt; const myForm = new SmarkForm( document.querySelector(\"#myForm\") ); &lt;/script&gt; &lt;/body&gt; &lt;/html&gt; . React to some basic events: . &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First SmarkForm Form&lt;/title&gt; &lt;script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/dist/SmarkForm.umd.js'&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;My First SmarkForm Form&lt;/h1&gt; &lt;div id='myForm'&gt; &lt;p&gt;Some form here...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;/div&gt; &lt;script&gt; const myForm = new SmarkForm( document.querySelector(\"#myForm\") , { onAfterAction_export({data}) { console.log(data); }, async onBeforeAction_empty({context, preventDefault}) { if ( ! await context.isEmpty() &amp;&amp; ! confirm(\"Are you sure?\") ) preventDefault(); }, } ); &lt;/script&gt; &lt;/body&gt; &lt;/html&gt; . Fine-tune headers and styles using your own stylesheets or SmarkForm provided samples. &lt;!DOCTYPE html&gt; &lt;html&gt; &lt;head&gt; &lt;title&gt;My First SmarkForm Form&lt;/title&gt; &lt;meta name='viewport' content='width=device-width, initial-scale=1.0'&gt; &lt;meta http-equiv='Content-Type' content='text/html; charset=utf-8'&gt; &lt;link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/examples/smarkform_layout_sample.css'&gt; &lt;link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/examples/smarkform_styles_sample.css'&gt; &lt;script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/dist/SmarkForm.umd.js'&gt;&lt;/script&gt; &lt;/head&gt; &lt;body&gt; &lt;h1&gt;My First SmarkForm Form&lt;/h1&gt; &lt;div id='myForm'&gt; &lt;p&gt;Some form here...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;p&gt;...TODO...&lt;/p&gt; &lt;/div&gt; &lt;script&gt; const myForm = new SmarkForm( document.querySelector(\"#myForm\") , { onAfterAction_export({data}) { console.log(data); }, async onBeforeAction_empty({context, preventDefault}) { if ( ! await context.isEmpty() &amp;&amp; ! confirm(\"Are you sure?\") ) preventDefault(); }, } ); &lt;/script&gt; &lt;/body&gt; &lt;/html&gt; . ",
+    "url": "/getting_started/quickstart/",
+    
+    "relUrl": "/getting_started/quickstart/"
+  },"28": {
+    "doc": "«action» Component Type",
+    "title": "action Component Type",
+    "content": "📖 Table of Contents . | Actions . | Interactions | Origin | Context | Target | . | Action Components | . ",
+    "url": "/component_types/type_action/#action-component-type",
+    
+    "relUrl": "/component_types/type_action/#action-component-type"
+  },"29": {
+    "doc": "«action» Component Type",
+    "title": "Actions",
+    "content": "Every component type may have its own special methods called actions to interact with it. * [Interactions](#interactions) * [Origin](#origin) * [Context](#context) * [Target](#target) * [Action Components](#action-components) . For example, list components are provided with addItem and removeItem actions to add or remove items from the list. Actions can be triggered both programatically or when user interacts with an action component of the given action whose context is a component of given type. ",
+    "url": "/component_types/type_action/#actions",
+    
+    "relUrl": "/component_types/type_action/#actions"
+  },"30": {
+    "doc": "«action» Component Type",
+    "title": "Interactions",
+    "content": "Nowadays the only possible interaction for action components is the ‘click’ event. But in the future actions are expected to listen to several events (i.e. right/middle/left click or even keyboard events…) which would be mapped to specific behaviour variations. When the user interacts with an action component, its context is resolved and the propper action method is called in it. ",
+    "url": "/component_types/type_action/#interactions",
+    
+    "relUrl": "/component_types/type_action/#interactions"
+  },"31": {
+    "doc": "«action» Component Type",
+    "title": "Origin",
+    "content": "The origin of an action is the actual action component from which the action was originated. For programatically triggered actions its value is Null. This allow action implementations to interact with its originating action component. ",
+    "url": "/component_types/type_action/#origin",
+    
+    "relUrl": "/component_types/type_action/#origin"
+  },"32": {
+    "doc": "«action» Component Type",
+    "title": "Context",
+    "content": "The context of an action is the component willing to receive the action every time it is triggered. That is, by default, the second nearest ancestor (because nearest ancestor is the default target) of the action component whose type implements an action of that name. In action components the context can be altered by using the for property, consisting a relative (starting from default context) or absolute path to the desired context. This is what allows, for example, to place the addItem action components of a list outside of the actual list. Example: . &lt;button data-smark='{\"action\":\"addItem\",\"for\":\"myList\"}'&gt;&lt;/button&gt; &lt;ul data-smark=\"{}\"&gt; &lt;li&gt;...&lt;/li&gt; &lt;/ul&gt; . For convenience context is passed to the action handler by a property of that name even it is always the class of its component type. For programatically triggered actions, context is (as expected) always the component to from wihch we call the action. Example: . myForm.find(\"/myList\").removeItem(); . ",
+    "url": "/component_types/type_action/#context",
+    
+    "relUrl": "/component_types/type_action/#context"
+  },"33": {
+    "doc": "«action» Component Type",
+    "title": "Target",
+    "content": "The target of en action is the component to which the action is to be peformed. By default it is the nearest ancestor of the action component but, as with context, it can be explicitly specified in the target property by a relative or absolute path. For example, in the removeItem action of list components, the target is the item of the list that is going to be removed. Example: ```html . | ... &lt;/li&gt; &lt;/ul&gt; Action Components ----------------- | . ",
+    "url": "/component_types/type_action/#target",
+    
+    "relUrl": "/component_types/type_action/#target"
+  },"34": {
+    "doc": "«action» Component Type",
+    "title": "«action» Component Type",
+    "content": " ",
+    "url": "/component_types/type_action/",
+    
+    "relUrl": "/component_types/type_action/"
+  },"35": {
+    "doc": "«form» Component Type",
+    "title": "form Component Type",
+    "content": "📖 Table of Contents . | Options | Actions . | [Action | . | . ",
+    "url": "/component_types/type_form/#form-component-type",
+    
+    "relUrl": "/component_types/type_form/#form-component-type"
+  },"36": {
+    "doc": "«form» Component Type",
+    "title": "Options",
+    "content": " ",
+    "url": "/component_types/type_form/#options",
+    
+    "relUrl": "/component_types/type_form/#options"
+  },"37": {
+    "doc": "«form» Component Type",
+    "title": "Actions",
+    "content": " ",
+    "url": "/component_types/type_form/#actions",
+    
+    "relUrl": "/component_types/type_form/#actions"
+  },"38": {
+    "doc": "«form» Component Type",
+    "title": "Action “empty”:",
+    "content": " ",
+    "url": "/component_types/type_form/#action-empty",
+    
+    "relUrl": "/component_types/type_form/#action-empty"
+  },"39": {
+    "doc": "«form» Component Type",
+    "title": "Other Methods",
+    "content": " ",
+    "url": "/component_types/type_form/#other-methods",
+    
+    "relUrl": "/component_types/type_form/#other-methods"
+  },"40": {
+    "doc": "«form» Component Type",
+    "title": "Events",
+    "content": " ",
+    "url": "/component_types/type_form/#events",
+    
+    "relUrl": "/component_types/type_form/#events"
+  },"41": {
+    "doc": "«form» Component Type",
+    "title": "«form» Component Type",
+    "content": " ",
+    "url": "/component_types/type_form/",
+    
+    "relUrl": "/component_types/type_form/"
+  },"42": {
+    "doc": "«input» Component Type",
+    "title": "input Component Type",
+    "content": "📖 Table of Contents ",
+    "url": "/component_types/type_input/#input-component-type",
+    
+    "relUrl": "/component_types/type_input/#input-component-type"
+  },"43": {
+    "doc": "«input» Component Type",
+    "title": "«input» Component Type",
+    "content": " ",
+    "url": "/component_types/type_input/",
+    
+    "relUrl": "/component_types/type_input/"
+  },"44": {
+    "doc": "«list» Component Type",
+    "title": "list Component Type",
+    "content": "📖 Table of Contents . | Introduction . | List Component | Usage | . | API Reference . | Options . | min_items | max_items | of | . | Actions . | (Async) addItem (Action) . | properties (addItem) | . | (Async) removeItem (Action) . | properties (removeItem) | . | (Async) empty (Action) . | properties (empty) | . | count (Action) . | properties (count) | . | . | Events . | addItem (list Event) | removeItem (list Event) | . | . | . ",
+    "url": "/component_types/type_list/#list-component-type",
+    
+    "relUrl": "/component_types/type_list/#list-component-type"
+  },"45": {
+    "doc": "«list» Component Type",
+    "title": "Introduction",
+    "content": " ",
+    "url": "/component_types/type_list/#introduction",
+    
+    "relUrl": "/component_types/type_list/#introduction"
+  },"46": {
+    "doc": "«list» Component Type",
+    "title": "List Component",
+    "content": "The List component in SmarkForm allows you to dynamically manage a list of items within your form. It uses the content of the container element as the template for each item in the list. ",
+    "url": "/component_types/type_list/#list-component",
+    
+    "relUrl": "/component_types/type_list/#list-component"
+  },"47": {
+    "doc": "«list» Component Type",
+    "title": "Usage",
+    "content": "To use the List component, follow these steps: . | Create a form containing the list: . &lt;div id=\"myForm\"&gt; &lt;ul data-smark=\"{name: 'myList' type: 'list'}\"&gt; &lt;li&gt; &lt;!-- Content of this list item will be used as a template for each item --&gt; &lt;/li&gt; &lt;/ul&gt; &lt;p&gt; &lt;button data-smark=\"{\"action\":\"empty\"}\"&gt;❌ Clear&lt;/button&gt; &lt;button data-smark=\"{\"action\":\"export\"}\"&gt;💾 Submit&lt;/button&gt; &lt;/p&gt; &lt;/div&gt; . | . 📌 We could have ommitted the type property because it will be automatically infered by the &lt;ul&gt; type, but it is recommended to explicitly specify types to avoid potential errors in case of markup modifications. | Initialize the SmarkForm instance: . const myForm = new SmarkForm(document.getElementById(\"myForm\")); . 📌 This is just a simple example. For detailed explanation of how to build a full-featured SmarkForm see Creating a simple SmarkForm form section of this manual. | Add a template for the list items: . &lt;div id=\"myForm\"&gt; &lt;ul data-smark=\"{name: 'myList' type: 'list'}\"&gt; &lt;li&gt; &lt;input type=\"text\" name=\"field1\" data-smark /&gt; &lt;input type=\"number\" name=\"field2\" data-smark /&gt; &lt;/li&gt; &lt;/ul&gt; &lt;/div&gt; . 📌 List item templates are automatically enhanced as components of type form by default. You can override this by specifying the “data-smark” attribute explicitly or using the “of” property in the list data-smark attribute. | Add controls to add and remove items: . &lt;div id=\"myForm\"&gt; &lt;ul data-smark=\"{name: 'myList' type: 'list'}\"&gt; &lt;li&gt; &lt;input type=\"text\" name=\"field1\" data-smark /&gt; &lt;input type=\"number\" name=\"field2\" data-smark /&gt; &lt;button data-smark=\"{action='removeItem'}\"&gt;Remove Item&lt;/button&gt; &lt;/li&gt; &lt;/ul&gt; &lt;button data-smark=\"{action='addItem', for='myForm'}\"&gt;Remove Item&lt;/button&gt; &lt;/div&gt; . 📌 The removeItem action here takes its containing component (the implicitly created form over &lt;li&gt; template)) as its target (an its containing list as its context). On the other hand, the addItem action, being outside of the list, uses the for property to specify the (relative) path to its context. In this case, being target unspecified, new items will be appended at the end of the list. | . For more information on using the List component and its available methods, please refer to the API Reference. Feel free to adjust the content and structure of the section to match the specific functionality and usage of the List component in your SmarkForm library. ",
+    "url": "/component_types/type_list/#usage",
+    
+    "relUrl": "/component_types/type_list/#usage"
+  },"48": {
+    "doc": "«list» Component Type",
+    "title": "API Reference",
+    "content": " ",
+    "url": "/component_types/type_list/#api-reference",
+    
+    "relUrl": "/component_types/type_list/#api-reference"
+  },"49": {
+    "doc": "«list» Component Type",
+    "title": "Options",
+    "content": "min_items . max_items . of . ",
+    "url": "/component_types/type_list/#options",
+    
+    "relUrl": "/component_types/type_list/#options"
+  },"50": {
+    "doc": "«list» Component Type",
+    "title": "Actions",
+    "content": "(Async) addItem (Action) . properties (addItem) . | action: (= “addItem”) | origin: | context: | target: | position: = “after” (default) / “before” | autoscroll:, = “elegant” / “self” / “parent” / falsy | . (Async) removeItem (Action) . properties (removeItem) . | action:: (= “removeItem”) | origin: | context: | target: | autoscroll:, = “elegant” / “self” / “parent” / falsy | keep_non_empty: | failback: | . (Async) empty (Action) . properties (empty) . | action:: (= “empty”) | . count (Action) . properties (count) . | action:: (= “count”) | . ",
+    "url": "/component_types/type_list/#actions",
+    
+    "relUrl": "/component_types/type_list/#actions"
+  },"51": {
+    "doc": "«list» Component Type",
+    "title": "Events",
+    "content": "The List component emits the following events: . addItem (list Event) . Triggered when a new item is going to be added to the list. This event occurs just after the new item node is created and before it is actually inserted in the DOM. Event data contains the properties received by the originating addItem action, plus the following properties: . | newItemTarget: The new DOM element that is about to be inserted (not yet a component). | onRendered: A callback setter that allows executing code after the item is actually inserted in the DOM and rendered as a new child component of the list. The newly created child component is provided as an argument to the callback. | . Example: . myForm.on(\"addItem\", function({ newItemTarget, onRendered, }) { newItemTarget.classList.add(\"ingoing\"); onRendered((newItem) =&gt; { newItem.target.classList.remove(\"ingoing\"); newItem.target.classList.add(\"ongoing\"); // Alternatively, we could have used just newItemTarget instead of // newItem.target here. }); }); . In this example, we add the CSS class ingoing to the new item before it is rendered, and then change it by the class (ongoing) after it is rendered. This way we can animate the insertion of a new item with a few CSS lines such as follows: .form-group .ingoing { transform: scaleY(0) translateY(-50%); } .form-group .ongoing { transition: transform 70ms ease-in ; } . removeItem (list Event) . Triggered when an item is going to be removed from the list. This event occurs just before removing the item from the DOM and the list itself. Event data contains the properties received by the originating removeItem action, plus the following properties: . | oldItem: The child component (Smark component) of the list that is about to be removed. | oldItemTarget: The DOM element that is about to be removed from the DOM (the target of oldItem). | onRemoved: A callback setter that allows executing code after oldItemTarget is actually removed from the DOM and oldItem is removed from the list. No arguments will be provided to this callback. | . Example: . myForm.on(\"removeItem\", async function({ oldItemTarget, onRemoved, }) { oldItemTarget.classList.remove(\"ongoing\"); oldItemTarget.classList.add(\"outgoing\"); // Await transition to finish before removing the item: const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget) .getPropertyValue('transition-duration') .slice(0,-1).replace(\"m\",\"/1\") .split(\"/\") .map(Number) ; await new Promise(resolve =&gt; setTimeout( resolve, duration * multiplier )); }); . In this example, we add the outgoing CSS class to the item being removed so that it can be easily animated with a few CSS such as follows: .form-group .outgoing { transform: scaleY(0) translateY(-50%); transition: transform 70ms ease-out ; } . Then it wait for the specified transition duration to elapse preventing the item being actually removed from the DOM until animation finished. ",
+    "url": "/component_types/type_list/#events",
+    
+    "relUrl": "/component_types/type_list/#events"
+  },"52": {
+    "doc": "«list» Component Type",
+    "title": "«list» Component Type",
+    "content": " ",
+    "url": "/component_types/type_list/",
+    
+    "relUrl": "/component_types/type_list/"
+  },"53": {
+    "doc": "«select» Component Type",
+    "title": "select Component Type",
+    "content": "📖 Table of Contents . | Introduction | . 🚧 ＷＯＲＫ ＩＮ ＰＲＯＧＲＥＳＳ 🚧 . ",
+    "url": "/component_types/type_select/#select-component-type",
+    
+    "relUrl": "/component_types/type_select/#select-component-type"
+  },"54": {
+    "doc": "«select» Component Type",
+    "title": "Introduction",
+    "content": "Select component will be capable of loading its options from a remote API call by passing its src property to so called “API Interface”. Example: . &lt;select data-smark='{ \"src\":[ \"https/example.com/some/api\", { \"someConstant\":\"actual_value\", \"@someField\":\"sibling_field_name\", \"@someOtherField\":\"/absolute/path/to/field\", \"@anotherField\":\"../relative/path/to/field\" }, \"GET\" ] }'&gt; &lt;/select&gt; . Where: . | src[0]: Provides the endpoint url. | If it is the only argument provided, src can be simplified as just that url. | . | src[1]: (Optional) Provides arguments to be passed. | src[2]: (Optional) Specifies the HTTP method (‘GET’ by default). | . About API Interface: . API Interface will be responsible for fetching the data based on the specified endpoint, arguments, and other parameters (such as the method), while also keeping track of changes in every field it depends on (those marked with initial ‘@’) allowing the comsummer component (a select in this case, but it may be others in the future) to update its options every time relevant data changes. 👉 One important feature here is the ability to perform the fetching process through an interchangeable callback referred to as an ‘adapter.’ . By default, this adapter internally executes an HTTP request as explained earlier. However, it can be easily substituted with a custom implementation tailored to different types of APIs, ranging from GraphQL APIs to mock implementations used for testing purposes. ",
+    "url": "/component_types/type_select/#introduction",
+    
+    "relUrl": "/component_types/type_select/#introduction"
+  },"55": {
+    "doc": "«select» Component Type",
+    "title": "«select» Component Type",
+    "content": " ",
+    "url": "/component_types/type_select/",
+    
+    "relUrl": "/component_types/type_select/"
+  },"56": {
+    "doc": "«singleton» Component Type",
+    "title": "singleton Component Type",
+    "content": "📖 Table of Contents ",
+    "url": "/component_types/type_singleton/#singleton-component-type",
+    
+    "relUrl": "/component_types/type_singleton/#singleton-component-type"
+  },"57": {
+    "doc": "«singleton» Component Type",
+    "title": "«singleton» Component Type",
+    "content": " ",
+    "url": "/component_types/type_singleton/",
+    
+    "relUrl": "/component_types/type_singleton/"
+  },"58": {
+    "doc": "Examples",
+    "title": "Examples",
+    "content": "📖 Table of Contents . | Code Snippets and Samples | . ",
+    "url": "/examples/examples/",
+    
+    "relUrl": "/examples/examples/"
+  },"59": {
+    "doc": "Examples",
+    "title": "Code Snippets and Samples",
+    "content": "You can see SmarkForm in action in this complete CodePen example and even fork and play with all SmarkForm features: . See the Pen SmarkForm Complete Example by Joan Miquel Torres (@bitifet) on CodePen. 👉 See also SmarkForm Examples collection from bare minimal to more complex examples in CodePen. ",
+    "url": "/examples/examples/#code-snippets-and-samples",
+    
+    "relUrl": "/examples/examples/#code-snippets-and-samples"
+  }
+}

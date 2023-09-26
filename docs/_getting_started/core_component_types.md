@@ -1,0 +1,60 @@
+---
+title: Core Component Types
+layout: default
+nav_order: 5
+
+---
+
+# Core Component Types
+
+<details>
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {{ "
+<!-- vim-markdown-toc GitLab -->
+
+* [Form](#form)
+* [List](#list)
+* [Input](#input)
+* [Select](#select)
+* [Singleton](#singleton)
+* [Action](#action)
+
+<!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
+
+## Form
+
+{: .hint}
+> See also: [Form Component Type](component_types/type_form/)
+
+## List
+
+{: .hint}
+> See also: [List Component Type](component_types/type_list/)
+
+## Input
+
+{: .hint}
+> See also: [Input Component Type](component_types/type_input/)
+
+## Select
+
+{: .hint}
+> See also: [Select Component Type](component_types/type_select/)
+
+## Singleton
+
+{: .hint}
+> See also: [Singleton Component Type](component_types/type_singleton/)
+
+## Action
+
+{: .hint}
+> See also: [Action Component Type](component_types/type_action/)
+

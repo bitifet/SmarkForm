@@ -1,0 +1,116 @@
+title: Just the Docs Template
+description: A starter template for a Jeykll site using the Just the Docs theme!
+theme: just-the-docs
+
+#url: https://just-the-docs.github.io
+url: ""
+logo: "/assets/SmarkForm_logo.png"
+favicon_ico: "/assets/SmarkForm_favicon.png"
+
+collections:
+  about:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 1
+  getting_started:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 2
+  component_types:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 3
+  data_import_and_export:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 4
+  the_api_interface:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 5
+  events:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 6
+  examples:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 7
+
+just_the_docs:
+  collections:
+    about:
+      name: About SmarkForm
+      nav_fold: true
+    getting_started:
+      name: Getting Started
+      nav_fold: true
+    component_types:
+      name: Component Types
+      nav_fold: true
+    data_import_and_export:
+      name: Importing and Exporting data
+      nav_fold: true
+    the_api_interface:
+      name: The API Interface
+      nav_fold: true
+    events:
+      name: Event Handling
+      nav_fold: true
+    examples:
+      name: Examples
+      nav_fold: true
+
+
+callouts:
+  caution:
+    title: "‼️  CAUTION"
+    color: red
+  warning:
+    title: "⚠️  WARNING"
+    color: yellow
+  info:
+    title: "ℹ️  INFO"
+    color: green
+  hint:
+    title: "💡 HINT"
+    color: blue
+
+search:
+  heading_level: 3
+  previews: 3
+  preview_words_before: 5
+  preview_words_after: 10
+  tokenizer_separator: /[\s\/]+/
+  re_url: true
+  button: false
+
+
+enable_copy_code_button: true
+
+# mermaid:
+#   version: "9.1.3"
+# https://just-the-docs.github.io/just-the-docs/docs/ui-components/code/#mermaid-diagram-code-blocks
+# https://mermaid.js.org/config/configuration.html
+
+aux_links:
+  Home: /
+  Getting Started: /getting_started/getting_started
+  Examples: /examples/examples
+aux_links_new_tab: false
+
+nav_external_links:
+
+  - title: NPM
+    url: https://www.npmjs.com/package/smarkform 
+    hide_icon: false
+  - title: GitHub
+    url: https://github.com/bitifet/SmarkForm
+    hide_icon: false
+  - title: CodePen
+    url: https://codepen.io/collection/YyvbPz
+    hide_icon: false
+
+
+
+heading_anchors: true
