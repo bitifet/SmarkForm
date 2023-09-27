@@ -94,9 +94,9 @@ enable_copy_code_button: true
 # https://mermaid.js.org/config/configuration.html
 
 aux_links:
-  Home: SmarkForm/
-  Quick Start: SmarkFormm/getting_started/quick_start
-  Examples: SmarkForm/examples/examples
+  Home: /SmarkForm/
+  Quick Start: /SmarkFormm/getting_started/quick_start
+  Examples: /SmarkForm/examples/examples
 aux_links_new_tab: false
 
 nav_external_links:
