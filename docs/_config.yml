@@ -95,7 +95,7 @@ enable_copy_code_button: true
 
 aux_links:
   Home: /SmarkForm/
-  Quick Start: /SmarkFormm/getting_started/quick_start
+  Quick Start: /SmarkForm/getting_started/quick_start
   Examples: /SmarkForm/examples/examples
 aux_links_new_tab: false
 
