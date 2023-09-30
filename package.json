@@ -9,6 +9,7 @@
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "dev": "rollup -c -w",
+    "doc": "cd docs && bundle exec jekyll serve --livereload",
     "test": "mocha",
     "pretest": "npm run build",
     "start": "node ./playground/bin/www.js"

@@ -1,7 +1,8 @@
 ---
 title: Examples
 layout: default
-permalink: /examples/examples
+permalink: /resources/examples
+nav_order: 3
 
 ---
 
@@ -16,6 +17,7 @@ permalink: /examples/examples
 <!-- vim-markdown-toc GitLab -->
 
 * [Code Snippets and Samples](#code-snippets-and-samples)
+* [CodePen](#codepen)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -25,8 +27,12 @@ permalink: /examples/examples
 
 ## Code Snippets and Samples
 
-You can see **SmarkForm** in action in this complete CodePen example and even
-fork and play with all SmarkForm features: 
+<iframe style="width:100%; height:50vh" src="{{ site.root }}/examples"></iframe>
+
+## CodePen
+
+You can also see **SmarkForm** in action in this complete CodePen example and
+even fork and play with all SmarkForm features: 
 
 <p class="codepen" data-height="300" data-theme-id="light" data-default-tab="html,result" data-slug-hash="LYgvobZ" data-editable="true" data-user="bitifet" style="height: 300px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; border: 2px solid; margin: 1em 0; padding: 1em;">
   <span>See the Pen <a href="https://codepen.io/bitifet/pen/LYgvobZ">
