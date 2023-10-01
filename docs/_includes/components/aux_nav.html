@@ -1,0 +1,25 @@
+<style>
+    .site-button.active {
+        font-weight: bold;
+    }
+</style>
+{% assign current_url = page.url | relative_url %}
+<nav aria-label="Auxiliary" class="aux-nav">
+  <ul class="aux-nav-list">
+    {% for link in site.aux_links %}
+      <li class="aux-nav-list-item">
+        {% assign item_url = link.last | relative_url %}
+        <a 
+          
+          href="{{ item_url }}"
+          class="site-button {% if item_url == current_url %} active{% endif %}"
+          {% if site.aux_links_new_tab %}
+          target="_blank" rel="noopener noreferrer"
+          {% endif %}
+        >
+          {{ link.first }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</nav>
