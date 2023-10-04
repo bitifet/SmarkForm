@@ -1,46 +1,44 @@
+---
+title: TO-DO List
+layout: default
+permalink: /roadmap/TODO
+nav_order: 1
 
-TO-DO List
-==========
+---
 
-<!-- Table of Contents {{{ -->
+# TO-DO List
 
-<table align="right"><tr><td>
-<details open>
+<details>
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>
 
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 * [UX Improvements](#ux-improvements)
     * [👉 Keyboard Shortcuts](#-keyboard-shortcuts)
 * [Pending core features](#pending-core-features)
     * [👉 The API interface](#-the-api-interface)
-    * [👉 "src" property for import action](#-src-property-for-import-action)
+    * [👉 *src* property for import action](#-src-property-for-import-action)
 * [Pending core components](#pending-core-components)
-    * [👉 The "select" component](#-the-select-component)
+    * [👉 The «select» component](#-the-select-component)
 * [Other possible features](#other-possible-features)
     * [💡 Implement Focus subsystem. Let's say:](#-implement-focus-subsystem-lets-say)
 * [New non-core components](#new-non-core-components)
     * [💡 Implement UNDO component.](#-implement-undo-component)
     * [💡 Implement Table Of Contents component.](#-implement-table-of-contents-component)
-    * [💡 Implement a "multiform" component type.](#-implement-a-multiform-component-type)
+    * [💡 Implement a «multiform» component type.](#-implement-a-multiform-component-type)
 * [Spare Ideas](#spare-ideas)
     * [Implement download action](#implement-download-action)
-* [Documentation and advertising](#documentation-and-advertising)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
 
 </details>
-</td></tr></table>
-
-<!-- }}} -->
 
 
-  👉 Complete documentation.
-
-UX Improvements
----------------
+## UX Improvements
 
 ### 👉 Keyboard Shortcuts
   - Allow component types to capture keyboard events to trigger actions.
@@ -50,15 +48,16 @@ UX Improvements
     removeItem action with that item as target).
 
 
-Pending core features
----------------------
+## Pending core features
+
 
 ### 👉 The API interface
 
-...
+Bla bla bla...
 
 
-### 👉 "src" property for import action
+
+### 👉 *src* property for import action
 
 Taking advantadge of the API interface it will not only allow for loading data
 from static source:
@@ -67,16 +66,16 @@ The API interface will allow to use other fields values as arguments for the
 API request to perform everty time the action is triggered.
 
 
-Pending core components
------------------------
+## Pending core components
 
-### 👉 The "select" component
+
+### 👉 The «select» component
 
 ...
 
 
-Other possible features
------------------------
+## Other possible features
+
 
 ### 💡 Implement Focus subsystem. Let's say:
   - AddItem send focus to added Item.
@@ -84,8 +83,7 @@ Other possible features
     input for forms, etc...)
 
 
-New non-core components
------------------------
+## New non-core components
 
 The following are ideas for possible future components (not necessarily and in
 most cases they won't be core components but just plugable components in their
@@ -109,7 +107,7 @@ own repository.
   - Implement a "return to TOC" actions.
   - Stop scanning on compoenents containing a self-targetted TOC.
 
-### 💡 Implement a "multiform" component type.
+### 💡 Implement a «multiform» component type.
   - Multiple subform templates (every direct child) internally stored (like
     in lists...).
   - Only one actually inserted in DOM (interchangeably).
@@ -126,38 +124,34 @@ own repository.
 
 
 
-Spare Ideas
------------
+## Spare Ideas
+
+Spare (not yet mature) random ideas...
 
 ### Implement download action
 
   * Implement in lib/component.js.
   * Rely on (each type)'s export action.
   * Allow to specify file name (maybe even prompt...)
+  * Downloads (exported) json by default
+  * ...but allow for transformation filters to generate other kinds of data
+    from json input.
 
 
-**Sample code:**
+**Sample code for download fuctionality:**
 
 ```javascript
-function descarregarText(text, nomFitxer) {
-    var elementA = document.createElement('a');
-    elementA.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    elementA.setAttribute('download', nomFitxer);
-    elementA.style.display = 'none';
-    document.body.appendChild(elementA);
-    elementA.click();
-    document.body.removeChild(elementA);
+function download(fileName, payload, ctype = "text/plain", charset="utf-8") {
+    var dldAnchor = document.createElement('a');
+    dldAnchor.setAttribute('href', `data:${ctype};charset=${charset},${encodeURIComponent(payload)}`);
+    dldAnchor.setAttribute('download', fileName);
+    dldAnchor.style.display = 'none';
+    document.body.appendChild(dldAnchor);
+    dldAnchor.click();
+    document.body.removeChild(dldAnchor);
 }
 
-// Exemple d'ús
-var text = "Aquest és el contingut del fitxer.";
-var nomFitxer = "fitxer.txt";
-descarregarText(text, nomFitxer);
+// Usage example
+download(myFile.json, {foo: "bar"});
 ```
-
-Documentation and advertising
------------------------------
-
-  * Build examples with daisyUI:
-    - https://daisyui.com/
 

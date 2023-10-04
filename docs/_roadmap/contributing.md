@@ -1,7 +1,7 @@
 ---
 title: Contributing
 layout: default
-permalink: /about/contributing
+permalink: /roadmap/contributing
 nav_order: 2
 
 ---

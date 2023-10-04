@@ -37,6 +37,10 @@ collections:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 7
+  roadmap:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 8
 
 just_the_docs:
   collections:
@@ -60,6 +64,9 @@ just_the_docs:
       nav_fold: true
     resources:
       name: Resources
+      nav_fold: false
+    roadmap:
+      name: Roadmap
       nav_fold: true
 
 
