@@ -1,12 +1,12 @@
 ---
-title: «singleton» Component Type
+title: History
 layout: default
-permalink: /component_types/type_singleton
+permalink: /about/history
+nav_order: 2
 
 ---
 
-*singleton* Component Type
-==========================
+## History
 
 <details>
 <summary>
@@ -21,4 +21,4 @@ permalink: /component_types/type_singleton
 
 </details>
 
-🚧 Work in progress...
+🚧 Work in Progress...

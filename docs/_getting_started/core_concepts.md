@@ -137,7 +137,7 @@ components types while others are tied to secific types like `addItem` an d
 actions on another compoenent which we refer to it as its "context".
 
 Any SmarkForm component whith an *action* property is an [Action
-Component](type_action.md) and for the sake of simplicity, its *type* property
+Component]({{ "component_types/type_action" | relative_url }}) and for the sake of simplicity, its *type* property
 can be ommitted but it cannot take a different value than "action".
 
 **Example:**
@@ -147,7 +147,7 @@ can be ommitted but it cannot take a different value than "action".
 ```
 
 {: .hint }
-> 📖 For detailed information see [Action Type Documentation](type_action.md).
+> 📖 For detailed information see [Action Type Documentation]({{ "component_types/type_action" | relative_url }}).
 
 
 

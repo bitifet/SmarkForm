@@ -32,30 +32,30 @@ nav_order: 5
 ## Form
 
 {: .hint}
-> See also: [Form Component Type](component_types/type_form/)
+> See also: [Form Component Type]({{ "component_types/type_form" | relative_url }})
 
 ## List
 
 {: .hint}
-> See also: [List Component Type](component_types/type_list/)
+> See also: [List Component Type]({{ "component_types/type_list" | relative_url }})
 
 ## Input
 
 {: .hint}
-> See also: [Input Component Type](component_types/type_input/)
+> See also: [Input Component Type]({{ "component_types/type_input" | relative_url }})
 
 ## Select
 
 {: .hint}
-> See also: [Select Component Type](component_types/type_select/)
+> See also: [Select Component Type]({{ "component_types/type_select" | relative_url }})
 
 ## Singleton
 
 {: .hint}
-> See also: [Singleton Component Type](component_types/type_singleton/)
+> See also: [Singleton Component Type]({{ "component_types/type_singleton" | relative_url }})
 
 ## Action
 
 {: .hint}
-> See also: [Action Component Type](component_types/type_action/)
+> See also: [Action Component Type]({{ "component_types/type_action" | relative_url }})
 

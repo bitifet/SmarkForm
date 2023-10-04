@@ -17,7 +17,7 @@ nav_order: 1
 <!-- vim-markdown-toc GitLab -->
 
 * [SmarkForm](#smarkform)
-    * [Version {{ site.data.package.version }}](#version-sitedatapackageversion-)
+    * [Latest version](#latest-version)
 * [Other Resources](#other-resources)
     * [CSS](#css)
 
@@ -26,10 +26,9 @@ nav_order: 1
 
 </details>
 
-
 ## SmarkForm
 
-### Version {{ site.data.package.version }}
+### Latest version
 
   * ESM: <a href="../dist/SmarkForm.esm.js" download="SmarkForm-{{ site.data.package.version }}.esm.js">SmarkForm-{{ site.data.package.version }}.esm.js</a>
   * UMD: <a href="../dist/SmarkForm.umd.js" download="SmarkForm-{{ site.data.package.version }}.umd.js">SmarkForm-{{ site.data.package.version }}.umd.js</a>
@@ -40,6 +39,6 @@ nav_order: 1
 
 ### CSS
 
-...
+🚧 Work in progress...
 
 

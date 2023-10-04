@@ -36,15 +36,6 @@ Actions
 Every component type may have its own special methods called *actions* to
 interact with it.
 
-<!-- vim-markdown-toc GitLab -->
-
-    * [Interactions](#interactions)
-    * [Origin](#origin)
-    * [Context](#context)
-    * [Target](#target)
-* [Action Components](#action-components)
-
-<!-- vim-markdown-toc -->
 For example, *list* components are provided with *addItem* and *removeItem*
 actions to add or remove items from the list.
 
@@ -117,7 +108,9 @@ relative or absolute path.
 
 For example, in the *removeItem* action of *list* components, the *target* is
 the item of the list that is going to be removed.
+
 **Example:**
+
 ```html
 <button data-smark='{"action":"addItem","for":"myList"}'></button>
 <ul data-smark="{}">
@@ -126,6 +119,7 @@ the item of the list that is going to be removed.
     <button data-smark='{"action":"removeItem"}'>
   </li>
 </ul>
+```
 
 
 

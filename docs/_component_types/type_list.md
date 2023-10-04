@@ -68,8 +68,8 @@ To use the List component, follow these steps:
        </li>
      </ul>
      <p>
-       <button data-smark="{"action":"empty"}">❌ Clear</button>
-       <button data-smark="{"action":"export"}">💾 Submit</button>
+       <button data-smark='{"action":"empty"}'>❌ Clear</button>
+       <button data-smark='{"action":"export"}'>💾 Submit</button>
      </p>
    </div>
    ```

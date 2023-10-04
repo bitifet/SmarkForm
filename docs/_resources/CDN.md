@@ -20,7 +20,7 @@ nav_order: 2
 <!-- vim-markdown-toc GitLab -->
 
 * [SmarkForm](#smarkform)
-    * [Version {{ site.data.package.version }}](#version-sitedatapackageversion-)
+    * [Latest Version](#latest-version)
 * [Other Resources](#other-resources)
     * [CSS](#css)
 
@@ -32,10 +32,10 @@ nav_order: 2
 
 ## SmarkForm
 
-### Version {{ site.data.package.version }}
+### Latest Version
 
-  * ESM: [{{ esm_link }}]({{ esm_link }})
-  * UMD: [{{ umd_link }}]({{ umd_link }})
+  * ESM: `{{ esm_link }}`
+  * UMD: `{{ umd_link }}`
 
 {: .hint}
 > See [Getting Started section]({{ site.root }}/getting_started/getting_smarkform) for more details:
