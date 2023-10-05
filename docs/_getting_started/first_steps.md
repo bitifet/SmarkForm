@@ -73,7 +73,7 @@ To create a SmarkForm form, you need to follow a few simple steps:
 > import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
 > ```
 > 
-> See `[Installation Instructions](../README.md#installation)` for more details.
+> See [Installation Instructions](../README.md#installation) for more details.
 
 
 3. Initialize SmarkForm on your form element. In your JavaScript file, create a

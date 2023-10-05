@@ -6,6 +6,8 @@ nav_order: 2
 
 ---
 
+{% include links.md %}
+
 # Getting SmarkForm
 
 <details>
@@ -19,6 +21,9 @@ nav_order: 2
 * [Using a CDN (Esiest approach)](#using-a-cdn-esiest-approach)
     * [ES module](#es-module)
     * [UMD Module](#umd-module)
+* [Download minified](#download-minified)
+* [Installing it from NPM](#installing-it-from-npm)
+* [Clone from GitHub](#clone-from-github)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -29,27 +34,31 @@ nav_order: 2
 To incorporate **SmarkForm** to your project you have several alternatives:
 
 
-### Using a CDN (Esiest approach)
+## Using a CDN (Esiest approach)
 
-#### ES module
+{: .hint}
+> This is the quicker method for playground and testing apps.
+
+
+### ES module
 
 👉 Import it as ES module:
 
 ```html
 <script type="module">
-  import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
+  import SmarkForm from '{{smarkform_esm_cdn_latest';
   
   // Use SmarkForm in your code
 </script>
 ```
 
 
-#### UMD Module
+### UMD Module
 
 👉 Include it your HTML file using a `<script>` tag:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js"></script>
+<script src="{{ smarkform_umd_cdn_latest }}"></script>
 <script>
     // Now it is avalable as SmarkForm global variable.
 </script>
@@ -58,13 +67,13 @@ To incorporate **SmarkForm** to your project you have several alternatives:
 👉 Import as CommonJS module:
 
 ```javascript
-const SmarkForm = require("smarkform");
+const SmarkForm = require("{{ smarkform_umd_cdn_latest }}");
 ```
 
 👉 Import as AMD (RequireJS) module:
 
 ```javascript
-require(['https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js'], function(SmarkForm) {
+require(['{{ smarkform_umd_cdn_latest }}'], function(SmarkForm) {
   // Now it is avalable as SmarkForm local variable.
 });
 ```
@@ -72,13 +81,68 @@ require(['https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js'], functi
 
 {: .warning}
 > 📌 These examples will use the latest published version of SmarkForm from
-> NPM. If you prefer to use a specific version, you can specify the version
-> number in the CDN URLs. For example, if you want to use version 0.1.0, the
-> CDN URLs would be:
->
-> - **ESM:** `https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.esm.js`
-> - **UMD:** `https://cdn.jsdelivr.net/npm/smarkform@0.1.0/dist/SmarkForm.umd.js`
->
-> Make sure to replace `0.1.0` with the desired version number in the URLs.
+> NPM (better for development / testing / training).
+> 
+> For production code is advised to rely on specific version CDN to keep it
+> working despite any future changes.
+> 
+> See [CDN Resources section](
+> {{ "/resources/CDN#specific-version" | relative_url }}) for more details...
+
+
+## Download minified
+
+Go to [Download section]({{ "/resources/download" | relative_url }}) to obtain a
+minified versionof Smarkform you can then serve toghether with your app.
+
+
+## Installing it from NPM
+
+👉 Execute:
+
+```sh
+npm install smarkform
+```
+
+👉  Then you can use it with your favourite bundler or pick it in your preferred
+format:
+
+```
+node_modules
+└── smarkform
+    └── dist
+        ├── SmarkForm.esm.js
+        └── SmarkForm.umd.js
+```
+
+> 📌 *SmarkForm.umd.js* can be loaded from regular ``<script>`` tag and will export
+> ``SmarkForm`` class as global variable.
+
+
+## Clone from GitHub
+
+
+
+👉 Execute:
+
+```sh
+git clone git@github.com:bitifet/SmarkForm.git
+```
+
+👉 Then, like with NPM package, you will find it under *dist* directory:
+
+```
+dist
+├── SmarkForm.esm.js
+└── SmarkForm.umd.js
+```
+
+{: .hint}
+> You can also install dev dependencies by running ``npm install`` and then
+> 
+> - ``npm run build``: To build after doing some change.
+> - ``npm run dev``: To build and watch for any source file change and auto rebuild as needed.
+> - ``npm run test``: To run automated tests.
+> - ``npm start``: To run Express server with the playground environment.
 
 

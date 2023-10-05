@@ -188,14 +188,6 @@ dist
 
 👍 ...but you can also install dev dependencies by running ``npm install`` and then
 
-
-    "build": "rollup -c",
-    "dev": "rollup -c -w",
-    "test": "mocha",
-    "pretest": "npm run build",
-    "start": "node ./playground/bin/www.js"
-
-
 - ``npm run build``: To build after doing some change.
 - ``npm run dev``: To build and watch for any source file change and auto rebuild as needed.
 - ``npm run test``: To run automated tests.
