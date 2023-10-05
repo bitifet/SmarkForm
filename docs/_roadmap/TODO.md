@@ -1,6 +1,6 @@
 ---
 title: TO-DO List
-layout: default
+layout: chapter
 permalink: /roadmap/TODO
 nav_order: 1
 

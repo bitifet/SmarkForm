@@ -1,6 +1,6 @@
 ---
 title: Core Component Types
-layout: default
+layout: chapter
 permalink: /getting_started/core_component_types
 nav_order: 5
 

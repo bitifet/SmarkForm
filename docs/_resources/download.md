@@ -1,6 +1,6 @@
 ---
 title: Download
-layout: default
+layout: chapter
 permalink: /resources/download
 nav_order: 1
 

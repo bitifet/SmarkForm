@@ -1,6 +1,6 @@
 ---
 title: Examples
-layout: default
+layout: chapter
 permalink: /resources/examples
 nav_order: 3
 

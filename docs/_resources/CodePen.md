@@ -1,6 +1,6 @@
 ---
 title: CodePen
-layout: default
+layout: chapter
 permalink: /resources/CodePen
 nav_order: 4
 

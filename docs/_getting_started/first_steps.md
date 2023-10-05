@@ -1,6 +1,6 @@
 ---
 title: First Steps
-layout: default
+layout: chapter
 permalink: /getting_started/first_steps
 nav_order: 3
 

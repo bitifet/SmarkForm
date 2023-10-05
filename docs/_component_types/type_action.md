@@ -1,6 +1,6 @@
 ---
 title: «action» Component Type
-layout: default
+layout: chapter
 permalink: /component_types/type_action
 
 ---

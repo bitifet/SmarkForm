@@ -1,6 +1,6 @@
 ---
 title: Getting SmarkForm
-layout: default
+layout: chapter
 permalink: /getting_started/getting_smarkform
 nav_order: 2
 

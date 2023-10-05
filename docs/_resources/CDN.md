@@ -1,6 +1,6 @@
 ---
 title: CDN
-layout: default
+layout: chapter
 permalink: /resources/CDN
 nav_order: 2
 

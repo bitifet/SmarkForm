@@ -1,6 +1,6 @@
 ---
 title: Core Concepts
-layout: default
+layout: chapter
 permalink: /getting_started/core_concepts
 nav_order: 4
 

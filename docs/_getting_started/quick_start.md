@@ -1,6 +1,6 @@
 ---
 title: Quick Start
-layout: default
+layout: chapter
 permalink: /getting_started/quick_start
 nav_order: 1
 

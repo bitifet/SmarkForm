@@ -1,6 +1,6 @@
 ---
 title: «singleton» Component Type
-layout: default
+layout: chapter
 permalink: /component_types/type_singleton
 
 ---

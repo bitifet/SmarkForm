@@ -1,6 +1,6 @@
 ---
 title: About SmarkForm
-layout: default
+layout: chapter
 permalink: /about/about_smarkform
 nav_order: 1
 

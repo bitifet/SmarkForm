@@ -1,6 +1,6 @@
 ---
 title: History
-layout: default
+layout: chapter
 permalink: /about/history
 nav_order: 2
 

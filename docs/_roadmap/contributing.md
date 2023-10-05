@@ -1,6 +1,6 @@
 ---
 title: Contributing
-layout: default
+layout: chapter
 permalink: /roadmap/contributing
 nav_order: 2
 
