@@ -12,7 +12,7 @@ layout: default
 <td style="text-align: left">
 
 {{% if page.next.url %}}
-<a href="{{ page.next.url }}">⏪ {{ page.next.title }}</a>
+<a href="{{ page.next.url | relative_url }}">⏪ {{ page.next.title }}</a>
 {{% endif %}}
 
 </td><td style="text-align: center">
@@ -20,7 +20,7 @@ layout: default
 </td><td style="text-align: right">
 
 {{% if page.previous.url %}}
-<a href="{{ page.previous.url }}">{{ page.previous.title }} ⏩</a>
+<a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }} ⏩</a>
 {{% endif %}}
 
 </td></tr>
