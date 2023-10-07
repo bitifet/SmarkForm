@@ -46,7 +46,7 @@ To incorporate **SmarkForm** to your project you have several alternatives:
 
 ```html
 <script type="module">
-  import SmarkForm from '{{smarkform_esm_cdn_latest';
+  import SmarkForm from '{{ smarkform_esm_cdn_latest }}';
   
   // Use SmarkForm in your code
 </script>
