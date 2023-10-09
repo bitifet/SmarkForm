@@ -448,13 +448,44 @@ needs a lot of work...
 > 📌 ...And many more amazing ideas in the [TODO list](./TODO.md).
 
 
-
-
 ## Contributing
 
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
 Before contributing, make sure to read our [contribution guidelines](docs/contributing.md).
+
+
+## Documentation
+
+You can find official *SmarkForm* documentation at:
+
+  👉 [https://bitifet.github.io/smarkform](https://bitifet.github.io/smarkform)
+
+
+### Documentation Source:
+
+Documentation source can be found in [/docs](/docs) directory of this
+repository.
+
+It uses [Jekyll](https://jekyllrb.com/) and
+[just-the-docs](https://just-the-docs.github.io/just-the-docs/) Jekyll layout
+and it is automatically deployed by GitHub infrastructure anytime new revision
+is pushed..
+
+
+### Documentation Building:
+
+To build SmarkForm documentation localloy you first need to install follow this
+instructions:
+
+  * [Install Jekyll prerequisites](https://jekyllrb.com/docs/installation/)
+
+  * Execute `gem install jekyll bundler`.
+
+  * Run `npm run doc`.
+
+Then you will be able to see the documentation at `http://localhost:4000` or
+`http://<your-ip>:4000`.
 
 
 ## License
