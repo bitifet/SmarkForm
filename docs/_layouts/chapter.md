@@ -4,7 +4,6 @@ layout: default
 
 {{ content }}
 
-<!--
 
 <hr/>
 
@@ -28,4 +27,3 @@ layout: default
 </td></tr>
 </table>
 
--->
