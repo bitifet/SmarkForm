@@ -85,13 +85,25 @@ layout: default
     align-items: center;
     background: #eee;
     border-radius: .3em;
+    max-width: 45%;
 }
 .bottom-bar .nav-link:hover {
     transform: translate(.1em, .1em);
 }
 
-.bottom-bar .nav-link a>* {
-    padding: .5rem 2rem;
+.bottom-bar .nav-link:first-child .icon {
+    padding: .5rem .7rem .5rem 1.5rem;
+}
+.bottom-bar .nav-link:first-child .text {
+    padding: .5rem .5rem .5rem .7rem;
+    text-align: right;
+}
+.bottom-bar .nav-link:last-child .icon {
+    padding: .5rem 1.5rem .5rem .7rem;
+}
+.bottom-bar .nav-link:last-child .text {
+    padding: .5rem .7rem .5rem .5rem;
+    text-align: left;
 }
 
 .bottom-bar a
