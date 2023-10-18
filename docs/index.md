@@ -6,32 +6,74 @@ permalink: /
 
 ---
 
-**SmarkForm** is a powerful while effortless Markup-driven library that allows
-to create powerful and Extendable forms with just HTML markup and a few
-properties.
 
-You can see it in action in the following example (among others you can find in
-[CodePen](https://codepen.io/collection/YyvbPz)):
+<style>
+.SmarkForm-Hero {
+    float:right;
+    max-width: 30%;
+    margin: 1rem;
+    background: gainsboro;
+    padding: .5rem;
+    border-radius: 1rem;
+}
+.SmarkForm-Hero img {
+    border-radius: .5rem;
+}
+.SmarkForm-Hero a, a:hover, a:visited, a:active {
+    text-decoration: none;
+    color: darkblue;
+}
+.SmarkForm-Hero:hover {
+    transform: scale(2,2) translate(-25%, 25%);
+}
+</style>
 
-<iframe style="width:100%; height:50vh" src="https://codepen.io/bitifet/full/LYgvobZ"></iframe>
 
-SmarkForm empowers designers to enhance their form templates with
-advanced capabilities, such as dynamic list manipulation and context-based
-interactions, with no need to deal with complex JavaScript code.
+# SmarkForm
 
-{: .warning}
-> 
-> **🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧**
-> 
-> This documentation is still in **draft** stage.
-> 
-> {: .caution}
-> > All information may be incomplete, inaccurate, outdated or even
-> > **completely wrong**.
+<div class="SmarkForm-Hero">
+<a
+    href="{{ 'resources/examples' | relative_url }}"
+    title="Click to see Live Examples..."
 >
-> {: .info}
-> We welcome any feedback, suggestions, or improvements as we continue
-> to enhance and expand the functionality of SmarkForm.
+<img
+    src="assets/SmarkForm_hero.png"
+    alt="SmarkForm Hero Image"
+><br />
+🔗 Live Examples
+</a>
+</div>
+
+
+## Powerful while effortless Markup-driven and Extendable forms.
+
+[![npm dependents](https://badgen.net/npm/dependents/smarkform)](https://www.npmjs.com/package/smarkform?activeTab=dependents)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+
+
+**SmarkForm** is a powerful library for creating markup-driven and extendable
+forms in web applications.
+
+SmarkForm empowers designers to enhance their form templates with advanced
+capabilities, such as dynamic list manipulation and context-based interactions,
+with no need to deal with complex JavaScript code. \[[More...]({{
+    "about/about_smarkform" | relative_url }})\]
+
+
+{: .hint}
+>  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url
+>  }}) to see what SmarkForm is capable of in a glance!!
+
+
+## Getting Started
+
+To get started with SmarkForm you can:
+
+  * Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" |
+    relative_url }}) to rapidly dive in.
+
+  * ...or just try and modify any of the
+    [🔗 Available CodePen Examples]({{ "resources/CodePen" | relative_url }}).
 
 
 ## Features
@@ -83,7 +125,36 @@ interactions, with no need to deal with complex JavaScript code.
 </details>
 
 
-## Try it yourself!!
+## Current Status
 
-See the [Examples Section](/examples/examples/) for CodePen examples and
-other resources...
+SmarkForm implementation is stable and fully functional (or, at least, it
+passes defined tests).
+
+
+But it still lacks one of its planed core features (the API Interface and the
+`<select>` component type.
+
+
+{: .warning }
+> Even this documentation is not yet finished and may be incomplete, inaccurate
+> or outdated in many of its sections.
+
+> **🚧  ＷＯＲＫ  ＩＳ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧**
+
+
+## License
+
+  [MIT](LICENSE)
+
+
+## Contributing
+
+We welcome any feedback, suggestions, or improvements as we continue to enhance
+and expand the functionality of SmarkForm.
+
+
+{: .info}
+>   * See the [🔗 Contributing Section]({{ "roadmap/contributing" |
+>     relative_url }}) for more details...
+
+

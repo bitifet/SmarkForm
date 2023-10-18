@@ -72,7 +72,7 @@ just_the_docs:
       nav_fold: true
     resources:
       name: Resources
-      nav_fold: false
+      nav_fold: true
     roadmap:
       name: Roadmap
       nav_fold: true
@@ -110,9 +110,9 @@ enable_copy_code_button: true
 # https://mermaid.js.org/config/configuration.html
 
 aux_links:
-  Home: /
-  Quick Start: /getting_started/quick_start
-  Examples: /resources/examples
+  "🏠 Home": /
+  "⚡ Quick Start": /getting_started/quick_start
+  "🔍 Examples": /resources/examples
 aux_links_new_tab: false
 
 nav_external_links:

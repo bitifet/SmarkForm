@@ -2,7 +2,7 @@
 title: Contributing
 layout: chapter
 permalink: /roadmap/contributing
-nav_order: 2
+nav_order: 3
 
 ---
 

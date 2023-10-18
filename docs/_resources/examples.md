@@ -12,10 +12,10 @@ nav_order: 3
 .ex-viewer .button{
   display: inline-block;
   padding: 10px 20px; /* Ajusta el espaciado según tus necesidades */
-  background-color: #007BFF; /* Color de fondo del botón */
-  color: #fff; /* Color del texto */
+  background-color: #eeeeee; /* Color de fondo del botón */
+  color: #444; /* Color del texto */
   text-decoration: none; /* Elimina el subrayado del enlace */
-  border: 2px solid #007BFF; /* Borde del botón */
+  border: 2px solid #edeff6; /* Borde del botón */
   border-radius: 5px; /* Bordes redondeados */
   cursor: pointer; /* Cambia el cursor al pasar el mouse */
   font-weight: bold; /* Texto en negrita */
@@ -24,8 +24,9 @@ nav_order: 3
 }
 
 .ex-viewer .button:hover {
-  background-color: #0056b3; /* Cambio de color de fondo en hover */
-  color: #fff; /* Cambio de color del texto en hover */
+  background-color: #edeff6; /* Cambio de color de fondo en hover */
+  border: 2px solid #cccccc; /* Borde del botón */
+  color: #000; /* Cambio de color del texto en hover */
 }
 </style>
 
