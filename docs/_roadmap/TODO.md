@@ -25,6 +25,7 @@ nav_order: 3
     * [👉 The «select» component](#-the-select-component)
 * [Other possible features](#other-possible-features)
     * [💡 Implement Focus subsystem. Let's say:](#-implement-focus-subsystem-lets-say)
+    * [💡 Recursive lists](#-recursive-lists)
 * [New non-core components](#new-non-core-components)
     * [💡 Implement UNDO component.](#-implement-undo-component)
     * [💡 Implement Table Of Contents component.](#-implement-table-of-contents-component)
@@ -82,6 +83,11 @@ API request to perform everty time the action is triggered.
   - This item (type) in turn, may re-send it to inner parts (i.e.: first
     input for forms, etc...)
 
+### 💡 Recursive lists
+  - recursive = (path) (Must be parent)
+  - min_items = 0 (forcibly)
+  - max_recursion = (optional) Self item will be removed from template when
+    reached.
 
 ## New non-core components
 
