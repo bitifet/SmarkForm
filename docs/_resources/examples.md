@@ -32,24 +32,27 @@ nav_order: 3
 
 
 
+<div style="text-align: center">
+<b>Select:</b>&nbsp;
+<select class="button" id="iframe_example_switcher">
+{% for item in site.data.examples %}
+    <option
+        value="{{ item.url | relative_url }}"
+        title="{{ item.details }}"
+    >{{ item.title }}</option>
+{% endfor %}
+</select>
+</div>
 <table class="ex-viewer">
 <tr>
-<th>
-Select:
-    <select class="button" id="iframe_example_switcher">
-    {% for item in site.data.examples %}
-        <option
-            value="{{ item.url | relative_url }}"
-            title="{{ item.details }}"
-        >{{ item.title }}</option>
-    {% endfor %}
-    </select>
-</th>
 <th>
     <a class="button" id="iframe_fullscreen_link" target=_blank href="">🖥️ View FullScreen</a>
 </th>
 <th>
-    <a class="button" href="#source-code">⬇️  Source Code</a>
+    <a id="dld_button" class="button" href="" download>💾 Download</a>
+</th>
+<th>
+    <a class="button" href="#source-code">⬇️  See Source Code</a>
 </th>
 </tr>
 <tr>
@@ -76,10 +79,12 @@ Select:
     const selector = document.getElementById("iframe_example_switcher");
     const iframe = document.getElementById("iframe_example_viewer");
     const fullScreenLnk = document.getElementById("iframe_fullscreen_link");
+    const dldLnk = document.getElementById("dld_button");
     const sources = document.getElementsByClassName("example-source");
     function updateIframe() {
         iframe.src = selector.value;
         fullScreenLnk.href = selector.value;
+        dldLnk.href = selector.value;
         for (let i = 0; i < sources.length; i++) {
             if (sources[i].getAttribute("data-source") == selector.value) {
                 sources[i].style.display="block";

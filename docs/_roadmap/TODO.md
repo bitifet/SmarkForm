@@ -2,11 +2,11 @@
 title: TO-DO List
 layout: chapter
 permalink: /roadmap/TODO
-nav_order: 2
+nav_order: 3
 
 ---
 
-# TO-DO List
+# {{ page.title }}
 
 <details>
 <summary>

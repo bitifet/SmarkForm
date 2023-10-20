@@ -64,18 +64,6 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 >  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url
 >  }}) to see what SmarkForm is capable of in a glance!!
 
-
-## Getting Started
-
-To get started with SmarkForm you can:
-
-  * Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" |
-    relative_url }}) to rapidly dive in.
-
-  * ...or just try and modify any of the
-    [🔗 Available CodePen Examples]({{ "resources/CodePen" | relative_url }}).
-
-
 ## Features
 
 <details>
@@ -127,24 +115,25 @@ To get started with SmarkForm you can:
 
 ## Current Status
 
-SmarkForm implementation is stable and fully functional (or, at least, it
-passes defined tests).
+SmarkForm implementation is stable and fully functional, but not all initially
+planned requirements are yet implemented. Hence, it's not yet in the 1.0.0
+version. \[[🔗 More...]({{ "roadmap/status" | relative_url }})\]
 
 
-But it still lacks one of its planed core features (the API Interface and the
-`<select>` component type.
+## Where to Go Next?
+
+To get started with SmarkForm you can:
 
 
-{: .warning }
-> Even this documentation is not yet finished and may be incomplete, inaccurate
-> or outdated in many of its sections.
+| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
+| 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
+| 👉 ...or just try and modify any of the [🔗 Available CodePen Examples]({{ "resources/CodePen" | relative_url }}). |
 
-> **🚧  ＷＯＲＫ  ＩＳ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧**
 
 
 ## License
 
-  [MIT](LICENSE)
+[🔗 MIT]({{ "community/license" | relative_url }})
 
 
 ## Contributing
@@ -154,7 +143,7 @@ and expand the functionality of SmarkForm.
 
 
 {: .info}
->   * See the [🔗 Contributing Section]({{ "roadmap/contributing" |
+>   * See the [🔗 Contributing Section]({{ "community/contributing" |
 >     relative_url }}) for more details...
 
 
