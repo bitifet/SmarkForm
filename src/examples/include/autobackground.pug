@@ -4,11 +4,5 @@ block background_switcher
         document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
         document.addEventListener("DOMContentLoaded", function() {
             const backgroundAnchor = document.getElementById("background-anchor");
-            if (backgroundAnchor) {
-                backgroundAnchor.textContent = bgImg;
-                backgroundAnchor.href = bgImg;
-                backgroundAnchor.parentNode.classList.remove("hidden");
-                console.log(backgroundAnchor, bgImg);
-            }
-
+            if (backgroundAnchor) backgroundAnchor.href = bgImg;
         });

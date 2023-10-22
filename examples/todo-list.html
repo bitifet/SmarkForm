@@ -11,13 +11,7 @@
       document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
       document.addEventListener("DOMContentLoaded", function() {
           const backgroundAnchor = document.getElementById("background-anchor");
-          if (backgroundAnchor) {
-              backgroundAnchor.textContent = bgImg;
-              backgroundAnchor.href = bgImg;
-              backgroundAnchor.parentNode.classList.remove("hidden");
-              console.log(backgroundAnchor, bgImg);
-          }
-      
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
       });
     </script>
     <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/dist/SmarkForm.umd.js'></script>
@@ -97,14 +91,60 @@
     <div class='main-container'>
       <div class='smarkForm' id='main-form'>
         <header>
-          <h1>SmarkForm TODO-List Example</h1><small>
-            <p>
-              This example demonstrates how to create a simple form
-              layout that can almost responsively expand and stack
-              depending on the width of the page.
-            </p>
-            <p><span>Background image courtesy of </span><a href='https://picsum.photos/' target='_blank'>https://picsum.photos/</a></p>
-            <p class='hidden'><b>Url:</b><a id='background-anchor' href=''></a></p></small>
+          <h1>SmarkForm TODO-List Example</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: .5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://bitifet.github.io/SmarkForm/'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example shows how to create a complete TO-DO list interface
+    with just a few HTML lines.
+</p>
+            <ul>
+              <li>
+                Complete documentation and
+                <a href='https://bitifet.github.io/SmarkForm/resources/examples'>more examples</a>
+                at
+                <a href='https://bitifet.github.io/SmarkForm'>https://bitifet.github.io/SmarkForm</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm.</a>
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://bitifet.github.io/SmarkForm</a>
+              </li>
+              <li><a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
         </header>
         <section>
           <div class='form-group h1 nowrap'>
