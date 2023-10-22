@@ -29,7 +29,7 @@ version.
 It still lacks two of its planned key features:
 
   * The API Interface.
-  * The [:link: `<select>` component type]({{ /component_types/type_select |
+  * The [:link: `<select>` component type]({{ "/component_types/type_select" |
     relative_url }}).
 
 {: .warning }

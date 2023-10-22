@@ -33,7 +33,7 @@ permalink: /
 
 <div class="SmarkForm-Hero">
 <a
-    href="{{ 'resources/examples' | relative_url }}"
+    href='{{ "resources/examples" | relative_url }}'
     title="Click to see Live Examples..."
 >
 <img
@@ -61,8 +61,8 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 
 
 {: .hint}
->  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url
->  }}) to see what SmarkForm is capable of in a glance!!
+>  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
+> to see what SmarkForm is capable of in a glance!!
 
 ## Features
 
@@ -143,7 +143,7 @@ and expand the functionality of SmarkForm.
 
 
 {: .info}
->   * See the [🔗 Contributing Section]({{ "community/contributing" |
->     relative_url }}) for more details...
+>   * See the [🔗 Contributing Section]({{ "community/contributing" | relative_url }})
+>     for more details...
 
 
