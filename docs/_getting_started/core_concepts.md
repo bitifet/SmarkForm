@@ -16,7 +16,13 @@ nav_order: 4
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
+* [Forms, Lists and Fields](#forms-lists-and-fields)
 * [The `data-smark` Attribute](#the-data-smark-attribute)
+    * [Syntax](#syntax)
+    * [Shorthand Syntaxes](#shorthand-syntaxes)
+        * [String Value](#string-value)
+        * [No value at all](#no-value-at-all)
+* [Mandatory properties](#mandatory-properties)
 * [Components and Actions](#components-and-actions)
     * [Components](#components)
     * [Actions](#actions)
@@ -29,40 +35,146 @@ nav_order: 4
 </details>
 
 
+## Forms, Lists and Fields
+
+When we initialize a *SmarkForm* instance over some DOM element, it is enhanced
+as **a *SmarkForm* form** component which is returned as our *root form*.
+
+```javascript
+const myForm = new SmarkForm(some_DOM_element); // Or myRootForm
+```
+
+👉 Then, every inner DOM element with a *data-smark* attribute, will be enhanced
+as another SmarkForm component.
+
+👉 **Every *SmarkForm* component (except *actions*) is a form field** from and
+to which **we can import and export values**.
+
+👉 So our *root form* is also a *field* (of type "form") from and to which we
+can import and export *values* (JSON objects).
+
+👉 This mean **we can nest forms** inside other forms as regular fields
+(holding JSON objects) with no depth limit.
+
+👉 In case we need arrays, the *list* type come to rescue: Likewise forms hold
+JSON objects, lists hold JSON arrays. So **we are able to define simple HTML
+forms that can import and export any imaginable JSON data**.
+
+👉 List's length can be constrained with "minItems" and "maxItems" properties
+and controlled through "addItem" and "removeItem" *action* components.
+
+
+{: .hint }
+>  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url
+>  }}) section to better understand these concepts.
+
+
 ## The `data-smark` Attribute
 
 The `data-smark` attribute is used in SmarkForm to identify and enhance
 specific DOM elements (HTML tags) as SmarkForm components. It also provides the
 required properties for their enhancement.
 
+{: .warning }
+> The terms *attribute* and *property* may lead to confussion.
+> 
+> In this whole manual, we will consistently use **the term *attribute* to refer
+> [HTML elemnts attributes](https://www.w3schools.com/html/html_attributes.asp)**
+> and **the term *property* to refer object properties** and, specially
+> SmarkForm components's properties defined in their *data-smark* attribute.
+
 By using the `data-smark` attribute, you can mark elements to be transformed
 into SmarkForm components, while the remaining elements are ignored by
 SmarkForm.
 
 {: .info }
-> 📌 The following are exceptions to this rule:
+> The following are **exceptions to this rule:**
 >
-> 1. The DOM element passed to the SmarkForm constructor is always considered a
->    SmarkForm component.
+> 1. The root element (the DOM element passed to the SmarkForm constructor to
+>    be enhanced as *SmarkForm*) is always considered a SmarkForm component.
 > 2. The item template of a list component, which is the only allowed direct
->    child in the HTML source before rendering, is always a SmarkForm component
->    by default. In this case, the `data-smark` attribute can be omitted.
+>    child in the HTML source before rendering, will always be rendered (per
+>    each list item) as a SmarkForm component by default.
+> 
+> 👉 **In both cases, the `data-smark` attribute can be omitted.**
 
-**Syntax:**
+**Example:**
 
-The `data-smark` attribute can be specified in three different ways:
+```html
+<div id="myForm">
+    <!-- Other form fields... -->
+    <ul data-smark='{"name": "myList", "type": "list", "maxItems": 5}'>
+        <li>
+            <!-- Template describing list Item's layout -->
+        </li>
+    </ul>
+    <!-- Other form fields... -->
+</div>
+<script>
+    const myForm = new SmarkForm(document.getElementById("myForm"));
+</script>
+```
 
-1. Without any value (e.g., `<textarea ... data-smark>`).
-   - In this case, the component type is inferred based on the actual tag. For
-   example, it is inferred as an *input* type for `<textarea>`.
+{: .hint }
+> In the previous example:
+>   * The outer `<div>` does not need the *data-smark* property since it is the
+>     DOM element we enhanced as a *SmarkForm* root form field.
+>   * The `<li>` element is the template that the  *list* component will render
+>     as SmarkForm component every time a new item is added to the list.
 
-2. With a string value (e.g., `<div ... data-smark="singleton">`).
-   - This is equivalent to `<div ... data-smark='{"type": "singleton"}'>`.
+### Syntax
 
-3. With a valid JSON string (e.g., `<div data-smark='{"type": "list", "name":
-   "myList"}'>`).
+The `data-smark` attribute should contain a valid JSON object with following
+attributes:
 
-**Mandatory properties:**
+  * `type` **(Mandatory):** Which specifies the component type.
+
+  * `name` **(Recommended):** Field name to identify the component in its form
+    level. Defaults to the value of the `name` attribute of actual HTML tag. If
+    none given, random generated valued will be used instead.
+
+  * *(other...)*: Depending on actual component type...
+
+
+{: .info }
+> 📌 There are also exceptions to this rule:
+>
+> 1. Any component with the `action` property is of "action" type and hence the
+>    *type* property can be omitted.
+> 
+> 2. *Action* components are not considered form fields and, therefore, they
+>    hav no *name* property.
+
+
+### Shorthand Syntaxes
+
+For the sake of brevity, the *data-smark* attribute can also be specified in
+the following alternative ways:
+
+#### String Value
+
+If only the type needs to be specified, it can be done as a regular string.
+
+**Example:**
+
+  * **Shorthand:** `<div data-smark="singleton">` 
+  * **Long Form:** `<div data-smark='{"type": "singleton"}'>`
+
+#### No value at all
+
+Since component type can be infered from actual tag name and attributes, and
+field name can be provided as regular property, the whole *data-smark*
+attribute value can be omitted if we are happy with this inference:
+
+**Example:**
+
+  * **Shorthand:** `<textarea ... data-smark>`
+  * **Long Form:** `<textarea data-smark='{}>`
+  * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}>`
+
+
+
+## Mandatory properties
 
 The following properties are (nearly) mandatory:
 
