@@ -45,7 +45,21 @@ const myForm = new SmarkForm(some_DOM_element); // Or myRootForm
 ```
 
 👉 Then, every inner DOM element with a *data-smark* attribute, will be enhanced
-as another SmarkForm component.
+as another SmarkForm component. No matter if it is a direct child or a
+descendant of any depth.
+
+```html
+<div id='myForm'> <!-- SmarkForm Component -->
+  <input name='userId' data-smark> <!-- SmarkForm Component -->
+  <ul>
+    <li><input name='name' data-smark> <!-- SmarkForm Component --> </li>
+    <li><input name='surname' data-smark> <!-- SmarkForm Component --> </li>
+  </ul>
+  <script>
+    const myForm = new SmarkForm(document.getElementById("myForm"));
+  </script>
+</div>
+```
 
 👉 **Every *SmarkForm* component (except *actions*) is a form field** from and
 to which **we can import and export values**.
@@ -53,12 +67,73 @@ to which **we can import and export values**.
 👉 So our *root form* is also a *field* (of type "form") from and to which we
 can import and export *values* (JSON objects).
 
-👉 This mean **we can nest forms** inside other forms as regular fields
+```javascript
+myForm.onRendered(function() {
+  this.export().then(console.log);
+  // { "userId": "", "name": "", "surname": "" }
+  this.import({name: "John"})
+    .then(()=>this.export())
+    .then(console.log)
+  ;
+  // { "userId": "", "name": "John", "surname": "" }
+});
+```
+
+{: .info }
+> Alternatively, you can enhance readability by providing the onRendered
+> callback through the options object and/or using an async function.
+> 
+> ```javascript
+> const myForm = new SmarkForm(document.getElementById("myForm"), {
+>     async onRendered() {
+>         console.log(await this.export());
+>         // { "userId": "", "name": "", "surname": "" }
+>         await this.import({name: "John"});
+>         console.log(await this.export());
+>         // { "userId": "", "name": "John", "surname": "" }
+>     },
+> });
+> ```
+
+👉 This also mean **we can nest forms** inside other forms as regular fields
 (holding JSON objects) with no depth limit.
 
-👉 In case we need arrays, the *list* type come to rescue: Likewise forms hold
-JSON objects, lists hold JSON arrays. So **we are able to define simple HTML
-forms that can import and export any imaginable JSON data**.
+```html
+<div id='myForm'> <!-- SmarkForm Component -->
+  <input name='userId' value='0001' data-smark> <!-- SmarkForm Component -->
+  <div data-smark='{"type":"form","name":"personal_data"}'> <!-- SmarkForm Component -->
+    <input name='name' value='John' data-smark> <!-- SmarkForm Component -->
+    <input name='surname' value='Doe' data-smark> <!-- SmarkForm Component -->
+  </div>
+  <script>
+    const myForm = new SmarkForm(document.getElementById("myForm"), {
+        async onRendered() {
+            console.log(await this.export());
+            // { "userId": "0001", "personal_data": { "name": "John", "surname": "Doe" } }
+        }
+    });
+  </script>
+</div>
+```
+
+👉 In case we need arrays, the *list* component type come to rescue: Likewise
+forms hold JSON objects, lists hold JSON arrays. So **we are able to define
+simple HTML forms that can import and export any imaginable JSON data**.
+
+<!--
+
+TODO:
+
+  * List examples:
+    - Pets (subform)
+    - Phones and/or emails (singleton)
+
+  * Addressability:
+    - Import and export given vectors.
+
+  * AutoId...
+
+-->
 
 👉 List's length can be constrained with "minItems" and "maxItems" properties
 and controlled through "addItem" and "removeItem" *action* components.
