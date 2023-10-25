@@ -137,14 +137,15 @@ export class SmarkComponent {
             me.onRenderedTasks = null;
             setRendered(true);
         })();
+        if (me.options.onRendered) me.onRendered(me.options.onRendered);
 
     };//}}}
     onRendered(cbk) {//{{{
         const me = this;
         if (me.onRenderedTasks) {
-            me.onRenderedTasks.push(cbk);
+            me.onRenderedTasks.push(cbk.bind(me));
         } else {
-            cbk();
+            cbk.bind(me)();
         };
     };//}}}
     getNodeOptions(node, defaultOptions) {//{{{
