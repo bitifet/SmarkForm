@@ -35,6 +35,16 @@ nav_order: 4
 </details>
 
 
+{: .warning }
+> The code examples in this section have been designed to provide a clearer
+> understanding of the concepts they illustrate.
+> 
+> In most real-world scenarios, these examples may not be the best choices.
+> 
+> For instance, we will seldom need to use onRendered callbacks, as all form
+> interactions will be handled through action components.
+
+
 ## Forms, Lists and Fields
 
 When we initialize a *SmarkForm* instance over some DOM element, it is enhanced
@@ -64,8 +74,8 @@ descendant of any depth.
 👉 **Every *SmarkForm* component (except *actions*) is a form field** from and
 to which **we can import and export values**.
 
-👉 So our *root form* is also a *field* (of type "form") from and to which we
-can import and export *values* (JSON objects).
+So our *root form* is also a *field* (of type "form") from and to which we can
+import and export *values* (JSON objects).
 
 ```javascript
 myForm.onRendered(function() {
@@ -99,11 +109,11 @@ myForm.onRendered(function() {
 (holding JSON objects) with no depth limit.
 
 ```html
-<div id='myForm'> <!-- SmarkForm Component -->
-  <input name='userId' value='0001' data-smark> <!-- SmarkForm Component -->
-  <div data-smark='{"type":"form","name":"personal_data"}'> <!-- SmarkForm Component -->
-    <input name='name' value='John' data-smark> <!-- SmarkForm Component -->
-    <input name='surname' value='Doe' data-smark> <!-- SmarkForm Component -->
+<div id='myForm'>
+  <input name='userId' value='0001' data-smark>
+  <div data-smark='{"type":"form","name":"personal_data"}'>
+    <input name='name' value='John' data-smark>
+    <input name='surname' value='Doe' data-smark>
   </div>
   <script>
     const myForm = new SmarkForm(document.getElementById("myForm"), {
@@ -117,8 +127,126 @@ myForm.onRendered(function() {
 ```
 
 👉 In case we need arrays, the *list* component type come to rescue: Likewise
-forms hold JSON objects, lists hold JSON arrays. So **we are able to define
-simple HTML forms that can import and export any imaginable JSON data**.
+forms hold JSON objects, **lists hold JSON arrays**. So we are able to define
+simple HTML forms that can import and export any imaginable JSON data.
+
+
+```html
+<div data-smark='{"type":"form","name":"personal_data"}'>
+  <input name='name' value='John' data-smark>
+  <input name='surname' value='Doe' data-smark>
+  <ul data-smark='{"type":"list","name":"pets"}'>
+    <li>
+      <input name='species' data-smark>
+      <input name='name' data-smark>
+    </li>
+  </ul>
+  <button data-smark='{"action":"addItem","for":"pets"}'>Add Pet</button>
+  <button data-smark='{"action":"removeItem","for":"pets"}'>Remove Pet</button>
+</div>
+```
+
+{: .info }
+> To enable users to control the array's length, the *list* component type
+> offers the "addItem" and "removeItem" *actions*.
+> 
+> 👉 *Actions* are functions provided by component types for interaction. They
+> can be triggered by components of the so-called "action" type, where the
+> component acts as their *context*.
+
+👉 *Action* components have a "natural context" which is the closest
+*SmarkForm* component conaining it (That is: *personal_data* subform in
+previous example) but its actual *context* is the closest component
+**implementing that action** unless overridden by the *for* property.
+
+The *for* property specifies the *relative path*, from its *natural context*
+to the actual context of the action component.
+
+👉 Besides the *context*, *action* components may also have a *target*
+consisting of an inner component to which the action is performed.
+
+The target can be specified using the *to* property, but it can also have a
+default value depending on the context's component type. In the case of *lists*,
+the default target is the list item that contains the *action* component (if it
+is contained within one) or the last item in the list otherwise. For example,
+when clicking the "Remove Pet" button in the previous example, the last pet in
+the list would be removed.
+
+In other words: We can move the *removeItem* action button inside list items
+allowing users to cherry-pick which item to remove:
+
+```html
+<ul data-smark='{"type":"list","name":"pets"}'>
+  <li>
+    <input name='species' data-smark>
+    <input name='name' data-smark>
+    <button data-smark='{"action":"removeItem"}'>❌</button>
+  </li>
+</ul>
+<button data-smark='{"action":"addItem","for":"pets"}'>➕</button>
+<!-- (Optionally we can keep both)
+<button data-smark='{"action":"removeItem","for":"pets"}'>➖</button>
+-->
+```
+
+👉 A special case for the "to" property is specifying it as "\*". In this case,
+the *action* button's target will be all items of the list.
+
+Which combined (or not) with the *keep_non_empty* property of *list* component
+type's actions, may lead to several interesting combinations:
+
+➡️  Remove last empty pet. If none is empty, remove last one:
+
+```html
+<button
+    data-smark='{
+        "action":"removeItem",
+        "for":"pets",
+        "keep_non_empty":true
+    }'
+>Remove Pet</button>
+```
+
+➡️  Remove all pets with no filled data:
+```html
+<button
+    data-smark='{
+        "action":"removeItem",
+        "for":"pets",
+        "to":"*",
+        "keep_non_empty":true
+    }'
+>Clear Empty Pets</button>
+```
+
+➡️  Remove all pets unconditionally:
+```html
+<button
+    data-smark='{
+        "action":"removeItem",
+        "for":"pets",
+        "to":"*",
+    }'
+>Remove All Pets</button>
+```
+
+
+👉 Lists can hold any number of items, from 1 to infinite by default. But this
+can be overridden with *minItems* and *maxItems* properties. Example:
+
+```html
+<ul data-smark='{
+    "type":"list",
+    "name":"pets",
+    "minItems": 0,
+    "maxItems": 5,
+}'>
+  <li>
+    <!-- ... -->
+  </li>
+</ul>
+```
+
 
 <!--
 
@@ -135,8 +263,11 @@ TODO:
 
 -->
 
-👉 List's length can be constrained with "minItems" and "maxItems" properties
-and controlled through "addItem" and "removeItem" *action* components.
+
+
+
+
+
 
 
 {: .hint }
