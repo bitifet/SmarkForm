@@ -17,6 +17,16 @@ nav_order: 4
 <!-- vim-markdown-toc GitLab -->
 
 * [Forms, Lists and Fields](#forms-lists-and-fields)
+    * [Fields](#fields)
+    * [Component nesting](#component-nesting)
+    * [Lists](#lists)
+    * [Actions](#actions)
+    * [Actions target](#actions-target)
+    * [Behaviour tunning](#behaviour-tunning)
+    * [Constraining lists](#constraining-lists)
+    * [Singletons](#singletons)
+    * [Addressability](#addressability)
+    * [More...](#more)
 * [The `data-smark` Attribute](#the-data-smark-attribute)
     * [Syntax](#syntax)
     * [Shorthand Syntaxes](#shorthand-syntaxes)
@@ -25,7 +35,7 @@ nav_order: 4
 * [Mandatory properties](#mandatory-properties)
 * [Components and Actions](#components-and-actions)
     * [Components](#components)
-    * [Actions](#actions)
+    * [Actions](#actions-1)
     * [Action Components](#action-components)
 * [Accessing Components](#accessing-components)
 
@@ -54,8 +64,8 @@ as **a *SmarkForm* form** component which is returned as our *root form*.
 const myForm = new SmarkForm(some_DOM_element); // Or myRootForm
 ```
 
-👉 Then, every inner DOM element with a *data-smark* attribute, will be enhanced
-as another SmarkForm component. No matter if it is a direct child or a
+👉 Then, every inner DOM element with a *data-smark* attribute, will be
+enhanced as another SmarkForm component. No matter if it is a direct child or a
 descendant of any depth.
 
 ```html
@@ -70,6 +80,8 @@ descendant of any depth.
   </script>
 </div>
 ```
+
+### Fields
 
 👉 **Every *SmarkForm* component (except *actions*) is a form field** from and
 to which **we can import and export values**.
@@ -105,6 +117,8 @@ myForm.onRendered(function() {
 > });
 > ```
 
+### Component nesting
+
 👉 This also mean **we can nest forms** inside other forms as regular fields
 (holding JSON objects) with no depth limit.
 
@@ -126,6 +140,8 @@ myForm.onRendered(function() {
 </div>
 ```
 
+### Lists
+
 👉 In case we need arrays, the *list* component type come to rescue: Likewise
 forms hold JSON objects, **lists hold JSON arrays**. So we are able to define
 simple HTML forms that can import and export any imaginable JSON data.
@@ -133,8 +149,8 @@ simple HTML forms that can import and export any imaginable JSON data.
 
 ```html
 <div data-smark='{"type":"form","name":"personal_data"}'>
-  <input name='name' value='John' data-smark>
-  <input name='surname' value='Doe' data-smark>
+  <input name='name' data-smark>
+  <input name='surname' data-smark>
   <ul data-smark='{"type":"list","name":"pets"}'>
     <li>
       <input name='species' data-smark>
@@ -154,6 +170,8 @@ simple HTML forms that can import and export any imaginable JSON data.
 > can be triggered by components of the so-called "action" type, where the
 > component acts as their *context*.
 
+### Actions
+
 👉 *Action* components have a "natural context" which is the closest
 *SmarkForm* component conaining it (That is: *personal_data* subform in
 previous example) but its actual *context* is the closest component
@@ -161,6 +179,8 @@ previous example) but its actual *context* is the closest component
 
 The *for* property specifies the *relative path*, from its *natural context*
 to the actual context of the action component.
+
+### Actions target
 
 👉 Besides the *context*, *action* components may also have a *target*
 consisting of an inner component to which the action is performed.
@@ -172,8 +192,8 @@ is contained within one) or the last item in the list otherwise. For example,
 when clicking the "Remove Pet" button in the previous example, the last pet in
 the list would be removed.
 
-In other words: We can move the *removeItem* action button inside list items
-allowing users to cherry-pick which item to remove:
+**In other words:** We can move the *removeItem* action button inside list
+items allowing users to cherry-pick which item to remove:
 
 ```html
 <ul data-smark='{"type":"list","name":"pets"}'>
@@ -188,6 +208,21 @@ allowing users to cherry-pick which item to remove:
 <button data-smark='{"action":"removeItem","for":"pets"}'>➖</button>
 -->
 ```
+
+{: .info }
+> Similarly, we could have placed an "addItem" button too inside the list item
+> template. In that case, new items would be inserted **after** the item
+> containing the button (its default target) unless if we set the *position*
+> property to "before".
+> 
+> {: .warning }
+> > But keep in mind that, if *minItems* (see [Constraining
+> > lists](#constraining-lists) below...) is set to 0 you would need at least
+> > another *external* "addItem" button to be able to add items to the list
+> > when it is empty...
+
+
+### Behaviour tunning
 
 👉 A special case for the "to" property is specifying it as "\*". In this case,
 the *action* button's target will be all items of the list.
@@ -230,8 +265,9 @@ type's actions, may lead to several interesting combinations:
 >Remove All Pets</button>
 ```
 
+### Constraining lists
 
-👉 Lists can hold any number of items, from 1 to infinite by default. But this
+👉 By default, lists can hold any number of items, from 1 to infinite. But this
 can be overridden with *minItems* and *maxItems* properties. Example:
 
 ```html
@@ -247,14 +283,79 @@ can be overridden with *minItems* and *maxItems* properties. Example:
 </ul>
 ```
 
+### Singletons
+
+👉 As we have seen, lists can hold any number of *subform* instances. But  if
+we need a list of just scalar values such as text or numbers (`<input>`,
+`<textarea>`, `<select>`...) there will be no room for action components in
+list items.
+
+The *singleton* component type behaves as a form allowing the presence of
+*action* components inside it, but:
+
+  * They only allow for a single non *action* component in it.
+  * Does not require (and it's not advisable) to provide a name for that
+    component.
+  * When exported, *singleton* components return only the value ot that field
+    and vice-versa.
+
+```html
+<div data-smark='{"type":"form","name":"personal_data"}'>
+  <input name='name'  data-smark>
+  <input name='surname' data-smark>
+  <ul data-smark='{"type":"list","name":"phones"}'>
+    <li data-smark='{"type":"singleton"}'>
+      <input placeholder='Phone Number' type="text" data-smark>
+      <button data-smark='{"action":"removeItem"}'>❌</button>
+    </li>
+  </ul>
+  <button data-smark='{"action":"addItem","for":"phones"}'>➕</button>
+</div>
+```
+
+This forced us to explicitly specify the *data-smark* property in the list item
+template. To avoid this we can use the "of" property of the list to specify the
+desired SmarkForm component type:
+
+
+```html
+<ul data-smark='{"type":"list","name":"phones","of":"singleton"}'>
+  <li>
+    <input placeholder='Phone Number' type="text" data-smark>
+    <button data-smark='{"action":"removeItem"}'>❌</button>
+  </li>
+</ul>
+```
+
+### Addressability
+
+In the previous examples we have seen the *for* and *to* properties that let us
+pointing to some *SmarkForm* component from another.
+
+It may seem we simply used the value of the *name* property of the field we
+want to point to. But, in fact, those were "directory-like" relative paths.
+
+We also mentioned that our root form is, in fact, a SmarkForm field that
+imports and exports JSON data.
+
+And all SmarkForm fields have a `.find()` method through which we can get any
+other fields of the form by providding a relative or absolute (starting with
+'/' which points to our root).
+
+**Example:***
+
+```javascript
+myForm.export().then(console.log);
+// {name:"",surname:"",phones:[""],pets:[{ species: '', name: '' } ] }
+const firstPet = myForm.find("pets/0")
+firstPet.export().then(console.log);
+// { species: '', name: '' } 
+
+```
 
 <!--
 
 TODO:
-
-  * List examples:
-    - Pets (subform)
-    - Phones and/or emails (singleton)
 
   * Addressability:
     - Import and export given vectors.
@@ -268,7 +369,7 @@ TODO:
 
 
 
-
+### More...
 
 {: .hint }
 >  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url
