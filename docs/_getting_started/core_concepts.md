@@ -372,8 +372,8 @@ TODO:
 ### More...
 
 {: .hint }
->  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url
->  }}) section to better understand these concepts.
+> Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
+> section to better understand these concepts.
 
 
 ## The `data-smark` Attribute
