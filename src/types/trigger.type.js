@@ -1,5 +1,5 @@
-// types/action.type.js
-// ====================
+// types/trigger.type.js
+// =====================
 import {SmarkComponent} from "../lib/component.js";
 
 const beforeEvent = Symbol("beforeEventName");
@@ -14,14 +14,14 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
 };
 
 
-export class action_type extends SmarkComponent {
+export class trigger extends SmarkComponent {
     render(){
         const me = this;
         me.parent.onRendered(()=>{
-            const actionArgs = me.getActionArgs();
+            const triggerArgs = me.getTriggerArgs();
             if (
-                typeof actionArgs.context?.onActionRender == "function"
-            ) actionArgs.context.onActionRender(actionArgs);
+                typeof triggerArgs.context?.onTriggerRender == "function"
+            ) triggerArgs.context.onTriggerRender(triggerArgs);
         });
     };
     disable() {//{{{
@@ -32,13 +32,13 @@ export class action_type extends SmarkComponent {
         const me = this;
         me.target.disabled = false;
     };//}}}
-    getActionArgs() {//{{{
+    getTriggerArgs() {//{{{
         const me = this;
         const parents = [...me.parents];
         const { action:actionSpec, for: path, to: toTarget} = me.options;
-        if (! actionSpec) return; // Not an action component.
+        if (! actionSpec) return; // Not an trigger component.
 
-        // Allow binding actions to specific component types:
+        // Allow binding triggers to specific component types:
         // (Syntax "type:action")
         let [actionName, targetType] = actionSpec.split(":").reverse();
 
@@ -68,11 +68,11 @@ export class action_type extends SmarkComponent {
     };//}}}
 };
 
-export async function onActionClick(ev) {
+export async function onTriggerClick(ev) {
     const me = this;
-    const actionComponent = me.getComponent(ev.target);
-    const options = actionComponent.getActionArgs();
-    if (! options) return; // Not an action.
+    const triggerComponent = me.getComponent(ev.target);
+    const options = triggerComponent.getTriggerArgs();
+    if (! options) return; // Not an trigger.
     const {context, action} = options;
     const mtd = context?.actions[action]
     if (

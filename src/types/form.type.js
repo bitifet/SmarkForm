@@ -4,7 +4,7 @@
 import {SmarkComponent} from "../lib/component.js";
 import {getRoots} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
-import {action} from "./action.type.js";
+import {action} from "./trigger.type.js";
 
 @foldable
 export class form extends SmarkComponent {
@@ -17,7 +17,7 @@ export class form extends SmarkComponent {
             of getRoots(me.target, me.selector)
         ) {
             const newItem = await me.enhance(node);
-            if (newItem.options.type != "action") {
+            if (newItem.options.type != "trigger") {
                 newItem.name = me.validName(
                     newItem.options.name
                     , node.getAttribute("name")

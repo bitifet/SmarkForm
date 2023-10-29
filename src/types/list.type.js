@@ -17,7 +17,7 @@
 import {SmarkComponent} from "../lib/component.js";
 import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
-import {action} from "./action.type.js";
+import {action} from "./trigger.type.js";
 import {mutex} from "../decorators/mutex.deco.js";
 
 

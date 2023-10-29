@@ -2,7 +2,7 @@
 // =======================
 
 import {form} from "./form.type.js";
-import {action} from "./action.type.js";
+import {action} from "./trigger.type.js";
 
 export class singleton extends form {
     async render() {//{{{

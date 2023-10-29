@@ -4,7 +4,7 @@
 import {createType} from "./lib/component.js";
 
 // Import core component types and event handlers:
-import {action_type as action, onActionClick} from "./types/action.type.js";
+import {trigger, onTriggerClick} from "./types/trigger.type.js";
 import {form} from "./types/form.type.js";
 import {list} from "./types/list.type.js";
 import {singleton} from "./types/singleton.type.js";
@@ -12,7 +12,7 @@ import {input} from "./types/input.type.js";
 
 // Load core component types:
 for (const [name, controller] of Object.entries({
-    action,
+    trigger,
     form,
     list,
     singleton,
@@ -50,7 +50,7 @@ class SmarkForm extends form {
         };
         me.target.addEventListener(
             "click"
-            , onActionClick.bind(me)
+            , onTriggerClick.bind(me)
             , true
         );
     };

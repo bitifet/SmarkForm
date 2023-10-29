@@ -1,5 +1,5 @@
 
-import {action} from "../types/action.type.js";
+import {action} from "../types/trigger.type.js";
 
 export const foldable = function foldable_decorator(target, {kind}) {
     if (kind == "class") {

@@ -189,16 +189,16 @@ export class SmarkComponent {
 
         // Classify:{{{
         if (options.action) {
-            if (! options.type) options.type = "action"; // Make type optional for actions.
-            if (options.type != "action") throw me.renderError(
-                "WRONG_ACTION_TYPE"
-                , `Actions must be of type "action" but "${options.type}" given.`
+            if (! options.type) options.type = "trigger"; // Make type optional for triggers.
+            if (options.type != "trigger") throw me.renderError(
+                "ACTION_IN_NON_TRIGGER"
+                , `"action" property is only allowed for "trigger" components but "${options.type}" type specified.`
             );
-            delete options.name; // Actions are always unnamed.
+            delete options.name; // Triggers are always unnamed.
         } else if (typeof options.type != "string") {
             throw me.renderError(
                 "NO_TYPE_PROVIDED"
-                , `Invalid SmarkForm item: type is mandatory for non action elements.`
+                , `Invalid SmarkForm item: type is mandatory for non trigger components.`
             );
         };
         //}}}

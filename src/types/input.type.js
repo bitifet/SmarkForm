@@ -1,7 +1,7 @@
 // types/input.type.js
 // ===================
 import {SmarkComponent} from "../lib/component.js";
-import {action} from "./action.type.js";
+import {action} from "./trigger.type.js";
 export class input extends SmarkComponent {
     render() {//{{{
         const me = this;
