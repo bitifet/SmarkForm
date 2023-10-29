@@ -113,7 +113,7 @@ It will just wrap input component to export as number instead of string (we
         </details>
 
         <details>
-        <summary><img src="https://progress-bar.dev/50/" alt="(50%)"> Action (Special) Component Type </summary>
+        <summary><img src="https://progress-bar.dev/50/" alt="(50%)"> Trigger (Special) Component Type </summary>
 
         Fully functional but only for regular clicks.
 

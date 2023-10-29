@@ -21,7 +21,7 @@ nav_order: 5
 * [Input](#input)
 * [Select](#select)
 * [Singleton](#singleton)
-* [Action](#action)
+* [Trigger](#trigger)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -54,8 +54,8 @@ nav_order: 5
 {: .hint}
 > See also: [Singleton Component Type]({{ "component_types/type_singleton" | relative_url }})
 
-## Action
+## Trigger
 
 {: .hint}
-> See also: [Action Component Type]({{ "component_types/type_action" | relative_url }})
+> See also: [Trigger Component Type]({{ "component_types/type_trigger" | relative_url }})
 

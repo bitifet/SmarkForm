@@ -1,11 +1,11 @@
 ---
-title: «action» Component Type
+title: «trigger» Component Type
 layout: chapter
-permalink: /component_types/type_action
+permalink: /component_types/type_trigger
 
 ---
 
-*action* Component Type
+*trigger* Component Type
 =======================
 
 <details>
@@ -21,7 +21,7 @@ permalink: /component_types/type_action
     * [Origin](#origin)
     * [Context](#context)
     * [Target](#target)
-* [Action Components](#action-components)
+* [Trigger Components](#trigger-components)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -57,10 +57,10 @@ resolved and the propper action method is called in it.
 
 ### Origin
 
-The origin of an action is the actual *action* component from which the action
+The origin of an action is the actual *trigger* component from which the action
 was originated. For programatically triggered actions its value is *Null*.
 
-This allow action implementations to interact with its originating action
+This allow action implementations to interact with its originating trigger
 component.
 
 ### Context
@@ -69,14 +69,14 @@ The context of an action is the component willing to receive the action every
 time it is triggered.
 
 That is, by default, the **second** nearest ancestor (because nearest ancestor
-is the default [target](#target)) of the action component whose type implements
+is the default [target](#target)) of the trigger component whose type implements
 an action of that name.
 
-In action components the context can be altered by using the *for* property,
+In trigger components the context can be altered by using the *for* property,
 consisting a relative (starting from default context) or absolute path to the
 desired context.
 
-This is what allows, for example, to place the *addItem* action components of a
+This is what allows, for example, to place the *addItem* trigger components of a
 list outside of the actual list.
 
 **Example:**
@@ -100,9 +100,9 @@ myForm.find("/myList").removeItem();
 
 ### Target
 
-The target of en action is the component to which the action is to be peformed.
+The target of an action is the component to which the action is to be peformed.
 
-By default it is the nearest ancestor of the action component but, as with
+By default it is the nearest ancestor of the trigger component but, as with
 *context*, it can be explicitly specified in the *target* property by a
 relative or absolute path.
 
@@ -123,8 +123,8 @@ the item of the list that is going to be removed.
 
 
 
-Action Components
------------------
+Trigger Components
+------------------
 
 
 

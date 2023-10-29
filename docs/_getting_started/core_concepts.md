@@ -20,8 +20,8 @@ nav_order: 4
     * [Fields](#fields)
     * [Component nesting](#component-nesting)
     * [Lists](#lists)
-    * [Actions](#actions)
-    * [Actions target](#actions-target)
+    * [Triggers](#triggers)
+    * [Triggers target](#triggers-target)
     * [Behaviour tunning](#behaviour-tunning)
     * [Constraining lists](#constraining-lists)
     * [Singletons](#singletons)
@@ -35,8 +35,8 @@ nav_order: 4
 * [Mandatory properties](#mandatory-properties)
 * [Components and Actions](#components-and-actions)
     * [Components](#components)
-    * [Actions](#actions-1)
-    * [Action Components](#action-components)
+    * [Actions](#actions)
+    * [Trigger Components](#trigger-components)
 * [Accessing Components](#accessing-components)
 
 <!-- vim-markdown-toc -->
@@ -52,7 +52,7 @@ nav_order: 4
 > In most real-world scenarios, these examples may not be the best choices.
 > 
 > For instance, we will seldom need to use onRendered callbacks, as all form
-> interactions will be handled through action components.
+> interactions will be handled through *trigger* components.
 
 
 ## Forms, Lists and Fields
@@ -83,7 +83,7 @@ descendant of any depth.
 
 ### Fields
 
-👉 **Every *SmarkForm* component (except *actions*) is a form field** from and
+👉 **Every *SmarkForm* component (except *triggers*) is a form field** from and
 to which **we can import and export values**.
 
 So our *root form* is also a *field* (of type "form") from and to which we can
@@ -167,32 +167,40 @@ simple HTML forms that can import and export any imaginable JSON data.
 > offers the "addItem" and "removeItem" *actions*.
 > 
 > 👉 *Actions* are functions provided by component types for interaction. They
-> can be triggered by components of the so-called "action" type, where the
+> can be triggered by components of the so-called "trigger" type, where the
 > component acts as their *context*.
+> 
+> 👉 Trigger components have a (mandatory) *action* attribute which specifies
+> the action to be triggered.
+> 
+> 👉 In order to improve readability, the *action* property is not allowed in
+> any other component type and, hence, the `"type": "trigger"` become optional
+> (and discouraged).
 
-### Actions
 
-👉 *Action* components have a "natural context" which is the closest
+### Triggers
+
+👉 *Trigger* components have a "natural context" which is the closest
 *SmarkForm* component conaining it (That is: *personal_data* subform in
 previous example) but its actual *context* is the closest component
 **implementing that action** unless overridden by the *for* property.
 
 The *for* property specifies the *relative path*, from its *natural context*
-to the actual context of the action component.
+to the actual context of the trigger.
 
-### Actions target
+### Triggers target
 
-👉 Besides the *context*, *action* components may also have a *target*
-consisting of an inner component to which the action is performed.
+👉 Besides the *context*, *trigger* components may also have a *target*
+consisting of an inner component to which the specified action is performed.
 
 The target can be specified using the *to* property, but it can also have a
 default value depending on the context's component type. In the case of *lists*,
-the default target is the list item that contains the *action* component (if it
-is contained within one) or the last item in the list otherwise. For example,
-when clicking the "Remove Pet" button in the previous example, the last pet in
-the list would be removed.
+the default target is the list item that contains the *trigger* component (if
+it is contained within one) or the last item in the list otherwise. For
+example, when clicking the "Remove Pet" button in the previous example, the
+last pet in the list would be removed.
 
-**In other words:** We can move the *removeItem* action button inside list
+**In other words:** We can move the *removeItem* trigger button inside list
 items allowing users to cherry-pick which item to remove:
 
 ```html
@@ -225,10 +233,10 @@ items allowing users to cherry-pick which item to remove:
 ### Behaviour tunning
 
 👉 A special case for the "to" property is specifying it as "\*". In this case,
-the *action* button's target will be all items of the list.
+the *trigger* button's target will be all items of the list.
 
 Which combined (or not) with the *keep_non_empty* property of *list* component
-type's actions, may lead to several interesting combinations:
+type's *removeItem* action, may lead to several interesting combinations:
 
 ➡️  Remove last empty pet. If none is empty, remove last one:
 
@@ -287,13 +295,13 @@ can be overridden with *minItems* and *maxItems* properties. Example:
 
 👉 As we have seen, lists can hold any number of *subform* instances. But  if
 we need a list of just scalar values such as text or numbers (`<input>`,
-`<textarea>`, `<select>`...) there will be no room for action components in
+`<textarea>`, `<select>`...) there will be no room for trigger components in
 list items.
 
 The *singleton* component type behaves as a form allowing the presence of
-*action* components inside it, but:
+*trigger* components inside it, but:
 
-  * They only allow for a single non *action* component in it.
+  * They only allow for a single non *trigger* component in it.
   * Does not require (and it's not advisable) to provide a name for that
     component.
   * When exported, *singleton* components return only the value ot that field
@@ -446,11 +454,11 @@ attributes:
 {: .info }
 > 📌 There are also exceptions to this rule:
 >
-> 1. Any component with the `action` property is of "action" type and hence the
->    *type* property can be omitted.
+> 1. Any component with the `action` property is of "trigger" type and hence
+>    the *type* property can be omitted.
 > 
-> 2. *Action* components are not considered form fields and, therefore, they
->    hav no *name* property.
+> 2. *Trigger* components are not considered form fields and, therefore, they
+>    have no *name* property.
 
 
 ### Shorthand Syntaxes
@@ -488,17 +496,17 @@ The following properties are (nearly) mandatory:
 - The `type` property is always necessary to determine which component type
   controller should be used for rendering the component. In many cases, it can be
   inferred based on the tag name or the presence of the `action` property, which
-  forces the type to be "action".
+  forces the type to be "trigger".
 
-- The `name` property is required for all non-action components.
+- The `name` property is required for all non-trigger components.
    - If not explicitly provided, it can be inferred from the `name` property of
      the tag being enhanced. For example, `<input name="foo" data-smark>`.
    - If not provided and cannot be inferred, a randomly generated name will be
      used.
 
 - The `action` property is mandatory for all [components of the type
-  "action"](#action-components) to specify which [action](actions) they
-  actually trigger. In fact, the `type="action"` property itself is optional
+  "trigger"](#trigger-components) to specify which [action](actions) they
+  actually trigger. In fact, the `type="trigger"` property itself is optional
   here having it is implied by the presence of the `action` property.
 
 
@@ -506,14 +514,14 @@ The following properties are (nearly) mandatory:
 
 Depending on the actual component type other properties may be applicable.
 
-In case of *actions*, despite `type`and `name`, is worth to mention that,
+In case of *triggers*, despite `type`and `name`, is worth to mention that,
 except for the `for` and `to` properties
 
 
 FIXME: To be continued...
 //// ** ... the rest of available properties depend on the type of its [context]()...
 
-TODO: Link 'for' and 'to' to propper type_action.md section...
+TODO: Link 'for' and 'to' to propper type_trigger.md section...
 
 
 
@@ -550,14 +558,15 @@ components types while others are tied to secific types like `addItem` an d
 `removeItem` for lists, etc...
 
 
-### Action Components
+### Trigger Components
 
-*Action Components* are a special type of *component* that serve to trigger
+*Trigger Components* are a special type of *component* that serve to trigger
 actions on another compoenent which we refer to it as its "context".
 
-Any SmarkForm component whith an *action* property is an [Action
-Component]({{ "component_types/type_action" | relative_url }}) and for the sake of simplicity, its *type* property
-can be ommitted but it cannot take a different value than "action".
+Any SmarkForm component whith an *action* property is a [Trigger
+Component]({{ "component_types/type_trigger" | relative_url }}) and for the
+sake of simplicity, its *type* property can be ommitted but it cannot take a
+different value than "trigger".
 
 **Example:**
 
@@ -566,7 +575,7 @@ can be ommitted but it cannot take a different value than "action".
 ```
 
 {: .hint }
-> 📖 For detailed information see [Action Type Documentation]({{ "component_types/type_action" | relative_url }}).
+> 📖 For detailed information see [Trigger Type Documentation]({{ "component_types/type_trigger" | relative_url }}).
 
 
 

@@ -36,7 +36,7 @@ export class trigger extends SmarkComponent {
         const me = this;
         const parents = [...me.parents];
         const { action:actionSpec, for: path, to: toTarget} = me.options;
-        if (! actionSpec) return; // Not an trigger component.
+        if (! actionSpec) return; // Not a trigger component.
 
         // Allow binding triggers to specific component types:
         // (Syntax "type:action")
@@ -72,7 +72,7 @@ export async function onTriggerClick(ev) {
     const me = this;
     const triggerComponent = me.getComponent(ev.target);
     const options = triggerComponent.getTriggerArgs();
-    if (! options) return; // Not an trigger.
+    if (! options) return; // Not a trigger.
     const {context, action} = options;
     const mtd = context?.actions[action]
     if (
