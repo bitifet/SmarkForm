@@ -15,7 +15,7 @@ interactions, with no need to deal with complex JavaScript code.
 [![npm dependents](https://badgen.net/npm/dependents/smarkform)](https://www.npmjs.com/package/smarkform?activeTab=dependents)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-<a href="https://bitifet.github.io/SmarkForm/">
+<a href="https://smarkform.bitifet.net">
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
@@ -199,7 +199,7 @@ dist
 ## Usage
 
 > 📌 For detailed usage instructions and API reference check out [📔 SmarkForm
-> Reference Manual](https://bitifet.github.io/SmarkForm/).
+> Reference Manual](https://smarkform.bitifet.net).
 
 
 <details>
@@ -319,7 +319,7 @@ Bla bla bla...
 <details>
 <summary>✅ See Also</summary>
 
-  * [📔 SmarkForm Refernce Manual](https://bitifet.github.io/SmarkForm/)
+  * [📔 SmarkForm Refernce Manual](https://smarkform.bitifet.net)
 
   * [💾 SmarkForm Examples collection in CodePen](https://codepen.io/collection/YyvbPz)
 
@@ -338,7 +338,7 @@ Before contributing, make sure to read our [contribution guidelines](docs/contri
 
 You can find official *SmarkForm* documentation at:
 
-  👉 [https://bitifet.github.io/smarkform](https://bitifet.github.io/smarkform)
+  👉 [https://smarkform.bitifet.net](https://smarkform.bitifet.net)
 
 
 ### Documentation Source:
