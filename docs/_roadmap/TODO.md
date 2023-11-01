@@ -23,13 +23,13 @@ nav_order: 3
     * [👉 *src* property for import action](#-src-property-for-import-action)
 * [Pending core components](#pending-core-components)
     * [👉 The «select» component](#-the-select-component)
+    * [👉 The «multiform» component](#-the-multiform-component)
 * [Other possible features](#other-possible-features)
     * [💡 Implement Focus subsystem. Let's say:](#-implement-focus-subsystem-lets-say)
     * [💡 Recursive lists](#-recursive-lists)
 * [New non-core components](#new-non-core-components)
     * [💡 Implement UNDO component.](#-implement-undo-component)
     * [💡 Implement Table Of Contents component.](#-implement-table-of-contents-component)
-    * [💡 Implement a «multiform» component type.](#-implement-a-multiform-component-type)
 * [Spare Ideas](#spare-ideas)
     * [Implement download action](#implement-download-action)
 
@@ -74,16 +74,30 @@ API request to perform everty time the action is triggered.
 
 ...
 
+### 👉 The «multiform» component
+  - Multiple subform templates (every direct child of its original layout)
+    internally stored (likewise lists item template...).
+  - Only one "active" (actually inserted in DOM) at the same time
+    (interchangeablilityy).
+  - import() and export() methods work always over currently selected subform.
+  - Each subform must include a <select> (or any other input smart type) tag
+    whose name should match some "selector" property in the options object
+    passed to mulitform component (data-smark attribute) and whose value
+    should decide wich template is actually used (making imports and exports
+    consistent thanks to this field).
+
 
 ## Other possible features
 
 
 ### 💡 Implement Focus subsystem. Let's say:
+
   - AddItem send focus to added Item.
   - This item (type) in turn, may re-send it to inner parts (i.e.: first
     input for forms, etc...)
 
 ### 💡 Recursive lists
+
   - recursive = (path) (Must be parent)
   - min_items = 0 (forcibly)
   - max_recursion = (optional) Self item will be removed from template when
@@ -112,21 +126,6 @@ own repository.
   - Allow navigating to every secton through their (full path) id's.
   - Implement a "return to TOC" actions.
   - Stop scanning on compoenents containing a self-targetted TOC.
-
-### 💡 Implement a «multiform» component type.
-  - Multiple subform templates (every direct child) internally stored (like
-    in lists...).
-  - Only one actually inserted in DOM (interchangeably).
-  - import() and export() methods work always over currently selected subform.
-  - Each subform must include a <select> (or any other input smart type) tag
-    whose name should match some "selector" field in the options object
-    passed to mulitform component (data-smark property) and whose value
-    should decide wich template is actually used (making imports and exports
-    consistent thanks to this field).
-  - Consider using an special action instead of that <select> tag so that it
-    can freely placed inside or outside multiform component subtemplates (in
-    this case, the "selector" field sholuld be maintained "maically" by
-    compoenent's internals).
 
 
 
