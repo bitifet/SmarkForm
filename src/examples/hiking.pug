@@ -1,0 +1,182 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Adventure Tracking";
+        var description = `
+            This example is a draft for an excursion planning form that allows
+            users to provide location, date, start and end times, and route
+            details.  Participants can receive personal tracking links for
+            automatic position updates during the excursion, ensuring a safer
+            experience and enabling quick rescue in emergencies.
+        `;
+block mainForm
+    section
+        h2 Activity
+        .form-group
+            label Title
+            input(
+                data-smark
+                name="activity_name"
+                type="text"
+                placeholder="Name your planned activity..."
+            )
+        .input-group
+            label Description
+            textarea(
+                data-smark
+                name="activity_description"
+                placeholder="Brief description of your activity"
+            )
+
+        h2 Planning
+        h3 Origin
+        .form-group(data-smark={
+            type: "form",
+            name: "origin",
+        })
+            input(
+                data-smark
+                name="place"
+                placeholder='Place'
+            )
+            input(
+                data-smark
+                name="city"
+                placeholder='City'
+            )
+            input(
+                data-smark
+                name="date"
+                type="date"
+                placeholder='dd/mm/yyyy'
+            )
+            input(
+                data-smark
+                name="time"
+                type="time"
+                placeholder='hh:mm'
+            )
+        h3 Stops
+        .form-group(data-smark={
+            type: "list",
+            name: "stops",
+            min_items: 0,
+            exportEmpties: false,
+        })
+            .full-width.form-group.aside.reverse
+                button.inline(data-smark={
+                    action: "removeItem"
+                }) -
+                .form-group
+                    input(
+                        data-smark
+                        name="place"
+                        placeholder='Place'
+                    )
+                    input(
+                        data-smark
+                        name="city"
+                        placeholder='City'
+                    )
+                    input(
+                        data-smark
+                        name="date"
+                        type="date"
+                        placeholder='dd/mm/yyyy'
+                    )
+                    input(
+                        data-smark
+                        name="time"
+                        type="time"
+                        placeholder='hh:mm'
+                    )
+        .form-group
+            .spacer
+            button.inline(data-smark={
+                action: "addItem",
+                for: "stops",
+            }) Add Stop Place
+        h3 Destination
+        .form-group(data-smark={
+            type: "form",
+            name: "destination",
+        })
+            input(
+                data-smark
+                name="place"
+                placeholder='Place'
+            )
+            input(
+                data-smark
+                name="city"
+                placeholder='City'
+            )
+            input(
+                data-smark
+                name="date"
+                type="date"
+                placeholder='dd/mm/yyyy'
+            )
+            input(
+                data-smark
+                name="time"
+                type="time"
+                placeholder='hh:mm'
+            )
+    section
+        h2 Participants
+
+        h3 Organizers
+        .form-group(data-smark={
+            type: "list",
+            name: "organizers",
+            exportEmpties: false,
+        })
+            .full-width.form-group.aside.reverse
+                button.inline(data-smark={
+                    action: "removeItem"
+                }) -
+                .form-group.spacer
+                    .form-group
+                        input(style='flex: 6', data-smark name="name" placeholder="Name")
+                        input(style='flex: 2', data-smark name = "phone" type="tel" placeholder="Phone number")
+        .form-group
+            .spacer
+            button.inline(data-smark={
+                action: "addItem",
+                for: "organizers",
+            }) Add Organizer
+
+        h3 Participants:
+        .form-group(data-smark={
+            type: "list",
+            name: "participants",
+            min_items: 0,
+            exportEmpties: false,
+        })
+            .full-width.form-group.aside.reverse
+                button.inline(data-smark={
+                    action: "removeItem"
+                }) -
+                .form-group.spacer
+                    .form-group
+                        input(style='flex: 6', data-smark name="name" placeholder="Name")
+                        input(style='flex: 2', data-smark name = "phone" type="tel" placeholder="Phone number")
+        .form-group
+            .spacer
+            button.inline(data-smark={
+                action: "addItem",
+                for: "participants",
+            }) Add Participant
+    section
+        .form-group
+            .spacer
+            button(data-smark = {
+                action: "empty",
+            }, title="Clear form data") ❌ Cancel
+            button(data-smark = {
+                action: "export",
+            }, title="Submit form data") 💾 Submit
