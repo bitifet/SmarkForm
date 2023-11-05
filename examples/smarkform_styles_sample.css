@@ -63,6 +63,10 @@
   flex-direction: row-reverse;
 }
 
+.smarkForm .full-width {
+  width: 100%;
+}
+
 .smarkForm .form-group {
   display: flex;
   gap: var(--form-gap);

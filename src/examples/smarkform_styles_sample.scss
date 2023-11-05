@@ -68,6 +68,11 @@
         }
     }
 
+    // .full-width - Ensure elements to took all available with
+    //               👉 Useful for list items...
+    .full-width {
+        width: 100%;
+    }
 
     .form-group {
         display: flex;
