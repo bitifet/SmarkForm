@@ -66,6 +66,15 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 
 ## Features
 
+  * Markup-driven and Intuitive API.
+  * Easy to use.
+  * Advanced capabilities.
+  * Can hold any data structure expressible in JSON.
+  * Flexible and extendable.
+  * Lightweight yet highly compatible.
+  * [More...]({{ "about/features" | relative_url }})
+
+
 <details>
 <summary>✔️  <b>Markup-driven and Intuitive API</b></summary>
 <ul>

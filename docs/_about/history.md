@@ -2,11 +2,11 @@
 title: History
 layout: chapter
 permalink: /about/history
-nav_order: 2
+nav_order: 3
 
 ---
 
-## History
+# {{ page.title }}
 
 <details>
 <summary>
