@@ -116,8 +116,10 @@ node_modules
 ```
 
 {: .hint }
-> *SmarkForm.umd.js* can be loaded from regular ``<script>`` tag and will export
-> ``SmarkForm`` class as global variable.
+> *SmarkForm.umd.js* can be loaded through any [UMD compatibley module
+> loader](https://github.com/umdjs/umd) such as RequireJS among others or just
+> with regular ``<script>`` tag, in which case it will export ``SmarkForm``
+> class as global variable.
 
 
 ## Clone from GitHub
