@@ -65,13 +65,27 @@ nav_order: 3
 ## Source Code
 
 {% for item in site.data.examples %}
-{% capture contenido_markdown %}
-```html
+
+{% capture full_html_content %}
 {% include_relative {{ item.url }} %}
-```
 {% endcapture %}
+
+{% assign head_stripped = full_html_content | split: "<!-- BEGIN SmarkForm sample-->" %}
+{% assign foot_stripped = head_stripped[1] | split: "<!-- END SmarkForm sample-->" | first | strip %}
+
+<!-- ]() -->
+
+{% capture markdown_content %}
+```html
+      <div class="SmarkForm">
+        {{ foot_stripped }}
+      </div>
+```
+{% endcapture | replace: '^ {6}', '' %}
+
+
 <div class="example-source" data-source="{{item.url | relative_url }}">
-{{ contenido_markdown | markdownify }}
+{{ markdown_content | markdownify }}
 </div>
 {% endfor %}
 
