@@ -9,32 +9,41 @@ nav_order: 3
 # Examples
 
 <style>
-.ex-viewer .button{
-  display: inline-block;
-  padding: 10px 20px; /* Ajusta el espaciado según tus necesidades */
-  background-color: #eeeeee; /* Color de fondo del botón */
-  color: #444; /* Color del texto */
-  text-decoration: none; /* Elimina el subrayado del enlace */
-  border: 2px solid #edeff6; /* Borde del botón */
-  border-radius: 5px; /* Bordes redondeados */
-  cursor: pointer; /* Cambia el cursor al pasar el mouse */
-  font-weight: bold; /* Texto en negrita */
-  text-align: center; /* Alineación del texto al centro */
-  transition: background-color 0.3s, color 0.3s; /* Transiciones suaves en hover */
-}
+    .tab-container
+    , .tab-container>.tab
+    , .tab-container>.tab>.iframe
+    {
+        margin: 0px;
+        padding: 0px;
+        border: 0px;
+    }
 
-.ex-viewer .button:hover {
-  background-color: #edeff6; /* Cambio de color de fondo en hover */
-  border: 2px solid #cccccc; /* Borde del botón */
-  color: #000; /* Cambio de color del texto en hover */
-}
+    .example-selector {
+        text-align: right;
+    }
+    .example-selector label {
+        font-weight: bold;
+            padding-right: .5em;
+    }
+    .tab_buttons {
+        margin-top: 1em;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .tab_buttons .spacer {
+        flex-grow: 1;
+    }
 </style>
 
+{% capture void %}
+{% include_relative examples.capture.md %}
+{% endcapture %}
 
 
-<div style="text-align: center">
-<b>Select:</b>&nbsp;
-<select class="button" id="iframe_example_switcher">
+
+<div class="example-selector">
+<label for="example_switcher">Select:</label>
+<select class="btn" id="example_switcher">
 {% for item in site.data.examples %}
     <option
         value="{{ item.url | relative_url }}"
@@ -43,70 +52,76 @@ nav_order: 3
 {% endfor %}
 </select>
 </div>
-<table class="ex-viewer">
-<tr>
-<th>
-    <a class="button" id="iframe_fullscreen_link" target=_blank href="">🖥️ View FullScreen</a>
-</th>
-<th>
-    <a id="dld_button" class="button" href="" download>💾 Download</a>
-</th>
-<th>
-    <a class="button" href="#source-code">⬇️  See Source Code</a>
-</th>
-</tr>
-<tr>
-<td colspan=3>
-    <iframe id="iframe_example_viewer" style="width:100%; height:75vh" src=""></iframe>
-</td>
-</tr>
-</table>
-
-## Source Code
-
-{% for item in site.data.examples %}
-
-{% capture full_html_content %}
-{% include_relative {{ item.url }} %}
-{% endcapture %}
-
-{% assign head_stripped = full_html_content | split: "<!-- BEGIN SmarkForm sample-->" %}
-{% assign foot_stripped = head_stripped[1] | split: "<!-- END SmarkForm sample-->" | first | strip %}
-
-<!-- ]() -->
-
-{% capture markdown_content %}
-```html
-      <div class="SmarkForm">
-        {{ foot_stripped }}
-      </div>
-```
-{% endcapture | replace: '^ {6}', '' %}
-
-
-<div class="example-source" data-source="{{item.url | relative_url }}">
-{{ markdown_content | markdownify }}
+<div class="tab_buttons">
+<button onClick="selectTab('output_view', this)" class="btn" id="firstTabBtn">Output</button>
+<button onClick="selectTab('html_source', this)" class="btn">HTML</button>
+<button onClick="selectTab('js_source', this)" class="tabbuton btn">Js</button>
+<span class="spacer"></span>
+<a class="btn" id="fullscreen_link" target=_blank href="">🖥️ View FullScreen</a>
+<a id="dld_button" class="btn" href="" download>💾 Download</a>
 </div>
-{% endfor %}
+<div class="tab_container">
+<div class="tab" id="output_view">
+<iframe id="example_viewer" style="width:100%; height:75vh" src=""></iframe>
+</div>
+<div class="tab" id="html_source">
+{{ html_sources }}
+</div>
+<div class="tab" id="js_source">
+{{ js_sources }}
+</div>
+</div>
+
+
 
 <script>
-    const selector = document.getElementById("iframe_example_switcher");
-    const iframe = document.getElementById("iframe_example_viewer");
-    const fullScreenLnk = document.getElementById("iframe_fullscreen_link");
+    const switcher = document.getElementById("example_switcher");
+    const iframe = document.getElementById("example_viewer");
+    const fullScreenLnk = document.getElementById("fullscreen_link");
     const dldLnk = document.getElementById("dld_button");
     const sources = document.getElementsByClassName("example-source");
-    function updateIframe() {
-        iframe.src = selector.value;
-        fullScreenLnk.href = selector.value;
-        dldLnk.href = selector.value;
+    function updateExample() {
+        iframe.src = switcher.value;
+        fullScreenLnk.href = switcher.value;
+        dldLnk.href = switcher.value;
+        document.location.hash = switcher.value;
         for (let i = 0; i < sources.length; i++) {
-            if (sources[i].getAttribute("data-source") == selector.value) {
+            if (sources[i].getAttribute("data-source") == switcher.value) {
                 sources[i].style.display="block";
             } else {
                 sources[i].style.display="none";
             };
         }
     };
-    updateIframe();
-    selector.addEventListener("change", updateIframe);
+    const hashSelection = document.location.hash.slice(1);
+    if (
+        1 + [...switcher.options]
+            .findIndex(
+                op=>op.value==hashSelection
+            )
+    ) {
+        switcher.value = hashSelection
+    };
+    updateExample();
+    switcher.addEventListener("change", updateExample);
+
+
+    const tabs = [...document.getElementsByClassName("tab")];
+    let oldButton;
+    const selectTab = (tabId, btn)=>tabs.forEach(
+        t=>{
+            t.hidden=t.id!=tabId;
+            if (oldButton) oldButton.classList.toggle("btn-outline");
+            if (btn) btn.classList.toggle("btn-outline");
+            oldButton = btn;
+        }
+    );
+    document.getElementById("firstTabBtn").click();
+
+
+
+
+
+
+
 </script>

@@ -10,21 +10,25 @@
     <script>
       document.addEventListener('DOMContentLoaded', function() {
       
+          // <!-- BEGIN controller sample-->
           // Form instantiation:
           // -------------------
           window.form = new SmarkForm(
               document.querySelector("#main-form")
               , {
-                  autoId: true,
+                  // Do Something on export action:
                   onAfterAction_export({data}) {
                       alert (JSON.stringify(data, null, 4));
                   },
+                  // Ask for confirm on empty action
+                  // ...but only if form is not already empty:
                   async onBeforeAction_empty({context, preventDefault}) {
                       if (
                           ! await context.isEmpty()
                           && ! confirm("Are you sure?")
                       ) preventDefault();
                   },
+                  // Fetching data on import action (example):
                   onBeforeAction_import(options) {
                       let data = prompt('Provide JSON data');
                       try {
@@ -75,6 +79,7 @@
                   ));
               })
           ;
+          // <!-- END controller sample-->
       
       });
     </script>
