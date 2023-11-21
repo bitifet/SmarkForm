@@ -1,11 +1,28 @@
 // types/input.type.js
 // ===================
-import {SmarkComponent} from "../lib/component.js";
+import {form} from "./form.type.js";
 import {action} from "./trigger.type.js";
-export class input extends SmarkComponent {
-    render() {//{{{
+export class input extends form {
+    async render() {//{{{
         const me = this;
-        me.isCheckbox = String(me.target.type).toLowerCase() == "checkbox";
+        me.isSingleton = ! (
+            me.target.tagName === "INPUT"
+            || me.target.tagName === "SELECT"
+            || me.target.tagName === "TEXTAREA"
+        );
+        me.isCheckbox = (
+            ! me.isSingleton
+            && String(me.target.type).toLowerCase() == "checkbox"
+        );
+        if (me.isSingleton) {
+            await super.render();
+            const numFields = Object.keys(me.children).length;
+            if (numFields != 1) throw me.renderError(
+                'NOT_A_SINGLETON'
+                , `Singleton forms are only allowed to contain exactly one`
+                + ` data field but ${numFields} found.`
+            );
+        }
         // console.log("New input!!!!", {
         //     target: me.target,
         //     parent: me.parent,
@@ -18,14 +35,19 @@ export class input extends SmarkComponent {
     async export() {//{{{
         const me = this;
         return (
-            me.isCheckbox ? !!me.target.checked
+            me.isSingleton ? Object.values(await super.export())[0]
+            : me.isCheckbox ? !!me.target.checked
             : me.target.value
         );
     };//}}}
     @action
     async import({data = ""}) {//{{{
         const me = this;
-        if (me.isCheckbox) {
+        if (me.isSingleton) {
+            return await super.import({data: Object.fromEntries(
+                [[Object.keys(me.children)[0], data]]
+            )});
+        } else if (me.isCheckbox) {
             me.target.checked = !! data;
         } else {
             me.target.value = data;

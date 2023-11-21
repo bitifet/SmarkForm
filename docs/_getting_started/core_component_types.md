@@ -20,7 +20,6 @@ nav_order: 5
 * [List](#list)
 * [Input](#input)
 * [Select](#select)
-* [Singleton](#singleton)
 * [Trigger](#trigger)
 
 <!-- vim-markdown-toc -->
@@ -48,11 +47,6 @@ nav_order: 5
 
 {: .hint}
 > See also: [Select Component Type]({{ "component_types/type_select" | relative_url }})
-
-## Singleton
-
-{: .hint}
-> See also: [Singleton Component Type]({{ "component_types/type_singleton" | relative_url }})
 
 ## Trigger
 

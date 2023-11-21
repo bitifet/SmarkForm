@@ -296,23 +296,29 @@ can be overridden with *minItems* and *maxItems* properties. Example:
 👉 As we have seen, lists can hold any number of *subform* instances. But  if
 we need a list of just scalar values such as text or numbers (`<input>`,
 `<textarea>`, `<select>`...) there will be no room for trigger components in
-list items.
+list items to, say, remove given item.
 
-The *singleton* component type behaves as a form allowing the presence of
-*trigger* components inside it, but:
+But the *input* component type can handle not only single `<input>`, `<selext>`
+and `<textarea>`tags but also any other tag surrounding a whole subform with
+the only restriction that only one actual field is allowed (and, in fact,
+required) inside but allowing the presence of any number of *trigger*
+components.
+
+This special behavior of the *input* component type is what we call a
+*singleton*, which adheres to the following rules:
 
   * They only allow for a single non *trigger* component in it.
   * Does not require (and it's not advisable) to provide a name for that
     component.
-  * When exported, *singleton* components return only the value ot that field
-    and vice-versa.
+  * When imported or exported, they receive and return only the value ot that
+    field.
 
 ```html
 <div data-smark='{"type":"form","name":"personal_data"}'>
   <input name='name'  data-smark>
   <input name='surname' data-smark>
   <ul data-smark='{"type":"list","name":"phones"}'>
-    <li data-smark='{"type":"singleton"}'>
+    <li data-smark='{"type":"input"}'>
       <input placeholder='Phone Number' type="text" data-smark>
       <button data-smark='{"action":"removeItem"}'>❌</button>
     </li>
@@ -327,7 +333,7 @@ desired SmarkForm component type:
 
 
 ```html
-<ul data-smark='{"type":"list","name":"phones","of":"singleton"}'>
+<ul data-smark='{"type":"list","name":"phones","of":"input"}'>
   <li>
     <input placeholder='Phone Number' type="text" data-smark>
     <button data-smark='{"action":"removeItem"}'>❌</button>
@@ -472,8 +478,8 @@ If only the type needs to be specified, it can be done as a regular string.
 
 **Example:**
 
-  * **Shorthand:** `<div data-smark="singleton">` 
-  * **Long Form:** `<div data-smark='{"type": "singleton"}'>`
+  * **Shorthand:** `<div data-smark="list">` 
+  * **Long Form:** `<div data-smark='{"type": "list"}'>`
 
 #### No value at all
 

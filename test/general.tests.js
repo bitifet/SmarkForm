@@ -168,7 +168,7 @@ mixin inputlist(label="Annonymous")
         div(data-smark = {
             name: name,
             type: "list",
-            of: "singleton",
+            of: "input",
             min_items,
             max_items,
         })

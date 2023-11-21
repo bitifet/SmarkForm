@@ -104,7 +104,7 @@ mixin inputlist(label="Annonymous")
         ul(data-smark = {
             name: name,
             type: "list",
-            of: "singleton",
+            of: "input",
             min_items,
             max_items,
         })
