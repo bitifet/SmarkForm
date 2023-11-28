@@ -112,6 +112,21 @@ block mainForm
                                     placeholder="Surnme"
                                 )
                         .form-group
+                            .input-group
+                                label Date of Birth
+                                input(
+                                    data-smark
+                                    name="birth"
+                                    placeholder="dd/mm/yyyy"
+                                )
+                            .input-group
+                                label Salary
+                                input(
+                                    data-smark="number"
+                                    name="salary"
+                                    placeholder="Euros"
+                                )
+                        .form-group
                             +inputlist("Telephones")(
                                 name="phones"
                                 type="tel",

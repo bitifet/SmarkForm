@@ -23,6 +23,10 @@ export class input extends form {
                 + ` data field but ${numFields} found.`
             );
         }
+        me.targetField = (
+            me.isSingleton ? me.children[0]
+            : me.target
+        );
         // console.log("New input!!!!", {
         //     target: me.target,
         //     parent: me.parent,

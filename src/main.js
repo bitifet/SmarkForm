@@ -8,6 +8,7 @@ import {trigger, onTriggerClick} from "./types/trigger.type.js";
 import {form} from "./types/form.type.js";
 import {list} from "./types/list.type.js";
 import {input} from "./types/input.type.js";
+import {number} from "./types/number.type.js";
 
 // Load core component types:
 for (const [name, controller] of Object.entries({
@@ -15,6 +16,7 @@ for (const [name, controller] of Object.entries({
     form,
     list,
     input,
+    number,
 })) createType(name,controller);
 
 
