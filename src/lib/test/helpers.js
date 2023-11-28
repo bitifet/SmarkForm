@@ -51,7 +51,7 @@ export async function renderPug({title, src, ...options} = {}) {
         };
 
     } catch (err) {
-        console.error(" 💣 Failed to render PUT test template!!!_____________________________");
+        console.error(" 💣 Failed to render PUG test template!!!_____________________________");
         console.error(err);
         console.error(" 💣 __________________________________________________________________");
     };

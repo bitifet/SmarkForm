@@ -27,7 +27,9 @@ export default [
         plugins: [
             babel({ babelHelpers: 'bundled' }),
             cleanup(),
-            terser(),
+            ...(isProduction ? [
+                terser(),
+            ] : [])
         ]
     },
     {
