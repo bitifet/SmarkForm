@@ -32,6 +32,7 @@ const errors = {
 };
 
 function inferType(node, parentComponent) {//{{{
+    const type = String(node.getAttribute("type")||"").toLowerCase();
     switch (node.tagName.toLowerCase()) {
         case "ul":
         case "ol":
@@ -41,6 +42,7 @@ function inferType(node, parentComponent) {//{{{
         case "tfoot":
             return "list";
         case "input":
+            if (type == "number") return "number";
         case "textarea":
         case "select":
             return "input";
