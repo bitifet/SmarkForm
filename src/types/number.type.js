@@ -3,7 +3,7 @@
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
 export class number extends input {
-    async render() {
+    async render() {//{{{
         await super.render();
         const me = this;
         const targetTag = me.targetField.tagName;
@@ -16,8 +16,7 @@ export class number extends input {
             , `Number inputs require an INPUT tag of type "number".`
         );
         if (! targetType) me.targetField.type = "number"; // Autofill
-        console.log(me);
-    };
+    };//}}}
     @action
     async export() {//{{{
         const data = await super.export();
@@ -26,12 +25,8 @@ export class number extends input {
             : null
         );
     };//}}}
-
-
-
     @action
     async import({data = null}) {//{{{
-        console.log("Importing:", data);
         const typename = typeof data;
         return await super.import({data:(
             typename == "number" ? data
@@ -47,7 +42,4 @@ export class number extends input {
         const value = await me.export();
         return value === null;
     };//}}}
-
-
-
 };
