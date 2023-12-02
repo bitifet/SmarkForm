@@ -270,5 +270,9 @@
         }
     }
 
+    // Form validation:
+    input:invalid {
+        background-color: lightpink;
+    }
 
 }

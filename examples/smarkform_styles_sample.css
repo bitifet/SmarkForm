@@ -265,3 +265,7 @@
     transform: translate(2px, 2px);
   }
 }
+
+.smarkForm input:invalid {
+  background-color: lightpink;
+}
