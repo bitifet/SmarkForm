@@ -2,11 +2,11 @@
 title: «list» Component Type
 layout: chapter
 permalink: /component_types/type_list
+nav_order: 2
 
 ---
 
-*list* Component Type
-=====================
+# {{ page.title }}
 
 <details>
 <summary>

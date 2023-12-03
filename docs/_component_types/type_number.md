@@ -1,8 +1,8 @@
 ---
-title: «input» Component Type
+title: «number» Component Type
 layout: chapter
-permalink: /component_types/type_input
-nav_order: 3
+permalink: /component_types/type_number
+nav_order: 4
 
 ---
 

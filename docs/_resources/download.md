@@ -6,7 +6,7 @@ nav_order: 1
 
 ---
 
-# Download
+# {{ page.title }}
 
 <details>
 <summary>

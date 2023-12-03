@@ -6,7 +6,7 @@ nav_order: 4
 
 ---
 
-# CodePen
+# {{ page.title }}
 
 You can also see **SmarkForm** in action in this complete CodePen example and
 even fork and play with all SmarkForm features: 

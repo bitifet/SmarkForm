@@ -8,7 +8,7 @@ nav_order: 2
 
 {% include links.md %}
 
-# Getting SmarkForm
+# {{ page.title }}
 
 <details>
 <summary>

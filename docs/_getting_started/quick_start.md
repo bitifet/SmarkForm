@@ -6,7 +6,7 @@ nav_order: 1
 
 ---
 
-# Quick Start
+# {{ page.title }}
 
 <details>
 <summary>

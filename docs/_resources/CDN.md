@@ -8,7 +8,7 @@ nav_order: 2
 
 {% include links.md %}
 
-# CDN
+# {{ page.title }}
 
 <details>
 <summary>

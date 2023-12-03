@@ -6,7 +6,7 @@ nav_order: 1
 
 ---
 
-## About SmarkForm
+# {{ page.title }}
 
 <details>
 <summary>
@@ -26,7 +26,7 @@ nav_order: 1
 </details>
 
 
-### Introduction
+## Introduction
 
 <b>Smarkform</b> is a powerful while effortless Markup-driven and Extendable forms.
    
@@ -54,7 +54,7 @@ They are able to develop custom component types as well which designers can then
 > release.
 
 
-### Why SmarkForm
+## Why SmarkForm
 
 Traditional HTML forms are limited in structure and lack flexibility. They only
 support a single level of discrete key-value pairs, limited to text-only
@@ -75,7 +75,7 @@ As a result, this approach leads to non-reusable and bespoke implementations
 for each form.
 
 
-### The SmarkForm Approach
+## The SmarkForm Approach
 
 SmarkForm tackles these limitations by providing a powerful and flexible
 solution for building forms directly in the markup (view layer) that seamlessly

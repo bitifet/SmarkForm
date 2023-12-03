@@ -2,11 +2,11 @@
 title: «select» Component Type
 layout: chapter
 permalink: /component_types/type_select
+nav_order: 6
 
 ---
 
-*select* Component Type
-=======================
+# {{ page.title }}
 
 <details>
 <summary>

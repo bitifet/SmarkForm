@@ -6,7 +6,7 @@ nav_order: 3
 
 ---
 
-# Examples
+# {{ page.title }}
 
 <style>
     .tab-container

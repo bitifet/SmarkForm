@@ -2,11 +2,11 @@
 title: «trigger» Component Type
 layout: chapter
 permalink: /component_types/type_trigger
+nav_order: 10000
 
 ---
 
-*trigger* Component Type
-=======================
+# {{ page.title }}
 
 <details>
 <summary>

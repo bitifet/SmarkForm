@@ -6,7 +6,7 @@ nav_order: 4
 
 ---
 
-# Core Concepts
+# {{ page.title }}
 
 <details>
 <summary>
@@ -313,6 +313,12 @@ This special behavior of the *input* component type is what we call a
   * When imported or exported, they receive and return only the value ot that
     field.
 
+{: .info}
+> Not only *input* components are *singletons*. Also all other components
+> inheriting from it (*number*, *date*...) work as singletons too.
+
+**Example:**
+
 ```html
 <div data-smark='{"type":"form","name":"personal_data"}'>
   <input name='name'  data-smark>
@@ -327,19 +333,20 @@ This special behavior of the *input* component type is what we call a
 </div>
 ```
 
-This forced us to explicitly specify the *data-smark* property in the list item
-template. To avoid this we can use the "of" property of the list to specify the
-desired SmarkForm component type:
-
-
-```html
-<ul data-smark='{"type":"list","name":"phones","of":"input"}'>
-  <li>
-    <input placeholder='Phone Number' type="text" data-smark>
-    <button data-smark='{"action":"removeItem"}'>❌</button>
-  </li>
-</ul>
-```
+{: .hint}
+> This forced us to explicitly specify the *data-smark* property in the list
+> item template. To avoid this we can use the "of" property of the list to
+> specify the desired SmarkForm component type:
+> 
+> 
+> ```html
+> <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
+>   <li>
+>     <input placeholder='Phone Number' type="text" data-smark>
+>     <button data-smark='{"action":"removeItem"}'>❌</button>
+>   </li>
+> </ul>
+> ```
 
 ### Addressability
 

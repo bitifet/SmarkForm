@@ -2,11 +2,11 @@
 title: «form» Component Type
 layout: chapter
 permalink: /component_types/type_form
+nav_order: 1
 
 ---
 
-*form* Component Type
-=====================
+# {{ page.title }}
 
 <details>
 <summary>

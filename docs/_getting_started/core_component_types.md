@@ -19,6 +19,8 @@ nav_order: 5
 * [Form](#form)
 * [List](#list)
 * [Input](#input)
+* [Number](#number)
+* [Date](#date)
 * [Select](#select)
 * [Trigger](#trigger)
 
@@ -42,6 +44,16 @@ nav_order: 5
 
 {: .hint}
 > See also: [Input Component Type]({{ "component_types/type_input" | relative_url }})
+
+## Number
+
+{: .hint}
+> See also: [Number Component Type]({{ "component_types/type_number" | relative_url }})
+
+## Date
+
+{: .hint}
+> See also: [Date Component Type]({{ "component_types/type_date" | relative_url }})
 
 ## Select
 

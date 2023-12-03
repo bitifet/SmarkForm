@@ -1,8 +1,8 @@
 ---
-title: «input» Component Type
+title: «date» Component Type
 layout: chapter
-permalink: /component_types/type_input
-nav_order: 3
+permalink: /component_types/type_date
+nav_order: 5
 
 ---
 

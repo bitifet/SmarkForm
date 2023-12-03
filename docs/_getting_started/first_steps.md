@@ -6,7 +6,7 @@ nav_order: 3
 
 ---
 
-# First Steps
+# {{ page.title }}
 
 <details>
 <summary>
