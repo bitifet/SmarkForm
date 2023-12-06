@@ -91,14 +91,14 @@ export class list extends SmarkComponent {
         });
         return;
     };//}}}
-    onActionRender({action, origin}) {
+    onTriggerRender({action, origin}) {//{{{
         switch (action) {
             case "addItem":
             case "removeItem":
                 makeNonNavigable(origin.target);
                 break;
         };
-    };
+    };//}}}
     @mutex("list_mutating")
     @action
     async export() {//{{{
@@ -371,10 +371,10 @@ export class list extends SmarkComponent {
         return await me.import({data: []});
     };//}}}
     @action
-    count() {
+    count() {//{{{
         // Return number of children.
         // But also it's sole existence allow reinjecting contents to it.
         const me = this;
         return me.children.length;
-    };
+    };//}}}
 };
