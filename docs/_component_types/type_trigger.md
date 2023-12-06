@@ -39,14 +39,14 @@ interact with it.
 For example, *list* components are provided with *addItem* and *removeItem*
 actions to add or remove items from the list.
 
-Actions can be triggered both programatically or when user interacts with an
-*action component* of the given action whose [*context*](#context) is a
+Actions can be triggered both programatically or when user interacts with a
+*trigger component* of the given action whose [*context*](#context) is a
 component of given type.
 
 
 ### Interactions
 
-Nowadays the only possible interaction for action components is the 'click'
+Nowadays the only possible interaction for trigger components is the 'click'
 event. But in the future actions are expected to listen to several events (i.e.
 right/middle/left click or even keyboard events...) which would be mapped to
 specific behaviour variations.

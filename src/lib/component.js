@@ -303,7 +303,7 @@ export class SmarkComponent {
                 .map(target=>target[sym_smart])
                 .filter(x=>x) // Ignore not yet rendered.
         ) {
-            const options = acc.getActionArgs()
+            const options = acc.getTriggerArgs()
             if (! options) continue; // Not an action.
             if (! Object.is(options.context, me)) continue;
             if ( // Matches actionName string or any in actionName array:
@@ -327,7 +327,7 @@ export class SmarkComponent {
         };
         return me.target.id
     };//}}}
-    getActionArgs() {}; // Let's easily filter out non action compoenents.
+    getTriggerArgs() {}; // Let's easily filter out non trigger compoenents.
     // Error types:
     renderError(code, message) {//{{{
         const me = this;
