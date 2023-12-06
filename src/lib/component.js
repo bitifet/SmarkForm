@@ -294,7 +294,7 @@ export class SmarkComponent {
             // Like 'document.location.hash = ""' but without leaving leading
             // hash character.
     };//}}}
-    getActions(actionNames = null) {//{{{
+    getTriggers(actionNames = null) {//{{{
         const me = this;
         const myCurrentActions = [];
         for (
@@ -304,7 +304,7 @@ export class SmarkComponent {
                 .filter(x=>x) // Ignore not yet rendered.
         ) {
             const options = acc.getTriggerArgs()
-            if (! options) continue; // Not an action.
+            if (! options) continue; // Not a trigger
             if (! Object.is(options.context, me)) continue;
             if ( // Matches actionName string or any in actionName array:
                 actionNames

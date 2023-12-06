@@ -31,7 +31,7 @@ export const foldable = function foldable_decorator(target, {kind}) {
                     : me.originalDisplayProp
                 );
 
-                me.getActions("fold").forEach(acc => {
+                me.getTriggers("fold").forEach(acc => {
                     const {foldedClass, unfoldedClass} = acc.options;
                     if (foldedClass) acc.target.classList[
                         isFolded ? "add"
@@ -43,7 +43,7 @@ export const foldable = function foldable_decorator(target, {kind}) {
                     ](unfoldedClass);
                 });
 
-                me.getActions(["addItem", "removeItem"]).map(
+                me.getTriggers(["addItem", "removeItem"]).map(
                     isFolded ? acc => acc.disable()
                     : acc => acc.enable()
                 );

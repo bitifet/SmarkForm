@@ -84,7 +84,7 @@ export class list extends SmarkComponent {
             if (me.min_items == 0) {
                 // Update "count" actions in case of not already updated by
                 // me.addItem:
-                me.getActions("count").forEach(
+                me.getTriggers("count").forEach(
                     acc=>acc.target.innerText = String(me.children.length)
                 );
             };
@@ -246,7 +246,7 @@ export class list extends SmarkComponent {
         // Execute "onRendered" callbacks:{{{
         onRenderedCbks.forEach(cbk=>cbk(newItem));
         //}}}
-        me.getActions("count").forEach(
+        me.getTriggers("count").forEach(
             acc=>acc.target.innerText = String(me.children.length)
         );
     };//}}}
@@ -345,7 +345,7 @@ export class list extends SmarkComponent {
             oldItem.target.remove();
             me.children = newChildren;
 
-            me.getActions("count").forEach(
+            me.getTriggers("count").forEach(
                 acc=>acc.target.innerText = String(me.children.length)
             );
 
