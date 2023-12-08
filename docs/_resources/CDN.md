@@ -56,10 +56,16 @@ version-specific CDNs instaed:
 
 ### CSS
 
-Bla bla bla...
+As discussed in the
+[Download Section]({{ "resources/download" | relative_url }}), you can also
+find the CSS used in our
+[Examples Section]({{ "resources/examples" | relative_url }}) as CDN resources.
 
+Just insert the following lines in your `<head>` section.
+
+  
 ```html
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/examples/smarkform_layout_sample.css'>
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.1.4/examples/smarkform_styles_sample.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/examples/smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/examples/smarkform_styles_sample.css'>
 ```
 
