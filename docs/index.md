@@ -64,6 +64,7 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 >  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
 > to see what SmarkForm is capable of in a glance!!
 
+
 ## Features
 
   * Markup-driven and Intuitive API.
@@ -74,6 +75,23 @@ with no need to deal with complex JavaScript code. \[[More...]({{
   * Lightweight yet highly compatible.
   * [More...]({{ "about/features" | relative_url }})
 
+
+## Sample Code:
+
+```html
+<ul data-smark='{
+    type: "list",
+    name: "phones",
+    of: "input",
+    maxItems: 3,
+}'>
+  <li>
+    <input placeholder='Phone Number' type="tel" data-smark>
+    <button data-smark='{"action":"removeItem"}'>❌</button>
+  </li>
+</ul>
+<button data-smark='{"action":"addItem","for":"phones"}'>➕</button>
+```
 
 
 ## Current Status

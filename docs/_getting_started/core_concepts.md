@@ -71,10 +71,10 @@ descendant of any depth.
 ```html
 <div id='myForm'> <!-- SmarkForm Component -->
   <input name='userId' data-smark> <!-- SmarkForm Component -->
-  <ul>
-    <li><input name='name' data-smark> <!-- SmarkForm Component --> </li>
-    <li><input name='surname' data-smark> <!-- SmarkForm Component --> </li>
-  </ul>
+  <div>
+    <input name='name' data-smark /> <!-- SmarkForm Component --> 
+    <input name='surname' data-smark /> <!-- SmarkForm Component --> 
+  </div>
   <script>
     const myForm = new SmarkForm(document.getElementById("myForm"));
   </script>
@@ -325,7 +325,7 @@ This special behavior of the *input* component type is what we call a
   <input name='surname' data-smark>
   <ul data-smark='{"type":"list","name":"phones"}'>
     <li data-smark='{"type":"input"}'>
-      <input placeholder='Phone Number' type="text" data-smark>
+      <input placeholder='Phone Number' type="tel" data-smark>
       <button data-smark='{"action":"removeItem"}'>❌</button>
     </li>
   </ul>
