@@ -25,7 +25,20 @@ export default [
             },
         ],
         plugins: [
-            babel({ babelHelpers: 'bundled' }),
+            babel({
+                babelHelpers: 'bundled',
+                presets: [
+                    ['@babel/preset-env', {
+                        //useBuiltIns: "usage",
+                        // targets: {
+                        //     esmodules: true,
+                        // },
+                    }],
+                ],
+                plugins: [
+                    ["@babel/plugin-proposal-decorators", { "version": "2023-01" }]
+                ]
+            }),
             cleanup(),
             ...(isProduction ? [
                 terser(),
