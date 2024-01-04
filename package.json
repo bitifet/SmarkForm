@@ -3,7 +3,7 @@
   "version": "0.3.1",
   "private": false,
   "type": "module",
-  "main": "dist/SmarkForm.esm.js",
+  "browser": "dist/SmarkForm.esm.js",
   "module": "dist/SmarkForm.esm.js",
   "umd": "dist/SmarkForm.umd.js",
   "scripts": {
