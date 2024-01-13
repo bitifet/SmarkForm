@@ -13,7 +13,7 @@ export default [
         input: 'src/main.js',
         output: [
             {   // ES module
-                file: pkg.main,
+                file: pkg.browser,
                 format: 'es',
                 compact: true,
             },
