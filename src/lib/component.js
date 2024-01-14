@@ -227,7 +227,7 @@ export class SmarkComponent {
         const me = this;
         return (
             target[sym_smart]
-            || target.parentElement.closest(me.selector)[sym_smart]
+            || target.parentElement?.closest(me.selector)[sym_smart]
             || null
         );
     };//}}}
