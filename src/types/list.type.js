@@ -51,7 +51,6 @@ export class list extends SmarkComponent {
             typeof me.options.max_items == "number" ? me.options.max_items
             : Infinity
         );
-        me.sortable = !! me.options.sortable;
         me.children = [];
         const numChilds = me.target.children.length;
         if (numChilds != 1) throw me.renderError(
@@ -65,7 +64,6 @@ export class list extends SmarkComponent {
             'LIST_CONTAINS_ID'
             , `List components are not allowed to contain elements with 'id' attribute`
         );
-        me.itemTpl.setAttribute("draggable", me.sortable);
         const tplOptions = me.getNodeOptions(
             me.itemTpl
             , {
@@ -79,46 +77,26 @@ export class list extends SmarkComponent {
             'LIST_ITEM_TYPE_MISSMATCH'
             , `List item type missmatch`
         );
+        // onRendered tweaks:
+        me.root.onRendered(async ()=>{
+            for(let i=0; i<me.min_items; i++) await me.addItem();
+            if (me.min_items == 0) {
+                // Update "count" actions in case of not already updated by
+                // me.addItem:
+                me.getTriggers("count").forEach(
+                    acc=>acc.target.innerText = String(me.children.length)
+                );
+            };
+        });
         me.itemTpl.remove();
+
+        // Sortable implementation:
+        me.sortable = !! me.options.sortable;
+        me.itemTpl.setAttribute("draggable", me.sortable);
+        me.children.forEach(c=>c.target.setAttribute("dragable", me.sortable));
         if (me.sortable) {
             let dragSource = null;
             let dragDest = null;
-            async function move(source, dest) {
-                const from = me.getComponent(source);
-                const to = me.getComponent(dest);
-                if (
-                    to === null // Dropped outside
-                    || from === null // (Shouldn't happen)
-                ) return;
-                const fromi = Number(from?.name);
-                const toi = Number(to?.name);
-                if (fromi == toi) {
-                    return;
-                } else if (fromi < toi) {
-                    const newChunk = [
-                        ...me.children.slice(fromi + 1, toi + 1),
-                        me.children[fromi],
-                    ].map((c, i)=>{
-                        c.name = i+fromi;
-                        c.updateId();
-                        return c;
-                    });
-                    me.children.splice(fromi, toi - fromi + 1, ...newChunk);
-                } else if (fromi > toi) {
-                    const newChunk = [
-                        me.children[fromi],
-                        ...me.children.slice(toi, fromi),
-                    ].map((c, i)=>{
-                        c.name = i+toi;
-                        c.updateId();
-                        return c;
-                    });
-                    me.children.splice(toi, fromi - toi + 1, ...newChunk);
-                };
-                const inc = fromi < toi ? 1 : -1;
-                const moveMethod = inc > 0 ? "after" : "before";
-                to.target[moveMethod](from.target);
-            };
             me.target.addEventListener("dragstart", e => {
                 if (dragSource === null) {
                     dragSource = e.target
@@ -137,23 +115,51 @@ export class list extends SmarkComponent {
                 dragDest = target;
             });
             me.target.addEventListener("dragend", async () => {
-                if (dragDest) await move(dragSource, dragDest);
+                if (dragDest)  await me.move(
+                    me.getComponent(dragSource)
+                    , me.getComponent(dragDest)
+                );
                 dragSource = null;
                 dragDest = null;
             });
         };
-        // onRendered tweaks:
-        me.root.onRendered(async ()=>{
-            for(let i=0; i<me.min_items; i++) await me.addItem();
-            if (me.min_items == 0) {
-                // Update "count" actions in case of not already updated by
-                // me.addItem:
-                me.getTriggers("count").forEach(
-                    acc=>acc.target.innerText = String(me.children.length)
-                );
-            };
-        });
+
         return;
+    };//}}}
+    async move(from, to) {//{{{
+        const me = this;
+        if (
+            to === null // Dropped outside
+            || from === null // (Shouldn't happen)
+        ) return;
+        const fromi = Number(from?.name);
+        const toi = Number(to?.name);
+        if (fromi == toi) {
+            return;
+        } else if (fromi < toi) {
+            const newChunk = [
+                ...me.children.slice(fromi + 1, toi + 1),
+                me.children[fromi],
+            ].map((c, i)=>{
+                c.name = i+fromi;
+                c.updateId();
+                return c;
+            });
+            me.children.splice(fromi, toi - fromi + 1, ...newChunk);
+        } else if (fromi > toi) {
+            const newChunk = [
+                me.children[fromi],
+                ...me.children.slice(toi, fromi),
+            ].map((c, i)=>{
+                c.name = i+toi;
+                c.updateId();
+                return c;
+            });
+            me.children.splice(toi, fromi - toi + 1, ...newChunk);
+        };
+        const inc = fromi < toi ? 1 : -1;
+        const moveMethod = inc > 0 ? "after" : "before";
+        to.target[moveMethod](from.target);
     };//}}}
     onTriggerRender({action, origin}) {//{{{
         switch (action) {
