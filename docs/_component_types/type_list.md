@@ -23,6 +23,7 @@ nav_order: 2
     * [Options](#options)
         * [min_items](#min_items)
         * [max_items](#max_items)
+        * [sortable](#sortable)
         * [of](#of)
     * [Actions](#actions)
         * [(Async) addItem (Action)](#async-additem-action)
@@ -148,9 +149,32 @@ API Reference
 
 #### min_items
 
+Establishes the minimum number of items allowed.
+
+  * **Type:** Number
+  * **Default value:** 1
+  * **Minimum value:** 0
+
+
 #### max_items
 
+Establishes the maximum number of items allowed.
+
+  * **Type:** Number
+  * **Default value:** Infinity
+  * **Minimum value:** Infinity
+
+
+#### sortable
+
+Controls wether the list can be user sorted by dragging and dropping list items.
+
+  * **Type:** Boolean
+  * **Default value:** false
+
+
 #### of
+
 
 ### Actions
 

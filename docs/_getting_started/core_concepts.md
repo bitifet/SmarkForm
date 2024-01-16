@@ -151,7 +151,7 @@ simple HTML forms that can import and export any imaginable JSON data.
 <div data-smark='{"type":"form","name":"personal_data"}'>
   <input name='name' data-smark>
   <input name='surname' data-smark>
-  <ul data-smark='{"type":"list","name":"pets"}'>
+  <ul data-smark='{"type":"list","name":"pets", "sortable":true}'>
     <li>
       <input name='species' data-smark>
       <input name='name' data-smark>
