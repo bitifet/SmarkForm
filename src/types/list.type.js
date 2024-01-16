@@ -17,6 +17,7 @@
 import {SmarkComponent} from "../lib/component.js";
 import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
+import {sortable} from "./list.decorators/sortable.deco.js";
 import {action} from "./trigger.type.js";
 import {mutex} from "../decorators/mutex.deco.js";
 
@@ -38,6 +39,7 @@ function makeNonNavigable(target) {//{{{
 // --------------------
 
 @foldable
+@sortable
 export class list extends SmarkComponent {
     render () {//{{{
         const me = this;
@@ -89,41 +91,6 @@ export class list extends SmarkComponent {
             };
         });
         me.itemTpl.remove();
-
-        // Sortable implementation:
-        me.sortable = !! me.options.sortable;
-        me.itemTpl.setAttribute("draggable", me.sortable);
-        me.children.forEach(c=>c.target.setAttribute("dragable", me.sortable));
-        if (me.sortable) {
-            let dragSource = null;
-            let dragDest = null;
-            me.target.addEventListener("dragstart", e => {
-                if (dragSource === null) {
-                    dragSource = e.target
-                } else {
-                    // Single dragging at a time.
-                    e.preventDefault();
-                };
-            });
-            me.target.addEventListener("dragover", e => e.preventDefault());
-            me.target.addEventListener("drop", e => {
-                let target = e.target;
-                while (
-                    target.parentElement
-                    && target.parentElement != dragSource.parentElement
-                ) target = target.parentElement;
-                dragDest = target;
-            });
-            me.target.addEventListener("dragend", async () => {
-                if (dragDest)  await me.move(
-                    me.getComponent(dragSource)
-                    , me.getComponent(dragDest)
-                );
-                dragSource = null;
-                dragDest = null;
-            });
-        };
-
         return;
     };//}}}
     async move(from, to) {//{{{
