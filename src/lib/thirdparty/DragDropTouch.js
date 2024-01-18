@@ -256,7 +256,9 @@ let DragDropTouch;
                 // user clicked the element but didn't drag, so clear the source and simulate a click
                 if (!this._img) {
                     this._dragSource = null;
-                    this._dispatchEvent(this._lastTouch, 'click', e.target);
+                    /// <Fix 01>: Avoid duplicating click event:
+                    /// this._dispatchEvent(this._lastTouch, 'click', e.target);
+                    /// </Fix 01>
                     this._lastClick = Date.now();
                 }
                 // finish dragging
