@@ -3,8 +3,6 @@
 
 import {createType} from "./lib/component.js";
 
-import "./lib/thirdparty/DragDropTouch.js";
-
 // Import core component types and event handlers:
 import {trigger, onTriggerClick} from "./types/trigger.type.js";
 import {form} from "./types/form.type.js";
