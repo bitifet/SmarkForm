@@ -47,8 +47,12 @@ permalink: /
 
 ## Powerful while effortless Markup-driven and Extendable forms.
 
-[![npm dependents](https://badgen.net/npm/dependents/smarkform)](https://www.npmjs.com/package/smarkform?activeTab=dependents)
-[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![NPM Version][npm-image]][npm-url]
+[![npm dependents](depends-image)](depends-url)
+[![npms.io](quality-image)](quality-url)
+[![npms.io](maintenance-image)](maintenance-url)
+[![NPM Downloads][downloads-image]][downloads-url]
+[![License](license-image)](license-url)
 
 
 **SmarkForm** is a powerful library for creating markup-driven and extendable
@@ -128,3 +132,15 @@ and expand the functionality of SmarkForm.
 >     for more details...
 
 
+[npm-image]: https://img.shields.io/npm/v/smarkform.svg
+[npm-url]: https://npmjs.org/package/smarkform
+[depends-image]: https://badgen.net/npm/dependents/smarkform
+[depends-url]: https://www.npmjs.com/package/smarkform?activeTab=dependents
+[quality-image]: https://img.shields.io/npms-io/quality/smarkform
+[quality-url]: https://npms.io/search?q=smarkform
+[downloads-image]: https://img.shields.io/npm/dm/smarkform.svg
+[downloads-url]: https://npmjs.org/package/smarkform
+[maintenance-image]: https://img.shields.io/npms-io/maintenance/smarkform
+[maintenance-url]: https://npms.io/search?q=smarkform
+[license-image]: https://img.shields.io/badge/license-MIT-brightgreen.svg
+[license-url]: https://opensource.org/licenses/MIT
