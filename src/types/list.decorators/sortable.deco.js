@@ -1,3 +1,7 @@
+// types/list.decorators/sortable.deco.js
+// ======================================
+
+import {mutex} from "../../decorators/mutex.deco.js";
 
 export const sortable = function list_sortable_decorator(target, {kind}) {
     if (kind == "class") {
@@ -40,6 +44,42 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 };
 
                 return retv;
+            };//}}}
+            @mutex("list_mutating")
+            async move(from, to) {//{{{
+                const me = this;
+                if (
+                    to === null // Dropped outside
+                    || from === null // (Shouldn't happen)
+                ) return;
+                const fromi = Number(from?.name);
+                const toi = Number(to?.name);
+                if (fromi == toi) {
+                    return;
+                } else if (fromi < toi) {
+                    const newChunk = [
+                        ...me.children.slice(fromi + 1, toi + 1),
+                        me.children[fromi],
+                    ].map((c, i)=>{
+                        c.name = i+fromi;
+                        c.updateId();
+                        return c;
+                    });
+                    me.children.splice(fromi, toi - fromi + 1, ...newChunk);
+                } else if (fromi > toi) {
+                    const newChunk = [
+                        me.children[fromi],
+                        ...me.children.slice(toi, fromi),
+                    ].map((c, i)=>{
+                        c.name = i+toi;
+                        c.updateId();
+                        return c;
+                    });
+                    me.children.splice(toi, fromi - toi + 1, ...newChunk);
+                };
+                const inc = fromi < toi ? 1 : -1;
+                const moveMethod = inc > 0 ? "after" : "before";
+                to.target[moveMethod](from.target);
             };//}}}
         };
     };
