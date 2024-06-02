@@ -11,8 +11,7 @@
     "dev": "rollup -c -w",
     "doc": "cd docs && bundle install && bundle exec jekyll serve --livereload",
     "test": "mocha",
-    "pretest": "npm run build",
-    "start": "node ./playground/bin/www.js"
+    "pretest": "npm run build"
   },
   "repository": {
     "type": "git",
