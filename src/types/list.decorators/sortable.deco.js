@@ -34,10 +34,10 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                         dragDest = target;
                     });
                     me.target.addEventListener("dragend", async () => {
-                        if (dragDest)  await me.move(
-                            me.getComponent(dragSource)
-                            , me.getComponent(dragDest)
-                        );
+                        if (dragDest)  await me.move({
+                            from: me.getComponent(dragSource),
+                            to: me.getComponent(dragDest),
+                        });
                         dragSource = null;
                         dragDest = null;
                     });
@@ -46,8 +46,15 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 return retv;
             };//}}}
             @mutex("list_mutating")
-            async move(from, to) {//{{{
+            async move(options = {}) {//{{{
                 const me = this;
+                let {
+                    from,
+                    to,
+                } = options;
+                //
+                // TODO: Convert to action!!!
+                //
                 if (
                     to === null // Dropped outside
                     || from === null // (Shouldn't happen)

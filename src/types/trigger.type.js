@@ -35,7 +35,12 @@ export class trigger extends SmarkComponent {
     getTriggerArgs() {//{{{
         const me = this;
         const parents = [...me.parents];
-        const { action:actionSpec, for: path, to: toTarget} = me.options;
+        const {
+            // property: local variable
+            action: actionSpec,
+            for: path,          // Define context component
+            to: toTarget,       // Define targetted child
+        } = me.options;
         if (! actionSpec) return; // Not a trigger component.
 
         // Allow binding triggers to specific component types:
