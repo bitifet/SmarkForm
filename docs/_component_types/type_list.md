@@ -121,14 +121,14 @@ To use the List component, follow these steps:
          <button data-smark="{action='removeItem'}">Remove Item</button>
        </li>
      </ul>
-     <button data-smark="{action='addItem', for='myForm'}">Remove Item</button>
+     <button data-smark="{action='addItem', context='myForm'}">Remove Item</button>
    </div>
    ```
 
    > 📌 The *removeItem* action here takes its containing component (the
    > implicitly created form over ``<li>`` template)) as its target (an its
    > containing list as its context). On the other hand, the *addItem* action,
-   > being outside of the list, uses the *for* property to specify the
+   > being outside of the list, uses the *context* property to specify the
    > (relative) path to its context. In this case, being target unspecified,
    > new items will be appended at the end of the list.
 

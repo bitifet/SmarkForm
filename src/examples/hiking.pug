@@ -97,7 +97,7 @@ block mainForm
             .spacer
             button.inline(data-smark={
                 action: "addItem",
-                for: "stops",
+                context: "stops",
             }) Add Stop Place
         h3 Destination
         .form-group(data-smark={
@@ -147,7 +147,7 @@ block mainForm
             .spacer
             button.inline(data-smark={
                 action: "addItem",
-                for: "organizers",
+                context: "organizers",
             }) Add Organizer
 
         h3 Participants:
@@ -169,7 +169,7 @@ block mainForm
             .spacer
             button.inline(data-smark={
                 action: "addItem",
-                for: "participants",
+                context: "participants",
             }) Add Participant
     section
         .form-group

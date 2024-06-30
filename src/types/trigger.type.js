@@ -38,8 +38,9 @@ export class trigger extends SmarkComponent {
         const {
             // property: local variable
             action: actionSpec,
-            for: path,          // Define context component
+            context: path,          // Define context component
             to: toTarget,       // Define targetted child
+            ...otherOptions
         } = me.options;
         if (! actionSpec) return; // Not a trigger component.
 
@@ -67,7 +68,7 @@ export class trigger extends SmarkComponent {
             origin: me,
             context,
             target,
-            ...me.options
+            ...otherOptions,
         };
 
     };//}}}

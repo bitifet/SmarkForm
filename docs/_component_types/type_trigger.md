@@ -72,7 +72,7 @@ That is, by default, the **second** nearest ancestor (because nearest ancestor
 is the default [target](#target)) of the trigger component whose type implements
 an action of that name.
 
-In trigger components the context can be altered by using the *for* property,
+In trigger components the context can be altered by using the *context* property,
 consisting a relative (starting from default context) or absolute path to the
 desired context.
 
@@ -81,7 +81,7 @@ list outside of the actual list.
 
 **Example:**
 ```html
-<button data-smark='{"action":"addItem","for":"myList"}'></button>
+<button data-smark='{"action":"addItem","context":"myList"}'></button>
 <ul data-smark="{}">
   <li>...</li>
 </ul>
@@ -112,7 +112,7 @@ the item of the list that is going to be removed.
 **Example:**
 
 ```html
-<button data-smark='{"action":"addItem","for":"myList"}'></button>
+<button data-smark='{"action":"addItem","context":"myList"}'></button>
 <ul data-smark="{}">
   <li>
     ...

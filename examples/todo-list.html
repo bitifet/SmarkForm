@@ -155,8 +155,8 @@
         <section>
           <div class='form-group h1 nowrap'>
             <div class='spacer'></div>
-            <button data-smark='{"action":"import","for":"tasklist"}'>📂 Import (JSON)</button>
-            <button data-smark='{"action":"export","for":"tasklist"}'>💾 Export (JSON)</button>
+            <button data-smark='{"action":"import","context":"tasklist"}'>📂 Import (JSON)</button>
+            <button data-smark='{"action":"export","context":"tasklist"}'>💾 Export (JSON)</button>
           </div>
           <div class='form-group' data-smark='{"type":"list","name":"tasklist","exportEmpties":true,"min_items":0}'>
             <fieldset class='form-group aside reverse' data-smark='{"exportEmpties":false}'>
@@ -182,9 +182,9 @@
           </div>
           <div class='form-group f1 nowrap' style='text-align: right'>
             <div class='spacer'></div>
-            <button data-smark='{"action":"empty","for":"tasklist","autoscroll":"elegant"}' title='Clear form data'>❌ Clear all</button>
-            <button data-smark='{"action":"removeItem","for":"tasklist","to":"*","autoscroll":"elegant","keep_non_empty":true}' title='Clear all empty tasks'>🧹 Clear empty</button>
-            <button data-smark='{"action":"addItem","for":"tasklist"}'>➕ Add new task</button>
+            <button data-smark='{"action":"empty","context":"tasklist","autoscroll":"elegant"}' title='Clear form data'>❌ Clear all</button>
+            <button data-smark='{"action":"removeItem","context":"tasklist","to":"*","autoscroll":"elegant","keep_non_empty":true}' title='Clear all empty tasks'>🧹 Clear empty</button>
+            <button data-smark='{"action":"addItem","context":"tasklist"}'>➕ Add new task</button>
           </div>
         </section>
         <!-- END SmarkForm sample-->

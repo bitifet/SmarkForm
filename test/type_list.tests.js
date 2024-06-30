@@ -12,22 +12,22 @@ block mainForm
                 span Employees (
                 span(data-smark={
                     action: "count",
-                    for: "employees",
+                    context: "employees",
                 })
                 span )
             button(data-smark = {
                 action: "addItem",
-                for: "employees",
+                context: "employees",
                 autoscroll: "self",
             }) ➕
             button(data-smark = {
                 action: "removeItem",
-                for: "employees",
+                context: "employees",
                 keep_non_empty: true,
             }, title="Remove last non-empty employee") ➖
             button(data-smark = {
                 action: "removeItem",
-                for: "employees",
+                context: "employees",
                 to: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
@@ -73,18 +73,18 @@ block mainForm
         div
             button(data-smark = {
                 action: "addItem",
-                for: "employees",
+                context: "employees",
                 autoscroll: "elegant",
             }) ➕
             button(data-smark = {
                 action: "removeItem",
-                for: "employees",
+                context: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
             button(data-smark = {
                 action: "removeItem",
-                for: "employees",
+                context: "employees",
                 to: "*",
                 autoscroll: "elegant",
                 keep_non_empty: true,

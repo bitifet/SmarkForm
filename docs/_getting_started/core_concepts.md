@@ -157,8 +157,8 @@ simple HTML forms that can import and export any imaginable JSON data.
       <input name='name' data-smark>
     </li>
   </ul>
-  <button data-smark='{"action":"addItem","for":"pets"}'>Add Pet</button>
-  <button data-smark='{"action":"removeItem","for":"pets"}'>Remove Pet</button>
+  <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
+  <button data-smark='{"action":"removeItem","context":"pets"}'>Remove Pet</button>
 </div>
 ```
 
@@ -183,9 +183,9 @@ simple HTML forms that can import and export any imaginable JSON data.
 👉 *Trigger* components have a "natural context" which is the closest
 *SmarkForm* component conaining it (That is: *personal_data* subform in
 previous example) but its actual *context* is the closest component
-**implementing that action** unless overridden by the *for* property.
+**implementing that action** unless overridden by the *context* property.
 
-The *for* property specifies the *relative path*, from its *natural context*
+The *context* property specifies the *relative path*, from its *natural context*
 to the actual context of the trigger.
 
 ### Triggers target
@@ -211,9 +211,9 @@ items allowing users to cherry-pick which item to remove:
     <button data-smark='{"action":"removeItem"}'>❌</button>
   </li>
 </ul>
-<button data-smark='{"action":"addItem","for":"pets"}'>➕</button>
+<button data-smark='{"action":"addItem","context":"pets"}'>➕</button>
 <!-- (Optionally we can keep both)
-<button data-smark='{"action":"removeItem","for":"pets"}'>➖</button>
+<button data-smark='{"action":"removeItem","context":"pets"}'>➖</button>
 -->
 ```
 
@@ -244,7 +244,7 @@ type's *removeItem* action, may lead to several interesting combinations:
 <button
     data-smark='{
         "action":"removeItem",
-        "for":"pets",
+        "context":"pets",
         "keep_non_empty":true
     }'
 >Remove Pet</button>
@@ -255,7 +255,7 @@ type's *removeItem* action, may lead to several interesting combinations:
 <button
     data-smark='{
         "action":"removeItem",
-        "for":"pets",
+        "context":"pets",
         "to":"*",
         "keep_non_empty":true
     }'
@@ -267,7 +267,7 @@ type's *removeItem* action, may lead to several interesting combinations:
 <button
     data-smark='{
         "action":"removeItem",
-        "for":"pets",
+        "context":"pets",
         "to":"*",
     }'
 >Remove All Pets</button>
@@ -329,7 +329,7 @@ This special behavior of the *input* component type is what we call a
       <button data-smark='{"action":"removeItem"}'>❌</button>
     </li>
   </ul>
-  <button data-smark='{"action":"addItem","for":"phones"}'>➕</button>
+  <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
 </div>
 ```
 
@@ -350,7 +350,7 @@ This special behavior of the *input* component type is what we call a
 
 ### Addressability
 
-In the previous examples we have seen the *for* and *to* properties that let us
+In the previous examples we have seen the *context* and *to* properties that let us
 pointing to some *SmarkForm* component from another.
 
 It may seem we simply used the value of the *name* property of the field we
@@ -528,13 +528,13 @@ The following properties are (nearly) mandatory:
 Depending on the actual component type other properties may be applicable.
 
 In case of *triggers*, despite `type`and `name`, is worth to mention that,
-except for the `for` and `to` properties
+except for the `context` and `to` properties
 
 
 FIXME: To be continued...
 //// ** ... the rest of available properties depend on the type of its [context]()...
 
-TODO: Link 'for' and 'to' to propper type_trigger.md section...
+TODO: Link 'context' and 'to' to propper type_trigger.md section...
 
 
 
@@ -567,7 +567,7 @@ It looks like as follows:
 *Actions* are operations that can be performed over components.
 
 Some of them such as `import`, `export` and `empty` are available for all
-components types while others are tied to secific types like `addItem` an d
+components types while others are tied to secific types like `addItem` and
 `removeItem` for lists, etc...
 
 

@@ -35,7 +35,7 @@ nav_order: 2
   * [x] Create powerful interactive forms with just plain HTML.
   * [x] Just add `data-smark` attribute to relevant tags and see the magic.
   * [x] Intuitive option names.
-    - **Ex.:** `<button data-smark='{action: "addItem", for: "myList">`
+    - **Ex.:** `<button data-smark='{action: "addItem", context: "myList">`
 
 
 ## Easy to use

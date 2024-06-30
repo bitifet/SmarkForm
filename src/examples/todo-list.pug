@@ -13,8 +13,8 @@ block mainForm
     section
       .form-group.h1.nowrap
         .spacer
-        button(data-smark='{"action":"import","for":"tasklist"}') 📂 Import (JSON)
-        button(data-smark='{"action":"export","for":"tasklist"}') 💾 Export (JSON)
+        button(data-smark='{"action":"import","context":"tasklist"}') 📂 Import (JSON)
+        button(data-smark='{"action":"export","context":"tasklist"}') 💾 Export (JSON)
       .form-group(data-smark={
           type:"list",
           name:"tasklist",
@@ -40,16 +40,16 @@ block mainForm
         .spacer
         button(data-smark = {
             action: "empty",
-            for: "tasklist",
+            context: "tasklist",
             autoscroll: "elegant",
         }, title="Clear form data") ❌ Clear all
         button(data-smark = {
             action: "removeItem",
-            for: "tasklist",
+            context: "tasklist",
             to: "*",
             autoscroll: "elegant",
             keep_non_empty: true,
         }, title="Clear all empty tasks") 🧹 Clear empty
-        button(data-smark='{"action":"addItem","for":"tasklist"}') ➕ Add new task
+        button(data-smark='{"action":"addItem","context":"tasklist"}') ➕ Add new task
 
 

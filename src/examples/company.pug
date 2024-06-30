@@ -53,7 +53,7 @@ block mainForm
             span.foldButton(
                 data-smark={
                     action: "fold",
-                    for: "employees",
+                    context: "employees",
                     foldedClass: "folded",
                 }
             )
@@ -61,24 +61,24 @@ block mainForm
                 span Employees (
                 span(data-smark={
                     action: "count",
-                    for: "employees",
+                    context: "employees",
                 })
                 span )
             .form-group
                 .spacer
                 button(data-smark = {
                     action: "addItem",
-                    for: "employees",
+                    context: "employees",
                     autoscroll: "self",
                 }, title="Add employee") ➕
                 button(data-smark = {
                     action: "removeItem",
-                    for: "employees",
+                    context: "employees",
                     keep_non_empty: true,
                 }, title="Remove employees from bottom priorizing empties") ➖
                 button(data-smark = {
                     action: "removeItem",
-                    for: "employees",
+                    context: "employees",
                     to: "*",
                     keep_non_empty: true,
                 }, title="Clear all empty employees") 🧹
@@ -148,18 +148,18 @@ block mainForm
             .spacer
             button(data-smark = {
                 action: "addItem",
-                for: "employees",
+                context: "employees",
                 autoscroll: "elegant",
             }, title="Add employee") ➕
             button(data-smark = {
                 action: "removeItem",
-                for: "employees",
+                context: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove employees from bottom priorizing empties") ➖
             button(data-smark = {
                 action: "removeItem",
-                for: "employees",
+                context: "employees",
                 to: "*",
                 autoscroll: "elegant",
                 keep_non_empty: true,

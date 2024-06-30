@@ -140,7 +140,7 @@ list itself.
     <button data-smark='{"action":"removeItem"}'>❌</button>
   </li>
 </ul>
-<button data-smark='{"action":"addItem","for":"phones"}'>➕</button>
+<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
 ```
 
 
