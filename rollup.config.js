@@ -16,12 +16,14 @@ export default [
                 file: pkg.browser,
                 format: 'es',
                 compact: true,
+                sourcemap: true,
             },
             {   // UMD module
                 name: 'SmarkForm',
                 file: pkg.umd,
                 format: 'umd',
                 compact: true,
+                sourcemap: true,
             },
         ],
         plugins: [
@@ -40,9 +42,7 @@ export default [
                 ]
             }),
             cleanup(),
-            ...(isProduction ? [
-                terser(),
-            ] : [])
+            terser(),
         ]
     },
     {
