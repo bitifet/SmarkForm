@@ -38,8 +38,8 @@ export class trigger extends SmarkComponent {
         const {
             // property: local variable
             action: actionSpec,
-            context: path,          // Define context component
-            to: toTarget,       // Define targetted child
+            context: contextPath,     // Define context component
+            target: targetPath,       // Define targetted child component
             ...otherOptions
         } = me.options;
         if (! actionSpec) return; // Not a trigger component.
@@ -49,7 +49,7 @@ export class trigger extends SmarkComponent {
         let [actionName, targetType] = actionSpec.split(":").reverse();
 
         const context = (
-            path ? me.parent.find(path)
+            contextPath ? me.parent.find(contextPath)
             : parents.find(p=>{
                 if (targetType && p.options.type != targetType) return false;
                 if (typeof p.actions[actionName] != "function") return false;
@@ -58,8 +58,8 @@ export class trigger extends SmarkComponent {
         );
 
         const target = (
-            toTarget ? context.find(toTarget) // Explicit target (context relative)
-            : path ? null // Explicit context path => don't mind component position
+            targetPath ? context.find(targetPath) // Explicit target (context relative)
+            : contextPath ? null // Explicit context path => don't mind component position
             : parents.find(p=>p.parent?.target.isSameNode(context?.target))
         );
 

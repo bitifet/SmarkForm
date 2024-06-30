@@ -87,7 +87,7 @@ block mainForm
             button(data-smark = {
                 action: "removeItem",
                 context: "employees",
-                to: "*",
+                target: "*",
                 keep_non_empty: true,
             }, title="Clear all empty employee") 🧹
         div
@@ -149,7 +149,7 @@ block mainForm
             button(data-smark = {
                 action: "removeItem",
                 context: "employees",
-                to: "*",
+                target: "*",
                 autoscroll: "elegant",
                 keep_non_empty: true,
             }, title="Clear all empty employees") 🧹
