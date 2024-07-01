@@ -1,10 +1,13 @@
-import pkg from './package.json';
-
 import { babel } from '@rollup/plugin-babel';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
-import pug from './rollup-plugins/rollup-plugin-pug';
-import sass from './rollup-plugins/rollup-plugin-sass';
+import pug from './rollup-plugins/rollup-plugin-pug.js';
+import sass from './rollup-plugins/rollup-plugin-sass.js';
+
+///import pkg from './package.json' assert { type: 'json' };
+///-> Importing JSON modules is an experimental feature and might change at any time
+import { readFileSync } from 'fs';
+const pkg = JSON.parse(readFileSync('./package.json'));
 
 const isProduction = process.env.BUILD === 'production';
 
@@ -42,7 +45,12 @@ export default [
                 ]
             }),
             cleanup(),
-            terser(),
+            terser({
+                compress: {
+                    // Fix terser bug removing actually used assignment:
+                    unused: false,
+                },
+            }),
         ]
     },
     {

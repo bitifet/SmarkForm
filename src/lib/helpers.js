@@ -1,4 +1,4 @@
-
+"use strict";
 export function getRoots(target, selector){//{{{
     const parent = target.parentNode;
     const isTop = (
