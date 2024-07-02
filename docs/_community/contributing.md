@@ -16,11 +16,11 @@ nav_order: 2
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Contents](#contents)
-* [Build processs](#build-processs)
-* [Dev process](#dev-process)
-* [Testing](#testing)
-* [Documenting](#documenting)
+* [Scripts](#scripts)
+    * [npm run build](#npm-run-build)
+    * [npm run dev](#npm-run-dev)
+    * [npm run test](#npm-run-test)
+    * [npm run doc](#npm-run-doc)
 * [Code of Conduct](#code-of-conduct)
 * [Help](#help)
 
@@ -41,24 +41,32 @@ project.
 > questions or suggestions.
 
 
-## Contents
-
-<!-- vim-markdown-toc GitLab -->
-
-* [Build processs](#build-processs)
-* [Dev process](#dev-process)
-* [Testing](#testing)
-* [Documenting](#documenting)
-* [Code of Conduct](#code-of-conduct)
-* [Help](#help)
-
-<!-- vim-markdown-toc -->
 
 
-## Build processs
+## Scripts
+
+In order to facilitate the development process, the *scripts* section of
+*package.json* file define the following commands:
+
+
+### npm run build
+
+Runs the building process of *SmarkForm* library.
+
+It creates the follwing files:
+
+  * *SmarkForm.esm.js* - SmarkForm ESM module.
+
+  * *SmarkForm.umd.js* - SmarkForm UMD package.
+
+  * *SmarkForm.esm.js.map* and *SmarkForm.umd.js.map* - Sourcemap files for
+    that modules.
+
+
+**Example:**
 
 ```sh
-joanmi@constructor:~/.../lib/SmarkForm$ npm run build
+$ npm run build
 
 > smarkform@0.4.0 build
 > rollup -c --environment BUILD:production
@@ -76,13 +84,14 @@ index
 created tmp/index.js in 220ms
 ```
 
-## Dev process
+### npm run dev
 
-To check you changes as you go, run the following command:
 
-``npm run dev``
+Runs the building process in *watch* mode so output files are regenerated every
+time single source file is modified and starts a simple http server to ease
+checking that generated *examples* work propperly with them.
 
-This:
+That is:
 
   * Builds both ESM and UMD modules into */dist*.
   * Builds *sourcemap* files for them.
@@ -134,13 +143,10 @@ $ npm run dev
 > Let me know if you have a better approach.
 
 
-## Testing
+### npm run test
 
-To run tests, execute the following command:
 
-```sh
-npm run test
-```
+Runs existing tests.
 
 
 **Example:**
@@ -185,7 +191,7 @@ created tmp/index.js in 245ms
   8 passing (2s)
 ```
 
-## Documenting
+### npm run doc
 
 SmarkForm documentation is published at:
 [https://smarkform.bitifet.net](https://smarkform.bitifet.net).
@@ -199,9 +205,8 @@ Source files can be found in the */docs* directory of this repository.
 
 To compile / see the results, you can run the following command:
 
-```sh
-npm run doc
-```
+```npm run doc```
+
 
 **Example:**
 
