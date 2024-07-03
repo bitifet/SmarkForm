@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c -w",
-    "dev": "concurrently -n server,rollup \"http-server --no-dotfiles -c-1\" \"rollup -c -w\"",
+    "dev": "npx concurrently -n server,rollup \"npx http-server --no-dotfiles -c-1\" \"rollup -c -w\"",
     "doc": "cd docs && bundle install && bundle exec jekyll serve --livereload",
     "test": "mocha",
     "pretest": "npm run build"
@@ -45,8 +45,6 @@
     "@babel/preset-env": "^7.24.7",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-terser": "^0.4.4",
-    "concurrently": "^8.2.2",
-    "http-server": "^14.1.1",
     "mocha": "^10.5.2",
     "node-sass": "^9.0.0",
     "pug": "^3.0.3",
