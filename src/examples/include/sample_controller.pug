@@ -3,44 +3,53 @@ script.
     document.addEventListener('DOMContentLoaded', function() {
 
         // <!-- BEGIN controller sample-->
-        // Form instantiation:
-        // -------------------
-        window.form = new SmarkForm(
-            document.querySelector("#main-form")
-            , {
-                // Do Something on export action:
-                onAfterAction_export({data}) {
-                    alert (JSON.stringify(data, null, 4));
-                },
-                // Ask for confirm on empty action
-                // ...but only if form is not already empty:
-                async onBeforeAction_empty({context, preventDefault}) {
-                    if (
-                        ! await context.isEmpty()
-                        && ! confirm("Are you sure?")
-                    ) preventDefault();
-                },
-                // Fetching data on import action (example):
-                onBeforeAction_import(options) {
-                    let data = prompt('Provide JSON data');
-                    try {
-                        options.data = JSON.parse(data);
-                    } catch (err) {
-                        if (data.length) {
-                            alert ('⚠️  Invalid JSON!!');
-                            data = null;
-                        } else {
-                            data = {}; // Drop form contents
-                        };
-                    };
-                    if (data === null) options.preventDefault();
-                },
-            }
+
+        // Essential:
+        // ==========
+
+        // SmarkForm instantiation:
+        const myForm = new SmarkForm(document.querySelector("#main-form"));
+
+
+        // Import / Export data handling:
+        // ==============================
+
+        // Do Something on export action:
+        myForm.on("AfterAction_export"
+            , ({data})=>alert (JSON.stringify(data, null, 4))
         );
 
-        // List items addition/removal animation:
-        // --------------------------------------
-        form
+        // Fetching data on import action (example):
+        myForm.on("BeforeAction_import", (options) => {
+            let data = prompt('Provide JSON data');
+            try {
+                options.data = JSON.parse(data);
+            } catch (err) {
+                if (data.length) {
+                    alert ('⚠️  Invalid JSON!!');
+                    data = null; // Emulate prompt cancel.
+                } else {
+                    data = {}; // Drop form contents
+                };
+            };
+            if (data === null) options.preventDefault();
+        });
+
+
+        // Aesthetic enhancements:
+        // =======================
+
+        // Ask for confirm on empty action
+        myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+            if (
+                ! await context.isEmpty() // Don't even ask if already empty
+                && ! confirm("Are you sure?") // Ask for confirmation
+            ) preventDefault(); // Abort if user cancelled
+        });
+
+        // Allow for list items addition/removal CSS animation:
+        // (Add and remove "ingoing", "ongoing" and "outgoint" CSS classes)
+        myForm
             .onAll("addItem", function({
                 newItemTarget,
                 onRendered,
@@ -71,6 +80,7 @@ script.
                 ));
             })
         ;
+
         // <!-- END controller sample-->
 
     });

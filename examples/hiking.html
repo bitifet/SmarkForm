@@ -4,8 +4,8 @@
     <title>Adventure Tracking</title>
     <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.5.0/examples/smarkform_layout_sample.css'>
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.5.0/examples/smarkform_styles_sample.css'>
+    <link rel='stylesheet' href='../examples/smarkform_layout_sample.css?foo=0.010107400860261961'>
+    <link rel='stylesheet' href='../examples/smarkform_styles_sample.css?foo=0.9794289773642209'>
     <script>
       const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
       document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
@@ -14,49 +14,58 @@
           if (backgroundAnchor) backgroundAnchor.href = bgImg;
       });
     </script>
-    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.5.0/dist/SmarkForm.umd.js'></script>
+    <script defer src='../dist/SmarkForm.umd.js?foo=0.26420506628199414'></script>
     <script>
       document.addEventListener('DOMContentLoaded', function() {
       
           // <!-- BEGIN controller sample-->
-          // Form instantiation:
-          // -------------------
-          window.form = new SmarkForm(
-              document.querySelector("#main-form")
-              , {
-                  // Do Something on export action:
-                  onAfterAction_export({data}) {
-                      alert (JSON.stringify(data, null, 4));
-                  },
-                  // Ask for confirm on empty action
-                  // ...but only if form is not already empty:
-                  async onBeforeAction_empty({context, preventDefault}) {
-                      if (
-                          ! await context.isEmpty()
-                          && ! confirm("Are you sure?")
-                      ) preventDefault();
-                  },
-                  // Fetching data on import action (example):
-                  onBeforeAction_import(options) {
-                      let data = prompt('Provide JSON data');
-                      try {
-                          options.data = JSON.parse(data);
-                      } catch (err) {
-                          if (data.length) {
-                              alert ('⚠️  Invalid JSON!!');
-                              data = null;
-                          } else {
-                              data = {}; // Drop form contents
-                          };
-                      };
-                      if (data === null) options.preventDefault();
-                  },
-              }
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
           );
       
-          // List items addition/removal animation:
-          // --------------------------------------
-          form
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on empty action
+          myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+              if (
+                  ! await context.isEmpty() // Don't even ask if already empty
+                  && ! confirm("Are you sure?") // Ask for confirmation
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Add and remove "ingoing", "ongoing" and "outgoint" CSS classes)
+          myForm
               .onAll("addItem", function({
                   newItemTarget,
                   onRendered,
@@ -87,6 +96,7 @@
                   ));
               })
           ;
+      
           // <!-- END controller sample-->
       
       });
@@ -100,7 +110,7 @@
           <style>
             .credits {
                 background: rgba(255, 255, 255, .7);
-                padding: .5em;
+                padding: 1em 1.5em;
                 margin: .3em;
                 font-size: small;
             }
@@ -134,10 +144,12 @@
 </p>
             <ul>
               <li>
-                Complete documentation and
-                <a href='https://smarkform.bitifet.net/resources/examples'>more examples</a>
-                at
+                Complete documentation at
                 <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/resources/examples'>https://smarkform.bitifet.net/resources/examples</a>
               </li>
               <li>
                 GitHub:
@@ -147,7 +159,7 @@
                 NPM:
                 <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
               </li>
-              <li><a id='background-anchor' href='#'>Background image</a>
+              <li> <a id='background-anchor' href='#'>Background image</a>
                 courtesy of 
                 <a href='https://picsum.photos/'>Lorem Picsum</a>
               </li>
@@ -235,6 +247,7 @@
         <section>
           <div class='form-group'>
             <div class='spacer'></div>
+            <button data-smark='{"action":"import"}' title='Import (JSON) data'>📂 Import</button>
             <button data-smark='{"action":"empty"}' title='Clear form data'>❌ Cancel</button>
             <button data-smark='{"action":"export"}' title='Submit form data'>💾 Submit</button>
           </div>
