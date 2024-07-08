@@ -61,11 +61,11 @@ export default [
         plugins: [
             sass({
                 outputStyle: "expanded",
-                outputDir: "examples",
+                outputDir: "docs/examples",
             }),
             pug({
                 pretty: true,
-                outputDir: "examples",
+                outputDir: "docs/examples",
                 locals: {
                     isProduction,
                     pkg,
