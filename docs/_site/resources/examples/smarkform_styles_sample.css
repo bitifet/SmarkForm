@@ -1,0 +1,271 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+:root {
+  --section-background: hsla(267, 11%, 82%, .3);
+  --fieldset-background: hsla(247, 11%, 82%, .5);
+  --round-radius: .75rem;
+  --form-gap: .2rem;
+  --layout-paddings: 1rem;
+}
+
+@media (max-width: 400px) {
+  :root {
+    --layout-paddings: .2rem;
+  }
+}
+
+.smarkForm {
+  flex: 1;
+  margin: var(--layout-paddings);
+  /* Headers and Footers */
+}
+
+.smarkForm section, .smarkForm header {
+  margin: var(--layout-paddings);
+}
+
+.smarkForm section > h1, .smarkForm header > h1 {
+  margin-top: 0px;
+}
+
+.smarkForm section {
+  background: var(--section-background);
+  border: solid 1px grey;
+  border-radius: .5em;
+  padding: var(--layout-paddings);
+}
+
+.smarkForm fieldset {
+  margin: 1em 0px;
+  padding: calc(var(--layout-paddings) / 2);
+  border-radius: .5em;
+  position: relative;
+  background: var(--fieldset-background);
+}
+
+.smarkForm .aside {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.smarkForm .aside > :not(.inline) {
+  flex: 1;
+}
+
+.smarkForm .aside > .inline {
+  display: inline-block;
+}
+
+.smarkForm .aside.reverse {
+  flex-direction: row-reverse;
+}
+
+.smarkForm .full-width {
+  width: 100%;
+}
+
+.smarkForm .form-group {
+  display: flex;
+  gap: var(--form-gap);
+  align-items: flex-start;
+  align-content: stretch;
+  justify-content: flex-start;
+  max-width: 100%;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-basis: auto;
+}
+
+.smarkForm .form-group:not(.nowrap) {
+  flex-wrap: wrap;
+}
+
+.smarkForm .spacer {
+  flex-grow: 5;
+}
+
+.smarkForm .input-group {
+  display: grid;
+  flex-grow: 1;
+  grid-template-columns: min-content 1fr;
+  gap: var(--form-gap);
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .smarkForm .input-group {
+    grid-template-columns: 1fr;
+  }
+}
+
+.smarkForm .singleton {
+  display: flex;
+  align-items: stretch;
+  margin: var(--form-gap);
+}
+
+.smarkForm .singleton input, .smarkForm .singleton textarea, .smarkForm .singleton select {
+  width: 140px;
+}
+
+.smarkForm .singleton input, .smarkForm .singleton textarea, .smarkForm .singleton select, .smarkForm .singleton button {
+  border-radius: 0px;
+}
+
+.smarkForm .singleton input:first-child, .smarkForm .singleton textarea:first-child, .smarkForm .singleton select:first-child, .smarkForm .singleton button:first-child {
+  border-radius: var(--round-radius) 0px 0px var(--round-radius);
+}
+
+.smarkForm .singleton input:last-child, .smarkForm .singleton textarea:last-child, .smarkForm .singleton select:last-child, .smarkForm .singleton button:last-child {
+  border-radius: 0px var(--round-radius) var(--round-radius) 0px;
+}
+
+.smarkForm .singleton > * {
+  z-index: 2;
+  margin: 0px !important;
+}
+
+.smarkForm .singleton > button {
+  z-index: 1;
+}
+
+.smarkForm input,
+.smarkForm textarea,
+.smarkForm select {
+  background-color: #ffffff;
+  flex-grow: 5;
+}
+
+.smarkForm input, .smarkForm textarea, .smarkForm select, .smarkForm button {
+  margin: var(--form-gap);
+  border-radius: var(--round-radius);
+  padding: .5rem 1rem;
+  width: auto;
+  font-size: inherit;
+}
+
+.smarkForm button {
+  min-width: 2rem;
+}
+
+.smarkForm textarea {
+  resize: none;
+}
+
+.smarkForm label {
+  padding-top: .3rem;
+  font-weight: bold;
+}
+
+.smarkForm label, .smarkForm button {
+  user-select: none;
+}
+
+.smarkForm a:focus,
+.smarkForm button:focus,
+.smarkForm input:focus,
+.smarkForm textarea:focus {
+  box-shadow: none;
+}
+
+.smarkForm a:focus:not([tabindex="-1"]),
+.smarkForm button:focus:not([tabindex="-1"]),
+.smarkForm input:focus:not([tabindex="-1"]),
+.smarkForm textarea:focus:not([tabindex="-1"]) {
+  outline: darkgray dotted 4px;
+  outline-offset: .05em;
+}
+
+.smarkForm h1, .smarkForm h2, .smarkForm h3, .smarkForm h4, .smarkForm h5, .smarkForm h6 {
+  user-select: none;
+}
+
+.smarkForm .form-group.h1, .smarkForm .form-group.f1 {
+  font-size: 1.6rem;
+  font-weight: bold;
+  user-select: none;
+}
+
+.smarkForm .form-group.h1 {
+  border-bottom: solid 3px;
+  margin-top: 1.5rem;
+  margin-bottom: .8rem;
+}
+
+.smarkForm .form-group.f1 {
+  border-top: solid 3px;
+  margin-bottom: 1.5rem;
+  margin-top: .8rem;
+  padding-top: .2em;
+}
+
+.smarkForm .form-group.h2, .smarkForm .form-group.f2 {
+  font-size: 1.4rem;
+  user-select: none;
+}
+
+.smarkForm .form-group.h2 {
+  border-bottom: solid 2px;
+  margin-top: 1.5rem;
+  margin-bottom: .8rem;
+}
+
+.smarkForm .form-group.f2 {
+  border-top: solid 2px;
+  margin-bottom: 1.5rem;
+  margin-top: .8rem;
+  padding-top: .2em;
+}
+
+.smarkForm .foldButton {
+  border: solid black;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  padding: .2em;
+  background: none;
+  font-size: 1.3em;
+  transition: transform .5s;
+  transform: translateY(0.2em) rotate(45deg);
+}
+
+.smarkForm .foldButton.folded {
+  transform: translateY(0.2em) rotate(-135deg);
+}
+
+@media (hover: hover) {
+  .smarkForm .foldButton:hover {
+    opacity: .5;
+  }
+  .smarkForm .foldButton:hover.folded {
+    transform: translateY(0.2em) rotate(45deg);
+  }
+  .smarkForm .foldButton:hover:not(.folded) {
+    transform: translateY(0.2em) rotate(-135deg);
+  }
+}
+
+.smarkForm .ingoing {
+  transform: scaleY(0) translateY(-50%);
+}
+
+.smarkForm .ongoing {
+  transition: transform 70ms ease-in;
+}
+
+.smarkForm .outgoing {
+  transform: scaleY(0) translateY(-50%);
+  transition: transform 70ms ease-out;
+}
+
+@media (hover: hover) {
+  .smarkForm .form-group button:not([disabled]):hover {
+    transform: translate(2px, 2px);
+  }
+}
+
+.smarkForm input:invalid {
+  background-color: lightpink;
+}

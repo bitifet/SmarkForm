@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
+  <head>
+    <title>SmarkForm TODO-List Example</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.5.0/examples/smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.5.0/examples/smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
+      });
+    </script>
+    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.5.0/dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // <!-- BEGIN controller sample-->
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
+          );
+      
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on empty action
+          myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+              if (
+                  ! await context.isEmpty() // Don't even ask if already empty
+                  && ! confirm("Are you sure?") // Ask for confirmation
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Add and remove "ingoing", "ongoing" and "outgoint" CSS classes)
+          myForm
+              .onAll("addItem", function({
+                  newItemTarget,
+                  onRendered,
+              }) {
+                  newItemTarget.classList.add("ingoing");
+                  onRendered(()=>{
+                      newItemTarget.classList.remove("ingoing")
+                      newItemTarget.classList.add("ongoing");
+                  });
+              })
+              .onAll("removeItem", async function({
+                  oldItemTarget,
+                  onRemmoved,
+              }) {
+                  oldItemTarget.classList.remove("ongoing");
+                  oldItemTarget.classList.add("outgoing");
+      
+                  // Await for transition to be finished before item removal:
+                  const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
+                      .getPropertyValue('transition-duration')
+                      .slice(0,-1).replace("m","/1")
+                      .split("/")
+                      .map(Number)
+                  ;
+                  await new Promise(resolve=>setTimeout(
+                      resolve
+                      , duration * multiplier
+                  ));
+              })
+          ;
+      
+          // <!-- END controller sample-->
+      
+      });
+    </script>
+  </head>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>SmarkForm TODO-List Example</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: 1em 1.5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://smarkform.bitifet.net'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example shows how to create a complete TO-DO list interface
+    with just a few HTML lines.
+</p>
+            <ul>
+              <li>
+                Complete documentation at
+                <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/resources/examples'>https://smarkform.bitifet.net/resources/examples</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm</a>.
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
+              </li>
+              <li> <a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
+        </header>
+        <!-- BEGIN SmarkForm sample-->
+        <section>
+          <div class='form-group h1 nowrap'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"import","context":"tasklist"}'>📂 Import (JSON)</button>
+            <button data-smark='{"action":"export","context":"tasklist"}'>💾 Export (JSON)</button>
+          </div>
+          <div class='form-group' data-smark='{"type":"list","name":"tasklist","exportEmpties":true,"min_items":0}'>
+            <fieldset class='form-group aside reverse' data-smark='{"exportEmpties":false}'>
+              <button class='inline' data-smark='{"action":"removeItem"}' title='Remove task'>❌</button>
+              <div class='form-group spacer'>
+                <div class='form-group'>
+                  <input data-smark name='title' type='text' placeholder='Task title'>
+                </div>
+                <div class='form-group'>
+                  <div class='input-group'>
+                    <label>Goals</label>
+                    <div data-smark='{"name":"goals","type":"list","of":"input","max_items":100}'>
+                      <div class='singleton'>
+                        <button data-smark='{"action":"addItem"}' title='Add new item below'>➕</button>
+                        <input data-smark='data-smark' type='text' placeholder='New goal...'/>
+                        <button data-smark='{"action":"removeItem","failback":"clear"}' title='Remove this item'>➖</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class='form-group f1 nowrap' style='text-align: right'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"empty","context":"tasklist","autoscroll":"elegant"}' title='Clear form data'>❌ Clear all</button>
+            <button data-smark='{"action":"removeItem","context":"tasklist","target":"*","autoscroll":"elegant","keep_non_empty":true}' title='Clear all empty tasks'>🧹 Clear empty</button>
+            <button data-smark='{"action":"addItem","context":"tasklist"}'>➕ Add new task</button>
+          </div>
+        </section>
+        <!-- END SmarkForm sample-->
+      </div>
+    </div>
+  </body>
+</html>
