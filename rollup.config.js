@@ -3,6 +3,7 @@ import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 import pug from './rollup-plugins/rollup-plugin-pug.js';
 import sass from './rollup-plugins/rollup-plugin-sass.js';
+import copy from 'rollup-plugin-copy'
 
 ///import pkg from './package.json' assert { type: 'json' };
 ///-> Importing JSON modules is an experimental feature and might change at any time
@@ -71,6 +72,13 @@ export default [
                     pkg,
                 },
             }),
+            copy({
+                targets: [
+                    { src: "dist/*.js", dest: "docs/dist" },
+                    { src: "docs/examples", dest: "docs/_resources/" },
+                ]
+            }),
+
         ],
     },
 ];
