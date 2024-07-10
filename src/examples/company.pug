@@ -84,17 +84,17 @@ block mainForm
                 }, title="Clear all empty employees") 🧹
         .form-group
             .form-group(data-smark = {
+                name: "employees",
                 type: "list",
                 exportEmpties: true,
                 sortable: true,
-                name: "employees",
-                min_items: 0,
             })
                 fieldset.full-width.form-group.aside.reverse(data-smark={
                     exportEmpties: false
                 })
                     button.inline(data-smark = {
                         action: "removeItem",
+                        failback: "clear",
                     }, title="Remove this employee") ➖
                     .form-group.spacer
                         .form-group
@@ -156,6 +156,7 @@ block mainForm
                 context: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
+                failback: "clear",
             }, title="Remove employees from bottom priorizing empties") ➖
             button(data-smark = {
                 action: "removeItem",

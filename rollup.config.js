@@ -74,7 +74,7 @@ export default [
             }),
             copy({
                 targets: [
-                    { src: "dist/*.js", dest: "docs/dist" },
+                    { src: "dist/*", dest: "docs/dist" },
                     { src: "docs/examples", dest: "docs/_resources/" },
                 ]
             }),

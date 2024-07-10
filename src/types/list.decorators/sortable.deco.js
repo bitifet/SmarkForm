@@ -52,6 +52,10 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                     from,
                     to,
                 } = options;
+
+                // // FIXME: Avoid nested sortables to interact.
+                // console.log({from, to}); // <--- See this!!!
+
                 //
                 // TODO: Convert to action!!!
                 //
