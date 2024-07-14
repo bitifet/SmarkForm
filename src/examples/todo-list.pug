@@ -15,7 +15,7 @@ block mainForm
         .spacer
         button(data-smark='{"action":"import","context":"tasklist"}') 📂 Import (JSON)
         button(data-smark='{"action":"export","context":"tasklist"}') 💾 Export (JSON)
-      .form-group(data-smark={
+      div(data-smark={
           type:"list",
           name:"tasklist",
           sortable: true,
