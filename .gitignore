@@ -2,7 +2,7 @@
 **.sw*
 
 # Jekyll
-#_site/
+docs/_site
 
 # Temporary files
 tmp
