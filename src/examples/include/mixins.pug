@@ -7,6 +7,7 @@ mixin inputlist(label="Annonymous")
                 min_items,
                 max_items,
                 removeFailback, // none / clear / throw
+                sortable,
                 ...atts // Extra attributes for inputs (placeholder, etc...)
             } = attributes;
         label= label
@@ -14,6 +15,7 @@ mixin inputlist(label="Annonymous")
             name: name,
             type: "list",
             of: "input",
+            sortable: sortable,
             min_items,
             max_items,
         })
