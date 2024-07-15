@@ -3,6 +3,9 @@
 
 # Jekyll
 docs/_site
+docs/_data/package.json
+docs/dist/
+docs/_resources/examples/
 
 # Temporary files
 tmp
