@@ -19,6 +19,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                     me.target.addEventListener("dragstart", e => {
                         if (dragSource === null) {
                             dragSource = e.target
+                            e.stopPropagation();
                         } else {
                             // Single dragging at a time.
                             e.preventDefault();
@@ -26,6 +27,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                     });
                     me.target.addEventListener("dragover", e => e.preventDefault());
                     me.target.addEventListener("drop", e => {
+                        if (! dragSource) return; // Already dropped
                         let target = e.target;
                         while (
                             target.parentElement
