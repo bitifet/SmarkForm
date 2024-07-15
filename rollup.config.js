@@ -62,11 +62,11 @@ export default [
         plugins: [
             sass({
                 outputStyle: "expanded",
-                outputDir: "docs/examples",
+                outputDir: "dist/examples",
             }),
             pug({
                 pretty: true,
-                outputDir: "docs/examples",
+                outputDir: "dist/examples",
                 locals: {
                     isProduction,
                     pkg,
@@ -76,7 +76,7 @@ export default [
                 targets: [
                     { src: "package.json", dest: "docs/_data/" },
                     { src: "dist/*", dest: "docs/dist" },
-                    { src: "docs/examples", dest: "docs/_resources/" },
+                    { src: "dist/examples/*", dest: "docs/_resources/examples/" },
                 ]
             }),
 

@@ -65,7 +65,7 @@ Just insert the following lines in your `<head>` section.
 
   
 ```html
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/examples/smarkform_layout_sample.css'>
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/examples/smarkform_styles_sample.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/docs/dist/examples/smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/docs/dist/examples/smarkform_styles_sample.css'>
 ```
 

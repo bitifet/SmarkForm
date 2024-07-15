@@ -1,6 +1,9 @@
 # Vim
 **.sw*
 
+# Generated files
+dist
+
 # Jekyll
 docs/_site
 docs/_data/package.json
