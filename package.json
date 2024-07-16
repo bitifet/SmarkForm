@@ -9,8 +9,8 @@
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "watch": "rollup -c -w",
-    "dev": "npx concurrently -n server,rollup \"npx http-server --no-dotfiles -c-1\" \"rollup -c -w\"",
     "doc": "cd docs && bundle install && bundle exec jekyll serve --livereload",
+    "dev": "npx concurrently -n rollup,site \"npm run watch\" \"npm run doc\"",
     "test": "mocha",
     "pretest": "npm run build"
   },
