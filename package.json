@@ -7,12 +7,14 @@
   "module": "dist/SmarkForm.esm.js",
   "umd": "dist/SmarkForm.umd.js",
   "scripts": {
-    "build": "rollup -c --environment BUILD:production",
-    "watch": "rollup -c -w",
-    "doc": "cd docs && bundle install && bundle exec jekyll serve --livereload",
-    "dev": "npx concurrently -n rollup,site \"npm run watch\" \"npm run doc\"",
+    "pretest": "npm run build",
     "test": "mocha",
-    "pretest": "npm run build"
+    "build": "rollup -c --environment BUILD:production",
+    "doc": "cd docs && bundle install && bundle exec jekyll build",
+    "bundle": "npm run build && npm run doc",
+    "watch": "rollup -c -w",
+    "servedoc": "cd docs && bundle install && bundle exec jekyll serve --livereload",
+    "dev": "npx concurrently -n rollup,site \"npm run watch\" \"npm run servedoc\""
   },
   "repository": {
     "type": "git",
