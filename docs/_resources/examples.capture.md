@@ -6,6 +6,8 @@ nav_order: 1000
 ---
 
 
+{% assign current_directory = page.path | split: '/' | slice: 0, -1 | join: '/' %}
+
 {% assign html_sources = "" %}
 {% assign js_sources = "" %}
 
@@ -13,8 +15,10 @@ nav_order: 1000
 {% for item in site.data.examples %}
 
 {% capture full_html_content %}
-{% include_relative {{ item.url }} %}
+{% include_relative {{ current_directory }}/{{ item.url }} %}
 {% endcapture %}
+
+
 
 {% assign html_head_stripped = full_html_content | split: "<!-- BEGIN SmarkForm sample-->" %}
 {% assign html_foot_stripped = html_head_stripped[1] | split: "<!-- END SmarkForm sample-->" | first | strip %}
@@ -40,13 +44,13 @@ nav_order: 1000
 
 
 {% capture html_origin %}
-<div class="example-source" data-source="{{item.url | relative_url }}">
+<div class="example-source" data-source="./{{item.url | relative_url }}">
 {{ html_content | markdownify }}
 </div>
 {% endcapture %}
 
 {% capture js_origin %}
-<div class="example-source" data-source="{{item.url | relative_url }}">
+<div class="example-source" data-source="./{{item.url | relative_url }}">
 {{ js_content | markdownify }}
 </div>
 {% endcapture %}

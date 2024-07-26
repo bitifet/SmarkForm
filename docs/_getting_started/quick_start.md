@@ -6,6 +6,8 @@ nav_order: 1
 
 ---
 
+{% include links.md %}
+
 # {{ page.title }}
 
 <details>
@@ -28,8 +30,14 @@ nav_order: 1
 </details>
 
 
-To create a SmarkForm form, you need to follow a few simple steps:
+{: .hint}
+> This section is meant to be educational. If you are eager to get your hands
+> dirty, go straight to the [Examples]({{ "resources/examples" | relative_url }})
+> section, download the one you like the
+> most, and start editing to see what happens.
 
+
+To create a SmarkForm form, you need to follow a few simple steps:
 
 ## Create an HTML document
 
@@ -84,10 +92,11 @@ Webpack or Parcel.
 > file:
 > 
 > ```javascript
-> import SmarkForm from 'https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js';
+> import SmarkForm from '{{ smarkform_esm_cdn_latest }}';
 > ```
 > 
-> See [Installation Instructions](../README.md#installation) for more details.
+> See [Installation Instructions](../README.md#installation) for more details
+> about all available options to include *SmarkForm* in your project.
 
 
 ## Initialize the Form

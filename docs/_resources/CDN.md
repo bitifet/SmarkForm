@@ -20,9 +20,9 @@ nav_order: 2
 
 * [SmarkForm](#smarkform)
     * [Latest Version](#latest-version)
-    * [Specific Version](#specific-version)
 * [Other Resources](#other-resources)
     * [CSS](#css)
+    * [Latest sample CSS:](#latest-sample-css)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -32,24 +32,25 @@ nav_order: 2
 
 ## SmarkForm
 
-### Latest Version
 
-To get latest available SmarkForm version through CDN you can use following links:
+Latest SmarkForm version is currently ({{ site.data.package.version }}).
 
-  * ESM: `{{ smarkform_esm_cdn_latest }}`
-  * UMD: `{{ smarkform_umd_cdn_latest }}`
 
-### Specific Version
-
-If you prefer to rely in specific version (let's say
-{{ site.data.package.version }}) (**recommended for production**) you can use
-version-specific CDNs instaed:
+You can link this version **(recommended)** it as CDN with following links:
 
   * ESM: `{{ smarkform_esm_cdn_current }}`
   * UMD: `{{ smarkform_umd_cdn_current }}`
 
 {: .hint}
 > See [Getting Started section]({{ "/getting_started/getting_smarkform#using-a-cdn-esiest-approach" | relative_url }}) for more details:
+
+### Latest Version
+
+If your'd rather get always latest available SmarkForm version (not recommended
+for production code) through CDN, use the following links instead:
+
+  * ESM: `{{ smarkform_esm_cdn_latest }}`
+  * UMD: `{{ smarkform_umd_cdn_latest }}`
 
 
 ## Other Resources
@@ -63,9 +64,20 @@ find the CSS used in our
 
 Just insert the following lines in your `<head>` section.
 
-  
+
 ```html
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/docs/dist/examples/smarkform_layout_sample.css'>
-    <link rel='stylesheet' href='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@{{ site.data.package.version }}/docs/dist/examples/smarkform_styles_sample.css'>
+    <link rel='stylesheet' href='{{ css_layout_cdn_current }}'>
+    <link rel='stylesheet' href='{{ css_styles_cdn_current }}'>
+```
+
+
+### Latest sample CSS:
+
+As for SmarkForm modules, if you want to always get the latest available
+example CSS files, you can use the following links instead:
+
+```html
+    <link rel='stylesheet' href='{{ css_layout_cdn_latest }}'>
+    <link rel='stylesheet' href='{{ css_styles_cdn_latest }}'>
 ```
 

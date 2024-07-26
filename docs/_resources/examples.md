@@ -46,7 +46,7 @@ nav_order: 3
 <select class="btn" id="example_switcher">
 {% for item in site.data.examples %}
     <option
-        value="{{ item.url | relative_url }}"
+        value="./{{ item.url | relative_url }}"
         title="{{ item.details }}"
     >{{ item.title }}</option>
 {% endfor %}

@@ -132,20 +132,52 @@ node_modules
 git clone git@github.com:bitifet/SmarkForm.git
 ```
 
-👉 Then, like with NPM package, you will find it under *dist* directory:
+👉 Then, like with NPM package, you will find everything under the *dist*
+directory:
 
 ```
 dist
 ├── SmarkForm.esm.js
-└── SmarkForm.umd.js
+├── SmarkForm.esm.js.map
+├── SmarkForm.umd.js
+├── SmarkForm.umd.js.map
+└── examples
+    ├── smarkform_layout_sample.css
+    └── smarkform_styles_sample.css
 ```
 
 {: .hint}
-> You can also install dev dependencies by running ``npm install`` and then
+> You can also install dev dependencies by running ``npm run dev`` to start
+> developping or ``npm run bundle`` to just rebuild everything.
 > 
-> - ``npm run build``: To build after doing some change.
-> - ``npm run dev``: To build and watch for any source file change and auto rebuild as needed.
-> - ``npm run test``: To run automated tests.
-> - ``npm start``: To run Express server with the playground environment.
+> For more information, execute ``npm run`` alone:
+> 
+> ```sh
+> $ npm run
+> Lifecycle scripts included in smarkform@0.5.1:
+>   pretest
+>     npm run build
+>   test
+>     mocha
+> available via `npm run-script`:
+>   build
+>     scripts/build_production_smarkform.sh
+>   doc
+>     scripts/build_documentation_site.sh
+>   bundle
+>     scripts/build_all.sh
+>   watch
+>     scripts/livebuild_dev_smarkform.sh
+>   servedoc
+>     scripts/liveserve_documentation_site.sh
+>   dev
+>     scripts/liveserve_documentation_site.sh
+> ```
+
+
+
+
+
+
 
 

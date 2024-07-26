@@ -61,8 +61,14 @@ When we initialize a *SmarkForm* instance over some DOM element, it is enhanced
 as **a *SmarkForm* form** component which is returned as our *root form*.
 
 ```javascript
-const myForm = new SmarkForm(some_DOM_element); // Or myRootForm
+const myForm = new SmarkForm(some_DOM_element); // Our root form
 ```
+
+{: .hint :}
+> For this to work you need to get SmarkForm loaded into your page or module.
+> More information at [Getting SmarkForm section](
+> {{ "/getting_started/getting_smarkform" | relative_url }}
+> ).
 
 👉 Then, every inner DOM element with a *data-smark* attribute, will be
 enhanced as another SmarkForm component. No matter if it is a direct child or a

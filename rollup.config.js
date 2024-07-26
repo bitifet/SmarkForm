@@ -75,8 +75,7 @@ export default [
             copy({
                 targets: [
                     { src: "package.json", dest: "docs/_data/" },
-                    { src: "dist/*", dest: "docs/dist" },
-                    { src: "dist/examples/*", dest: "docs/_resources/examples/" },
+                    { src: "dist/*", dest: "docs/_resources/dist" },
                 ]
             }),
 

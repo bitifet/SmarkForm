@@ -5,10 +5,10 @@
         css_styles_url,
         js_smarkform_url,
     ] = [
-        '/docs/_resources/examples/smarkform_layout_sample.css',
-        '/docs/_resources/examples/smarkform_styles_sample.css',
-        '/dist/SmarkForm.umd.js',
+        'dist/examples/smarkform_layout_sample.css',
+        'dist/examples/smarkform_styles_sample.css',
+        'dist/SmarkForm.umd.js',
     ].map(path=>(
-        isProduction ? `${CDN}${path}`
-        : `..${path}?foo=${Math.random()}`
+        isProduction ? `${CDN}/${path}`
+        : `/docs/_resources/${path}?foo=${Math.random()}`
     ));

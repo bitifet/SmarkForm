@@ -2,13 +2,12 @@
 **.sw*
 
 # Generated files
-dist
+dist/examples/*.html
 
 # Jekyll
 docs/_site
 docs/_data/package.json
-docs/dist/
-docs/_resources/examples/
+docs/_resources/dist/
 
 # Temporary files
 tmp
