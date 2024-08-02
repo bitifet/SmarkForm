@@ -15,7 +15,7 @@
 {% assign smarkform_esm_cdn_latest = smarkform_cdn_base
     | append: smarkform_esm_path
 %}
-{% assign smarkform_umd_cdn_latest = smarkfor_cdn_base
+{% assign smarkform_umd_cdn_latest = smarkform_cdn_base
     | append: smarkform_umd_path
 %}
 {% assign css_layout_cdn_latest = smarkform_cdn_base

@@ -24,7 +24,7 @@ permalink: /
     color: darkblue;
 }
 .SmarkForm-Hero:hover {
-    transform: scale(2,2) translate(-25%, 25%);
+    transform: scale(1.1,1.1) translate(-2.5%, 2.5%);
 }
 </style>
 

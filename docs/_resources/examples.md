@@ -46,7 +46,7 @@ nav_order: 3
 <select class="btn" id="example_switcher">
 {% for item in site.data.examples %}
     <option
-        value="./{{ item.url | relative_url }}"
+        value="{{ item.url | relative_url }}"
         title="{{ item.details }}"
     >{{ item.title }}</option>
 {% endfor %}
@@ -72,8 +72,6 @@ nav_order: 3
 </div>
 </div>
 
-
-
 <script>
     const switcher = document.getElementById("example_switcher");
     const iframe = document.getElementById("example_viewer");
@@ -81,9 +79,10 @@ nav_order: 3
     const dldLnk = document.getElementById("dld_button");
     const sources = document.getElementsByClassName("example-source");
     function updateExample() {
-        iframe.src = switcher.value;
-        fullScreenLnk.href = switcher.value;
-        dldLnk.href = switcher.value;
+        const exampleLink = "."+switcher.value;
+        iframe.src = exampleLink;
+        fullScreenLnk.href = exampleLink;
+        dldLnk.href = exampleLink;
         document.location.hash = switcher.value;
         for (let i = 0; i < sources.length; i++) {
             if (sources[i].getAttribute("data-source") == switcher.value) {
