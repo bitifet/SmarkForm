@@ -111,7 +111,6 @@ To get started with SmarkForm you can:
 
 | 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
-| 👉 ...or just try and modify any of the [🔗 Available CodePen Examples]({{ "resources/CodePen" | relative_url }}). |
 
 
 
