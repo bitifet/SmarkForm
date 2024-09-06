@@ -2,7 +2,7 @@
 title: Core Concepts
 layout: chapter
 permalink: /getting_started/core_concepts
-nav_order: 4
+nav_order: 3
 
 ---
 
