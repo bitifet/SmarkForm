@@ -18,6 +18,7 @@ nav_order: 2
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
+* [Available formats](#available-formats)
 * [Using a CDN (Esiest approach)](#using-a-cdn-esiest-approach)
     * [ES module](#es-module)
     * [UMD Module](#umd-module)
@@ -29,6 +30,23 @@ nav_order: 2
        " | markdownify }}
 
 </details>
+
+
+## Available formats
+
+**SmarkForm** is provided in two alternative formats:
+
+  * **ESM module (SmarkForm.esm.js)** which is built as an ECMAScript module
+    (ESM) and can be imported directly using the ``import`` statement in modern
+    *JavaScript* environments. It allows for
+    [tree-shaking](https://en.wikipedia.org/wiki/Tree_shaking) and efficient
+    module management. 
+
+  * **UMD (SmarkForm.umd.js)** which is a universal format that works both in
+    browsers and in module systems like CommonJS and AMD. It can be loaded
+    through any [UMD compatibley module loader](https://github.com/umdjs/umd)
+    such as [RequireJS](https://requirejs.org/) or directly via a <script> tag,
+    where it will export the SmarkForm class as a global variable.
 
 
 To incorporate **SmarkForm** to your project you have several alternatives:
@@ -116,15 +134,14 @@ node_modules
 ```
 
 {: .hint }
-> *SmarkForm.umd.js* can be loaded through any [UMD compatibley module
-> loader](https://github.com/umdjs/umd) such as RequireJS among others or just
-> with regular ``<script>`` tag, in which case it will export ``SmarkForm``
-> class as global variable.
+> If you're using [Express](https://www.npmjs.com/package/express) and
+> want to avoid publishing your entire ``node_modules`` directory or manually configuring custom
+> routes, you can use the [ESMrouter](https://www.npmjs.com/package/esmrouter)
+> package from NPM. This package simplifies routing for ECMAScript modules in
+> Express, saving you time and effort.
 
 
 ## Clone from GitHub
-
-
 
 👉 Execute:
 
@@ -146,7 +163,7 @@ dist
     └── smarkform_styles_sample.css
 ```
 
-{: .hint}
+{: .info}
 > You can also install dev dependencies by running ``npm run dev`` to start
 > developping or ``npm run bundle`` to just rebuild everything.
 > 

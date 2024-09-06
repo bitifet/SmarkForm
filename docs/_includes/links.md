@@ -40,3 +40,36 @@
 %}
 
 
+{% assign smarkform_esm_dld_link = "/resources/dist/SmarkForm.esm.js" %}
+{% assign smarkform_esm_dld_name = "SmarkForm-"
+    | append: site.data.package.version
+    | append: ".esm.js"
+%}
+
+{% assign smarkform_umd_dld_link = "/resources/dist/SmarkForm.umd.js" %}
+{% assign smarkform_umd_dld_name = "SmarkForm-"
+    | append: site.data.package.version
+    | append: ".umd.js"
+%}
+
+
+
+{% assign smarkform_css_layout_dld_link = "/resources/dist/examples/smarkform_layout_sample.css" %}
+{% assign smarkform_css_layout_dld_name = "SmarkForm_layout-"
+    | append: site.data.package.version
+    | append: ".css"
+%}
+
+{% assign smarkform_css_styles_dld_link = "/resources/dist/examples/smarkform_styles_sample.css" %}
+{% assign smarkform_css_styles_dld_name = "SmarkForm_styles-"
+    | append: site.data.package.version
+    | append: ".css"
+%}
+
+
+{% assign smarkform_boilerplate_dld_link = "/resources/dist/examples/template.html" %}
+{% assign smarkform_boilerplate_dld_name = "SmarkForm_template-"
+    | append: site.data.package.version
+    | append: ".html"
+%}
+

@@ -18,9 +18,11 @@ nav_order: 4
 
 * [Forms, Lists and Fields](#forms-lists-and-fields)
     * [Fields](#fields)
-    * [Component nesting](#component-nesting)
+    * [Form nesting](#form-nesting)
     * [Lists](#lists)
+    * [Component Types](#component-types)
     * [Triggers](#triggers)
+    * [Actions:](#actions)
     * [Triggers target](#triggers-target)
     * [Behaviour tunning](#behaviour-tunning)
     * [Constraining lists](#constraining-lists)
@@ -30,12 +32,10 @@ nav_order: 4
 * [The `data-smark` Attribute](#the-data-smark-attribute)
     * [Syntax](#syntax)
     * [Shorthand Syntaxes](#shorthand-syntaxes)
-        * [String Value](#string-value)
-        * [No value at all](#no-value-at-all)
 * [Mandatory properties](#mandatory-properties)
 * [Components and Actions](#components-and-actions)
     * [Components](#components)
-    * [Actions](#actions)
+    * [Actions](#actions-1)
     * [Trigger Components](#trigger-components)
 * [Accessing Components](#accessing-components)
 
@@ -51,8 +51,9 @@ nav_order: 4
 > 
 > In most real-world scenarios, these examples may not be the best choices.
 > 
-> For instance, we will seldom need to use onRendered callbacks, as all form
-> interactions will be handled through *trigger* components.
+> For instance, the use of ``onRendered`` callbacks to output introspection
+> data to the console which we will seldom need to use in real world as all
+> form interactions will be handled through *trigger* components.
 
 
 ## Forms, Lists and Fields
@@ -92,8 +93,10 @@ descendant of any depth.
 👉 **Every *SmarkForm* component (except *triggers*) is a form field** from and
 to which **we can import and export values**.
 
-So our *root form* is also a *field* (of type "form") from and to which we can
-import and export *values* (JSON objects).
+So our *root form* is also a *field* (of type "form") and we can import and
+export its *value*.
+
+In the case of the *form* fields, **its value is a JSON object.**
 
 ```javascript
 myForm.onRendered(function() {
@@ -107,7 +110,7 @@ myForm.onRendered(function() {
 });
 ```
 
-{: .info }
+{: .hint }
 > Alternatively, you can enhance readability by providing the onRendered
 > callback through the options object and/or using an async function.
 > 
@@ -123,7 +126,7 @@ myForm.onRendered(function() {
 > });
 > ```
 
-### Component nesting
+### Form nesting
 
 👉 This also mean **we can nest forms** inside other forms as regular fields
 (holding JSON objects) with no depth limit.
@@ -148,9 +151,13 @@ myForm.onRendered(function() {
 
 ### Lists
 
-👉 In case we need arrays, the *list* component type come to rescue: Likewise
-forms hold JSON objects, **lists hold JSON arrays**. So we are able to define
-simple HTML forms that can import and export any imaginable JSON data.
+👉 In case we need arrays, the *list* component type come to rescue.
+
+Likewise forms hold JSON objects, **lists hold JSON arrays**.
+
+
+...This means that we are able to define simple **HTML forms that can import
+and export any imaginable JSON data structure**.
 
 
 ```html
@@ -171,28 +178,68 @@ simple HTML forms that can import and export any imaginable JSON data.
 {: .info }
 > To enable users to control the array's length, the *list* component type
 > offers the "addItem" and "removeItem" *actions*.
-> 
-> 👉 *Actions* are functions provided by component types for interaction. They
-> can be triggered by components of the so-called "trigger" type, where the
-> component acts as their *context*.
-> 
-> 👉 Trigger components have a (mandatory) *action* attribute which specifies
-> the action to be triggered.
-> 
-> 👉 In order to improve readability, the *action* property is not allowed in
-> any other component type and, hence, the `"type": "trigger"` become optional
-> (and discouraged).
+
+
+
+
+
+
+### Component Types
+
+In *SmarkForm* we don't talk of *components* but of *component types*.
+
+Except for [triggers](#triggers), *component types* are kind of regular
+form-field types.
+
+
+
+
 
 
 ### Triggers
 
-👉 *Trigger* components have a "natural context" which is the closest
+*Triggers* are special components that allow the user to interact with the form
+through given so-called "actions".
+
+👉 They have a (mandatory) *action* attribute which specifies the action to be
+triggered.
+
+👉 *Trigger* components also have a "natural context" which is the closest
 *SmarkForm* component conaining it (That is: *personal_data* subform in
 previous example) but its actual *context* is the closest component
 **implementing that action** unless overridden by the *context* property.
 
-The *context* property specifies the *relative path*, from its *natural context*
-to the actual context of the trigger.
+{: .hint :}
+> The *natural context* of a trigger is the component that implements that
+> action and contains the trigger (outside of any other inner component of the
+> same type or implementing the same action).
+> 
+> There is no need of any *hard wiring code* to connect triggers to their
+> targettend component. **The actions take place in the correct component
+> thanks to the position in the DOM where the trigger is placed.**
+
+👉 The *context* property specifies the *relative path*, from its *natural
+context* to the actual context of the trigger.
+
+
+{: .info :}
+> In order to improve readability, the *action* property is not allowed in
+> any other component type and, hence, the `"type": "trigger"` become optional
+> (and discouraged).
+
+
+### Actions:
+
+*Actions* are functions provided by component types for interaction.
+
+They can be triggered by components of the so-called "trigger" type, where the
+inner component ancestors implementing that specific action acts as their
+*context*.
+
+Actions may also require additional parameters, provided as *data-smark* object
+properties, that may be specific of a given action and/or component type.
+
+
 
 ### Triggers target
 
@@ -399,8 +446,8 @@ TODO:
 ### More...
 
 {: .hint }
-> Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
-> section to better understand these concepts.
+> Check out our [🔗 Examples section]({{ "resources/examples" | relative_url }})
+> to better understand these concepts.
 
 
 ## The `data-smark` Attribute
@@ -485,26 +532,26 @@ attributes:
 For the sake of brevity, the *data-smark* attribute can also be specified in
 the following alternative ways:
 
-#### String Value
+👉 **String Value:**
 
 If only the type needs to be specified, it can be done as a regular string.
 
-**Example:**
+> **Example:**
+> 
+>   * **Shorthand:** `<div data-smark="list">` 
+>   * **Long Form:** `<div data-smark='{"type": "list"}'>`
 
-  * **Shorthand:** `<div data-smark="list">` 
-  * **Long Form:** `<div data-smark='{"type": "list"}'>`
-
-#### No value at all
+👉 **No value at all:**
 
 Since component type can be infered from actual tag name and attributes, and
 field name can be provided as regular property, the whole *data-smark*
 attribute value can be omitted if we are happy with this inference:
 
-**Example:**
-
-  * **Shorthand:** `<textarea ... data-smark>`
-  * **Long Form:** `<textarea data-smark='{}>`
-  * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}>`
+> **Example:**
+> 
+>   * **Shorthand:** `<textarea ... data-smark>`
+>   * **Long Form:** `<textarea data-smark='{}>`
+>   * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}>`
 
 
 
@@ -531,16 +578,20 @@ The following properties are (nearly) mandatory:
 
 **Other properties:**
 
-Depending on the actual component type other properties may be applicable.
-
-In case of *triggers*, despite `type`and `name`, is worth to mention that,
-except for the `context` and `to` properties
+{: .warning }
+> 🚧 This section is still a draft...
 
 
-FIXME: To be continued...
-//// ** ... the rest of available properties depend on the type of its [context]()...
+    Depending on the actual component type other properties may be applicable.
 
-TODO: Link 'context' and 'to' to propper type_trigger.md section...
+    In case of *triggers*, despite `type`and `name`, is worth to mention that,
+    except for the `context` and `to` properties
+
+
+    FIXME: To be continued...
+    //// ** ... the rest of available properties depend on the type of its [context]()...
+
+    TODO: Link 'context' and 'to' to propper type_trigger.md section...
 
 
 
@@ -597,13 +648,18 @@ different value than "trigger".
 > 📖 For detailed information see [Trigger Type Documentation]({{ "component_types/type_trigger" | relative_url }}).
 
 
-
 ## Accessing Components
 
+Every *SmarkForm* component have a *.find()* method that allows to navigate to
+other components throug their *relative path*.
 
 ```javascript
 const form = new SmarkForm(
     document.querySelector("#main-form")
 );
 ```
+
+
+
+
 

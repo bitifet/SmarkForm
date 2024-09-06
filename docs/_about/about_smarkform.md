@@ -48,7 +48,7 @@ They also have the flexibility to access any component in the form tree using si
 
 They are able to develop custom component types as well which designers can then place wherever they want.
 
-{: .caution}
+{: .warning}
 > 🚧 **Please note** that select dropdowns (as explained before) are not yet implemented in the
 > current version (but they are planned for inclusion in the upcoming 1.0.0). Of course, for regular behaviour you can simply use a `<select>` tag in a regular *type = input* component.
 > release.

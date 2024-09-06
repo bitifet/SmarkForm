@@ -91,12 +91,12 @@ callouts:
   warning:
     title: "⚠️  WARNING"
     color: yellow
-  info:
-    title: "ℹ️  INFO"
-    color: green
   hint:
     title: "💡 HINT"
-    color: blue
+    color: green
+  info:
+    title: "ℹ️  INFO"
+    color: grey-dk
 
 search:
   heading_level: 3

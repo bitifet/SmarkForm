@@ -6,6 +6,8 @@ nav_order: 1
 
 ---
 
+{% include links.md %}
+
 # {{ page.title }}
 
 <details>
@@ -34,8 +36,8 @@ nav_order: 1
 
 ### Latest version
 
-  * ESM: <a href="./dist/SmarkForm.esm.js" download="SmarkForm-{{ site.data.package.version }}.esm.js">⤵️ SmarkForm-{{ site.data.package.version }}.esm.js</a>
-  * UMD: <a href="./dist/SmarkForm.umd.js" download="SmarkForm-{{ site.data.package.version }}.umd.js">⤵️ SmarkForm-{{ site.data.package.version }}.umd.js</a>
+  * ESM: <a href="{{ smarkform_esm_dld_link }}" download="{{ smarkform_esm_dld_name }}">⤵️ {{ smarkform_esm_dld_name }}</a>
+  * UMD: <a href="{{ smarkform_umd_dld_link }}" download="{{ smarkform_umd_dld_name }}">⤵️ {{ smarkform_umd_dld_name }}</a>
 
 ### Older versions
 
@@ -55,8 +57,8 @@ But, in case you liked the layout and styles of our
 [Examples Section]({{ "resources/examples" | relative_url }}) or just want some
 boilerplate to start from, here you have its CSS files:
 
-  * Layout: <a href="./dist/examples/smarkform_layout_sample.css" download="SmarkForm_layout-{{ site.data.package.version }}.css">⤵️ SmarkForm_layout-{{ site.data.package.version }}.css</a>
-  * Styles: <a href="./dist/examples/smarkform_styles_sample.css" download="SmarkForm_styles-{{ site.data.package.version }}.css">⤵️ SmarkForm_styles-{{ site.data.package.version }}.css</a>
+  * Layout: <a href="{{ smarkform_css_layout_dld_link }}" download="{{ smarkform_css_layout_dld_name }}">⤵️ {{ smarkform_css_layout_dld_name }}</a>
+  * Styles: <a href="{{ smarkform_css_styles_dld_link }}" download="{{ smarkform_css_styles_dld_name }}">⤵️ {{ smarkform_css_styles_dld_name }}</a>
 
 
 {: .hint}
@@ -70,7 +72,7 @@ Alternatively, if you want an empty template to start from the scratch but
 without worriying about HTML and CSS boilerplate, you can check out or *empty
 template* as a base code to begin with:
 
-  * Template: <a href="./dist/examples/template.html" download="SmarkForm_template-{{ site.data.package.version }}.html">SmarkForm_template-{{ site.data.package.version }}.html</a>
+  * Boilerplate template: <a href="{{ smarkform_boilerplate_dld_link }}" download="{{ smarkform_boilerplate_dld_name }}">⤵️ {{ smarkform_boilerplate_dld_name }}</a>
 
 
 {: .info}
