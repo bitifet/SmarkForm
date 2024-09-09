@@ -142,6 +142,12 @@ layout: default
 .bottom-bar .next-page {
     justify-content: flex-end;
 }
+
+@media print {
+    .bottom-bar {
+        display: none;
+    }
+}
 </style>
 
 
