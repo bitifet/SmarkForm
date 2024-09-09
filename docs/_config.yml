@@ -22,20 +22,10 @@ collections:
     output: true
     nav_order: 3
     sort_by: nav_order
-  data_import_and_export:
+  advanced_concepts:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 4
-    sort_by: nav_order
-  the_api_interface:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 5
-    sort_by: nav_order
-  events:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 6
     sort_by: nav_order
   resources:
     permalink: "/:collection/:path/"
@@ -64,14 +54,8 @@ just_the_docs:
     component_types:
       name: Component Types
       nav_fold: true
-    data_import_and_export:
-      name: Importing and Exporting data
-      nav_fold: true
-    the_api_interface:
-      name: The API Interface
-      nav_fold: true
-    events:
-      name: Event Handling
+    advanced_concepts:
+      name: Advanced Concepts
       nav_fold: true
     resources:
       name: Resources
