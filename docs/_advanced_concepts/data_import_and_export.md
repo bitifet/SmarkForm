@@ -1,7 +1,7 @@
 ---
 title: Importing and Exporting Data
 layout: chapter
-permalink: /api_import_and_export/api_import_and_export
+permalink: /advanced_concepts/api_import_and_export
 nav_order: 2
 
 ---

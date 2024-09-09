@@ -1,8 +1,8 @@
 ---
-title: «input» Component Type
+title: «label» Component Type
 layout: chapter
-permalink: /component_types/type_input
-nav_order: 3
+permalink: /component_types/type_label
+nav_order: 10001
 
 ---
 
@@ -16,15 +16,10 @@ nav_order: 3
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Singleton Pattern](#singleton-pattern)
-
 <!-- vim-markdown-toc -->
        " | markdownify }}
 
 </details>
 
 
-### Singleton Pattern
-
-🚧 TODO... 🚧
 

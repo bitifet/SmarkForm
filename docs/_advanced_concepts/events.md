@@ -1,7 +1,7 @@
 ---
 title: Event Handling
 layout: chapter
-permalink: /events/events
+permalink: /advanced_concepts/events
 nav_order: 1
 
 ---

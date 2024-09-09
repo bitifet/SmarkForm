@@ -1,7 +1,7 @@
 ---
 title: The API Interface
 layout: chapter
-permalink: /the_api_interface/the_api_interface
+permalink: /advanced_concepts/the_api_interface
 nav_order: 3
 
 ---

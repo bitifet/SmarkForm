@@ -52,8 +52,8 @@ nav_order: 3
 > In most real-world scenarios, these examples may not be the best choices.
 > 
 > For instance, the use of ``onRendered`` callbacks to output introspection
-> data to the console which we will seldom need to use in real world as all
-> form interactions will be handled through *trigger* components.
+> data to the console which we will seldom need in real world applications
+> since all form interactions will be handled through *trigger* components.
 
 
 ## Forms, Lists and Fields

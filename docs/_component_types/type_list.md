@@ -17,8 +17,8 @@ nav_order: 2
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
-    * [List Component](#list-component)
-    * [Usage](#usage)
+    * [Singleton Pattern](#singleton-pattern)
+* [Usage](#usage)
 * [API Reference](#api-reference)
     * [Options](#options)
         * [min_items](#min_items)
@@ -48,14 +48,111 @@ nav_order: 2
 Introduction
 ------------
 
-### List Component
-
 The List component in SmarkForm allows you to dynamically manage a list of
-items within your form. It uses the content of the container element as the
-template for each item in the list.
+items within your form.
+
+It uses the content of the container element as a template for each item in the
+list.
+
+Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
+inputs can be created over any HTML tag **except for actual HTML form
+elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
+
+They can contain a variable number of unnamed inputs (list items) that user
+will (or won't) be able to add or remove at its own discretion (according
+certain configurable rules).
+
+But in its html source, **they must contain exactly one html tag which will be
+used as a template** for its items.
+
+Every time a new item is added to the list, this template is automatically
+rendered as a *SmarkForm* field (no matter if we explicitly specified the
+*data-smark* attribute or not).
+
+If *data-smark* attribute is not provided (or it does not especify the *type*
+property), the type "form" is taken by default.
+
+**Example:**
+
+```html
+<section data-smark='{"type":"list","name":"users"}'>
+  <fieldset>
+    <input name='name' placeholder='User name' type='text' data-smark='data-smark'/>
+    <input name='phone' placeholder='Phone number' type='tel' data-smark='data-smark'/>
+    <input name='email' placeholder='Email' type='text' data-smark='data-smark'/>
+    <button data-smark='{"action":"removeItem"}'>❌</button>
+  </fieldset>
+</section>
+<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+```
+
+Other field types (except *list* itself) can be used too as *item template*.
+
+**Example:**
+
+```html
+<section data-smark='{"type":"list","name":"phones"}'>
+  <input placeholder='Phone number' type='tel'/>
+</section>
+<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+<button data-smark='{"action":"removeItem","context":"phones"}'>❌</button>
+```
+
+...but now we can only remove last item every time in the list.
+
+{: .hint}
+> Notice that the *input* tag has no "name" attribute. This is because it is a
+> list item template and it's actual name will be automatically set as its
+> position in the array every time a new item is added, moved or removed.
 
 
-### Usage
+
+### Singleton Pattern
+
+
+🚧 To be continued...
+
+
+
+
+....Old rest:
+
+But other types can be used in case we only want a list of discrete values. To
+do so we can add the *data-smark* attribute to the item template or just
+specify that type in the *to* property of the *data-smark* attribute of the
+list itself.
+
+{: .info}
+> For lists of scalar values, we still may want to include list controls en
+> each item. To do so, scalar input types can be defined like if they were a
+> nested form with a single input (See [Singleton Pattern](#singleton-pattern)
+> in the *Input* type section.
+
+**Example:**
+
+```html
+<ul data-smark='{
+    type: "list",
+    name: "phones",
+    of: "input",
+    maxItems: 3,
+}'>
+  <li>
+    <input placeholder='Phone Number' type="tel" data-smark>
+    <button data-smark='{"action":"removeItem"}'>❌</button>
+  </li>
+</ul>
+<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+```
+
+
+
+
+Usage
+-----
+
+🚧 To be merged into previous text (if appropriate)...
+
 
 To use the List component, follow these steps:
 
