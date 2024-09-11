@@ -17,7 +17,7 @@ nav_order: 2
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
-    * [Singleton Pattern](#singleton-pattern)
+    * [Scalar item types](#scalar-item-types)
 * [Usage](#usage)
 * [API Reference](#api-reference)
     * [Options](#options)
@@ -48,35 +48,35 @@ nav_order: 2
 Introduction
 ------------
 
-The List component in SmarkForm allows you to dynamically manage a list of
+👉 The List component in SmarkForm allows you to dynamically manage a list of
 items within your form.
 
-It uses the content of the container element as a template for each item in the
-list.
+👉 It uses the content of the container element as a template for each item in
+the list.
 
-Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
-inputs can be created over any HTML tag **except for actual HTML form
+👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
+inputs can be created over any HTML tag1️⃣  **except for actual HTML form
 elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 
-They can contain a variable number of unnamed inputs (list items) that user
-will (or won't) be able to add or remove at its own discretion (according
-certain configurable rules).
+👉 They can contain a variable number of unnamed inputs (list items) of a given
+type that the user will (or won't) be able to add or remove at its own
+discretion (according certain configurable rules).
 
-But in its html source, **they must contain exactly one html tag which will be
-used as a template** for its items.
+👉 However, in its html source, **list fields must contain exactly one direct
+child**2️⃣ .
 
-Every time a new item is added to the list, this template is automatically
-rendered as a *SmarkForm* field (no matter if we explicitly specified the
+👉 Every time a new item is added to the list, **this template is automatically
+rendered as a *SmarkForm* field** (no matter if we explicitly specified the
 *data-smark* attribute or not).
 
-If *data-smark* attribute is not provided (or it does not especify the *type*
-property), the type "form" is taken by default.
+👉 If *data-smark* attribute is not provided (or it does not specify the
+*type* property), the type "form" is taken by default3️⃣ .
 
 **Example:**
 
 ```html
-<section data-smark='{"type":"list","name":"users"}'>
-  <fieldset>
+<section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
+  <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
     <input name='name' placeholder='User name' type='text' data-smark='data-smark'/>
     <input name='phone' placeholder='Phone number' type='tel' data-smark='data-smark'/>
     <input name='email' placeholder='Email' type='text' data-smark='data-smark'/>
@@ -86,28 +86,31 @@ property), the type "form" is taken by default.
 <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
 ```
 
-Other field types (except *list* itself) can be used too as *item template*.
+👉 Other field types (except for *list* itself) can be used too as *item
+template*4️⃣ .
+
+👉 ...but now we can only remove last item every time in the list5️⃣ .
 
 **Example:**
 
 ```html
 <section data-smark='{"type":"list","name":"phones"}'>
-  <input placeholder='Phone number' type='tel'/>
+  <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
 </section>
 <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
-<button data-smark='{"action":"removeItem","context":"phones"}'>❌</button>
+<button data-smark='{"action":"removeItem","context":"phones"}'>❌</button> <!-- 5️⃣  -->
 ```
 
-...but now we can only remove last item every time in the list.
-
 {: .hint}
-> Notice that the *input* tag has no "name" attribute. This is because it is a
-> list item template and it's actual name will be automatically set as its
-> position in the array every time a new item is added, moved or removed.
+> Notice that in this example, likewise the *fieldset* in the former, the
+> *input* tag has no "name" attribute6️⃣ . This is because it is a list item
+> template and it's actual name attribute will be automatically set depending
+> on its position in the array every time a new item is added, moved or
+> removed.
 
 
 
-### Singleton Pattern
+### Scalar item types
 
 
 🚧 To be continued...

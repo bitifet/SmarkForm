@@ -32,12 +32,13 @@ nav_order: 1
 Introduction
 ------------
 
-In *SmarkForm* the whole form is a field of the type *form* which imports and
-exports JSON data.
+👉 In *SmarkForm* the whole form is a field of the type *form* which imports
+and exports JSON data.
 
-The keys of that JSON data correspond to the names of the fields in the form.
+👉 The keys of that JSON data correspond to the names of the fields in the
+form.
 
-From fields can be created over any HTML tag except for actual HTML form
+👉 From fields can be created over any HTML tag except for actual HTML form
 elements (`<input>`, `<textarea>`, `<select>`, `<button>`...) and can contain
 any number of *SmarkForm* fields, **including nested forms**.
 
