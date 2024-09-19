@@ -17,8 +17,10 @@ nav_order: 2
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
+    * [List items](#list-items)
     * [Scalar item types](#scalar-item-types)
-* [Usage](#usage)
+    * [Applying the singleton pattern](#applying-the-singleton-pattern)
+    * [Nesting lists](#nesting-lists)
 * [API Reference](#api-reference)
     * [Options](#options)
         * [min_items](#min_items)
@@ -58,38 +60,53 @@ the list.
 inputs can be created over any HTML tag1️⃣  **except for actual HTML form
 elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 
-👉 They can contain a variable number of unnamed inputs (list items) of a given
-type that the user will (or won't) be able to add or remove at its own
-discretion (according certain configurable rules).
+
+### List items
+
+👉 Lists can contain a variable number of unnamed inputs (list items) of a given
+type.
 
 👉 However, in its html source, **list fields must contain exactly one direct
-child**2️⃣ .
+child**2️⃣  (the template).
 
-👉 Every time a new item is added to the list, **this template is automatically
-rendered as a *SmarkForm* field** (no matter if we explicitly specified the
-*data-smark* attribute or not).
+👉 The user will (or won't) be able to, at its own discretion (and according
+certain configurable rules), add or remove items to the list.
+
+👉 Every time a new item is added to the list, **its item template is
+automatically rendered as a *SmarkForm* field** (no matter if we explicitly
+specified the *data-smark* attribute or not).
 
 👉 If *data-smark* attribute is not provided (or it does not specify the
-*type* property), the type "form" is taken by default3️⃣ .
+*type* property), the type "form" is automatically taken by default3️⃣ .
 
 **Example:**
 
 ```html
 <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
   <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
-    <input name='name' placeholder='User name' type='text' data-smark='data-smark'/>
-    <input name='phone' placeholder='Phone number' type='tel' data-smark='data-smark'/>
-    <input name='email' placeholder='Email' type='text' data-smark='data-smark'/>
-    <button data-smark='{"action":"removeItem"}'>❌</button>
+    <input name='name' placeholder='User name' type='text' data-smark/>
+    <input name='phone' placeholder='Phone number' type='tel' data-smark/>
+    <input name='email' placeholder='Email' type='text' data-smark/>
+    <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
   </fieldset>
 </section>
-<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+<button data-smark='{"action":"addItem","context":"phones"}' title='Add User'>➕</button>
 ```
 
-👉 Other field types (except for *list* itself) can be used too as *item
-template*4️⃣ .
 
-👉 ...but now we can only remove last item every time in the list5️⃣ .
+### Scalar item types
+
+👉 Other field types can be used too as *item template*4️⃣ .
+
+👉 ...but, in the case of
+([scalar field types]({{ "getting_started/core_component_types#scalar-field-types" | relative_url }}))
+it may look like we are limited when it comes to inserting labels **and
+triggers** in the item template and hence we can only remove last item every
+time in the list.
+
+This would forece us to move the *Remove Item* button outside the list5️⃣  like in the
+following example.
+
 
 **Example:**
 
@@ -97,8 +114,8 @@ template*4️⃣ .
 <section data-smark='{"type":"list","name":"phones"}'>
   <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
 </section>
-<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
-<button data-smark='{"action":"removeItem","context":"phones"}'>❌</button> <!-- 5️⃣  -->
+<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+<button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>❌</button> <!-- 5️⃣  -->
 ```
 
 {: .hint}
@@ -108,138 +125,110 @@ template*4️⃣ .
 > on its position in the array every time a new item is added, moved or
 > removed.
 
+👉 Now, when the user clicks the *Remove Item* button, it will default to the
+last item of the list, **but we cannot ([yet](#applying-the-singleton-pattern))
+cherry-pick which item we'd like to remove**.
 
 
-### Scalar item types
+### Applying the singleton pattern
 
 
-🚧 To be continued...
-
-
-
-
-....Old rest:
-
-But other types can be used in case we only want a list of discrete values. To
-do so we can add the *data-smark* attribute to the item template or just
-specify that type in the *to* property of the *data-smark* attribute of the
-list itself.
-
-{: .info}
-> For lists of scalar values, we still may want to include list controls en
-> each item. To do so, scalar input types can be defined like if they were a
-> nested form with a single input (See [Singleton Pattern](#singleton-pattern)
-> in the *Input* type section.
+Thankfully, all *Scalar field types* implement the
+[Singleton Pattern]({{ "/getting_started/core_component_types#the-singleton-pattern" | relative_url }})
+so that we can use any other html tag in place and just put the form field tag
+inside.
 
 **Example:**
 
 ```html
 <ul data-smark='{
-    type: "list",
     name: "phones",
     of: "input",
     maxItems: 3,
 }'>
   <li>
     <input placeholder='Phone Number' type="tel" data-smark>
-    <button data-smark='{"action":"removeItem"}'>❌</button>
+    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
   </li>
 </ul>
-<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+```
+
+{: .info}
+> In this example we have omitted the `type: "list"` bit and still works because
+> *SmarkForm* automatically inferes the type from the HTML tag.
+> 
+> {: .warning}
+> > This is hany for fast developping but it is **not a recommended practice**
+> > since our designer may decide to change the tag for the template and different
+> > type could be infered.
+
+
+### Nesting lists
+
+Since they're just smarkform fields, *lists* can be nested as needed.
+
+Now we are prepared to extend our initial *Users list* example by providding,
+say, up to three phone numbers and up to three emails.
+
+
+**Example:**
+
+```html
+<section data-smark='{"type":"list","name":"users"}'>
+  <fieldset>
+    <input name='name' placeholder='User name' type='text' data-smark/>
+    <hr>
+    <ul data-smark='{
+        type: "list",
+        name: "phones",
+        of: "input",
+        maxItems: 3,
+    }'>
+        <li>
+            <input placeholder='Phone Number' type="tel" data-smark>
+            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+        </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+    <hr>
+    <ul data-smark='{
+        type: "list",
+        name: "emails",
+        of: "input",
+        maxItems: 3,
+    }'>
+        <li>
+            <input placeholder='Email address' type="email" data-smark>
+            <button data-smark='{"action":"removeItem"}' title='Remove Email'>❌</button>
+        </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"emails"}' title='Add Email'>➕</button>
+    <hr>
+    <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
+  </fieldset>
+</section>
+<button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
 ```
 
 
+{: .hint}
+> As you can see here, phones and emails lists share almost the same layout.
+> 
+> Since *SmarkForm* work just over the DOM, you can use your preferred HTML 
+> templating system. For instance, 
+> [here](https://github.com/bitifet/SmarkForm/blob/main/src/examples/include/mixins.pug)
+> you can see a similar *mixin* implemented whith [Pug templates](https://pugjs.org).
+> 
+> Also it 
+> [is planned]({{ "about/features" | relative_url }}#flexible-and-extendable)
+> to implement a *mixin* feature allowing to create SmarkForm components from
+> *SmarkForm* html code.
 
-
-Usage
------
-
-🚧 To be merged into previous text (if appropriate)...
-
-
-To use the List component, follow these steps:
-
-1. Create a form containing the list:
-
-   ```html
-   <div id="myForm">
-     <ul data-smark="{name: 'myList' type: 'list'}">
-       <li>
-         <!-- Content of this list item will be used as a template for each item -->
-       </li>
-     </ul>
-     <p>
-       <button data-smark='{"action":"empty"}'>❌ Clear</button>
-       <button data-smark='{"action":"export"}'>💾 Submit</button>
-     </p>
-   </div>
-   ```
-
-  > 📌 We could have ommitted the *type* property because it will be
-  > automatically infered by the ``<ul>`` type, but it is recommended to
-  > explicitly specify types to avoid potential errors in case of markup
-  > modifications.
-
-2. Initialize the SmarkForm instance:
-
-   ```javascript
-   const myForm = new SmarkForm(document.getElementById("myForm"));
-   ```
-
-   📌 This is just a simple example. For detailed explanation of how to build a
-      full-featured SmarkForm see [Creating a simple SmarkForm
-      form](./index.md#creating-a-simple-smarkform-form) section of this manual.
-
-
-3. Add a template for the list items:
-
-   ```html
-   <div id="myForm">
-     <ul data-smark="{name: 'myList' type: 'list'}">
-       <li>
-         <input type="text" name="field1" data-smark />
-         <input type="number" name="field2" data-smark />
-       </li>
-     </ul>
-   </div>
-   ```
-
-   > 📌 List item templates are automatically enhanced as components of type
-   > *form* by default. You can override this by specifying the "data-smark"
-   > attribute explicitly or using the "of" property in the list *data-smark*
-   > attribute.
-
-
-4. Add controls to add and remove items:
-
-   ```html
-   <div id="myForm">
-     <ul data-smark="{name: 'myList' type: 'list'}">
-       <li>
-         <input type="text" name="field1" data-smark />
-         <input type="number" name="field2" data-smark />
-         <button data-smark="{action='removeItem'}">Remove Item</button>
-       </li>
-     </ul>
-     <button data-smark="{action='addItem', context='myForm'}">Remove Item</button>
-   </div>
-   ```
-
-   > 📌 The *removeItem* action here takes its containing component (the
-   > implicitly created form over ``<li>`` template)) as its target (an its
-   > containing list as its context). On the other hand, the *addItem* action,
-   > being outside of the list, uses the *context* property to specify the
-   > (relative) path to its context. In this case, being target unspecified,
-   > new items will be appended at the end of the list.
 
 
 For more information on using the List component and its available methods,
 please refer to the [API Reference](#api-reference).
-
-Feel free to adjust the content and structure of the section to match the
-specific functionality and usage of the List component in your SmarkForm
-library.
-
 
 
 API Reference

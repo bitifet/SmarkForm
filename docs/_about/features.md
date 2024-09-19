@@ -64,6 +64,8 @@ nav_order: 2
   * [x] JSON import and export capabilities
   * [x] Local Import and export of any subform instead of the whole one.
   * [x] Develop your own component types to suit your specific needs.
+  * [ ] Mixin feature to create new component types based on (but not limited
+        to) *SmarkForm* template.
 
 
 

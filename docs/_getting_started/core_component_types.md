@@ -137,7 +137,7 @@ component of given *scalar* type.
 
 {: .hint}
 > See
-> [Scalar item types]({{ "component_types/type_list" | relative_url }}#scalar-item-types)
+> [Applying the singleton pattern]({{ "component_types/type_list" | relative_url }}#applying-the-singleton-pattern)
 > in the *«list» Component Type* chapter for a more real-world example.
 
 

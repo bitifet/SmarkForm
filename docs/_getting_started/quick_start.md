@@ -76,11 +76,11 @@ login form like this:
 <div id="myForm">
   <div>
     <label for="username">Username:</label>
-    <input type="text" id="username" name="username" data-smark="data-smark">
+    <input type="text" id="username" name="username" data-smark>
   </div>
   <div>
     <label for="password">Password:</label>
-    <input type="password" id="password" name="password" data-smark="data-smark">
+    <input type="password" id="password" name="password" data-smark>
   </div>
   <p>
     <button data-smark='{"action":"empty"}'>❌ Clear</button>
@@ -134,12 +134,14 @@ Initialize SmarkForm on your form element. In your JavaScript file, create a
 new instance of the SmarkForm class and pass the form element as the parameter:
 
 ```javascript
-const myForm = new SmarkForm(document.querySelector("#myForm"));
+const myForm = new SmarkForm(
+    document.querySelector("#myForm")
+);
 ```
 
-{: .info }
-> Notice that, if you fill data in your form and then hit de `❌ Clear` button, it
-> already works!! 🎉
+{: .hint }
+> Notice that, if you fill data in your form and then hit de `❌ Clear` button,
+> **it already works!!** 🎉
 
 
 ## 5. Do the magic
@@ -163,28 +165,22 @@ myForm.on("afterAction_export", ({data}) => {
 
 **Going deeper...**
 
-Following example uses the *options object* instead and, additionally, adds a
+Following example adds a
 *beforeAction_empty* event listener to gently ask users for confirmation before
 they loose all their work in case of an accidental click to the *Clear*
 ("empty" action trigger) button:
 
 ```javascript
-const form = new SmarkForm(
-    document.querySelector("#myForm")
-    , {
-        onAfterAction_export({data}) {
-            // Show exported data:
-            alert (JSON.stringify(data));
-        },
-        async onBeforeAction_empty({context, preventDefault}) {
-            // Ask for confirmation unless form is already empty:
-            if (
-                ! await context.isEmpty()
-                && ! confirm("Are you sure?")
-            ) preventDefault();
-        },
-    }
-);
+// Ask for confirmation unless form is already empty:
+myForm.on("beforeAction_empty", ({context, preventDefault}) => {
+    if (
+        ! await context.isEmpty()     // Form is not empty
+        && ! confirm("Are you sure?") // User click on "Cancel" btn.
+    ) {
+        // Prevent default (empty form) behaviour:
+        preventDefault();
+    };
+});
 ```
 
 
