@@ -139,7 +139,7 @@ specified the *data-smark* attribute or not).
 **Example:**
 
 {% include components/sampletabs_tpl.md
-   source=page.simple_list_example
+   htmlSource=page.simple_list_example
 %}
 
 
@@ -161,7 +161,7 @@ following example.
 **Example:**
 
 {% include components/sampletabs_tpl.md
-   source=page.scalar_list_example
+   htmlSource=page.scalar_list_example
 %}
 
 {: .hint}
@@ -187,7 +187,7 @@ inside.
 **Example:**
 
 {% include components/sampletabs_tpl.md
-   source=page.singleton_list_example
+   htmlSource=page.singleton_list_example
 %}
 
 {: .info}
@@ -211,7 +211,7 @@ say, up to three phone numbers and up to three emails.
 **Example:**
 
 {% include components/sampletabs_tpl.md
-   source=page.nesting_list_example
+   htmlSource=page.nesting_list_example
 %}
 
 
