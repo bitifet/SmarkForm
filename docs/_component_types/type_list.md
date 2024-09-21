@@ -4,7 +4,6 @@ layout: chapter
 permalink: /component_types/type_list
 nav_order: 2
 
-
 simple_list_example: |
     <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
     <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
@@ -13,6 +12,48 @@ simple_list_example: |
         <input name='email' placeholder='Email' type='text' data-smark/>
         <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
     </fieldset>
+    </section>
+    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+
+scalar_list_example: |
+    <section data-smark='{"type":"list","name":"phones"}'>
+        <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
+    </section>
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+    <button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>❌</button> <!-- 5️⃣  -->
+
+singleton_list_example: |
+    <ul data-smark='{"name": "phones", "of": "input", "maxItems": 3}'>
+        <li>
+            <input placeholder='Phone Number' type="tel" data-smark>
+            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+        </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+
+nesting_list_example: |
+    <section data-smark='{"type":"list","name":"users"}'>
+        <fieldset>
+            <input name='name' placeholder='User name' type='text' data-smark/>
+            <hr>
+            <ul data-smark='{"type": "list", "name": "phones", "of": "input", "maxItems": 3}'>
+                <li>
+                    <input placeholder='Phone Number' type="tel" data-smark>
+                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+                </li>
+            </ul>
+            <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+            <hr>
+            <ul data-smark='{"type": "list", "name": "emails", "of": "input", "maxItems": 3}'>
+                <li>
+                    <input placeholder='Email address' type="email" data-smark>
+                    <button data-smark='{"action":"removeItem"}' title='Remove Email'>❌</button>
+                </li>
+            </ul>
+            <button data-smark='{"action":"addItem","context":"emails"}' title='Add Email'>➕</button>
+            <hr>
+            <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
+        </fieldset>
     </section>
     <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
 
@@ -119,13 +160,9 @@ following example.
 
 **Example:**
 
-```html
-<section data-smark='{"type":"list","name":"phones"}'>
-  <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
-</section>
-<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-<button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>❌</button> <!-- 5️⃣  -->
-```
+{% include components/sampletabs_tpl.md
+   source=page.scalar_list_example
+%}
 
 {: .hint}
 > Notice that in this example, likewise the *fieldset* in the former, the
@@ -149,19 +186,9 @@ inside.
 
 **Example:**
 
-```html
-<ul data-smark='{
-    name: "phones",
-    of: "input",
-    maxItems: 3,
-}'>
-  <li>
-    <input placeholder='Phone Number' type="tel" data-smark>
-    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-  </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-```
+{% include components/sampletabs_tpl.md
+   source=page.singleton_list_example
+%}
 
 {: .info}
 > In this example we have omitted the `type: "list"` bit and still works because
@@ -183,42 +210,9 @@ say, up to three phone numbers and up to three emails.
 
 **Example:**
 
-```html
-<section data-smark='{"type":"list","name":"users"}'>
-  <fieldset>
-    <input name='name' placeholder='User name' type='text' data-smark/>
-    <hr>
-    <ul data-smark='{
-        type: "list",
-        name: "phones",
-        of: "input",
-        maxItems: 3,
-    }'>
-        <li>
-            <input placeholder='Phone Number' type="tel" data-smark>
-            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-        </li>
-    </ul>
-    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-    <hr>
-    <ul data-smark='{
-        type: "list",
-        name: "emails",
-        of: "input",
-        maxItems: 3,
-    }'>
-        <li>
-            <input placeholder='Email address' type="email" data-smark>
-            <button data-smark='{"action":"removeItem"}' title='Remove Email'>❌</button>
-        </li>
-    </ul>
-    <button data-smark='{"action":"addItem","context":"emails"}' title='Add Email'>➕</button>
-    <hr>
-    <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
-  </fieldset>
-</section>
-<button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
-```
+{% include components/sampletabs_tpl.md
+   source=page.nesting_list_example
+%}
 
 
 {: .hint}
