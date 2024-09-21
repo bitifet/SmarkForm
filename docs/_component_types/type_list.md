@@ -4,7 +4,23 @@ layout: chapter
 permalink: /component_types/type_list
 nav_order: 2
 
+
+simple_list_example: |
+    <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
+    <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
+        <input name='name' placeholder='User name' type='text' data-smark/>
+        <input name='phone' placeholder='Phone number' type='tel' data-smark/>
+        <input name='email' placeholder='Email' type='text' data-smark/>
+        <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
+    </fieldset>
+    </section>
+    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+
 ---
+
+
+{% include components/sampletabs_ctrl.md %}
+
 
 # {{ page.title }}
 
@@ -81,17 +97,10 @@ specified the *data-smark* attribute or not).
 
 **Example:**
 
-```html
-<section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
-  <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
-    <input name='name' placeholder='User name' type='text' data-smark/>
-    <input name='phone' placeholder='Phone number' type='tel' data-smark/>
-    <input name='email' placeholder='Email' type='text' data-smark/>
-    <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
-  </fieldset>
-</section>
-<button data-smark='{"action":"addItem","context":"phones"}' title='Add User'>➕</button>
-```
+{% include components/sampletabs_tpl.md
+   source=page.simple_list_example
+%}
+
 
 
 ### Scalar item types
