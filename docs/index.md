@@ -4,8 +4,20 @@ layout: home
 nav_order: 0
 permalink: /
 
+simple_list_example: |
+    <div id="myForm">
+        <ul data-smark='{"name": "phones", "of": "input"}'>
+            <li>
+                <input placeholder='Phone Number' type="tel" data-smark>
+                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+            </li>
+        </ul>
+        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
+    </div>
+
 ---
 
+{% include components/sampletabs_ctrl.md %}
 
 <style>
 .SmarkForm-Hero {
@@ -81,20 +93,11 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 
 ## Sample Code:
 
-```html
-<ul data-smark='{
-    type: "list",
-    name: "phones",
-    of: "input",
-    maxItems: 3,
-}'>
-  <li>
-    <input placeholder='Phone Number' type="tel" data-smark>
-    <button data-smark='{"action":"removeItem"}'>❌</button>
-  </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
-```
+
+{% include components/sampletabs_tpl.md
+   formId="simple_list"
+   htmlSource=page.simple_list_example
+%}
 
 
 ## Current Status
