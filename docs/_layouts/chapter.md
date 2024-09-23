@@ -70,6 +70,22 @@ layout: default
 {% endif %}
 
 
+<!-- Style tweaks -->
+<!-- ------------ -->
+
+<style>
+h4 {
+    font-weight: bold;
+    text-decoration: underline;
+    line-height: 3em;
+    color: #000077;
+}
+</style>
+
+
+<!-- Bottom bar -->
+<!-- ---------- -->
+
 <style>
 .bottom-bar {
     display: flex;
