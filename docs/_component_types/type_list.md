@@ -193,7 +193,7 @@ simple_list_animation_example_complete_js: |
 Introduction
 ------------
 
-👉 The List component in SmarkForm allows you to dynamically manage a list of
+The List component in SmarkForm allows you to dynamically manage a list of
 items within your form.
 
 👉 It uses the content of the container element as a template for each item in

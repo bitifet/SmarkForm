@@ -159,7 +159,7 @@ myForm.on("afterAction_export", ({data}) => {
 ```
 
 {: .info :}
-> Alternatively, most even handlers can be provided at onece through the
+> Alternatively, most event handlers can be provided at once through the
 > [options object](#the-options-object).
 
 
