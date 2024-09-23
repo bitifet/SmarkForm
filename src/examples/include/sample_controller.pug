@@ -48,38 +48,27 @@ script.
         });
 
         // Allow for list items addition/removal CSS animation:
-        // (Add and remove "ingoing", "ongoing" and "outgoint" CSS classes)
-        myForm
-            .onAll("addItem", function({
-                newItemTarget,
-                onRendered,
-            }) {
-                newItemTarget.classList.add("ingoing");
-                onRendered(()=>{
-                    newItemTarget.classList.remove("ingoing")
-                    newItemTarget.classList.add("ongoing");
-                });
-            })
-            .onAll("removeItem", async function({
-                oldItemTarget,
-                onRemmoved,
-            }) {
-                oldItemTarget.classList.remove("ongoing");
-                oldItemTarget.classList.add("outgoing");
-
-                // Await for transition to be finished before item removal:
-                const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
-                    .getPropertyValue('transition-duration')
-                    .slice(0,-1).replace("m","/1")
-                    .split("/")
-                    .map(Number)
-                ;
-                await new Promise(resolve=>setTimeout(
-                    resolve
-                    , duration * multiplier
-                ));
-            })
-        ;
+        // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
+        const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+        myForm.onAll("addItem", function({
+            newItemTarget, /* the target of the future new item */
+            onRendered
+        }) {
+            newItemTarget.classList.add("animated_item");
+            onRendered(async (newItem)=>{
+                await delay(1); /* Allow for default .animated_item style to be applied */
+                newItem.target.classList.add("ongoing");
+                /* Here we could have used newItemTarget instead */
+            });
+        });
+        myForm.onAll("removeItem", async function({
+            oldItemTarget,
+            onRemmoved
+        }) {
+            oldItemTarget.classList.remove("ongoing");
+            /* Await for transition to be finished before item removal: */
+            await delay(150);
+        });
 
         // <!-- END controller sample-->
 

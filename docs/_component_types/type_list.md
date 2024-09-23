@@ -5,57 +5,143 @@ permalink: /component_types/type_list
 nav_order: 2
 
 simple_list_example: |
-    <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
-    <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
-        <input name='name' placeholder='User name' type='text' data-smark/>
-        <input name='phone' placeholder='Phone number' type='tel' data-smark/>
-        <input name='email' placeholder='Email' type='text' data-smark/>
-        <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
-    </fieldset>
-    </section>
-    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+    <div id="myForm">
+        <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
+            <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
+                <input name='name' placeholder='User name' type='text' data-smark/>
+                <input name='phone' placeholder='Phone number' type='tel' data-smark/>
+                <input name='email' placeholder='Email' type='text' data-smark/>
+                <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
+            </fieldset>
+        </section>
+        <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+    </div>
 
 scalar_list_example: |
-    <section data-smark='{"type":"list","name":"phones"}'>
-        <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
-    </section>
-    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-    <button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>❌</button> <!-- 5️⃣  -->
+    <div id="myForm">
+        <section data-smark='{"type":"list","name":"phones"}'>
+            <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
+        </section>
+        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+        <button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>❌</button> <!-- 5️⃣  -->
+    </div>
 
 singleton_list_example: |
-    <ul data-smark='{"name": "phones", "of": "input", "maxItems": 3}'>
-        <li>
-            <input placeholder='Phone Number' type="tel" data-smark>
-            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-        </li>
-    </ul>
-    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+    <div id="myForm">
+        <ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
+            <li>
+                <input placeholder='Phone Number' type="tel" data-smark>
+                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+            </li>
+        </ul>
+        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+    </div>
 
 nesting_list_example: |
-    <section data-smark='{"type":"list","name":"users"}'>
-        <fieldset>
-            <input name='name' placeholder='User name' type='text' data-smark/>
-            <hr>
-            <ul data-smark='{"type": "list", "name": "phones", "of": "input", "maxItems": 3}'>
-                <li>
-                    <input placeholder='Phone Number' type="tel" data-smark>
-                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-                </li>
-            </ul>
-            <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-            <hr>
-            <ul data-smark='{"type": "list", "name": "emails", "of": "input", "maxItems": 3}'>
-                <li>
-                    <input placeholder='Email address' type="email" data-smark>
-                    <button data-smark='{"action":"removeItem"}' title='Remove Email'>❌</button>
-                </li>
-            </ul>
-            <button data-smark='{"action":"addItem","context":"emails"}' title='Add Email'>➕</button>
-            <hr>
-            <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
-        </fieldset>
-    </section>
-    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+    <div id="myForm">
+        <section data-smark='{"type":"list","name":"users"}'>
+            <fieldset>
+                <input name='name' placeholder='User name' type='text' data-smark/>
+                <hr>
+                <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
+                    <li>
+                        <input placeholder='Phone Number' type="tel" data-smark>
+                        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+                    </li>
+                </ul>
+                <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+                <hr>
+                <ul data-smark='{"type": "list", "name": "emails", "of": "input", "max_items": 3}'>
+                    <li>
+                        <input placeholder='Email address' type="email" data-smark>
+                        <button data-smark='{"action":"removeItem"}' title='Remove Email'>❌</button>
+                    </li>
+                </ul>
+                <button data-smark='{"action":"addItem","context":"emails"}' title='Add Email'>➕</button>
+                <hr>
+                <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
+            </fieldset>
+        </section>
+        <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+    </div>
+
+
+simple_list_animation_example: |
+    <div id="myForm">
+        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
+        <ul data-smark='{"name": "phones", "of": "input", "min_items": 0}'>
+            <li>
+                <input placeholder='Phone Number' type="tel" data-smark>
+                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+            </li>
+        </ul>
+        <!-- This is just a regular SmarkForm list. -->
+        <!-- See CSS and JS code to see what changes... -->
+    </div>
+
+simple_list_animation_example_additem_css: |
+    .animated_item {
+        transform: scaleY(0) translateY(-50%);
+    }
+    .animated_item.ongoing {
+        transform: default;
+        transition:
+            transform 150ms ease-in
+        ;
+    }
+
+simple_list_animation_example_additem_js: |
+    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+    myForm.onAll("addItem", function({
+        newItemTarget, /* the target of the future new item */
+        onRendered
+    }) {
+        newItemTarget.classList.add("animated_item");
+        onRendered(async (newItem)=>{
+            await delay(1); /* Allow for default .animated_item style to be applied */
+            newItem.target.classList.add("ongoing");
+            /* Here we could have used newItemTarget instead */
+        });
+    });
+
+simple_list_animation_example_complete_css: |
+    .animated_item {
+        transform: scaleY(0) translateY(-50%);
+        /* Add transition for removal effect */
+        transition:
+            transform 150ms ease-out
+        ;
+    }
+    .animated_item.ongoing {
+        transform: scaleY(1) translateY(0%);
+        transition:
+            transform 150ms ease-in
+        ;
+    }
+
+simple_list_animation_example_complete_js: |
+    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+    myForm.onAll("addItem", function({
+        newItemTarget, /* the target of the future new item */
+        onRendered
+    }) {
+        newItemTarget.classList.add("animated_item");
+        onRendered(async (newItem)=>{
+            await delay(1); /* Allow for default .animated_item style to be applied */
+            newItem.target.classList.add("ongoing");
+            /* Here we could have used newItemTarget instead */
+        });
+    });
+    myForm.onAll("removeItem", async function({
+        oldItemTarget,
+        onRemmoved
+    }) {
+        oldItemTarget.classList.remove("ongoing");
+        /* Await for transition to be finished before item removal: */
+        await delay(150);
+    });
 
 ---
 
@@ -139,6 +225,7 @@ specified the *data-smark* attribute or not).
 **Example:**
 
 {% include components/sampletabs_tpl.md
+   formId="simple_list"
    htmlSource=page.simple_list_example
 %}
 
@@ -161,6 +248,7 @@ following example.
 **Example:**
 
 {% include components/sampletabs_tpl.md
+   formId="scalar_list"
    htmlSource=page.scalar_list_example
 %}
 
@@ -187,6 +275,7 @@ inside.
 **Example:**
 
 {% include components/sampletabs_tpl.md
+   formId="singleton_list"
    htmlSource=page.singleton_list_example
 %}
 
@@ -211,6 +300,7 @@ say, up to three phone numbers and up to three emails.
 **Example:**
 
 {% include components/sampletabs_tpl.md
+   formId="nesting_list"
    htmlSource=page.nesting_list_example
 %}
 
@@ -316,9 +406,12 @@ The List component emits the following events:
 
 #### addItem (list Event)
 
-Triggered when a new item is going to be added to the list. This event occurs
-just **after** the new item node is created and **before** it is actually
-inserted in the DOM.
+Triggered when a new item is going to be added to the list.
+    
+👉 This event occurs just **after** the new item node is created and **before**
+it is actually inserted in the DOM.
+
+**Properties:**
 
 Event data contains the properties received by the originating `addItem`
 action, plus the following properties:
@@ -327,27 +420,20 @@ action, plus the following properties:
     a component).
 
   * `onRendered`: A callback setter that allows executing code after the item
-    is actually inserted in the DOM and rendered as a new child component of
+    being actually inserted in the DOM and rendered as a new child component of
     the list. The newly created child component is provided as an argument to
     the callback.
 
 
 **Example:**
 
-```javascript
-myForm.on("addItem", function({
-    newItemTarget,
-    onRendered,
-}) {
-    newItemTarget.classList.add("ingoing");
-    onRendered((newItem) => {
-        newItem.target.classList.remove("ingoing");
-        newItem.target.classList.add("ongoing");
-        // Alternatively, we could have used just newItemTarget instead of
-        // newItem.target here.
-    });
-});
-```
+{% include components/sampletabs_tpl.md
+   formId="simple_list_animation_additem"
+   htmlSource=page.simple_list_animation_example
+   cssSource=page.simple_list_animation_example_additem_css
+   jsSource=page.simple_list_animation_example_additem_js
+%}
+
 
 In this example, we add the CSS class `ingoing` to the new item before it is
 rendered, and then change it by the class (`ongoing`) after it is rendered.
@@ -355,17 +441,6 @@ rendered, and then change it by the class (`ongoing`) after it is rendered.
 This way we can animate the insertion of a new item with a few CSS lines such
 as follows:
 
-```css
-.form-group .ingoing {
-    transform: scaleY(0) translateY(-50%);
-}
-
-.form-group .ongoing {
-    transition:
-        transform 70ms ease-in
-    ;
-}
-```
 
 #### removeItem (list Event)
 
@@ -388,39 +463,20 @@ action, plus the following properties:
 
 **Example:**
 
-```javascript
-myForm.on("removeItem", async function({
-    oldItemTarget,
-    onRemoved,
-}) {
-    oldItemTarget.classList.remove("ongoing");
-    oldItemTarget.classList.add("outgoing");
+Following example extends the previous one adding a collapsing effect every
+time an item is removed from the list.
 
-    // Await transition to finish before removing the item:
-    const [duration, multiplier = 1000] = window.getComputedStyle(oldItemTarget)
-        .getPropertyValue('transition-duration')
-        .slice(0,-1).replace("m","/1")
-        .split("/")
-        .map(Number)
-    ;
-    await new Promise(resolve => setTimeout(
-        resolve,
-        duration * multiplier
-    ));
-});
-```
+{% include components/sampletabs_tpl.md
+   formId="simple_list_animation_complete"
+   htmlSource=page.simple_list_animation_example
+   cssSource=page.simple_list_animation_example_complete_css
+   jsSource=page.simple_list_animation_example_complete_js
+%}
+
+
 
 In this example, we add the `outgoing` CSS class to the item being removed so
-that it can be easily animated with a few CSS such as follows:
-
-```css
-.form-group .outgoing {
-    transform: scaleY(0) translateY(-50%);
-    transition:
-        transform 70ms ease-out
-    ;
-}
-```
+that it can be easily animated with a few CSS.
 
 Then it wait for the specified transition duration to elapse preventing the
 item being actually removed from the DOM until animation finished.

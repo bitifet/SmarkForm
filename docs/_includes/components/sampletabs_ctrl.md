@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   });
-  for (let formTarget of document.getElementsByClassName("smarkform_example")) {
-    new SmarkForm(formTarget);
-  };
 });
 </script>
 <style>

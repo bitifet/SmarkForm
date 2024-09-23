@@ -249,20 +249,21 @@
     }
 
 
-    .ingoing {
+    /* List items animation */
+    .animated_item {
         transform: scaleY(0) translateY(-50%);
-    }
-    .ongoing {
+        /* Add transition for removal effect */
         transition:
-            transform 70ms ease-in
+            transform 150ms ease-out
         ;
     }
-    .outgoing {
-        transform: scaleY(0) translateY(-50%);
+    .animated_item.ongoing {
+        transform: scaleY(1) translateY(0%);
         transition:
-            transform 70ms ease-out
+            transform 150ms ease-in
         ;
     }
+
 
     @media (hover:hover) {
         .form-group button:not([disabled]):hover {

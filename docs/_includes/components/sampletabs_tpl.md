@@ -1,47 +1,98 @@
-{% capture rendered_htmlSource %}
+{% comment %} ###  ### {% endcomment %}
+{% comment %} ###  ### {% endcomment %}
+{% comment %} ###  ### {% endcomment %}
+
+
+{% comment %} ### ################################# ### {% endcomment %}
+{% comment %} ### Read arguments and apply defaults ### {% endcomment %}
+{% comment %} ### ################################# ### {% endcomment %}
+
+{% capture default_jsSource %}const myForm = new SmarkForm(document.getElementById("myForm"));{% endcapture %}
+
+
+{% assign formId = include.formId | default: "FIXME" %}
+{% assign htmlSource = include.htmlSource | default: default_htmlSource %}
+{% assign cssSource = include.cssSource | default: default_cssSource %}
+{% assign jsSource = include.jsSource | default: default_jsSource %}
+
+
+{% comment %} ### ##################### ### {% endcomment %}
+{% comment %} ### Capture rendered HTML ### {% endcomment %}
+{% comment %} ### ##################### ### {% endcomment %}
+
+{% capture rendered_htmlSource | raw %}
 ```html
-{{ include.htmlSource }}
+{{ htmlSource }}
 ```
 {% endcapture %}
-{% capture rendered_cssSource %}
+
+
+
+{% comment %} ### #################### ### {% endcomment %}
+{% comment %} ### Capture rendered CSS ### {% endcomment %}
+{% comment %} ### #################### ### {% endcomment %}
+
+{% capture rendered_cssSource | raw %}
 ```css
-{{ include.cssSource }}
+{{ cssSource }}
 ```
 {% endcapture %}
+
+
+
+{% comment %} ### ################### ### {% endcomment %}
+{% comment %} ### Capture rendered JS ### {% endcomment %}
+{% comment %} ### ################### ### {% endcomment %}
+
 {% capture rendered_jsSource %}
 ```javascript
-{{ include.jsSource }}
+{{ jsSource }}
 ```
 {% endcapture %}
+
+
+
+{% comment %} ### ################################## ### {% endcomment %}
+{% comment %} ### Render tabbed layout with examples ### {% endcomment %}
+{% comment %} ### ################################## ### {% endcomment %}
+
+<style>
+{{ cssSource | raw }}
+</style>
 <div class="tab-container">
   <div class="tab-labels">
-    <div class="tab-label tab-label-active">📝 HTML</div>
-    {% if include.cssSource %}
-        <div class="tab-label">🎨 CSS</div>
+    <div class="tab-label tab-label-active" title="HTML Source">📝 HTML</div>
+    {% if cssSource %}
+        <div class="tab-label" title="CSS Source">🎨 CSS</div>
     {% endif %}
-    {% if include.jsSource %}
-        <div class="tab-label">⚙️  JS</div>
+    {% if jsSource %}
+        <div class="tab-label" title="JS Source">⚙️  JS</div>
     {% endif %}
-    <div class="tab-label">👁️ Preview</div>
+    <div class="tab-label" title="Live Preview">👁️ Preview</div>
   </div>
   <div class="tab-content tab-active">
     {{ rendered_htmlSource | markdownify }}
   </div>
-    {% if include.cssSource %}
+    {% if cssSource %}
         <div class="tab-content">
             {{ rendered_cssSource | markdownify }}
         </div>
     {% endif %}
-    {% if include.jsSource %}
+    {% if jsSource %}
         <div class="tab-content">
             {{ rendered_jsSource | markdownify }}
         </div>
     {% endif %}
   <div class="tab-content">
     <div class="smarkform_example">
-      <style>{{ include.cssSource }}</style>
-      {{ include.htmlSource | raw }}
-      <script>{{ include.jsSource }}</script>
+      {{ htmlSource | replace: "myForm", formId | raw }}
     </div>
   </div>
+</div>
+<div>
+<script>
+(function() {
+{{ jsSource | replace: "myForm", formId }}
+})();
+</script>
 </div>
