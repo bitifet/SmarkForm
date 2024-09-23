@@ -14,6 +14,7 @@
 {% assign htmlSource = include.htmlSource | default: default_htmlSource %}
 {% assign cssSource = include.cssSource | default: default_cssSource %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
+{% assign notes = include.notes | default: default_notes %}
 
 
 {% comment %} ### ##################### ### {% endcomment %}
@@ -61,33 +62,41 @@
 </style>
 <div class="tab-container">
   <div class="tab-labels">
-    <div class="tab-label tab-label-active" title="HTML Source">📝 HTML</div>
+    <div class="tab-label tab-label-active" title="HTML Source">🗒️ HTML</div>
     {% if cssSource %}
         <div class="tab-label" title="CSS Source">🎨 CSS</div>
     {% endif %}
     {% if jsSource %}
         <div class="tab-label" title="JS Source">⚙️  JS</div>
     {% endif %}
-    <div class="tab-label" title="Live Preview">👁️ Preview</div>
+        <div class="tab-label" title="Live Preview">👁️ Preview</div>
+    {% if notes %}
+        <div class="tab-label tab-label-right" title="Notes">📝 Notes</div>
+    {% endif %}
   </div>
   <div class="tab-content tab-active">
     {{ rendered_htmlSource | markdownify }}
   </div>
-    {% if cssSource %}
-        <div class="tab-content">
-            {{ rendered_cssSource | markdownify }}
-        </div>
-    {% endif %}
-    {% if jsSource %}
-        <div class="tab-content">
-            {{ rendered_jsSource | markdownify }}
-        </div>
-    {% endif %}
+  {% if cssSource %}
+      <div class="tab-content">
+          {{ rendered_cssSource | markdownify }}
+      </div>
+  {% endif %}
+  {% if jsSource %}
+      <div class="tab-content">
+          {{ rendered_jsSource | markdownify }}
+      </div>
+  {% endif %}
   <div class="tab-content">
     <div class="smarkform_example">
       {{ htmlSource | replace: "myForm", formId | raw }}
     </div>
   </div>
+  {% if notes %}
+    <div class="tab-content">
+        {{ notes | markdownify }}
+    </div>
+  {% endif %}
 </div>
 <div>
 <script>

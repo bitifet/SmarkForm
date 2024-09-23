@@ -33,12 +33,18 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .tab-label {
+  flex-grow: 0;
   cursor: pointer;
   padding: 10px 15px;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
   margin-right: 5px;
   transition: background-color 0.3s;
+}
+
+.tab-label.tab-label-right {
+  margin-left: auto;
+  margin-right: 0;
 }
 
 .tab-label:hover {
