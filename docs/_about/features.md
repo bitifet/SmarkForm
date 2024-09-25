@@ -34,6 +34,8 @@ nav_order: 2
 
   * [x] Create powerful interactive forms with just plain HTML.
   * [x] Just add `data-smark` attribute to relevant tags and see the magic.
+  * [ ] Properties be automatically mapped as `data-smark-<property_name>`-like
+    attributes enabling `[data-smark-<property_name>]`-like CSS selectors.
   * [x] Intuitive option names.
     - **Ex.:** `<button data-smark='{action: "addItem", context: "myList">`
 
@@ -49,7 +51,10 @@ nav_order: 2
   * [x] Addressable elements by easy-to-read path-style relative or absolute addresses.
   * [x] Complete separation between View and Controller logic.
   * [x] Context-based actions (no need to hard-wire context and/or target).
-  * [ ] Dynamic and reactive options loading for dropdowns (comming soon).
+  * [ ] Dynamic and reactive options loading for dropdowns (comming soon)
+        through [the API Interface](/advanced_concepts/the_api_interface)).
+  * [ ] Infinite lists (with lazy loading through [the API
+        Interface](/advanced_concepts/the_api_interface)).
 
 
 ## Can hold any data structure expressible in JSON
