@@ -52,6 +52,13 @@ export default [
                     unused: false,
                 },
             }),
+            copy({
+                targets: [
+                    { src: "package.json", dest: "docs/_data/" },
+                    { src: "dist/*", dest: "docs/_resources/dist" },
+                ],
+                hook: "writeBundle",
+            }),
         ]
     },
     {
@@ -72,13 +79,6 @@ export default [
                     pkg,
                 },
             }),
-            copy({
-                targets: [
-                    { src: "package.json", dest: "docs/_data/" },
-                    { src: "dist/*", dest: "docs/_resources/dist" },
-                ]
-            }),
-
         ],
     },
 ];

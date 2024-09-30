@@ -14,7 +14,7 @@
     "bundle": "scripts/build_all.sh",
     "watch": "scripts/livebuild_dev_smarkform.sh",
     "servedoc": "scripts/liveserve_documentation_site.sh",
-    "dev": "scripts/liveserve_documentation_site.sh"
+    "dev": "scripts/liveserve_all.sh"
   },
   "repository": {
     "type": "git",

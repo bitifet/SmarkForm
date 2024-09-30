@@ -2,6 +2,6 @@
 
 npx concurrently \
     -n rollup,site \
-    \"npm run watch\" \
-    \"npm run servedoc\"
+    "npm run watch" \
+    "npm run servedoc" \
 ;
