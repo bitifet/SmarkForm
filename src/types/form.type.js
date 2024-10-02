@@ -1,13 +1,13 @@
 // types/form.type.js
 // ==================
 
-import {SmarkComponent} from "../lib/component.js";
+import {SmarkField} from "../lib/component.js";
 import {getRoots} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {action} from "./trigger.type.js";
 
 @foldable
-export class form extends SmarkComponent {
+export class form extends SmarkField {
     async render() {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;
@@ -17,7 +17,7 @@ export class form extends SmarkComponent {
             of getRoots(me.target, me.selector)
         ) {
             const newItem = await me.enhance(node);
-            if (newItem.options.type != "trigger") {
+            if (!! newItem._isField) {
                 newItem.name = me.validName(
                     newItem.options.name
                     , node.getAttribute("name")

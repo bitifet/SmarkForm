@@ -50,6 +50,8 @@ function inferType(node, parentComponent) {//{{{
         case "textarea":
         case "select":
             return "input";
+        case "label":
+            return "label";
         default:
             //if (parentComponent.options.type == "list") return "form";
         case "form":
@@ -200,7 +202,6 @@ export class SmarkComponent {
                 "ACTION_IN_NON_TRIGGER"
                 , `"action" property is only allowed for "trigger" components but "${options.type}" type specified.`
             );
-            delete options.name; // Triggers are always unnamed.
         } else if (typeof options.type != "string") {
             throw me.renderError(
                 "NO_TYPE_PROVIDED"
@@ -333,6 +334,13 @@ export class SmarkComponent {
         const me = this;
         return new errors.renderError(code, message, me.getPath());
     };//}}}
+};
+
+export class SmarkField extends SmarkComponent {
+    constructor(...args){
+        super(...args);
+        this._isField = true;
+    };
 };
 
 export function createType(name, controller) {//{{{

@@ -24,7 +24,7 @@ export class input extends form {
             );
         }
         me.targetField = (
-            me.isSingleton ? me.children[0]
+            me.isSingleton ? Object.values(me.children)[0].target
             : me.target
         );
         // console.log("New input!!!!", {

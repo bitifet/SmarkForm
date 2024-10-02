@@ -14,7 +14,7 @@
 //
 
 
-import {SmarkComponent} from "../lib/component.js";
+import {SmarkField} from "../lib/component.js";
 import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
@@ -40,7 +40,7 @@ function makeNonNavigable(target) {//{{{
 
 @foldable
 @sortable
-export class list extends SmarkComponent {
+export class list extends SmarkField {
     render () {//{{{
         const me = this;
         me.originalDisplayProp = me.target.style.display;

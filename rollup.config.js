@@ -57,7 +57,14 @@ export default [
                     { src: "package.json", dest: "docs/_data/" },
                     { src: "dist/*", dest: "docs/_resources/dist" },
                 ],
-                hook: "writeBundle",
+                ...(
+                    ! isProduction ? {hook: "writeBundle"}
+                        // Copies files after every rebuild making jekyll site
+                        // to reload while in dev (watch) mode.
+                        // BUT makes 'npm run build' to fail.
+                        // This (almost) fixes that...
+                    : {}
+                )
             }),
         ]
     },

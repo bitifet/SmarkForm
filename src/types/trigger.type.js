@@ -15,6 +15,10 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
 
 
 export class trigger extends SmarkComponent {
+    constructor(node, options, ...args){
+        delete options.name; // Triggers are always unnamed.
+        return super(node, options, ...args);
+    };
     render(){
         const me = this;
         me.parent.onRendered(()=>{
