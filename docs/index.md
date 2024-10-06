@@ -42,8 +42,8 @@ simple_list_example_notes: |
        button to see resulting data.
     
     👉 Notice it inforces some default behaviours like a convenient minimum of
-    one item or not exporting empty items for lists. But it can be easily
-    changed, with properties like *min_items* and (🚧 FIXME!).
+       one item or not exporting empty items for lists. But it can be easily
+       changed, with properties like *min_items* and *exportEmpties*.
 
     👉 Check the *JS* tab to see the little JS just to initialize it as a
        *SmarkForm* and show you the data when exported.
@@ -115,13 +115,13 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 
 ## Features
 
-  * Markup-driven and Intuitive API.
-  * Easy to use.
-  * Advanced capabilities.
-  * Can hold any data structure expressible in JSON.
-  * Flexible and extendable.
-  * Lightweight yet highly compatible.
-  * [More...]({{ "about/features" | relative_url }})
+  * Easy to use **Markup-driven** and Intuitive API.
+  * No reliance on a specific HTML structure: **Designers have complete freedom**.
+  * No manual wiring between controls and fields.
+  * Imports/Exports JSON supporting nested subforms (objects) and
+    variable-length lists (arrays).
+  * Lightweigh, flexible and extendable.
+  * [More...](https://smarkform.bitifet.net/about/features)
 
 
 ## Sample Code:
