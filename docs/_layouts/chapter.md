@@ -75,10 +75,13 @@ layout: default
 
 <style>
 h4 {
-    font-weight: bold;
-    text-decoration: underline;
     line-height: 3em;
+    font-size: 1.2em !important;
     color: #000077;
+    text-transform: none !important;
+}
+h4::before {
+    content: "🔧 "
 }
 </style>
 
