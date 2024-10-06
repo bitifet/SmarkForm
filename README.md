@@ -25,12 +25,12 @@ interactions, with no need to deal with complex JavaScript code.
 
 ## Features
 
-  * Markup-driven and Intuitive API.
-  * Easy to use.
-  * Advanced capabilities.
-  * Can hold any data structure expressible in JSON.
-  * Flexible and extendable.
-  * Lightweight yet highly compatible.
+  * Easy to use **Markup-driven** and Intuitive API.
+  * No reliance on a specific HTML structure: **Designers have complete freedom**.
+  * No manual wiring between controls and fields.
+  * Imports/Exports JSON supporting nested subforms (objects) and
+    variable-length lists (arrays).
+  * Lightweigh, flexible and extendable.
   * [More...](https://smarkform.bitifet.net/about/features)
 
 
