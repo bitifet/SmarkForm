@@ -6,14 +6,47 @@ permalink: /
 
 simple_list_example: |
     <div id="myForm">
-        <ul data-smark='{"name": "phones", "of": "input"}'>
-            <li>
-                <input placeholder='Phone Number' type="tel" data-smark>
-                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-            </li>
-        </ul>
-        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
+        <p>
+            <label>Name:
+                <input data-smark='{"name":"name"}' placeholder='Full name' type="tel">
+            </label>
+        </p>
+        <p>
+            <label>
+                <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
+                Phones:
+            </label>
+            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+                <li>
+                    <label>📞 
+                        <input placeholder='+34...' type="tel" data-smark>
+                    </label>
+                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+                </li>
+            </ul>
+        </p>
+        <button data-smark='{"action":"export"}'>⬇️  Export</button>
     </div>
+
+simple_list_example_js: |
+    const myForm = new SmarkForm(document.getElementById("myForm"));
+    myForm.on("AfterAction_export", ({data})=>{
+        window.alert(JSON.stringify(data, null, 4));
+    });
+
+simple_list_example_notes: |
+    👉 This is a simple form to show the power of *SmarkForm*.
+
+    👉 Tinker with it modifying data, adding or removing items from the
+       *Phones* list, sorting its items by dragging them and click the `Export`
+       button to see resulting data.
+    
+    👉 Notice it inforces some default behaviours like a convenient minimum of
+    one item or not exporting empty items for lists. But it can be easily
+    changed, with properties like *min_items* and (🚧 FIXME!).
+
+    👉 Check the *JS* tab to see the little JS just to initialize it as a
+       *SmarkForm* and show you the data when exported.
 
 ---
 
@@ -97,6 +130,9 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 {% include components/sampletabs_tpl.md
    formId="simple_list"
    htmlSource=page.simple_list_example
+   jsSource=page.simple_list_example_js
+   cssSource=page.simple_list_example_css
+   notes=page.simple_list_example_notes
 %}
 
 

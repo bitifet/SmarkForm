@@ -295,8 +295,9 @@ descendant of any depth.
 
 ### Fields
 
-👉 **Every *SmarkForm* component (except *triggers*) is a form field** from and
-to which **we can import and export values**.
+👉 **Every *SmarkForm* component (except [labels](#labels) and
+[triggers](#triggers)) is a form field** from and to which **we can import and
+export values**.
 
 So our *root form* is also a *field* (of type "form") and we can import and
 export its *value*.
@@ -389,7 +390,7 @@ actions:
 
 In *SmarkForm* we don't talk of *components* but of *component types*.
 
-Except for [labels](#tlabels) and [triggers](#triggers), *component types* are
+Except for [labels](#labels) and [triggers](#triggers), *component types* are
 kind of regular form-field types.
 
 
