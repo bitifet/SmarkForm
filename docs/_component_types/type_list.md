@@ -169,6 +169,7 @@ simple_list_animation_example_complete_js: |
         * [min_items](#min_items)
         * [max_items](#max_items)
         * [sortable](#sortable)
+        * [exportEmpties](#exportempties)
         * [of](#of)
     * [Actions](#actions)
         * [(Async) addItem (Action)](#async-additem-action)
@@ -355,7 +356,23 @@ Controls wether the list can be user sorted by dragging and dropping list items.
   * **Default value:** false
 
 
+#### exportEmpties
+
+Controls whether unfilled list items should be exported or not. This allows for
+neater arrays when the user adds more items to the list than are used.
+
+  * **Type:** Boolean
+  * **Default value:** false
+
+
 #### of
+
+Specify a field type for list items. Handy to avoid spacifying a whole
+*data-smark* attribute in the template to just specify the field type when
+needed.
+
+  * **Type:** string
+  * **Default value:** undefined
 
 
 ### Actions
@@ -407,7 +424,7 @@ The List component emits the following events:
 #### addItem (list Event)
 
 Triggered when a new item is going to be added to the list.
-    
+
 👉 This event occurs just **after** the new item node is created and **before**
 it is actually inserted in the DOM.
 
