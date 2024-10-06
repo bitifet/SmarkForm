@@ -10,5 +10,5 @@
         'dist/SmarkForm.umd.js',
     ].map(path=>(
         isProduction ? `${CDN}/${path}`
-        : `/docs/_resources/${path}?foo=${Math.random()}`
+        : `/resources/${path}?foo=${Math.random()}`
     ));
