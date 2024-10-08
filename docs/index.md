@@ -108,11 +108,6 @@ with no need to deal with complex JavaScript code. \[[More...]({{
     "about/about_smarkform" | relative_url }})\]
 
 
-{: .hint}
->  Check out our [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
-> to see what SmarkForm is capable of in a glance!!
-
-
 ## Features
 
   * Easy to use **Markup-driven** and Intuitive API.
@@ -124,8 +119,14 @@ with no need to deal with complex JavaScript code. \[[More...]({{
   * [More...](https://smarkform.bitifet.net/about/features)
 
 
+
+
 ## Sample Code:
 
+The following code snippet shows *SmarkForm* simplicity.
+
+👉 You will find similar examples working preview along this documentation.
+**Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
 
 {% include components/sampletabs_tpl.md
    formId="simple_list"
@@ -134,6 +135,11 @@ with no need to deal with complex JavaScript code. \[[More...]({{
    cssSource=page.simple_list_example_css
    notes=page.simple_list_example_notes
 %}
+
+{: .hint}
+> Also check out our
+> [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
+> to see what SmarkForm is capable of in a glance!!
 
 
 ## Current Status
