@@ -12,6 +12,13 @@ const pkg = JSON.parse(readFileSync('./package.json'));
 
 const isProduction = process.env.BUILD === 'production';
 
+
+const copyTargets = [
+    { src: "package.json", dest: "docs/_data/" },
+    { src: "dist/*", dest: "docs/_resources/dist" },
+];
+
+
 export default [
     {
         input: 'src/main.js',
@@ -53,10 +60,7 @@ export default [
                 },
             }),
             copy({
-                targets: [
-                    { src: "package.json", dest: "docs/_data/" },
-                    { src: "dist/*", dest: "docs/_resources/dist" },
-                ],
+                targets: copyTargets,
                 ...(
                     ! isProduction ? {hook: "writeBundle"}
                         // Copies files after every rebuild making jekyll site
@@ -85,6 +89,9 @@ export default [
                     isProduction,
                     pkg,
                 },
+            }),
+            copy({
+                targets: copyTargets,
             }),
         ],
     },
