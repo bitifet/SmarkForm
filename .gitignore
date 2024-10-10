@@ -3,6 +3,7 @@
 
 # Generated files
 dist/examples/*.html
+docs/_data/computed.json
 
 # Jekyll
 docs/_site

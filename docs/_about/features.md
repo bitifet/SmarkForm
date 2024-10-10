@@ -77,7 +77,7 @@ nav_order: 2
 ## Lightweight yet highly compatible
 
   * [x] Bundled both as modern ES Module and UMD for wide compatibility.
-  * [x] Only 20KB minified!
+  * [x] Only {{ site.data.computed.bundleSizeKB }}KB minified!
   * [x] > 0.25%, browser coverage thanks to Babel
 
 
