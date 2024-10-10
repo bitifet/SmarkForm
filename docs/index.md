@@ -112,10 +112,10 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 
   * Easy to use **Markup-driven** and Intuitive API.
   * No reliance on a specific HTML structure: **Designers have complete freedom**.
-  * No manual wiring between controls and fields.
-  * Imports/Exports JSON supporting nested subforms (objects) and
+  * **No manual wiring** between controls and fields.
+  * **Imports/Exports JSON** supporting nested subforms (objects) and
     variable-length lists (arrays).
-  * Lightweigh, flexible and extendable.
+  * Lightweigh (**Only {{ site.data.computed.bundleSizeKB }}KB** minified), flexible and extendable.
   * [More...](https://smarkform.bitifet.net/about/features)
 
 
@@ -146,7 +146,9 @@ The following code snippet shows *SmarkForm* simplicity.
 
 SmarkForm implementation is stable and fully functional, but not all initially
 planned requirements are yet implemented. Hence, it's not yet in the 1.0.0
-version. \[[🔗 More...]({{ "roadmap/status" | relative_url }})\]
+version. \[[🔗 More...]({{ "about/about_smarkform" | relative_url }}#status)\]
+
+**Last Updated:** {{ site.data.computed.lastUpdated }}.
 
 
 ## Where to Go Next?

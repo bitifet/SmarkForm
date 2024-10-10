@@ -1,7 +1,7 @@
 ---
 title: TO-DO List
 layout: chapter
-permalink: /roadmap/TODO
+permalink: /about/TODO
 nav_order: 3
 
 ---

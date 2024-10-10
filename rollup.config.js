@@ -21,7 +21,6 @@ const copyTargets = [
 
 
 
-
 const computed_plugin = ()=>({
     name: 'computed_plugin',
     async writeBundle() {
@@ -29,9 +28,11 @@ const computed_plugin = ()=>({
         try {
             const stats = await fs.stat(filePath);
             const bundleSizeKB = Math.round(stats.size / 1024);
+            const lastUpdated = (new Date()).toDateString();
 
             const fileContents = JSON.stringify({
-                bundleSizeKB
+                bundleSizeKB,
+                lastUpdated,
             });
 
             // Write the file size to another file

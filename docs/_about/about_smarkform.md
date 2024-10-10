@@ -19,6 +19,13 @@ nav_order: 1
 * [Introduction](#introduction)
 * [Why SmarkForm](#why-smarkform)
 * [The SmarkForm Approach](#the-smarkform-approach)
+* [Status](#status)
+    * [Core functionality.](#core-functionality)
+    * [Select component type.](#select-component-type)
+    * [Trigger component](#trigger-component)
+    * [Automated tests](#automated-tests)
+    * [Documentation](#documentation)
+* [History](#history)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -29,7 +36,7 @@ nav_order: 1
 ## Introduction
 
 <b>Smarkform</b> is a powerful while effortless Markup-driven and Extendable forms.
-   
+
 It simplifies the creation of interactive forms in web applications, empowering designers to utilize custom templates and seamlessly incorporate interaction through contextual actions.
 
 **Designers** can enhance their templates by using their own HTML and CSS, without
@@ -89,4 +96,80 @@ and export JSON data from the controller layer.
 
 This approach allows for greater flexibility and efficiency in form development
 and maintenance.
+
+
+## Status
+
+SmarkForm implementation is stable and fully functional, but not all initially
+planned requirements are yet implemented. Hence, it's not yet in the 1.0.0
+version.
+
+It still lacks two of its planned key features:
+
+  * The API Interface.
+  * The [🔗 `<select>` component type]({{ "/component_types/type_select" |
+    relative_url }}).
+
+{: .warning }
+> Even this documentation is not yet finished and may be incomplete, inaccurate
+> or outdated in many of its sections.
+
+
+**🚧  ＷＯＲＫ  ＩＳ  ＩＮ  ＰＲＯＧＲＥＳＳ...  🚧**  <big style="font-size: 2em;">&nbsp;&nbsp;😉</big>
+
+
+
+### Core functionality.
+
+
+*SmarkForm* Core functionality is in mature state.
+
+Almost all initially planed features are implemented and working well.
+
+The only exception is the "API interface" which will allow future *select*
+component type to fetch its optinons dynamically depending on the value of
+other fields (See *Select Component* in [Core component
+types](#core-component-types) section).
+
+
+### Select component type.
+
+Select component will be capable of loading its options from a remote API call
+by passing its *src* property to so called "API Interface".
+
+The *API Interface* will allow *select* (and other future components) to fetch
+their options dynamically from an external API and react to any change in any
+other fields whose value were used as argument to the API call.
+
+For detailed explanation see: [Select Component Type](type_select.md).
+
+
+
+### Trigger component
+
+Fully functional but only for regular clicks.
+
+Special behaviours for right / middle / (other) cliks, keyboard events, etc...
+may be eventually implemented in the future. But not a priority yet.
+
+
+### Automated tests
+
+A mature testing structure with mocha and puppetter is set up to easily
+implement tests over any SmarkForm feature.
+
+But only a few actual tests are implemented yet. More tests need to be
+developed to ensure all functionality keeps working while implementation
+advances.
+
+
+### Documentation
+
+  * This Reference Manual is quite mature. But API documentation still needs a
+    lot of work...
+
+  * **Last Updated:** {{ site.data.computed.lastUpdated }}.
+
+
+## History
 

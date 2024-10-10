@@ -32,15 +32,10 @@ collections:
     output: true
     nav_order: 7
     sort_by: nav_order
-  roadmap:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 8
-    sort_by: nav_order
   community:
     permalink: "/:collection/:path/"
     output: true
-    nav_order: 9
+    nav_order: 8
     sort_by: nav_order
 
 just_the_docs:
@@ -59,9 +54,6 @@ just_the_docs:
       nav_fold: true
     resources:
       name: Resources
-      nav_fold: true
-    roadmap:
-      name: Roadmap
       nav_fold: true
     community:
       name: Community
