@@ -31,21 +31,21 @@ export const foldable = function foldable_decorator(target, {kind}) {
                     : me.originalDisplayProp
                 );
 
-                me.getTriggers("fold").forEach(acc => {
-                    const {foldedClass, unfoldedClass} = acc.options;
-                    if (foldedClass) acc.target.classList[
+                me.getTriggers("fold").forEach(tgg => {
+                    const {foldedClass, unfoldedClass} = tgg.options;
+                    if (foldedClass) tgg.target.classList[
                         isFolded ? "add"
                         : "remove"
                     ](foldedClass);
-                    if (unfoldedClass) acc.target.classList[
+                    if (unfoldedClass) tgg.target.classList[
                         isFolded ? "remove"
                         : "add"
                     ](unfoldedClass);
                 });
 
                 me.getTriggers(["addItem", "removeItem"]).map(
-                    isFolded ? acc => acc.disable()
-                    : acc => acc.enable()
+                    isFolded ? tgg => tgg.disable()
+                    : tgg => tgg.enable()
                 );
             };//}}}
         };

@@ -299,19 +299,19 @@ export class SmarkComponent {
         const me = this;
         const myCurrentActions = [];
         for (
-            const acc
+            const tgg
             of [...me.root.target.querySelectorAll(me.selector)]
                 .map(target=>target[sym_smart])
                 .filter(x=>x) // Ignore not yet rendered.
         ) {
-            const options = acc.getTriggerArgs()
+            const options = tgg.getTriggerArgs()
             if (! options) continue; // Not a trigger
             if (! Object.is(options.context, me)) continue;
             if ( // Matches actionName string or any in actionName array:
                 actionNames
                 && ! (1 + [actionNames].flat().findIndex(n=>n==options.action))
             ) continue;
-            myCurrentActions.push(acc);
+            myCurrentActions.push(tgg);
         };
         return myCurrentActions;
     };//}}}

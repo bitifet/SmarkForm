@@ -21,10 +21,10 @@ mixin inputlist(label="Annonymous")
         })
             .singleton
                 button(data-smark = {
-                    action: "addItem",
-                }, title="Add new item below") ➕
-                input(data-smark)&attributes(atts)
-                button(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
                 }, title="Remove this item") ➖
+                input(data-smark)&attributes(atts)
+                button(data-smark = {
+                    action: "addItem",
+                }, title="Add new item below") ➕

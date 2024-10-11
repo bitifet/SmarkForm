@@ -86,7 +86,7 @@ export class list extends SmarkField {
                 // Update "count" actions in case of not already updated by
                 // me.addItem:
                 me.getTriggers("count").forEach(
-                    acc=>acc.target.innerText = String(me.children.length)
+                    tgg=>tgg.target.innerText = String(me.children.length)
                 );
             };
         });
@@ -249,7 +249,7 @@ export class list extends SmarkField {
         onRenderedCbks.forEach(cbk=>cbk(newItem));
         //}}}
         me.getTriggers("count").forEach(
-            acc=>acc.target.innerText = String(me.children.length)
+            tgg=>tgg.target.innerText = String(me.children.length)
         );
     };//}}}
     @action
@@ -348,7 +348,7 @@ export class list extends SmarkField {
             me.children = newChildren;
 
             me.getTriggers("count").forEach(
-                acc=>acc.target.innerText = String(me.children.length)
+                tgg=>tgg.target.innerText = String(me.children.length)
             );
 
             // Execute "onRemoved" callbacks:{{{
