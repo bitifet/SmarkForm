@@ -18,6 +18,7 @@ nav_order: 3
 
 * [UX Improvements](#ux-improvements)
     * [👉 Keyboard Shortcuts](#-keyboard-shortcuts)
+    * [👉 Auto disabled triggers](#-auto-disabled-triggers)
 * [Pending core features](#pending-core-features)
     * [👉 The API interface](#-the-api-interface)
     * [👉 *src* property for import action](#-src-property-for-import-action)
@@ -48,6 +49,31 @@ nav_order: 3
   - I.e. Ctrl+"-" in list item may remove the item containing it (trigger
     removeItem action with that item as target).
 
+
+{: .hint}
+>   * We will define a new "shorcut" property to specify a standard key name
+>     (defined for keydown events).
+>   * Ctrl key keydown event will trigger a hint reveal (by default, setting
+>     ::before content property), but only for those triggers targetting
+>     currently focused field.
+>   * ...or its parents as long as they don't conflict with the innermost
+>     triggers.
+>   * Finally, if the specified key is pressed while holding 'Ctrl' key, the
+>     trigger will be fired.
+
+
+### 👉 Auto disabled triggers
+
+When, for instance, a list reaches the number of items specified as *maxItems*
+property, the *addItem* action wont be performed (since the limit is reached).
+
+Now this condition is checked inside the action implementation.
+
+We should instead implement a kind of action "permissions" allowing to tell
+whether an action can or cannot be performed beforehand.
+
+After that, non callable actions should be automatically disabled through the
+"disabled" html attribute (and vice-versa).
 
 ## Pending core features
 
