@@ -295,9 +295,15 @@ export class SmarkComponent {
             // Like 'document.location.hash = ""' but without leaving leading
             // hash character.
     };//}}}
-    getTriggers(actionNames = null) {//{{{
+    getTriggers(actionNames = "") {//{{{
         const me = this;
         const myCurrentActions = [];
+        const actionKeys = new Set([actionNames]
+            .flat()
+            .map(String)
+            .filter(x=>x)
+        );
+        const returnAll = actionKeys.has("*");
         for (
             const tgg
             of [...me.root.target.querySelectorAll(me.selector)]
@@ -307,11 +313,10 @@ export class SmarkComponent {
             const options = tgg.getTriggerArgs()
             if (! options) continue; // Not a trigger
             if (! Object.is(options.context, me)) continue;
-            if ( // Matches actionName string or any in actionName array:
-                actionNames
-                && ! (1 + [actionNames].flat().findIndex(n=>n==options.action))
-            ) continue;
-            myCurrentActions.push(tgg);
+            if (
+                returnAll
+                || actionKeys.has(options.action)
+            ) myCurrentActions.push(tgg);
         };
         return myCurrentActions;
     };//}}}
