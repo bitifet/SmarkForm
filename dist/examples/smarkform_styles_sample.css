@@ -165,6 +165,30 @@
   user-select: none;
 }
 
+.smarkForm button[data-hotkey] {
+  position: relative;
+  overflow-x: display;
+}
+
+.smarkForm button[data-hotkey]::before {
+  content: attr(data-hotkey);
+  display: inline-block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 10;
+  pointer-events: none;
+  background-color: #ffd;
+  outline: 1px solid lightyellow;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: sans-serif;
+  font-size: .8em;
+  white-space: nowrap;
+  transform: scale(1.8) translate(-0.3em, -0.3em);
+}
+
 .smarkForm a:focus,
 .smarkForm button:focus,
 .smarkForm input:focus,

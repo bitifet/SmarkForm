@@ -169,6 +169,33 @@
         user-select: none;
     }
 
+    button[data-hotkey] {
+        position: relative;
+        overflow-x: display;
+    }
+    button[data-hotkey]::before {
+        content: attr(data-hotkey);
+
+        display: inline-block;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        z-index: 10;
+        pointer-events: none;
+
+        background-color: #ffd;
+        outline: 1px solid lightyellow;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-family: sans-serif;
+        font-size: .8em;
+        white-space: nowrap;
+
+        transform: scale(1.8) translate(-.3em, -.3em);
+
+    }
+
     a:focus,
     button:focus,
     input:focus,

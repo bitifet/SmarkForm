@@ -23,8 +23,10 @@ mixin inputlist(label="Annonymous")
                 button(data-smark = {
                     action: "removeItem",
                     failback: removeFailback,
+                    hotkey: "-",
                 }, title="Remove this item") ➖
                 input(data-smark)&attributes(atts)
                 button(data-smark = {
                     action: "addItem",
+                    hotkey: "+",
                 }, title="Add new item below") ➕
