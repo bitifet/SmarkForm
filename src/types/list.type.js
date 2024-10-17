@@ -251,6 +251,7 @@ export class list extends SmarkField {
         me.getTriggers("count").forEach(
             tgg=>tgg.target.innerText = String(me.children.length)
         );
+        newItem.focus();
     };//}}}
     @action
     @mutex("list_mutating")
@@ -304,8 +305,9 @@ export class list extends SmarkField {
             };
             if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
             let oldItem = null;
+            let newFocusPosition = null;
             const newChildren = me.children
-                .filter(child=>{
+                .filter((child, i, all)=>{
                     if (child.target.isSameNode(currentTarget.target)) {
                         if (autoscroll == "elegant") {
                             makeRoom(child.target, child.target.offsetHeight);
@@ -319,6 +321,13 @@ export class list extends SmarkField {
                         };
 
                         oldItem = child;
+
+                        newFocusPosition = (
+                            (all.length -i > 1) ? newFocusPosition = i // More above
+                            : i == 0 ? null           // No items left
+                            : i - 1                   // Removing last item
+                        );
+
                         return false;
                     };
                     return true;
@@ -354,6 +363,10 @@ export class list extends SmarkField {
             // Execute "onRemoved" callbacks:{{{
             onRemovedCbks.forEach(cbk=>cbk());
             //}}}
+
+            if (newFocusPosition !== null) {
+                me.children[newFocusPosition].focus();
+            };
 
         };
 

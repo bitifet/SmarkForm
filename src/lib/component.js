@@ -333,6 +333,13 @@ export class SmarkComponent {
         };
         return me.target.id
     };//}}}
+    focus() {//{{{
+        const me = this;
+        for (const fname in me.children) {
+            return me.children[fname].focus();
+        };
+        me.targetField.focus();
+    };//}}}
     getTriggerArgs() {}; // Let's easily filter out non trigger compoenents.
     // Error types:
     renderError(code, message) {//{{{
