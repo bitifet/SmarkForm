@@ -16,7 +16,7 @@ block mainForm
     section
         h2 Activity
         .form-group
-            label Title
+            label(data-smark) Title
             input(
                 data-smark
                 name="activity_name"
@@ -24,7 +24,7 @@ block mainForm
                 placeholder="Name your planned activity..."
             )
         .input-group
-            label Description
+            label(data-smark) Description
             textarea(
                 data-smark
                 name="activity_description"
@@ -32,7 +32,7 @@ block mainForm
             )
 
         h2 Planning
-        h3 Origin
+        label(data-smark) Origin
         .form-group(data-smark={
             type: "form",
             name: "origin",
@@ -59,7 +59,7 @@ block mainForm
                 type="time"
                 placeholder='hh:mm'
             )
-        h3 Stops
+        label(data-smark) Stops
         .form-group(data-smark={
             type: "list",
             name: "stops",
@@ -99,7 +99,7 @@ block mainForm
                 action: "addItem",
                 context: "stops",
             }) Add Stop Place
-        h3 Destination
+        label(data-smark) Destination
         .form-group(data-smark={
             type: "form",
             name: "destination",
@@ -129,7 +129,7 @@ block mainForm
     section
         h2 Participants
 
-        h3 Organizers
+        label(data-smark) Organizers
         .form-group(data-smark={
             type: "list",
             name: "organizers",
@@ -150,7 +150,7 @@ block mainForm
                 context: "organizers",
             }) Add Organizer
 
-        h3 Participants:
+        label(data-smark) Participants:
         .form-group(data-smark={
             type: "list",
             name: "participants",

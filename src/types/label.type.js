@@ -29,7 +29,7 @@ export class label extends SmarkComponent {
         const me = this;
         me.parent.onRendered(()=>{
             const labelArgs = me.getLabelArgs();
-            const {targetField} = labelArgs.target;
+            const {targetField} = labelArgs.target || {};
             if (targetField) { // Apply only to native inputs (scalars)
                 if (! targetField.id) { // Ensure targetted field has an Id
                     targetField.id = Math.random().toString(36).substring(2);
@@ -41,6 +41,8 @@ export class label extends SmarkComponent {
     getLabelArgs() {//{{{
         const me = this;
         const parents = [...me.parents];
+        let context, target;
+
         const {
             // property: local variable
             context: contextPath,     // Define context component
@@ -48,15 +50,38 @@ export class label extends SmarkComponent {
             ...otherOptions
         } = me.options;
 
-        const context = (
-            contextPath ? me.parent.find(contextPath)
-            : me.parent
-        );
-
-        const target = (
-            targetPath ? context.find(targetPath) // Explicit target (context relative)
-            : context
-        );
+        if (! contextPath && ! targetPath) {
+            // Guess ;-)
+            context = me.parent;
+            const candidates = context.target.querySelectorAll(me.selector);
+            let found = false;
+            for (const childName in candidates) {
+                if (found) {
+                    let targetComponent = me.getComponent(candidates[childName]);
+                    if (targetComponent?._isField) {
+                        // FIXME : Dig deeper in case of non native field tags
+                        // (forms, lists, singletons...)
+                        // It may require to await for rendering or even listen
+                        // to events (lists with minItems = 0);
+                        target = targetComponent;
+                        break;
+                    };
+                } else if (
+                    Object.is(candidates[childName], me.target)
+                ) {
+                    found = true;;
+                };
+            };
+        } else {
+            context = (
+                contextPath ? me.parent.find(contextPath)
+                : me.parent
+            );
+            target = (
+                targetPath ? context.find(targetPath) // Explicit target (context relative)
+                : context
+            );
+        };
 
         return {
             origin: me,

@@ -10,7 +10,7 @@ mixin inputlist(label="Annonymous")
                 sortable,
                 ...atts // Extra attributes for inputs (placeholder, etc...)
             } = attributes;
-        label= label
+        label(data-smark)= label
         div(data-smark = {
             name: name,
             type: "list",
