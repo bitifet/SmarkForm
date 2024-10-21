@@ -79,6 +79,7 @@ export class list extends SmarkField {
             'LIST_ITEM_TYPE_MISSMATCH'
             , `List item type missmatch`
         );
+
         // onRendered tweaks:
         me.root.onRendered(async ()=>{
             for(let i=0; i<me.min_items; i++) await me.addItem();
@@ -89,6 +90,9 @@ export class list extends SmarkField {
                     tgg=>tgg.target.innerText = String(me.children.length)
                 );
             };
+            // Let screen readers know lists may change.
+            me.target.setAttribute("aria-live", "polite");
+            me.target.setAttribute("aria-atomic", "true");
         });
         me.itemTpl.remove();
         return;

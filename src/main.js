@@ -128,6 +128,12 @@ class SmarkForm extends form {
             , true
         );
     };
+    async render() {
+        const me = this;
+        me.target.setAttribute("aria-busy", "true");
+        await super.render();
+        me.target.setAttribute("aria-busy", "false");
+    };
 };
 
 SmarkForm.createType = createType;

@@ -13,8 +13,8 @@ block mainForm
     section
       .form-group.h1.nowrap
         .spacer
-        button(data-smark='{"action":"import","context":"tasklist"}') 📂 Import (JSON)
-        button(data-smark='{"action":"export","context":"tasklist"}') 💾 Export (JSON)
+        button(data-smark='{"action":"import","context":"tasklist"}') #[span(role='img', aria-label='') 📂] Import (JSON)
+        button(data-smark='{"action":"export","context":"tasklist"}') #[span(role='img', aria-label='') 💾] Export (JSON)
       div(data-smark={
           type:"list",
           name:"tasklist",
@@ -25,33 +25,37 @@ block mainForm
         fieldset.form-group.aside.reverse(data-smark={
             exportEmpties: false
         })
-          button.inline(data-smark='{"action":"removeItem"}', title='Remove task') ❌
+          button.inline(data-smark='{"action":"removeItem"}', title='Remove task')
+            span(role='img', aria-label='Remove task') ❌
           .form-group.spacer
             .form-group
-                input(data-smark, name='title', type='text', placeholder='Task title')
+              input(data-smark, name='title', type='text', placeholder='Task title')
             .form-group
-                +inputlist("Goals")(
-                    name="goals"
-                    type="text",
-                    max_items=100,
-                    placeholder="New goal...",
-                    removeFailback="clear",
-                    sortable=true,
-                )
+              +inputlist("Goals")(
+                name="goals"
+                type="text",
+                max_items=100,
+                placeholder="New goal...",
+                removeFailback="clear",
+                sortable=true,
+              )
       .form-group.f1.nowrap(style='text-align: right')
         .spacer
         button(data-smark = {
             action: "empty",
             context: "tasklist",
             autoscroll: "elegant",
-        }, title="Clear form data") ❌ Clear all
+        }, title="Clear form data").
+            #[span(role='img', aria-label='') ❌] Clear all
         button(data-smark = {
             action: "removeItem",
             context: "tasklist",
             target: "*",
             autoscroll: "elegant",
             keep_non_empty: true,
-        }, title="Clear all empty tasks") 🧹 Clear empty
-        button(data-smark='{"action":"addItem","context":"tasklist"}') ➕ Add new task
+        }, title="Clear all empty tasks").
+            #[span(role='img', aria-label='') 🧹] Clear empty
+        button(data-smark='{"action":"addItem","context":"tasklist"}').
+            #[span(role='img', aria-label='') ➕] Add new task
 
 

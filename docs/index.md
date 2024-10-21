@@ -12,10 +12,8 @@ simple_list_example: |
             </label>
         </p>
         <p>
-            <label>
+            <label>Phones: </label>
                 <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-                Phones:
-            </label>
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
                 <li>
                     <label>📞 
@@ -83,7 +81,7 @@ simple_list_example_notes: |
 >
 <img
     src="assets/SmarkForm_hero.png"
-    alt="SmarkForm Hero Image"
+    alt=""
 ><br />
 🔗 Live Examples
 </a>
@@ -110,11 +108,12 @@ with no need to deal with complex JavaScript code. \[[More...]({{
 
 ## Features
 
+  * **Responsive and accessible UX** across devices.
+  * **Imports/Exports JSON** supporting nested subforms (objects) and
+    variable-length lists (arrays).
   * Easy to use **Markup-driven** and Intuitive API.
   * No reliance on a specific HTML structure: **Designers have complete freedom**.
   * **No manual wiring** between controls and fields.
-  * **Imports/Exports JSON** supporting nested subforms (objects) and
-    variable-length lists (arrays).
   * Lightweigh (**Only {{ site.data.computed.bundleSizeKB }}KB** minified), flexible and extendable.
   * [More...](https://smarkform.bitifet.net/about/features)
 

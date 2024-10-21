@@ -57,8 +57,8 @@ nav_order: 3
 <button onClick="selectTab('html_source', this)" class="btn">HTML</button>
 <button onClick="selectTab('js_source', this)" class="tabbuton btn">Js</button>
 <span class="spacer"></span>
-<a class="btn" id="fullscreen_link" target=_blank href="">🖥️ View FullScreen</a>
-<a id="dld_button" class="btn" href="" download>💾 Download</a>
+<a class="btn" id="fullscreen_link" target=_blank href=""><span aria-label="">🖥️</span> View FullScreen</a>
+<a id="dld_button" class="btn" href="" download><span aria-label="">💾</span> Download</a>
 </div>
 <div class="tab_container">
 <div class="tab" id="output_view">

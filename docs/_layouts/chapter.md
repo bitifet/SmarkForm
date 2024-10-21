@@ -174,7 +174,7 @@ h4::before {
 <div class="bottom-bar">
     <div class="nav-link">
         <a href="{{prev_url}}">
-            <div class="icon">{{ prev_icon }}</div>
+            <div class="icon" role="img" aria-label="">{{ prev_icon }}</div>
             <div class="text">
                 <div class="line bold">{{ prev_collection }}</div>
                 <div class="line">{{ prev_title }}</div>
@@ -187,7 +187,7 @@ h4::before {
                 <div class="line bold">{{ next_collection }}</div>
                 <div class="line">{{ next_title }}</div>
             </div>
-            <div class="icon">{{ next_icon }}</div>
+            <div class="icon" role="img" aria-label="">{{ next_icon }}</div>
         </a>
     </div>
 </div>

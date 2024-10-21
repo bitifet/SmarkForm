@@ -70,18 +70,21 @@ block mainForm
                     action: "addItem",
                     context: "employees",
                     autoscroll: "self",
-                }, title="Add employee") ➕
+                }, title="Add employee")
+                    span(role='img', aria-label='Append new employee') ➕
                 button(data-smark = {
                     action: "removeItem",
                     context: "employees",
                     keep_non_empty: true,
-                }, title="Remove employees from bottom priorizing empties") ➖
+                }, title="Remove employees from bottom priorizing empties")
+                    span(role='img', aria-label='Wisely shrink employee list') ➖
                 button(data-smark = {
                     action: "removeItem",
                     context: "employees",
                     target: "*",
                     keep_non_empty: true,
-                }, title="Clear all empty employees") 🧹
+                }, title="Clear all empty employees")
+                    span(role='img', aria-label='Remove all empty employees') 🧹
         .form-group
             .form-group(data-smark = {
                 name: "employees",
@@ -95,7 +98,8 @@ block mainForm
                     button.inline(data-smark = {
                         action: "removeItem",
                         failback: "clear",
-                    }, title="Remove this employee") ➖
+                    }, title="Remove this employee")
+                        span(role='img', aria-label='Remove this employee') ➖
                     .form-group.spacer
                         .form-group
                             .input-group
@@ -157,23 +161,28 @@ block mainForm
                 keep_non_empty: true,
                 autoscroll: "elegant",
                 failback: "clear",
-            }, title="Remove employees from bottom priorizing empties") ➖
+            }, title="Remove employees from bottom priorizing empties")
+                span(role='img', aria-label='Wisely shrink employee list') ➖
             button(data-smark = {
                 action: "removeItem",
                 context: "employees",
                 target: "*",
                 autoscroll: "elegant",
                 keep_non_empty: true,
-            }, title="Clear all empty employees") 🧹
+            }, title="Clear all empty employees")
+                span(role='img', aria-label='') 🧹
     section
         .form-group
             .spacer
             button(data-smark = {
                 action:"import",
-            }, title ="Import (JSON) data") 📂 Import
+            }, title ="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
             button(data-smark = {
                 action: "empty",
-            }, title="Clear form data") ❌ Cancel
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
             button(data-smark = {
                 action: "export",
-            }, title="Submit form data") 💾 Submit
+            }, title="Submit form data").
+                #[span(role='img', aria-label='') 💾] Submit

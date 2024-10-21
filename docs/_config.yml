@@ -92,9 +92,9 @@ enable_copy_code_button: true
 # https://mermaid.js.org/config/configuration.html
 
 aux_links:
-  "🏠 Home": /
-  "⚡ Quick Start": /getting_started/quick_start
-  "🔍 Examples": /resources/examples
+  "<span role='img' aria-label=''>🏠</span> Home": /
+  "<span role='img' aria-label=''>⚡</span> Quick Start": /getting_started/quick_start
+  "<span role='img' aria-label=''>🔍</span> Examples": /resources/examples
 aux_links_new_tab: false
 
 nav_external_links:

@@ -68,8 +68,9 @@ block mainForm
         })
             .full-width.form-group.aside.reverse
                 button.inline(data-smark={
-                    action: "removeItem"
-                }) -
+                    action: "removeItem",
+                }, title = "Remove stop place")
+                    span(role='img', aria-label='Remove stop place') ➖
                 .form-group
                     input(
                         data-smark
@@ -98,7 +99,7 @@ block mainForm
             button.inline(data-smark={
                 action: "addItem",
                 context: "stops",
-            }) Add Stop Place
+            }) #[span(role='img', aria-label='') ➕] Add Stop Place
         label(data-smark) Destination
         .form-group(data-smark={
             type: "form",
@@ -137,8 +138,9 @@ block mainForm
         })
             .full-width.form-group.aside.reverse
                 button.inline(data-smark={
-                    action: "removeItem"
-                }) -
+                    action: "removeItem",
+                }, title = "Remove organizer")
+                    span(role='img', aria-label='Remove organizer') ➖
                 .form-group.spacer
                     .form-group
                         input(style='flex: 6', data-smark name="name" placeholder="Name")
@@ -148,7 +150,7 @@ block mainForm
             button.inline(data-smark={
                 action: "addItem",
                 context: "organizers",
-            }) Add Organizer
+            }) #[span(role='img', aria-label='') ➕] Add Organizer
 
         label(data-smark) Participants:
         .form-group(data-smark={
@@ -159,8 +161,9 @@ block mainForm
         })
             .full-width.form-group.aside.reverse
                 button.inline(data-smark={
-                    action: "removeItem"
-                }) -
+                    action: "removeItem",
+                }, title = "Remove participant")
+                    span(role='img', aria-label='Remove participant') ➖
                 .form-group.spacer
                     .form-group
                         input(style='flex: 6', data-smark name="name" placeholder="Name")
@@ -170,16 +173,19 @@ block mainForm
             button.inline(data-smark={
                 action: "addItem",
                 context: "participants",
-            }) Add Participant
+            }) #[span(role='img', aria-label='') ➕] Add Participant
     section
         .form-group
             .spacer
             button(data-smark = {
                 action:"import",
-            }, title ="Import (JSON) data") 📂 Import
+            }, title ="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
             button(data-smark = {
                 action: "empty",
-            }, title="Clear form data") ❌ Cancel
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
             button(data-smark = {
                 action: "export",
-            }, title="Submit form data") 💾 Submit
+            }, title="Submit form data").
+                #[span(role='img', aria-label='') 💾] Submit

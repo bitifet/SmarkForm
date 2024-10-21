@@ -24,9 +24,11 @@ mixin inputlist(label="Annonymous")
                     action: "removeItem",
                     failback: removeFailback,
                     hotkey: "-",
-                }, title="Remove this item") ➖
+                }, title="Remove this item")
+                    span(role='img', aria-label='Remove this item') ➖
                 input(data-smark)&attributes(atts)
                 button(data-smark = {
                     action: "addItem",
                     hotkey: "+",
-                }, title="Add new item below") ➕
+                }, title="Add new item below")
+                    span(role='img', aria-label='Add new item') ➕
