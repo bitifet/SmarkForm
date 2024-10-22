@@ -51,8 +51,12 @@ Reference Manual](https://smarkform.bitifet.net).
 ## Try it yourself!!
 
   * See our [Live Examples](https://smarkform.bitifet.net/resources/examples).
+    - You can download each one and modify as you like.
 
-  * Or play with them in [CodePen](https://smarkform.bitifet.net/resources/CodePen).
+  * See also interactive code snippets across the [Reference Manual](https://smarkform.bitifet.net).
+    - They show relevant HTML, JS (and sometimes CSS).
+    - Try them out in the *Preview* tab.
+    - Don't miss the *Notes* tabs for relevant insights.
 
 
 ## Contributing
