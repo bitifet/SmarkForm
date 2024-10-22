@@ -2,6 +2,7 @@
 // ============
 
 import {createType} from "./lib/component.js";
+import {hotKeys_handler} from "./lib/hotkeys.js";
 
 // Import core component types and event handlers:
 import {trigger, onTriggerClick} from "./types/trigger.type.js";
@@ -25,62 +26,7 @@ for (const [name, controller] of Object.entries({
 })) createType(name,controller);
 
 
-
-function onKeydown(ev) {
-    const me = this;
-
-    if (ev.key == "Control") {
-
-        const component = me.getComponent(ev.target);
-
-        const context = (
-            component.parent.isSingleton ? component.parent
-            : component
-        );
-
-        me.revealedTriggers = [component, ...component.parents]
-            .flatMap(p=>p.getTriggers('*'))
-            .filter(t=>Object.is(t.getTriggerArgs()?.target?.target, context.target))
-
-        for (const t of me.revealedTriggers) {
-            const {hotkey} = t.options;
-            if (hotkey) t.target.setAttribute('data-hotkey', hotkey);
-        };
-
-
-    } else if (ev.ctrlKey) {
-
-        const targettedTrigger = me.revealedTriggers.find(
-            t=>t.options.hotkey == ev.key
-        );
-
-
-        if (targettedTrigger) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            targettedTrigger.target.click();
-        };
-
-    };
-};
-
-function onReleaseCondition(ev) {
-    const me = this;
-    if (
-        ev.type == "focusout"
-        || ev.key == "Control"
-    ) {
-        for (let t of me.revealedTriggers) {
-            t.target.removeAttribute("data-hotkey");
-        };
-        me.revealedTriggers = [];
-    };
-};
-
-
-
 class SmarkForm extends form {
-    revealedTriggers = [];
     constructor(
         target
         , {
@@ -112,21 +58,7 @@ class SmarkForm extends form {
             , onTriggerClick.bind(me)
             , true
         );
-        me.target.addEventListener(
-            "keydown"
-            , onKeydown.bind(me)
-            , true
-        );
-        me.target.addEventListener(
-            "keyup"
-            , onReleaseCondition.bind(me)
-            , true
-        );
-        me.target.addEventListener(
-            "focusout"
-            , onReleaseCondition.bind(me)
-            , true
-        );
+        new hotKeys_handler(me);
     };
     async render() {
         const me = this;
