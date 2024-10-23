@@ -76,13 +76,10 @@ export class hotKeys_handler {
         };
 
         if (target) {
+
             // Reveal new target triggers' hotkeys:
             const component = me.form.getComponent(target);
-
-            const context = (
-                component.parent.isSingleton ? component.parent
-                : component
-            );
+            const context = component.parent;
 
             me.revealed = [component, ...component.parents]
                 .flatMap(p=>p.getTriggers('*'))
