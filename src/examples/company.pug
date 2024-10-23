@@ -53,6 +53,7 @@ block mainForm
             span.foldButton(
                 data-smark={
                     action: "fold",
+                    hotkey: "f",
                     context: "employees",
                     foldedClass: "folded",
                 }
@@ -68,18 +69,21 @@ block mainForm
                 .spacer
                 button(data-smark = {
                     action: "addItem",
+                    hotkey: "+",
                     context: "employees",
                     autoscroll: "self",
                 }, title="Add employee")
                     span(role='img', aria-label='Append new employee') ➕
                 button(data-smark = {
                     action: "removeItem",
+                    hotkey: "-",
                     context: "employees",
                     keep_non_empty: true,
                 }, title="Remove employees from bottom priorizing empties")
                     span(role='img', aria-label='Wisely shrink employee list') ➖
                 button(data-smark = {
                     action: "removeItem",
+                    hotkey: "*",
                     context: "employees",
                     target: "*",
                     keep_non_empty: true,
@@ -97,6 +101,7 @@ block mainForm
                 })
                     button.inline(data-smark = {
                         action: "removeItem",
+                        hotkey: "-",
                         failback: "clear",
                     }, title="Remove this employee")
                         span(role='img', aria-label='Remove this employee') ➖
@@ -152,11 +157,13 @@ block mainForm
             .spacer
             button(data-smark = {
                 action: "addItem",
+                hotkey: "+",
                 context: "employees",
                 autoscroll: "elegant",
             }, title="Add employee") ➕
             button(data-smark = {
                 action: "removeItem",
+                hotkey: "-",
                 context: "employees",
                 keep_non_empty: true,
                 autoscroll: "elegant",
@@ -165,6 +172,7 @@ block mainForm
                 span(role='img', aria-label='Wisely shrink employee list') ➖
             button(data-smark = {
                 action: "removeItem",
+                hotkey: "*",
                 context: "employees",
                 target: "*",
                 autoscroll: "elegant",
@@ -176,13 +184,16 @@ block mainForm
             .spacer
             button(data-smark = {
                 action:"import",
+                hotkey:"i",
             }, title ="Import (JSON) data").
                 #[span(role='img', aria-label='') 📂] Import
             button(data-smark = {
                 action: "empty",
+                hotkey:"x",
             }, title="Clear form data").
                 #[span(role='img', aria-label='') ❌] Cancel
             button(data-smark = {
                 action: "export",
+                hotkey:"s",
             }, title="Submit form data").
                 #[span(role='img', aria-label='') 💾] Submit

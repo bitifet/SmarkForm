@@ -79,18 +79,41 @@ export class hotKeys_handler {
 
             // Reveal new target triggers' hotkeys:
             const component = me.form.getComponent(target);
-            const context = component.parent;
+            const activeContexts = [component, ...component.parents];
+            const activeContextsSet = new Set(activeContexts);
 
-            me.revealed = [component, ...component.parents]
-                .flatMap(p=>p.getTriggers('*'))
-                .filter(
-                    t=>Object.is(t.getTriggerArgs()?.target?.target, context.target)
-                )
+            const candidateTriggers = activeContexts
+                .map((c, lv)=>(
+                    c.getTriggers('*')
+                    .map(tg=>({tg, lv}))
+                ))
+                .flat()
+                .map(({tg, lv})=>({
+                    tg,
+                    lv,
+                    args: tg.getTriggerArgs() || {},
+                    hotkey: String(tg.options.hotkey || ""),
+                }))
+                .filter(({args, hotkey})=>(
+                    hotkey.length
+                    && activeContextsSet.has(args.context)
+                ))
+                .sort((ta,tb)=>(
+                    activeContextsSet.has(tb.args.target)
+                    - activeContextsSet.has(ta.args.target)
+                    - tb.lv
+                    + ta.lv
+                ))
             ;
 
-            for (const t of me.revealed) {
-                const {hotkey} = t.options;
-                if (hotkey) t.target.setAttribute('data-hotkey', hotkey);
+            const usedKeys = new Set();
+            me.revealed = [];
+
+            for (const candidate of candidateTriggers) {
+                if (usedKeys.has(candidate.hotkey)) continue; // Used by more preferent tg.
+                me.revealed.push(candidate.tg);
+                usedKeys.add(candidate.hotkey);
+                candidate.tg.target.setAttribute("data-hotkey", candidate.hotkey);
             };
 
         };
