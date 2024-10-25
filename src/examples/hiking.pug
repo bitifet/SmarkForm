@@ -69,6 +69,7 @@ block mainForm
             .full-width.form-group.aside.reverse
                 button.inline(data-smark={
                     action: "removeItem",
+                    hotkey: "-",
                 }, title = "Remove stop place")
                     span(role='img', aria-label='Remove stop place') ➖
                 .form-group
@@ -98,6 +99,7 @@ block mainForm
             .spacer
             button.inline(data-smark={
                 action: "addItem",
+                hotkey: "+",
                 context: "stops",
             }) #[span(role='img', aria-label='') ➕] Add Stop Place
         label(data-smark) Destination
@@ -139,6 +141,7 @@ block mainForm
             .full-width.form-group.aside.reverse
                 button.inline(data-smark={
                     action: "removeItem",
+                    hotkey: "-",
                 }, title = "Remove organizer")
                     span(role='img', aria-label='Remove organizer') ➖
                 .form-group.spacer
@@ -149,6 +152,7 @@ block mainForm
             .spacer
             button.inline(data-smark={
                 action: "addItem",
+                hotkey: "+",
                 context: "organizers",
             }) #[span(role='img', aria-label='') ➕] Add Organizer
 
@@ -162,6 +166,7 @@ block mainForm
             .full-width.form-group.aside.reverse
                 button.inline(data-smark={
                     action: "removeItem",
+                    hotkey: "-",
                 }, title = "Remove participant")
                     span(role='img', aria-label='Remove participant') ➖
                 .form-group.spacer
@@ -172,6 +177,7 @@ block mainForm
             .spacer
             button.inline(data-smark={
                 action: "addItem",
+                hotkey: "+",
                 context: "participants",
             }) #[span(role='img', aria-label='') ➕] Add Participant
     section

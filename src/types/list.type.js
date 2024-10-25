@@ -97,11 +97,18 @@ export class list extends SmarkField {
         me.itemTpl.remove();
         return;
     };//}}}
-    onTriggerRender({action, origin}) {//{{{
+    onTriggerRender({action, origin, context, ...rest}) {//{{{
         switch (action) {
             case "addItem":
             case "removeItem":
-                makeNonNavigable(origin.target);
+                if (
+                    // Placed inside
+                    (1 + [...origin.parents].findIndex(p=>Object.is(p, context)))
+                    && origin.options.hotkey
+                ) {
+                    // Skip them in keyboard navigation.
+                    makeNonNavigable(origin.target);
+                };
                 break;
         };
     };//}}}
