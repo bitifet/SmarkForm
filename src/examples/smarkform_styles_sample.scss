@@ -153,8 +153,20 @@
     }
     button {
         min-width:2rem;
+        cursor: pointer;
     }
 
+    button:disabled {
+        background-color: #b0b0b0; /* Gray color for disabled state */
+        color: #6c757d; /* Light gray text */
+        cursor: not-allowed;
+        opacity: .50;
+    }
+
+    /* Optional: Hover effect for non-disabled buttons */
+    button:hover:not(:disabled) {
+        background-color: ivory;
+    }
 
     textarea {
         resize: none;

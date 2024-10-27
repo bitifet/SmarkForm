@@ -19,6 +19,7 @@
 .smarkForm {
   flex: 1;
   margin: var(--layout-paddings);
+  /* Optional: Hover effect for non-disabled buttons */
   /* Headers and Footers */
   /* List items animation */
 }
@@ -150,6 +151,20 @@
 
 .smarkForm button {
   min-width: 2rem;
+  cursor: pointer;
+}
+
+.smarkForm button:disabled {
+  background-color: #b0b0b0;
+  /* Gray color for disabled state */
+  color: #6c757d;
+  /* Light gray text */
+  cursor: not-allowed;
+  opacity: .50;
+}
+
+.smarkForm button:hover:not(:disabled) {
+  background-color: ivory;
 }
 
 .smarkForm textarea {
