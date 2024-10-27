@@ -25,12 +25,14 @@ interactions, with no need to deal with complex JavaScript code.
 
 ## Features
 
+  * **Responsive and accessible UX** across devices.
+  * **Imports/Exports JSON** supporting nested subforms (objects) and
+    variable-length lists (arrays).
+  * Configurable context-driven keyboard shortcuts (hotkeys).
   * Easy to use **Markup-driven** and Intuitive API.
   * No reliance on a specific HTML structure: **Designers have complete freedom**.
-  * No manual wiring between controls and fields.
-  * Imports/Exports JSON supporting nested subforms (objects) and
-    variable-length lists (arrays).
-  * Lightweigh, flexible and extendable.
+  * **No manual wiring** between controls and fields.
+  * Lightweigh (**Only {{ site.data.computed.bundleSizeKB }}KB** minified), flexible and extendable.
   * [More...](https://smarkform.bitifet.net/about/features)
 
 

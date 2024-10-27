@@ -19,6 +19,7 @@ nav_order: 2
 * [Markup-driven and Intuitive API](#markup-driven-and-intuitive-api)
 * [Easy to use](#easy-to-use)
 * [Advanced capabilities](#advanced-capabilities)
+* [Improved UX](#improved-ux)
 * [Can hold any data structure expressible in JSON](#can-hold-any-data-structure-expressible-in-json)
 * [Flexible and extendable](#flexible-and-extendable)
 * [Lightweight yet highly compatible](#lightweight-yet-highly-compatible)
@@ -56,6 +57,12 @@ nav_order: 2
   * [ ] Infinite lists (with lazy loading through [the API
         Interface](/advanced_concepts/the_api_interface)).
 
+## Improved UX
+
+  * [x] Configurable context-driven keyboard shortcuts.
+  * [x] Automatically enabled/disabled controls (depending on context).
+  * [x] Non-breaking unobtrusive flow (controls removed from navigation flow
+        when accessible through hotkeys. 
 
 ## Can hold any data structure expressible in JSON
 
