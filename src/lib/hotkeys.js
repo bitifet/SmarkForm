@@ -110,9 +110,13 @@ export class hotKeys_handler {
 
             for (const candidate of candidateTriggers) {
                 if (usedKeys.has(candidate.hotkey)) continue; // Used by more preferent tg.
-                me.revealed.push(candidate.tg);
-                usedKeys.add(candidate.hotkey);
-                candidate.tg.target.setAttribute("data-hotkey", candidate.hotkey);
+                if (! candidate.tg.target.disabled) {
+                    candidate.tg.target.setAttribute("data-hotkey", candidate.hotkey);
+                };
+                // (UX): Perform the following even if disabled for behavioral
+                // consistency...
+                usedKeys.add(candidate.hotkey); // ...don't activate others in place.
+                me.revealed.push(candidate.tg); // ...keep preventing event propagation.
             };
 
         };
