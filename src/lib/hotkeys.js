@@ -84,16 +84,15 @@ export class hotKeys_handler {
 
             const candidateTriggers = activeContexts
                 .map((c, lv)=>(
-                    c.getTriggers('*')
-                    .map(tg=>({tg, lv}))
+                    c.getTriggers('*')    // All triggers.
+                    .map(tg=>({
+                        tg,
+                        lv,   // Ancestor level.
+                        args: tg.getTriggerArgs() || {},
+                        hotkey: String(tg.options.hotkey || ""),
+                    }))
                 ))
                 .flat()
-                .map(({tg, lv})=>({
-                    tg,
-                    lv,
-                    args: tg.getTriggerArgs() || {},
-                    hotkey: String(tg.options.hotkey || ""),
-                }))
                 .filter(({args, hotkey})=>(
                     hotkey.length
                     && activeContextsSet.has(args.context)
