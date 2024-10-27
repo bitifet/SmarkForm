@@ -132,6 +132,7 @@ export class SmarkComponent {
         me.onRenderedTasks = [];
 
         let setRendered;
+        me.renderedSync = false;
         me.rendered = new Promise(resolve => setRendered = resolve);
 
         me.children = {};
@@ -144,6 +145,7 @@ export class SmarkComponent {
             ) await task();
             me.onRenderedTasks = null;
             setRendered(true);
+            setTimeout(()=>me.renderedSync = true, 1);
         })();
         if (me.options.onRendered) me.onRendered(me.options.onRendered);
 
@@ -335,6 +337,7 @@ export class SmarkComponent {
     };//}}}
     focus() {//{{{
         const me = this;
+        if (! me.renderedSync) return;
         for (const fname in me.children) {
             return me.children[fname].focus();
         };
