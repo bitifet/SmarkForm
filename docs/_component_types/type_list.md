@@ -4,6 +4,11 @@ layout: chapter
 permalink: /component_types/type_list
 nav_order: 2
 
+generic_sample_css: |
+    button:disabled {
+        opacity: .5;
+    }
+
 simple_list_example: |
     <div id="myForm">
         <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
@@ -228,6 +233,7 @@ specified the *data-smark* attribute or not).
 {% include components/sampletabs_tpl.md
    formId="simple_list"
    htmlSource=page.simple_list_example
+   cssSource=page.generic_sample_css
 %}
 
 
@@ -251,6 +257,7 @@ following example.
 {% include components/sampletabs_tpl.md
    formId="scalar_list"
    htmlSource=page.scalar_list_example
+   cssSource=page.generic_sample_css
 %}
 
 {: .hint}
@@ -278,6 +285,7 @@ inside.
 {% include components/sampletabs_tpl.md
    formId="singleton_list"
    htmlSource=page.singleton_list_example
+   cssSource=page.generic_sample_css
 %}
 
 {: .info}
@@ -303,6 +311,7 @@ say, up to three phone numbers and up to three emails.
 {% include components/sampletabs_tpl.md
    formId="nesting_list"
    htmlSource=page.nesting_list_example
+   cssSource=page.generic_sample_css
 %}
 
 

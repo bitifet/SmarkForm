@@ -18,6 +18,7 @@ nav_order: 10000
 
 * [Actions](#actions)
     * [Interactions](#interactions)
+        * [Hot Keys](#hot-keys)
     * [Origin](#origin)
     * [Context](#context)
     * [Target](#target)
@@ -28,7 +29,7 @@ nav_order: 10000
 
 </details>
 
-
+🚧 Section still pending of review and completion...
 
 Actions
 -------
@@ -53,6 +54,19 @@ specific behaviour variations.
 
 When the user interacts with an *action* component, its [context](#context) is
 resolved and the propper action method is called in it.
+
+#### Hot Keys
+
+Even though, if the *hotkey* option is defined for a given trigger, they can
+also be triggered by pressing `Ctrl` key + its configured *hotkeys*.
+
+Hot keys work when the focus is in their *context* so that hot keys can be
+reused in different contexts (or context levels).
+
+If the `Ctrl` key is pressed and hold, active hot keys will be revealed by
+setting *data-hotkey* attribute of their trigger buttons. SmakForm's sample CSS
+use that to reveal a small pop-up hint but you can use the way you prefer in
+your own CSS. 
 
 
 ### Origin
@@ -81,7 +95,7 @@ list outside of the actual list.
 
 **Example:**
 ```html
-<button data-smark='{"action":"addItem","context":"myList"}'></button>
+<button data-smark='{"action":"addItem","context":"myList","hotkey":"+"}'></button>
 <ul data-smark="{}">
   <li>...</li>
 </ul>
@@ -112,11 +126,11 @@ the item of the list that is going to be removed.
 **Example:**
 
 ```html
-<button data-smark='{"action":"addItem","context":"myList"}'></button>
+<button data-smark='{"action":"addItem","context":"myList","hotkey":"+"}'></button>
 <ul data-smark="{}">
   <li>
     ...
-    <button data-smark='{"action":"removeItem"}'>
+    <button data-smark='{"action":"removeItem","hotkey":"-"}'>
   </li>
 </ul>
 ```
