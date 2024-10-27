@@ -204,7 +204,7 @@
         font-size: .8em;
         white-space: nowrap;
 
-        transform: scale(1.8) translate(-.3em, -.3em);
+        transform: scale(1.8) translate(.1em, .1em);
 
     }
 
@@ -214,7 +214,7 @@
     textarea:focus {
         box-shadow: none;
         &:not([tabindex="-1"]) {
-            outline: darkgray dotted 4px;
+            outline: dotted #ffd 4px;
             outline-offset: .05em;
         }
     }

@@ -201,7 +201,7 @@
   font-family: sans-serif;
   font-size: .8em;
   white-space: nowrap;
-  transform: scale(1.8) translate(-0.3em, -0.3em);
+  transform: scale(1.8) translate(0.1em, 0.1em);
 }
 
 .smarkForm a:focus,
@@ -215,7 +215,7 @@
 .smarkForm button:focus:not([tabindex="-1"]),
 .smarkForm input:focus:not([tabindex="-1"]),
 .smarkForm textarea:focus:not([tabindex="-1"]) {
-  outline: darkgray dotted 4px;
+  outline: dotted #ffd 4px;
   outline-offset: .05em;
 }
 
