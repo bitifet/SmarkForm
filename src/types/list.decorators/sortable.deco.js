@@ -6,8 +6,8 @@ import {mutex} from "../../decorators/mutex.deco.js";
 export const sortable = function list_sortable_decorator(target, {kind}) {
     if (kind == "class") {
         return class sortableTarget extends target {
-            render(...args) {//{{{
-                const retv = super.render(...args);
+            async render(...args) {//{{{
+                const retv = await super.render(...args);
                 const me = this;
 
                 me.sortable = !! me.options.sortable;

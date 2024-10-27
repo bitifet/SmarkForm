@@ -18,6 +18,7 @@ import {SmarkField} from "../lib/component.js";
 import {makeRoom} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
+import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
 import {action} from "./trigger.type.js";
 import {mutex} from "../decorators/mutex.deco.js";
 
@@ -34,21 +35,13 @@ function makeNonNavigable(target) {//{{{
     };
 };//}}}
 
-async function updateTriggers(context) {
-    await context.rendered;
-    for (const tg of context.getTriggers(["removeItem", "addItem"])) {
-        tg.target.disabled = (
-            tg.options.action == "removeItem" ? context.children.length <= context.min_items
-            : context.children.length >= context.max_items
-        );
-    };
-};
 
 // List component type:
 // --------------------
 
 @foldable
 @sortable
+@smartdisabling
 export class list extends SmarkField {
     async render () {//{{{
         const me = this;
@@ -92,30 +85,21 @@ export class list extends SmarkField {
         // onRendered tweaks:
         me.root.onRendered(async ()=>{
             for(let i=0; i<me.min_items; i++) await me.addItem();
-
             if (me.min_items == 0) {
                 // Update "count" actions in case of not already updated by
                 // me.addItem:
                 me.getTriggers("count").forEach(
                     tgg=>tgg.target.innerText = String(me.children.length)
                 );
-
             };
-
-            setTimeout(()=>updateTriggers(me), 1);
-                // FIXME (Why do we need to delay it?)
-                // Even more: Why it is even needed with min_items >= 1??
-
             // Let screen readers know lists may change.
             me.target.setAttribute("aria-live", "polite");
             me.target.setAttribute("aria-atomic", "true");
         });
         me.itemTpl.remove();
-
         return;
     };//}}}
     onTriggerRender({action, origin, context, ...rest}) {//{{{
-        const me = this;
         switch (action) {
             case "addItem":
             case "removeItem":
@@ -181,6 +165,7 @@ export class list extends SmarkField {
     };//}}}
     @action
     @mutex("list_mutating")
+    @smartdisabling
     async addItem(options = {}) {//{{{
         const me = this;
         // Parameters checking and resolution:{{{
@@ -261,9 +246,6 @@ export class list extends SmarkField {
             ;
         };
         //}}}
-
-        await updateTriggers(me);
-
         // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newItem) {
             makeRoom(newItem.target, - newItem.offsetHeight);
@@ -287,6 +269,7 @@ export class list extends SmarkField {
     };//}}}
     @action
     @mutex("list_mutating")
+    @smartdisabling
     async removeItem(options = {}) {//{{{
         const me = this;
         let {
@@ -387,8 +370,6 @@ export class list extends SmarkField {
 
             oldItem.target.remove();
             me.children = newChildren;
-
-            await updateTriggers(me);
 
             me.getTriggers("count").forEach(
                 tgg=>tgg.target.innerText = String(me.children.length)
