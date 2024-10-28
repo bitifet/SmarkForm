@@ -5,7 +5,10 @@ async function updateTriggers(context) {
     await context.rendered;
     for (const tg of context.getTriggers(["removeItem", "addItem"])) {
         tg.target.disabled = (
-            tg.options.action == "removeItem" ? context.children.length <= context.min_items
+            tg.options.action == "removeItem" ? (
+                context.children.length <= context.min_items
+                && tg.options.failback != "clear" // Unless clearing function
+            )
             : context.children.length >= context.max_items
         );
     };

@@ -4,21 +4,24 @@ layout: home
 nav_order: 0
 permalink: /
 
+generic_sample_css: |
+    button:disabled {
+        opacity: .5;
+    }
+
 simple_list_example: |
     <div id="myForm">
         <p>
-            <label>Name:
-                <input data-smark='{"name":"name"}' placeholder='Full name' type="tel">
-            </label>
+            <label data-smark>Name:</label>
+            <input data-smark='{"name":"name"}' placeholder='Full name' type="tel">
         </p>
         <p>
-            <label>Phones: </label>
-                <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
+            <label data-smark>Phones:</label>
+            <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
                 <li>
-                    <label>📞 
+                    <label data-smark>📞 </label>
                         <input placeholder='+34...' type="tel" data-smark>
-                    </label>
                     <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
                 </li>
             </ul>
@@ -130,7 +133,7 @@ The following code snippet shows *SmarkForm* simplicity.
    formId="simple_list"
    htmlSource=page.simple_list_example
    jsSource=page.simple_list_example_js
-   cssSource=page.simple_list_example_css
+   cssSource=page.generic_sample_css
    notes=page.simple_list_example_notes
 %}
 
