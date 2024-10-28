@@ -27,16 +27,9 @@ export const smartdisabling = function list_smartdisabling_decorator(target, {ki
     } else if (kind == "method") {
         return async function smartdisablingMethod(...args) {
             const me = this;
-            let err, retv;
-            try {
-                retv = await target.call(me, ...args);
-            } catch (error) {
-                err = error;
-            };
-            if (err) throw err;
+            const retv = await target.call(me, ...args);
             updateTriggers(me);
             return retv;
         };
-
     };
 };
