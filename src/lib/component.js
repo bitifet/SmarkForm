@@ -337,7 +337,6 @@ export class SmarkComponent {
     };//}}}
     focus() {//{{{
         const me = this;
-        if (! me.renderedSync) return;
         for (const fname in me.children) {
             return me.children[fname].focus();
         };

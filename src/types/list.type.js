@@ -265,7 +265,7 @@ export class list extends SmarkField {
         me.getTriggers("count").forEach(
             tgg=>tgg.target.innerText = String(me.children.length)
         );
-        newItem.focus();
+        if (me.renderedSync) newItem.focus();
     };//}}}
     @action
     @mutex("list_mutating")
