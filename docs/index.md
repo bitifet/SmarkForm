@@ -16,9 +16,9 @@ simple_list_example: |
             <input data-smark='{"name":"name"}' placeholder='Full name' type="tel">
         </p>
         <p>
-            <label data-smark>Phones:</label>
             <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+            <label data-smark>Phones:</label>
+            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
                 <li>
                     <label data-smark>📞 </label>
                         <input placeholder='+34...' type="tel" data-smark>
@@ -39,8 +39,8 @@ simple_list_example_notes: |
     👉 This is a simple form to show the power of *SmarkForm*.
 
     👉 Tinker with it modifying data, adding or removing items from the
-       *Phones* list, sorting its items by dragging them and click the `Export`
-       button to see resulting data.
+       *Phones* list, sorting its items by dragging them and then clicking the
+       `Export` button to see resulting data.
     
     👉 Notice it inforces some default behaviours like a convenient minimum of
        one item or not exporting empty items for lists. But it can be easily
