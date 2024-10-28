@@ -21,7 +21,7 @@ simple_list_example: |
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
                 <li>
                     <label data-smark>📞 </label>
-                        <input placeholder='+34...' type="tel" data-smark>
+                    <input placeholder='+34...' type="tel" data-smark>
                     <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
                 </li>
             </ul>
