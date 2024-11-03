@@ -340,7 +340,7 @@ export class SmarkComponent {
         for (const fname in me.children) {
             return me.children[fname].focus();
         };
-        me.targetField.focus();
+        me.targetFieldNode.focus();
     };//}}}
     getTriggerArgs() {}; // Let's easily filter out non trigger compoenents.
     // Error types:

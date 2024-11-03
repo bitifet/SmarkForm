@@ -29,12 +29,12 @@ export class label extends SmarkComponent {
         const me = this;
         me.parent.onRendered(()=>{
             const labelArgs = me.getLabelArgs();
-            const {targetField} = labelArgs.target || {};
-            if (targetField) { // Apply only to native inputs (scalars)
-                if (! targetField.id) { // Ensure targetted field has an Id
-                    targetField.id = Math.random().toString(36).substring(2);
+            const {targetFieldNode} = labelArgs.target || {};
+            if (targetFieldNode) { // Apply only to native inputs (scalars)
+                if (! targetFieldNode.id) { // Ensure targetted field has an Id
+                    targetFieldNode.id = Math.random().toString(36).substring(2);
                 };
-                me.targetNode.setAttribute("for", targetField.id);
+                me.targetNode.setAttribute("for", targetFieldNode.id);
             };
         });
     };

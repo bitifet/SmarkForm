@@ -36,8 +36,8 @@ export class date extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetField.tagName;
-        const targetType = me.targetField.getAttribute("type");
+        const targetTag = me.targetFieldNode.tagName;
+        const targetType = me.targetFieldNode.getAttribute("type");
         if (
             targetTag != "INPUT"
             || (targetType || "date").toLowerCase() != "date"
@@ -45,7 +45,7 @@ export class date extends input {
             'NOT_A_DATE_FIELD'
             , `Date inputs require an INPUT tag of type "date".`
         );
-        if (! targetType) me.targetField.type = "date"; // Autofill
+        if (! targetType) me.targetFieldNode.type = "date"; // Autofill
     };//}}}
     @action
     async export() {//{{{

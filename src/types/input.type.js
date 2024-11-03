@@ -23,7 +23,7 @@ export class input extends form {
                 + ` data field but ${numFields} found.`
             );
         }
-        me.targetField = (
+        me.targetFieldNode = (
             me.isSingleton ? Object.values(me.children)[0].targetNode
             : me.targetNode
         );

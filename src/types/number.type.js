@@ -6,8 +6,8 @@ export class number extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetField.tagName;
-        const targetType = me.targetField.getAttribute("type");
+        const targetTag = me.targetFieldNode.tagName;
+        const targetType = me.targetFieldNode.getAttribute("type");
         if (
             targetTag != "INPUT"
             || (targetType || "number").toLowerCase() != "number"
@@ -15,7 +15,7 @@ export class number extends input {
             'NOT_A_NUMBER_FIELD'
             , `Number inputs require an INPUT tag of type "number".`
         );
-        if (! targetType) me.targetField.type = "number"; // Autofill
+        if (! targetType) me.targetFieldNode.type = "number"; // Autofill
     };//}}}
     @action
     async export() {//{{{
