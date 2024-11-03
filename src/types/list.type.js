@@ -45,7 +45,7 @@ function makeNonNavigable(target) {//{{{
 export class list extends SmarkField {
     async render () {//{{{
         const me = this;
-        me.originalDisplayProp = me.target.style.display;
+        me.originalDisplayProp = me.targetNode.style.display;
 
         me.min_items = Math.max(0,
             typeof me.options.min_items == "number" ? me.options.min_items
@@ -56,12 +56,12 @@ export class list extends SmarkField {
             : Infinity
         );
         me.children = [];
-        const numChilds = me.target.children.length;
+        const numChilds = me.targetNode.children.length;
         if (numChilds != 1) throw me.renderError(
             'LIST_WRONG_NUM_CHILDREN'
             , `List components must contain exactly 1 direct children, but ${numChilds} given`
         );
-        me.itemTpl = me.target.children[0];
+        me.itemTpl = me.targetNode.children[0];
         if (
             me.itemTpl.querySelector("[id]") !== null // Contains IDs
         ) throw me.renderError(
@@ -89,12 +89,12 @@ export class list extends SmarkField {
                 // Update "count" actions in case of not already updated by
                 // me.addItem:
                 me.getTriggers("count").forEach(
-                    tgg=>tgg.target.innerText = String(me.children.length)
+                    tgg=>tgg.targetNode.innerText = String(me.children.length)
                 );
             };
             // Let screen readers know lists may change.
-            me.target.setAttribute("aria-live", "polite");
-            me.target.setAttribute("aria-atomic", "true");
+            me.targetNode.setAttribute("aria-live", "polite");
+            me.targetNode.setAttribute("aria-atomic", "true");
         });
         me.itemTpl.remove();
         return;
@@ -109,7 +109,7 @@ export class list extends SmarkField {
                     && origin.options.hotkey
                 ) {
                     // Skip them in keyboard navigation.
-                    makeNonNavigable(origin.target);
+                    makeNonNavigable(origin.targetNode);
                 };
                 break;
         };
@@ -214,7 +214,7 @@ export class list extends SmarkField {
         // Child component creation and insertion:{{{
         let newItem;
         if (! me.children.length) {
-            me.target.appendChild(newItemTarget);
+            me.targetNode.appendChild(newItemTarget);
             newItem = await me.enhance(newItemTarget, {type: "form", name: 0});
             await newItem.rendered;
             me.children.push(newItem);
@@ -223,14 +223,14 @@ export class list extends SmarkField {
         } else {
             me.children = (await Promise.all(
                 me.children.map(async (child, i)=>{
-                    if (! child.target.isSameNode(target.target)) return child;
+                    if (! child.targetNode.isSameNode(target.targetNode)) return child;
                     if (position == "after") {
-                        child.target.after(newItemTarget);
+                        child.targetNode.after(newItemTarget);
                         newItem = await me.enhance(newItemTarget, {type: "form"});
                         await newItem.rendered;
                         return [child, newItem]; // Right order, flatted later...
                     } else {
-                        child.target.before(newItemTarget);
+                        child.targetNode.before(newItemTarget);
                         newItem = await me.enhance(newItemTarget, {type: "form"});
                         await newItem.rendered;
                         return [newItem, child]; // Right order, flatted later...
@@ -248,7 +248,7 @@ export class list extends SmarkField {
         //}}}
         // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newItem) {
-            makeRoom(newItem.target, - newItem.offsetHeight);
+            makeRoom(newItem.targetNode, - newItem.offsetHeight);
         } else {
             const moveTarget = (
                 ! newItem ? null
@@ -263,7 +263,7 @@ export class list extends SmarkField {
         onRenderedCbks.forEach(cbk=>cbk(newItem));
         //}}}
         me.getTriggers("count").forEach(
-            tgg=>tgg.target.innerText = String(me.children.length)
+            tgg=>tgg.targetNode.innerText = String(me.children.length)
         );
         if (me.renderedSync) newItem.focus();
     };//}}}
@@ -323,9 +323,9 @@ export class list extends SmarkField {
             let newFocusPosition = null;
             const newChildren = me.children
                 .filter((child, i, all)=>{
-                    if (child.target.isSameNode(currentTarget.target)) {
+                    if (child.targetNode.isSameNode(currentTarget.targetNode)) {
                         if (autoscroll == "elegant") {
-                            makeRoom(child.target, child.target.offsetHeight);
+                            makeRoom(child.targetNode, child.targetNode.offsetHeight);
                         } else {
                             const moveTarget = (
                                 autoscroll == "self" ? child
@@ -362,17 +362,17 @@ export class list extends SmarkField {
                 context,
                 target: currentTarget,  // <--- Effective target.
                 oldItem,                 // Child going to be removed.
-                oldItemTarget: oldItem.target, // Its target (analogous to addItem event).
+                oldItemTarget: oldItem.targetNode, // Its target (analogous to addItem event).
                 options,
                 onRemoved: cbk => onRemovedCbks.push(cbk),
             });
             //}}}
 
-            oldItem.target.remove();
+            oldItem.targetNode.remove();
             me.children = newChildren;
 
             me.getTriggers("count").forEach(
-                tgg=>tgg.target.innerText = String(me.children.length)
+                tgg=>tgg.targetNode.innerText = String(me.children.length)
             );
 
             // Execute "onRemoved" callbacks:{{{

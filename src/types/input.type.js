@@ -6,13 +6,13 @@ export class input extends form {
     async render() {//{{{
         const me = this;
         me.isSingleton = ! (
-            me.target.tagName === "INPUT"
-            || me.target.tagName === "SELECT"
-            || me.target.tagName === "TEXTAREA"
+            me.targetNode.tagName === "INPUT"
+            || me.targetNode.tagName === "SELECT"
+            || me.targetNode.tagName === "TEXTAREA"
         );
         me.isCheckbox = (
             ! me.isSingleton
-            && String(me.target.type).toLowerCase() == "checkbox"
+            && String(me.targetNode.type).toLowerCase() == "checkbox"
         );
         if (me.isSingleton) {
             await super.render();
@@ -24,11 +24,11 @@ export class input extends form {
             );
         }
         me.targetField = (
-            me.isSingleton ? Object.values(me.children)[0].target
-            : me.target
+            me.isSingleton ? Object.values(me.children)[0].targetNode
+            : me.targetNode
         );
         // console.log("New input!!!!", {
-        //     target: me.target,
+        //     targetNode: me.targetNode,
         //     parent: me.parent,
         //     options: me.options,
         //     inputField: me.inputField,
@@ -40,8 +40,8 @@ export class input extends form {
         const me = this;
         return (
             me.isSingleton ? Object.values(await super.export())[0]
-            : me.isCheckbox ? !!me.target.checked
-            : me.target.value
+            : me.isCheckbox ? !!me.targetNode.checked
+            : me.targetNode.value
         );
     };//}}}
     @action
@@ -52,14 +52,14 @@ export class input extends form {
                 [[Object.keys(me.children)[0], data]]
             )});
         } else if (me.isCheckbox) {
-            me.target.checked = !! data;
+            me.targetNode.checked = !! data;
         } else {
-            me.target.value = data;
+            me.targetNode.value = data;
         };
-        // me.target.dispatchEvent(
+        // me.targetNode.dispatchEvent(
         //     new customEvent("change", {})
         // );
-        return me.target.value;
+        return me.targetNode.value;
     };//}}}
     async isEmpty() {//{{{
         const me = this;

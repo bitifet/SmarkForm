@@ -20,24 +20,24 @@ export const foldable = function foldable_decorator(target, {kind}) {
                 operation = "toggle", // Values: "fold" / "unfold" / "toggle"
             } = {}) {
                 const me = this;
-                const wasFolded = me.target.style.display == "none";
+                const wasFolded = me.targetNode.style.display == "none";
                 const isFolded = (
                     operation == "fold" ? true
                     : operation == "unfold" ? false
                     : ! wasFolded
                 );
-                me.target.style.display = (
+                me.targetNode.style.display = (
                     isFolded ? "none"
                     : me.originalDisplayProp
                 );
 
                 me.getTriggers("fold").forEach(tgg => {
                     const {foldedClass, unfoldedClass} = tgg.options;
-                    if (foldedClass) tgg.target.classList[
+                    if (foldedClass) tgg.targetNode.classList[
                         isFolded ? "add"
                         : "remove"
                     ](foldedClass);
-                    if (unfoldedClass) tgg.target.classList[
+                    if (unfoldedClass) tgg.targetNode.classList[
                         isFolded ? "remove"
                         : "add"
                     ](unfoldedClass);

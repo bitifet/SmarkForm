@@ -57,7 +57,7 @@ script.
             newItemTarget.classList.add("animated_item");
             onRendered(async (newItem)=>{
                 await delay(1); /* Allow for default .animated_item style to be applied */
-                newItem.target.classList.add("ongoing");
+                newItem.targetNode.classList.add("ongoing");
                 /* Here we could have used newItemTarget instead */
             });
         });

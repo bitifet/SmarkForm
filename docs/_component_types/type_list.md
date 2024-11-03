@@ -99,13 +99,13 @@ simple_list_animation_example_additem_js: |
     const myForm = new SmarkForm(document.getElementById("myForm"));
     const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     myForm.onAll("addItem", function({
-        newItemTarget, /* the target of the future new item */
+        newItemTarget, /* the targetNode of the future new item */
         onRendered
     }) {
         newItemTarget.classList.add("animated_item");
         onRendered(async (newItem)=>{
             await delay(1); /* Allow for default .animated_item style to be applied */
-            newItem.target.classList.add("ongoing");
+            newItem.targetNode.classList.add("ongoing");
             /* Here we could have used newItemTarget instead */
         });
     });
@@ -129,13 +129,13 @@ simple_list_animation_example_complete_js: |
     const myForm = new SmarkForm(document.getElementById("myForm"));
     const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     myForm.onAll("addItem", function({
-        newItemTarget, /* the target of the future new item */
+        newItemTarget, /* the targetNode of the future new item */
         onRendered
     }) {
         newItemTarget.classList.add("animated_item");
         onRendered(async (newItem)=>{
             await delay(1); /* Allow for default .animated_item style to be applied */
-            newItem.target.classList.add("ongoing");
+            newItem.targetNode.classList.add("ongoing");
             /* Here we could have used newItemTarget instead */
         });
     });
@@ -480,7 +480,7 @@ action, plus the following properties:
     to be removed.
 
   * `oldItemTarget`: The DOM element that is about to be removed from the DOM
-    (the target of `oldItem`).
+    (the targetNode of `oldItem`).
 
   * `onRemoved`: A callback setter that allows executing code after
     `oldItemTarget` is actually removed from the DOM and `oldItem` is removed

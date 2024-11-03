@@ -6,22 +6,22 @@ export class hotKeys_handler {
         const me = this;
         me.form = form;
         me.revealed = null;
-        me.form.target.addEventListener(
+        me.form.targetNode.addEventListener(
             "keydown"
             , me.onKeydown.bind(me)
             , true
         );
-        me.form.target.addEventListener(
+        me.form.targetNode.addEventListener(
             "keyup"
             , me.onKeyup.bind(me)
             , true
         );
-        me.form.target.addEventListener(
+        me.form.targetNode.addEventListener(
             "focusout"
             , me.onFocusout.bind(me)
             , true
         );
-        me.form.target.addEventListener(
+        me.form.targetNode.addEventListener(
             "focusin"
             , me.onFocusin.bind(me)
             , true
@@ -38,7 +38,7 @@ export class hotKeys_handler {
             if (targettedTrigger) {
                 ev.preventDefault();
                 ev.stopPropagation();
-                targettedTrigger.target.click();
+                targettedTrigger.targetNode.click();
             };
         };
     };
@@ -66,7 +66,7 @@ export class hotKeys_handler {
         // Conceal previous target triggers' hotkeys if any:
         if (me.revealed !== null) {
             for (const t of me.revealed) {
-                t.target.removeAttribute("data-hotkey");
+                t.targetNode.removeAttribute("data-hotkey");
             };
             me.revealed.length = 0;
         };
@@ -110,8 +110,8 @@ export class hotKeys_handler {
 
             for (const candidate of candidateTriggers) {
                 if (usedKeys.has(candidate.hotkey)) continue; // Used by more preferent tg.
-                if (! candidate.tg.target.disabled) {
-                    candidate.tg.target.setAttribute("data-hotkey", candidate.hotkey);
+                if (! candidate.tg.targetNode.disabled) {
+                    candidate.tg.targetNode.setAttribute("data-hotkey", candidate.hotkey);
                 };
                 // (UX): Perform the following even if disabled for behavioral
                 // consistency...

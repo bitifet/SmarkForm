@@ -28,7 +28,7 @@ for (const [name, controller] of Object.entries({
 
 class SmarkForm extends form {
     constructor(
-        target
+        targetNode
         , {
             customActions = {},
             ...formOptions
@@ -40,12 +40,12 @@ class SmarkForm extends form {
             type: "form",
         };
         super(
-            target
+            targetNode
             , options
             , null // (Root has no parent)
         );
         const me = this;
-        me.setNodeOptions(me.target, options);
+        me.setNodeOptions(me.targetNode, options);
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(
@@ -53,7 +53,7 @@ class SmarkForm extends form {
                     .map(([name, ctrl])=>[name, ctrl.bind(me)])
             ),
         };
-        me.target.addEventListener(
+        me.targetNode.addEventListener(
             "click"
             , onTriggerClick.bind(me)
             , true
@@ -62,9 +62,9 @@ class SmarkForm extends form {
     };
     async render() {
         const me = this;
-        me.target.setAttribute("aria-busy", "true");
+        me.targetNode.setAttribute("aria-busy", "true");
         await super.render();
-        me.target.setAttribute("aria-busy", "false");
+        me.targetNode.setAttribute("aria-busy", "false");
     };
 };
 

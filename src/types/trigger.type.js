@@ -30,11 +30,11 @@ export class trigger extends SmarkComponent {
     };
     disable() {//{{{
         const me = this;
-        me.target.disabled = true;
+        me.targetNode.disabled = true;
     };//}}}
     enable() {//{{{
         const me = this;
-        me.target.disabled = false;
+        me.targetNode.disabled = false;
     };//}}}
     getTriggerArgs() {//{{{
         const me = this;
@@ -64,7 +64,7 @@ export class trigger extends SmarkComponent {
         const target = (
             targetPath ? context.find(targetPath) // Explicit target (context relative)
             : contextPath ? null // Explicit context path => don't mind component position
-            : parents.find(p=>p.parent?.target.isSameNode(context?.target))
+            : parents.find(p=>p.parent?.targetNode.isSameNode(context?.targetNode))
         );
 
         return {

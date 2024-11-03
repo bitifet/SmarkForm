@@ -311,7 +311,7 @@ describe('List Component Type Test', function() {
 
             // Fix Hommer's email.
             form.find("/employees/0/emails/0")
-                .target
+                .targetNode
                 .querySelector("input")
                 .value = "homer@simpsons.home"
             ;

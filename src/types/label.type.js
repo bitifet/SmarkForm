@@ -34,7 +34,7 @@ export class label extends SmarkComponent {
                 if (! targetField.id) { // Ensure targetted field has an Id
                     targetField.id = Math.random().toString(36).substring(2);
                 };
-                me.target.setAttribute("for", targetField.id);
+                me.targetNode.setAttribute("for", targetField.id);
             };
         });
     };
@@ -53,7 +53,7 @@ export class label extends SmarkComponent {
         if (! contextPath && ! targetPath) {
             // Guess ;-)
             context = me.parent;
-            const candidates = context.target.querySelectorAll(me.selector);
+            const candidates = context.targetNode.querySelectorAll(me.selector);
             let found = false;
             for (const childName in candidates) {
                 if (found) {
@@ -67,7 +67,7 @@ export class label extends SmarkComponent {
                         break;
                     };
                 } else if (
-                    Object.is(candidates[childName], me.target)
+                    Object.is(candidates[childName], me.targetNode)
                 ) {
                     found = true;;
                 };

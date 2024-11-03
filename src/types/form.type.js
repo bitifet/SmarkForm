@@ -10,11 +10,11 @@ import {action} from "./trigger.type.js";
 export class form extends SmarkField {
     async render() {//{{{
         const me = this;
-        me.originalDisplayProp = me.target.style.display;
+        me.originalDisplayProp = me.targetNode.style.display;
         // Enhance childs:
         for (
             const node
-            of getRoots(me.target, me.selector)
+            of getRoots(me.targetNode, me.selector)
         ) {
             const newItem = await me.enhance(node);
             if (!! newItem._isField) {

@@ -62,7 +62,7 @@ function inferType(node, parentComponent) {//{{{
 @events
 export class SmarkComponent {
     constructor(//{{{
-        target
+        targetNode
         , {
             property_name = "smark",
             ...options
@@ -90,9 +90,9 @@ export class SmarkComponent {
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;
         me.types = componentTypes;
-        me.target = target;
+        me.targetNode = targetNode;
         me.options = options;
-        me.setNodeOptions(me.target, me.options);
+        me.setNodeOptions(me.targetNode, me.options);
 
         me.parent = parent;
         if (! me.parent instanceof SmarkComponent) throw me.renderError(
@@ -136,7 +136,7 @@ export class SmarkComponent {
         me.rendered = new Promise(resolve => setRendered = resolve);
 
         me.children = {};
-        me.target[sym_smart] = me;
+        me.targetNode[sym_smart] = me;
 
         (async ()=>{
             await me.render();
@@ -290,8 +290,8 @@ export class SmarkComponent {
     };//}}}
     moveTo(){//{{{
         const me = this;
-        if (! me.target.id) me.target.id = me.getPath();
-        document.location.hash = me.target.id;
+        if (! me.targetNode.id) me.targetNode.id = me.getPath();
+        document.location.hash = me.targetNode.id;
         // Avoid noisy url hash "randomish" effect:
         window.history.pushState({}, undefined,window.location.pathname);
             // Like 'document.location.hash = ""' but without leaving leading
@@ -308,7 +308,7 @@ export class SmarkComponent {
         const returnAll = actionKeys.has("*");
         for (
             const tgg
-            of [...me.root.target.querySelectorAll(me.selector)]
+            of [...me.root.targetNode.querySelectorAll(me.selector)]
                 .map(target=>target[sym_smart])
                 .filter(x=>x) // Ignore not yet rendered.
         ) {
@@ -326,14 +326,14 @@ export class SmarkComponent {
         const me = this;
         if (me.genId === false) return; // Abort if disabled.
         const newId = me.genId(me.getPath());
-        if (me.target.id != newId) {
-            me.target.id = newId;
+        if (me.targetNode.id != newId) {
+            me.targetNode.id = newId;
             for (
                 const child
                 of Object.values(me.children)
             ) child.updateId();
         };
-        return me.target.id
+        return me.targetNode.id
     };//}}}
     focus() {//{{{
         const me = this;

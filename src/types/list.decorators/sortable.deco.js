@@ -12,11 +12,11 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                 me.sortable = !! me.options.sortable;
                 me.itemTpl.setAttribute("draggable", me.sortable);
-                me.children.forEach(c=>c.target.setAttribute("dragable", me.sortable));
+                me.children.forEach(c=>c.targetNode.setAttribute("dragable", me.sortable));
                 if (me.sortable) {
                     let dragSource = null;
                     let dragDest = null;
-                    me.target.addEventListener("dragstart", e => {
+                    me.targetNode.addEventListener("dragstart", e => {
                         if (dragSource === null) {
                             dragSource = e.target
                             e.stopPropagation();
@@ -25,8 +25,8 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             e.preventDefault();
                         };
                     });
-                    me.target.addEventListener("dragover", e => e.preventDefault());
-                    me.target.addEventListener("drop", e => {
+                    me.targetNode.addEventListener("dragover", e => e.preventDefault());
+                    me.targetNode.addEventListener("drop", e => {
                         if (! dragSource) return; // Already dropped
                         let target = e.target;
                         while (
@@ -35,7 +35,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                         ) target = target.parentElement;
                         dragDest = target;
                     });
-                    me.target.addEventListener("dragend", async () => {
+                    me.targetNode.addEventListener("dragend", async () => {
                         if (dragDest)  await me.move({
                             from: me.getComponent(dragSource),
                             to: me.getComponent(dragDest),
@@ -92,7 +92,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 };
                 const inc = fromi < toi ? 1 : -1;
                 const moveMethod = inc > 0 ? "after" : "before";
-                to.target[moveMethod](from.target);
+                to.targetNode[moveMethod](from.targetNode);
             };//}}}
         };
     };
