@@ -1,6 +1,6 @@
 {
   "name": "smarkform",
-  "version": "0.6.4",
+  "version": "0.7.0",
   "private": false,
   "type": "module",
   "browser": "dist/SmarkForm.esm.js",
