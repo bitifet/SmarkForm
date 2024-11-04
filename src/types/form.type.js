@@ -17,11 +17,7 @@ export class form extends SmarkField {
             of getRoots(me.targetNode, me.selector)
         ) {
             const newItem = await me.enhance(node);
-            if (!! newItem._isField) {
-                newItem.name = me.validName(
-                    newItem.options.name
-                    , node.getAttribute("name")
-                );
+            if (!! newItem?._isField) {
                 if (me.children[newItem.name] !== undefined) throw me.renderError(
                     'REPEATED_FIELD_NAME'
                     , `Field name '${newItem.name}' used more than once in this form level.`

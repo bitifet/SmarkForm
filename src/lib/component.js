@@ -354,6 +354,12 @@ export class SmarkField extends SmarkComponent {
     constructor(...args){
         super(...args);
         this._isField = true;
+        if (! Object.is(this, this.root)) {
+            this.name = this.validName(
+                this.options.name
+                , this.targetNode.getAttribute("name")
+            );
+        };
     };
 };
 
