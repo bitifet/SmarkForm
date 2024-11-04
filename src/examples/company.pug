@@ -122,6 +122,17 @@ block mainForm
                                     placeholder="Surnme"
                                 )
                         .form-group
+                            label(data-smark) Sex:
+                            label
+                                input(data-smark, type="radio" name="sex" value="male")
+                                | Male
+                            label
+                                input(data-smark, type="radio" name="sex" value="female")
+                                | Female
+                            label
+                                input(data-smark, type="radio" name="sex" value="other")
+                                | Other
+                        .form-group
                             .input-group
                                 label(data-smark) Date of Birth
                                 input(

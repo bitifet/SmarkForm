@@ -12,6 +12,7 @@ import {list} from "./types/list.type.js";
 import {input} from "./types/input.type.js";
 import {number} from "./types/number.type.js";
 import {date} from "./types/date.type.js";
+import {radio} from "./types/radio.type.js";
 
 
 // Load core component types:
@@ -23,6 +24,7 @@ for (const [name, controller] of Object.entries({
     input,
     number,
     date,
+    radio,
 })) createType(name,controller);
 
 
