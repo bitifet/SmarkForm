@@ -1,6 +1,7 @@
 // types/label.type.js
 // ===================
 import {SmarkComponent} from "../lib/component.js";
+import {randomId} from "../lib/helpers.js";
 
 // TODO:
 // =====
@@ -32,7 +33,7 @@ export class label extends SmarkComponent {
             const {targetFieldNode} = labelArgs.target || {};
             if (targetFieldNode) { // Apply only to native inputs (scalars)
                 if (! targetFieldNode.id) { // Ensure targetted field has an Id
-                    targetFieldNode.id = Math.random().toString(36).substring(2);
+                    targetFieldNode.id = randomId();
                 };
                 me.targetNode.setAttribute("for", targetFieldNode.id);
             };
