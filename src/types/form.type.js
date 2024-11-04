@@ -22,6 +22,10 @@ export class form extends SmarkField {
                     newItem.options.name
                     , node.getAttribute("name")
                 );
+                if (me.children[newItem.name] !== undefined) throw me.renderError(
+                    'REPEATED_FIELD_NAME'
+                    , `Field name '${newItem.name}' used more than once in this form level.`
+                );
                 me.children[newItem.name] = newItem;
                 newItem.updateId();
             };
