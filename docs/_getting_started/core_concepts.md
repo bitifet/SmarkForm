@@ -7,8 +7,14 @@ nav_order: 3
 
 simple_form_example: |
     <div id='myForm$$'>
-        <p>Name: <input name='name' data-smark></p>
-        <p>Surname: <input name='surname' data-smark></p>
+        <p>
+            <label data-smark>Name:</label>
+            <input name='name' data-smark>
+        </p>
+        <p>
+            <label data-smark>Surname:</label>
+            <input name='surname' data-smark>
+        </p>
         <p>
             <button data-smark='{"action":"import"}'>⬆️  Import</button>
             <button data-smark='{"action":"export"}'>⬇️  Export</button>
@@ -49,8 +55,14 @@ simple_form_example_notes: |
 
 inner_exports_form_example: |
     <div id='myForm$$'>
-        <p>Name: <input name='name' data-smark></p>
-        <p>Surname: <input name='surname' data-smark></p>
+        <p>
+            <label data-smark>Name:</label>
+            <input name='name' data-smark>
+        </p>
+        <p>
+            <label data-smark>Surname:</label>
+            <input name='surname' data-smark>
+        </p>
         <table>
             <tr>
                 <th>Whole Form:</th>
@@ -73,18 +85,23 @@ inner_exports_form_example: |
 inner_exports_form_example_js: |
     const myForm = new SmarkForm(document.getElementById("myForm$$"));
     myForm.on("BeforeAction_import", async (ev)=>{
-        const previous_value = await ev.context.export();
-        let data = window.prompt('Fill JSON data', JSON.stringify(previous_value));
+        /* Read previous value: */
+        let previous_value = await ev.context.export();
+        let isObject = typeof previous_value == "object";
+        if (isObject) previous_value = JSON.stringify(previous_value);
+        let data = window.prompt(`Edit ${ev.context.getPath()}`, previous_value);
         if (data === null) return void ev.preventDefault();
         try {
-            ev.data = JSON.parse(data);
+            if (isObject) data = JSON.parse(data);
+            ev.data = data;
         } catch(err) {
             alert(err.message);
             ev.preventDefault();
         };
     });
-    myForm.on("AfterAction_export", ({data})=>{
-        window.alert(JSON.stringify(data, null, 4));
+    myForm.on("AfterAction_export", ({context, data})=>{
+        if (typeof data == "object") data = JSON.stringify(data, null, 4);
+        window.alert(`Value of ${context.getPath()}: ${data}`);
     });
 
 inner_exports_form_example_notes: |
@@ -105,14 +122,32 @@ inner_exports_form_example_notes: |
     it easy to edit the value no matter if we are importing one of the text
     fields or the whole form.
 
-
 nested_forms_example: |
     <div id='myForm$$'>
         <b>User:</b>
-        <p>Id: <input name='userId' value='0001' data-smark></p>
+        <p>
+            <label data-smark>Id:</label>
+            <input name='userId' value='0001' data-smark>
+        </p>
         <fieldset data-smark='{"type":"form","name":"personal_data"}'>
-            <p>Name: <input name='name' value='John' data-smark></p>
-            <p>Surname: <input name='surname' value='Doe' data-smark></p>
+            <p>
+                <label data-smark>Name:</label>
+                <input name='name' value='John' data-smark>
+            </p>
+            <p>
+                <label data-smark>Surname:</label>
+                <input name='surname' value='Doe' data-smark>
+            </p>
+            <fieldset data-smark='{"type":"form","name":"contact"}'>
+                <p>
+                    <label data-smark>Phone:</label>
+                    <input name='phone' type='tel' value='555444999' data-smark>
+                </p>
+                <p>
+                    <label data-smark>eMail:</label>
+                    <input name='email' type='mail' value='john@dohe.example.org' data-smark>
+                </p>
+            </fieldset>
         </fieldset>
         <p><button data-smark='{"action":"export"}'>👀 Export data</button></p>
     </div>
@@ -124,8 +159,11 @@ nested_forms_example_js: |
     });
 
 nested_forms_example_notes: |
-    ooooo
+    👉 This example comes with pre-filled values to make it more illustrative,
+    but feel free to change them if you like.
 
+    👉 We could have also added nested lists (to allow multiple phone numbers
+    and/or emails).
 
 fixed_list_example: |
     <div id="myForm$$">
@@ -279,72 +317,47 @@ descendant of any depth.
     notes=page.simple_form_example_notes
 %}
 
+### Fields
 
-👉 All field types (including form) provide so called *export* and *import*
-[actions](#actions) allowing to read and write data from/to them.
+Every *SmarkForm* component (except [labels](#labels) and
+[triggers](#triggers)) is a form field from and to which we can import and
+export values.
 
+So **our *root form* is also a *field*** (of type "form") and we can import and
+export its *value*.
+
+In the case of the *form* fields, **its value is a JSON object.**
+
+👉 All field types (including form) provide so called *import* and *export*
+[actions](#actions) allowing to, respectively, write and read data to/from
+them.
+
+The following example shows how we can use the *import* and *export* actions to
+seamlessly handle either the whole form or individual fields.
 
 {% include components/sampletabs_tpl.md
     formId="inner_exports_form"
     htmlSource=page.inner_exports_form_example
     jsSource=page.inner_exports_form_example_js
     notes=page.inner_exports_form_example_notes
+    selected="preview"
 %}
 
 
-
-### Fields
-
-👉 **Every *SmarkForm* component (except [labels](#labels) and
-[triggers](#triggers)) is a form field** from and to which **we can import and
-export values**.
-
-So our *root form* is also a *field* (of type "form") and we can import and
-export its *value*.
-
-In the case of the *form* fields, **its value is a JSON object.**
-
-
-
-```javascript
-myForm.onRendered(function() {
-  this.export().then(console.log);
-  // { "userId": "", "name": "", "surname": "" }
-  this.import({name: "John"})
-    .then(()=>this.export())
-    .then(console.log)
-  ;
-  // { "userId": "", "name": "John", "surname": "" }
-});
-```
-
-{: .hint }
-> Alternatively, you can enhance readability by providing the onRendered
-> callback through the options object and/or using an async function.
-> 
-> ```javascript
-> const myForm = new SmarkForm(document.getElementById("myForm"), {
->     async onRendered() {
->         console.log(await this.export());
->         // { "userId": "", "name": "", "surname": "" }
->         await this.import({name: "John"});
->         console.log(await this.export());
->         // { "userId": "", "name": "John", "surname": "" }
->     },
-> });
-> ```
-
 ### Form nesting
 
-👉 This also mean **we can nest forms** inside other forms as regular fields
-(holding JSON objects) with no depth limit.
+Now we know *SmarkForm* root form is just a *SmarkForm Field* of the type
+"form".
 
+This means that **we can nest forms** inside other forms as regular fields
+(holding JSON objects) with no depth limit.
 
 {% include components/sampletabs_tpl.md
     formId="nested_forms"
     htmlSource=page.nested_forms_example
     jsSource=page.nested_forms_example_js
     notes=page.nested_forms_example_notes
+    selected="preview"
 %}
 
 
@@ -368,6 +381,11 @@ and export any imaginable JSON data structure**.
 
 👉 In order to enable users to control the array's length, the *list* component
 type offers the "addItem" and "removeItem" *actions*.
+
+👉 By default, *lists* have at least one item and can grow to infinity. But
+this can be changed through the *min_items* and *max_items* properties.
+
+👉 They also can be sorted by the user (by setting the *sortable* property to *true*).
 
 The following example uses *trigger* components to allow user to invoke those
 actions:
@@ -399,7 +417,6 @@ kind of regular form-field types.
 
 🚧 Work in progres... 🚧 
 
-Labels aren't yet implemented as SmarkForm component type.
 
 
 ### Triggers

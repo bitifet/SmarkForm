@@ -6,14 +6,14 @@ nav_order: 1
 
 login_form_example: |
     <div id="myForm$$">
-        <div>
+        <p>
             <label for="username$$">Username:</label>
             <input type="text" id="username$$" name="username">
-        </div>
-        <div>
+        </p>
+        <p>
             <label for="password$$">Password:</label>
             <input type="password" id="password$$" name="password">
-        </div>
+        </p>
         <p>
             <button>❌ Clear</button>
             <button>💾 Submit</button>
@@ -22,14 +22,14 @@ login_form_example: |
 
 enhanced_login_form_example: |
     <div id="myForm$$">
-        <div>
+        <p>
             <label data-smark>Username:</label>
-            <input type="text" id="username$$" name="username" data-smark>
-        </div>
-        <div>
+            <input type="text" name="username" data-smark>
+        </p>
+        <p>
             <label data-smark>Password:</label>
-            <input type="password" id="password$$" name="password" data-smark>
-        </div>
+            <input type="password" name="password" data-smark>
+        </p>
         <p>
             <button data-smark='{"action":"empty"}'>❌ Clear</button>
             <button data-smark='{"action":"export"}'>💾 Submit</button>
@@ -58,6 +58,7 @@ confirm_cancel_example_js: |
             preventDefault();
         };
     });
+
 
 ---
 
