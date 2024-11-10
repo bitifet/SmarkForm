@@ -1,21 +1,40 @@
-{% comment %} ###  ### {% endcomment %}
-{% comment %} ###  ### {% endcomment %}
-{% comment %} ###  ### {% endcomment %}
+{% comment %}
+
+Accepted arguments:
+-------------------
+
+  * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
+  * htmlSource (mandatory)
+  * cssSource
+  * jsSource
+  * notes: Optional notes for further clarifications.
+  * selected: Default selected tab (defaults to "html").
+
+{% endcomment %}
 
 
 {% comment %} ### ################################# ### {% endcomment %}
 {% comment %} ### Read arguments and apply defaults ### {% endcomment %}
 {% comment %} ### ################################# ### {% endcomment %}
 
-{% capture default_jsSource %}const myForm = new SmarkForm(document.getElementById("myForm"));{% endcapture %}
+{% assign default_htmlSource = '-' %}
+{% assign default_cssSource = '-' %}
+{% assign default_jsSource = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+{% assign default_notes = '-' %}
 
 
 {% assign formId = include.formId | default: "FIXME" %}
+{% assign formId = include.formId | default: "FIXME" %}
+{% assign formId = "-" | append: formId %}
+
+
 {% assign htmlSource = include.htmlSource | default: default_htmlSource %}
 {% assign cssSource = include.cssSource | default: default_cssSource %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
 
+
+{% assign current_tab = include.selected | default: "html" %}
 
 {% comment %} ### ##################### ### {% endcomment %}
 {% comment %} ### Capture rendered HTML ### {% endcomment %}
@@ -60,48 +79,62 @@
 <style>
 {{ cssSource | raw }}
 </style>
+
+
 <div class="tab-container">
   <div class="tab-labels">
-    <div class="tab-label tab-label-active" title="HTML Source">🗒️ HTML</div>
-    {% if cssSource %}
-        <div class="tab-label" title="CSS Source">🎨 CSS</div>
+    {% if current_tab == "html" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+    <div class="tab-label {{active_class}}" title="HTML Source">🗒️ HTML</div>
+    {% if cssSource != '-' %}
+        {% if current_tab == "css" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+        <div class="tab-label {{active_class}}" title="CSS Source">🎨 CSS</div>
     {% endif %}
-    {% if jsSource %}
-        <div class="tab-label" title="JS Source">⚙️  JS</div>
+    {% if jsSource != '-' %}
+        {% if current_tab == "js" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+        <div class="tab-label {{active_class}}" title="JS Source">⚙️  JS</div>
     {% endif %}
-        <div class="tab-label" title="Live Preview">👁️ Preview</div>
-    {% if notes %}
-        <div class="tab-label tab-label-right" title="Notes">📝 Notes</div>
+    {% if current_tab == "preview" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+    <div class="tab-label {{active_class}}" title="Live Preview">👁️ Preview</div>
+    {% if notes != '-' %}
+        {% if current_tab == "notes" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+        <div class="tab-label tab-label-right {{active_class}}" title="Notes">📝 Notes</div>
     {% endif %}
   </div>
-  <div class="tab-content tab-active">
-    {{ rendered_htmlSource | markdownify }}
+  {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+  <div class="tab-content {{active_class}}">
+    {{ rendered_htmlSource | replace: "$$", "" | markdownify }}
   </div>
-  {% if cssSource %}
-      <div class="tab-content">
-          {{ rendered_cssSource | markdownify }}
+  {% if cssSource != '-' %}
+      {% if current_tab == "css" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+      <div class="tab-content {{active_class}}">
+          {{ rendered_cssSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
-  {% if jsSource %}
-      <div class="tab-content">
-          {{ rendered_jsSource | markdownify }}
+  {% if jsSource != '-' %}
+      {% if current_tab == "js" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+      <div class="tab-content {{active_class}}">
+          {{ rendered_jsSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
-  <div class="tab-content">
+  {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+  <div class="tab-content {{active_class}}">
     <div class="smarkform_example">
-      {{ htmlSource | replace: "myForm", formId | raw }}
+      {{ htmlSource | replace: "$$", formId | raw }}
     </div>
   </div>
-  {% if notes %}
-    <div class="tab-content">
+  {% if notes != '-' %}
+    {% if current_tab == "notes" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+    <div class="tab-content {{active_class}}">
         {{ notes | markdownify }}
     </div>
   {% endif %}
 </div>
 <div>
-<script>
-(function() {
-{{ jsSource | replace: "myForm", formId }}
-})();
-</script>
+{% if jsSource != '-' %}
+    <script>
+        (function() {
+            {{ jsSource | replace: "$$", formId }}
+        })();
+    </script>
+{% endif %}
 </div>

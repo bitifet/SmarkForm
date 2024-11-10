@@ -10,7 +10,7 @@ generic_sample_css: |
     }
 
 simple_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <p>
             <label data-smark>Name:</label>
             <input data-smark='{"name":"name"}' placeholder='Full name' type="tel">
@@ -30,7 +30,7 @@ simple_list_example: |
     </div>
 
 simple_list_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     myForm.on("AfterAction_export", ({data})=>{
         window.alert(JSON.stringify(data, null, 4));
     });
@@ -135,6 +135,7 @@ The following code snippet shows *SmarkForm* simplicity.
    jsSource=page.simple_list_example_js
    cssSource=page.generic_sample_css
    notes=page.simple_list_example_notes
+   selected="preview"
 %}
 
 {: .hint}

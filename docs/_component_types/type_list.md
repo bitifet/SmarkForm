@@ -10,7 +10,7 @@ generic_sample_css: |
     }
 
 simple_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
             <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
                 <input name='name' placeholder='User name' type='text' data-smark/>
@@ -23,7 +23,7 @@ simple_list_example: |
     </div>
 
 scalar_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <section data-smark='{"type":"list","name":"phones"}'>
             <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
         </section>
@@ -32,7 +32,7 @@ scalar_list_example: |
     </div>
 
 singleton_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
             <li>
                 <input placeholder='Phone Number' type="tel" data-smark>
@@ -43,7 +43,7 @@ singleton_list_example: |
     </div>
 
 nesting_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <section data-smark='{"type":"list","name":"users"}'>
             <fieldset>
                 <input name='name' placeholder='User name' type='text' data-smark/>
@@ -72,7 +72,7 @@ nesting_list_example: |
 
 
 simple_list_animation_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
         <ul data-smark='{"name": "phones", "of": "input", "min_items": 0}'>
             <li>
@@ -96,7 +96,7 @@ simple_list_animation_example_additem_css: |
     }
 
 simple_list_animation_example_additem_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     myForm.onAll("addItem", function({
         newItemTarget, /* the targetNode of the future new item */
@@ -126,7 +126,7 @@ simple_list_animation_example_complete_css: |
     }
 
 simple_list_animation_example_complete_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     myForm.onAll("addItem", function({
         newItemTarget, /* the targetNode of the future new item */

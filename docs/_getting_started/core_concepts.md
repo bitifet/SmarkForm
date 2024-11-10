@@ -6,7 +6,7 @@ nav_order: 3
 
 
 simple_form_example: |
-    <div id='myForm'>
+    <div id='myForm$$'>
         <p>Name: <input name='name' data-smark></p>
         <p>Surname: <input name='surname' data-smark></p>
         <p>
@@ -16,7 +16,7 @@ simple_form_example: |
     </div>
 
 simple_form_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     myForm.on("BeforeAction_import", async (ev)=>{
         let data = window.prompt(
             'Fill JSON data'
@@ -48,7 +48,7 @@ simple_form_example_notes: |
 
 
 inner_exports_form_example: |
-    <div id='myForm'>
+    <div id='myForm$$'>
         <p>Name: <input name='name' data-smark></p>
         <p>Surname: <input name='surname' data-smark></p>
         <table>
@@ -71,7 +71,7 @@ inner_exports_form_example: |
     </div>
 
 inner_exports_form_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     myForm.on("BeforeAction_import", async (ev)=>{
         const previous_value = await ev.context.export();
         let data = window.prompt('Fill JSON data', JSON.stringify(previous_value));
@@ -107,7 +107,7 @@ inner_exports_form_example_notes: |
 
 
 nested_forms_example: |
-    <div id='myForm'>
+    <div id='myForm$$'>
         <b>User:</b>
         <p>Id: <input name='userId' value='0001' data-smark></p>
         <fieldset data-smark='{"type":"form","name":"personal_data"}'>
@@ -118,7 +118,7 @@ nested_forms_example: |
     </div>
 
 nested_forms_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     myForm.on("AfterAction_export", ({data})=>{
         window.alert(JSON.stringify(data, null, 4));
     });
@@ -128,7 +128,7 @@ nested_forms_example_notes: |
 
 
 fixed_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <b>Phones:</b>
         <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
             <li>
@@ -165,7 +165,7 @@ fixed_list_example_notes: |
        pattern**.
 
 pets_list_example: |
-    <div id="myForm">
+    <div id="myForm$$">
         <div data-smark='{"type":"form","name":"personal_data"}'>
             <b>Pets:</b>
             <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0}' class="sortable">

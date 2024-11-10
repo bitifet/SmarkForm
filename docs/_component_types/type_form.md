@@ -5,7 +5,7 @@ permalink: /component_types/type_form
 nav_order: 1
 
 simple_form_example: |
-    <div id='myForm'>
+    <div id='myForm$$'>
     <p>
         <label for='id'>Id:</label>
         <input data-smark type='text' name='id' />
@@ -45,7 +45,7 @@ simple_form_example: |
     </div>
 
 simple_form_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm"));
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
     /* Export action: */
     myForm.on("AfterAction_export", function ({data}) {
         window.alert (JSON.stringify(data, null, 4));

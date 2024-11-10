@@ -4,15 +4,72 @@ layout: chapter
 permalink: /getting_started/quick_start
 nav_order: 1
 
+login_form_example: |
+    <div id="myForm$$">
+        <div>
+            <label for="username$$">Username:</label>
+            <input type="text" id="username$$" name="username">
+        </div>
+        <div>
+            <label for="password$$">Password:</label>
+            <input type="password" id="password$$" name="password">
+        </div>
+        <p>
+            <button>❌ Clear</button>
+            <button>💾 Submit</button>
+        </p>
+    </div>
+
+enhanced_login_form_example: |
+    <div id="myForm$$">
+        <div>
+            <label data-smark>Username:</label>
+            <input type="text" id="username$$" name="username" data-smark>
+        </div>
+        <div>
+            <label data-smark>Password:</label>
+            <input type="password" id="password$$" name="password" data-smark>
+        </div>
+        <p>
+            <button data-smark='{"action":"empty"}'>❌ Clear</button>
+            <button data-smark='{"action":"export"}'>💾 Submit</button>
+        </p>
+    </div>
+
+login_export_example_js: |
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
+    myForm.on("AfterAction_export", ({data})=>{
+        window.alert(JSON.stringify(data, null, 4));
+    });
+
+
+confirm_cancel_example_js: |
+    const myForm = new SmarkForm(document.getElementById("myForm$$"));
+    /* Ask for confirmation unless form is already empty: */
+    myForm.on("AfterAction_export", ({data})=>{
+        window.alert(JSON.stringify(data, null, 4));
+    });
+    myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+        if (
+            ! await context.isEmpty()     /* Form is not empty */
+            && ! confirm("Are you sure?") /* User click on "Cancel" btn. */
+        ) {
+            /* Prevent default (empty form) behaviour: */
+            preventDefault();
+        };
+    });
+
 ---
 
 {% include links.md %}
+
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
 A SmarkForm form can be created by following a few simple steps:
 
-{: .info}
+{: .hint}
 > This section is meant to be educational. If you are eager to get your hands
 > dirty, 🏁 go straight to the
 > [Examples]({{ "resources/examples" | relative_url }}) section, download the
@@ -28,11 +85,12 @@ A SmarkForm form can be created by following a few simple steps:
 <!-- vim-markdown-toc GitLab -->
 
 * [1. Create an HTML document](#1-create-an-html-document)
-* [2. Create an HTML form](#2-create-an-html-form)
-* [3. Include SmarkForm Library](#3-include-smarkform-library)
+* [2. Include SmarkForm Library](#2-include-smarkform-library)
+* [3. Create a simple HTML form](#3-create-a-simple-html-form)
 * [4. Initialize the Form](#4-initialize-the-form)
 * [5. Do the magic](#5-do-the-magic)
-* [6. Customize your form](#6-customize-your-form)
+* [6. Go further...](#6-go-further)
+* [7. Customize your form](#7-customize-your-form)
 * [Final notes](#final-notes)
     * [Boilerplate file](#boilerplate-file)
     * [You don't need a form tag](#you-dont-need-a-form-tag)
@@ -66,50 +124,7 @@ A SmarkForm form can be created by following a few simple steps:
 > [fourth](#4-initialize-the-form) steps of this guide too and 🚀 go stright to
 > the [nitty](#2-create-an-html-form)-[gritty](#5-do-the-magic).
 
-
-## 2. Create an HTML form
-
-Start by writing the form markup in HTML. For example, let's create a basic
-login form like this:
-
-```html
-<div id="myForm">
-  <div>
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" data-smark>
-  </div>
-  <div>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" data-smark>
-  </div>
-  <p>
-    <button data-smark='{"action":"empty"}'>❌ Clear</button>
-    <button data-smark='{"action":"export"}'>💾 Submit</button>
-  </p>
-</div>
-```
-
-You may notice that there is no `<form>` tag. Just a regular `<div>`, in this
-example with an Id that we will use to capture the node to enhance it as a
-*SmarkForm* instance.
-
-{: .info}
-> You can use a `<form>` tag instead if you like, but it is [absolutely
-> unnecessary](#you-dont-need-a-form-tag).
-
-Also pay attention to the elements with a 
-[data-smark](/geting_started/core_concepts#the-data-smark-attribute)
-attribute: They are *SmarkForm*
-[components](/getting_started/core_concepts#components) of a given type.
-
-{: .hint}
-> *SmarkForm* components type [is often
-> implicit](/getting_started/core_concepts#syntax), either by their tag name
-> or by the presence of the *action* property that tell us they are action
-> triggers.
-
-
-## 3. Include SmarkForm Library
+## 2. Include SmarkForm Library
 
 Next, load SmarkForm to your document.
 
@@ -128,35 +143,126 @@ The easiest way is using a CDN:
 > ways](#alternative-forms-to-getinclude-smarkform).
 
 
-## 4. Initialize the Form
+You can also add an additional `<script>` tag for the few JS code we will need
+to write.
 
-Initialize SmarkForm on your form element. In your JavaScript file, create a
-new instance of the SmarkForm class and pass the form element as the parameter:
+Our complete layout may look as follows:
 
-```javascript
-const myForm = new SmarkForm(
-    document.querySelector("#myForm")
-);
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>My First SmarkForm Form</title>
+    <script src="{{ smarkform_umd_cdn_current }}"></script>
+  </head>
+  <body>
+    <h1>My First SmarkForm Form</h1>
+    <!-- Your form markup goes here -->
+    <script>
+      /* Your JS code goes here */
+    </script>
+  </body>
+</html>
 ```
 
-{: .hint }
-> Notice that, if you fill data in your form and then hit de `❌ Clear` button,
-> **it already works!!** 🎉
+
+## 3. Create a simple HTML form
+
+Start by writing the form markup in plain HTML. For example, let's create a
+basic login form like this:
+
+
+{% include components/sampletabs_tpl.md
+   formId="login_form"
+   htmlSource=page.login_form_example
+   jsSource="-"
+%}
+
+
+{: .info}
+> You may notice that there is no `<form>` tag. Just a regular `<div>`, in this
+> example with an Id that we will use to capture the node to enhance it as a
+> *SmarkForm* instance.
+> 
+> You can use a `<form>` tag instead if you like, but it is [not actually
+> necessary](#you-dont-need-a-form-tag).
+
+
+## 4. Initialize the Form
+
+In your JavaScript tag, create a new instance of the SmarkForm class and pass
+the DOM node of the form container as parameter:
+
+
+{% include components/sampletabs_tpl.md
+   formId="instantiated_login_form"
+   htmlSource=page.login_form_example
+   selected="js"
+%}
+
+Ok: Nothing exciting happended by now...
 
 
 ## 5. Do the magic
+
+By default, *SmarkForm* ignores all DOM elements in its container unless they
+are marked with the [data-smark
+]({{ "getting_started/core_concepts" | relative_url }}#the-data-smark-attribute)
+attribute.
+
+{: .info }
+> This is because you can have html fields or buttons that belong to other
+> components or functionalities of the page and you don't want them to be taken
+> as part of the form.
+
+Let's mark all fields, buttons and labels... with it:
+
+{% include components/sampletabs_tpl.md
+   formId="enhanced_login_form"
+   htmlSource=page.enhanced_login_form_example
+%}
+
+
+Now, if you go to the *Preview* tag and fill some data in, you can then hit de
+`❌ Clear` button and see that, **it already works!!** 🎉
+
+Also notice that the *for* attribute of all `<label>`s had been removed and they
+still work.
+
+{: .info}
+> All elements with a 
+> [data-smark](/getting_started/core_concepts#the-data-smark-attribute)
+> attribute are *SmarkForm*
+> [components](/getting_started/core_concepts#components) of a certain type.
+
+*SmarkForm* components' type [is often
+implicit](/getting_started/core_concepts#syntax), either by their tag name (like the `<label>` elements), their *type* attribute in case of `<input>`s or by the presence of the *action* property that tell us they are action
+[triggers](getting_started/core_component_types#type-trigger).
+
+
+
+## 6. Go further...
 
 The `💾 Submit` button is working too. It's just we configured it to trigger
 the *export* action but **we haven't told it what to do** with that data.
 
 To do so, we only need to listen the proper event, and **that's it!**:
 
-```javascript
-myForm.on("afterAction_export", ({data}) => {
-    // Show exported data:
-    console.log(data);
-});
-```
+Now go to the *Preview* tab, fill some data in and try clicking the `💾 Submit`
+button.
+
+{: .warning :}
+> Remember not to type a real password here!!. 😉
+
+
+{% include components/sampletabs_tpl.md
+   formId="enhanced_login_form_export"
+   htmlSource=page.enhanced_login_form_example
+   jsSource=page.login_export_example_js
+   selected="js"
+%}
+
+
 
 {: .info :}
 > Alternatively, most event handlers can be provided at once through the
@@ -170,18 +276,13 @@ Following example adds a
 they loose all their work in case of an accidental click to the *Clear*
 ("empty" action trigger) button:
 
-```javascript
-// Ask for confirmation unless form is already empty:
-myForm.on("beforeAction_empty", ({context, preventDefault}) => {
-    if (
-        ! await context.isEmpty()     // Form is not empty
-        && ! confirm("Are you sure?") // User click on "Cancel" btn.
-    ) {
-        // Prevent default (empty form) behaviour:
-        preventDefault();
-    };
-});
-```
+
+{% include components/sampletabs_tpl.md
+   formId="confirm_cancel_form_export"
+   htmlSource=page.enhanced_login_form_example
+   jsSource=page.confirm_cancel_example_js
+   selected="js"
+%}
 
 
 **That's it!!!**  🎉
@@ -201,7 +302,7 @@ possibilities and unleash the power of markup-driven form development.
 
 
 
-## 6. Customize your form
+## 7. Customize your form
 
 Now you are ready to add advanced features to your form, such as nested forms
 and variable-length arrays.
