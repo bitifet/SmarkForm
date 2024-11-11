@@ -36,6 +36,79 @@ enhanced_login_form_example: |
         </p>
     </div>
 
+generic_sample_css: |
+    button:disabled {
+        opacity: .5;
+    }
+
+phone_list_form_example: |
+    <div id="myForm$$">
+        <div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
+            <div>
+            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
+            <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
+            <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+            </div>
+        </div>
+        <p>
+            <button data-smark='{"action":"empty"}'>❌ Clear</button>
+            <button data-smark='{"action":"export"}'>💾 Submit</button>
+        </p>
+    </div>
+
+phone_list_form_example_notes: |
+    👉 Limited to a **maximum of 6** numbers.
+
+    👉 Notice trigger butons **get propperly disabled** when limits reached.
+
+    👉 They are also excluded from keyboard navigation for better navigation with `tab` / `shift`+`tab`.
+
+    👉 Even thought they can be triggered from keyboard through configured (`Ctrl`-`+` and `Ctrl-`-`) hot keys.
+
+    👉 ...Notice what happen when you hit the `ctrl` key while editing...
+
+    👉 Also note that, when you click the `💾 Submit` button **only non empty items get exported**.
+    
+    👉 ...You can prevent this behaviour by setting the *exportEmpteis* property to *true*.
+
+    👉 Change items order by just dragging and dropping them.
+
+advanced_sample_css: |
+    button:disabled {
+        opacity: .5;
+    }
+    label, button {
+        user-select: none;
+    }
+
+    button[data-hotkey] {
+        position: relative;
+        overflow-x: display;
+    }
+    button[data-hotkey]::before {
+        content: attr(data-hotkey);
+
+        display: inline-block;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        z-index: 10;
+        pointer-events: none;
+
+        background-color: #ffd;
+        outline: 1px solid lightyellow;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-family: sans-serif;
+        font-size: .8em;
+        white-space: nowrap;
+
+        transform: scale(1.4) translate(.1em, .1em);
+
+    }
+
+
 login_export_example_js: |
     const myForm = new SmarkForm(document.getElementById("myForm$$"));
     myForm.on("AfterAction_export", ({data})=>{
@@ -224,7 +297,7 @@ Let's mark all fields, buttons and labels... with it:
 %}
 
 
-Now, if you go to the *Preview* tag and fill some data in, you can then hit de
+Now, if you go to the *Preview* tab and fill some data in, you can then hit de
 `❌ Clear` button and see that, **it already works!!** 🎉
 
 Also notice that the *for* attribute of all `<label>`s had been removed and they
@@ -242,15 +315,10 @@ implicit](/getting_started/core_concepts#syntax), either by their tag name (like
 
 
 
-## 6. Go further...
-
-The `💾 Submit` button is working too. It's just we configured it to trigger
+👉 The `💾 Submit` button is working too. It's just we configured it to trigger
 the *export* action but **we haven't told it what to do** with that data.
 
-To do so, we only need to listen the proper event, and **that's it!**:
-
-Now go to the *Preview* tab, fill some data in and try clicking the `💾 Submit`
-button.
+To do so, we only need to listen the proper event:
 
 {: .warning :}
 > Remember not to type a real password here!!. 😉
@@ -263,6 +331,8 @@ button.
    selected="js"
 %}
 
+Now go to the *Preview* tab, fill some data in and try clicking the `💾 Submit`
+button.
 
 
 {: .info :}
@@ -270,13 +340,20 @@ button.
 > [options object](#the-options-object).
 
 
-**Going deeper...**
+## 6. Go further...
 
-Following example adds a
-*beforeAction_empty* event listener to gently ask users for confirmation before
-they loose all their work in case of an accidental click to the *Clear*
-("empty" action trigger) button:
+Everything works now. 🎉
 
+Well... actually, the submit button shows your credentials to the world in an
+*alert* modal. But for demonstration purposes, it is enough.
+
+However, if it were a larger form, we might not feel so comfortable with the
+`❌ Clear` button ("empty" action trigger) clearing everything in case of an
+accidental click.
+
+Luckily, we can listen to the *BeforeAction_empty* event and gently ask users for confirmation before they lose all their work.
+
+Let's see a simple example using a *window.confirm()* dialog:
 
 {% include components/sampletabs_tpl.md
    formId="confirm_cancel_form_export"
@@ -285,33 +362,53 @@ they loose all their work in case of an accidental click to the *Clear*
    selected="js"
 %}
 
+{: .hint}
+> Notice that, if you go to the *Preview* tab and click the `❌ Clear` button
+> nothing seems to happen (since the form is already empty so there is no need
+> to bother the user asking for confirmation) while, if you fill some data in
+> and then click again, it will effectively ask before clearing the data.
 
-**That's it!!!**  🎉
+## 7. Customize your form
 
 Now you have a SmarkForm-enhanced form. **SmarkForm will automatically handle
 form submission, validation, and other interactions** based on the provided
 markup and configuration.
 
-{: .hint}
-You can customize the behavior and appearance of your SmarkForm form by
+👉 You can customize the behavior and appearance of your SmarkForm form by
 configuring options and adding event listeners. SmarkForm provides a wide range
 of features and capabilities to simplify form development and enhance user
 experience.
 
-Start exploring the SmarkForm documentation and examples to discover all the
+👉 Start exploring the
+[Core Concepts section]({{ "getting_started/core_concepts" | relative_url }})
+for a deeper understanding of what is going on and continue with the rest of
+this SmarkForm manual for more details and examples to discover all the
 possibilities and unleash the power of markup-driven form development.
 
 
+🔎 Here you have a few examples of a larger forms that demonstrates some
+additional capabilities of the library:
 
-## 7. Customize your form
 
-Now you are ready to add advanced features to your form, such as nested forms
-and variable-length arrays.
+**List of telephones:**
 
-{: .hint}
-> Check out the
-> [Core Concepts section]({{ "getting_started/core_concepts" | relative_url }})
-> for a deeper understanding of what is going on...
+{% include components/sampletabs_tpl.md
+   formId="misc_examples_form"
+   htmlSource=page.phone_list_form_example
+   cssSource=page.advanced_sample_css
+   jsSource=page.confirm_cancel_example_js
+   notes=page.phone_list_form_example_notes
+   selected="preview"
+%}
+
+
+ 🚧 Pending to add a few more examples... 🚧 
+
+
+
+{: .hint :}
+> Don't miss the [Examples]({{ "resources/examples" | relative_url }}) section
+> for more...
 
 
 ## Final notes
@@ -391,13 +488,13 @@ const myForm = new SmarkForm(
 );
 ```
 
-All *afterAction_xxx* and *beforeAction_xxx* events can get their first event
+All *AfterAction_xxx* and *BeforeAction_xxx* events can get their first event
 handler attached through functions respectively named *onAfterAction_xxx* and
 *onBeforeAction_xxx* in the *options* object passed to the *SmarkForm*
 constructor.
 
 {: .hint :}
-> The only differrence here is that *afterAction_xxx* and *beforeAction_xxx*
+> The only differrence here is that *AfterAction_xxx* and *BeforeAction_xxx*
 > events **can be attached to any *SmarkForm* field**.
 > 
 > Handlers passed through that options are attached to the *root form*.
