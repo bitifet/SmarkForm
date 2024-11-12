@@ -4,15 +4,15 @@ layout: chapter
 permalink: /getting_started/quick_start
 nav_order: 1
 
-login_form_example: |
+simple_form_example: |
     <div id="myForm$$">
         <p>
-            <label for="username$$">Username:</label>
-            <input type="text" id="username$$" name="username">
+            <label for="nameField$$">Name:</label>
+            <input type="text" id="nameField$$" name="name">
         </p>
         <p>
-            <label for="password$$">Password:</label>
-            <input type="password" id="password$$" name="password">
+            <label for="emailField$$">Email:</label>
+            <input type="email" id="emailField$$" name="email">
         </p>
         <p>
             <button>❌ Clear</button>
@@ -20,26 +20,21 @@ login_form_example: |
         </p>
     </div>
 
-enhanced_login_form_example: |
+simple_form_enhanced_example: |
     <div id="myForm$$">
         <p>
-            <label data-smark>Username:</label>
-            <input type="text" name="username" data-smark>
+            <label data-smark>Name:</label>
+            <input type="text" name="name" data-smark>
         </p>
         <p>
-            <label data-smark>Password:</label>
-            <input type="password" name="password" data-smark>
+            <label data-smark>Email:</label>
+            <input type="email" name="email" data-smark>
         </p>
         <p>
             <button data-smark='{"action":"empty"}'>❌ Clear</button>
             <button data-smark='{"action":"export"}'>💾 Submit</button>
         </p>
     </div>
-
-generic_sample_css: |
-    button:disabled {
-        opacity: .5;
-    }
 
 phone_list_form_example: |
     <div id="myForm$$">
@@ -74,13 +69,12 @@ phone_list_form_example_notes: |
     👉 Change items order by just dragging and dropping them.
 
 advanced_sample_css: |
+    /* Emphasize disabled buttons */
     button:disabled {
         opacity: .5;
     }
-    label, button {
-        user-select: none;
-    }
 
+    /* Reveal hotkey hints */
     button[data-hotkey] {
         position: relative;
         overflow-x: display;
@@ -93,24 +87,21 @@ advanced_sample_css: |
         top: 2px;
         left: 2px;
         z-index: 10;
-        pointer-events: none;
 
         background-color: #ffd;
         outline: 1px solid lightyellow;
-        padding: 2px 8px;
+        padding: 1px 4px;
         border-radius: 4px;
         font-weight: bold;
-        font-family: sans-serif;
-        font-size: .8em;
-        white-space: nowrap;
 
         transform: scale(1.4) translate(.1em, .1em);
 
     }
 
 
-login_export_example_js: |
+form_export_example_js: |
     const myForm = new SmarkForm(document.getElementById("myForm$$"));
+    /* Show exported data in an alert() window */
     myForm.on("AfterAction_export", ({data})=>{
         window.alert(JSON.stringify(data, null, 4));
     });
@@ -118,14 +109,15 @@ login_export_example_js: |
 
 confirm_cancel_example_js: |
     const myForm = new SmarkForm(document.getElementById("myForm$$"));
-    /* Ask for confirmation unless form is already empty: */
+    /* Show exported data in an alert() window */
     myForm.on("AfterAction_export", ({data})=>{
         window.alert(JSON.stringify(data, null, 4));
     });
+    /* Ask for confirmation unless form is already empty: */
     myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
         if (
             ! await context.isEmpty()     /* Form is not empty */
-            && ! confirm("Are you sure?") /* User click on "Cancel" btn. */
+            && ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
         ) {
             /* Prevent default (empty form) behaviour: */
             preventDefault();
@@ -243,12 +235,12 @@ Our complete layout may look as follows:
 ## 3. Create a simple HTML form
 
 Start by writing the form markup in plain HTML. For example, let's create a
-basic login form like this:
+simple form like the following:
 
 
 {% include components/sampletabs_tpl.md
-   formId="login_form"
-   htmlSource=page.login_form_example
+   formId="simple_form"
+   htmlSource=page.simple_form_example
    jsSource="-"
 %}
 
@@ -269,8 +261,8 @@ the DOM node of the form container as parameter:
 
 
 {% include components/sampletabs_tpl.md
-   formId="instantiated_login_form"
-   htmlSource=page.login_form_example
+   formId="instantiated_simple_form"
+   htmlSource=page.simple_form_example
    selected="js"
 %}
 
@@ -292,8 +284,8 @@ attribute.
 Let's mark all fields, buttons and labels... with it:
 
 {% include components/sampletabs_tpl.md
-   formId="enhanced_login_form"
-   htmlSource=page.enhanced_login_form_example
+   formId="enhanced_simple_form"
+   htmlSource=page.simple_form_enhanced_example
 %}
 
 
@@ -301,7 +293,8 @@ Now, if you go to the *Preview* tab and fill some data in, you can then hit de
 `❌ Clear` button and see that, **it already works!!** 🎉
 
 Also notice that the *for* attribute of all `<label>`s had been removed and they
-still work.
+still work (if you click on them, corresponging fields get focus anyway).
+
 
 {: .info}
 > All elements with a 
@@ -320,14 +313,10 @@ the *export* action but **we haven't told it what to do** with that data.
 
 To do so, we only need to listen the proper event:
 
-{: .warning :}
-> Remember not to type a real password here!!. 😉
-
-
 {% include components/sampletabs_tpl.md
-   formId="enhanced_login_form_export"
-   htmlSource=page.enhanced_login_form_example
-   jsSource=page.login_export_example_js
+   formId="enhanced_simple_form_export"
+   htmlSource=page.simple_form_enhanced_example
+   jsSource=page.form_export_example_js
    selected="js"
 %}
 
@@ -344,9 +333,6 @@ button.
 
 Everything works now. 🎉
 
-Well... actually, the submit button shows your credentials to the world in an
-*alert* modal. But for demonstration purposes, it is enough.
-
 However, if it were a larger form, we might not feel so comfortable with the
 `❌ Clear` button ("empty" action trigger) clearing everything in case of an
 accidental click.
@@ -357,7 +343,7 @@ Let's see a simple example using a *window.confirm()* dialog:
 
 {% include components/sampletabs_tpl.md
    formId="confirm_cancel_form_export"
-   htmlSource=page.enhanced_login_form_example
+   htmlSource=page.simple_form_enhanced_example
    jsSource=page.confirm_cancel_example_js
    selected="js"
 %}

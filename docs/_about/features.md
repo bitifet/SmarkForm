@@ -38,7 +38,7 @@ nav_order: 2
   * [ ] Properties be automatically mapped as `data-smark-<property_name>`-like
     attributes enabling `[data-smark-<property_name>]`-like CSS selectors.
   * [x] Intuitive option names.
-    - **Ex.:** `<button data-smark='{action: "addItem", context: "myList">`
+    - **Ex.:** `<button data-smark='{action: "addItem"}'>`
 
 
 ## Easy to use
