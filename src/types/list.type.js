@@ -36,6 +36,7 @@ function makeNonNavigable(target) {//{{{
 };//}}}
 
 
+
 // List component type:
 // --------------------
 
@@ -56,20 +57,31 @@ export class list extends SmarkField {
             : Infinity
         );
         me.children = [];
-        const numChilds = me.targetNode.children.length;
-        if (numChilds != 1) throw me.renderError(
-            'LIST_WRONG_NUM_CHILDREN'
-            , `List components must contain exactly 1 direct children, but ${numChilds} given`
-        );
-        me.itemTpl = me.targetNode.children[0];
+        me.templates = {};
+        for (const child of me.targetNode.children) {
+            const {role = "item"} = child.getAttribute("data-smark") || {};
+            switch (role) {
+                case "item": // (Default)
+                // case "empty_list":
+                // case "separator":
+                // case "last_separator":
+                    if (me.templates[role] !== undefined) throw me.renderError(
+                        'LIST_DUPLICATE TEMPLATE'
+                        , `Repated list template role ${role}`
+                    );
+                    me.templates[role] = child;
+                    me.templates[role].remove();
+                break;
+            };
+        };
         if (
-            me.itemTpl.querySelector("[id]") !== null // Contains IDs
+            me.templates.item.querySelector("[id]") !== null // Contains IDs
         ) throw me.renderError(
             'LIST_CONTAINS_ID'
             , `List components are not allowed to contain elements with 'id' attribute`
         );
         const tplOptions = me.getNodeOptions(
-            me.itemTpl
+            me.templates.item
             , {
                 type: me.options.of, // Allow to specify items type from list declaration.
             }
@@ -96,7 +108,6 @@ export class list extends SmarkField {
             me.targetNode.setAttribute("aria-live", "polite");
             me.targetNode.setAttribute("aria-atomic", "true");
         });
-        me.itemTpl.remove();
         return;
     };//}}}
     onTriggerRender({action, origin, context, ...rest}) {//{{{
@@ -195,7 +206,7 @@ export class list extends SmarkField {
         );
         //}}}
         // DOM element creation:{{{
-        const newItemTarget = me.itemTpl.cloneNode(true);
+        const newItemTarget = me.templates.item.cloneNode(true);
         //}}}
         // addItem event emitting:{{{
         const onRenderedCbks = [];

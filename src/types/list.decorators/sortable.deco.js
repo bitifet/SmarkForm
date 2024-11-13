@@ -11,7 +11,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 const me = this;
 
                 me.sortable = !! me.options.sortable;
-                me.itemTpl.setAttribute("draggable", me.sortable);
+                me.templates.item.setAttribute("draggable", me.sortable);
                 me.children.forEach(c=>c.targetNode.setAttribute("dragable", me.sortable));
                 if (me.sortable) {
                     let dragSource = null;
