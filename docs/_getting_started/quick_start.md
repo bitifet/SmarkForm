@@ -68,6 +68,109 @@ phone_list_form_example_notes: |
 
     👉 Change items order by just dragging and dropping them.
 
+beach_surveillance_form_example: |
+    <div id="myForm$$">
+        <h2>Surveillance Periods</h2>
+        <div data-smark='{"type":"list","name":"periods","exportEmpties":true}'>
+            <fieldset>
+                <h2>
+                    <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this period'>
+                        <span role='img' aria-label='Remove this item'>➖</span>
+                    </button>
+                    Period <span title="This is a pending feature... 😉">N</span>
+                </h2>
+                <p>
+                    <label data-smark>Start Date:</label>
+                    <input data-smark type='date' name='start_date'/>
+                    <span>-</span>
+                    <label data-smark>End Date:</label>
+                    <input data-smark type='date' name='end_date'/>
+                </p>
+                <h3>Schedule</h3>
+                <p>
+                    <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
+                        <span role='img' aria-label='Remove interval'>➖</span>
+                    </button>
+                    <button data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}' title='More intrevals'>
+                        <span role='img' aria-label='Add new interval'>➕</span>
+                    </button>
+                    <label>Surveillance:</label>
+                    <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3}'>
+                        <span>
+                            <input data-smark type='time' name='start'/>
+                            -
+                            <input data-smark type='time' name='end'/>
+                        </span>
+                    </span>
+                </p>
+                <p>
+                    <button data-smark='{"action":"removeItem","hotkey":"-","context":"boat_schedule"}' title='Less intervals'>
+                        <span role='img' aria-label='Remove interval'>➖</span>
+                    </button>
+                    <button data-smark='{"action":"addItem","hotkey":"+","context":"boat_schedule"}' title='More intrevals'>
+                        <span role='img' aria-label='Add new interval'>➕</span>
+                    </button>
+                    <label>Boat:</label>
+                    <span data-smark='{"type":"list","name":"boat_schedule","min_items":0,"max_items":3}'>
+                        <span>
+                            <input data-smark type='time' name='start'/>
+                            -
+                            <input data-smark type='time' name='end'/>
+                        </span>
+                    </span>
+                </p>
+                <h3>
+                    <button data-smark='{"action":"removeItem","hotkey":"-","context":"observers"}' title='Less points'>
+                        <span role='img' aria-label='Remove observation point'>➖</span>
+                    </button>
+                    <button data-smark='{"action":"addItem","hotkey":"+","context":"observers"}' title='More points'>
+                        <span role='img' aria-label='Add new observation point'>➕</span>
+                    </button>
+                    Observation Points
+                </h3>
+                <ul data-smark='{"type":"list","name":"observers","sortable":true}'>
+                    <li>
+                        <label data-smark>Type: </label>
+                        <select data-smark name='type'>
+                            <option value='tower'>Tower</option>
+                            <option value='station'>Lifeguard Station</option>
+                            <option value='post'>Surveillance Post</option>
+                            <option value='other'>Other</option>
+                        </select>
+                        <label data-smark>Name: </label>
+                        <input data-smark type='text' name='name' placeholder='(Optional)'/>
+                        <div style="display: block">
+                            <label data-smark>Phones: </label>
+                            <div data-smark='{"name":"phones","type":"list","of":"input","max_items":3}'>
+                                <div>
+                                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
+                                <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
+                                <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        <p>
+                        <label data-smark>Position: </label>
+                        <input data-smark type='text' name='position' placeholder='Latitude, Longitude'/>
+                        </p>
+                        <p>
+                        <label data-smark>Indications: </label>
+                        <input data-smark type='text' name='indications' placeholder='Where it is'/>
+                        </p>
+                    </li>
+                </ul>
+            </fieldset>
+        </div>
+        <button data-smark='{"action":"addItem","hotkey":"+","context":"periods"}'>
+            <span role='img' alt=''>➕</span> Add new Period
+        </button>
+        <p>
+            <button data-smark='{"action":"empty"}'>❌ Clear</button>
+            <button data-smark='{"action":"export"}'>💾 Submit</button>
+        </p>
+    </div>
+
+
 advanced_sample_css: |
     /* Emphasize disabled buttons */
     button:disabled {
@@ -388,7 +491,15 @@ additional capabilities of the library:
 %}
 
 
- 🚧 Pending to add a few more examples... 🚧 
+**Beach Surveillance Service Data**
+
+{% include components/sampletabs_tpl.md
+   formId="beach_surveillance_form"
+   htmlSource=page.beach_surveillance_form_example
+   cssSource=page.advanced_sample_css
+   jsSource=page.confirm_cancel_example_js
+   selected="preview"
+%}
 
 
 
