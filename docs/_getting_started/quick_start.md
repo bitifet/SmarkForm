@@ -98,9 +98,10 @@ beach_surveillance_form_example: |
                     <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3}'>
                         <span>
                             <input data-smark type='time' name='start'/>
-                            -
+                            to
                             <input data-smark type='time' name='end'/>
                         </span>
+                        <span data-smark='{"role":"empty_list"}'>(No Surveillance)</span>
                     </span>
                 </p>
                 <p>
@@ -117,6 +118,7 @@ beach_surveillance_form_example: |
                             -
                             <input data-smark type='time' name='end'/>
                         </span>
+                        <span data-smark='{"role":"empty_list"}'>(No Boat Service)</span>
                     </span>
                 </p>
                 <h3>

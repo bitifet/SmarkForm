@@ -15,7 +15,7 @@
 
 
 import {SmarkField} from "../lib/component.js";
-import {makeRoom} from "../lib/helpers.js";
+import {makeRoom, parseJSON} from "../lib/helpers.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
@@ -58,11 +58,11 @@ export class list extends SmarkField {
         );
         me.children = [];
         me.templates = {};
-        for (const child of me.targetNode.children) {
-            const {role = "item"} = child.getAttribute("data-smark") || {};
+        for (const child of [...me.targetNode.children]) {
+            const {role = "item"} = parseJSON(child.getAttribute("data-smark")) || {};
             switch (role) {
                 case "item": // (Default)
-                // case "empty_list":
+                case "empty_list":
                 // case "separator":
                 // case "last_separator":
                     if (me.templates[role] !== undefined) throw me.renderError(
@@ -103,6 +103,8 @@ export class list extends SmarkField {
                 me.getTriggers("count").forEach(
                     tgg=>tgg.targetNode.innerText = String(me.children.length)
                 );
+                // Reinject empty_list template:
+                if (me.templates.empty_list) me.targetNode.appendChild(me.templates.empty_list);
             };
             // Let screen readers know lists may change.
             me.targetNode.setAttribute("aria-live", "polite");
@@ -225,6 +227,7 @@ export class list extends SmarkField {
         // Child component creation and insertion:{{{
         let newItem;
         if (! me.children.length) {
+            if (me.templates.empty_list) me.templates.empty_list.remove(); // (In case of being present)
             me.targetNode.appendChild(newItemTarget);
             newItem = await me.enhance(newItemTarget, {type: "form", name: 0});
             await newItem.rendered;
@@ -379,6 +382,10 @@ export class list extends SmarkField {
             });
             //}}}
 
+            if (
+                me.templates.empty_list
+                && ! newChildren.length
+            ) me.targetNode.appendChild(me.templates.empty_list);
             oldItem.targetNode.remove();
             me.children = newChildren;
 

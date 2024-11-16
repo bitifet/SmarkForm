@@ -39,7 +39,12 @@ export function makeRoom(element, pixels) {//{{{
     };
 };//}}}
 
-export function randomId() {
+export function randomId() {//{{{
     return Math.random().toString(36).substring(2);
-};
+};//}}}
 
+export function parseJSON(str) {//{{{
+    try {
+        return JSON.parse(str);
+    } catch (err) {};
+};//}}}
