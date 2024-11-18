@@ -1,8 +1,9 @@
 ---
 title: Presentations
 layout: home
-nav_order: 0
 permalink: /presentations
+nav_exclude: true
+
 ---
 
 
