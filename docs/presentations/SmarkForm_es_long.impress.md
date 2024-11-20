@@ -12,7 +12,7 @@ simple_list_example: |
     <div id="myForm$$">
         <p>
             <label data-smark>Name:</label>
-            <input data-smark='{"name":"name"}' placeholder='Full name' type="tel">
+            <input data-smark='{"name":"name"}' placeholder='Full name' type="text">
         </p>
         <p>
             <button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove Phone'>➖</button>
