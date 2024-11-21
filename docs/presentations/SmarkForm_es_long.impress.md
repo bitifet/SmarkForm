@@ -4,58 +4,138 @@ title: SmarkForm
 permalink: /presentations/SmarkForm_es_long.impress.html
 
 generic_sample_css: |
+    .row {
+        padding: .5em;
+    }
+    fieldset.row {
+        border: solid 1px;
+    }
     button:disabled {
         opacity: .5;
     }
 
-simple_list_example: |
+simplicity_sample_css: |
+    .row {
+        padding: .5em;
+    }
+
+simplicity_example: |
     <div id="myForm$$">
-        <p>
-            <label data-smark>Name:</label>
-            <input data-smark='{"name":"name"}' placeholder='Full name' type="text">
+        <p class="row">
+            <label data-smark>Nombre:</label>
+            <input data-smark='{"name":"name"}' type="text" />
+            <button data-smark='{"action":"empty","context":"name"}'>❌</button>
         </p>
-        <p>
-            <button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove Phone'>➖</button>
+        <p class="row">
+            <label data-smark>Teléfono:</label>
+            <input type="tel" name="phone" data-smark />
+            <button data-smark='{"action":"empty","context":"phone"}'>❌</button>
+        </p>
+        <p class="row">
+            <label data-smark>eMail:</label>
+            <input type="email" name="email" data-smark />
+            <button data-smark='{"action":"empty","context":"email"}'>❌</button>
+        </p>
+        <p class="row">
+            <button data-smark='{"action":"empty"}'>❌ Borrar</button>
+            <button data-smark='{"action":"export"}'>💾 Guardar</button>
+        </p>
+    </div>
+
+simplicity_example_js: |
+    const myForm = new SmarkForm(
+        document.getElementById("myForm$$")
+    );
+
+power_example: |
+    <div id="myForm$$">
+        <p class="row"><label data-smark>Nombre:</label>
+        <input data-smark='{"name":"name"}' type="text"></p>
+        <fieldset data-smark='{"name":"conatact_data"}' class="row">
+            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove All'>🧹</button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove Phone'>➖</button>
             <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-            <label data-smark>Phones:</label>
+            <label data-smark>Teléfonos:</label>
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>
-                <li data-smark='{"role": "empty_list"}'>
-                    (User has no phone)
-                </li>
-                <li>
-                    <label data-smark>📞 </label>
-                    <input placeholder='+34...' type="tel" data-smark>
+                <li data-smark='{"role": "empty_list"}' class="row">(No dispone)</li>
+                <li class="row">
+                    <label data-smark>📞 </label><input type="tel" data-smark>
                     <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
                 </li>
             </ul>
+            <p class="row"><label data-smark>eMail:</label>
+            <input type="email" name="email" data-smark /></p>
+        </fieldset>
+        <p class="row">
+            <button data-smark='{"action":"empty"}'>❌ Borrar</button>
+            <button data-smark='{"action":"export"}'>💾 Guardar</button>
         </p>
-        <button data-smark='{"action":"export"}'>⬇️  Export</button>
     </div>
 
-simple_list_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm$$"));
-    
+power_example_js: |
+    const myForm = new SmarkForm(
+        document.getElementById("myForm$$")
+    );
+
     /* Do something on data export */
     myForm.on("AfterAction_export", ({data})=>{
         window.alert(JSON.stringify(data, null, 4));
     });
 
+    /* Ask for confirmation unless form is already empty: */
+    myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+        if (
+            ! await context.isEmpty()     /* Form is not empty */
+            && ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
+        ) {
+            /* Prevent default (empty form) behaviour: */
+            preventDefault();
+        };
+    });
+
 ---
+<style type="text/css">
+    .substep { opacity: 0; }
+    .substep.substep-visible { opacity: 1; transition: opacity 1s; }
+    h1 { font-size: 5em !important; color: black; }
+    .big-text { font-size: 2em !important; }
+    .medium-text { font-size: 1.4em !important; }
+    li, p { color:black; }
+    li:not(.big-text) { padding-left: 2em; font-size: .8em; }
+    li.l2 { padding-left: 4em; font-size: 0.7em; }
+    .center { text-align: center; }
+    .center>div, .center>iframe { display: inline-block; }
+    .gray { color: #777777; }
+    .tab-container { font-size: 1rem }
+    div.tab-content { height: 600px }
+</style>
+
+
+{% include_relative css/jekyll_styles.css.md %}
 
 
 {% include components/sampletabs_ctrl.md %}
 
-{% capture rendered_simple_example | raw %}
+{% capture rendered_simplicity_example | raw %}
 {% include components/sampletabs_tpl.md
-   formId="simple_list"
-   htmlSource=page.simple_list_example
-   jsSource=page.simple_list_example_js
+   formId="simplicity"
+   htmlSource=page.simplicity_example
+   jsSource=page.simplicity_example_js
+   cssSource=page.simplicity_sample_css
+%}
+{% endcapture %}
+
+
+{% capture rendered_power_example | raw %}
+{% include components/sampletabs_tpl.md
+   formId="power"
+   htmlSource=page.power_example
+   jsSource=page.power_example_js
    cssSource=page.generic_sample_css
 %}
 {% endcapture %}
 
 
-{% include_relative css/jekyll_styles.css.md %}
 
 
 <meta charset="utf-8" />
@@ -68,19 +148,6 @@ simple_list_example_js: |
 <link href="css/impress-demo.css" rel="stylesheet" />
 <link href="css/impress-common.css" rel="stylesheet" />
 
-<style type="text/css">
-    .substep { opacity: 0; }
-    .substep.substep-visible { opacity: 1; transition: opacity 1s; }
-    h1 { font-size: 1.2em; }
-    .big-text { font-size: 2em !important; }
-    li:not(.big-text) { padding-left: 2em; font-size: .8em; }
-    li.l2 { padding-left: 4em; font-size: 0.7em; }
-    .center { text-align: center; }
-    .center>div, .center>iframe { display: inline-block; }
-    .gray { color: #777777; }
-    .tab-container { font-size: 1rem }
-    div.tab-content { height: 600px }
-</style>
 
 
 <div id="impress"
@@ -132,7 +199,7 @@ simple_list_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Smark" data-x="{{ counter }}" class="step">
-        <h1>😪 Czy jest na sali jakiś Polak?</h1>
+        <h1 class="center medium-text">Czy jest na sali jakiś Polak?</h1>
         <div class="notes">
             <ul>
                 <li>Traducción: «Algún polonés en la sala?»</li>
@@ -141,27 +208,39 @@ simple_list_example_js: |
         </div>
     </div>
 
+{% assign counter = counter | plus: 2000 %}
+    <div id="Smark_explain" data-x="{{ counter }}" class="step">
+        <h1 class="center medium-text">Smark = Smart + Markup</h1>
+        <div class="center">
+            <img style="width: 300px;" src="assets/npm_smartform.png" alt="">
+            <img style="width: 300px;" src="assets/npm_smart-form.png" alt="">
+        </div>
+    </div>
+
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Otra_libreria_de_formularios_mas" data-x="{{ counter }}" class="step">
         <h1 class="big-text center">🥱</h1> 
         <p>&nbsp;</p>
-        <h1 class="center">Otra libreria de formularios...</h1>
+        <h1 class="center medium-text">Otra libreria de formularios...</h1>
         <h1 class="big-text center">&nbsp;</h1> 
     </div>
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Diferencias" data-x="{{ counter }}" class="step">
-        <h2 style="color: blue;">🤔 ¿Por qué SmarkForm es distinta?</h2>
+        <h1 class="big-text center">🤔</h1> 
+        <p>&nbsp;</p>
+        <h1 class="center medium-text" style="color: blue;">¿Por qué SmarkForm es distinta?</h1>
+        <h1 class="big-text center">&nbsp;</h1> 
     </div>
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Sencillez" data-x="{{ counter }}" class="step">
-        <h1>👌 Sencillez</h1>
+        <h1 class="medium-text">👌 Sencillez</h1>
         <ul>
             <li class="substep">👉 HTML + metadatos</li>
             <li class="substep">👉 Markup-agnostic</li>
-            <li class="substep">👉 SoC</li>
+            <li class="substep">👉 SoC (MVC)</li>
             <li class="substep">👉 <b>Zero-Wiring:</b></li>
             <li class="substep l2">🔧 Acciones.</li>
             <li class="substep l2">🔧 Triggers contextuales.</li>
@@ -171,13 +250,13 @@ simple_list_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Sencillez_ejemplo" data-x="{{ counter }}" class="step">
-        <h1>👀 Sencillez</h1>
-        {{ rendered_simple_example }}
+        <h1>👌 Sencillez 👀</h1>
+        {{ rendered_simplicity_example }}
     </div>
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Potencia" data-x="{{ counter }}" class="step">
-        <h1>🚀 Poténcia</h1>
+        <h1 class="medium-text">🚀 Poténcia</h1>
         <ul>
             <li class="substep">👉 JSON ⬆️ / ⬇️ </li>
             <li class="substep">👉 Subformularios</li>
@@ -188,8 +267,14 @@ simple_list_example_js: |
     </div>
 
 {% assign counter = counter | plus: 2000 %}
+    <div id="Potencia_ejemplo" data-x="{{ counter }}" class="step">
+        <h1>🚀 Poténcia 👀</h1>
+        {{ rendered_power_example }}
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
     <div id="Usabilidad" data-x="{{ counter }}" class="step">
-        <h1>🫶 Usabilidad </h1>
+        <h1 class="medium-text">🫶 Usabilidad </h1>
         <ul>
             <li class="substep">👉 Navegación natural </li>
             <li class="substep">👉 Hot-keys contextuales</li>
@@ -200,7 +285,7 @@ simple_list_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Accesibilidad" data-x="{{ counter }}" class="step">
-        <h1>♿ Accesibilidad</h1>
+        <h1 class="medium-text">♿ Accesibilidad</h1>
         <ul>
             <li class="substep">👉 Tiene en cuenta aspectos de accesibilidad. </li>
             <li class="substep gray">👉 Todavía queda trabajo por hacer...</li>
@@ -210,7 +295,7 @@ simple_list_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Extendibilidad" data-x="{{ counter }}" class="step">
-        <h1>🏗️ Extendible</h1>
+        <h1 class="medium-text">🏗️ Extendibilidad</h1>
         <ul>
             <li class="substep">👉 Posibilidad de incorporar nuevos tipos de campos.</li>
             <li class="substep gray">👉 Incluso fragmentos o "Mixin"s.</li>
@@ -219,7 +304,7 @@ simple_list_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Independencia" data-x="{{ counter }}" class="step">
-        <h1>🚁 Independéncia</h1>
+        <h1 class="medium-text">🚁 Independéncia</h1>
         <ul>
             <li class="substep">👉 Vanilla JS.</li>
             <li class="substep">👉 ES module / UMD</li>
@@ -231,7 +316,7 @@ simple_list_example_js: |
 {% assign counter = counter | plus: 2000 %}
     <div id="Principios" data-x="{{ counter }}" class="step">
         <div class="center">
-            <h1>— Principios —</h1>
+            <h1 class="medium-text">— Principios —</h1>
             <br />
             <ul>
                 <li class="substep big-text">DRY</li>
@@ -272,7 +357,7 @@ simple_list_example_js: |
 {% assign counter = counter | plus: 2000 %}
     <div id="Colaborar" data-x="{{ counter }}" class="step">
         <div class="center">
-            <h1 style="color: red;">Como puedo ayudar?</h1>
+            <h1 class="medium-text" style="color: red;">Como puedo ayudar?</h1>
         </div>
         <ul>
             <li class="substep">✊ Usándola</li>
@@ -287,7 +372,7 @@ simple_list_example_js: |
 {% assign counter = counter | plus: 2000 %}
     <div id="Thanks" data-x="{{ counter }}" class="step">
         <div style="text-align: center">
-            <h1>Thanks for your a<b style="color:red">tt</b>ention!!</h1>
+            <h1 class="medium-text">Thanks for your a<b style="color:red">tt</b>ention!!</h1>
             <p class="substep big-text">Preguntas... <span style="font-size:1.5em;color:red">??</span></p>
         </div>
     </div>
