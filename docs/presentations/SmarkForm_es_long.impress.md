@@ -7,9 +7,11 @@ generic_sample_css: |
     .row {
         padding: .5em;
     }
+
     fieldset.row {
         border: solid 1px;
     }
+
     button:disabled {
         opacity: .5;
     }
@@ -42,6 +44,19 @@ simplicity_example: |
         </p>
     </div>
 
+simplicity_notes: |
+    <ul>
+        <li>👉 Los elementos sin la etiqueta <i>data-smark</i> no son tenidos en cuenta.</li>
+        <li class="l2">➡️  Podríamos incluso insertar tags <i>&lt;input&gt;</i> para otros widgets.</li>
+        <li class="l2">📝 Los que sí la tienen son <b>TODOS</b> componentes del formulario y tienen una propiedad <i>type</i> que indica su tipo. Aunque <b>en la mayoría de los casos éste es implícito y puede omitirse</b>.</li>
+        <li>👉 El HTML original es funcional y puede ser trabajado por un diseñador sin interfréncias con el código.</li>
+        <li>👉 Las etiquetas (<i>&lt;label&gt;</i> funcionan sin necesidad de asignar y mapear manualmente identificadores para cada campo.</li>
+        <li>👉 Los botones con la propiedad <i>action</i> son (implícitamente) componentes de tipo "trigger" que disparan <i>acciones</i> de otro componente (contexto).</li>
+        <li class="l2">➡️  El contexto es, implícitamente, de entre sus componentes ancestros, el más cercano que implemente la acción especificada.</li>
+        <li class="l2">➡️  El contexto puede alterarse mediante la propiedad <i>context</i> del trigger, especificando una ruta absoluta (empezando por "/") o relativa (desde el componente padre del trigger).</li>
+        <li class="l2">➡️  Las rutas se construyen utilizando la propiedad "name" de los componentes, separando por "/" y pudiendo utilizar el comodín ".." para subir de nivel.</li>
+    </ul>
+
 simplicity_example_js: |
     const myForm = new SmarkForm(
         document.getElementById("myForm$$")
@@ -68,9 +83,23 @@ power_example: |
         </fieldset>
         <p class="row">
             <button data-smark='{"action":"empty"}'>❌ Borrar</button>
+            <button data-smark='{"action":"import"}'>📂 Abrir</button>
             <button data-smark='{"action":"export"}'>💾 Guardar</button>
         </p>
     </div>
+
+power_notes:
+    <ul>
+        <li>👉 Interceptando los eventos adecuados, podemos, por ejemplo:</li>
+        <li class="l2">➡️  Inyectar o capturar los datos (JSON) de las acciones <i>import</i> y <i>export</i>.</li>
+        <li class="l2">➡️  Alterar el comportamiento de la acción <i>empty</i> para que nos solicite confirmación cuando sea pertinente.</li>
+        <li>👉 Para agrupar los datos de contacto, usamos un campo de tipo <i>form</i> que devuelve JSON.</li>
+        <li>👉 En lugar de un sólo teléfono hemos utilizado una lista de longitud variable.</li>
+        <li class="l2">📝 Los descendientes directos de las listas son <i>plantillas</i> que cumplen un determinado <i>rol</i>. Por defecto "list_item" que es obligatorio y se utilizará para renderizar los elementos de la lista. Pero hay otros, como <i>empty_list</i>, que nos ha permitido mostrar el texto "(No dispone)" cuando la lista esté vacía.</li>
+        <li class="l2">➡️  La propiedad <i>of</i> nos permite ahorrarnos el atributo <i>data-smark</i> en la plantilla <i>list_item</i> si sólo es para especficar el tipo. (📌 El tipo <i>input</i> activa el patrón <i>Singleton</i>).</li>
+        <li class="l2">➡️  Con <i>min_items=0</i> y <i>max_items=5</i> permitimos, respectivamente, que la lista esté vacía y limitamos su longitud a un máximo de 5 elementos.</li>
+        <li class="l2">➡️  Las propiedades <i>sortable</i> y <i>export_empties</i> permiten, respectivamente, que el usuario pueda ordenar la lista arrastrando los elementos y que los que estén <i>vacíos</i> también se exporten.</li>
+    </ul>
 
 power_example_js: |
     const myForm = new SmarkForm(
@@ -82,16 +111,64 @@ power_example_js: |
         window.alert(JSON.stringify(data, null, 4));
     });
 
+    /* Get data from somewhere on import */
+    myForm.on("BeforeAction_import", async (ev)=>{
+        let data = window.prompt('Fill JSON data');
+        if (data === null) return void ev.preventDefault(); /* Cancelled */
+        try {
+            ev.data = JSON.parse(data);
+        } catch(err) {
+            alert(err.message);
+            ev.preventDefault();
+        };
+    });
+
     /* Ask for confirmation unless form is already empty: */
     myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
         if (
             ! await context.isEmpty()     /* Form is not empty */
-            && ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
+            && ! confirm("Are you sure?") /* User clicked the "Cancel" button. */
         ) {
             /* Prevent default (empty form) behaviour: */
             preventDefault();
         };
     });
+
+usability_example: |
+    <div id="myForm$$">
+        <p>🚧 Refurbishment pending... 🚧</p>
+        <p class="row"><label data-smark>Nombre:</label>
+        <input data-smark='{"name":"name"}' type="text"></p>
+        <fieldset data-smark='{"name":"conatact_data"}' class="row">
+            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Limpiar'>🧹</button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Eliminar Teléfono'>➖</button>
+            <button data-smark='{"action":"addItem","context":"phones"}' title='Añadir Teléfono'>➕ </button>
+            <label data-smark>Teléfonos:</label>
+            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>
+                <li data-smark='{"role": "empty_list"}' class="row">(No dispone)</li>
+                <li class="row">
+                    <label data-smark>📞 </label><input type="tel" data-smark>
+                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+                </li>
+            </ul>
+            <p class="row"><label data-smark>eMail:</label>
+            <input type="email" name="email" data-smark /></p>
+        </fieldset>
+        <p class="row">
+            <button data-smark='{"action":"empty"}'>❌ Borrar</button>
+            <button data-smark='{"action":"export"}'>💾 Guardar</button>
+        </p>
+    </div>
+
+usability_notes:
+    <ul>
+        <li>🚧 Refurbishment pending... 🚧</li>
+        <li>👉 Navegación natural </li>
+        <li>👉 Hot-keys contextuales</li>
+        <li>👉 Plegado de secciones</li>
+        <li>👉 <span class="gray">(Auto)</span>ordenación...</li>
+    </ul>
+
 
 ---
 <style type="text/css">
@@ -107,7 +184,16 @@ power_example_js: |
     .center>div, .center>iframe { display: inline-block; }
     .gray { color: #777777; }
     .tab-container { font-size: 1rem }
-    div.tab-content { height: 600px }
+    .tab-content { font-size: 1.3rem }
+    div.tab-content { height: 600px; }
+    div.tab-content.tab-content-notes { font-size: 1.5em; padding-top: 0px; max-height: 550px; overflow: auto; padding-bottom: 2em; }
+    div.tab-content.tab-content-notes i { color: darkblue; }
+    div.tab-content.tab-content-notes li { margin-top: 1em; list-style-type: none; }
+    div.tab-content.tab-content-notes li.l2 { margin-top: .7em; }
+    div.tab-content pre.highlight { max-height: 540px; }
+
+    #Sencillez_ejemplo div.tab-content.tab-content-html { font-size: 1.08em; }
+    #Potencia_ejemplo div.tab-content.tab-content-html { font-size: .9em; }
 </style>
 
 
@@ -122,9 +208,9 @@ power_example_js: |
    htmlSource=page.simplicity_example
    jsSource=page.simplicity_example_js
    cssSource=page.simplicity_sample_css
+   notes=page.simplicity_notes
 %}
 {% endcapture %}
-
 
 {% capture rendered_power_example | raw %}
 {% include components/sampletabs_tpl.md
@@ -132,9 +218,19 @@ power_example_js: |
    htmlSource=page.power_example
    jsSource=page.power_example_js
    cssSource=page.generic_sample_css
+   notes=page.power_notes
 %}
 {% endcapture %}
 
+{% capture rendered_usability_example | raw %}
+{% include components/sampletabs_tpl.md
+   formId="usability"
+   htmlSource=page.usability_example
+   jsSource=page.power_example_js
+   cssSource=page.generic_sample_css
+   notes=page.usability_notes
+%}
+{% endcapture %}
 
 
 
@@ -212,8 +308,8 @@ power_example_js: |
     <div id="Smark_explain" data-x="{{ counter }}" class="step">
         <h1 class="center medium-text">Smark = Smart + Markup</h1>
         <div class="center">
-            <img style="width: 300px;" src="assets/npm_smartform.png" alt="">
-            <img style="width: 300px;" src="assets/npm_smart-form.png" alt="">
+            <img class="substep" style="width: 300px;" src="assets/npm_smartform.png" alt="">
+            <img class="substep" style="width: 300px;" src="assets/npm_smart-form.png" alt="">
         </div>
     </div>
 
@@ -256,7 +352,7 @@ power_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Potencia" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">🚀 Poténcia</h1>
+        <h1 class="medium-text">🚀 Potencia</h1>
         <ul>
             <li class="substep">👉 JSON ⬆️ / ⬇️ </li>
             <li class="substep">👉 Subformularios</li>
@@ -268,7 +364,7 @@ power_example_js: |
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Potencia_ejemplo" data-x="{{ counter }}" class="step">
-        <h1>🚀 Poténcia 👀</h1>
+        <h1>🚀 Potencia 👀</h1>
         {{ rendered_power_example }}
     </div>
 
@@ -281,6 +377,12 @@ power_example_js: |
             <li class="substep">👉 Plegado de secciones</li>
             <li class="substep">👉 <span class="gray">(Auto)</span>ordenación...</li>
         </ul>
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
+    <div id="Usabilidad_ejemplo" data-x="{{ counter }}" class="step">
+        <h1>🫶 Usabilidad  👀</h1>
+        {{ rendered_usability_example }}
     </div>
 
 {% assign counter = counter | plus: 2000 %}

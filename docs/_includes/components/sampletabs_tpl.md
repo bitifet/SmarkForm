@@ -101,30 +101,30 @@ Accepted arguments:
     {% endif %}
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-  <div class="tab-content {{active_class}}">
+  <div class="tab-content tab-content-html {{active_class}}">
     {{ rendered_htmlSource | replace: "$$", "" | markdownify }}
   </div>
   {% if cssSource != '-' %}
       {% if current_tab == "css" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-      <div class="tab-content {{active_class}}">
+      <div class="tab-content tab-content-css {{active_class}}">
           {{ rendered_cssSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
   {% if jsSource != '-' %}
       {% if current_tab == "js" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-      <div class="tab-content {{active_class}}">
+      <div class="tab-content tab-content-js {{active_class}}">
           {{ rendered_jsSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
   {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-  <div class="tab-content {{active_class}}">
+  <div class="tab-content tab-content-preview {{active_class}}">
     <div class="smarkform_example">
       {{ htmlSource | replace: "$$", formId | raw }}
     </div>
   </div>
   {% if notes != '-' %}
     {% if current_tab == "notes" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-    <div class="tab-content {{active_class}}">
+    <div class="tab-content tab-content-notes {{active_class}}">
         {{ notes | markdownify }}
     </div>
   {% endif %}
