@@ -3,22 +3,58 @@ nav_exclude: true
 title: SmarkForm
 permalink: /presentations/SmarkForm_es_long.impress.html
 
-generic_sample_css: |
+simplicity_sample_css: |
+    .row {
+        padding: .5em;
+    }
+
+power_sample_css: |
     .row {
         padding: .5em;
     }
 
     fieldset.row {
         border: solid 1px;
+        margin: 3px;
     }
 
     button:disabled {
         opacity: .5;
     }
 
-simplicity_sample_css: |
+usability_sample_css: |
+    button[data-hotkey] {
+        position: relative;
+        overflow-x: display;
+    }
+    button[data-hotkey]::before {
+        content: attr(data-hotkey);
+        display: inline-block;
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        z-index: 10;
+        background-color: #ffd;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-family: sans-serif;
+        font-size: .8em;
+        white-space: nowrap;
+        transform: scale(1.8) translate(.1em, .1em);
+    }
+
     .row {
         padding: .5em;
+    }
+
+    fieldset.row {
+        border: solid 1px;
+        margin: 3px;
+    }
+
+    button:disabled {
+        opacity: .5;
     }
 
 simplicity_example: |
@@ -66,7 +102,7 @@ power_example: |
     <div id="myForm$$">
         <p class="row"><label data-smark>Nombre:</label>
         <input data-smark='{"name":"name"}' type="text"></p>
-        <fieldset data-smark='{"name":"conatact_data"}' class="row">
+        <fieldset class="row" data-smark='{"name":"conatact_data"}'>
             <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove All'>🧹</button>
             <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove Phone'>➖</button>
             <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
@@ -136,27 +172,26 @@ power_example_js: |
 
 usability_example: |
     <div id="myForm$$">
-        <p>🚧 Refurbishment pending... 🚧</p>
-        <p class="row"><label data-smark>Nombre:</label>
-        <input data-smark='{"name":"name"}' type="text"></p>
-        <fieldset data-smark='{"name":"conatact_data"}' class="row">
-            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Limpiar'>🧹</button>
-            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Eliminar Teléfono'>➖</button>
-            <button data-smark='{"action":"addItem","context":"phones"}' title='Añadir Teléfono'>➕ </button>
-            <label data-smark>Teléfonos:</label>
-            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>
-                <li data-smark='{"role": "empty_list"}' class="row">(No dispone)</li>
-                <li class="row">
-                    <label data-smark>📞 </label><input type="tel" data-smark>
-                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-                </li>
-            </ul>
-            <p class="row"><label data-smark>eMail:</label>
-            <input type="email" name="email" data-smark /></p>
-        </fieldset>
+        <button data-smark='{"action":"addItem","context":"employee","hotkey":"+"}' title='Nuevo empleado'>👥</button>
+        <label data-smark>Empleados:</label>
+        <div data-smark='{"type":"list","name":"employee", "min_items":0,"sortable":true}'>
+            <fieldset class="row">
+                <p class="row">
+                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Baja empleado'>🔥</button>
+                <input data-smark='{"name":"name"}' type="text" placeholder='Nombre...'></p>
+                <label data-smark>📞 Teléfonos:</label>
+                <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":3}'>
+                    <li class="row">
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Eliminar Teléfono'>➖</button>
+                        <input type="tel" data-smark />
+                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='Añadir Teléfono'>➕ </button>
+                    </li>
+                </ul>
+            </fieldset>
+        </div>
         <p class="row">
-            <button data-smark='{"action":"empty"}'>❌ Borrar</button>
-            <button data-smark='{"action":"export"}'>💾 Guardar</button>
+            <button data-smark='{"action":"empty","hotkey":"x"}'>❌ Borrar</button>
+            <button data-smark='{"action":"export","hotkey":"s"}'>💾 Guardar</button>
         </p>
     </div>
 
@@ -186,6 +221,7 @@ usability_notes:
     .tab-container { font-size: 1rem }
     .tab-content { font-size: 1.3rem }
     div.tab-content { height: 600px; }
+    div.tab-content.tab-content-preview { overflow: auto; }
     div.tab-content.tab-content-notes { font-size: 1.5em; padding-top: 0px; max-height: 550px; overflow: auto; padding-bottom: 2em; }
     div.tab-content.tab-content-notes i { color: darkblue; }
     div.tab-content.tab-content-notes li { margin-top: 1em; list-style-type: none; }
@@ -217,7 +253,7 @@ usability_notes:
    formId="power"
    htmlSource=page.power_example
    jsSource=page.power_example_js
-   cssSource=page.generic_sample_css
+   cssSource=page.power_sample_css
    notes=page.power_notes
 %}
 {% endcapture %}
@@ -227,7 +263,7 @@ usability_notes:
    formId="usability"
    htmlSource=page.usability_example
    jsSource=page.power_example_js
-   cssSource=page.generic_sample_css
+   cssSource=page.usability_sample_css
    notes=page.usability_notes
 %}
 {% endcapture %}
