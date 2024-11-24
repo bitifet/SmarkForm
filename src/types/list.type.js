@@ -132,10 +132,17 @@ export class list extends SmarkField {
     async export() {//{{{
         const me = this;
         const list = [];
+        const emptyChilds = [];
         const stripEmpties = ! me.inherittedOption("exportEmpties", false);
         for (const child of me.children) {
-            if (stripEmpties && await child.isEmpty()) continue;
+            if (stripEmpties && await child.isEmpty()) {
+                if (list.length < me.min_items) emptyChilds.push(child);
+                continue;
+            };
             list.push(await child.export())
+        };
+        for (let i=0; list.length < me.min_items; i++) {
+            list.push(await emptyChilds[i].export());
         };
         return list;
     };//}}}
