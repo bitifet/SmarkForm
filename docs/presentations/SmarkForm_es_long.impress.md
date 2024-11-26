@@ -103,15 +103,15 @@ power_example: |
         <p class="row"><label data-smark>Nombre:</label>
         <input data-smark='{"name":"name"}' type="text"></p>
         <fieldset class="row" data-smark='{"name":"conatact_data"}'>
-            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove All'>🧹</button>
-            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove Phone'>➖</button>
-            <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Limpiar vacíos'>🧹</button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Eliminar teléfono'>➖</button>
+            <button data-smark='{"action":"addItem","context":"phones"}' title='Añadir teléfono'>➕ </button>
             <label data-smark>Teléfonos:</label>
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>
                 <li data-smark='{"role": "empty_list"}' class="row">(No dispone)</li>
                 <li class="row">
                     <label data-smark>📞 </label><input type="tel" data-smark>
-                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+                    <button data-smark='{"action":"removeItem"}' title='Eliminar éste teléfono'>❌</button>
                 </li>
             </ul>
             <p class="row"><label data-smark>eMail:</label>
@@ -361,9 +361,17 @@ usability_notes:
 {% assign counter = counter | plus: 2000 %}
     <div id="Diferencias" data-x="{{ counter }}" class="step">
         <h1 class="big-text center">🤔</h1> 
-        <p>&nbsp;</p>
         <h1 class="center medium-text" style="color: blue;">¿Por qué SmarkForm es distinta?</h1>
-        <h1 class="big-text center">&nbsp;</h1> 
+        <ul style="float: left">
+            <li class="substep">👌 Sencillez</li>
+            <li class="substep">🚀 Potencia</li>
+            <li class="substep">🫶 Usabilidad</li>
+        </ul>
+        <ul style="float: right">
+            <li class="substep">♿ Accesibilidad</li>
+            <li class="substep">🏗️ Extendibilidad</li>
+            <li class="substep">🚁 Independéncia</li>
+        </ul>
     </div>
 
 {% assign counter = counter | plus: 2000 %}

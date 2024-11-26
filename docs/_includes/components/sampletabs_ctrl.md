@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
   border: 1px solid #dee2e6;
   margin-right: 5px;
   transition: background-color 0.3s;
+  user-select: none;
 }
 
 .tab-label.tab-label-right {
