@@ -37,14 +37,14 @@ export class form extends SmarkField {
         );
     };//}}}
     @action
-    async import({data = {}}) {//{{{
+    async import({data = {}, focus = true}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (dataConstructor !== {}.constructor) throw me.renderError(
             'FORM_NOT_PLAIN_OBJECT'
             , `Expected plain object for form import, ${dataConstructor.name} given.`
         );
-        return Object.fromEntries(
+        const retv = Object.fromEntries(
             await Promise.all(
                 Object.entries(me.children).map(
                     async ([key, target]) => {
@@ -55,12 +55,14 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import({data: data[key]});
+                        const value = await target.import({data: data[key], focus});
                         return [key, value];
                     }
                 )
             )
         );
+        if (focus) me.focus();
+        return retv;
     };//}}}
     async isEmpty() {//{{{
         const me = this;
@@ -72,8 +74,8 @@ export class form extends SmarkField {
         return true;
     };//}}}
     @action
-    async empty() {//{{{
+    async empty({focus}) {//{{{
         const me = this;
-        return await me.import({data: {}});
+        return await me.import({data: {}, focus});
     };//}}}
 };

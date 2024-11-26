@@ -147,7 +147,7 @@ export class list extends SmarkField {
         return list;
     };//}}}
     @action
-    async import({data = []}) {//{{{
+    async import({data = []}, focus) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
         if (! data instanceof Array) data = [data];
@@ -158,7 +158,7 @@ export class list extends SmarkField {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(); // Make room on demand
-            await me.children[i].import({data: data[i]});
+            await me.children[i].import({data: data[i], focus});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -181,6 +181,7 @@ export class list extends SmarkField {
             i < me.children.length; // (Due to min_items)
             i++
         ) me.children[i].empty();
+        if (focus) me.focus();
         return; // await me.export();
     };//}}}
     @action
@@ -421,9 +422,9 @@ export class list extends SmarkField {
         return true;
     };//}}}
     @action
-    async empty() {//{{{
+    async empty({focus}) {//{{{
         const me = this;
-        return await me.import({data: []});
+        return await me.import({data: [], focus});
     };//}}}
     @action
     count() {//{{{

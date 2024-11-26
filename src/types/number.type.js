@@ -26,16 +26,19 @@ export class number extends input {
         );
     };//}}}
     @action
-    async import({data = null}) {//{{{
+    async import({data = null, focus = true}) {//{{{
+        const me = this;
         const typename = typeof data;
-        return await super.import({data:(
+        const retv =  await super.import({data:(
             typename == "number" ? data
             : typename == "string"
                 && data.length
                 && ! isNaN(data)
                 ? Number(data)
             : null
-        )});
+        ), focus});
+        if (focus) me.focus();
+        return retv;
     };//}}}
     async isEmpty() {//{{{
         const me = this;

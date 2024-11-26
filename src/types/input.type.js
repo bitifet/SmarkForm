@@ -45,12 +45,12 @@ export class input extends form {
         );
     };//}}}
     @action
-    async import({data = ""}) {//{{{
+    async import({data = "", focus = true}) {//{{{
         const me = this;
         if (me.isSingleton) {
             return await super.import({data: Object.fromEntries(
                 [[Object.keys(me.children)[0], data]]
-            )});
+            ), focus});
         } else if (me.isCheckbox) {
             me.targetNode.checked = !! data;
         } else {
@@ -59,6 +59,7 @@ export class input extends form {
         // me.targetNode.dispatchEvent(
         //     new customEvent("change", {})
         // );
+        if (focus) me.focus();
         return me.targetNode.value;
     };//}}}
     async isEmpty() {//{{{
@@ -71,8 +72,8 @@ export class input extends form {
             // Native input's value type is always a string.
     };//}}}
     @action
-    async empty() {//{{{
+    async empty({empty}) {//{{{
         const me = this;
-        await me.import({data: ""});
+        await me.import({data: "", focus});
     };//}}}
 };

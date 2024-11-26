@@ -58,17 +58,20 @@ export class date extends input {
         );
     };//}}}
     @action
-    async import({data = null}) {//{{{
+    async import({data = null, focus = true}) {//{{{
+        const me = this;
         const value = (
             data instanceof Date ? data // Accept Date instance
             : typeof data == "number" ? new Date(data) // Accept epoch
             : ! data || (typeof data != "string") ? NaN // Reject nullish
             : parseDateStr(data) // Handle strings
         );
-        return await super.import({data:(
+        const retv = await super.import({data:(
             isNaN(value) ? null
             : ISODate(value)
-        )});
+        ), focus});
+        if (focus) me.focus();
+        return retv;
     };//}}}
     async isEmpty() {//{{{
         const me = this;
