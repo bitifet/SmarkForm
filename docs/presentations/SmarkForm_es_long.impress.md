@@ -84,7 +84,7 @@ simplicity_notes: |
     <ul>
         <li>👉 Los elementos sin la etiqueta <i>data-smark</i> no son tenidos en cuenta.</li>
         <li class="l2">➡️  Podríamos incluso insertar tags <i>&lt;input&gt;</i> para otros widgets.</li>
-        <li class="l2">📝 Los que sí la tienen son <b>TODOS</b> componentes del formulario y tienen una propiedad <i>type</i> que indica su tipo. Aunque <b>en la mayoría de los casos éste es implícito y puede omitirse</b>.</li>
+        <li class="l2">📝 Los que sí la tienen son <b>TODOS</b> componentes del formulario y tienen una propiedad <i>type</i> que indica su tipo. Aunque <b>en la mayoría de los casos éste es implícito y puede omitirse</b>...</li>
         <li>👉 El HTML original es funcional y puede ser trabajado por un diseñador sin interfréncias con el código.</li>
         <li>👉 Las etiquetas (<i>&lt;label&gt;</i> funcionan sin necesidad de asignar y mapear manualmente identificadores para cada campo.</li>
         <li>👉 Los botones con la propiedad <i>action</i> son (implícitamente) componentes de tipo "trigger" que disparan <i>acciones</i> de otro componente (contexto).</li>
@@ -100,8 +100,10 @@ simplicity_example_js: |
 
 power_example: |
     <div id="myForm$$">
-        <p class="row"><label data-smark>Nombre:</label>
-        <input data-smark='{"name":"name"}' type="text"></p>
+        <p class="row">
+            <label data-smark>Nombre:</label><input data-smark='{"name":"name"}' type="text">
+            <label data-smark>Edad:</label><input data-smark='{"name":"age"}' type="number">
+        </p>
         <fieldset class="row" data-smark='{"name":"conatact_data"}'>
             <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Limpiar vacíos'>🧹</button>
             <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Eliminar teléfono'>➖</button>
@@ -162,8 +164,8 @@ power_example_js: |
     /* Ask for confirmation unless form is already empty: */
     myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
         if (
-            ! await context.isEmpty()     /* Form is not empty */
-            && ! confirm("Are you sure?") /* User clicked the "Cancel" button. */
+            ! await context.isEmpty()        /* Form (or field) is not empty */
+            && ! confirm("Descartar datos?") /* User clicked the "Cancel" button. */
         ) {
             /* Prevent default (empty form) behaviour: */
             preventDefault();
@@ -197,11 +199,15 @@ usability_example: |
 
 usability_notes:
     <ul>
-        <li>🚧 Refurbishment pending... 🚧</li>
-        <li>👉 Navegación natural </li>
-        <li>👉 Hot-keys contextuales</li>
-        <li>👉 Plegado de secciones</li>
-        <li>👉 <span class="gray">(Auto)</span>ordenación...</li>
+        <li>👉 Las teclas rápidas se revelan al pulsar la tecla <kbd class="key">Ctrl</kbd> y se activan combinándolas con ésta.</li>
+        <li class="l2 small-text">➡️  La <i>revelación</i>, por defecto, se hace mediante el atributo <i>data-hotkey</i> aunque <span class="gray">éste comportamiento podrá alterarse mediante la intercepción del evento</span>.</li>
+        <li class="l2 small-text">➡️  De éste modo, la forma en que se muestre al usuario dicha "revelación" (pista) depende totalmente del CSS.</li>
+        <li class="l2 small-text">➡️  Si hay más de un trigger con la misma tecla rápida, se activará sólo la del que esté contextualmente mas cerca al foco.</li>
+        <li class="l2 small-text">➡️  Si un trigger está desactivado, su tecla rápida no se revela pero, por consistencia, tampoco "cede el paso".</li>
+        <li>👉 Los controles (triggers) para añadir o quitar elementos de una lista que estén integrados déntro de éstos, no reciben el foco al navegar con tabulador <b>siempre que dispongan de tecla rápida</b>.</li>
+        <li>👉 Éste ejemplo tiene dos listas anidadas que podemos reordenar simplemente arrastrando con el ratón <span class="gray">(y en el futuro también automáticamente según criterio)</span>...</li>
+        <li>⚠️  El software utilizado para ésta presentación interfiere en los eventos de teclado y ratón. Para una mejor apreciación, ver los ejemplos del Manual de SmarkForm:</li>
+        <li class="l2">🔗 (<a href="https://smarkform.bitifet.net" target=_blank>https://smarkform.bitifet.net</a>).</li>
     </ul>
 
 
@@ -210,14 +216,12 @@ usability_notes:
     .substep { opacity: 0; }
     .substep.substep-visible { opacity: 1; transition: opacity 1s; }
     h1 { font-size: 5em !important; color: black; }
-    .big-text { font-size: 2em !important; }
-    .medium-text { font-size: 1.4em !important; }
     li, p { color:black; }
     li:not(.big-text) { padding-left: 2em; font-size: .8em; }
     li.l2 { padding-left: 4em; font-size: 0.7em; }
     .center { text-align: center; }
     .center>div, .center>iframe { display: inline-block; }
-    .gray { color: #777777; }
+    .gray { color: #779977; }
     .tab-container { font-size: 1rem }
     .tab-content { font-size: 1.3rem }
     div.tab-content { height: 600px; }
@@ -230,6 +234,24 @@ usability_notes:
 
     #Sencillez_ejemplo div.tab-content.tab-content-html { font-size: 1.08em; }
     #Potencia_ejemplo div.tab-content.tab-content-html { font-size: .9em; }
+
+    .big-text { font-size: 2em !important; }
+    .medium-text { font-size: 1.4em !important; }
+    .small-text { font-size: .6em !important; display: inline-block; transform: translateY(-.3em); }
+    .shadow { text-shadow: 0px 0px 8px yellow; }
+    kbd.key {
+        display: inline-block;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.9em;
+        color: #333;
+        background-color: #f5f5f5;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        padding: 2px 4px;
+        box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+        text-shadow: 0 1px 0 #fff;
+        white-space: nowrap;
+    }
 </style>
 
 
@@ -379,7 +401,7 @@ usability_notes:
         <h1 class="medium-text">👌 Sencillez</h1>
         <ul>
             <li class="substep">👉 HTML + metadatos</li>
-            <li class="substep">👉 Markup-agnostic</li>
+            <li class="substep">👉 Markup-agnostic <span class="small-text substep">(Atributo <i class="shadow">data-smark</i>)</span></li>
             <li class="substep">👉 SoC (MVC)</li>
             <li class="substep">👉 <b>Zero-Wiring:</b></li>
             <li class="substep l2">🔧 Acciones.</li>
@@ -402,6 +424,7 @@ usability_notes:
             <li class="substep">👉 Subformularios</li>
             <li class="substep">👉 Listas dinámicas ordenables</li>
             <li class="substep gray">👉 Gestión de interdependéncia</li>
+            <li class="l2 substep gray">➡️  The API Interface</li>
             <li class="substep">👉 Tipado y validación</li>
         </ul>
     </div>
@@ -433,8 +456,9 @@ usability_notes:
     <div id="Accesibilidad" data-x="{{ counter }}" class="step">
         <h1 class="medium-text">♿ Accesibilidad</h1>
         <ul>
-            <li class="substep">👉 Tiene en cuenta aspectos de accesibilidad. </li>
-            <li class="substep gray">👉 Todavía queda trabajo por hacer...</li>
+            <li class="substep">👉 Máxima libertad en la maquetación.</li>
+            <li class="substep">👉 Mínima intrusión en el foco.</li>
+            <li class="substep gray">🚧 Todavía queda trabajo por hacer...</li>
             <li class="substep">🆘 Help!!</li>
         </ul>
     </div>
@@ -443,8 +467,12 @@ usability_notes:
     <div id="Extendibilidad" data-x="{{ counter }}" class="step">
         <h1 class="medium-text">🏗️ Extendibilidad</h1>
         <ul>
-            <li class="substep">👉 Posibilidad de incorporar nuevos tipos de campos.</li>
-            <li class="substep gray">👉 Incluso fragmentos o "Mixin"s.</li>
+            <li class="substep">👉 Crea tus própios tipos:</li>
+            <li class="l2 substep">➡️  <code class="small-text">class myType extends Smarkform.types.input { ... }</code></li>
+            <li class="l2 substep">➡️  <code class="small-text">SmarkForm.createType(name, myType);</code></li>
+            <li class="substep gray">💡 SmarkForm mixins:</li>
+            <li class="l2 substep gray">➡️  <code class="small-text">SmarkFrom.createMixin(name, htmlsource);</code></li>
+            <li class="l2 substep gray">🩹 (Mixins de plantillas PUG o similar...)</li>
         </ul>
     </div>
 
@@ -458,26 +486,6 @@ usability_notes:
         </ul>
     </div>
 
-
-{% assign counter = counter | plus: 2000 %}
-    <div id="Principios" data-x="{{ counter }}" class="step">
-        <div class="center">
-            <h1 class="medium-text">— Principios —</h1>
-            <br />
-            <ul>
-                <li class="substep big-text">DRY</li>
-                <li class="substep big-text">SoC</li>
-                <li class="substep big-text">KISS</li>
-            </ul>
-            <br />
-        </div>
-        <div class="notes">
-            <ul>
-                <li>👉 Cita: «Sin frameworks modernos no se pueden hacer aplicaciones complejas»</li>
-                <li>👉 Las complicaciones ya vienen sólas.</li>
-            </ul>
-        </div>
-    </div>
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Más..." data-x="{{ counter }}" class="step">
