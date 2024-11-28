@@ -150,7 +150,7 @@ export class list extends SmarkField {
     async import({data = []}, focus) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
-        if (! data instanceof Array) data = [data];
+        if (! (data instanceof Array)) data = [data];
         // Load data:
         for (
             let i = 0;
