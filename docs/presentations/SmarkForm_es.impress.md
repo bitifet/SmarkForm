@@ -1,7 +1,7 @@
 ---
 nav_exclude: true
 title: SmarkForm
-permalink: /presentations/SmarkForm_es_long.impress.html
+permalink: /presentations/SmarkForm_es.impress.html
 
 simplicity_sample_css: |
     .row {
