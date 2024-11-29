@@ -421,7 +421,7 @@ usability_notes:
         <ul style="float: right">
             <li class="substep">♿ Accesibilidad</li>
             <li class="substep">🏗️ Extendibilidad</li>
-            <li class="substep">🚁 Independéncia</li>
+            <li class="substep">🚁 Independencia</li>
         </ul>
     </div>
 
@@ -496,7 +496,7 @@ usability_notes:
     <div id="Extendibilidad" data-x="{{ counter }}" class="step">
         <h1 class="medium-text">🏗️ Extendibilidad</h1>
         <ul>
-            <li class="substep">👉 Crea tus própios tipos:</li>
+            <li class="substep">👉 Crea tus propios tipos:</li>
             <li class="l2 substep">➡️  <code class="small-text">class myType extends Smarkform.types.input { ... }</code></li>
             <li class="l2 substep">➡️  <code class="small-text">SmarkForm.createType(name, myType);</code></li>
             <li class="substep gray">💡 SmarkForm mixins:</li>
@@ -507,7 +507,7 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Independencia" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">🚁 Independéncia</h1>
+        <h1 class="medium-text">🚁 Independencia</h1>
         <ul>
             <li class="substep">👉 Vanilla JS.</li>
             <li class="substep">👉 ES module / UMD</li>
@@ -540,7 +540,7 @@ usability_notes:
 {% assign counter = counter | plus: 2000 %}
     <div id="Colaborar" data-x="{{ counter }}" class="step">
         <div class="center">
-            <h1 class="medium-text" style="color: red;">Como puedo ayudar?</h1>
+            <h1 class="medium-text" style="color: red;">Cómo puedo ayudar?</h1>
         </div>
         <ul>
             <li class="substep">✊ Usándola</li>
