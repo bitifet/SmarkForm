@@ -213,6 +213,31 @@ usability_notes:
 
 ---
 <style type="text/css">
+    #presentation-footer {
+        position: fixed;
+        bottom: 0px;
+        width: 100vw;
+        height: 5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1em;
+        font-size: 3em;
+        color: black;
+        opacity: .5;
+    }
+    body[data-hash="/__blank__"] #presentation-footer
+    , body[data-hash="/Welcome"] #presentation-footer
+    , body[data-hash="/SmarkForm"] #presentation-footer
+    {
+        display: none;
+    }
+    .align-left {
+        text-align: left;              /* Per assegurar l'alineació del text */
+    }
+    .align-right {
+        text-align: right;             /* Per assegurar l'alineació del text */
+    }
     .substep { opacity: 0; }
     .substep.substep-visible { opacity: 1; transition: opacity 1s; }
     h1 { font-size: 5em !important; color: black; }
@@ -253,7 +278,6 @@ usability_notes:
         white-space: nowrap;
     }
 </style>
-
 
 {% include_relative css/jekyll_styles.css.md %}
 
@@ -317,6 +341,11 @@ usability_notes:
 
 {% assign counter = -2000 %}
 
+{% assign counter = counter | plus: 2000 %}
+    <div id="__blank__" data-x="{{ counter }}" class="step">
+        <div></div>
+        <!-- Just a blank slide to avoid initial rendering problem in Firefox -->
+    </div>
 
 
 {% assign counter = counter | plus: 2000 %}
@@ -527,20 +556,49 @@ usability_notes:
     <div id="Thanks" data-x="{{ counter }}" class="step">
         <div style="text-align: center">
             <h1 class="medium-text">Thanks for your a<b style="color:red">tt</b>ention!!</h1>
-            <p class="substep big-text">Preguntas... <span style="font-size:1.5em;color:red">??</span></p>
+        </div>
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
+    <div id="Thanks_hosts" data-x="{{ counter }}" class="step">
+        <div style="text-align: center; background: white; border-radius: 20px; padding: 20px;">
+            <h1 class="big-text">Grácias</h1>
+            <div>
+            <img class="align-left" width="380px" src="assets/QR_TechSpirit_crafters.jpg" alt="TechSpirit.org and Mallorca Software Crafters" />
+            <img class="align-right" width="380px" src="assets/frssystems_logo.jpeg" alt="FRS Systems" />
+            </div>
         </div>
     </div>
 
 
+{% assign counter = counter | plus: 2000 %}
+    <div id="Questions" data-x="{{ counter }}" class="step">
+        <div style="text-align: center">
+            <h1 class="big-text">Preguntas... <span style="font-size:1.5em;color:red">??</span></h1>
+        </div>
+    </div>
+
 
 </div>
+
+
+<div id="presentation-footer">
+    <div class="align-left">
+        https://smarkform.bitifet.net
+    </div>
+    <div class="align-right">
+        https://techspirit.org
+    </div>
+
+</div>
+
 
 <!--
     This is a UI plugin. You can read more about plugins in src/plugins/README.md.
     For now, I'll just tell you that this adds some graphical controls to navigate the
     presentation. In the CSS file you can style them as you want. We've put them bottom right.
 -->
-<div id="impress-toolbar"></div>
+<div id="impress-toolbar_disabled"></div>
 
 <!--
     
@@ -576,23 +634,28 @@ if ("ontouchstart" in document.documentElement) {
 }
 </script>
 
-<!--
-    
-    Last, but not least.
-    
-    To make all described above really work, you need to include impress.js in the page.
-    I strongly encourage to minify it first.
-    
-    In here I just include full source of the script to make it more readable.
-    
-    You also need to call a `impress().init()` function to initialize impress.js presentation.
-    And you should do it in the end of your document. Not only because it's a good practice, but also
-    because it should be done when the whole document is ready.
-    Of course you can wrap it in any kind of "DOM ready" event, but I was too lazy to do so ;)
-    
--->
+
 <script src="js/impress.js"></script>
-<script>impress().init();</script>
+<script>
+    addEventListener("DOMContentLoaded", (event) => {
+        impress().init();
+                
+        function updateHashData() {
+            // Get the current hash, remove the '#' if it exists
+            const hash = window.location.hash.slice(1);
+
+            // Update the data-hash attribute on the <body>
+            document.body.setAttribute('data-hash', hash);
+        }
+
+        // Set the hash data on page load
+        updateHashData();
+
+        // Update the hash data whenever the hash changes
+        window.addEventListener('hashchange', updateHashData);
+                            
+    });
+</script>
 
 <!--
     
@@ -620,44 +683,3 @@ if ("ontouchstart" in document.documentElement) {
 -->
 
 
-<!--
-    
-    Now you know more or less everything you need to build your first impress.js presentation, but before
-    you start...
-    
-    Oh, you've already cloned the code from GitHub?
-    
-    You have it open in text editor?
-    
-    Stop right there!
-    
-    That's not how you create awesome presentations. This is only a code. Implementation of the idea that
-    first needs to grow in your mind.
-    
-    So if you want to build great presentation take a pencil and piece of paper. And turn off the computer.
-    
-    Sketch, draw and write. Brainstorm your ideas on a paper. Try to build a mind-map of what you'd like
-    to present. It will get you closer and closer to the layout you'll build later with impress.js.
-    
-    Get back to the code only when you have your presentation ready on a paper. It doesn't make sense to do
-    it earlier, because you'll only waste your time fighting with positioning of useless points.
-    
-    If you think I'm crazy, please put your hands on a book called "Presentation Zen". It's all about 
-    creating awesome and engaging presentations.
-    
-    Think about it. 'Cause impress.js may not help you, if you have nothing interesting to say.
-    
--->
-
-<!--
-    
-    Are you still reading this?
-    
-    For real? I'm impressed! 
-    
-    But now, take my advice and take some time off. Make yourself a cup of coffee, tea,
-    or anything you like to drink.
-    
-    Cheers!
-    
--->
