@@ -135,8 +135,8 @@ power_notes:
         <li>👉 En lugar de un sólo teléfono hemos utilizado una lista de longitud variable.</li>
         <li class="l2">📝 Los descendientes directos de las listas son <i>plantillas</i> que cumplen un determinado <i>rol</i>. Por defecto "list_item" que es obligatorio y se utilizará para renderizar los elementos de la lista. Pero hay otros, como <i>empty_list</i>, que nos ha permitido mostrar el texto "(No dispone)" cuando la lista esté vacía.</li>
         <li class="l2">➡️  La propiedad <i>of</i> nos permite ahorrarnos el atributo <i>data-smark</i> en la plantilla <i>list_item</i> si sólo es para especficar el tipo. (📌 El tipo <i>input</i> activa el patrón <i>Singleton</i>).</li>
-        <li class="l2">➡️  Con <i>min_items=0</i> y <i>max_items=5</i> permitimos, respectivamente, que la lista esté vacía y limitamos su longitud a un máximo de 5 elementos.</li>
-        <li class="l2">➡️  Las propiedades <i>sortable</i> y <i>export_empties</i> permiten, respectivamente, que el usuario pueda ordenar la lista arrastrando los elementos y que los que estén <i>vacíos</i> también se exporten.</li>
+        <li class="l2">➡️  Con <i>min_items=0</i> y <i>max_items=5</i>, respectivamente, permitimos que la lista esté vacía y limitamos su longitud a un máximo de 5 elementos.</li>
+        <li class="l2">➡️  Las propiedades <i>sortable</i> y <i>export_empties</i> permiten, a su vez, que el usuario pueda ordenar la lista arrastrando los elementos y que los que estén <i>vacíos</i> también se exporten.</li>
     </ul>
 
 power_example_js: |
@@ -206,13 +206,22 @@ usability_notes:
         <li class="l2 small-text">➡️  Si un trigger está desactivado, su tecla rápida no se revela pero, por consistencia, tampoco "cede el paso".</li>
         <li>👉 Los controles (triggers) para añadir o quitar elementos de una lista que estén integrados déntro de éstos, no reciben el foco al navegar con tabulador <b>siempre que dispongan de tecla rápida</b>.</li>
         <li>👉 Éste ejemplo tiene dos listas anidadas que podemos reordenar simplemente arrastrando con el ratón <span class="gray">(y en el futuro también automáticamente según criterio)</span>...</li>
-        <li>⚠️  El software utilizado para ésta presentación interfiere en los eventos de teclado y ratón. Para una mejor apreciación, ver los ejemplos del Manual de SmarkForm:</li>
-        <li class="l2">🔗 (<a href="https://smarkform.bitifet.net" target=_blank>https://smarkform.bitifet.net</a>).</li>
     </ul>
+    <div class="warnbox">
+        <p>⚠️  El software utilizado para ésta presentación interfiere en los eventos de teclado y ratón. Para una mejor apreciación, ver los ejemplos del Manual de SmarkForm:</p>
+        <p class="l2">🔗 (<a href="https://smarkform.bitifet.net" target=_blank>https://smarkform.bitifet.net</a>).</p>
+    </div>
 
 
 ---
 <style type="text/css">
+    .warnbox {
+        margin-top: .5em;
+        border: solid 10px #ffeeee;
+        border-radius: 5px;
+        padding: .4em;
+        font-size: .6em;
+    }
     #presentation-footer {
         position: fixed;
         bottom: 0px;
@@ -244,21 +253,30 @@ usability_notes:
     li, p { color:black; }
     li:not(.big-text) { padding-left: 2em; font-size: .8em; }
     li.l2 { padding-left: 4em; font-size: 0.7em; }
-    .center { text-align: center; }
+    .center { text-align: center; transform: translateX(-100px); }
     .center>div, .center>iframe { display: inline-block; }
     .gray { color: #779977; }
-    .tab-container { font-size: 1rem }
-    .tab-content { font-size: 1.3rem }
-    div.tab-content { height: 600px; }
+    .tab-container {
+        font-size: 1rem;
+        max-width: initial !important;
+        transform: translateX(-200px);
+        width: 1100px;
+    }
+    .tab-content { font-size: 1.3rem; }
+    div.tab-content { height: 540px; }
     div.tab-content.tab-content-preview { overflow: auto; }
-    div.tab-content.tab-content-notes { font-size: 1.5em; padding-top: 0px; max-height: 550px; overflow: auto; padding-bottom: 2em; }
+    div.tab-content.tab-content-notes { font-size: 1.8em; padding: 0px 7em 2em 3em; max-height: 490px; overflow: auto; }
     div.tab-content.tab-content-notes i { color: darkblue; }
-    div.tab-content.tab-content-notes li { margin-top: 1em; list-style-type: none; }
+    div.tab-content.tab-content-notes li { margin-top: 1.1em; list-style-type: none; }
     div.tab-content.tab-content-notes li.l2 { margin-top: .7em; }
-    div.tab-content pre.highlight { max-height: 540px; }
+    div.tab-content pre.highlight { max-height: 490px; }
 
-    #Sencillez_ejemplo div.tab-content.tab-content-html { font-size: 1.08em; }
-    #Potencia_ejemplo div.tab-content.tab-content-html { font-size: .9em; }
+    #Sencillez_ejemplo div.tab-content.tab-content-html { font-size: .9em; }
+    #Potencia_ejemplo div.tab-content.tab-content-html { font-size: .8em; }
+    #Potencia_ejemplo div.tab-content.tab-content-js { font-size: 1em; }
+    #Usabilidad_ejemplo div.tab-content.tab-content-html { font-size: .9em; }
+    #Usabilidad_ejemplo div.tab-content.tab-content-css { font-size: 1em; }
+    #Usabilidad_ejemplo div.tab-content.tab-content-js { font-size: 1em; }
 
     .big-text { font-size: 2em !important; }
     .medium-text { font-size: 1.4em !important; }
@@ -415,7 +433,7 @@ usability_notes:
         <h1 class="center medium-text" style="color: blue;">¿Por qué SmarkForm es distinta?</h1>
         <ul style="float: left">
             <li class="substep">👌 Sencillez</li>
-            <li class="substep">🚀 Potencia</li>
+            <li class="substep">⚡ Potencia</li>
             <li class="substep">🫶 Usabilidad</li>
         </ul>
         <ul style="float: right">
@@ -441,13 +459,32 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Sencillez_ejemplo" data-x="{{ counter }}" class="step">
-        <h1>👌 Sencillez 👀</h1>
+        <h1 class="medium-text">👌 Sencillez 👀</h1>
         {{ rendered_simplicity_example }}
     </div>
 
+
+{% assign counter = counter | plus: 2000 %}
+    <div id="DIY_1" data-x="{{ counter }}" class="step">
+        <h1 class="big-text center">🛠️ DIY</h1>
+        <h1 class="center substep">1. Crea tu primer formulario</h1>
+        <p class="small-text">&nbsp;</p>
+        <ul>
+            <li class="substep">🤔 Elige un proyecto</li>
+            <li class="substep">👉 Elige un Stack</li>
+            <li class="l2 substep">➡️  ESM / UMD.</li>
+            <li class="l2 substep">➡️  NPM / GitHub / Descarga...</li>
+            <li class="l2 substep">➡️  Fichero local / Servidor HTTP / CodePen...</li>
+            <li class="l2 substep">➡️  Ejemplo / Boilerplate / Desde cero.</li>
+            <li class="substep">🚀 Empieza!!</li>
+        </ul>
+
+    </div>
+
+
 {% assign counter = counter | plus: 2000 %}
     <div id="Potencia" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">🚀 Potencia</h1>
+        <h1 class="center medium-text">⚡ Potencia</h1>
         <ul>
             <li class="substep">👉 JSON ⬆️ / ⬇️ </li>
             <li class="substep">👉 Subformularios</li>
@@ -460,13 +497,27 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Potencia_ejemplo" data-x="{{ counter }}" class="step">
-        <h1>🚀 Potencia 👀</h1>
+        <h1 class="center">⚡ Potencia 👀</h1>
         {{ rendered_power_example }}
     </div>
 
 {% assign counter = counter | plus: 2000 %}
+    <div id="DIY_2" data-x="{{ counter }}" class="step">
+        <h1 class="big-text center">🛠️ DIY</h1>
+        <h1 class="center substep">2. Completa tu formulario</h1>
+        <p class="small-text">&nbsp;</p>
+        <ul>
+            <li class="substep small-text">👉 Utiliza listas y subformularios si los necesitas.</li>
+            <li class="substep small-text">👉 Dispón los controles (triggers) donde se precisen.</li>
+            <li class="substep small-text">👉 Ajusta los parámetros a la funcionalidad deseada.</li>
+            <li class="substep small-text">👉 Gestiona los eventos.</li>
+            <li class="substep small-text">👍 Verifica que todo funcione corréctamente.</li>
+        </ul>
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
     <div id="Usabilidad" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">🫶 Usabilidad </h1>
+        <h1 class="center medium-text">🫶 Usabilidad </h1>
         <ul>
             <li class="substep">👉 Navegación natural </li>
             <li class="substep">👉 Hot-keys contextuales</li>
@@ -477,13 +528,27 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Usabilidad_ejemplo" data-x="{{ counter }}" class="step">
-        <h1>🫶 Usabilidad  👀</h1>
+        <h1 class="medium-text center">🫶 Usabilidad  👀</h1>
         {{ rendered_usability_example }}
     </div>
 
 {% assign counter = counter | plus: 2000 %}
+    <div id="DIY_3" data-x="{{ counter }}" class="step">
+        <h1 class="big-text center">🛠️ DIY</h1>
+        <h1 class="center substep">3. Mejora la Usabilidad</h1>
+        <p class="small-text">&nbsp;</p>
+        <ul>
+            <li class="substep small-text">👉 Ajusta las teclas rápidas.</li>
+            <li class="substep small-text">👉 Permite la ordenación (si procede).</li>
+            <li class="substep small-text">👉 Comprueba la navegación con el teclado.</li>
+            <li class="substep small-text">👉 Revisa los estilos (CSS).</li>
+            <li class="substep small-text">👉 Verifica el funcionamiento en distiontos dispositivos.</li>
+        </ul>
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
     <div id="Accesibilidad" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">♿ Accesibilidad</h1>
+        <h1 class="center medium-text">♿ Accesibilidad</h1>
         <ul>
             <li class="substep">👉 Máxima libertad en la maquetación.</li>
             <li class="substep">👉 Mínima intrusión en el foco.</li>
@@ -494,7 +559,7 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Extendibilidad" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">🏗️ Extendibilidad</h1>
+        <h1 class="center medium-text">🏗️ Extendibilidad</h1>
         <ul>
             <li class="substep">👉 Crea tus propios tipos:</li>
             <li class="l2 substep">➡️  <code class="small-text">class myType extends Smarkform.types.input { ... }</code></li>
@@ -507,7 +572,7 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Independencia" data-x="{{ counter }}" class="step">
-        <h1 class="medium-text">🚁 Independencia</h1>
+        <h1 class="center medium-text">🚁 Independencia</h1>
         <ul>
             <li class="substep">👉 Vanilla JS.</li>
             <li class="substep">👉 ES module / UMD</li>
@@ -573,7 +638,7 @@ usability_notes:
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Questions" data-x="{{ counter }}" class="step">
-        <div style="text-align: center">
+        <div class="center">
             <h1 class="big-text">Preguntas... <span style="font-size:1.5em;color:red">??</span></h1>
         </div>
     </div>
