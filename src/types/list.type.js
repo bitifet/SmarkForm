@@ -248,7 +248,6 @@ export class list extends SmarkField {
             await newItem.rendered;
             me.children.push(newItem);
             newItem.name = 0;
-            newItem.updateId();
         } else {
             me.children = (await Promise.all(
                 me.children.map(async (child, i)=>{
@@ -267,13 +266,9 @@ export class list extends SmarkField {
                 })
             ))
                 .flat()
-                .map((c,i)=>{
-                    c.name = i;
-                    c.updateId();
-                    return c;
-                })
             ;
         };
+        me.renum();
         //}}}
         // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newItem) {
@@ -376,11 +371,6 @@ export class list extends SmarkField {
                     };
                     return true;
                 })
-                .map((c,i)=>{
-                    c.name = i;
-                    c.updateId();
-                    return c;
-                })
             ;
             // removeItem event emitting:{{{
             const onRemovedCbks = [];
@@ -403,6 +393,7 @@ export class list extends SmarkField {
             ) me.targetNode.appendChild(me.templates.empty_list);
             oldItem.targetNode.remove();
             me.children = newChildren;
+            me.renum();
 
             me.getTriggers("count").forEach(
                 tgg=>tgg.targetNode.innerText = String(me.children.length)
@@ -440,4 +431,11 @@ export class list extends SmarkField {
         const me = this;
         return me.children.length;
     };//}}}
+    renum(){
+        const me = this;
+        for (const i in me.children) {
+            me.children[i].name = i;
+            me.children[i].updateId();
+        };
+    };
 };
