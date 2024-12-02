@@ -279,7 +279,7 @@ usability_notes:
     #Usabilidad_ejemplo div.tab-content.tab-content-js { font-size: 1em; }
 
     .big-text { font-size: 2em !important; }
-    .medium-text { font-size: 1.4em !important; }
+    .medium-text { font-size: 1.3em !important; }
     .small-text { font-size: .6em !important; display: inline-block; transform: translateY(-.3em); }
     .shadow { text-shadow: 0px 0px 8px yellow; }
     kbd.key {
