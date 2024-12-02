@@ -197,17 +197,24 @@ export class list extends SmarkField {
             target,
             position = "after",
             autoscroll,   // "elegant" / "self" / "parent" / (falsy)
+            failback,
         } = options;
         if (position != "after" && position != "before") throw me.renderError(
             'LIST_WRONG_ADDITEM_POSITION'
             , `Invalid value for addItem() position property: ${position}`
         );
         if (me.children.length >= me.max_items) {
-            me.emit("error", {
-                code: 'LIST_MAX_ITEMS_REACHED',
-                message: `Cannot add items over max_items boundary`,
-                options,
-            });
+            switch (failback) {
+                case "none":
+                    break;
+                case "throw":
+                default:
+                    me.emit("error", {
+                        code: 'LIST_MAX_ITEMS_REACHED',
+                        message: `Cannot add items over max_items boundary`,
+                        options,
+                    });
+            };
             return;
         };
         if (me.children.length && ! target) target = ( // Auto target:

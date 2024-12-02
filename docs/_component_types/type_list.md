@@ -396,6 +396,7 @@ needed.
   * **target:**
   * **position:** = "after" (default) / "before"
   * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
+  * **failback:** (= "none" / "throw" )
 
 #### (Async) removeItem (Action)
 
@@ -403,13 +404,13 @@ needed.
 
 ##### properties (removeItem)
 
-  * **action:**: (= "removeItem")
+  * **action:** (= "removeItem")
   * **origin:**
   * **context:**
   * **target:**
-  * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
-  * **keep_non_empty:**
-  * **failback:**
+  * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
+  * **keep_non_empty:** (boolean)
+  * **failback:** (= "none" / "clear" / "throw" )
 
 
 #### (Async) empty (Action)
