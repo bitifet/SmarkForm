@@ -179,8 +179,11 @@ usability_example: |
         <div data-smark='{"type":"list","name":"employee", "min_items":0,"sortable":true}'>
             <fieldset class="row">
                 <p class="row">
-                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Baja empleado'>🔥</button>
-                <input data-smark='{"name":"name"}' type="text" placeholder='Nombre...'></p>
+                    <label>Empleado</label>
+                    <span data-smark='{"action":"position"}'></span>/<span data-smark='{"action":"count"}'></span>:
+                    <input data-smark='{"name":"name"}' type="text" placeholder='Nombre...'>
+                    <button data-smark='{"action":"removeItem","hotkey":"-"}' style='float: right;' title='Baja empleado'>🔥</button>
+                </p>
                 <label data-smark>📞 Teléfonos:</label>
                 <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":3}'>
                     <li class="row">
