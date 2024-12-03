@@ -29,6 +29,8 @@ block mainForm
             span(role='img', aria-label='Remove task') ❌
           .form-group.spacer
             .form-group
+              span(data-smark='{"action":"position"}') /
+              span &nbsp;
               input(data-smark, name='title', type='text', placeholder='Task title')
             .form-group
               +inputlist("Goals")(
