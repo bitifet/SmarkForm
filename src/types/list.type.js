@@ -431,11 +431,20 @@ export class list extends SmarkField {
         const me = this;
         return me.children.length;
     };//}}}
-    renum(){
+    @action
+    position({target, offset = 1} = {}) {//{{{
+        return Number(target?.name) + Number(offset);
+    };//}}}
+    renum(){//{{{
         const me = this;
         for (const i in me.children) {
             me.children[i].name = i;
             me.children[i].updateId();
         };
-    };
+        me.getTriggers("position").forEach(tgg=>{
+            const me = this;
+            const args = tgg.getTriggerArgs();
+            tgg.targetNode.innerText = me.position(args);
+        });
+    };//}}}
 };

@@ -185,6 +185,8 @@ simple_list_animation_example_complete_js: |
             * [properties (empty)](#properties-empty)
         * [count (Action)](#count-action)
             * [properties (count)](#properties-count)
+        * [position (Action)](#position-action)
+            * [properties (position)](#properties-position)
     * [Events](#events)
         * [addItem (list Event)](#additem-list-event)
         * [removeItem (list Event)](#removeitem-list-event)
@@ -419,11 +421,21 @@ needed.
 
   * **action:**: (= "empty")
 
+
 #### count (Action)
 
 ##### properties (count)
 
   * **action:**: (= "count")
+
+
+#### position (Action)
+
+##### properties (position)
+
+  * **action:**: (= "position")
+  * **offset:**: (default 1)
+
 
 
 

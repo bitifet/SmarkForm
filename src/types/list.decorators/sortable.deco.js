@@ -73,26 +73,19 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                     const newChunk = [
                         ...me.children.slice(fromi + 1, toi + 1),
                         me.children[fromi],
-                    ].map((c, i)=>{
-                        c.name = i+fromi;
-                        c.updateId();
-                        return c;
-                    });
+                    ];
                     me.children.splice(fromi, toi - fromi + 1, ...newChunk);
                 } else if (fromi > toi) {
                     const newChunk = [
                         me.children[fromi],
                         ...me.children.slice(toi, fromi),
-                    ].map((c, i)=>{
-                        c.name = i+toi;
-                        c.updateId();
-                        return c;
-                    });
+                    ];
                     me.children.splice(toi, fromi - toi + 1, ...newChunk);
                 };
                 const inc = fromi < toi ? 1 : -1;
                 const moveMethod = inc > 0 ? "after" : "before";
                 to.targetNode[moveMethod](from.targetNode);
+                me.renum();
             };//}}}
         };
     };
