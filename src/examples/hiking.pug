@@ -4,11 +4,11 @@ include include/credits.pug
 include include/autobackground.pug
 block append properties
     -
-        var title = "Adventure Tracking";
+        var title = "Adventure Tracking Example";
         var description = `
             This example is a draft for an excursion planning form that allows
             users to provide location, date, start and end times, and route
-            details.  Participants can receive personal tracking links for
+            details. Participants can receive personal tracking links for
             automatic position updates during the excursion, ensuring a safer
             experience and enabling quick rescue in emergencies.
         `;
@@ -37,15 +37,14 @@ block mainForm
             type: "form",
             name: "origin",
         })
+            label.inline
+                span 0
+                span(role='img', aria-label='') &nbsp;📌
             input(
                 data-smark
-                name="place"
-                placeholder='Place'
-            )
-            input(
-                data-smark
-                name="city"
-                placeholder='City'
+                name="coordinates"
+                type="text"
+                placeholder='Lat, Lng'
             )
             input(
                 data-smark
@@ -59,6 +58,16 @@ block mainForm
                 type="time"
                 placeholder='hh:mm'
             )
+            input(
+                data-smark
+                name="place"
+                placeholder='Place name or address'
+            )
+            input(
+                data-smark
+                name="city"
+                placeholder='City'
+            )
         label(data-smark) Stops
         .form-group(data-smark={
             type: "list",
@@ -66,22 +75,16 @@ block mainForm
             min_items: 0,
             exportEmpties: false,
         })
-            .full-width.form-group.aside.reverse
-                button.inline(data-smark={
-                    action: "removeItem",
-                    hotkey: "-",
-                }, title = "Remove stop place")
-                    span(role='img', aria-label='Remove stop place') ➖
+            .full-width.form-group.aside
+                label.inline
+                    span(data-smark={action: "position"})
+                    span(role='img', aria-label='') &nbsp;📌
                 .form-group
                     input(
                         data-smark
-                        name="place"
-                        placeholder='Place'
-                    )
-                    input(
-                        data-smark
-                        name="city"
-                        placeholder='City'
+                        name="coordinates"
+                        type="text"
+                        placeholder='Lat, Lng'
                     )
                     input(
                         data-smark
@@ -95,6 +98,21 @@ block mainForm
                         type="time"
                         placeholder='hh:mm'
                     )
+                    input(
+                        data-smark
+                        name="place"
+                        placeholder='Place name or address'
+                    )
+                    input(
+                        data-smark
+                        name="city"
+                        placeholder='City'
+                    )
+                button.inline(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                }, title = "Remove stop place", style="margin-left:auto")
+                    span(role='img', aria-label='Remove stop place') ➖
         .form-group
             .spacer
             button.inline(data-smark={
@@ -107,15 +125,14 @@ block mainForm
             type: "form",
             name: "destination",
         })
+            label.inline
+                span(data-smark={action: "count", context: "../stops", delta: 1}) N
+                span(role='img', aria-label='') &nbsp;📌
             input(
                 data-smark
-                name="place"
-                placeholder='Place'
-            )
-            input(
-                data-smark
-                name="city"
-                placeholder='City'
+                name="coordinates"
+                type="text"
+                placeholder='Lat, Lng'
             )
             input(
                 data-smark
@@ -129,6 +146,16 @@ block mainForm
                 type="time"
                 placeholder='hh:mm'
             )
+            input(
+                data-smark
+                name="place"
+                placeholder='Place name or address'
+            )
+            input(
+                data-smark
+                name="city"
+                placeholder='City'
+            )
     section
         h2 Participants
 
@@ -138,16 +165,19 @@ block mainForm
             name: "organizers",
             exportEmpties: false,
         })
-            .full-width.form-group.aside.reverse
-                button.inline(data-smark={
-                    action: "removeItem",
-                    hotkey: "-",
-                }, title = "Remove organizer")
-                    span(role='img', aria-label='Remove organizer') ➖
+            .full-width.form-group.aside
+                label.inline
+                    span(data-smark={action: "position"})
+                    span(role='img', aria-label='') &nbsp;🧑‍💼
                 .form-group.spacer
                     .form-group
                         input(style='flex: 6', data-smark name="name" placeholder="Name")
                         input(style='flex: 2', data-smark name = "phone" type="tel" placeholder="Phone number")
+                button.inline(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                }, title = "Remove organizer", style="margin-left:auto")
+                    span(role='img', aria-label='Remove organizer') ➖
         .form-group
             .spacer
             button.inline(data-smark={
@@ -163,16 +193,19 @@ block mainForm
             min_items: 0,
             exportEmpties: false,
         })
-            .full-width.form-group.aside.reverse
-                button.inline(data-smark={
-                    action: "removeItem",
-                    hotkey: "-",
-                }, title = "Remove participant")
-                    span(role='img', aria-label='Remove participant') ➖
+            .full-width.form-group.aside
+                label.inline
+                    span(data-smark={action: "position"})
+                    span(role='img', aria-label='') &nbsp;🏃
                 .form-group.spacer
                     .form-group
                         input(style='flex: 6', data-smark name="name" placeholder="Name")
                         input(style='flex: 2', data-smark name = "phone" type="tel" placeholder="Phone number")
+                button.inline(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                }, title = "Remove participant", style="margin-left:auto")
+                    span(role='img', aria-label='Remove participant') ➖
         .form-group
             .spacer
             button.inline(data-smark={

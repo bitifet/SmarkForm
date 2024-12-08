@@ -427,6 +427,7 @@ needed.
 ##### properties (count)
 
   * **action:**: (= "count")
+  * **delta:**: (default 0)
 
 
 #### position (Action)
