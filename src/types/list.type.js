@@ -415,7 +415,7 @@ export class list extends SmarkField {
         return await me.import({data: [], focus});
     };//}}}
     @action
-    count({delta = 0}) {//{{{
+    count({delta = 0} = {}) {//{{{
         // Return number of children.
         // But also it's sole existence allow reinjecting contents to it.
         const me = this;
