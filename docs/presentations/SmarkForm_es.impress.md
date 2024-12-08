@@ -526,6 +526,7 @@ usability_notes:
             <li class="substep">👉 Hot-keys contextuales</li>
             <li class="substep">👉 Plegado de secciones</li>
             <li class="substep">👉 <span class="gray">(Auto)</span>ordenación...</li>
+            <li class="l2 substep"><span class="small-text">🔗 https://github.com/drag-drop-touch-js/dragdroptouch</span></li>
         </ul>
     </div>
 
@@ -583,6 +584,18 @@ usability_notes:
         </ul>
     </div>
 
+{% assign counter = counter | plus: 2000 %}
+    <div id="Futuro" data-x="{{ counter }}" class="step">
+        <h1 class="center medium-text gray">🔮 Futuro</h1>
+        <ul>
+            <li class="substep gray">👉 &lt;select&gt;</li>
+            <li class="substep gray l2">➡️  "Interdependéncia"</li>
+            <li class="substep gray l2">➡️  Carga dinámica</li>
+            <li class="substep gray">👉 The "API" interface</li>
+            <li class="substep gray l2">➡️  <span class='small-text'>&lt;option data-src='["https:...", {...}, "POST"]'&gt;</span></li>
+            <li class="substep gray l2">➡️  Adaptadores personalizados.</li>
+        </ul>
+    </div>
 
 {% assign counter = counter | plus: 2000 %}
     <div id="Más..." data-x="{{ counter }}" class="step">
