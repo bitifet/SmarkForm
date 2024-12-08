@@ -4,237 +4,9 @@ layout: chapter
 permalink: /getting_started/quick_start
 nav_order: 1
 
-simple_form_example: |
-    <div id="myForm$$">
-        <p>
-            <label for="nameField$$">Name:</label>
-            <input type="text" id="nameField$$" name="name">
-        </p>
-        <p>
-            <label for="emailField$$">Email:</label>
-            <input type="email" id="emailField$$" name="email">
-        </p>
-        <p>
-            <button>❌ Clear</button>
-            <button>💾 Submit</button>
-        </p>
-    </div>
-
-simple_form_enhanced_example: |
-    <div id="myForm$$">
-        <p>
-            <label data-smark>Name:</label>
-            <input type="text" name="name" data-smark>
-        </p>
-        <p>
-            <label data-smark>Email:</label>
-            <input type="email" name="email" data-smark>
-        </p>
-        <p>
-            <button data-smark='{"action":"empty"}'>❌ Clear</button>
-            <button data-smark='{"action":"export"}'>💾 Submit</button>
-        </p>
-    </div>
-
-phone_list_form_example: |
-    <div id="myForm$$">
-        <div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
-            <div>
-            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
-            <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
-            <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
-            </div>
-        </div>
-        <p>
-            <button data-smark='{"action":"empty"}'>❌ Clear</button>
-            <button data-smark='{"action":"export"}'>💾 Submit</button>
-        </p>
-    </div>
-
-phone_list_form_example_notes: |
-    👉 Limited to a **maximum of 6** numbers.
-
-    👉 Notice trigger butons **get propperly disabled** when limits reached.
-
-    👉 They are also excluded from keyboard navigation for better navigation with `tab` / `shift`+`tab`.
-
-    👉 Even thought they can be triggered from keyboard through configured (`Ctrl`-`+` and `Ctrl-`-`) hot keys.
-
-    👉 ...Notice what happen when you hit the `ctrl` key while editing...
-
-    👉 Also note that, when you click the `💾 Submit` button **only non empty items get exported**.
-    
-    👉 ...You can prevent this behaviour by setting the *exportEmpteis* property to *true*.
-
-    👉 Change items order by just dragging and dropping them.
-
-beach_surveillance_form_example: |
-    <div id="myForm$$">
-        <h2>Surveillance Periods</h2>
-        <div data-smark='{"type":"list","name":"periods","exportEmpties":true}'>
-            <fieldset>
-                <h2>
-                    <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this period'>
-                        <span role='img' aria-label='Remove this item'>➖</span>
-                    </button>
-                    Period <span title="This is a pending feature... 😉">N</span>
-                </h2>
-                <p>
-                    <label data-smark>Start Date:</label>
-                    <input data-smark type='date' name='start_date'/>
-                    <span>-</span>
-                    <label data-smark>End Date:</label>
-                    <input data-smark type='date' name='end_date'/>
-                </p>
-                <h3>Schedule</h3>
-                <p>
-                    <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
-                        <span role='img' aria-label='Remove interval'>➖</span>
-                    </button>
-                    <button data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}' title='More intrevals'>
-                        <span role='img' aria-label='Add new interval'>➕</span>
-                    </button>
-                    <label>Surveillance:</label>
-                    <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3}'>
-                        <span>
-                            <input data-smark type='time' name='start'/>
-                            to
-                            <input data-smark type='time' name='end'/>
-                        </span>
-                        <span data-smark='{"role":"empty_list"}'>(No Surveillance)</span>
-                    </span>
-                </p>
-                <p>
-                    <button data-smark='{"action":"removeItem","hotkey":"-","context":"boat_schedule"}' title='Less intervals'>
-                        <span role='img' aria-label='Remove interval'>➖</span>
-                    </button>
-                    <button data-smark='{"action":"addItem","hotkey":"+","context":"boat_schedule"}' title='More intrevals'>
-                        <span role='img' aria-label='Add new interval'>➕</span>
-                    </button>
-                    <label>Boat:</label>
-                    <span data-smark='{"type":"list","name":"boat_schedule","min_items":0,"max_items":3}'>
-                        <span>
-                            <input data-smark type='time' name='start'/>
-                            -
-                            <input data-smark type='time' name='end'/>
-                        </span>
-                        <span data-smark='{"role":"empty_list"}'>(No Boat Service)</span>
-                    </span>
-                </p>
-                <h3>
-                    <button data-smark='{"action":"removeItem","hotkey":"-","context":"observers"}' title='Less points'>
-                        <span role='img' aria-label='Remove observation point'>➖</span>
-                    </button>
-                    <button data-smark='{"action":"addItem","hotkey":"+","context":"observers"}' title='More points'>
-                        <span role='img' aria-label='Add new observation point'>➕</span>
-                    </button>
-                    Observation Points
-                </h3>
-                <ul data-smark='{"type":"list","name":"observers","sortable":true}'>
-                    <li>
-                        <label data-smark>Type: </label>
-                        <select data-smark name='type'>
-                            <option value='tower'>Tower</option>
-                            <option value='station'>Lifeguard Station</option>
-                            <option value='post'>Surveillance Post</option>
-                            <option value='other'>Other</option>
-                        </select>
-                        <label data-smark>Name: </label>
-                        <input data-smark type='text' name='name' placeholder='(Optional)'/>
-                        <div style="display: block">
-                            <label data-smark>Phones: </label>
-                            <div data-smark='{"name":"phones","type":"list","of":"input","max_items":3}'>
-                                <div>
-                                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
-                                <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
-                                <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
-                                </div>
-                            </div>
-                        </div>
-                        <p>
-                        <label data-smark>Position: </label>
-                        <input data-smark type='text' name='position' placeholder='Latitude, Longitude'/>
-                        </p>
-                        <p>
-                        <label data-smark>Indications: </label>
-                        <input data-smark type='text' name='indications' placeholder='Where it is'/>
-                        </p>
-                    </li>
-                </ul>
-            </fieldset>
-        </div>
-        <button data-smark='{"action":"addItem","hotkey":"+","context":"periods"}'>
-            <span role='img' alt=''>➕</span> Add new Period
-        </button>
-        <p>
-            <button data-smark='{"action":"empty"}'>❌ Clear</button>
-            <button data-smark='{"action":"export"}'>💾 Submit</button>
-        </p>
-    </div>
-
-
-advanced_sample_css: |
-    /* Emphasize disabled buttons */
-    button:disabled {
-        opacity: .5;
-    }
-
-    /* Reveal hotkey hints */
-    button[data-hotkey] {
-        position: relative;
-        overflow-x: display;
-    }
-    button[data-hotkey]::before {
-        content: attr(data-hotkey);
-
-        display: inline-block;
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        z-index: 10;
-
-        background-color: #ffd;
-        outline: 1px solid lightyellow;
-        padding: 1px 4px;
-        border-radius: 4px;
-        font-weight: bold;
-
-        transform: scale(1.4) translate(.1em, .1em);
-
-    }
-
-
-form_export_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm$$"));
-    /* Show exported data in an alert() window */
-    myForm.on("AfterAction_export", ({data})=>{
-        window.alert(JSON.stringify(data, null, 4));
-    });
-
-
-confirm_cancel_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm$$"));
-    /* Show exported data in an alert() window */
-    myForm.on("AfterAction_export", ({data})=>{
-        window.alert(JSON.stringify(data, null, 4));
-    });
-    /* Ask for confirmation unless form is already empty: */
-    myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
-        if (
-            ! await context.isEmpty()     /* Form is not empty */
-            && ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
-        ) {
-            /* Prevent default (empty form) behaviour: */
-            preventDefault();
-        };
-    });
-
-
 ---
 
 {% include links.md %}
-
-{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
@@ -343,11 +115,7 @@ Start by writing the form markup in plain HTML. For example, let's create a
 simple form like the following:
 
 
-{% include components/sampletabs_tpl.md
-   formId="simple_form"
-   htmlSource=page.simple_form_example
-   jsSource="-"
-%}
+{% include_relative examples/simple_form.examples.md option="legacy" %}
 
 
 {: .info}
@@ -364,12 +132,8 @@ simple form like the following:
 In your JavaScript tag, create a new instance of the SmarkForm class and pass
 the DOM node of the form container as parameter:
 
+{% include_relative examples/simple_form.examples.md option="initialized" %}
 
-{% include components/sampletabs_tpl.md
-   formId="instantiated_simple_form"
-   htmlSource=page.simple_form_example
-   selected="js"
-%}
 
 Ok: Nothing exciting happended by now...
 
@@ -388,10 +152,7 @@ attribute.
 
 Let's mark all fields, buttons and labels... with it:
 
-{% include components/sampletabs_tpl.md
-   formId="enhanced_simple_form"
-   htmlSource=page.simple_form_enhanced_example
-%}
+{% include_relative examples/simple_form.examples.md option="minimal" %}
 
 
 Now, if you go to the *Preview* tab and fill some data in, you can then hit de
@@ -418,12 +179,9 @@ the *export* action but **we haven't told it what to do** with that data.
 
 To do so, we only need to listen the proper event:
 
-{% include components/sampletabs_tpl.md
-   formId="enhanced_simple_form_export"
-   htmlSource=page.simple_form_enhanced_example
-   jsSource=page.form_export_example_js
-   selected="js"
-%}
+
+{% include_relative examples/simple_form.examples.md option="withExport" %}
+
 
 Now go to the *Preview* tab, fill some data in and try clicking the `💾 Submit`
 button.
@@ -446,12 +204,8 @@ Luckily, we can listen to the *BeforeAction_empty* event and gently ask users fo
 
 Let's see a simple example using a *window.confirm()* dialog:
 
-{% include components/sampletabs_tpl.md
-   formId="confirm_cancel_form_export"
-   htmlSource=page.simple_form_enhanced_example
-   jsSource=page.confirm_cancel_example_js
-   selected="js"
-%}
+{% include_relative examples/simple_form.examples.md option="withConfirmCancel" %}
+
 
 {: .hint}
 > Notice that, if you go to the *Preview* tab and click the `❌ Clear` button
@@ -483,26 +237,12 @@ additional capabilities of the library:
 
 **List of telephones:**
 
-{% include components/sampletabs_tpl.md
-   formId="misc_examples_form"
-   htmlSource=page.phone_list_form_example
-   cssSource=page.advanced_sample_css
-   jsSource=page.confirm_cancel_example_js
-   notes=page.phone_list_form_example_notes
-   selected="preview"
-%}
+{% include_relative examples/lists.examples.md option="phones" %}
 
 
-**Beach Surveillance Service Data**
+**Simple schedule:**
 
-{% include components/sampletabs_tpl.md
-   formId="beach_surveillance_form"
-   htmlSource=page.beach_surveillance_form_example
-   cssSource=page.advanced_sample_css
-   jsSource=page.confirm_cancel_example_js
-   selected="preview"
-%}
-
+{% include_relative examples/lists.examples.md option="schedule" %}
 
 
 {: .hint :}
