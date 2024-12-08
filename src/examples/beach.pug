@@ -1,0 +1,113 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Beach Surveillance Example";
+        var description = `
+            This example mocks a form to collect data about beaches' available
+            surveillance services every time during a whole season.
+
+            For real-life implementation it would require moving observation
+            points data outside of periods and a few dynamic tweaks that are
+            outside of the scope of this demonstration example.
+        `;
+block mainForm
+    h2 General data
+    .form-group
+        .form-group
+            label(data-smark) Name:
+            input(data-smark, type='text', name='name', placeholder='Beach Name')
+        .form-group
+            label(data-smark) Risk Level:
+            select(data-smark, name='risk', style='max-width: 8em')
+                option(value='low') Low
+                option(value='medium') Medium
+                option(value='high') High
+    .form-group
+        .form-group
+            label(data-smark) Municipality:
+            input(data-smark, type='text', name='municipality')
+        .form-group
+            label(data-smark) Coordinates:
+            input(data-smark, type='text', name='coordinates', placeholder='Lat, Lng')
+    h2 Surveillance Periods
+    div(data-smark='{"type":"list","name":"periods","exportEmpties":true}')
+        section
+            .form-group.aside
+                h2 Period #[span(data-smark='{"action":"position"}') N]
+                button.inline(data-smark='{"action":"removeItem","hotkey":"-"}', title='Remove this period')
+                    span(role='img', aria-label='Remove this item') ➖
+            .form-group
+                .form-group
+                    label(data-smark) Start Date:
+                    input(data-smark, type='date', name='start_date')
+                .form-group
+                    label(data-smark) End Date:
+                    input(data-smark, type='date', name='end_date')
+            h3 Schedule
+            .form-group
+                button(data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}', title='Less intervals')
+                    span(role='img', aria-label='Remove interval') ➖
+                button(data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}', title='More intrevals')
+                    span(role='img', aria-label='Add new interval') ➕
+                label Surveillance:
+                span(data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3}')
+                    span
+                        input.small(data-smark, type='time', name='start')
+                        | to
+                        input.small(data-smark, type='time', name='end')
+                    span(data-smark='{"role":"empty_list"}') (No Surveillance)
+            .form-group
+                button(data-smark='{"action":"removeItem","hotkey":"-","context":"boat_schedule"}', title='Less intervals')
+                    span(role='img', aria-label='Remove interval') ➖
+                button(data-smark='{"action":"addItem","hotkey":"+","context":"boat_schedule"}', title='More intrevals')
+                    span(role='img', aria-label='Add new interval') ➕
+                label Boat:
+                span(data-smark='{"type":"list","name":"boat_schedule","min_items":0,"max_items":3}')
+                    span
+                        input.small(data-smark, type='time', name='start')
+                        | -
+                        input.small(data-smark, type='time', name='end')
+                    span(data-smark='{"role":"empty_list"}') (No Boat Service)
+            .form-group.aside
+                h3 Observation Points
+                button.inline(data-smark='{"action":"removeItem","hotkey":"-","context":"observers"}', title='Less points')
+                    span(role='img', aria-label='Remove observation point') ➖
+                button.inline(data-smark='{"action":"addItem","hotkey":"+","context":"observers"}', title='More points')
+                    span(role='img', aria-label='Add new observation point') ➕
+            .form-group(data-smark='{"type":"list","name":"observers","sortable":true}')
+                fieldset.form-group
+                    .form-group
+                        label(data-smark) Type:
+                        select(data-smark, name='type' style='max-width: 12em')
+                            option(value='tower') Tower
+                            option(value='station') Lifeguard Station
+                            option(value='post') Surveillance Post
+                            option(value='other') Other
+                    .form-group
+                        label(data-smark) Name:
+                        input(data-smark, type='text', name='name', placeholder='(Optional)')
+                    .form-group
+                        label(data-smark) Position:
+                        input(data-smark, type='text', name='position', placeholder='Latitude, Longitude')
+                    .form-group.full-width
+                        div(style='display: block')
+                            +inputlist("Telephones")(
+                                name="phones"
+                                type="tel",
+                                max_items=3,
+                                placeholder="Telephone",
+                            )
+                        .form-group
+                            label(data-smark) Indications:
+                            textarea(rows=4, data-smark, name='indications', placeholder='Where it is')
+    .form-group.aside.reverse
+        button.inline(data-smark='{"action":"addItem","hotkey":"+","context":"periods"}')
+            span(role='img', alt) ➕
+            |    Add new Period
+    p &nbsp;
+    .form-group.aside.reverse
+        button.inline(data-smark='{"action":"export"}') 💾 Submit
+        button.inline(data-smark='{"action":"empty"}') ❌ Clear

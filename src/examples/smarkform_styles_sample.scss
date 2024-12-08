@@ -147,7 +147,9 @@
     input, textarea, select, button {
         margin: var(--form-gap);
         border-radius: var(--round-radius);
-        padding: .5rem 1rem;
+        &:not(.small) {
+            padding: .5rem 1rem;
+        }
         width: auto;
         font-size: inherit;
     }

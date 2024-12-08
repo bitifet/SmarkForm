@@ -144,9 +144,12 @@
 .smarkForm input, .smarkForm textarea, .smarkForm select, .smarkForm button {
   margin: var(--form-gap);
   border-radius: var(--round-radius);
-  padding: .5rem 1rem;
   width: auto;
   font-size: inherit;
+}
+
+.smarkForm input:not(.small), .smarkForm textarea:not(.small), .smarkForm select:not(.small), .smarkForm button:not(.small) {
+  padding: .5rem 1rem;
 }
 
 .smarkForm button {
