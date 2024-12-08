@@ -98,11 +98,8 @@ export class list extends SmarkField {
         me.root.onRendered(async ()=>{
             for(let i=0; i<me.min_items; i++) await me.addItem();
             if (me.min_items == 0) {
-                // Update "count" actions in case of not already updated by
-                // me.addItem:
-                me.getTriggers("count").forEach(
-                    tgg=>tgg.targetNode.innerText = String(me.children.length)
-                );
+                // Ensure "count" actions get updated:
+                me.renum();
                 // Reinject empty_list template:
                 if (me.templates.empty_list) me.targetNode.appendChild(me.templates.empty_list);
             };
@@ -286,9 +283,6 @@ export class list extends SmarkField {
         // Execute "onRendered" callbacks:{{{
         onRenderedCbks.forEach(cbk=>cbk(newItem));
         //}}}
-        me.getTriggers("count").forEach(
-            tgg=>tgg.targetNode.innerText = String(me.children.length)
-        );
         if (me.renderedSync) newItem.focus();
     };//}}}
     @action
@@ -395,10 +389,6 @@ export class list extends SmarkField {
             me.children = newChildren;
             me.renum();
 
-            me.getTriggers("count").forEach(
-                tgg=>tgg.targetNode.innerText = String(me.children.length)
-            );
-
             // Execute "onRemoved" callbacks:{{{
             onRemovedCbks.forEach(cbk=>cbk());
             //}}}
@@ -425,11 +415,11 @@ export class list extends SmarkField {
         return await me.import({data: [], focus});
     };//}}}
     @action
-    count() {//{{{
+    count({delta = 0}) {//{{{
         // Return number of children.
         // But also it's sole existence allow reinjecting contents to it.
         const me = this;
-        return me.children.length;
+        return me.children.length + Number(delta);
     };//}}}
     @action
     position({target, offset = 1} = {}) {//{{{
@@ -445,6 +435,11 @@ export class list extends SmarkField {
             const me = this;
             const args = tgg.getTriggerArgs();
             tgg.targetNode.innerText = me.position(args);
+        });
+        me.getTriggers("count").forEach(tgg=>{
+            const me = this;
+            const args = tgg.getTriggerArgs();
+            tgg.targetNode.innerText = me.count(args);
         });
     };//}}}
 };
