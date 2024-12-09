@@ -57,8 +57,14 @@ Introduction
 The List component in SmarkForm allows you to dynamically manage a list of
 items within your form.
 
-👉 It uses the content of the container element as a template for each item in
-the list.
+👉 All lists direct childs (before rendering) are considered *templates* with
+different *roles*.
+
+👉 Default role is "item", which is used as a template for each item in the
+list. This template is mandatory.
+
+👉 Other roles are "empty_list" (displayed when the list is empty) and, not yet
+implemented, "separator" and "last_separator".
 
 👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
 inputs can be created over any HTML tag1️⃣  **except for actual HTML form
@@ -70,8 +76,8 @@ elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 👉 Lists can contain a variable number of unnamed inputs (list items) of a given
 type.
 
-👉 However, in its html source, **list fields must contain exactly one direct
-child**2️⃣  (the template).
+👉 However, in its html source, **lists must only contain templates of supported roles as direct
+childs**2️⃣ , being the "item" role required and the rest optional.
 
 👉 The user will (or won't) be able to, at its own discretion (and according
 certain configurable rules), add or remove items to the list.
@@ -99,7 +105,7 @@ it may look like we are limited when it comes to inserting labels **and
 triggers** in the item template and hence we can only remove last item every
 time in the list.
 
-This would forece us to move the *Remove Item* button outside the list5️⃣  like in the
+This would force us to move the *Remove Item* button outside the list5️⃣  like in the
 following example.
 
 
@@ -136,7 +142,7 @@ inside.
 > *SmarkForm* automatically inferes the type from the HTML tag.
 > 
 > {: .warning}
-> > This is hany for fast developping but it is **not a recommended practice**
+> > This is handy for fast developping but it is **not a recommended practice**
 > > since our designer may decide to change the tag for the template and different
 > > type could be infered.
 
