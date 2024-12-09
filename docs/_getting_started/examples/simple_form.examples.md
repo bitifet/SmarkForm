@@ -1,6 +1,7 @@
 
 {% include components/sampletabs_ctrl.md %}
 
+{% raw %} <!-- html_source_legacy {{{ --> {% endraw %}
 {% capture html_source_legacy %}<div id="myForm$$">
     <p>
         <label for="nameField$$">Name:</label>
@@ -15,7 +16,9 @@
         <button>💾 Submit</button>
     </p>
 </div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
 {% capture html_source_enhanced %}<div id="myForm$$">
     <p>
         <label data-smark>Name:</label>
@@ -30,13 +33,17 @@
         <button data-smark='{"action":"export"}'>💾 Submit</button>
     </p>
 </div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- form_export_example_js {{{ --> {% endraw %}
 {% capture form_export_example_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
 /* Show exported data in an alert() window */
 myForm.on("AfterAction_export", ({data})=>{
     window.alert(JSON.stringify(data, null, 4));
 });{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- confirm_cancel_example_js {{{ --> {% endraw %}
 {% capture confirm_cancel_example_js: %}{{ form_export_example_js }}
 /* Ask for confirmation unless form is already empty: */
 myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
@@ -48,6 +55,7 @@ myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
         preventDefault();
     };
 });{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 
 

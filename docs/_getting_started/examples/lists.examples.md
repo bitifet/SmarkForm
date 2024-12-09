@@ -1,7 +1,7 @@
 
 {% include components/sampletabs_ctrl.md %}
 
-
+{% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
 {% capture html_phone_list %}<div id="myForm$$">
 <div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
     <div>
@@ -15,8 +15,9 @@
     <button data-smark='{"action":"export"}'>💾 Submit</button>
 </p>
 </div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-
+{% raw %} <!-- capture html_schedule_list {{{ --> {% endraw %}
 {% capture html_schedule_list %}<div id="myForm$$">
 <p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
@@ -40,9 +41,9 @@
     <button data-smark='{"action":"export"}'>💾 Submit</button>
 </p>
 </div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-
-
+{% raw %} <!-- capture advanced_sample_css {{{ --> {% endraw %}
 {% capture advanced_sample_css %}/* Emphasize disabled buttons */
 button:disabled {
     opacity: .5;
@@ -71,7 +72,9 @@ button[data-hotkey]::before {
     transform: scale(1.4) translate(.1em, .1em);
 
 }{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- capture default_js {{{ --> {% endraw %}
 {% capture default_js: %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
 /* Show exported data in an alert() window */
 myForm.on("AfterAction_export", ({data})=>{
@@ -87,7 +90,9 @@ myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
         preventDefault();
     };
 });{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- capture phone_list_form_example_notes {{{ --> {% endraw %}
 {%capture phone_list_form_example_notes %}👉 Limited to a **maximum of 6** numbers.
 
 👉 Notice trigger butons **get propperly disabled** when limits reached.
@@ -105,6 +110,8 @@ myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
 👉 Change items order by just dragging and dropping them.
 
 {% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 
 {% if include.option == "phones" %}
