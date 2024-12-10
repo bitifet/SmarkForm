@@ -61,17 +61,17 @@ simplicity_example: |
     <div id="myForm$$">
         <p class="row">
             <label data-smark>Nombre:</label>
-            <input data-smark='{"name":"name"}' type="text" />
+            <input data-smark='{"name":"name", "type":"input"}' type="text" />
             <button data-smark='{"action":"empty","context":"name"}'>❌</button>
         </p>
         <p class="row">
             <label data-smark>Teléfono:</label>
-            <input type="tel" name="phone" data-smark />
+            <input data-smark name="phone" type="tel" />
             <button data-smark='{"action":"empty","context":"phone"}'>❌</button>
         </p>
         <p class="row">
             <label data-smark>eMail:</label>
-            <input type="email" name="email" data-smark />
+            <input data-smark name="email" type="email" />
             <button data-smark='{"action":"empty","context":"email"}'>❌</button>
         </p>
         <p class="row">
@@ -258,6 +258,7 @@ usability_notes:
     li.l2 { padding-left: 4em; font-size: 0.7em; }
     .center { text-align: center; transform: translateX(-100px); }
     .center>div, .center>iframe { display: inline-block; }
+    .center>iframe {transform: translateX(+100px); }
     .gray { color: #779977; }
     .tab-container {
         font-size: 1rem;
