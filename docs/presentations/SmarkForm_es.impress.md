@@ -482,7 +482,13 @@ usability_notes:
             <li class="l2 substep">➡️  Ejemplo / Boilerplate / Desde cero.</li>
             <li class="substep">🚀 Empieza!!</li>
         </ul>
+    </div>
 
+{% assign counter = counter | plus: 2000 %}
+    <div id="codepen" data-x="{{ counter }}" class="step">
+        <div class="center">
+            <img style="width: 400px;" src="assets/CodePen_QR_workshop_20241212.png" alt="https://codepen.io/pen?template=pvzbYYJ">
+        </div>
     </div>
 
 
