@@ -30,12 +30,16 @@ nav_order: 2
         * [exportEmpties](#exportempties)
         * [of](#of)
     * [Actions](#actions)
+        * [(Async) export (Action)](#async-export-action)
+            * [properties (export)](#properties-export)
+        * [(Async) import (Action)](#async-import-action)
+            * [properties (import)](#properties-import)
+        * [(Async) empty (Action)](#async-empty-action)
+            * [properties (empty)](#properties-empty)
         * [(Async) addItem (Action)](#async-additem-action)
             * [properties (addItem)](#properties-additem)
         * [(Async) removeItem (Action)](#async-removeitem-action)
             * [properties (removeItem)](#properties-removeitem)
-        * [(Async) empty (Action)](#async-empty-action)
-            * [properties (empty)](#properties-empty)
         * [count (Action)](#count-action)
             * [properties (count)](#properties-count)
         * [position (Action)](#position-action)
@@ -163,7 +167,7 @@ say, up to three phone numbers and up to three emails.
 {: .hint}
 > As you can see here, phones and emails lists share almost the same layout.
 > 
-> Since *SmarkForm* work just over the DOM, you can use your preferred HTML 
+> Since *SmarkForm* works just over the DOM, you can use your preferred HTML 
 > templating system. For instance, 
 > [here](https://github.com/bitifet/SmarkForm/blob/main/src/examples/include/mixins.pug)
 > you can see a similar *mixin* implemented whith [Pug templates](https://pugjs.org).
@@ -209,6 +213,13 @@ Controls wether the list can be user sorted by dragging and dropping list items.
   * **Type:** Boolean
   * **Default value:** false
 
+{: .hint}
+> Drag and Drop events are not natively supported by touch devices.
+>
+> They can be emulated in serveral ways. A quite straighforward one is through the *dragdroptouch* library from Bernardo Castilho:
+>
+> 🔗 [https://github.com/drag-drop-touch-js/dragdroptouch](https://github.com/drag-drop-touch-js/dragdroptouch)
+
 
 #### exportEmpties
 
@@ -230,6 +241,46 @@ needed.
 
 
 ### Actions
+
+
+#### (Async) export (Action)
+
+##### properties (export)
+
+  * **action:** (= "export")
+  * **origin:**
+  * **context:**
+  * **target:**
+  * **data:**
+
+
+#### (Async) import (Action)
+
+##### properties (import)
+
+  * **action:** (= "import")
+  * **origin:**
+  * **context:**
+  * **target:**
+  * **data:** (array / any¹)
+  * **focus:** (boolean, default true)
+
+
+{: .hint}
+> ¹) If non array value is provided as *data*, then it is automatically wrapped
+> as such as a failback.
+
+#### (Async) empty (Action)
+
+(Shorhand for `import({data: []})`)
+
+##### properties (empty)
+
+  * **action:** (= "empty")
+  * **origin:**
+  * **context:**
+  * **target:**
+
 
 #### (Async) addItem (Action)
 
@@ -256,13 +307,6 @@ needed.
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **keep_non_empty:** (boolean)
   * **failback:** (= "none" / "clear" / "throw" )
-
-
-#### (Async) empty (Action)
-
-##### properties (empty)
-
-  * **action:**: (= "empty")
 
 
 #### count (Action)

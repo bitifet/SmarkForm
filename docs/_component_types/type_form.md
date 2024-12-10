@@ -101,11 +101,16 @@ simple_form_example_notes: |
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
-* [Options](#options)
-* [Actions](#actions)
-    * [Action «empty»](#action-empty)
-* [Other Methods](#other-methods)
-* [Events](#events)
+* [API Reference](#api-reference)
+    * [Options](#options)
+    * [Actions](#actions)
+        * [(Async) export (Action)](#async-export-action)
+            * [properties (export)](#properties-export)
+        * [(Async) import (Action)](#async-import-action)
+            * [properties (import)](#properties-import)
+        * [(Async) empty (Action)](#async-empty-action)
+            * [properties (empty)](#properties-empty)
+    * [Events](#events)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -138,24 +143,54 @@ Following example shows a simple *SmarkForm* form with two nested forms:
 %}
 
 
-Options
--------
 
 
-Actions
--------
-
-
-### Action «empty»
-
-
-Other Methods
+API Reference
 -------------
 
 
+### Options
 
-Events
-------
+
+### Actions
+
+#### (Async) export (Action)
+
+##### properties (export)
+
+  * **action:** (= "export")
+  * **origin:**
+  * **context:**
+  * **target:**
+  * **data:**
+
+
+#### (Async) import (Action)
+
+##### properties (import)
+
+  * **action:** (= "import")
+  * **origin:**
+  * **context:**
+  * **target:**
+  * **data:** (JSON)
+  * **focus:** (boolean, default true)
+
+
+#### (Async) empty (Action)
+
+(Shorhand for `import({data: {}})`)
+
+##### properties (empty)
+
+  * **action:** (= "empty")
+  * **origin:**
+  * **context:**
+  * **target:**
+
+
+### Events
+
 
 
 
