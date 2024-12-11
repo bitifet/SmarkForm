@@ -256,6 +256,7 @@ usability_notes:
     li, p { color:black; }
     li:not(.big-text) { padding-left: 2em; font-size: .8em; }
     li.l2 { padding-left: 4em; font-size: 0.7em; }
+    li.l3 { padding-left: 8em; font-size: 0.5em; }
     .center { text-align: center; transform: translateX(-100px); }
     .center>div, .center>iframe { display: inline-block; }
     .center>iframe {transform: translateX(+100px); }
@@ -456,8 +457,9 @@ usability_notes:
             <li class="substep">👉 SoC (MVC)</li>
             <li class="substep">👉 <b>Zero-Wiring:</b></li>
             <li class="substep l2">🔧 Acciones.</li>
-            <li class="substep l2">🔧 Triggers contextuales.</li>
-            <li class="substep l2">🔧 Rutas "directory-like".</li>
+            <li class="substep l2">🔧 Controles o disparadores (Triggers).</li>
+            <li class="substep l3">🪛 Contexto →  Acción.</li>
+            <li class="substep l3">🪛 Rutas <span class="small-text">(Ejemplo: "../../nombre_campo")</span>.</li>
         </ul>
     </div>
 
