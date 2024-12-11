@@ -256,7 +256,6 @@ usability_notes:
     li, p { color:black; }
     li:not(.big-text) { padding-left: 2em; font-size: .8em; }
     li.l2 { padding-left: 4em; font-size: 0.7em; }
-    li.l3 { padding-left: 8em; font-size: 0.5em; }
     .center { text-align: center; transform: translateX(-100px); }
     .center>div, .center>iframe { display: inline-block; }
     .center>iframe {transform: translateX(+100px); }
@@ -455,11 +454,24 @@ usability_notes:
             <li class="substep">👉 HTML + metadatos</li>
             <li class="substep">👉 Markup-agnostic <span class="small-text substep">(Atributo <i class="shadow">data-smark</i>)</span></li>
             <li class="substep">👉 SoC (MVC)</li>
-            <li class="substep">👉 <b>Zero-Wiring:</b></li>
-            <li class="substep l2">🔧 Acciones.</li>
-            <li class="substep l2">🔧 Controles o disparadores (Triggers).</li>
-            <li class="substep l3">🪛 Contexto →  Acción.</li>
-            <li class="substep l3">🪛 Rutas <span class="small-text">(Ejemplo: "../../nombre_campo")</span>.</li>
+            <li class="substep">👉 <b>Zero-Wiring</b></li>
+            <li>&nbsp;</li>
+        </ul>
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
+    <div id="zero_wiring" data-x="{{ counter }}" class="step">
+        <h1 class="medium-text">👉 Zero-Wiring</h1>
+        <ul>
+            <li class="substep">🔧 Acciones <span class="small-text">(por tipo de campo)</span></li>
+            <li class="substep l2 small-text">🪛 <i>import, export, empty</i>...</li>
+            <li class="substep">🔧 Disparadores <span class="small-text">(Triggers)</span></li>
+            <li class="substep l2 small-text">🪛 Trigger →  Acción</li>
+            <li class="substep">🔧 Contexto <span class="small-text">(Natural / Explícito)</span></li>
+            <li class="substep l2 small-text">🪛 (Direccionabilidad) </li>
+            <li class="substep l2 small-text">🪛 "ruta/relativa", "../superior", "/ruta/absoluta"... </li>
+            <li class="substep">🔧 Objetivo o "target"</li>
+            <li class="substep l2 small-text">🪛 (Implicito / Ruta o "*")</li>
         </ul>
     </div>
 
