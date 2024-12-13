@@ -576,7 +576,7 @@ It looks like as follows:
 
 *Actions* are operations that can be performed over components.
 
-Some of them such as `import`, `export` and `empty` are available for all
+Some of them such as `import`, `export` and `clear` are available for all
 components types while others are tied to secific types like `addItem` and
 `removeItem` for lists, etc...
 

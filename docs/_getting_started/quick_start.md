@@ -197,10 +197,10 @@ button.
 Everything works now. 🎉
 
 However, if it were a larger form, we might not feel so comfortable with the
-`❌ Clear` button ("empty" action trigger) clearing everything in case of an
+`❌ Clear` button ("clear" action trigger) clearing everything in case of an
 accidental click.
 
-Luckily, we can listen to the *BeforeAction_empty* event and gently ask users for confirmation before they lose all their work.
+Luckily, we can listen to the *BeforeAction_clear* event and gently ask users for confirmation before they lose all their work.
 
 Let's see a simple example using a *window.confirm()* dialog:
 

@@ -72,7 +72,7 @@ export class input extends form {
             // Native input's value type is always a string.
     };//}}}
     @action
-    async empty({empty}) {//{{{
+    async clear({focus}) {//{{{
         const me = this;
         await me.import({data: "", focus});
     };//}}}

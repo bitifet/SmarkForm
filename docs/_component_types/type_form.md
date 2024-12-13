@@ -40,7 +40,7 @@ simple_form_example: |
     </div>
     <hr />
     <button data-smark='{"action": "import"}'>Edit JSON</button>
-    <button data-smark='{"action": "empty"}'>Clear Data</button>
+    <button data-smark='{"action": "clear"}'>Clear Data</button>
     <button data-smark='{"action": "export"}'>Show JSON</button>
     </div>
 
@@ -73,7 +73,7 @@ simple_form_example_notes: |
     👉 The outer form doesn't need the "data-smark" attribute having it is the
        the one we passed to the SmarkForm constructor.
     
-    👉 Notice that the *empty* action just works out of the box.
+    👉 Notice that the *clear* action just works out of the box.
        
     ℹ️  In text fields the "name" attribute is naturally taken as field name.
     
@@ -108,8 +108,8 @@ simple_form_example_notes: |
             * [properties (export)](#properties-export)
         * [(Async) import (Action)](#async-import-action)
             * [properties (import)](#properties-import)
-        * [(Async) empty (Action)](#async-empty-action)
-            * [properties (empty)](#properties-empty)
+        * [(Async) clear (Action)](#async-clear-action)
+            * [properties (clear)](#properties-clear)
     * [Events](#events)
 
 <!-- vim-markdown-toc -->
@@ -177,13 +177,13 @@ API Reference
   * **focus:** (boolean, default true)
 
 
-#### (Async) empty (Action)
+#### (Async) clear (Action)
 
 (Shorhand for `import({data: {}})`)
 
-##### properties (empty)
+##### properties (clear)
 
-  * **action:** (= "empty")
+  * **action:** (= "clear")
   * **origin:**
   * **context:**
   * **target:**

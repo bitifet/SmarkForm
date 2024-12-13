@@ -74,7 +74,7 @@ export class form extends SmarkField {
         return true;
     };//}}}
     @action
-    async empty({focus}) {//{{{
+    async clear({focus}) {//{{{
         const me = this;
         return await me.import({data: {}, focus});
     };//}}}

@@ -34,8 +34,8 @@ nav_order: 2
             * [properties (export)](#properties-export)
         * [(Async) import (Action)](#async-import-action)
             * [properties (import)](#properties-import)
-        * [(Async) empty (Action)](#async-empty-action)
-            * [properties (empty)](#properties-empty)
+        * [(Async) clear (Action)](#async-clear-action)
+            * [properties (clear)](#properties-clear)
         * [(Async) addItem (Action)](#async-additem-action)
             * [properties (addItem)](#properties-additem)
         * [(Async) removeItem (Action)](#async-removeitem-action)
@@ -270,13 +270,13 @@ needed.
 > ¹) If non array value is provided as *data*, then it is automatically wrapped
 > as such as a failback.
 
-#### (Async) empty (Action)
+#### (Async) clear (Action)
 
 (Shorhand for `import({data: []})`)
 
-##### properties (empty)
+##### properties (clear)
 
-  * **action:** (= "empty")
+  * **action:** (= "clear")
   * **origin:**
   * **context:**
   * **target:**

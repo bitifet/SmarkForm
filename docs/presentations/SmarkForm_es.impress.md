@@ -62,20 +62,20 @@ simplicity_example: |
         <p class="row">
             <label data-smark>Nombre:</label>
             <input data-smark='{"name":"name", "type":"input"}' type="text" />
-            <button data-smark='{"action":"empty","context":"name"}'>❌</button>
+            <button data-smark='{"action":"clear","context":"name"}'>❌</button>
         </p>
         <p class="row">
             <label data-smark>Teléfono:</label>
             <input data-smark name="phone" type="tel" />
-            <button data-smark='{"action":"empty","context":"phone"}'>❌</button>
+            <button data-smark='{"action":"clear","context":"phone"}'>❌</button>
         </p>
         <p class="row">
             <label data-smark>eMail:</label>
             <input data-smark name="email" type="email" />
-            <button data-smark='{"action":"empty","context":"email"}'>❌</button>
+            <button data-smark='{"action":"clear","context":"email"}'>❌</button>
         </p>
         <p class="row">
-            <button data-smark='{"action":"empty"}'>❌ Borrar</button>
+            <button data-smark='{"action":"clear"}'>❌ Borrar</button>
             <button data-smark='{"action":"export"}'>💾 Guardar</button>
         </p>
     </div>
@@ -120,7 +120,7 @@ power_example: |
             <input type="email" name="email" data-smark /></p>
         </fieldset>
         <p class="row">
-            <button data-smark='{"action":"empty"}'>❌ Borrar</button>
+            <button data-smark='{"action":"clear"}'>❌ Borrar</button>
             <button data-smark='{"action":"import"}'>📂 Abrir</button>
             <button data-smark='{"action":"export"}'>💾 Guardar</button>
         </p>
@@ -130,7 +130,7 @@ power_notes:
     <ul>
         <li>👉 Interceptando los eventos adecuados, podemos, por ejemplo:</li>
         <li class="l2">➡️  Inyectar o capturar los datos (JSON) de las acciones <i>import</i> y <i>export</i>.</li>
-        <li class="l2">➡️  Alterar el comportamiento de la acción <i>empty</i> para que nos solicite confirmación cuando sea pertinente.</li>
+        <li class="l2">➡️  Alterar el comportamiento de la acción <i>clear</i> para que nos solicite confirmación cuando sea pertinente.</li>
         <li>👉 Para agrupar los datos de contacto, usamos un campo de tipo <i>form</i> que devuelve JSON.</li>
         <li>👉 En lugar de un sólo teléfono hemos utilizado una lista de longitud variable.</li>
         <li class="l2">📝 Los descendientes directos de las listas son <i>plantillas</i> que cumplen un determinado <i>rol</i>. Por defecto "list_item" que es obligatorio y se utilizará para renderizar los elementos de la lista. Pero hay otros, como <i>empty_list</i>, que nos ha permitido mostrar el texto "(No dispone)" cuando la lista esté vacía.</li>
@@ -162,12 +162,12 @@ power_example_js: |
     });
 
     /* Ask for confirmation unless form is already empty: */
-    myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+    myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
         if (
             ! await context.isEmpty()        /* Form (or field) is not empty */
             && ! confirm("Descartar datos?") /* User clicked the "Cancel" button. */
         ) {
-            /* Prevent default (empty form) behaviour: */
+            /* Prevent default (clear form) behaviour: */
             preventDefault();
         };
     });
@@ -195,7 +195,7 @@ usability_example: |
             </fieldset>
         </div>
         <p class="row">
-            <button data-smark='{"action":"empty","hotkey":"x"}'>❌ Borrar</button>
+            <button data-smark='{"action":"clear","hotkey":"x"}'>❌ Borrar</button>
             <button data-smark='{"action":"export","hotkey":"s"}'>💾 Guardar</button>
         </p>
     </div>
@@ -464,7 +464,7 @@ usability_notes:
         <h1 class="medium-text">👉 Zero-Wiring</h1>
         <ul>
             <li class="substep">🔧 Acciones <span class="small-text">(por tipo de campo)</span></li>
-            <li class="substep l2 small-text">🪛 <i>import, export, empty</i>...</li>
+            <li class="substep l2 small-text">🪛 <i>import, export, clear</i>...</li>
             <li class="substep">🔧 Disparadores <span class="small-text">(Triggers)</span></li>
             <li class="substep l2 small-text">🪛 Trigger →  Acción</li>
             <li class="substep">🔧 Contexto <span class="small-text">(Natural / Explícito)</span></li>

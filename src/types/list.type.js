@@ -177,7 +177,7 @@ export class list extends SmarkField {
             let i = data.length;
             i < me.children.length; // (Due to min_items)
             i++
-        ) me.children[i].empty();
+        ) me.children[i].clear();
         if (focus) me.focus();
         return; // await me.export();
     };//}}}
@@ -324,7 +324,7 @@ export class list extends SmarkField {
                     case "none":
                         break;
                     case "clear":
-                        await currentTarget.empty();
+                        await currentTarget.clear();
                         return;
                     case "throw":
                     default:
@@ -410,7 +410,7 @@ export class list extends SmarkField {
         return true;
     };//}}}
     @action
-    async empty({focus}) {//{{{
+    async clear({focus}) {//{{{
         const me = this;
         return await me.import({data: [], focus});
     };//}}}

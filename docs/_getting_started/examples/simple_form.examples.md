@@ -29,7 +29,7 @@
         <input type="email" name="email" data-smark>
     </p>
     <p>
-        <button data-smark='{"action":"empty"}'>❌ Clear</button>
+        <button data-smark='{"action":"clear"}'>❌ Clear</button>
         <button data-smark='{"action":"export"}'>💾 Submit</button>
     </p>
 </div>{% endcapture %}
@@ -46,12 +46,12 @@ myForm.on("AfterAction_export", ({data})=>{
 {% raw %} <!-- confirm_cancel_example_js {{{ --> {% endraw %}
 {% capture confirm_cancel_example_js: %}{{ form_export_example_js }}
 /* Ask for confirmation unless form is already empty: */
-myForm.on("BeforeAction_empty", async ({context, preventDefault}) => {
+myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     if (
         ! await context.isEmpty()     /* Form is not empty */
         && ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
     ) {
-        /* Prevent default (empty form) behaviour: */
+        /* Prevent default (clear form) behaviour: */
         preventDefault();
     };
 });{% endcapture %}
