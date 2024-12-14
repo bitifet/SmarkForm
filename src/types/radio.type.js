@@ -41,7 +41,7 @@ export class radio extends input {
         return this.radioButtons.find(r=>r.checked)?.value;
     };//}}}
     @action
-    async import({data = null, focus = true}) {//{{{
+    async import({data = null, focus = true} = {}) {//{{{
         const selected = this.radioButtons.find(r=>r.value === data);
         if (selected) selected.checked = true;
         if (focus) this.focus();

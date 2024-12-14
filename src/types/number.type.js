@@ -26,7 +26,7 @@ export class number extends input {
         );
     };//}}}
     @action
-    async import({data = null, focus = true}) {//{{{
+    async import({data = null, focus = true} = {}) {//{{{
         const me = this;
         const typename = typeof data;
         const retv =  await super.import({data:(

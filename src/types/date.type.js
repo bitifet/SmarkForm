@@ -58,7 +58,7 @@ export class date extends input {
         );
     };//}}}
     @action
-    async import({data = null, focus = true}) {//{{{
+    async import({data = null, focus = true} = {}) {//{{{
         const me = this;
         const value = (
             data instanceof Date ? data // Accept Date instance

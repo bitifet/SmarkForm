@@ -144,7 +144,7 @@ export class list extends SmarkField {
         return list;
     };//}}}
     @action
-    async import({data = []}, focus) {//{{{
+    async import({data = [], focus} = {}) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
         if (! (data instanceof Array)) data = [data];
@@ -410,7 +410,7 @@ export class list extends SmarkField {
         return true;
     };//}}}
     @action
-    async clear({focus}) {//{{{
+    async clear({focus} = {}) {//{{{
         const me = this;
         return await me.import({data: [], focus});
     };//}}}

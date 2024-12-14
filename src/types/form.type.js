@@ -37,7 +37,7 @@ export class form extends SmarkField {
         );
     };//}}}
     @action
-    async import({data = {}, focus = true}) {//{{{
+    async import({data = {}, focus = true} = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (dataConstructor !== {}.constructor) throw me.renderError(
@@ -74,7 +74,7 @@ export class form extends SmarkField {
         return true;
     };//}}}
     @action
-    async clear({focus}) {//{{{
+    async clear({focus} = {}) {//{{{
         const me = this;
         return await me.import({data: {}, focus});
     };//}}}

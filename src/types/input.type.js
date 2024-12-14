@@ -45,7 +45,7 @@ export class input extends form {
         );
     };//}}}
     @action
-    async import({data = "", focus = true}) {//{{{
+    async import({data = "", focus = true} = {}) {//{{{
         const me = this;
         if (me.isSingleton) {
             return await super.import({data: Object.fromEntries(
@@ -72,7 +72,7 @@ export class input extends form {
             // Native input's value type is always a string.
     };//}}}
     @action
-    async clear({focus}) {//{{{
+    async clear({focus} = {}) {//{{{
         const me = this;
         await me.import({data: "", focus});
     };//}}}
