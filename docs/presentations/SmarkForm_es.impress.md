@@ -501,7 +501,9 @@ usability_notes:
 {% assign counter = counter | plus: 2000 %}
     <div id="codepen" data-x="{{ counter }}" class="step">
         <div class="center">
-            <img style="width: 400px;" src="assets/CodePen_QR_workshop_20241212.png" alt="https://codepen.io/pen?template=pvzbYYJ">
+            <a href="https://codepen.io/pen?template=pvzbYYJ" target="_blank" style="background: none">
+            <img style="width: 800px;" src="assets/CodePen_QR_workshop_20241212.png" alt="https://codepen.io/pen?template=pvzbYYJ">
+            </a>
         </div>
     </div>
 
