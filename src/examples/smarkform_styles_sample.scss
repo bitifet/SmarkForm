@@ -150,7 +150,13 @@
         &:not(.small) {
             padding: .5rem 1rem;
         }
-        width: auto;
+        &:not([type=color]) {
+            width: auto;
+        }
+        &[type=color] {
+            padding: calc(var(--round-radius) * 0.25) calc(var(--round-radius) * 0.75);
+            height: 2em;
+        }
         font-size: inherit;
     }
     button {
