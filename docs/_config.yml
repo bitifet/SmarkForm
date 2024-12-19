@@ -105,5 +105,8 @@ nav_external_links:
   - title: GitHub
     url: https://github.com/bitifet/SmarkForm
     hide_icon: false
+  - title: Presentations
+    url: /presentations
+    hide_icon: false
 
 heading_anchors: true

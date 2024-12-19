@@ -1,7 +1,7 @@
 ---
 nav_exclude: true
 title: SmarkForm
-permalink: /presentations/SmarkForm_es.impress.html
+permalink: /presentations/SmarkForm_es.impress.20241212.html
 
 simplicity_sample_css: |
     .row {
@@ -284,8 +284,7 @@ usability_notes:
 
     .big-text { font-size: 2em !important; }
     .medium-text { font-size: 1.3em !important; }
-    .small-text { font-size: .6em !important; display: inline-block; }
-    .small-text .small-text { font-size: .8em !important; }
+    .small-text { font-size: .6em !important; display: inline-block; transform: translateY(-.3em); }
     .shadow { text-shadow: 0px 0px 8px yellow; }
     kbd.key {
         display: inline-block;
@@ -464,14 +463,15 @@ usability_notes:
     <div id="zero_wiring" data-x="{{ counter }}" class="step">
         <h1 class="medium-text">👉 Zero-Wiring</h1>
         <ul>
-            <li class="substep">🔧 Acciones <span class="small-text substep">(<span class="substep">Genéricas</span> / <span class="substep">Específicas por tipo de campo</span>)</span></li>
-            <li class="substep l2 small-text" style="color:blue">🧑‍🏫  <i class="substep">import, export, clear...</i> / <i class="substep">addItem, removeItem...</i></li>
-            <li class="substep">🔧 Disparadores <span class="small-text substep">(<span class="substep">Trigger</span> →  <span class="substep">Acción</span>)</span></li>
-            <li class="substep l2 small-text" style="color:blue">🧑‍🏫 &lt;button data-smark='{"action":"removeItem"}'&gt;</li>
-            <li class="substep l2 small-text">🪛 Contexto <span class="small-text substep">(<span class="substep">Natural</span> / <span class="substep">Explícito</span>)</span></li>
-            <li class="substep l2 small-text">🪛 Objetivo o "target" <span class="small-text substep"> (<span class="substep">Implicito</span> / <span class="substep">Ruta</span> o <span class="substep">"*"</span>)</span></li>
-            <li class="substep l2 small-text">🪛 Direccionabilidad </li>
-            <li class="substep l2 small-text" style="color:blue">🧑‍🏫 <span class="substep">"ruta/relativa"</span><span class="substep">, "../superior"</span><span class="substep">, "/ruta/absoluta"</span><span class="substep">...</span></li>
+            <li class="substep">🔧 Acciones <span class="small-text">(por tipo de campo)</span></li>
+            <li class="substep l2 small-text">🪛 <i>import, export, clear</i>...</li>
+            <li class="substep">🔧 Disparadores <span class="small-text">(Triggers)</span></li>
+            <li class="substep l2 small-text">🪛 Trigger →  Acción</li>
+            <li class="substep">🔧 Contexto <span class="small-text">(Natural / Explícito)</span></li>
+            <li class="substep l2 small-text">🪛 (Direccionabilidad) </li>
+            <li class="substep l2 small-text">🪛 "ruta/relativa", "../superior", "/ruta/absoluta"... </li>
+            <li class="substep">🔧 Objetivo o "target"</li>
+            <li class="substep l2 small-text">🪛 (Implicito / Ruta o "*")</li>
         </ul>
     </div>
 
