@@ -438,13 +438,13 @@ usability_notes:
         <h1 class="center medium-text" style="color: blue;">¿Por qué SmarkForm es distinta?</h1>
         <ul style="float: left">
             <li class="substep">👌 Sencillez</li>
+            <li class="substep">🚁 Independencia</li>
             <li class="substep">⚡ Potencia</li>
-            <li class="substep">🫶 Usabilidad</li>
         </ul>
         <ul style="float: right">
-            <li class="substep">♿ Accesibilidad</li>
             <li class="substep">🏗️ Extendibilidad</li>
-            <li class="substep">🚁 Independencia</li>
+            <li class="substep">🫶 Usabilidad</li>
+            <li class="substep">♿ Accesibilidad</li>
         </ul>
     </div>
 
@@ -481,6 +481,15 @@ usability_notes:
         {{ rendered_simplicity_example }}
     </div>
 
+{% assign counter = counter | plus: 2000 %}
+    <div id="Independencia" data-x="{{ counter }}" class="step">
+        <h1 class="center medium-text">🚁 Independencia</h1>
+        <ul>
+            <li class="substep">👉 Vanilla JS.</li>
+            <li class="substep">👉 ES module / UMD</li>
+            <li class="substep">👉 CDN / NPM / GitHub</li>
+        </ul>
+    </div>
 
 {% assign counter = counter | plus: 2000 %}
     <div id="DIY_1" data-x="{{ counter }}" class="step">
@@ -528,6 +537,19 @@ usability_notes:
     </div>
 
 {% assign counter = counter | plus: 2000 %}
+    <div id="Extendibilidad" data-x="{{ counter }}" class="step">
+        <h1 class="center medium-text">🏗️ Extendibilidad</h1>
+        <ul>
+            <li class="substep">👉 Crea tus propios tipos:</li>
+            <li class="l2 substep">➡️  <code class="small-text">class myType extends Smarkform.types.input { ... }</code></li>
+            <li class="l2 substep">➡️  <code class="small-text">SmarkForm.createType(name, myType);</code></li>
+            <li class="substep gray">💡 SmarkForm mixins:</li>
+            <li class="l2 substep gray">➡️  <code class="small-text">SmarkFrom.createMixin(name, htmlsource);</code></li>
+            <li class="l2 substep gray">🩹 (Mixins de plantillas PUG o similar...)</li>
+        </ul>
+    </div>
+
+{% assign counter = counter | plus: 2000 %}
     <div id="DIY_2" data-x="{{ counter }}" class="step">
         <h1 class="big-text center">🛠️ DIY</h1>
         <h1 class="center substep">2. Completa tu formulario</h1>
@@ -560,20 +582,6 @@ usability_notes:
     </div>
 
 {% assign counter = counter | plus: 2000 %}
-    <div id="DIY_3" data-x="{{ counter }}" class="step">
-        <h1 class="big-text center">🛠️ DIY</h1>
-        <h1 class="center substep">3. Mejora la Usabilidad</h1>
-        <p class="small-text">&nbsp;</p>
-        <ul>
-            <li class="substep small-text">👉 Ajusta las teclas rápidas.</li>
-            <li class="substep small-text">👉 Permite la ordenación (si procede).</li>
-            <li class="substep small-text">👉 Comprueba la navegación con el teclado.</li>
-            <li class="substep small-text">👉 Revisa los estilos (CSS).</li>
-            <li class="substep small-text">👉 Verifica el funcionamiento en distiontos dispositivos.</li>
-        </ul>
-    </div>
-
-{% assign counter = counter | plus: 2000 %}
     <div id="Accesibilidad" data-x="{{ counter }}" class="step">
         <h1 class="center medium-text">♿ Accesibilidad</h1>
         <ul>
@@ -585,25 +593,16 @@ usability_notes:
     </div>
 
 {% assign counter = counter | plus: 2000 %}
-    <div id="Extendibilidad" data-x="{{ counter }}" class="step">
-        <h1 class="center medium-text">🏗️ Extendibilidad</h1>
+    <div id="DIY_3" data-x="{{ counter }}" class="step">
+        <h1 class="big-text center">🛠️ DIY</h1>
+        <h1 class="center substep">3. Mejora la Usabilidad</h1>
+        <p class="small-text">&nbsp;</p>
         <ul>
-            <li class="substep">👉 Crea tus propios tipos:</li>
-            <li class="l2 substep">➡️  <code class="small-text">class myType extends Smarkform.types.input { ... }</code></li>
-            <li class="l2 substep">➡️  <code class="small-text">SmarkForm.createType(name, myType);</code></li>
-            <li class="substep gray">💡 SmarkForm mixins:</li>
-            <li class="l2 substep gray">➡️  <code class="small-text">SmarkFrom.createMixin(name, htmlsource);</code></li>
-            <li class="l2 substep gray">🩹 (Mixins de plantillas PUG o similar...)</li>
-        </ul>
-    </div>
-
-{% assign counter = counter | plus: 2000 %}
-    <div id="Independencia" data-x="{{ counter }}" class="step">
-        <h1 class="center medium-text">🚁 Independencia</h1>
-        <ul>
-            <li class="substep">👉 Vanilla JS.</li>
-            <li class="substep">👉 ES module / UMD</li>
-            <li class="substep">👉 CDN / NPM / GitHub</li>
+            <li class="substep small-text">👉 Ajusta las teclas rápidas.</li>
+            <li class="substep small-text">👉 Permite la ordenación (si procede).</li>
+            <li class="substep small-text">👉 Comprueba la navegación con el teclado.</li>
+            <li class="substep small-text">👉 Revisa los estilos (CSS).</li>
+            <li class="substep small-text">👉 Verifica el funcionamiento en distiontos dispositivos.</li>
         </ul>
     </div>
 
@@ -669,7 +668,7 @@ usability_notes:
             <h1 class="big-text">Grácias</h1>
             <div>
             <img class="align-left" width="380px" src="assets/QR_TechSpirit_crafters.jpg" alt="TechSpirit.org and Mallorca Software Crafters" />
-            <img class="align-right" width="380px" src="assets/frssystems_logo.jpeg" alt="FRS Systems" />
+            <!-- <img class="align-right" width="380px" src="assets/_______________.jpeg" alt="FRS Systems" /> -->
             </div>
         </div>
     </div>
