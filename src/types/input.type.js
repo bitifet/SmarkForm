@@ -16,23 +16,22 @@ export class input extends form {
         );
         if (me.isSingleton) {
             await super.render();
-            const numFields = Object.keys(me.children).length;
-            if (numFields != 1) throw me.renderError(
+            const sons = Object.values(me.children);
+            if (sons.length != 1) throw me.renderError(
                 'NOT_A_SINGLETON'
                 , `Singleton forms are only allowed to contain exactly one`
-                + ` data field but ${numFields} found.`
+                + ` data field but ${sons.length} found.`
             );
-        }
-        me.targetFieldNode = (
-            me.isSingleton ? Object.values(me.children)[0].targetNode
-            : me.targetNode
-        );
-        // console.log("New input!!!!", {
-        //     targetNode: me.targetNode,
-        //     parent: me.parent,
-        //     options: me.options,
-        //     inputField: me.inputField,
-        // });
+            const son = sons[0];
+            if (me.options.type !== son.options.type) throw me.renderError(
+                'SINGLETON_TYPE_MISMATCH'
+                , `Singleton type (${me.options.type})`
+                + ` does not match child field type (${son.options.type}).`
+            );
+            me.targetFieldNode = son.targetNode;
+        } else {
+            me.targetFieldNode = me.targetNode;
+        };
         return;
     };//}}}
     @action
