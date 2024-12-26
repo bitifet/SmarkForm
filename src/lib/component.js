@@ -361,6 +361,15 @@ export class SmarkField extends SmarkComponent {
                 this.options.name
                 , this.targetNode.getAttribute("name")
             );
+            if (this.options.hasOwnProperty("value")) {
+                if (this.targetNode.getAttribute("value") !== null) { // Conflict
+                    throw me.renderError(
+                        'VALUE_CONFLICT'
+                        , `Initial value specied both as "value" option and HTML "value" attribute.`
+                    );
+                };
+                this.targetNode.setAttribute("value", this.options.value);
+            };
         };
     };
 };
