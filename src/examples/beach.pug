@@ -87,6 +87,14 @@ block mainForm
                             option(value='post') Surveillance Post
                             option(value='other') Other
                     .form-group
+                        label(data-smark) Color:
+                        span(data-smark='{"type":"color","name":"color"}')
+                            // ,"value":"#ffff00" (...won't work here YET)
+                            input(data-smark)
+                            button(data-smark='{"action":"clear"}') ❌
+                        // input(data-smark='{"type":"color","name":"color","value":"#ffff00"}')
+                        // button(data-smark='{"action":"clear","context":"color"}') ❌
+                    .form-group
                         label(data-smark) Name:
                         input(data-smark, type='text', name='name', placeholder='(Optional)')
                     .form-group

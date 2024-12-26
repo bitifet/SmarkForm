@@ -41,9 +41,12 @@ script.
 
         // Ask for confirm on clear action
         myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+
+            // Ask for confirmation:
             if (
-                ! await context.isEmpty() // Don't even ask if already empty
-                && ! confirm("Are you sure?") // Ask for confirmation
+                context.getPath() == "/"      // Only for the whole form
+                && ! await context.isEmpty()  // Don't even ask if already empty
+                && ! confirm("Are you sure?")
             ) preventDefault(); // Abort if user cancelled
         });
 
