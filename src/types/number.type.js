@@ -37,7 +37,6 @@ export class number extends input {
                 ? Number(data)
             : null
         ), focus});
-        if (focus) me.focus();
         return retv;
     };//}}}
     async isEmpty() {//{{{

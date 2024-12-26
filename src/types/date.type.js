@@ -70,7 +70,6 @@ export class date extends input {
             isNaN(value) ? null
             : ISODate(value)
         ), focus});
-        if (focus) me.focus();
         return retv;
     };//}}}
     async isEmpty() {//{{{

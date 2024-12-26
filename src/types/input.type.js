@@ -73,6 +73,6 @@ export class input extends form {
     @action
     async clear({focus} = {}) {//{{{
         const me = this;
-        await me.import({data: "", focus});
+        await me.import({focus});
     };//}}}
 };
