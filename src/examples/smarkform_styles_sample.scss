@@ -150,6 +150,13 @@
         &:not(.small) {
             padding: .5rem 1rem;
         }
+        font-size: inherit;
+    }
+    button {
+        min-width:2rem;
+        cursor: pointer;
+    }
+    input {
         &:not([type=color]) {
             width: auto;
         }
@@ -157,11 +164,6 @@
             padding: calc(var(--round-radius) * 0.25) calc(var(--round-radius) * 0.75);
             height: 2em;
         }
-        font-size: inherit;
-    }
-    button {
-        min-width:2rem;
-        cursor: pointer;
     }
 
     button:disabled {

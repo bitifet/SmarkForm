@@ -144,7 +144,6 @@
 .smarkForm input, .smarkForm textarea, .smarkForm select, .smarkForm button {
   margin: var(--form-gap);
   border-radius: var(--round-radius);
-  width: auto;
   font-size: inherit;
 }
 
@@ -155,6 +154,15 @@
 .smarkForm button {
   min-width: 2rem;
   cursor: pointer;
+}
+
+.smarkForm input:not([type=color]) {
+  width: auto;
+}
+
+.smarkForm input[type=color] {
+  padding: calc(var(--round-radius) * 0.25) calc(var(--round-radius) * 0.75);
+  height: 2em;
 }
 
 .smarkForm button:disabled {
