@@ -19,7 +19,9 @@ export class number extends input {
     };//}}}
     @action
     async export() {//{{{
+        const me = this;
         const data = await super.export();
+        if (me.isSingleton) return data; // Overload only inner field
         return (
             data.length && ! isNaN(data) ? Number(data)
             : null
@@ -29,6 +31,7 @@ export class number extends input {
     async import({data = null, focus = true} = {}) {//{{{
         const me = this;
         const typename = typeof data;
+        if (me.isSingleton) return await super.import({data, focus}); // Overload only inner field
         const retv =  await super.import({data:(
             typename == "number" ? data
             : typename == "string"

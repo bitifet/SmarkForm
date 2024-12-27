@@ -49,7 +49,9 @@ export class date extends input {
     };//}}}
     @action
     async export() {//{{{
+        const me = this;
         const data = await super.export();
+        if (me.isSingleton) return data; // Overload only inner field
         if (! data.length) return null;
         const value = parseDateStr(data);
         return (
@@ -60,6 +62,7 @@ export class date extends input {
     @action
     async import({data = null, focus = true} = {}) {//{{{
         const me = this;
+        if (me.isSingleton) return await super.import({data, focus}); // Overload only inner field
         const value = (
             data instanceof Date ? data // Accept Date instance
             : typeof data == "number" ? new Date(data) // Accept epoch
