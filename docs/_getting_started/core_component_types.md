@@ -23,6 +23,7 @@ Core component types are the backbone of *SmarkForm*:
 * [Scalar field types](#scalar-field-types)
     * [type: input](#type-input)
     * [type: number and type: date](#type-number-and-type-date)
+    * [type: color](#type-color)
     * [type: select](#type-select)
     * [The Singleton Pattern.](#the-singleton-pattern)
 * [Non field component types](#non-field-component-types)
@@ -58,7 +59,8 @@ and arrays.
 > This way a *SmarkForm* component of type *input* can be defined over either
 > `<select>`, a `<textarea>` or a `<input>` tag with any valid value of its
 > *type* property while, in the case of number, only a `<input>` tag with a
-> "number" as its *type* attribute is allowed.
+> "number" as its *type* attribute is allowed (or with no *type* attribute in
+> which case it will be auto-filled).
 > 
 > And so on...
 
@@ -70,6 +72,15 @@ type provide basic support for all HTML form fields (`<input>`, `<textarea>`
 and `select`) **no matter, in case of *inputs* its actual *type* attribute**.
 
   * Imports and exports *String* like regular HTML form fields.
+
+Other component types may provide more advanced behaviour, like
+importing/exporting appropriate data types, for specific input types, etc...
+But every present and future HTML *&lt;input&gt;* tag could be used as
+*SmarkForm* "input" component type.
+
+**Example:**
+
+{% include_relative examples/core_component_types.examples.md option="input_example" %}
 
 
 ### type: number and type: date
@@ -86,6 +97,48 @@ component type providding extra sanitation (when importing) and formatting
 
   * If inappropriate types (like *String*) are imported, they are properly
     converted on the fly.
+
+**Example:**
+
+{% include_relative examples/core_component_types.examples.md option="number_and_date_example" %}
+
+
+
+### type: color
+
+Similar to [number and date](#type-number-and-type-date), the
+📋 [color]({{ "component_types/type_color" | relative_url }}) component type
+extends the [Input]({{ "component_types/type_input" | relative_url }})
+component type. However, unlike them and as outlined in [its
+specification](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value),
+`<input type="color">` HTML fields do not require additional sanitation or
+formatting.
+
+
+This is because `<input type="color">` ensures a consistently valid RGB color
+value and **even if the user does not interact with the field**, a valid value is
+always enforced.
+
+As a result, it can be difficult to determine whether the user intentionally
+selected pure black (#000000) or simply overlooked the field altogether.
+
+
+**Example:**
+
+{% include_relative examples/core_component_types.examples.md option="color_example" %}
+
+
+....
+
+
+<blockquote class="hint">
+<p>The *clear* action can be used to clear all other field component types</p>
+
+<p><b>Example:</b></p>
+
+{% include_relative examples/core_component_types.examples.md option="clear_others_example" %}
+
+</blockquote>
 
 
 ### type: select

@@ -1,8 +1,8 @@
 ---
-title: «date» Component Type
+title: «color» Component Type
 layout: chapter
-permalink: /component_types/type_date
-nav_order: 6
+permalink: /component_types/type_color
+nav_order: 5
 
 ---
 
