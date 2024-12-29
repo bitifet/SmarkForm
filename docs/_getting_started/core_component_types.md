@@ -22,10 +22,10 @@ Core component types are the backbone of *SmarkForm*:
     * [type: form and type: list](#type-form-and-type-list)
 * [Scalar field types](#scalar-field-types)
     * [type: input](#type-input)
+        * [The Singleton Pattern.](#the-singleton-pattern)
     * [type: number and type: date](#type-number-and-type-date)
     * [type: color](#type-color)
     * [type: select](#type-select)
-    * [The Singleton Pattern.](#the-singleton-pattern)
 * [Non field component types](#non-field-component-types)
     * [type: trigger](#type-trigger)
     * [type: label](#type-label)
@@ -83,78 +83,7 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
 {% include_relative examples/core_component_types.examples.md option="input_example" %}
 
 
-### type: number and type: date
-
-The 📋 [number]({{ "component_types/type_number" | relative_url }}) and
-📋 [date]({{ "component_types/type_date" | relative_url }}) component type
-extends the [Input]({{ "component_types/type_input" | relative_url }})
-component type providding extra sanitation (when importing) and formatting
-(when exporting).
-
-  * *number* imports and exports *Number*.
-
-  * *date* imports and exports *Date*.
-
-  * If inappropriate types (like *String*) are imported, they are properly
-    converted on the fly.
-
-**Example:**
-
-{% include_relative examples/core_component_types.examples.md option="number_and_date_example" %}
-
-
-
-### type: color
-
-Similar to [number and date](#type-number-and-type-date), the
-📋 [color]({{ "component_types/type_color" | relative_url }}) component type
-extends the [Input]({{ "component_types/type_input" | relative_url }})
-component type. However, unlike them and as outlined in [its
-specification](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value),
-`<input type="color">` HTML fields do not require additional sanitation or
-formatting.
-
-
-This is because `<input type="color">` ensures a consistently valid RGB color
-value and **even if the user does not interact with the field**, a valid value is
-always enforced.
-
-As a result, it can be difficult to determine whether the user intentionally
-selected pure black (#000000) or simply overlooked the field altogether.
-
-
-**Example:**
-
-{% include_relative examples/core_component_types.examples.md option="color_example" %}
-
-
-....
-
-
-<blockquote class="hint">
-<p>The *clear* action can be used to clear all other field component types</p>
-
-<p><b>Example:</b></p>
-
-{% include_relative examples/core_component_types.examples.md option="clear_others_example" %}
-
-</blockquote>
-
-
-### type: select
-
-The 📋 [select]({{ "component_types/type_select" | relative_url }})
-compenent type **will** (🚧 since it is not yet implemented 🚧) provide support
-for advanced features like dynamic options loading and update, even reacting to
-changes of other fields in a really transparent manner thanks to the
-(future) "API interface".
-
-  * Will inmport and export array of *String*.
-
-  * Will allow configuration to expor arrays of different types.
-
-
-### The Singleton Pattern.
+#### The Singleton Pattern.
 
 All *Scalar field types* implement the so called **Singleton Pattern**.
 
@@ -192,6 +121,110 @@ component of given *scalar* type.
 > See
 > [Applying the singleton pattern]({{ "component_types/type_list" | relative_url }}#applying-the-singleton-pattern)
 > in the *«list» Component Type* chapter for a more real-world example.
+
+
+The Singleton Pattern can also be used to avoid explicit context path
+specification for simple actions such as *clear* for field types like *number*
+or, specially, *color* (since native `<input type='color'>` doesn't allow not
+to specify any while *SmarkForm* component does.
+
+
+**Example:**
+
+👉 In the following example we need to explicitly specify the *context* path
+for the *clear* action since, otherwise, the whole form (its natural context)
+would be cleared.
+
+{% include_relative examples/core_component_types.examples.md option="no_singleton_example" %}
+
+
+👉 Conversely, using the *Singleton Pattern*, not only the code looks clenaner
+but, also, **it could avoid future issues** in case of field name being changed
+(for instance after copying a block of code to reuse it somewhere else):
+
+{% include_relative examples/core_component_types.examples.md option="singleton_example" %}
+
+
+### type: number and type: date
+
+The 📋 [number]({{ "component_types/type_number" | relative_url }}) and
+📋 [date]({{ "component_types/type_date" | relative_url }}) component type
+extends the [Input]({{ "component_types/type_input" | relative_url }})
+component type providding extra sanitation (when importing) and formatting
+(when exporting).
+
+  * *number* imports and exports *Number*.
+
+  * *date* imports and exports *Date*.
+
+  * Having they inherit from *input*, both implement the [Singleton
+    Pattern.](#the-singleton-pattern).
+
+  * If inappropriate types (like *String*) are imported, they are properly
+    converted on the fly.
+
+**Example:**
+
+{% include_relative examples/core_component_types.examples.md option="number_and_date_example" %}
+
+
+
+### type: color
+
+Similar to [number and date](#type-number-and-type-date), the
+📋 [color]({{ "component_types/type_color" | relative_url }}) component type
+extends the [Input]({{ "component_types/type_input" | relative_url }})
+component type.
+
+  * *color* imports and exports (Hex `#rrggbb`) string or Null.
+  
+  * Invalid inputs are replaced by Null.
+
+  * Having it inherits from *input*, it implements the [Singleton
+    Pattern.](#the-singleton-pattern).
+
+
+However, unlike [them](#type-number-and-type-date), and as outlined in [its
+specification](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value),
+`<input type="color">` HTML fields do not require additional sanitation or
+formatting.
+
+
+This is because `<input type="color">` ensures a consistently valid RGB color
+value and **even if the user does not interact with the field**, a valid value is
+always enforced.
+
+As a result, it can be difficult to determine whether the user intentionally
+selected pure black (#000000) or simply overlooked the field altogether.
+
+
+**Example:**
+
+{% include_relative examples/core_component_types.examples.md option="color_example" %}
+
+
+
+<blockquote class="hint">
+<p>The <i>clear</i> action can be used to clear all other field component types</p>
+
+<p><b>Example:</b></p>
+
+{% include_relative examples/core_component_types.examples.md option="clear_others_example" %}
+
+</blockquote>
+
+
+### type: select
+
+The 📋 [select]({{ "component_types/type_select" | relative_url }})
+compenent type **will** (🚧 since it is not yet implemented 🚧) provide support
+for advanced features like dynamic options loading and update, even reacting to
+changes of other fields in a really transparent manner thanks to the
+(future) "API interface".
+
+  * Will inmport and export array of *String*.
+
+  * Will allow configuration to expor arrays of different types.
 
 
 ## Non field component types

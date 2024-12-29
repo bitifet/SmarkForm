@@ -2,6 +2,23 @@
 
 {% include components/sampletabs_ctrl.md %}
 
+{% raw %} <!-- no_singleton_example {{{ --> {% endraw %}
+{% capture no_singleton_example %}<div id="myForm$$">
+    <p>
+        <p>
+            <label data-smark>Pick a Color:</label>
+            <input type="color" name="color" data-smark>
+            <button data-smark='{"action":"clear","context":"color"}'>❌ Reset</button>
+        </p>
+    </p>
+    <p>
+        <button data-smark='{"action":"clear"}'>❌ Clear</button>
+        <button data-smark='{"action":"export"}'>💾 Submit</button>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
 {% raw %} <!-- input_example {{{ --> {% endraw %}
 {% capture input_example %}<div id="myForm$$">
     <p>
@@ -68,15 +85,8 @@
 {% raw %} <!-- color_example {{{ --> {% endraw %}
 {% capture color_example %}<div id="myForm$$">
     <p>
-        <!-- Classic approach: -->
         <p>
-            <label data-smark>Foreground Color:</label>
-            <input type="color" name="fgcolor" data-smark>
-            <button data-smark='{"action":"clear","context":"fgcolor"}'>❌ Reset</button>
-        </p>
-        <!-- Singleton approach: -->
-        <p>
-            <label data-smark>Background Color:</label>
+            <label data-smark>Pick a Color:</label>
             <span data-smark='{"type":"color", "name":"bgcolor"}'>
                 <input data-smark>
                 <button data-smark='{"action":"clear"}'>❌ Reset</button>
@@ -134,8 +144,23 @@ myForm.on("AfterAction_export", ({data})=>{
 
 
 
+{% if include.option == "no_singleton_example" %}
 
-{% if include.option == "input_example" %}
+    {% include components/sampletabs_tpl.md
+        formId="no_singleton_example"
+        htmlSource=no_singleton_example
+        jsSource=form_export_example_js
+    %}
+
+{% elsif include.option == "singleton_example" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="singleton_example"
+        htmlSource=color_example
+        jsSource=form_export_example_js
+    %}
+
+{% elsif include.option == "input_example" %}
 
     {% include components/sampletabs_tpl.md
         formId="input_example"

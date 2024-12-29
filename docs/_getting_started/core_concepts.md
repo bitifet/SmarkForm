@@ -23,7 +23,7 @@ nav_order: 3
     * [Component Types](#component-types)
     * [Labels](#labels)
     * [Triggers](#triggers)
-    * [Actions:](#actions)
+    * [Actions](#actions)
     * [Triggers target](#triggers-target)
     * [Behaviour tunning](#behaviour-tunning)
     * [Constraining lists](#constraining-lists)
@@ -181,7 +181,7 @@ context* to the actual context of the trigger.
 > (and discouraged).
 
 
-### Actions:
+### Actions
 
 *Actions* are functions provided by component types for interaction.
 
