@@ -156,11 +156,12 @@
   cursor: pointer;
 }
 
-.smarkForm input:not([type=color]) {
+.smarkForm input {
   width: auto;
 }
 
 .smarkForm input[type=color] {
+  min-width: 3em;
   padding: calc(var(--round-radius) * 0.25) calc(var(--round-radius) * 0.75);
   height: 2em;
 }

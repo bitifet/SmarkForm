@@ -157,10 +157,9 @@
         cursor: pointer;
     }
     input {
-        &:not([type=color]) {
-            width: auto;
-        }
+        width: auto;
         &[type=color] {
+            min-width: 3em;
             padding: calc(var(--round-radius) * 0.25) calc(var(--round-radius) * 0.75);
             height: 2em;
         }
