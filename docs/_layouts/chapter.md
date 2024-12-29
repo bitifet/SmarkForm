@@ -74,15 +74,120 @@ layout: default
 <!-- ------------ -->
 
 <style>
-h4 {
+
+
+  /* h1 -> (Page title) */
+  /* h2 -> x. */
+  /* h3 -> x.y */
+  /* h4 -> x.y.z */
+  body {
+    counter-reset: h2-counter;
+  }
+
+  /* Style and increment h2 */
+  h2 {
+    counter-reset: h3-counter;
+    counter-increment: h2-counter;
+  }
+  h2::before {
+    content: counter(h2-counter) ". ";
+  }
+
+  /* Style and increment h3 */
+  h3 {
+    counter-reset: h4-counter;
+    counter-increment: h3-counter;
+  }
+  h3::before {
+    content: counter(h2-counter) "." counter(h3-counter) ". ";
+  }
+
+  /* Style and increment h4 */
+  h4 {
+    counter-increment: h4-counter;
+    line-height: 3em;
+    font-size: 1.2em !important;
+    text-transform: none !important;
+  }
+  h4::before {
+    content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) ". ";
+  }
+
+
+  /* (Untested) */
+  h5, h6 {
     line-height: 3em;
     font-size: 1.2em !important;
     color: #000077;
     text-transform: none !important;
-}
-h4::before {
-    content: "🔧 "
-}
+  }
+  h5::before {
+    content: "► ";
+  }
+  h6::before {
+    content: "▻ ";
+  }
+
+
+
+  /* TOC */
+  /* Match any <ul> inside <details> */
+  .main-content details>ul {
+    margin-left: 1em;
+    counter-reset: item-counter;
+    list-style: none;
+  }
+
+  /* Style and increment top-level list items */
+  .main-content details>ul > li {
+    counter-reset: subitem-counter;
+    counter-increment: item-counter;
+    list-style: none !important;
+  }
+  .main-content details>ul > li::before {
+    content: counter(item-counter) ". ";
+    font-weight: bold;
+    margin-right: 0.5em;
+    margin-left: -1.3em !important;
+  }
+
+  /* Style and increment second-level list items */
+  .main-content details>ul > li > ul {
+    counter-reset: subitem-counter;
+    list-style: none;
+    padding-left: 1.5em;
+  }
+  .main-content details>ul > li > ul > li {
+    counter-reset: subsubitem-counter;
+    counter-increment: subitem-counter;
+  }
+  .main-content details>ul > li > ul > li::before {
+    content: counter(item-counter) "." counter(subitem-counter) ". ";
+    font-weight: normal;
+    margin-right: 0.5em;
+    margin-left: -2em !important;
+  }
+
+  /* Style and increment third-level list items */
+  .main-content details>ul > li > ul > li > ul {
+    list-style: none;
+    padding-left: 1.5em;
+  }
+  .main-content details>ul > li > ul > li > ul > li {
+    counter-increment: subsubitem-counter;
+  }
+  .main-content details>ul > li > ul > li > ul > li::before {
+    content: counter(item-counter) "." counter(subitem-counter) "." counter(subsubitem-counter) ". ";
+    margin-right: 0.5em;
+    margin-left: -2.8em !important;
+  }
+
+
+
+
+
+
+
 </style>
 
 

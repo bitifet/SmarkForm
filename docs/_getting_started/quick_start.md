@@ -27,13 +27,14 @@ A SmarkForm form can be created by following a few simple steps:
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [1. Create an HTML document](#1-create-an-html-document)
-* [2. Include SmarkForm Library](#2-include-smarkform-library)
-* [3. Create a simple HTML form](#3-create-a-simple-html-form)
-* [4. Initialize the Form](#4-initialize-the-form)
-* [5. Do the magic](#5-do-the-magic)
-* [6. Go further...](#6-go-further)
-* [7. Customize your form](#7-customize-your-form)
+* [Quick Start](#quick-start)
+    * [Create an HTML document](#create-an-html-document)
+    * [Include SmarkForm Library](#include-smarkform-library)
+    * [Create a simple HTML form](#create-a-simple-html-form)
+    * [Initialize the Form](#initialize-the-form)
+    * [Do the magic](#do-the-magic)
+* [Go further...](#go-further)
+* [Customize your form](#customize-your-form)
 * [Final notes](#final-notes)
     * [Boilerplate file](#boilerplate-file)
     * [You don't need a form tag](#you-dont-need-a-form-tag)
@@ -46,7 +47,10 @@ A SmarkForm form can be created by following a few simple steps:
 
 </details>
 
-## 1. Create an HTML document
+
+## Quick Start
+
+### Create an HTML document
 
 
 ```html
@@ -67,7 +71,7 @@ A SmarkForm form can be created by following a few simple steps:
 > [fourth](#4-initialize-the-form) steps of this guide too and 🚀 go stright to
 > the [nitty](#2-create-an-html-form)-[gritty](#5-do-the-magic).
 
-## 2. Include SmarkForm Library
+### Include SmarkForm Library
 
 Next, load SmarkForm to your document.
 
@@ -109,7 +113,7 @@ Our complete layout may look as follows:
 ```
 
 
-## 3. Create a simple HTML form
+### Create a simple HTML form
 
 Start by writing the form markup in plain HTML. For example, let's create a
 simple form like the following:
@@ -127,7 +131,7 @@ simple form like the following:
 > necessary](#you-dont-need-a-form-tag).
 
 
-## 4. Initialize the Form
+### Initialize the Form
 
 In your JavaScript tag, create a new instance of the SmarkForm class and pass
 the DOM node of the form container as parameter:
@@ -138,7 +142,7 @@ the DOM node of the form container as parameter:
 Ok: Nothing exciting happended by now...
 
 
-## 5. Do the magic
+### Do the magic
 
 By default, *SmarkForm* ignores all DOM elements in its container unless they
 are marked with the [data-smark
@@ -191,10 +195,10 @@ button.
 > Alternatively, most event handlers can be provided at once through the
 > [options object](#the-options-object).
 
-
-## 6. Go further...
-
 Everything works now. 🎉
+
+
+## Go further...
 
 However, if it were a larger form, we might not feel so comfortable with the
 `❌ Clear` button ("clear" action trigger) clearing everything in case of an
@@ -213,7 +217,7 @@ Let's see a simple example using a *window.confirm()* dialog:
 > to bother the user asking for confirmation) while, if you fill some data in
 > and then click again, it will effectively ask before clearing the data.
 
-## 7. Customize your form
+## Customize your form
 
 Now you have a SmarkForm-enhanced form. **SmarkForm will automatically handle
 form submission, validation, and other interactions** based on the provided
