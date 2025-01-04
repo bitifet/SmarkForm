@@ -66,13 +66,22 @@ export class list extends SmarkField {
                 // case "separator":
                 // case "last_separator":
                     if (me.templates[role] !== undefined) throw me.renderError(
-                        'LIST_DUPLICATE TEMPLATE'
+                        'LIST_DUPLICATE_TEMPLATE'
                         , `Repated list template role ${role}`
                     );
                     me.templates[role] = child;
                     me.templates[role].remove();
                 break;
             };
+        };
+        if (me.targetNode.children.length) {
+            const {role = "item"} = parseJSON(
+                me.targetNode.children[0].getAttribute("data-smark")
+            ) || {};
+            throw me.renderError(
+                'LIST_UNKNOWN_TEMPLATE_ROLE'
+                , `Unknown list template role ${role}`
+            );
         };
         if (
             me.templates.item.querySelector("[id]") !== null // Contains IDs
