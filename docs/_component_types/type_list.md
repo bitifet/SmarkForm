@@ -67,8 +67,12 @@ different *roles*.
 👉 Default role is "item", which is used as a template for each item in the
 list. This template is mandatory.
 
-👉 Other roles are "empty_list" (displayed when the list is empty) and, not yet
-implemented, "separator" and "last_separator".
+👉 Other available roles are:
+
+  * `empty_list`: Displayed when the list is empty.
+  * `separator`: To visually separate items.
+  * `last_separator`: That, if provided, replaces *separator* for last item.
+  * More commig soon like `header`, `padding` or `footer`.
 
 👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
 inputs can be created over any HTML tag1️⃣  **except for actual HTML form
