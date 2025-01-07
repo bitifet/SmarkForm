@@ -110,12 +110,10 @@ export class list extends SmarkField {
         // onRendered tweaks:
         me.root.onRendered(async ()=>{
             for(let i=0; i<me.min_items; i++) await me.addItem();
-            if (me.min_items == 0) {
-                // Ensure "count" actions get updated:
-                me.renum();
-                // Reinject empty_list template:
-                if (me.templates.empty_list) me.targetNode.appendChild(me.templates.empty_list);
-            };
+
+            // Initialize "count" actions and reinject empty_list template:
+            if (me.min_items == 0) me.renum();
+
             // Let screen readers know lists may change.
             me.targetNode.setAttribute("aria-live", "polite");
             me.targetNode.setAttribute("aria-atomic", "true");
@@ -252,7 +250,6 @@ export class list extends SmarkField {
         // Child component creation and insertion:{{{
         let newItem;
         if (! me.children.length) {
-            if (me.templates.empty_list) me.templates.empty_list.remove(); // (In case of being present)
             me.targetNode.appendChild(newItemTarget);
             newItem = await me.enhance(newItemTarget, {type: "form", name: 0});
             await newItem.rendered;
@@ -394,10 +391,6 @@ export class list extends SmarkField {
             });
             //}}}
 
-            if (
-                me.templates.empty_list
-                && ! newChildren.length
-            ) me.targetNode.appendChild(me.templates.empty_list);
             oldItem.targetNode.remove();
             me.children = newChildren;
             me.renum();
@@ -440,6 +433,7 @@ export class list extends SmarkField {
     };//}}}
     renum(){//{{{
         const me = this;
+
         for (const i in me.children) {
 
             // Update child index:
@@ -468,6 +462,15 @@ export class list extends SmarkField {
             };
 
         };
+
+        if (me.templates.empty_list) {
+            if (me.children.length) {
+                me.templates.empty_list.remove(); // (from DOM)
+            } else {
+                me.targetNode.appendChild(me.templates.empty_list);
+            };
+        };
+
         me.getTriggers("position").forEach(tgg=>{
             const me = this;
             const args = tgg.getTriggerArgs();
