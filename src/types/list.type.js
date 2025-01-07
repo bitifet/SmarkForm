@@ -61,10 +61,11 @@ export class list extends SmarkField {
         for (const child of [...me.targetNode.children]) {
             const {role = "item"} = parseJSON(child.getAttribute("data-smark")) || {};
             switch (role) {
-                case "item": // (Default)
                 case "empty_list":
-                // case "separator":
-                // case "last_separator":
+                case "separator":
+                case "last_separator":
+                    child.setAttribute("data-role", role);
+                case "item": // (Default)
                     if (me.templates[role] !== undefined) throw me.renderError(
                         'LIST_DUPLICATE_TEMPLATE'
                         , `Repated list template role ${role}`
@@ -73,6 +74,9 @@ export class list extends SmarkField {
                     me.templates[role].remove();
                 break;
             };
+        };
+        if (! me.templates.last_separator) {
+            me.templates.last_separator = me.templates.separator; // (If any)
         };
         if (me.targetNode.children.length) {
             const {role = "item"} = parseJSON(
@@ -437,8 +441,32 @@ export class list extends SmarkField {
     renum(){//{{{
         const me = this;
         for (const i in me.children) {
+
+            // Update child index:
             me.children[i].name = i;
             me.children[i].updateId();
+
+            // Handle separators:
+            const isLastNode = i >= me.children.length - 1;
+            const sepRole = (
+                i <= 0 ? null
+                : isLastNode ? "last_separator"
+                : "separator"
+            );
+
+            const currentNode = me.children[i].targetNode;
+            const prevNode = currentNode.previousElementSibling;
+            const prevNode_role = prevNode && prevNode.getAttribute("data-role");
+            if (prevNode_role !== sepRole) {
+                if (!! prevNode_role) prevNode.remove();
+                const sepTemplate = me.templates[sepRole];
+                if (!! sepRole && !! sepTemplate) currentNode.parentElement.insertBefore(sepTemplate.cloneNode(true), currentNode);
+            };
+            if (isLastNode) { // LastItem
+                const nextNode = currentNode.nextElementSibling;
+                if (!! nextNode) nextNode.remove();
+            };
+
         };
         me.getTriggers("position").forEach(tgg=>{
             const me = this;

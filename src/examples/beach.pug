@@ -59,6 +59,8 @@ block mainForm
                         | to
                         input.small(data-smark, type='time', name='end')
                     span(data-smark='{"role":"empty_list"}') (No Surveillance)
+                    span(data-smark='{"role":"separator"}')=", "
+                    span(data-smark='{"role":"last_separator"}')=" and "
             .form-group
                 button(data-smark='{"action":"removeItem","hotkey":"-","context":"boat_schedule"}', title='Less intervals')
                     span(role='img', aria-label='Remove interval') ➖
@@ -71,6 +73,8 @@ block mainForm
                         | -
                         input.small(data-smark, type='time', name='end')
                     span(data-smark='{"role":"empty_list"}') (No Boat Service)
+                    span(data-smark='{"role":"separator"}')=", "
+                    span(data-smark='{"role":"last_separator"}')=" and "
             .form-group.aside
                 h3 Observation Points
                 button.inline(data-smark='{"action":"removeItem","hotkey":"-","context":"observers"}', title='Less points')
