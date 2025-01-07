@@ -62,8 +62,11 @@ export class list extends SmarkField {
             const {role = "item"} = parseJSON(child.getAttribute("data-smark")) || {};
             switch (role) {
                 case "empty_list":
+                ///case "header":
                 case "separator":
                 case "last_separator":
+                ///case "padding":
+                ///case "footer":
                     child.setAttribute("data-role", role);
                 case "item": // (Default)
                     if (me.templates[role] !== undefined) throw me.renderError(
@@ -434,13 +437,18 @@ export class list extends SmarkField {
     renum(){//{{{
         const me = this;
 
+        // Update child index:
         for (const i in me.children) {
-
-            // Update child index:
             me.children[i].name = i;
             me.children[i].updateId();
+        };
 
-            // Handle separators:
+        // Handle separators:
+        if (
+            !! me.templates.separator
+            || !! me.templates.last_separator
+        ) for (const i in me.children) {
+
             const isLastNode = i >= me.children.length - 1;
             const sepRole = (
                 i <= 0 ? null
@@ -463,6 +471,7 @@ export class list extends SmarkField {
 
         };
 
+        // Handle empty_list template:
         if (me.templates.empty_list) {
             if (me.children.length) {
                 me.templates.empty_list.remove(); // (from DOM)
