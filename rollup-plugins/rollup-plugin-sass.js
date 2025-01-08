@@ -1,5 +1,5 @@
 import rollupPlugin from "./rollup-plugin.factory.js";
-import sass from 'sass';
+import * as sass from 'sass';
 const name = "sass";
 const inputExtension = "scss";
 const outputExtension = "css";
@@ -8,14 +8,12 @@ function compiler(file, {
     outputStyle = "compressed", // 'expanded'
     ...options
 }) {
-    const result = sass.renderSync({
-        file,
+    const result = sass.compile(file, {
         outputStyle,
         ...options
     });
-    const dependencies = result.stats.includedFiles;
     const output = result.css.toString();
-    return {output, dependencies};
+    return {output, dependencies: [file]};
 };
 
 export default rollupPlugin({
