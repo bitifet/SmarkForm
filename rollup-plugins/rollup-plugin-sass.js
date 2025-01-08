@@ -1,5 +1,5 @@
 import rollupPlugin from "./rollup-plugin.factory.js";
-import sass from 'node-sass';
+import sass from 'sass';
 const name = "sass";
 const inputExtension = "scss";
 const outputExtension = "css";

@@ -51,12 +51,12 @@
     "@rollup/plugin-terser": "^0.4.4",
     "concurrently": "^9.1.0",
     "mocha": "^10.7.3",
-    "node-sass": "^9.0.0",
     "pug": "^3.0.3",
     "puppeteer": "^22.15.0",
     "rollup": "^4.24.2",
     "rollup-plugin-cleanup": "^3.2.1",
-    "rollup-plugin-copy": "^3.5.0"
+    "rollup-plugin-copy": "^3.5.0",
+    "sass": "^1.83.1"
   },
   "browserslist": "> 0.25%, not dead",
   "files": [

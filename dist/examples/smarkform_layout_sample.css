@@ -30,7 +30,6 @@ body {
   position: fixed;
   font-family: 1rem/1.6 Arial, Helvetica, sans-serif;
 }
-
 html .hidden,
 body .hidden {
   display: none;
