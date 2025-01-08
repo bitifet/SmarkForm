@@ -3,6 +3,7 @@ import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
 import pug from './rollup-plugins/rollup-plugin-pug.js';
 import sass from './rollup-plugins/rollup-plugin-sass.js';
+import del from 'rollup-plugin-del'
 import copy from 'rollup-plugin-copy'
 import { readFileSync, promises as fs } from 'fs';
 import path from 'path';
@@ -13,6 +14,12 @@ const pkg = JSON.parse(readFileSync('./package.json'));
 
 const isProduction = process.env.BUILD === 'production';
 
+
+const delTargets = [
+    "dist/*",
+    "docs/_resources/dist",
+    "docs/_data/package.json",
+];
 
 const copyTargets = [
     { src: "package.json", dest: "docs/_data/" },
@@ -67,6 +74,10 @@ export default [
             },
         ],
         plugins: [
+            del({
+                targets: delTargets,
+                runOnce: true,
+            }),
             babel({
                 babelHelpers: 'bundled',
                 presets: [
@@ -90,14 +101,7 @@ export default [
             }),
             copy({
                 targets: copyTargets,
-                ...(
-                    ! isProduction ? {hook: "writeBundle"}
-                        // Copies files after every rebuild making jekyll site
-                        // to reload while in dev (watch) mode.
-                        // BUT makes 'npm run build' to fail.
-                        // This (almost) fixes that...
-                    : {}
-                )
+                copyOnce: true,
             }),
         ]
     },
