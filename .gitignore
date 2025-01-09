@@ -7,7 +7,7 @@ docs/_data/computed.json
 
 # Jekyll
 docs/_site
-docs/_data/package.json
+# NO (to trigger GitHub action every new version): docs/_data/package.json
 docs/_resources/dist/
 
 # Temporary files

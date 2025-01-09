@@ -1,0 +1,66 @@
+{
+  "name": "smarkform",
+  "version": "0.8.3",
+  "private": false,
+  "type": "module",
+  "browser": "dist/SmarkForm.esm.js",
+  "module": "dist/SmarkForm.esm.js",
+  "umd": "dist/SmarkForm.umd.js",
+  "scripts": {
+    "pretest": "npm run build",
+    "test": "mocha",
+    "build": "scripts/build_production_smarkform.sh",
+    "doc": "scripts/build_documentation_site.sh",
+    "bundle": "scripts/build_all.sh",
+    "watch": "scripts/livebuild_dev_smarkform.sh",
+    "servedoc": "scripts/liveserve_documentation_site.sh",
+    "dev": "scripts/liveserve_all.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitifet/SmarkForm.git"
+  },
+  "keywords": [
+    "front-end",
+    "web",
+    "form",
+    "controller",
+    "markup",
+    "lightweight",
+    "component",
+    "DOM",
+    "vanilla",
+    "pureweb",
+    "html",
+    "css-agnostic",
+    "library",
+    "framework",
+    "template"
+  ],
+  "author": "Joan Miquel Torres <joanmi@bitifet.net>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bitifet/SmarkForm/issues"
+  },
+  "homepage": "https://smarkform.bitifet.net",
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/plugin-proposal-decorators": "^7.25.9",
+    "@babel/preset-env": "^7.26.0",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-terser": "^0.4.4",
+    "concurrently": "^9.1.0",
+    "mocha": "^10.7.3",
+    "pug": "^3.0.3",
+    "puppeteer": "^22.15.0",
+    "rollup": "^4.24.2",
+    "rollup-plugin-cleanup": "^3.2.1",
+    "rollup-plugin-copy": "^3.5.0",
+    "rollup-plugin-del": "^1.0.1",
+    "sass": "^1.83.1"
+  },
+  "browserslist": "> 0.25%, not dead",
+  "files": [
+    "dist"
+  ]
+}
