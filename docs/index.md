@@ -96,6 +96,7 @@ simple_list_example_notes: |
 [![NPM Version][npm-image]][npm-url]
 [![npm dependents][depends-image]][depends-url]
 [![NPM Downloads][downloads-image]][downloads-url]
+[![jsDelivr Hits](cdnhits-image)](cdnhits-url)
 [![License][license-image]][license-url]
 <!-- Hilighting fix: []() -->
 
@@ -185,5 +186,7 @@ and expand the functionality of SmarkForm.
 [depends-url]: https://www.npmjs.com/package/smarkform?activeTab=dependents
 [downloads-image]: https://img.shields.io/npm/dm/smarkform.svg
 [downloads-url]: https://npmjs.org/package/smarkform
+[cdnhits-image]: https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded
+[cdnhits-url]: https://www.jsdelivr.com/package/npm/smarkform
 [license-image]: https://img.shields.io/badge/license-MIT-brightgreen.svg
 [license-url]: https://opensource.org/licenses/MIT
