@@ -8,6 +8,13 @@ nav_order: 5
 
 # {{ page.title }}
 
+<br />
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 * [👉 Current Status](#-current-status)
@@ -17,6 +24,10 @@ nav_order: 5
     * [Implement download action](#implement-download-action)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
 
 ## 👉 Current Status
 

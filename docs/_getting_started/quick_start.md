@@ -19,7 +19,7 @@ A SmarkForm form can be created by following a few simple steps:
 > one you like the most, and start editing to see what happens.
 
 <br />
-<details>
+<details class="chaptertoc">
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>

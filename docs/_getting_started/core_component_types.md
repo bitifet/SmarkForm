@@ -10,7 +10,7 @@ nav_order: 4
 
 Core component types are the backbone of *SmarkForm*:
 
-<details>
+<details class="chaptertoc">
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>

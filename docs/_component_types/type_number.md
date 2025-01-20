@@ -8,7 +8,7 @@ nav_order: 4
 
 # {{ page.title }}
 
-<details>
+<details class="chaptertoc">
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>

@@ -8,6 +8,12 @@ nav_order: 4
 
 # {{ page.title }}
 
+
+<br />
+<div class="chaptertoc toplevel">
+<p>A web form must:</p>
+
+  {{ "
 <!-- vim-markdown-toc GitLab -->
 
 * [Easy to use](#easy-to-use)
@@ -15,9 +21,9 @@ nav_order: 4
     * [Zero-Wiring](#zero-wiring)
     * [No need for extensive JavaScript coding.](#no-need-for-extensive-javascript-coding)
 * [Lightweight yet highly compatible](#lightweight-yet-highly-compatible)
+    * [Only a few KBs of JavaScript](#only-a-few-kbs-of-javascript)
     * [Bundled both as modern ES Module and UMD for wide compatibility.](#bundled-both-as-modern-es-module-and-umd-for-wide-compatibility)
-    * [Only {{ site.data.computed.bundleSizeKB }}KB minified!](#only-sitedatacomputedbundlesizekb-kb-minified)
-    * [> 0.25%, browser coverage thanks to Babel](#-025-browser-coverage-thanks-to-babel)
+    * [&gt; 0.25%, browser coverage thanks to Babel](#gt-025-browser-coverage-thanks-to-babel)
 * [Flexible and extendable](#flexible-and-extendable)
     * [Don't require specific HTML structure or CSS design rules.](#dont-require-specific-html-structure-or-css-design-rules)
     * [Develop your own component types to suit your specific needs.](#develop-your-own-component-types-to-suit-your-specific-needs)
@@ -34,6 +40,9 @@ nav_order: 4
     * [Non-breaking unobtrusive keyboard navigation (controls are smartly added or removed from navigation flow when appropriate).](#non-breaking-unobtrusive-keyboard-navigation-controls-are-smartly-added-or-removed-from-navigation-flow-when-appropriate)
 
 <!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</div>
 
 
 ## Easy to use
@@ -61,13 +70,16 @@ nav_order: 4
 ## Lightweight yet highly compatible
 
 
+### Only a few KBs of JavaScript
+
+Just {{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB minified!
+
+
+
 ### Bundled both as modern ES Module and UMD for wide compatibility.
 
 
-### Only {{ site.data.computed.bundleSizeKB }}KB minified!
-
-
-### > 0.25%, browser coverage thanks to Babel
+### &gt; 0.25%, browser coverage thanks to Babel
 
 
 ## Flexible and extendable

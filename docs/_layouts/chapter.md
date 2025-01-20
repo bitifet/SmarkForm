@@ -131,20 +131,19 @@ layout: default
 
 
   /* TOC */
-  /* Match any <ul> inside <details> */
-  .main-content details>ul {
+  .main-content .chaptertoc>ul {
     margin-left: 1em;
     counter-reset: item-counter;
     list-style: none;
   }
 
   /* Style and increment top-level list items */
-  .main-content details>ul > li {
+  .main-content .chaptertoc>ul > li {
     counter-reset: subitem-counter;
     counter-increment: item-counter;
     list-style: none !important;
   }
-  .main-content details>ul > li::before {
+  .main-content .chaptertoc>ul > li::before {
     content: counter(item-counter) ". ";
     font-weight: bold;
     margin-right: 0.5em;
@@ -152,16 +151,16 @@ layout: default
   }
 
   /* Style and increment second-level list items */
-  .main-content details>ul > li > ul {
+  .main-content .chaptertoc:not(.toplevel)>ul > li > ul {
     counter-reset: subitem-counter;
     list-style: none;
     padding-left: 1.5em;
   }
-  .main-content details>ul > li > ul > li {
+  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li {
     counter-reset: subsubitem-counter;
     counter-increment: subitem-counter;
   }
-  .main-content details>ul > li > ul > li::before {
+  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li::before {
     content: counter(item-counter) "." counter(subitem-counter) ". ";
     font-weight: normal;
     margin-right: 0.5em;
@@ -169,14 +168,14 @@ layout: default
   }
 
   /* Style and increment third-level list items */
-  .main-content details>ul > li > ul > li > ul {
+  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li > ul {
     list-style: none;
     padding-left: 1.5em;
   }
-  .main-content details>ul > li > ul > li > ul > li {
+  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li > ul > li {
     counter-increment: subsubitem-counter;
   }
-  .main-content details>ul > li > ul > li > ul > li::before {
+  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li > ul > li::before {
     content: counter(item-counter) "." counter(subitem-counter) "." counter(subsubitem-counter) ". ";
     margin-right: 0.5em;
     margin-left: -2.8em !important;

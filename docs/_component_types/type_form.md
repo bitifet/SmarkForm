@@ -92,7 +92,7 @@ simple_form_example_notes: |
 
 # {{ page.title }}
 
-<details>
+<details class="chaptertoc">
 <summary>
 <strong>📖 Table of Contents</strong>
 </summary>
