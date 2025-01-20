@@ -15,7 +15,7 @@ interactions, with no need to deal with complex JavaScript code.
 [![NPM Version][npm-image]][npm-url]
 [![npm dependents][depends-image]][depends-url]
 [![NPM Downloads][downloads-image]][downloads-url]
-[![jsDelivr Hits](cdnhits-image)](cdnhits-url)
+[![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 <!-- Hilighting fix: []() -->
 

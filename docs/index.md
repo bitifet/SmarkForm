@@ -96,7 +96,7 @@ simple_list_example_notes: |
 [![NPM Version][npm-image]][npm-url]
 [![npm dependents][depends-image]][depends-url]
 [![NPM Downloads][downloads-image]][downloads-url]
-[![jsDelivr Hits](cdnhits-image)](cdnhits-url)
+[![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 <!-- Hilighting fix: []() -->
 
