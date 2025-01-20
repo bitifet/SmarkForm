@@ -20,12 +20,13 @@ nav_order: 4
     * [Markup-driven and Intuitive API](#markup-driven-and-intuitive-api)
     * [Zero-Wiring](#zero-wiring)
     * [No need for extensive JavaScript coding.](#no-need-for-extensive-javascript-coding)
+* [Responsive and accessible UX](#responsive-and-accessible-ux)
 * [Lightweight yet highly compatible](#lightweight-yet-highly-compatible)
     * [Only a few KBs of JavaScript](#only-a-few-kbs-of-javascript)
     * [Bundled both as modern ES Module and UMD for wide compatibility.](#bundled-both-as-modern-es-module-and-umd-for-wide-compatibility)
     * [&gt; 0.25%, browser coverage thanks to Babel](#gt-025-browser-coverage-thanks-to-babel)
 * [Flexible and extendable](#flexible-and-extendable)
-    * [Don't require specific HTML structure or CSS design rules.](#dont-require-specific-html-structure-or-css-design-rules)
+    * [Markup agnostic](#markup-agnostic)
     * [Develop your own component types to suit your specific needs.](#develop-your-own-component-types-to-suit-your-specific-needs)
 * [Powerful](#powerful)
     * [Supports variable-length lists and subforms.](#supports-variable-length-lists-and-subforms)
@@ -67,6 +68,11 @@ nav_order: 4
   * **Ex.:** `<button data-smark='{action: "addItem"}'>`
 
 
+## Responsive and accessible UX
+
+
+
+
 ## Lightweight yet highly compatible
 
 
@@ -85,8 +91,11 @@ Just {{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB minified!
 ## Flexible and extendable
 
 
-### Don't require specific HTML structure or CSS design rules.
+### Markup agnostic
 
+Don't require specific HTML structure or CSS design rules.
+
+Designers have complete freedom.
 
 ### Develop your own component types to suit your specific needs.
 
