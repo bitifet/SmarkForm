@@ -13,7 +13,7 @@ interactions, with no need to deal with complex JavaScript code.
 </details>
 
 [![NPM Version][npm-image]][npm-url]
-[![npm dependents][depends-image]][depends-url]
+[![npm dependencies][dependencies-image]][dependencies-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
@@ -114,8 +114,8 @@ We would like to express our gratitude to the open source community for their va
 
 [npm-image]: https://img.shields.io/npm/v/smarkform.svg
 [npm-url]: https://npmjs.org/package/smarkform
-[depends-image]: https://badgen.net/npm/dependents/smarkform
-[depends-url]: https://www.npmjs.com/package/smarkform?activeTab=dependents
+[dependencies-image]: https://img.shields.io/badge/dependencies-0-green
+[dependencies-url]: https://www.npmjs.com/package/smarkform?activeTab=dependencies
 [downloads-image]: https://img.shields.io/npm/dm/smarkform.svg
 [downloads-url]: https://npmjs.org/package/smarkform
 [cdnhits-image]: https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded
