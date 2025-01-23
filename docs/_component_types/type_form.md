@@ -105,11 +105,11 @@ simple_form_example_notes: |
     * [Options](#options)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
-            * [properties (export)](#properties-export)
+            * [Options (export)](#options-export)
         * [(Async) import (Action)](#async-import-action)
-            * [properties (import)](#properties-import)
+            * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
-            * [properties (clear)](#properties-clear)
+            * [Options (clear)](#options-clear)
     * [Events](#events)
 
 <!-- vim-markdown-toc -->
@@ -154,25 +154,30 @@ API Reference
 
 ### Actions
 
+{{ site.data.definitions.actions.intro }}
+
+The `form` component type supports the following actions:
+
+
 #### (Async) export (Action)
 
-##### properties (export)
+##### Options (export)
 
   * **action:** (= "export")
-  * **origin:**
-  * **context:**
-  * **target:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.target_export }}
   * **data:**
 
 
 #### (Async) import (Action)
 
-##### properties (import)
+##### Options (import)
 
   * **action:** (= "import")
-  * **origin:**
-  * **context:**
-  * **target:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.target_import }}
   * **data:** (JSON)
   * **focus:** (boolean, default true)
 
@@ -181,11 +186,11 @@ API Reference
 
 (Shorhand for `import({data: {}})`)
 
-##### properties (clear)
+##### Options (clear)
 
   * **action:** (= "clear")
-  * **origin:**
-  * **context:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
   * **target:**
 
 

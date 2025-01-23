@@ -31,19 +31,19 @@ nav_order: 2
         * [of](#of)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
-            * [properties (export)](#properties-export)
+            * [Options (export)](#options-export)
         * [(Async) import (Action)](#async-import-action)
-            * [properties (import)](#properties-import)
+            * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
-            * [properties (clear)](#properties-clear)
+            * [Options (clear)](#options-clear)
         * [(Async) addItem (Action)](#async-additem-action)
-            * [properties (addItem)](#properties-additem)
+            * [Options (addItem)](#options-additem)
         * [(Async) removeItem (Action)](#async-removeitem-action)
-            * [properties (removeItem)](#properties-removeitem)
+            * [Options (removeItem)](#options-removeitem)
         * [count (Action)](#count-action)
-            * [properties (count)](#properties-count)
+            * [Options (count)](#options-count)
         * [position (Action)](#position-action)
-            * [properties (position)](#properties-position)
+            * [Options (position)](#options-position)
     * [Events](#events)
         * [addItem (list Event)](#additem-list-event)
         * [removeItem (list Event)](#removeitem-list-event)
@@ -246,26 +246,30 @@ needed.
 
 ### Actions
 
+{{ site.data.definitions.actions.intro }}
+
+The `list` component type supports the following actions:
+
 
 #### (Async) export (Action)
 
-##### properties (export)
+##### Options (export)
 
   * **action:** (= "export")
-  * **origin:**
-  * **context:**
-  * **target:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.target_export }}
   * **data:**
 
 
 #### (Async) import (Action)
 
-##### properties (import)
+##### Options (import)
 
   * **action:** (= "import")
-  * **origin:**
-  * **context:**
-  * **target:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.target_import }}
   * **data:** (array / any¹)
   * **focus:** (boolean, default true)
 
@@ -278,21 +282,20 @@ needed.
 
 (Shorhand for `import({data: []})`)
 
-##### properties (clear)
+##### Options (clear)
 
   * **action:** (= "clear")
-  * **origin:**
-  * **context:**
-  * **target:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
 
 
 #### (Async) addItem (Action)
 
-##### properties (addItem)
+##### Options (addItem)
 
   * **action:** (= "addItem")
-  * **origin:**
-  * **context:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
   * **target:**
   * **position:** = "after" (default) / "before"
   * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
@@ -302,11 +305,11 @@ needed.
 
 
 
-##### properties (removeItem)
+##### Options (removeItem)
 
   * **action:** (= "removeItem")
-  * **origin:**
-  * **context:**
+  * {{ site.data.definitions.actions.origin }}
+  * {{ site.data.definitions.actions.context }}
   * **target:**
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **keep_non_empty:** (boolean)
@@ -315,7 +318,7 @@ needed.
 
 #### count (Action)
 
-##### properties (count)
+##### Options (count)
 
   * **action:**: (= "count")
   * **delta:**: (default 0)
@@ -323,7 +326,7 @@ needed.
 
 #### position (Action)
 
-##### properties (position)
+##### Options (position)
 
   * **action:**: (= "position")
   * **offset:**: (default 1)
@@ -342,7 +345,7 @@ Triggered when a new item is going to be added to the list.
 👉 This event occurs just **after** the new item node is created and **before**
 it is actually inserted in the DOM.
 
-**Properties:**
+**Options:**
 
 Event data contains the properties received by the originating `addItem`
 action, plus the following properties:
