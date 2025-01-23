@@ -88,6 +88,10 @@ nav_order: 5
      - max_recursion = (optional) Self item will be removed from template when
        reached.
 
+  * Implement the "target" option for *import* and *export* actions.
+    - Will work as a (mutually exclusive) alternative to the "data" option.
+    - If provided (instead of "data"), the *import* action will get the value from the *export* action of the target component and vice-versa.
+    - 🚀 This will allow easy data duplication between components (i.e. across lists' items).
 
 ## 💡 Brainstorm
 
