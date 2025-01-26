@@ -46,6 +46,16 @@ export class input extends form {
     @action
     async import({data = "", focus = true} = {}) {//{{{
         const me = this;
+        if (
+            typeof data === "object"
+            && me.options.type === "input" // Not in a derivated field types
+        ) {
+            const isTextarea = me.targetFieldNode.tagName.toUpperCase() === "TEXTAREA";
+            data = (
+                isTextarea ? JSON.stringify(data, null, 4) // Pretty print
+                : JSON.stringify(data) // Compact print
+            );
+        };
         if (me.isSingleton) {
             return await super.import({data: Object.fromEntries(
                 [[Object.keys(me.children)[0], data]]
