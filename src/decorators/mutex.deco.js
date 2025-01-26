@@ -20,7 +20,7 @@ class Mutex {
     };
 }
 
-export const mutex = function method_mutex_generator(muxName) {
+export const mutex = function method_mutex_decorator(muxName) {
     return function mutex_decorator(target, {kind}) {
         if (kind == "method") {
             return async function muxed_target(...args) {
