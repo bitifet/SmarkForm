@@ -20,7 +20,8 @@ nav_order: 5
 * [👉 Current Status](#-current-status)
 * [🕒 Upcoming Features](#-upcoming-features)
 * [💡 Brainstorm](#-brainstorm)
-    * [Implement Table Of Contents component.](#implement-table-of-contents-component)
+    * [Implement "hint" component type](#implement-hint-component-type)
+    * [Implement Table Of Contents component](#implement-table-of-contents-component)
     * [Implement download action](#implement-download-action)
 
 <!-- vim-markdown-toc -->
@@ -101,15 +102,27 @@ The following are spare and not yet mature ideas for possible future components
 plugable components in their own repository).
 
 
-### Implement Table Of Contents component.
-  - Scan targetted component recursively.
-  - Refresh on every change (add or remove items).
-  - Show only components with a "toc-section" property.
-  - Allow navigating to every secton through their (full path) id's.
-  - Implement a "return to TOC" actions.
-  - Stop scanning on compoenents containing a self-targetted TOC.
+### Implement "hint" component type
+
+  * A component that can be used to display hints in a designed location using
+    the "title" attribute of trigger components.
+    - 👉 Consider to include all components with a "title" attribute.
+  * Will look for all triggers in their context (recursively, but excluding
+    subcontexts with their own hint component).
+  * Will intercept the "mouseover" event of each of them and display their
+    "title" attribute when the mouse passes over any of them.
+  * 💡 ...or it may be just a new action for forms...
+    - Hmmmm... 🤔
 
 
+### Implement Table Of Contents component
+
+  * Scan targetted component recursively.
+  * Refresh on every change (add or remove items).
+  * Show only components with a "toc-section" property.
+  * Allow navigating to every secton through their (full path) id's.
+  * Implement a "return to TOC" actions.
+  * Stop scanning on compoenents containing a self-targetted TOC.
 
 
 ### Implement download action
