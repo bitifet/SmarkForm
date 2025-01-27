@@ -2,9 +2,10 @@
 // ==================
 
 import {SmarkField} from "../lib/component.js";
-import {getRoots} from "../lib/helpers.js";
-import {foldable} from "../decorators/foldable.deco.js";
 import {action} from "./trigger.type.js";
+import {foldable} from "../decorators/foldable.deco.js";
+import {export_to_target} from "../decorators/export_to_target.deco.js";
+import {getRoots} from "../lib/helpers.js";
 
 @foldable
 export class form extends SmarkField {
@@ -28,6 +29,7 @@ export class form extends SmarkField {
         };
     };//}}}
     @action
+    @export_to_target
     async export() {//{{{
         const me = this;
         return Object.fromEntries(

@@ -2,6 +2,7 @@
 // ===================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
+import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {randomId} from "../lib/helpers.js";
 export class radio extends input {
     constructor(...args) {
@@ -37,6 +38,7 @@ export class radio extends input {
         if (! targetType) me.targetFieldNode.type = "radio"; // Autofill
     };//}}}
     @action
+    @export_to_target
     async export() {//{{{
         return this.radioButtons.find(r=>r.checked)?.value;
     };//}}}

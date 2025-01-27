@@ -18,9 +18,10 @@ export class number extends input {
         if (! targetType) me.targetFieldNode.type = "number"; // Autofill
     };//}}}
     @action
-    async export() {//{{{
+    // (Done in parent class) @export_to_target
+    async export(...args) {//{{{
         const me = this;
-        const data = await super.export();
+        const data = await super.export(...args);
         if (me.isSingleton) return data; // Overload only inner field
         return (
             data.length && ! isNaN(data) ? Number(data)

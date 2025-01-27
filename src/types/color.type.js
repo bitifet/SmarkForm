@@ -67,9 +67,10 @@ export class color extends input {
 
     };//}}}
     @action
-    async export() {//{{{
+    // (Done in parent class) @export_to_target
+    async export(...args) {//{{{
         const me = this;
-        let data = await super.export();
+        let data = await super.export(...args);
         if (! me.isSingleton) data = (
             me.isDefined && data.match(re_color) ? data.toLowerCase()
             : null

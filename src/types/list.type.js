@@ -15,12 +15,13 @@
 
 
 import {SmarkField} from "../lib/component.js";
-import {makeRoom, parseJSON} from "../lib/helpers.js";
-import {foldable} from "../decorators/foldable.deco.js";
-import {sortable} from "./list.decorators/sortable.deco.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
 import {action} from "./trigger.type.js";
+import {foldable} from "../decorators/foldable.deco.js";
+import {sortable} from "./list.decorators/sortable.deco.js";
+import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {mutex} from "../decorators/mutex.deco.js";
+import {makeRoom, parseJSON} from "../lib/helpers.js";
 
 
 // Helpers:
@@ -140,6 +141,7 @@ export class list extends SmarkField {
     };//}}}
     @mutex("list_mutating")
     @action
+    @export_to_target
     async export() {//{{{
         const me = this;
         const list = [];

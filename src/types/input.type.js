@@ -2,6 +2,7 @@
 // ===================
 import {form} from "./form.type.js";
 import {action} from "./trigger.type.js";
+import {export_to_target} from "../decorators/export_to_target.deco.js";
 export class input extends form {
     async render() {//{{{
         const me = this;
@@ -35,6 +36,7 @@ export class input extends form {
         return;
     };//}}}
     @action
+    @export_to_target
     async export() {//{{{
         const me = this;
         return (
