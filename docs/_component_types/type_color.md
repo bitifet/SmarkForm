@@ -87,9 +87,9 @@ Exports the value of the number input field. If the value is not a valid number,
 ##### Options (export)
 
   * **action:** (= "export")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
-  * {{ site.data.definitions.actions.target_export }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_export }}
   * **data:**
 
 #### (Async) import (Action)
@@ -99,9 +99,9 @@ Imports a value into the number input field. If the value is not a valid number 
 ##### Options (import)
 
   * **action:** (= "import")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
-  * {{ site.data.definitions.actions.target_import }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_import }}
   * **data:** (number or string)
   * **focus:** (boolean, default true)
 
@@ -112,8 +112,8 @@ Clears the value of the number input field (sets it to null).
 ##### Options (clear)
 
   * **action:** (= "clear")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
 
 
 

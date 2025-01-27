@@ -256,10 +256,9 @@ The `list` component type supports the following actions:
 ##### Options (export)
 
   * **action:** (= "export")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
-  * {{ site.data.definitions.actions.target_export }}
-  * **data:**
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_export }}
 
 
 #### (Async) import (Action)
@@ -267,9 +266,9 @@ The `list` component type supports the following actions:
 ##### Options (import)
 
   * **action:** (= "import")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
-  * {{ site.data.definitions.actions.target_import }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_import }}
   * **data:** (array / any¹)
   * **focus:** (boolean, default true)
 
@@ -285,8 +284,8 @@ The `list` component type supports the following actions:
 ##### Options (clear)
 
   * **action:** (= "clear")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
 
 
 #### (Async) addItem (Action)
@@ -294,8 +293,8 @@ The `list` component type supports the following actions:
 ##### Options (addItem)
 
   * **action:** (= "addItem")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
   * **target:** Path★  (absolute or relative to its *context*) to a component to be used as a base reference to calculate the position of the new item. If not provided, the last item in the list will be used.
   * **position:** (= "after" (default) / "before") Determines where the new item will be inserted in relation to the target.
   * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
@@ -308,8 +307,8 @@ The `list` component type supports the following actions:
 ##### Options (removeItem)
 
   * **action:** (= "removeItem")
-  * {{ site.data.definitions.actions.origin }}
-  * {{ site.data.definitions.actions.context }}
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
   * **target:**
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **keep_non_empty:** (boolean)

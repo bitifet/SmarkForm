@@ -1,10 +1,12 @@
 {
     "actions": {
         "intro": "{: .info }\n> Actions are special component methods that can be triggered both programmatically (by directly calling the function) or by user interaction with a trigger component. Each action is associated with a specific behavior that can be performed on the component.\n>\n 👉 Actions receive an `options` object as an argument, which contains the necessary information to perform the action.\n>\n 👉 When called from triggers, the properties defined in their `data-smark` object, are passed as `options` to the action. Those expecting a path(★ ) to other components are resolved to the actual component.\n",
-        "origin": "**origin:** Origin is automatically set to the trigger component that called the action (and cannot be overridden). In case of a manual call, it is set to Null.",
-        "context": "**context:** Path★  (absolute or relative to its *natural context*) to the component that is the context of the action. If not provided, the context is set to its *natural context*.",
-        "target_export": "**target:** Path★  (absolute or relative to its *context*) to a component that, when specified, will get the exported data through its \"import\" action.",
-        "target_import": "**target:** (✋ reserved)",
-        "data": ""
+        "options": {
+            "origin": "**origin:** Origin is automatically set to the trigger component that called the action (and cannot be overridden). In case of a manual call, it is set to Null.",
+            "context": "**context:** Path★  (absolute or relative to its *natural context*) to the component that is the context of the action. If not provided, the context is set to its *natural context*.",
+            "target_export": "**target:** Path★  (absolute or relative to its *context*) to a component that, when specified, will get the exported data through its \"import\" action.",
+            "target_import": "**target:** (✋ reserved)",
+            "data": ""
+        }
     }
 }
