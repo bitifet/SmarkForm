@@ -83,7 +83,10 @@ export class color extends input {
         if (
             ! me.isSingleton // Only for real field
         ) {
-            if (data === null) {
+            if (
+                data === null              // Explicit null value
+                || ! data.match(re_color)  // Invalid color value
+            ) {
                 me.isDefined = false;
                 me.targetFieldNode.setAttribute(
                     "style"
