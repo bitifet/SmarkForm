@@ -82,13 +82,17 @@ export class color extends input {
         const me = this;
         if (
             ! me.isSingleton // Only for real field
-            && data === null
         ) {
-            me.isDefined = false;
-            me.targetFieldNode.setAttribute(
-                "style"
-                , me.defaultStyleAttr + disabled_style
-            );
+            if (data === null) {
+                me.isDefined = false;
+                me.targetFieldNode.setAttribute(
+                    "style"
+                    , me.defaultStyleAttr + disabled_style
+                );
+            } else {
+                me.isDefined = true;
+                me.targetFieldNode.setAttribute("style", me.defaultStyleAttr);
+            };
         };
         const value = await super.import({data, focus});
         return (
