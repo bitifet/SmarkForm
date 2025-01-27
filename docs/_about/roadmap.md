@@ -57,7 +57,7 @@ nav_order: 5
 
   * The "API interface", that will allow, for instance, to use other fields
     values as arguments an external API request to, say, fill the options of a
-    <select> tag.
+    `<select>` tag.
 
   * The "src" property for import action, that will allow to load data from an
     external source every time the action is triggered. Also taking advantadge
