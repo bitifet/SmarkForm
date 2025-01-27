@@ -296,10 +296,10 @@ The `list` component type supports the following actions:
   * **action:** (= "addItem")
   * {{ site.data.definitions.actions.origin }}
   * {{ site.data.definitions.actions.context }}
-  * **target:**
-  * **position:** = "after" (default) / "before"
+  * **target:** Path★  (absolute or relative to its *context*) to a component to be used as a base reference to calculate the position of the new item. If not provided, the last item in the list will be used.
+  * **position:** (= "after" (default) / "before") Determines where the new item will be inserted in relation to the target.
   * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
-  * **failback:** (= "none" / "throw" )
+  * **failback:** (= "none" / "throw" (default)) Avoid emitting the "LIST_MAX_ITEMS_REACHED" event when the maximum number of items is reached.
 
 #### (Async) removeItem (Action)
 
