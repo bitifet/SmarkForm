@@ -61,6 +61,7 @@ export class date extends input {
         );
     };//}}}
     @action
+    // (Done in parent class) @import_from_target
     async import({data = null, focus = true} = {}) {//{{{
         const me = this;
         if (me.isSingleton) return await super.import({data, focus}); // Overload only inner field

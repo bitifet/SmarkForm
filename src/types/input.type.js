@@ -3,6 +3,7 @@
 import {form} from "./form.type.js";
 import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
+import {import_from_target} from "../decorators/import_from_target.deco.js";
 export class input extends form {
     async render() {//{{{
         const me = this;
@@ -46,6 +47,7 @@ export class input extends form {
         );
     };//}}}
     @action
+    @import_from_target
     async import({data = "", focus = true} = {}) {//{{{
         const me = this;
         if (
@@ -67,9 +69,6 @@ export class input extends form {
         } else {
             me.targetNode.value = data;
         };
-        // me.targetNode.dispatchEvent(
-        //     new customEvent("change", {})
-        // );
         if (focus) me.focus();
         return me.targetNode.value;
     };//}}}

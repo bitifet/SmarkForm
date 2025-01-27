@@ -1,3 +1,5 @@
+// src/decorators/export_to_target.deco.js
+// =======================================
 
 export const export_to_target = function export_to_target_decorator(method, {kind}) {
     if (kind == "method") {

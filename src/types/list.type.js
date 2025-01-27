@@ -20,6 +20,7 @@ import {action} from "./trigger.type.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
+import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {mutex} from "../decorators/mutex.deco.js";
 import {makeRoom, parseJSON} from "../lib/helpers.js";
 
@@ -160,6 +161,7 @@ export class list extends SmarkField {
         return list;
     };//}}}
     @action
+    @import_from_target
     async import({data = [], focus} = {}) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:

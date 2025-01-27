@@ -29,6 +29,7 @@ export class number extends input {
         );
     };//}}}
     @action
+    // (Done in parent class) @import_from_target
     async import({data = null, focus = true} = {}) {//{{{
         const me = this;
         const typename = typeof data;

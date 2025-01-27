@@ -5,6 +5,7 @@ import {SmarkField} from "../lib/component.js";
 import {action} from "./trigger.type.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
+import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {getRoots, parseJSON} from "../lib/helpers.js";
 
 @foldable
@@ -39,6 +40,7 @@ export class form extends SmarkField {
         );
     };//}}}
     @action
+    @import_from_target
     async import({data = {}, focus = true} = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;

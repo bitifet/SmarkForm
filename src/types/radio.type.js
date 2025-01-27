@@ -3,6 +3,7 @@
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
+import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {randomId} from "../lib/helpers.js";
 export class radio extends input {
     constructor(...args) {
@@ -43,6 +44,7 @@ export class radio extends input {
         return this.radioButtons.find(r=>r.checked)?.value;
     };//}}}
     @action
+    @import_from_target
     async import({data = null, focus = true} = {}) {//{{{
         const selected = this.radioButtons.find(r=>r.value === data);
         if (selected) selected.checked = true;
