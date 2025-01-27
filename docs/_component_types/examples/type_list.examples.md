@@ -6,9 +6,9 @@
 {% capture simple_list_example %}<div id="myForm$$">
     <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
         <fieldset><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
-            <input name='name' placeholder='User name' type='text' data-smark/>
-            <input name='phone' placeholder='Phone number' type='tel' data-smark/>
-            <input name='email' placeholder='Email' type='text' data-smark/>
+            <p><input name='name' placeholder='User name' type='text' data-smark/></p>
+            <p><input name='phone' placeholder='Phone number' type='tel' data-smark/></p>
+            <p><input name='email' placeholder='Email' type='text' data-smark/></p>
             <button data-smark='{"action":"removeItem"}' title='Remove User'>❌</button>
         </fieldset>
     </section>
@@ -18,7 +18,7 @@
 
 {% raw %} <!-- capture scalar_list_example {{{ --> {% endraw %}
 {% capture scalar_list_example %}<div id="myForm$$">
-    <section data-smark='{"type":"list","name":"phones"}'>
+    <section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
         <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
     </section>
     <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>

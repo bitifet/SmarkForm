@@ -4,9 +4,8 @@
         "options": {
             "origin": "**origin:** Origin is automatically set to the trigger component that called the action (and cannot be overridden). In case of a manual call, it is set to Null.",
             "context": "**context:** Path★  (absolute or relative to its *natural context*) to the component that is the context of the action. If not provided, the context is set to its *natural context*.",
-            "target_export": "**target:** Path★  (absolute or relative to its *context*) to a component that, when specified, will get the exported data through its \"import\" action.",
-            "target_import": "**target:** (✋ reserved)",
-            "data": ""
+            "target_export": "**target:** Path★  (absolute or relative to its *context*). Pipes the exported data to the *import* action of the target component.",
+            "target_import": "**target:** Path★  (absolute or relative to its *context*). Pipes the imported data from the *export* action of the target component, overridding the \"data\" option if specified."
         }
     }
 }

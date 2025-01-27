@@ -236,7 +236,7 @@ neater arrays when the user adds more items to the list than are used.
 
 #### of
 
-Specify a field type for list items. Handy to avoid spacifying a whole
+Specify a field type for list items. Handy to avoid specifying a whole
 *data-smark* attribute in the template to just specify the field type when
 needed.
 
