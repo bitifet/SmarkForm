@@ -1,6 +1,9 @@
 # Vim
 **.sw*
 
+# Git Worktree
+wtree
+
 # Generated files
 dist/examples/*.html
 docs/_data/computed.json
