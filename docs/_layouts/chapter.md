@@ -131,6 +131,9 @@ layout: default
 
 
   /* TOC */
+  .main-content .chaptertoc {
+    margin: 1.5em 0;
+  }
   .main-content .chaptertoc>ul {
     margin-left: 1em;
     counter-reset: item-counter;
