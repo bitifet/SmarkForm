@@ -85,52 +85,55 @@ layout: default
   }
 
   /* Style and increment h2 */
-  h2 {
+  main>h2 {
     counter-reset: h3-counter;
     counter-increment: h2-counter;
   }
-  h2::before {
+  main>h2::before {
     content: counter(h2-counter) ". ";
   }
 
   /* Style and increment h3 */
-  h3 {
+  main>h3 {
     counter-reset: h4-counter;
     counter-increment: h3-counter;
   }
-  h3::before {
+  main>h3::before {
     content: counter(h2-counter) "." counter(h3-counter) ". ";
   }
 
   /* Style and increment h4 */
-  h4 {
+  main>h4 {
     counter-increment: h4-counter;
     line-height: 3em;
     font-size: 1.2em !important;
     text-transform: none !important;
   }
-  h4::before {
+  main>h4::before {
     content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) ". ";
   }
 
 
   /* (Untested) */
-  h5, h6 {
+  main>h5, h6 {
     line-height: 3em;
     font-size: 1.2em !important;
     color: #000077;
     text-transform: none !important;
   }
-  h5::before {
+  main>h5::before {
     content: "► ";
   }
-  h6::before {
+  main>h6::before {
     content: "▻ ";
   }
 
 
 
   /* TOC */
+  .main-content .chaptertoc {
+    margin: 1.5em 0;
+  }
   .main-content .chaptertoc>ul {
     margin-left: 1em;
     counter-reset: item-counter;

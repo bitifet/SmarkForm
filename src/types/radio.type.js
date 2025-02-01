@@ -41,7 +41,7 @@ export class radio extends input {
     @action
     @export_to_target
     async export() {//{{{
-        return this.radioButtons.find(r=>r.checked)?.value;
+        return this.radioButtons.find(r=>r.checked)?.value || null;
     };//}}}
     @action
     @import_from_target

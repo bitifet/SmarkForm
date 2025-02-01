@@ -18,7 +18,6 @@ A SmarkForm form can be created by following a few simple steps:
 > [Examples]({{ "resources/examples" | relative_url }}) section, download the
 > one you like the most, and start editing to see what happens.
 
-<br />
 <details class="chaptertoc">
 <summary>
 <strong>📖 Table of Contents</strong>
