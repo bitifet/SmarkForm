@@ -22,9 +22,9 @@ import {randomId} from "../lib/helpers.js";
 //
 
 export class label extends SmarkComponent {
-    constructor(node, options, ...args){
+    constructor(node, {allow_select = false, ...options}, ...args){
         delete options.name; // Labels are always unnamed.
-        return super(node, options, ...args);
+        return super(node, {allow_select, ...options}, ...args);
     };
     render(){
         const me = this;
@@ -36,6 +36,11 @@ export class label extends SmarkComponent {
                     targetFieldNode.id = randomId();
                 };
                 me.targetNode.setAttribute("for", targetFieldNode.id);
+            };
+            if (! me.options.allow_select) {
+                // Make labels non-selectable unless "allow_select" option
+                // is set  to true.
+                me.targetNode.style["user-select"] = "none";
             };
         });
     };
