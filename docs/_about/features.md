@@ -2,7 +2,7 @@
 title: Features
 layout: chapter
 permalink: /about/features
-nav_order: 4
+nav_order: 3
 
 ---
 

@@ -2,7 +2,7 @@
 title: Showcase
 layout: chapter
 permalink: /about/showcase
-nav_order: 3
+nav_order: 2
 
 ---
 
