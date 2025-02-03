@@ -15,7 +15,7 @@ capabilities of SmarkForm.
 
 👉 Each example is designed to highlight different features and functionalities.
 
-👉 All examples are unstyled to emphasize the fact that SmarkForm is
+👉 All examples are mostly unstyled to emphasize the fact that SmarkForm is
 layout-agnostic.
 
 👉 If there is any CSS, it is only in order to make more evident some features
@@ -43,6 +43,7 @@ and you could check the applied styles in the *CSS* tab of each example.
 * [Basic Form](#basic-form)
 * [Nested forms](#nested-forms)
 * [Lists](#lists)
+* [Nested lists and forms](#nested-lists-and-forms)
 * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
 * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Import and Export Data](#import-and-export-data)
@@ -57,7 +58,7 @@ and you could check the applied styles in the *CSS* tab of each example.
 ## Basic Form
 
 In this first example, we'll start with a simple form that includes a few input
-fields.
+fields (right side) and a textarea .
 
   * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
   * Edit the resulting JSON in the textarea as you like.
@@ -74,7 +75,7 @@ fields.
 
 The former example example is entirely built with SmarkForm itself.
 
-If you look at the *JS* tab you'll see that there is no JavaScript code except
+If you look at its *JS* tab you'll see that there is no JavaScript code except
 for the SmarkForm instantiation itself.
 
 👉 The trick here is that you did not import/export the whole form but just a
@@ -100,6 +101,21 @@ subform.
   * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
   * Use the `📂` button to import new JSON data to the whole form.
     - You can use the previously exported JSON as a base for custom edits.
+
+👉 Context of the triggers:
+
+  * The `💾` and `📂` buttons operate on the whole form because it is their
+    *natural* context.
+
+  * In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
+    explicitly set by the option of the same name.
+
+  * We could have wanted to make the `💾` and `📂` buttons to operate only on the *demo* subform.
+    - We could have done that by setting their *context* property to "demo".
+    - But, also, we could just have placed them inside of that context **in the
+      markup** (see next example).
+
+{% include_relative examples/showcase.examples.md option="basic_form_with_local_import_export" %}
 
 
 ## Lists
@@ -146,6 +162,11 @@ example we:
 
   * Defined an alternate template for the case of empty list.
 
+  * Made the `➖` button a little smarter so that it removes empty items, if
+    any, first.
+
+  * Added a `🧹` button to remove all empty items.
+
   * Added a `❌` button to each item to cherry-pick which items to remove.
 
   * Returned to the default behaviour of not exporting empty items.
@@ -158,10 +179,18 @@ following example:
 
 {% include_relative examples/showcase.examples.md option="schedule_list" %}
 
+
+
+
+
+## Nested lists and forms
+
+
 **(To be continued...)**
 
 
 
+{% include_relative examples/showcase.examples.md option="nested_lists" %}
 
 
 
