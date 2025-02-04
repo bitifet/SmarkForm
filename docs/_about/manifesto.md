@@ -2,7 +2,7 @@
 title: Manifesto
 layout: chapter
 permalink: /about/manifesto
-nav_order: 2
+nav_order: 4
 
 ---
 

@@ -118,7 +118,7 @@ Accepted arguments:
   {% endif %}
   {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-preview {{active_class}}">
-    <div class="smarkform_example">
+    <div class="smarkform_example" style="overflow: auto">
       {{ htmlSource | replace: "$$", formId | raw }}
     </div>
   </div>

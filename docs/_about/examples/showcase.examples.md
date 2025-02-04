@@ -40,59 +40,93 @@
         </p>
 {% endcapture %}
 
-
+{% capture json_editor %}
+        <textarea
+            cols="20"
+            placeholder="JSON data editor"
+            data-smark='{"name":"editor","type":"input"}'
+            style="resize: none; align-self: stretch; min-height: 8em"
+        ></textarea>
+{% endcapture %}
 
 
 {% raw %} <!-- basic_form {{{ --> {% endraw %}
 {% capture basic_form %}<div id="myForm$$">
-    <table><tr>
-    <td data-smark='{"name":"demo"}'>{{ basic_form_source
-    }}    </td>
-    <td style="text-align:center;">
-        <p><button
-            data-smark='{"action":"export","context":"demo","target":"../editor"}'
-            title="Export 'demo' subform to 'editor' textarea"
-            >➡️ </button></p>
-        <p><button
-            data-smark='{"action":"import","context":"demo","target":"../editor"}'
-            title="Import 'editor' textarea contents to 'demo' subform"
-            >⬅️ </button></p>
-        <p><button
-            data-smark='{"action":"clear"}'
-            title="Clear the whole form"
-            >❌</button></p>
-    </td>
-    <td data-smark='{"name":"editor","type":"input"}'>
-        <textarea data-smark style="width: 100%; height: 100px;"></textarea>
-    </td>
-    </tr></table>
+    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}'>{{ basic_form_source
+        }}    </div>
+        <div>
+            <p><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >➡️ </button></p>
+            <p><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬅️ </button></p>
+            <p><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></p>
+        </div>{{ json_editor }}
+    </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- basic_form_with_import_export {{{ --> {% endraw %}
 {% capture basic_form_with_import_export %}<div id="myForm$$">
-    <table><tr>
-    <td data-smark='{"name":"demo"}'>{{ basic_form_source
-    }}    </td>
-    <td style="text-align:center;">
-        <p><button
-            data-smark='{"action":"export","context":"demo","target":"../editor"}'
-            title="Export 'demo' subform to 'editor' textarea"
-            >➡️ </button></p>
-        <p><button
-            data-smark='{"action":"import","context":"demo","target":"../editor"}'
-            title="Import 'editor' textarea contents to 'demo' subform"
-            >⬅️ </button></p>{{ import_export_buttons }}
-        <p><button
-            data-smark='{"action":"clear"}'
-            title="Clear the whole form"
-            >❌</button></p>
-    </td>
-    <td data-smark='{"name":"editor","type":"input"}'>
-        <textarea data-smark style="width: 100%; height: 100px;"></textarea>
-    </td>
-    </tr></table>
+    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}'>{{ basic_form_source
+        }}    </div>
+        <div>
+            <p><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >➡️ </button></p>
+            <p><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬅️ </button></p>{{ import_export_buttons }}
+            <p><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></p>
+        </div>{{ json_editor }}
+    </div>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- basic_form_with_local_import_export {{{ --> {% endraw %}
+{% capture basic_form_with_local_import_export %}<div id="myForm$$">
+    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}'>{{
+                basic_form_source
+            }}
+            <button
+                data-smark='{"action":"export"}'
+                title="Export the whole form as JSON (see JS tab)"
+                >💾 Export</button>
+            <button
+                data-smark='{"action":"import"}'
+                title="Import the whole form as JSON (see JS tab)"
+                >📂 Import</button>
+        </div>
+        <div>
+            <p><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >➡️ </button></p>
+            <p><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬅️ </button></p>
+            <p><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></p>
+        </div>{{ json_editor }}
+    </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -100,72 +134,65 @@
 
 {% raw %} <!-- simple_list {{{ --> {% endraw %}
 {% capture simple_list %}<div id="myForm$$">
-    <table><tr>
-    <td data-smark='{"name":"demo"}'>
-        <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
-        <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
-        <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-        <label data-smark>Phones:</label>
-        <div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
-            <input type="tel" style="display: block">
+    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}'>
+            <button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
+            <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+            <label data-smark>Phones:</label>
+            <div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
+                <input type="tel" style="display: block">
+            </div>
         </div>
-    </td>
-    <td style="text-align:center;">
-        <p><button
-            data-smark='{"action":"export","context":"demo","target":"../editor"}'
-            title="Export 'demo' subform to 'editor' textarea"
-            >➡️ </button></p>
-        <p><button
-            data-smark='{"action":"import","context":"demo","target":"../editor"}'
-            title="Import 'editor' textarea contents to 'demo' subform"
-            >⬅️ </button></p>
-        <p><button
-            data-smark='{"action":"clear"}'
-            title="Clear the whole form"
-            >❌</button></p>
-    </td>
-    <td data-smark='{"name":"editor","type":"input"}'>
-        <textarea data-smark style="width: 100%; height: 100px;"></textarea>
-    </td>
-    </tr></table>
+        <div>
+            <p><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >➡️ </button></p>
+            <p><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬅️ </button></p>
+            <p><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></p>
+        </div>{{ json_editor }}
+    </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- simple_list {{{ --> {% endraw %}
 {% capture simple_list_singleton %}<div id="myForm$$">
-    <table><tr>
-    <td data-smark='{"name":"demo"}'>
-        <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
-        <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
-        <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-        <label data-smark>Phones:</label>
-        <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
-            <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
-            <li class="row">
-                <label data-smark>📞 </label><input type="tel" data-smark>
-                <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
-            </li>
-        </ul>
-    </td>
-    <td style="text-align:center;">
-        <p><button
-            data-smark='{"action":"export","context":"demo","target":"../editor"}'
-            title="Export 'demo' subform to 'editor' textarea"
-            >➡️ </button></p>
-        <p><button
-            data-smark='{"action":"import","context":"demo","target":"../editor"}'
-            title="Import 'editor' textarea contents to 'demo' subform"
-            >⬅️ </button></p>
-        <p><button
-            data-smark='{"action":"clear"}'
-            title="Clear the whole form"
-            >❌</button></p>
-    </td>
-    <td data-smark='{"name":"editor","type":"input"}'>
-        <textarea data-smark style="width: 100%; height: 100px;"></textarea>
-    </td>
-    </tr></table>
+    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}'>
+            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+            <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+            <label data-smark>Phones:</label>
+            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
+                <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+                <li class="row">
+                    <label data-smark>📞 </label><input type="tel" data-smark>
+                    <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
+                </li>
+            </ul>
+        </div>
+        <div>
+            <p><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >➡️ </button></p>
+            <p><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬅️ </button></p>
+            <p><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></p>
+        </div>{{ json_editor }}
+    </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -173,40 +200,37 @@
 
 {% raw %} <!-- schedule_list {{{ --> {% endraw %}
 {% capture schedule_list %}<div id="myForm$$">
-    <table><tr>
-    <td data-smark='{"name":"demo"}'>
-        <p>
-            <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
-            <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
-            <label>Schedule:</label>
-            <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3}'>
-                <span>
-                    <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
+    <div style="display: flex; flex-direction:column; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}'>
+            <p>
+                <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
+                <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
+                <label>Schedule:</label>
+                <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3}'>
+                    <span>
+                        <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
+                    </span>
+                    <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+                    <span data-smark='{"role":"separator"}'>, </span>
+                    <span data-smark='{"role":"last_separator"}'> and </span>
                 </span>
-                <span data-smark='{"role":"empty_list"}'>(Closed)</span>
-                <span data-smark='{"role":"separator"}'>, </span>
-                <span data-smark='{"role":"last_separator"}'> and </span>
-            </span>
-        </p>
-    </td>
-    <td style="text-align:center;">
-        <p><button
-            data-smark='{"action":"export","context":"demo","target":"../editor"}'
-            title="Export 'demo' subform to 'editor' textarea"
-            >➡️ </button></p>
-        <p><button
-            data-smark='{"action":"import","context":"demo","target":"../editor"}'
-            title="Import 'editor' textarea contents to 'demo' subform"
-            >⬅️ </button></p>
-        <p><button
-            data-smark='{"action":"clear"}'
-            title="Clear the whole form"
-            >❌</button></p>
-    </td>
-    <td data-smark='{"name":"editor","type":"input"}'>
-        <textarea data-smark style="width: 100%; height: 100px;"></textarea>
-    </td>
-    </tr></table>
+            </p>
+        </div>
+        <div>
+            <span><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >⬇️ </button></span>
+            <span><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬆️ </button></span>
+            <span><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></span>
+        </div>{{ json_editor }}
+    </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -293,6 +317,15 @@ myForm.on("AfterAction_export", ({context, data})=>{
         selected="preview"
     %}
 
+{% elsif include.option == "basic_form_with_local_import_export" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="basic_form_with_local_import_export"
+        htmlSource=basic_form_with_local_import_export
+        jsSource=form_export_example_import_export_js
+        selected="preview"
+    %}
+
 {% elsif include.option == "simple_list" %}
 
     {% include components/sampletabs_tpl.md
@@ -328,5 +361,12 @@ myForm.on("AfterAction_export", ({context, data})=>{
         jsSource=form_export_example_js
         selected="preview"
     %}
+
+{% else %}
+
+<div style="border: solid 3px red; padding: 0px 2em 1em 2em; border-radius: 0.5em;">
+    <h2>🚧  Missing Example</h2>
+    <p>Example id misspelled or not yet implemented: <b>{{ include.option }}</b>.</p>
+</div>
 
 {% endif %}
