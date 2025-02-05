@@ -64,7 +64,12 @@ export class trigger extends SmarkComponent {
         const target = (
             targetPath ? context.find(targetPath) // Explicit target (context relative)
             : contextPath ? null // Explicit context path => don't mind component position
-            : parents.find(p=>p.parent?.targetNode.isSameNode(context?.targetNode))
+            : (
+                parents
+                    .slice(1) // Skip self
+                    .find(p=>p.parent?.targetNode.isSameNode(context?.targetNode))
+                || null
+            )
         );
 
         return {
