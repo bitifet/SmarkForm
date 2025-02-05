@@ -18,8 +18,9 @@ capabilities of SmarkForm.
 👉 All examples are mostly unstyled to emphasize the fact that SmarkForm is
 layout-agnostic.
 
-👉 If there is any CSS, it is only in order to make more evident some features
-and you could check the applied styles in the *CSS* tab of each example.
+👉 If there is any further CSS, it is only in order to make more evident some
+features and you could check the applied styles in the *CSS* tab of each
+example.
 
 
 {: .info :}
@@ -42,11 +43,13 @@ and you could check the applied styles in the *CSS* tab of each example.
 
 * [Basic Form](#basic-form)
 * [Nested forms](#nested-forms)
+* [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Lists](#lists)
 * [Nested lists and forms](#nested-lists-and-forms)
 * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
 * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Import and Export Data](#import-and-export-data)
+* [Smart value coercion](#smart-value-coercion)
 * [Advanced UX Improvements](#advanced-ux-improvements)
 * [Conclusion](#conclusion)
 
@@ -102,20 +105,59 @@ subform.
   * Use the `📂` button to import new JSON data to the whole form.
     - You can use the previously exported JSON as a base for custom edits.
 
-👉 Context of the triggers:
+👉 Despite of usability concerns, there is no limit in form nesting depth. For
+instance, the follwoing example shows a form with several levels of nesting:
 
-  * The `💾` and `📂` buttons operate on the whole form because it is their
-    *natural* context.
+{% include_relative examples/showcase.examples.md option="deeply_nested_form" %}
 
-  * In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
-    explicitly set by the option of the same name.
 
-  * We could have wanted to make the `💾` and `📂` buttons to operate only on the *demo* subform.
-    - We could have done that by setting their *context* property to "demo".
-    - But, also, we could just have placed them inside of that context **in the
-      markup** (see next example).
+
+## A note on context of the triggers
+
+In the previous example, the `💾` and `📂` buttons operate on the whole form
+because it is their *natural* context.
+
+In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
+explicitly set by the option of the same name.
+
+We could have wanted to make the `💾` and `📂` buttons to operate only on the
+*demo* subform.
+
+We could have done that by setting their *context* property to "demo".
+
+But, also, we could just have placed them inside of that context **in the
+markup** as is showin in the following example:
 
 {% include_relative examples/showcase.examples.md option="basic_form_with_local_import_export" %}
+
+👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
+they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
+without explicitly specifying their context.
+
+{: .hint :}
+> If you look at the *JS* tab of the last two exemples, you'll see that there
+> is a little difference between them.
+> 
+> In the first one, the "BeforeAction_import" and "AfterAction_export" event
+> handlers inhibits themselves depending on whether the context is the root
+> form or not while, in the later, it just focus on the fact that the *target*
+> is not provided.
+> 
+> The second is a more generic approach for this kind of event handlers. But
+> the first one serves as an alternative example showing how we can base those
+> event handlers' behaviour on the specific context (path) of every trigger.
+
+
+If you want a clearer example on how the context affect the triggers, take a
+look to the following example:
+
+{% include_relative examples/showcase.examples.md option="context_comparsion" %}
+
+{: .info :}
+From now on, having we already demonstrated how to work with *import* and
+*export* actions' eveents, for the sake of simplicity we'll stick to the layout
+of the very first example (`➡️ `, `⬅️` targetting the "editor" textarea and `❌`
+buttons) that doesn't need any additionally JS code.
 
 
 ## Lists
@@ -133,10 +175,13 @@ that can grow or shrink as needed:
 Here we used a simpple `<input>` field for each item in the list and had to
 trick them with `style="display: block;"` to make them to stack gracefully.
 
-We could have used a *form* field instead, but in this case we would had get a
-JSON object for each item in the list, which is not what we want here.
+But **lists are even more powerful** than that:
 
-To address this issue, we can take advantage of the *singleton pattern* to make
+For instance, we could have used a *form* field instead, but in this case we
+would had get a JSON object for each item in the list, which is not what we
+want in this specific case.
+
+👉 To address this issue, we can take advantage of the *singleton pattern* to make
 any HTML element to become a regular *input* field.
 
 
@@ -149,12 +194,12 @@ any HTML element to become a regular *input* field.
 ...
 
 This way we can not only use a more elaborated structure for each item in the
-list: it also allows us to include other controls within every list item.
+list: It also allows us to include other controls within every list item, like
+in the following example:
 
 {% include_relative examples/showcase.examples.md option="simple_list_singleton" %}
 
-👉 And lists are even more powerful than that. For instance, in the former
-example we:
+👉 In this example we:
 
   * Established a maximum of 5 items in the list.
 
@@ -174,79 +219,36 @@ example we:
   * Made it sortable (by dragging and dropping items).
 
 
-Another interesting use case for lists is to create a schedule list like the
-following example:
+👉 And there is a lot more... To begin with, another interesting use case for
+lists is to create a schedule list like the following example:
 
 {% include_relative examples/showcase.examples.md option="schedule_list" %}
 
 
 
+👉 Or we could have wanted a more formal (or better aligned, in case of multiple schedules) layout such as a table:
+
+{% include_relative examples/showcase.examples.md option="schedule_table" %}
+
 
 
 ## Nested lists and forms
 
+{: .warning :}
+> Section still under construction...
 
-**(To be continued...)**
+
+Since we can make lists of forms, we can also nest more forms and lists inside
+every list item and so forth to any depth.
 
 
 
 {% include_relative examples/showcase.examples.md option="nested_lists" %}
 
-
-
------------------
-
-
-  (🚧 Working examples, without technical explanation, just to show implemented capabilities)
-
-
-👉 This document is still in draft stage.
-
-The following random text snippets are just reminders of what should be included in this document:
-
-
-
-
-
-
-It imports and exports data in JSON format
-
-nested forms
-
-
-variable-length lists
-
-
-properly sanitizes and formats values according to its field type
-
-
-
-implements declarative restrictions like wether null is allowed or not
-
-
-maximum and minimum length for lists
-
-
-
-smooth and intuitive user experience
-
-
-such as forcing `type="color"` fields to always hold a valid color value
-
-
-
-context-driven keyboard shortcuts
-
-
-smart auto-enablement/disablement of controls
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%
+{: .hint :}
+> This is just a simple example to show the concept. You can see more
+> elaborated examples in the [Examples]({{ "resources/examples" | relative_url }})
+> section of this documentation.
 
 
 
@@ -256,29 +258,56 @@ smart auto-enablement/disablement of controls
 
 ## Context-Driven Keyboard Shortcuts
 
+{: .warning :}
+> Section still under construction...
+
 SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
 
-<!-- Example 4: Context-Driven Keyboard Shortcuts -->
+{% include_relative examples/showcase.examples.md option="keyboard_shortcuts" %}
+
 
 ## Dynamic Dropdown Options
 
+{: .warning :}
+> Section still under construction...
+
 In this example, we'll illustrate how to create dropdown menus with dynamic options. This is particularly useful for forms that need to load options based on user input or external data sources.
 
-<!-- Example 5: Dynamic Dropdown Options -->
+{% include_relative examples/showcase.examples.md option="dynamic_dropdown" %}
 
 ## Import and Export Data
 
+{: .warning :}
+> Section still under construction...
+
 SmarkForm makes it easy to import and export form data in JSON format. This example will show how to load data into a form and export it, ensuring proper data handling and integration with other systems.
 
-<!-- Example 6: Import and Export Data -->
+{% include_relative examples/showcase.examples.md option="import_export" %}
+
+
+
+## Smart value coercion
+
+{: .warning :}
+> Section still under construction...
+
+
+{% include_relative examples/showcase.examples.md option="smart_value_coercion" %}
 
 ## Advanced UX Improvements
 
+{: .warning :}
+> Section still under construction...
+
 Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enablement/disablement of controls and non-breaking unobtrusive keyboard navigation.
 
-<!-- Example 7: Advanced UX Improvements -->
+{% include_relative examples/showcase.examples.md option="advanced_ux" %}
+
 
 ## Conclusion
+
+{: .warning :}
+> Section still under construction...
 
 We hope these examples have given you a good overview of what SmarkForm can do. By leveraging the power of markup-driven forms, SmarkForm simplifies the creation of interactive and intuitive forms, allowing you to focus on your application's business logic. Feel free to experiment with these examples and adapt them to suit your specific needs.
 

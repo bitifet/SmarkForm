@@ -40,16 +40,16 @@ myForm.on("AfterAction_export", ({data})=>{
 
 {% raw %} <!-- capture simple_form_example_notes {{{ --> {% endraw %}
 {% capture simple_form_example_notes %}
-    👉 For this to work you need to get SmarkForm loaded into your page or
-    module (More information at *Getting SmarkForm* section).
+👉 For this to work you need to get SmarkForm loaded into your page or
+module (More information at *Getting SmarkForm* section).
 
-    💡 Try to fill the form and then press the *Export* button to get it as
-    JSON.
+💡 Try to fill the form and then press the *Export* button to get it as
+JSON.
 
-    💡 Try to *Import* button and fill the gaps in provided JSON structure.
+💡 Try to *Import* button and fill the gaps in provided JSON structure.
 
-    🔨 Try to add more JSON keys, remove existing, and even provide invalid
-    JSON data and see what happen.
+🔨 Try to add more JSON keys, remove existing, and even provide invalid
+JSON data and see what happen.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -108,22 +108,22 @@ myForm.on("AfterAction_export", ({context, data})=>{
 
 {% raw %} <!-- capture inner_exports_form_example_notes {{{ --> {% endraw %}
 {% capture inner_exports_form_example_notes %}
-    👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
-    by the same event handlers** (for "BeforeAction_import" and
-    "AfterAction_export", respectively).
+👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
+by the same event handlers** (for "BeforeAction_import" and
+"AfterAction_export", respectively).
 
-    👉 **They belong to different *SmarkForm* fields** determined by **(1)**
-    where they are placed in the DOM and **(2)** the relative path from that
-    place pointed by the *context* property.
+👉 **They belong to different *SmarkForm* fields** determined by **(1)**
+where they are placed in the DOM and **(2)** the relative path from that
+place pointed by the *context* property.
 
-    ℹ️  Different field types may import/export different data types (*forms*
-    import/export JSON while regular *inputs* import/export text).
+ℹ️  Different field types may import/export different data types (*forms*
+import/export JSON while regular *inputs* import/export text).
 
-    🔧 For the sake of simplicity, the *BeforeAction_import* event handler
-    reads the previous value of the field (no matter its type) and provides it
-    stringified as JSON as default value for the window.prompt() call. Making
-    it easy to edit the value no matter if we are importing one of the text
-    fields or the whole form.
+🔧 For the sake of simplicity, the *BeforeAction_import* event handler
+reads the previous value of the field (no matter its type) and provides it
+stringified as JSON as default value for the window.prompt() call. Making
+it easy to edit the value no matter if we are importing one of the text
+fields or the whole form.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture nested_forms_example {{{ --> {% endraw %}
@@ -166,11 +166,11 @@ myForm.on("AfterAction_export", ({data})=>{
 
 {% raw %} <!-- capture nested_forms_example_notes {{{ --> {% endraw %}
 {% capture nested_forms_example_notes %}
-    👉 This example comes with pre-filled values to make it more illustrative,
-    but feel free to change them if you like.
+👉 This example comes with pre-filled values to make it more illustrative,
+but feel free to change them if you like.
 
-    👉 We could have also added nested lists (to allow multiple phone numbers
-    and/or emails).
+👉 We could have also added nested lists (to allow multiple phone numbers
+and/or emails).
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -187,31 +187,31 @@ myForm.on("AfterAction_export", ({data})=>{
 
 {% raw %} <!-- capture fixed_list_example_notes {{{ --> {% endraw %}
 {% capture fixed_list_example_notes %}
-    👉 Here we used the *min_items* property to ensure at least 3 items are
-       laid out.
+👉 Here we used the *min_items* property to ensure at least 3 items are
+   laid out.
 
-    💡 Having we have not (yet) disposed any mechanism for the list to grow,
-       this works as a fixed-length list.
+💡 Having we have not (yet) disposed any mechanism for the list to grow,
+   this works as a fixed-length list.
 
-    ℹ️  *min_items* default value is 1, but we can also set it to 0 to allow
-       empty lists.
+ℹ️  *min_items* default value is 1, but we can also set it to 0 to allow
+   empty lists.
 
-    👉 By default, unless `<input>`, `<textarea>` or `<select>` used as list
-    item template is rendered as a SmarkForm field of the type *form*
-    (producing a JSON object for each item). But here we want an array of
-    phones: not an array of objects with a phone...
-           
-    ➡️  ...The `of` property allows us to use a different component type (we
-       could have also used `<li data-smark="input"> instead.
+👉 By default, unless `<input>`, `<textarea>` or `<select>` used as list
+item template is rendered as a SmarkForm field of the type *form*
+(producing a JSON object for each item). But here we want an array of
+phones: not an array of objects with a phone...
+       
+➡️  ...The `of` property allows us to use a different component type (we
+   could have also used `<li data-smark="input"> instead.
 
-    ➡️  ...We could just have used an actual `<input>` tag directly, but that
-       would have broken the layout in this case.
+➡️  ...We could just have used an actual `<input>` tag directly, but that
+   would have broken the layout in this case.
 
-    ➡️  When we assign the "input" (or any other *scalar* type) to an html tag
-       different than `<input>`, `<textarea>` or `<select>`, it is expected to
-       contain exactly one *SmarkForm* field inside and will export the value
-       of that type, not an object with it. **This is called the *singleton*
-       pattern**.
+➡️  When we assign the "input" (or any other *scalar* type) to an html tag
+   different than `<input>`, `<textarea>` or `<select>`, it is expected to
+   contain exactly one *SmarkForm* field inside and will export the value
+   of that type, not an object with it. **This is called the *singleton*
+   pattern**.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -247,18 +247,18 @@ myForm.on("AfterAction_export", ({data})=>{
 
 {% raw %} <!-- capture pets_list_example_notes {{{ --> {% endraw %}
 {% capture pets_list_example_notes %}
-    👉 Notice **you can rearrange list items** by simply dragging them having we
-       set the *sortable* property to *true*.
+👉 Notice **you can rearrange list items** by simply dragging them having we
+   set the *sortable* property to *true*.
 
-    👉 Here we added the *sortable* class to list to set propper pointer cursor
-       over list items through a simple CSS rule.
+👉 Here we added the *sortable* class to list to set propper pointer cursor
+   over list items through a simple CSS rule.
 
-    🚀 In the future we plan to automatically map all properties of the
-       *data-smark* attribute as "data-smark-&lt;prop_name&gt;" like attributes so that
-       we will be able to use a selector like `[data-smark-sortable]` in the CSS
-       rule and, hence, avoid having to set a custom class in template.
+🚀 In the future we plan to automatically map all properties of the
+   *data-smark* attribute as "data-smark-&lt;prop_name&gt;" like attributes so that
+   we will be able to use a selector like `[data-smark-sortable]` in the CSS
+   rule and, hence, avoid having to set a custom class in template.
 {% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
+{% raw %} <!-- }}} ]() --> {% endraw %}
 
 
 
