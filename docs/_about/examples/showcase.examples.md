@@ -3,17 +3,53 @@
 
 
 {% raw %} <!-- import_export_buttons {{{ --> {% endraw %}
-{% capture import_export_buttons %}
-        <p><button
-            data-smark='{"action":"export"}'
-            title="Export the whole form as JSON (see JS tab)"
-            >💾</button></p>
-        <p><button
-            data-smark='{"action":"import"}'
-            title="Import the whole form as JSON (see JS tab)"
-            >📂</button></p>
-{% endcapture %}
+{% capture import_export_buttons %}<p><button
+                data-smark='{"action":"export","context":"demo","target":"../editor"}'
+                title="Export 'demo' subform to 'editor' textarea"
+                >➡️ </button></p>
+            <p><button
+                data-smark='{"action":"import","context":"demo","target":"../editor"}'
+                title="Import 'editor' textarea contents to 'demo' subform"
+                >⬅️ </button></p>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+
+{% raw %} <!-- load_save_buttons_stacked {{{ --> {% endraw %}
+{% capture load_save_buttons_stacked %}<p><button
+                data-smark='{"action":"export"}'
+                title="Export the whole form as JSON (see JS tab)"
+                >💾</button></p>
+            <p><button
+                data-smark='{"action":"import"}'
+                title="Import the whole form as JSON (see JS tab)"
+                >📂</button></p>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% raw %} <!-- load_save_buttons {{{ --> {% endraw %}
+{% capture load_save_buttons
+%}<button
+                data-smark='{"action":"export"}'
+                title="Export the whole form as JSON (see JS tab)"
+                >💾 Save</button>
+            <button
+                data-smark='{"action":"import"}'
+                title="Import the whole form as JSON (see JS tab)"
+                >📂 Load</button>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% raw %} <!-- clear_button {{{ --> {% endraw %}
+{% capture clear_button %}<p><button
+                data-smark='{"action":"clear"}'
+                title="Clear the whole form"
+                >❌</button></p>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 {% raw %} <!-- basic_form_source {{{ --> {% endraw %}
 {% capture basic_form_source %}
@@ -63,18 +99,8 @@
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{ basic_form_source
         }}    </div>
         <div>
-            <p><button
-                data-smark='{"action":"export","context":"demo","target":"../editor"}'
-                title="Export 'demo' subform to 'editor' textarea"
-                >➡️ </button></p>
-            <p><button
-                data-smark='{"action":"import","context":"demo","target":"../editor"}'
-                title="Import 'editor' textarea contents to 'demo' subform"
-                >⬅️ </button></p>
-            <p><button
-                data-smark='{"action":"clear"}'
-                title="Clear the whole form"
-                >❌</button></p>
+            {{ import_export_buttons }}
+            {{ clear_button }}
         </div>{{ json_editor }}
     </div>
 </div>{% endcapture %}
@@ -87,18 +113,9 @@
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{ basic_form_source
         }}    </div>
         <div>
-            <p><button
-                data-smark='{"action":"export","context":"demo","target":"../editor"}'
-                title="Export 'demo' subform to 'editor' textarea"
-                >➡️ </button></p>
-            <p><button
-                data-smark='{"action":"import","context":"demo","target":"../editor"}'
-                title="Import 'editor' textarea contents to 'demo' subform"
-                >⬅️ </button></p>{{ import_export_buttons }}
-            <p><button
-                data-smark='{"action":"clear"}'
-                title="Clear the whole form"
-                >❌</button></p>
+            {{ import_export_buttons }}
+            {{ load_save_buttons_stacked }}
+            {{ clear_button }}
         </div>{{ json_editor }}
     </div>
 </div>{% endcapture %}
@@ -109,29 +126,13 @@
     <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
                 basic_form_source
-            }}
-            <button
-                data-smark='{"action":"export"}'
-                title="Export the whole form as JSON (see JS tab)"
-                >💾 Save</button>
-            <button
-                data-smark='{"action":"import"}'
-                title="Import the whole form as JSON (see JS tab)"
-                >📂 Load</button>
+}}        <p>
+            {{ load_save_buttons }}
+        </p>
         </div>
         <div>
-            <p><button
-                data-smark='{"action":"export","context":"demo","target":"../editor"}'
-                title="Export 'demo' subform to 'editor' textarea"
-                >➡️ </button></p>
-            <p><button
-                data-smark='{"action":"import","context":"demo","target":"../editor"}'
-                title="Import 'editor' textarea contents to 'demo' subform"
-                >⬅️ </button></p>
-            <p><button
-                data-smark='{"action":"clear"}'
-                title="Clear the whole form"
-                >❌</button></p>
+            {{ import_export_buttons }}
+            {{ clear_button }}
         </div>{{ json_editor }}
     </div>
 </div>{% endcapture %}
@@ -337,7 +338,7 @@ fields or the whole form.
         <p><button
             data-smark='{"action":"import","context":"demo","target":"../editor"}'
             title="Import 'editor' textarea contents to 'demo' subform"
-            >⬅️ </button></p>{{ import_export_buttons }}</td>
+            >⬅️ </button></p>{{ load_save_buttons }}</td>
     <td data-smark='{"name":"editor","type":"input"}'>
         <textarea data-smark style="width: 100%; height: 100px;"></textarea>
     </td>
