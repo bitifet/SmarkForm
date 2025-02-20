@@ -13,23 +13,26 @@ nav_order: 2
 This section provides a series of working examples to demonstrate the
 capabilities of SmarkForm.
 
-👉 Each example is designed to highlight different features and functionalities.
-
-👉 All examples are mostly unstyled to emphasize the fact that SmarkForm is
-layout-agnostic.
-
-👉 If there is any further CSS, it is only in order to make more evident some
-features and you could check the applied styles in the *CSS* tab of each
-example.
-
 
 {: .info :}
 > The goal of this section is to showcase what SmarkForm can do rather than
-> explaining the underlying code. Anyway, you can take a look at the HTML, CSS,
-> and JavaScript tabs of every example to glimpse the simplicity of the
-> implementation.
+> explaining the underlying code even you can take a look at the HTML, CSS,
+> and JavaScript tabs to glimpse the simplicity of the implementation.
 > 
-> For detailed explanations and code walkthroughs, please refer to the other
+> 👉 Each example is designed to highlight different features and functionalities.
+> 
+> 👉 All examples are mostly unstyled to emphasize the fact that SmarkForm is
+> layout-agnostic.
+> 
+> 👉 If there is any further CSS, it is only in order to make more evident some
+> features and you could check the applied styles in the *CSS* tab of each
+> example.
+> 
+> 👉 HTML/CSS code used in the examples is meant to be short and readable to make
+> it easier to understand the concepts rather than to be best fit from the point
+> of view of UX or semantics.
+> 
+> 🚀 For detailed explanations and code walkthroughs, please refer to the other
 > sections of this manual.
 
 
@@ -125,14 +128,19 @@ instance, the follwoing example shows a form with several levels of nesting:
 
 
 {: .hint :}
+
 {% include_relative examples/showcase.examples.md option="nested_forms" %}
 
 
 {: .hint :}
-> 🚀 See the [Nested lists and forms](#nested-lists-and-forms) section if you
-> want to see more elaborated examples of nested forms.
+> Here, despite importing and exporting the *demo* subform with `➡️ ` and `⬅️ `
+> buttons, you can use again the `💾` and `📂` buttons to see the whole form in a
+> `window.alert(...)` dialog and to import a new JSON data to the whole form
+> throught a `window.prompt(...)`, respectively.
 
 
+👉 See the [Nested lists and forms](#nested-lists-and-forms) section down below
+if you want to see 🚀 more elaborated examples of nested forms.
 
 
 ## A note on context of the triggers
@@ -148,8 +156,15 @@ We could have wanted to make the `💾` and `📂` buttons to operate only on th
 
 We could have done that by setting their *context* property to "demo".
 
-But, also, we could just have placed them inside of that context **in the
-markup** as is showin in the following example:
+{: .info :}
+From now on, except for the following example, having we already demonstrated
+how to work with *import* and *export* actions' eveents, for the sake of
+simplicity we'll stick to the layout of the very first example (`➡️ `, `⬅️` and
+`❌` buttons targetting the "editor" textarea) that doesn't need any
+additionally JS code.
+
+...But, also, we could just have placed them inside of that context **in the
+markup** as is showing in the following example:
 
 {% include_relative examples/showcase.examples.md option="basic_form_with_local_import_export" %}
 
@@ -175,12 +190,6 @@ If you want a clearer example on how the context affect the triggers, take a
 look to the following example:
 
 {% include_relative examples/showcase.examples.md option="context_comparsion" %}
-
-{: .info :}
-From now on, having we already demonstrated how to work with *import* and
-*export* actions' eveents, for the sake of simplicity we'll stick to the layout
-of the very first example (`➡️ `, `⬅️` targetting the "editor" textarea and `❌`
-buttons) that doesn't need any additionally JS code.
 
 
 ## Lists

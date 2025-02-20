@@ -252,6 +252,7 @@ endcapture %}
         }}    </div>
         <div>
             {{ import_export_buttons_stacked }}
+            {{ load_save_buttons_stacked }}
             {{ clear_button }}
         </div>{{ json_editor }}
     </div>
@@ -507,7 +508,7 @@ myForm.on("AfterAction_export", ({target, data})=>{
     {% include components/sampletabs_tpl.md
         formId="nested_forms"
         htmlSource=nested_forms
-        jsSource=form_export_example_js
+        jsSource=form_export_example_import_export_js
         selected="preview"
     %}
 
