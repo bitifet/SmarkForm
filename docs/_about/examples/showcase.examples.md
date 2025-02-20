@@ -58,7 +58,7 @@ endcapture %}
 
 {% raw %} <!-- clear_button_stacked {{{ --> {% endraw %}
 {% capture clear_button_stacked %}<p><button
-                data-smark='{"action":"clear"}'
+                data-smark='{"action":"clear", "context":"demo"}'
                 title="Clear the whole form"
                 >❌</button></p>{%
 endcapture %}
@@ -66,7 +66,7 @@ endcapture %}
 
 {% raw %} <!-- clear_button {{{ --> {% endraw %}
 {% capture clear_button %}<span><button
-                data-smark='{"action":"clear"}'
+                data-smark='{"action":"clear", "context":"demo"}'
                 title="Clear the whole form"
                 >❌</button></span>{%
 endcapture %}
@@ -117,6 +117,55 @@ endcapture %}
         </p>
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- nested_forms_source {{{ --> {% endraw %}
+{% capture nested_forms_source %}
+        <h2>Car Details</h2>
+        <p>
+            <label data-smark>Model:</label>
+            <input type="text" name="model" data-smark />
+        </p>
+        <p>
+            <label data-smark>Doors:</label>
+            <input type="number" name="doors" min="3" max="5" step=2 data-smark />
+        </p>
+        <p>
+            <label data-smark>Seats:</label>
+            <input type="number" name="seats" min=4 max=9 data-smark />
+        </p>
+        <p>
+            <label data-smark>Driving Side:</label>
+            <input type="radio" name="side" value="left" data-smark /> Left
+            <input type="radio" name="side" value="right" data-smark /> Right
+        </p>
+        <p data-smark='{"name":"safety","type":"form"}'>
+            <label>Safety Features:</label>
+            <span>
+                <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
+            </span>
+            &nbsp;&nbsp;
+            <span>
+                <label><input type="checkbox" name="abs" data-smark /> ABS.</label>
+            </span>
+            &nbsp;&nbsp;
+            <span>
+                <label><input type="checkbox" name="esp" data-smark /> ESP.</label>
+            </span>
+            &nbsp;&nbsp;
+            <span>
+                <label><input type="checkbox" name="tc" data-smark />TC.</label>
+            </span>
+        </p>
+        <p>
+            <label data-smark>Color:</label>
+            <span data-smark='{"type":"color", "name":"color"}'>
+                <input data-smark>
+                <button data-smark='{"action":"clear"}' title='Indifferent or unknown' >❌ </button>
+            </span>
+        </p>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 {% raw %} <!-- simple_list_source {{{ --> {% endraw %}
 {% capture simple_list_source %}
@@ -190,6 +239,19 @@ endcapture %}
         <div>
             {{ import_export_buttons_stacked }}
             {{ load_save_buttons_stacked }}
+            {{ clear_button }}
+        </div>{{ json_editor }}
+    </div>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- nested_forms {{{ --> {% endraw %}
+{% capture nested_forms %}<div id="myForm$$">
+    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{ nested_forms_source
+        }}    </div>
+        <div>
+            {{ import_export_buttons_stacked }}
             {{ clear_button }}
         </div>{{ json_editor }}
     </div>
@@ -437,6 +499,15 @@ myForm.on("AfterAction_export", ({target, data})=>{
         formId="basic_form_with_import_export"
         htmlSource=basic_form_with_import_export
         jsSource=form_export_example_import_export_js
+        selected="preview"
+    %}
+
+{% elsif include.option == "nested_forms" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="nested_forms"
+        htmlSource=nested_forms
+        jsSource=form_export_example_js
         selected="preview"
     %}
 

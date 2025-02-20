@@ -63,15 +63,29 @@ example.
 In this first example, we'll start with a simple form that includes a few input
 fields (right side) and a textarea .
 
-  * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
-  * Edit the resulting JSON in the textarea as you like.
-  * Use the `⬅️ ` buttorn to import that JSON to the form again.
-  * You can clear both using the `❌` button.
-  * Notice that most SmarkForm fields can be null, meaning the data is unknown
-    or indifferent.
-
 {% include_relative examples/showcase.examples.md option="basic_form" %}
 
+{: .hint :}
+> 👉 In this example you can:
+>   * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
+>   * Clear the form using the `❌` button.
+>   * Use the `⬅️ ` buttorn to import that JSON back to the form again.
+>   * Edit the JSON in the textarea as you like and click `⬅️ ` again to
+>     translate the changes to the form.
+>   * Try to import an invalid values for given field to see how the form
+>     handles it.
+>   * Notice that most SmarkForm fields can be null, meaning the data is unknown
+>     or indifferent.
+>   * Even color pickers can be null even [native HTML color inputs
+>     can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
+>   * To reset a color picker after a color being set, we a button to call it's
+>     "clear" *action*.
+>   * This kind of *SmarkForm* components intended to call *actions* on
+>     *SmarkForm* fields are called *triggers*.
+>   * There are several other *actions* that can be called on *SmarkForm* fields.
+>     Some, such as *import* and *export* are common to all field types and
+>     others are specific to some of them. For instance *addItem* and *removeItem*
+>     are specific to lists.
 
 
 ## Nested forms
@@ -98,17 +112,26 @@ subform.
 
 {% include_relative examples/showcase.examples.md option="basic_form_with_import_export" %}
 
-👉 Here you can:
-
-  * Repeat all the same trials as in the former example (with identical results).
-  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
-  * Use the `📂` button to import new JSON data to the whole form.
-    - You can use the previously exported JSON as a base for custom edits.
+{: .hint :}
+> 👉 Here you can:
+> 
+>   * Repeat all the same trials as in the former example (with identical results).
+>   * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
+>   * Use the `📂` button to import new JSON data to the whole form.
+>     - You can use the previously exported JSON as a base for custom edits.
 
 👉 Despite of usability concerns, there is no limit in form nesting depth. For
 instance, the follwoing example shows a form with several levels of nesting:
 
-{% include_relative examples/showcase.examples.md option="deeply_nested_form" %}
+
+{: .hint :}
+{% include_relative examples/showcase.examples.md option="nested_forms" %}
+
+
+{: .hint :}
+> 🚀 See the [Nested lists and forms](#nested-lists-and-forms) section if you
+> want to see more elaborated examples of nested forms.
+
 
 
 
@@ -242,11 +265,19 @@ Since we can make lists of forms, we can also nest more forms and lists inside
 every list item and so forth to any depth.
 
 
-
 {% include_relative examples/showcase.examples.md option="nested_lists" %}
 
+There is no theoretical limit to the depth of nesting beyond the logical
+usability concerns.
+
+Here is a more complex example with a deeply nested form:
+
 {: .hint :}
-> This is just a simple example to show the concept. You can see more
+{% include_relative examples/showcase.examples.md option="deeply_nested_form" %}
+
+
+{: .hint :}
+> These are just simple examples to show the concept. You can see more
 > elaborated examples in the [Examples]({{ "resources/examples" | relative_url }})
 > section of this documentation.
 
