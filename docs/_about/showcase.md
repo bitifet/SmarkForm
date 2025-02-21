@@ -69,26 +69,7 @@ fields (right side) and a textarea .
 {% include_relative examples/showcase.examples.md option="basic_form" %}
 
 {: .hint :}
-> 👉 In this example you can:
->   * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
->   * Clear the form using the `❌` button.
->   * Use the `⬅️ ` buttorn to import that JSON back to the form again.
->   * Edit the JSON in the textarea as you like and click `⬅️ ` again to
->     translate the changes to the form.
->   * Try to import an invalid values for given field to see how the form
->     handles it.
->   * Notice that most SmarkForm fields can be null, meaning the data is unknown
->     or indifferent.
->   * Even color pickers can be null even [native HTML color inputs
->     can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
->   * To reset a color picker after a color being set, we a button to call it's
->     "clear" *action*.
->   * This kind of *SmarkForm* components intended to call *actions* on
->     *SmarkForm* fields are called *triggers*.
->   * There are several other *actions* that can be called on *SmarkForm* fields.
->     Some, such as *import* and *export* are common to all field types and
->     others are specific to some of them. For instance *addItem* and *removeItem*
->     are specific to lists.
+> Don’t miss the `📝 Notes` tab. There you'll find useful guidelines and tips to deepen your understanding.
 
 
 ## Nested forms
@@ -115,32 +96,17 @@ subform.
 
 {% include_relative examples/showcase.examples.md option="basic_form_with_import_export" %}
 
-{: .hint :}
-> 👉 Here you can:
-> 
->   * Repeat all the same trials as in the former example (with identical results).
->   * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
->   * Use the `📂` button to import new JSON data to the whole form.
->     - You can use the previously exported JSON as a base for custom edits.
 
 👉 Despite of usability concerns, there is no limit in form nesting depth. For
-instance, the follwoing example shows a form with several levels of nesting:
+instance, the follwoing example shows a form with another level of nesting:
 
-
-{: .hint :}
 
 {% include_relative examples/showcase.examples.md option="nested_forms" %}
 
 
 {: .hint :}
-> Here, despite importing and exporting the *demo* subform with `➡️ ` and `⬅️ `
-> buttons, you can use again the `💾` and `📂` buttons to see the whole form in a
-> `window.alert(...)` dialog and to import a new JSON data to the whole form
-> throught a `window.prompt(...)`, respectively.
-
-
-👉 See the [Nested lists and forms](#nested-lists-and-forms) section down below
-if you want to see 🚀 more elaborated examples of nested forms.
+🚀 See the [Nested lists and forms](#nested-lists-and-forms) section down below
+for more elaborated examples of nested forms.
 
 
 ## A note on context of the triggers
@@ -172,21 +138,8 @@ markup** as is showing in the following example:
 they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
 without explicitly specifying their context.
 
-{: .hint :}
-> If you look at the *JS* tab of the last two exemples, you'll see that there
-> is a little difference between them.
-> 
-> In the first one, the "BeforeAction_import" and "AfterAction_export" event
-> handlers inhibits themselves depending on whether the context is the root
-> form or not while, in the later, it just focus on the fact that the *target*
-> is not provided.
-> 
-> The second is a more generic approach for this kind of event handlers. But
-> the first one serves as an alternative example showing how we can base those
-> event handlers' behaviour on the specific context (path) of every trigger.
 
-
-If you want a clearer example on how the context affect the triggers, take a
+👌 If you want a clearer example on how the context affect the triggers, take a
 look to the following example:
 
 {% include_relative examples/showcase.examples.md option="context_comparsion" %}
