@@ -5,6 +5,23 @@
 
 ## Features:
 
+  * Implement (preliminar) 'select' component type.
+    - Define a 'data-type' property with (at least) following values:
+      o "text" (default): Regular text.
+      o "json": JSON string.
+      o "number": Number (Almost like "json", but restricted to numbers).
+    - Make import() and export() actions to handle values accordingly.
+    - Options without value attribute should evaluate to their content as text
+      no matter the value of `data-type` property.
+    - Example:
+      ```html
+      <select data-smark=`{"data-type": "json"}'>
+        <option value='null'>-- Please Select --</option>  <!-- Null -->
+        <option value='"option_1"'>Option 1</option>       <!-- "option_1" -->
+        <option>Option 2</option>                          <!-- "Option 2" -->
+      </select>
+      ```
+
   * Allow for additional (sibling) direct childs in lists as specialized templates
     - They are required to come with "data-smark-template" attribute specifying its function.
     - Functions to implement:
@@ -17,6 +34,8 @@
 
   * Implement dependent disabilitation.
 
+  * Implement multiforms.
+    - Likewise dependent disabilitation, but more handy in case of very different subforms.
 
 ## Documentation:
 
