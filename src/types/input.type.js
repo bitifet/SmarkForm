@@ -4,6 +4,7 @@ import {form} from "./form.type.js";
 import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
+import {parseJSON} from "../lib/helpers.js";
 export class input extends form {
     async render() {//{{{
         const me = this;
@@ -40,25 +41,44 @@ export class input extends form {
     @export_to_target
     async export() {//{{{
         const me = this;
+        const nodeFld = me.targetFieldNode;
+        let retv;
+        if (me.isSingleton) {
+            retv = Object.values(await super.export())[0];
+        } else if (me.isCheckbox) {
+            retv = !! nodeFld.checked;
+        } else if (
+            me.options.encoding === "json"
+            && nodeFld.tagName.toUpperCase() === "SELECT"
+            && nodeFld.options[nodeFld.selectedIndex]?.getAttribute("value") === null
+        ) {
+            // Keep fallback working when encoding is json and value attribute is not set.
+            // (and don't expetct <opton> inner text to be JSON)
+            retv = JSON.stringify(nodeFld.options[nodeFld.selectedIndex].text);
+        } else {
+            retv = nodeFld.value;
+        };
         return (
-            me.isSingleton ? Object.values(await super.export())[0]
-            : me.isCheckbox ? !!me.targetNode.checked
-            : me.targetNode.value
+            me.options.encoding === "json" ? parseJSON(retv) || null
+            : retv
         );
     };//}}}
     @action
     @import_from_target
     async import({data = "", focus = true} = {}) {//{{{
         const me = this;
+        const nodeFld = me.targetFieldNode;
         if (
             typeof data === "object"
-            && me.options.type === "input" // Not in a derivated field types
+            && me.options.type === "input"    // Not in a derivated field types
+            || me.options.encoding === "json" // JSON encoding specified
         ) {
-            const isTextarea = me.targetFieldNode.tagName.toUpperCase() === "TEXTAREA";
+            data ||= null;
+            const isTextarea = nodeFld.tagName.toUpperCase() === "TEXTAREA";
             data = (
                 isTextarea ? JSON.stringify(data, null, 4) // Pretty print
                 : JSON.stringify(data) // Compact print
-            );
+            ) || "";
         };
         if (me.isSingleton) {
             return await super.import({data: Object.fromEntries(
@@ -66,6 +86,19 @@ export class input extends form {
             ), focus});
         } else if (me.isCheckbox) {
             me.targetNode.checked = !! data;
+        } else if (
+            me.options.encoding === "json"
+            && nodeFld.tagName.toUpperCase() === "SELECT"
+        ) {
+            me.targetNode.value = (data || "null"); // Faster, but won't work if value attribute is not set.
+            if (nodeFld.selectedIndex === -1) {
+                // Fallback when value attribute is not set.
+                const parsed = parseJSON(data) || "";
+                const idx = Array.from(nodeFld.options).findIndex(
+                    opt => opt.text === parsed
+                );
+                if (idx !== -1) nodeFld.selectedIndex = idx;
+            };
         } else {
             me.targetNode.value = data;
         };
@@ -84,6 +117,9 @@ export class input extends form {
     @action
     async clear({focus} = {}) {//{{{
         const me = this;
-        await me.import({focus});
+        await me.import({
+            data: me.options.encoding === "json" ? null : "",
+            focus,
+        });
     };//}}}
 };
