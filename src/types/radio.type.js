@@ -24,7 +24,9 @@ export class radio extends input {
                 master.targetNode
             ];
         };
-        me.targetNode.addEventListener("click", onRadioClick.bind(master));
+        let changeEventHandler = onRadioInteraction.bind(master);
+        me.targetNode.addEventListener("click", changeEventHandler);
+        me.targetNode.addEventListener("keydown", changeEventHandler);
         return retv;
     };
     async render() {//{{{
@@ -62,16 +64,27 @@ export class radio extends input {
     };//}}}
 };
 
-function onRadioClick(event) {//{{{
-    const me = this;
-    let checked = true; // All raddio buttons become checked on click.
-    const isRepetition = Object.is(me.lastClicked?.target, event.target);
-    if (isRepetition) {
-        checked = ! me.lastClicked.checked;
+function onRadioInteraction(event) {//{{{
+    if (
+        event.type === "click"
+        || event.type === "keydown" && event.code === "Delete"
+        // NOTE: Some browsers also send fake click events for toggling radio
+        //       buttons.
+        //       This approach avoids to interfere with that behavior while
+        //       ensuring a consistent keyboard resetting method (through the
+        //       Delete key).
+    ) {
+        const me = this;
+        let checked = true; // All raddio buttons become checked on click.
+        const lastSelection = Object.is(me.lastClicked?.target, event.target);
+        if (lastSelection) checked = (
+            ! me.lastClicked.checked    // Click  => Toggle
+            && event.type !== "keydown" // Delete => Reset
+        );
+        me.lastClicked = {
+            target: event.target,
+            checked,
+        };
+        event.target.checked = checked;
     };
-    me.lastClicked = {
-        target: event.target,
-        checked,
-    };
-    event.target.checked = checked;
 };//}}}
