@@ -9,20 +9,23 @@ export class radio extends input {
     constructor(...args) {
         super(...args);
         const me = this;
-        const singleton = me.parent.children[me.name];
-        if (singleton) {
-            me.targetNode.setAttribute("name", singleton.sharedNodeName);
-            singleton.radioButtons.push(me.targetNode);
-            return {}; // Not a field.
+        let master = me.parent.children[me.name];
+        let retv = me;
+        if (master) {
+            me.targetNode.setAttribute("name", master.sharedNodeName);
+            master.radioButtons.push(me.targetNode);
+            retv = {}; // Not the master field.
         } else {
+            master = me;
             // Provide unique name for DOM navigation to work properly:
-            me.sharedNodeName = randomId();
-            me.targetNode.setAttribute("name", me.sharedNodeName);
-            me.radioButtons = [
-                me.targetNode
+            master.sharedNodeName = randomId();
+            master.targetNode.setAttribute("name", master.sharedNodeName);
+            master.radioButtons = [
+                master.targetNode
             ];
         };
-        return me;
+        me.targetNode.addEventListener("click", onRadioClick.bind(master));
+        return retv;
     };
     async render() {//{{{
         await super.render();
@@ -47,7 +50,11 @@ export class radio extends input {
     @import_from_target
     async import({data = null, focus = true} = {}) {//{{{
         const selected = this.radioButtons.find(r=>r.value === data);
-        if (selected) selected.checked = true;
+        if (selected) {
+            selected.checked = true;
+        } else {
+            this.radioButtons.forEach(r=>r.checked = false);
+        };
         if (focus) this.focus();
     };//}}}
     async isEmpty() {//{{{
@@ -55,3 +62,16 @@ export class radio extends input {
     };//}}}
 };
 
+function onRadioClick(event) {//{{{
+    const me = this;
+    let checked = true; // All raddio buttons become checked on click.
+    const isRepetition = Object.is(me.lastClicked?.target, event.target);
+    if (isRepetition) {
+        checked = ! me.lastClicked.checked;
+    };
+    me.lastClicked = {
+        target: event.target,
+        checked,
+    };
+    event.target.checked = checked;
+};//}}}
