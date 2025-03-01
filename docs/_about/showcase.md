@@ -120,23 +120,26 @@ explicitly set by the option of the same name.
 We could have wanted to make the `💾` and `📂` buttons to operate only on the
 *demo* subform.
 
-We could have done that by setting their *context* property to "demo".
+{: .hint :}
+> We could have done that by setting their *context* property to "demo", in
+> which case then they would have exported/imported the same data than `➡️ ` and
+> `⬅️ ` buttons.
 
-{: .info :}
-From now on, except for the following example, having we already demonstrated
-how to work with *import* and *export* actions' eveents, for the sake of
-simplicity we'll stick to the layout of the very first example (`➡️ `, `⬅️` and
-`❌` buttons targetting the "editor" textarea) that doesn't need any
-additionally JS code.
-
-...But, also, we could just have placed them inside of that context **in the
-markup** as is showing in the following example:
+However, we could just have placed them inside of that context **in the
+markup** as it is shown in the following example:
 
 {% include_relative examples/showcase.examples.md option="basic_form_with_local_import_export" %}
 
 👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
 they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
 without explicitly specifying their context.
+
+{: .info :}
+From now on, except for the following example, having we already demonstrated
+how to work with *import* and *export* actions' events, for the sake of
+simplicity we'll stick to the layout of the very first example (`➡️ `, `⬅️` and
+`❌` buttons targetting the "editor" textarea) that doesn't need any
+additionally JS code.
 
 
 👌 If you want a clearer example on how the context affect the triggers, take a
@@ -219,9 +222,6 @@ lists is to create a schedule list like the following example:
 
 ## Nested lists and forms
 
-{: .warning :}
-> Section still under construction...
-
 
 Since we can make lists of forms, we can also nest more forms and lists inside
 every list item and so forth to any depth.
@@ -229,13 +229,21 @@ every list item and so forth to any depth.
 
 {% include_relative examples/showcase.examples.md option="nested_lists" %}
 
+
+
+{: .warning :}
+> Section still under construction...
+
+
+
 There is no theoretical limit to the depth of nesting beyond the logical
 usability concerns.
 
 Here is a more complex example with a deeply nested form:
 
-{: .hint :}
-{% include_relative examples/showcase.examples.md option="deeply_nested_form" %}
+
+{% include_relative examples/showcase.examples.md option="deeply_nested_forms" %}
+
 
 
 {: .hint :}
