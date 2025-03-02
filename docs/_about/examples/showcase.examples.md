@@ -461,98 +461,6 @@ myForm.on("AfterAction_export", ({target, data})=>{
 {% raw %} <!-- }}} --> {% endraw %}
 
 
-{% comment %} →  Form aditional notes:            {% endcomment %}
-{% comment %}    =====================            {% endcomment %}
-
-{% raw %} <!-- capture basic_form_notes {{{ --> {% endraw %}
-{% capture basic_form_notes %}
-👉 In this example you can:
-  * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
-  * Clear the form using the `❌` button.
-  * Use the `⬅️ ` buttorn to import that JSON back to the form again.
-  * Edit the JSON in the textarea as you like and click `⬅️ ` again to
-    translate the changes to the form.
-  * Try to import an invalid values for given field to see how the form
-    handles it.
-  * Notice that most SmarkForm fields can be null, meaning the data is unknown
-    or indifferent.
-  * Even color pickers can be null even [native HTML color inputs
-    can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
-  * To reset a color picker after a color being set, we a button to call it's
-    "clear" *action*.
-  * This kind of *SmarkForm* components intended to call *actions* on
-    *SmarkForm* fields are called *triggers*.
-  * There are several other *actions* that can be called on *SmarkForm* fields.
-    Some, such as *import* and *export* are common to all field types and
-    others are specific to some of them. For instance *addItem* and *removeItem*
-    are specific to lists.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture basic_form_with_import_export_notes {{{ --> {% endraw %}
-{% capture basic_form_with_import_export_notes %}
-👉 Here you can:
-
-  * Repeat all the same trials as in the former example (with identical results).
-  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
-  * Use the `📂` button to import new JSON data to the whole form.
-    - You can use the previously exported JSON as a base for custom edits.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
-{% capture nested_forms_notes %}
-👉 Again, despite importing and exporting the *demo* subform with `➡️ ` and `⬅️ `
-buttons you can, respectively:
-
-  * Use the `💾` button to see the whole form in a `window.alert(...)` dialog.
-  * And `📂` button to import a new JSON data to the whole form throught a
-    `window.prompt(...)`.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture deeply_nested_forms_notes {{{ --> {% endraw %}
-{% capture deeply_nested_forms_notes %}
-👉 FIXME!!
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-
-
-{% raw %} <!-- capture basic_form_with_local_import_export_notes {{{ --> {% endraw %}
-{% capture basic_form_with_local_import_export_notes %}
-If you compare the *JS* tab with the one in fhe former one,
-you'll see that there is a little difference between them.
-
-👉 In the first one, the "BeforeAction_import" and "AfterAction_export"
-event handlers inhibits themselves depending on whether the context is the
-root form or not while, in the later, it just focus on the fact that the
-*target* is not provided.
-
-👉 The second is a more generic approach for this kind of event handlers. But
-the first one serves as an alternative example showing how we can base those
-event handlers' behaviour on the specific context (path) of every trigger.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
-{% capture context_comparsion_example_notes %}
-👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
-by the same event handlers** (for "BeforeAction_import" and
-"AfterAction_export", respectively).
-
-👉 **They belong to different *SmarkForm* fields** determined by **(1)**
-where they are placed in the DOM and **(2)** the relative path from that
-place pointed by the *context* property.
-
-ℹ️  Different field types may import/export different data types (*forms*
-import/export JSON while regular *inputs* import/export text).
-
-🔧 For the sake of simplicity, the *BeforeAction_import* event handler
-reads the previous value of the field (no matter its type) and provides it
-stringified as JSON as default value for the window.prompt() call. Making
-it easy to edit the value no matter if we are importing one of the text
-fields or the whole form.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-
 {% comment %} →  Template conditional rendering:  {% endcomment %}
 {% comment %}    ===============================  {% endcomment %}
 
@@ -563,7 +471,7 @@ fields or the whole form.
         formId="basic_form"
         htmlSource=basic_form
         jsSource=form_export_example_js
-        notes=basic_form_notes
+        notes=include.notes
         selected="preview"
     %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -574,7 +482,7 @@ fields or the whole form.
         formId="basic_form_with_import_export"
         htmlSource=basic_form_with_import_export
         jsSource=form_export_example_import_export_js
-        notes=basic_form_with_import_export_notes
+        notes=include.notes
         selected="preview"
     %}
 
@@ -584,7 +492,7 @@ fields or the whole form.
         formId="nested_forms"
         htmlSource=nested_forms
         jsSource=form_export_example_import_export_js
-        notes=nested_forms_notes
+        notes=include.notes
         selected="preview"
     %}
 
@@ -594,19 +502,19 @@ fields or the whole form.
         formId="basic_form_with_local_import_export"
         htmlSource=basic_form_with_local_import_export
         jsSource=form_export_example_with_local_import_export_js
-        notes=basic_form_with_local_import_export_notes
+        notes=include.notes
         selected="preview"
     %}
 
 {% elsif include.option == "context_comparsion" %}
 
-{% include components/sampletabs_tpl.md
-    formId="context_comparsion"
-    htmlSource=context_comparsion_example
-    jsSource=context_comparsion_example_js
-    notes=context_comparsion_example_notes
-    selected="preview"
-%}
+    {% include components/sampletabs_tpl.md
+        formId="context_comparsion"
+        htmlSource=context_comparsion_example
+        jsSource=context_comparsion_example_js
+        notes=include.notes
+        selected="preview"
+    %}
 
 {% elsif include.option == "simple_list" %}
 
@@ -614,6 +522,7 @@ fields or the whole form.
         formId="simple_list"
         htmlSource=simple_list
         jsSource=form_export_example
+        notes=include.notes
         selected="preview"
     %}
 
@@ -623,6 +532,7 @@ fields or the whole form.
         formId="simple_list_singleton"
         htmlSource=simple_list_singleton
         jsSource=form_export_example
+        notes=include.notes
         selected="preview"
     %}
 
@@ -632,6 +542,7 @@ fields or the whole form.
         formId="schedule_list"
         htmlSource=schedule_list
         jsSource=form_export_example
+        notes=include.notes
         selected="preview"
     %}
 
@@ -641,7 +552,7 @@ fields or the whole form.
         formId="deeply_nested_forms"
         htmlSource=deeply_nested_forms
         jsSource=form_export_example_import_export_js
-        notes=deeply_nested_forms_notes
+        notes=include.notes
         selected="preview"
     %}
 

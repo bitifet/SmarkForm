@@ -66,7 +66,38 @@ capabilities of SmarkForm.
 In this first example, we'll start with a simple form that includes a few input
 fields (right side) and a textarea .
 
-{% include_relative examples/showcase.examples.md option="basic_form" %}
+
+
+{% raw %} <!-- capture basic_form_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 In this example you can:
+  * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
+  * Clear the form using the `❌` button.
+  * Use the `⬅️ ` buttorn to import that JSON back to the form again.
+  * Edit the JSON in the textarea as you like and click `⬅️ ` again to
+    translate the changes to the form.
+  * Try to import an invalid values for given field to see how the form
+    handles it.
+  * Notice that most SmarkForm fields can be null, meaning the data is unknown
+    or indifferent.
+  * Even color pickers can be null even [native HTML color inputs
+    can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
+  * To reset a color picker after a color being set, we a button to call it's
+    "clear" *action*.
+  * This kind of *SmarkForm* components intended to call *actions* on
+    *SmarkForm* fields are called *triggers*.
+  * There are several other *actions* that can be called on *SmarkForm* fields.
+    Some, such as *import* and *export* are common to all field types and
+    others are specific to some of them. For instance *addItem* and *removeItem*
+    are specific to lists.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% include_relative
+    examples/showcase.examples.md
+    option="basic_form"
+    notes=notes
+%}
+
 
 {: .hint :}
 > Don’t miss the `📝 Notes` tab. There you'll find useful guidelines and tips to deepen your understanding.
@@ -94,14 +125,52 @@ subform.
     reespectively.
 
 
-{% include_relative examples/showcase.examples.md option="basic_form_with_import_export" %}
+
+
+
+{% raw %} <!-- capture basic_form_with_import_export_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Here you can:
+
+  * Repeat all the same trials as in the former example (with identical results).
+  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
+  * Use the `📂` button to import new JSON data to the whole form.
+    - You can use the previously exported JSON as a base for custom edits.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="basic_form_with_import_export"
+    notes=notes
+%}
 
 
 👉 Despite of usability concerns, there is no limit in form nesting depth. For
 instance, the follwoing example shows a form with another level of nesting:
 
 
-{% include_relative examples/showcase.examples.md option="nested_forms" %}
+
+
+
+{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Again, despite importing and exporting the *demo* subform with `➡️ ` and `⬅️ `
+buttons you can, respectively:
+
+  * Use the `💾` button to see the whole form in a `window.alert(...)` dialog.
+  * And `📂` button to import a new JSON data to the whole form throught a
+    `window.prompt(...)`.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="nested_forms"
+    notes=notes
+%}
 
 
 {: .hint :}
@@ -128,7 +197,32 @@ We could have wanted to make the `💾` and `📂` buttons to operate only on th
 However, we could just have placed them inside of that context **in the
 markup** as it is shown in the following example:
 
-{% include_relative examples/showcase.examples.md option="basic_form_with_local_import_export" %}
+
+
+
+
+{% raw %} <!-- capture basic_form_with_local_import_export_notes {{{ --> {% endraw %}
+{% capture notes %}
+If you compare the *JS* tab with the one in fhe former one,
+you'll see that there is a little difference between them.
+
+👉 In the first one, the "BeforeAction_import" and "AfterAction_export"
+event handlers inhibits themselves depending on whether the context is the
+root form or not while, in the later, it just focus on the fact that the
+*target* is not provided.
+
+👉 The second is a more generic approach for this kind of event handlers. But
+the first one serves as an alternative example showing how we can base those
+event handlers' behaviour on the specific context (path) of every trigger.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="basic_form_with_local_import_export"
+    notes=notes
+%}
 
 👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
 they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
@@ -145,7 +239,38 @@ additionally JS code.
 👌 If you want a clearer example on how the context affect the triggers, take a
 look to the following example:
 
-{% include_relative examples/showcase.examples.md option="context_comparsion" %}
+
+
+
+
+
+{% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
+by the same event handlers** (for "BeforeAction_import" and
+"AfterAction_export", respectively).
+
+👉 **They belong to different *SmarkForm* fields** determined by **(1)**
+where they are placed in the DOM and **(2)** the relative path from that
+place pointed by the *context* property.
+
+ℹ️  Different field types may import/export different data types (*forms*
+import/export JSON while regular *inputs* import/export text).
+
+🔧 For the sake of simplicity, the *BeforeAction_import* event handler
+reads the previous value of the field (no matter its type) and provides it
+stringified as JSON as default value for the window.prompt() call. Making
+it easy to edit the value no matter if we are importing one of the text
+fields or the whole form.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="context_comparsion"
+    notes=notes
+%}
 
 
 ## Lists
@@ -157,7 +282,10 @@ having (and dealing with it) a fixed number of input fields, you can use a list
 that can grow or shrink as needed:
 
 
-{% include_relative examples/showcase.examples.md option="simple_list" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="simple_list"
+%}
 
 
 Here we used a simpple `<input>` field for each item in the list and had to
@@ -185,7 +313,10 @@ This way we can not only use a more elaborated structure for each item in the
 list: It also allows us to include other controls within every list item, like
 in the following example:
 
-{% include_relative examples/showcase.examples.md option="simple_list_singleton" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="simple_list_singleton"
+%}
 
 👉 In this example we:
 
@@ -210,13 +341,19 @@ in the following example:
 👉 And there is a lot more... To begin with, another interesting use case for
 lists is to create a schedule list like the following example:
 
-{% include_relative examples/showcase.examples.md option="schedule_list" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="schedule_list"
+%}
 
 
 
 👉 Or we could have wanted a more formal (or better aligned, in case of multiple schedules) layout such as a table:
 
-{% include_relative examples/showcase.examples.md option="schedule_table" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="schedule_table"
+%}
 
 
 
@@ -227,7 +364,10 @@ Since we can make lists of forms, we can also nest more forms and lists inside
 every list item and so forth to any depth.
 
 
-{% include_relative examples/showcase.examples.md option="nested_lists" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="nested_lists"
+%}
 
 
 
@@ -242,7 +382,21 @@ usability concerns.
 Here is a more complex example with a deeply nested form:
 
 
-{% include_relative examples/showcase.examples.md option="deeply_nested_forms" %}
+
+
+
+
+{% raw %} <!-- capture deeply_nested_forms_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 FIXME!!
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="deeply_nested_forms"
+    notes=notes
+%}
 
 
 
@@ -264,7 +418,10 @@ Here is a more complex example with a deeply nested form:
 
 SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
 
-{% include_relative examples/showcase.examples.md option="keyboard_shortcuts" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="keyboard_shortcuts"
+%}
 
 
 ## Dynamic Dropdown Options
@@ -274,7 +431,10 @@ SmarkForm supports context-driven keyboard shortcuts, enhancing the user experie
 
 In this example, we'll illustrate how to create dropdown menus with dynamic options. This is particularly useful for forms that need to load options based on user input or external data sources.
 
-{% include_relative examples/showcase.examples.md option="dynamic_dropdown" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="dynamic_dropdown"
+%}
 
 ## Import and Export Data
 
@@ -283,7 +443,10 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 
 SmarkForm makes it easy to import and export form data in JSON format. This example will show how to load data into a form and export it, ensuring proper data handling and integration with other systems.
 
-{% include_relative examples/showcase.examples.md option="import_export" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="import_export"
+%}
 
 
 
@@ -293,7 +456,10 @@ SmarkForm makes it easy to import and export form data in JSON format. This exam
 > Section still under construction...
 
 
-{% include_relative examples/showcase.examples.md option="smart_value_coercion" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="smart_value_coercion"
+%}
 
 ## Advanced UX Improvements
 
@@ -302,7 +468,10 @@ SmarkForm makes it easy to import and export form data in JSON format. This exam
 
 Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enablement/disablement of controls and non-breaking unobtrusive keyboard navigation.
 
-{% include_relative examples/showcase.examples.md option="advanced_ux" %}
+{% include_relative
+    examples/showcase.examples.md
+    option="advanced_ux"
+%}
 
 
 ## Conclusion
