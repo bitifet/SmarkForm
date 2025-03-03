@@ -275,7 +275,9 @@ endcapture %}
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             nested_forms_source
             | replace: "#indent#", "            "
-}}            <p>
+}}
+            <p>
+                <!-- Import and export triggers with implicit context -->
 {{ load_save_buttons | replace: "#indent#", "                " }}
         </p>
         </div>
@@ -411,10 +413,31 @@ myForm.on("AfterAction_export", ({context, data})=>{
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- form_export_example_basic_import_export_js {{{ --> {% endraw %}
+{% capture form_export_example_basic_import_export_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+myForm.on("BeforeAction_import", async (ev)=>{
+    if (ev.context.getPath() !== "/") return;           /* Only for the whole form */
+    let data = window.prompt("Provide JSON data");      /* Ask for JSON data */
+    if (data === null) return void ev.preventDefault(); /* User cancelled */
+    try {
+        ev.data = JSON.parse(data);
+    } catch(err) { /* Invalid JSON */
+        alert(err.message);
+        ev.preventDefault();
+    };
+});
+myForm.on("AfterAction_export", ({context, data})=>{
+    if (context.getPath() !== "/") return; /* Only for the whole form */
+    if (typeof data == "object") window.alert(
+        JSON.stringify(data, null, 4)      /* Show as pretty JSON */
+    );
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% raw %} <!-- form_export_example_import_export_js {{{ --> {% endraw %}
 {% capture form_export_example_import_export_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
 myForm.on("BeforeAction_import", async (ev)=>{
-    if (ev.context.getPath() !== "/") return; /* Only for root */
+    if (ev.context.getPath() !== "/") return; /* Importing the whole form */
     /* Read previous value: */
     let previous_value = await ev.context.export();
     let isObject = typeof previous_value == "object";
@@ -481,7 +504,7 @@ myForm.on("AfterAction_export", ({target, data})=>{
     {% include components/sampletabs_tpl.md
         formId="basic_form_with_import_export"
         htmlSource=basic_form_with_import_export
-        jsSource=form_export_example_import_export_js
+        jsSource=form_export_example_basic_import_export_js
         notes=include.notes
         selected="preview"
     %}

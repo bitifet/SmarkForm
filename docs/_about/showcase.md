@@ -64,32 +64,34 @@ capabilities of SmarkForm.
 ## Basic Form
 
 In this first example, we'll start with a simple form that includes a few input
-fields (right side) and a textarea .
+fields (right side) and a textarea that will allow you to export the form in
+the left side as JSON, edit as you like, and import again to see the effects of
+your changes..
 
 
 
 {% raw %} <!-- capture basic_form_notes {{{ --> {% endraw %}
 {% capture notes %}
-👉 In this example you can:
-  * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the right.
-  * Clear the form using the `❌` button.
-  * Use the `⬅️ ` buttorn to import that JSON back to the form again.
-  * Edit the JSON in the textarea as you like and click `⬅️ ` again to
-    translate the changes to the form.
   * Try to import an invalid values for given field to see how the form
     handles it.
   * Notice that most SmarkForm fields can be null, meaning the data is unknown
     or indifferent.
   * Even color pickers can be null even [native HTML color inputs
     can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
-  * To reset a color picker after a color being set, we a button to call it's
-    "clear" *action*.
+  * To reset a color picker after a color being set, you can use the `❌`
+    button to call it's "clear" *action*.
   * This kind of *SmarkForm* components intended to call *actions* on
     *SmarkForm* fields are called *triggers*.
   * There are several other *actions* that can be called on *SmarkForm* fields.
     Some, such as *import* and *export* are common to all field types and
     others are specific to some of them. For instance *addItem* and *removeItem*
     are specific to lists.
+  * Also notice the `{"encoding":"json"}` bit in the `<select>` dropdown. This
+    allow it to return a Null value when the first option is selected.
+    - It also foreces to wrap other values in double quotes to make them valid
+      JSON strings.
+    - ...unless the *value* property is omitted, in which case inner text is
+      used "as is".
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include_relative
@@ -97,6 +99,16 @@ fields (right side) and a textarea .
     option="basic_form"
     notes=notes
 %}
+
+
+👉 In this example you can:
+
+  * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the
+    right side.
+  * Clear the form using the `❌` button.
+  * Use the `⬅️ ` buttorn to import that JSON back to the form again.
+  * Edit the JSON in the textarea as you like and click `⬅️ ` again to
+    translate the changes to the form.
 
 
 {: .hint :}
@@ -107,44 +119,52 @@ fields (right side) and a textarea .
 
 The former example example is entirely built with SmarkForm itself.
 
-If you look at its *JS* tab you'll see that there is no JavaScript code except
-for the SmarkForm instantiation itself.
+If you look at its *JS* tab you'll see that **there is no JavaScript code except
+for the SmarkForm instantiation** itself.
 
 👉 The trick here is that you did not import/export the whole form but just a
 subform.
 
-  * The whole *SmarkForm* form is a field of the type "form" that
+  * In fact, the whole *SmarkForm* form is a field of the type *form* that
     imports/exports JSON and **they can be nested up to any depth**.
 
   * The `➡️ `, `⬅️ ` and `❌` buttons are *trigger* components that perform
-    specialized actions (look at the *HTML* tab to see how...).
-
-  * Below these lines you can see **the exact same form** with additional `💾`
-    and `📂` buttons and a little additional JavaScript code to mock the "save"
-    and "load" operations through window's `alert()` and `prompt()`,
-    reespectively.
+    specialized actions (look at the *HTML* tab to see how...). 🚀 **No
+    JavaScript wiring is needed**.
 
 
+👉 Below these lines you can see **the exact same form** with additional `💾`
+and `📂` buttons and a little additional JavaScript code to mock the "save" and
+"load" operations through window's `alert()` and `prompt()`, reespectively.
 
 
 
 {% raw %} <!-- capture basic_form_with_import_export_notes {{{ --> {% endraw %}
 {% capture notes %}
-👉 Here you can:
-
-  * Repeat all the same trials as in the former example (with identical results).
-  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
-  * Use the `📂` button to import new JSON data to the whole form.
-    - You can use the previously exported JSON as a base for custom edits.
+  * The JavaScript code in this example is, in fact, a little more complex than
+    it would be needed just to avoid interfering the '➡️ ' and ' ⬅️ ' that also
+    rely on the *export* and *import* actions.
+  * Conversely, in the next example, we'll see an even more elaborated example
+    where '📂' (import action) performs a soft *export* to prefill the prompt
+    dialog (so that you can edit the JSON data instead of manually copying ot
+    writing it from scratch).
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
 
 {% include_relative
     examples/showcase.examples.md
     option="basic_form_with_import_export"
     notes=notes
 %}
+
+👉 Here you can:
+
+  * Repeat all the same trials as in the former example (with identical results).
+  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
+  * Use the `📂` button to import new JSON data to the whole form.
+    - You can use the previously exported JSON as a base for custom edits.
+
+{: .hint :}
+> Remember to check the `📝 Notes` tab for more insights and tips.
 
 
 👉 Despite of usability concerns, there is no limit in form nesting depth. For
@@ -162,6 +182,9 @@ buttons you can, respectively:
   * Use the `💾` button to see the whole form in a `window.alert(...)` dialog.
   * And `📂` button to import a new JSON data to the whole form throught a
     `window.prompt(...)`.
+    - This time the import event handler is a little more elaborated and
+      automatically performs an *export* to get existing data and allow you to
+      edit the JSON before importing it.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -186,18 +209,16 @@ because it is their *natural* context.
 In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
 explicitly set by the option of the same name.
 
-We could have wanted to make the `💾` and `📂` buttons to operate only on the
-*demo* subform.
-
 {: .hint :}
-> We could have done that by setting their *context* property to "demo", in
-> which case then they would have exported/imported the same data than `➡️ ` and
-> `⬅️ ` buttons.
-
-However, we could just have placed them inside of that context **in the
-markup** as it is shown in the following example:
-
-
+> We could have wanted to make the `💾` and `📂` buttons to operate only on the
+> *demo* subform.
+> 
+> To do so, we could have set their *context* property to "demo", in which case
+> then they would have exported/imported the same data than `➡️ ` and `⬅️ `
+> buttons.
+>
+> Or, alternatively, 🚀 we could just have placed them inside of that context
+> **in the markup** as it is shown in the following example:
 
 
 
@@ -240,10 +261,6 @@ additionally JS code.
 look to the following example:
 
 
-
-
-
-
 {% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
@@ -282,9 +299,18 @@ having (and dealing with it) a fixed number of input fields, you can use a list
 that can grow or shrink as needed:
 
 
+{% raw %} <!-- capture simple_list_notes {{{ --> {% endraw %}
+{% capture notes %}
+  * By default, empty items in lists are not expoted to keep data clean.
+  * But for this very first example, we added the `{exportEmpties: true}`
+    option so that you can see every added item no matter if you typed anything
+    or not.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 {% include_relative
     examples/showcase.examples.md
     option="simple_list"
+    notes=notes
 %}
 
 
@@ -305,38 +331,38 @@ any HTML element to become a regular *input* field.
 > We call the *singleton pattern* when we use any HTML element different from
 > `<input>`, `<select>`, `<textarea>`, etc., as a regular input field.
 >
-> For this to work we only need to place one (and only one) of these elements
-> with the "data-smark" attribute in its contents.
-...
+> For this to work we only need to place one **and only one** of these elements
+> (with the "data-smark" attribute since otherwise they are ignored) in its
+> contents.
 
 This way we can not only use a more elaborated structure for each item in the
 list: It also allows us to include other controls within every list item, like
 in the following example:
 
+
+{% raw %} <!-- capture simple_list_singleton_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 In this example we:
+  * Established a maximum of 5 items in the list.
+  * Allowed the list to be empty (default minimum items is 1).
+  * Defined an alternate template for the case of empty list.
+  * Made the `➖` button a little smarter so that it removes empty items, if
+    any, first.
+  * Added a `🧹` button to remove all empty items.
+  * Added a `❌` button to each item to cherry-pick which items to remove.
+  * Returned to the default behaviour of not exporting empty items.
+  * Made it sortable (by dragging and dropping items).
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 {% include_relative
     examples/showcase.examples.md
     option="simple_list_singleton"
+    notes=notes
 %}
 
-👉 In this example we:
-
-  * Established a maximum of 5 items in the list.
-
-  * Allowed the list to be empty (default minimum items is 1).
-
-  * Defined an alternate template for the case of empty list.
-
-  * Made the `➖` button a little smarter so that it removes empty items, if
-    any, first.
-
-  * Added a `🧹` button to remove all empty items.
-
-  * Added a `❌` button to each item to cherry-pick which items to remove.
-
-  * Returned to the default behaviour of not exporting empty items.
-
-  * Made it sortable (by dragging and dropping items).
-
+{: .hint :}
+> Again, don't miss to check the `📝 Notes` tab for more powerful insights and
+> tips.
 
 👉 And there is a lot more... To begin with, another interesting use case for
 lists is to create a schedule list like the following example:
