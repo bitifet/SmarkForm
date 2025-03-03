@@ -72,26 +72,33 @@ your changes..
 
 {% raw %} <!-- capture basic_form_notes {{{ --> {% endraw %}
 {% capture notes %}
-  * Try to import an invalid values for given field to see how the form
-    handles it.
-  * Notice that most SmarkForm fields can be null, meaning the data is unknown
-    or indifferent.
+👉 Notice that **most SmarkForm fields can be null**, meaning the data is
+unknown or indifferent.
+
+  * In the case of radio buttons, if no option is selected, they evaluate to
+    null. Even after a value is set, they allow unselectiong the selected option
+    either by clicking on it again or by pressing the `Delete` key.
   * Even color pickers can be null even [native HTML color inputs
     can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
   * To reset a color picker after a color being set, you can use the `❌`
     button to call it's "clear" *action*.
-  * This kind of *SmarkForm* components intended to call *actions* on
-    *SmarkForm* fields are called *triggers*.
+
+👉 **This kind of *SmarkForm* components** intended to call *actions* on
+*SmarkForm* fields **are called *triggers*.**
+
   * There are several other *actions* that can be called on *SmarkForm* fields.
     Some, such as *import* and *export* are common to all field types and
     others are specific to some of them. For instance *addItem* and *removeItem*
     are specific to lists.
-  * Also notice the `{"encoding":"json"}` bit in the `<select>` dropdown. This
-    allow it to return a Null value when the first option is selected.
-    - It also foreces to wrap other values in double quotes to make them valid
-      JSON strings.
-    - ...unless the *value* property is omitted, in which case inner text is
-      used "as is".
+
+👉 Also notice the `{"encoding":"json"}` bit in the `<select>` dropdown.
+
+  * This allow it to return a Null value when the first option is selected.
+  * It also foreces to wrap other values in double quotes to make them valid
+    JSON strings.
+  * ...unless the *value* property is omitted, in which case inner text is
+    used "as is".
+
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include_relative
