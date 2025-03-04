@@ -124,20 +124,39 @@ unknown or indifferent.
 
 ## Nested forms
 
-The former example example is entirely built with SmarkForm itself.
+Let's add a few more fields to the form to provide information regarding
+included safety equipment. This time we'll group them in a nested subform under
+the name "safety".
 
-If you look at its *JS* tab you'll see that **there is no JavaScript code except
-for the SmarkForm instantiation** itself.
 
-👉 The trick here is that you did not import/export the whole form but just a
-subform.
+{% include_relative
+    examples/showcase.examples.md
+    option="nested_forms"
+%}
 
-  * In fact, the whole *SmarkForm* form is a field of the type *form* that
-    imports/exports JSON and **they can be nested up to any depth**.
 
-  * The `➡️ `, `⬅️ ` and `❌` buttons are *trigger* components that perform
-    specialized actions (look at the *HTML* tab to see how...). 🚀 **No
-    JavaScript wiring is needed**.
+
+👉 Despite of usability concerns, there is no limit in form nesting depth. For
+instance, all the examples in this chapter are entirely built with SmarkForm
+itself.
+
+  * If you look closer to the HTML source, you will see that `⬅️` and `➡️`
+    buttons only imports/exports a subform called *demo* from/to a *textarea*
+    field called *editor*.
+
+  * ...And if you look at its *JS* tab you'll see that **there is no JavaScript
+    code except for the SmarkForm instantiation** itself.
+
+{: .info :}
+> 👉 The trick here is that you did not import/export the whole form but just a
+> subform.
+>
+>   * In fact, 🚀  **the whole *SmarkForm* form is a field of the type *form***
+>     that imports/exports JSON and 🚀  **they can be nested up to any depth**.
+>
+>   * The `➡️ `, `⬅️ ` and `❌` buttons are *trigger* components that perform
+>     specialized actions (look at the *HTML* tab to see how...). 🚀 **No
+>     JavaScript wiring is needed**.
 
 
 👉 Below these lines you can see **the exact same form** with additional `💾`
@@ -145,21 +164,30 @@ and `📂` buttons and a little additional JavaScript code to mock the "save" an
 "load" operations through window's `alert()` and `prompt()`, reespectively.
 
 
-
-{% raw %} <!-- capture basic_form_with_import_export_notes {{{ --> {% endraw %}
+{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
 {% capture notes %}
+
+👉 Since `💾` and `📂` buttons are in the higher context level, in this case we
+used a litle JavaScript code intercepting the related events to, resepectively,
+show the whole form in a `window.alert(...)` dialog and import a new JSON data
+to the whole form throught a `window.prompt(...)`.
+
   * The JavaScript code in this example is, in fact, a little more complex than
     it would be needed just to avoid interfering the '➡️ ' and ' ⬅️ ' that also
     rely on the *export* and *import* actions.
+
   * Conversely, in the next example, we'll see an even more elaborated example
     where '📂' (import action) performs a soft *export* to prefill the prompt
     dialog (so that you can edit the JSON data instead of manually copying ot
     writing it from scratch).
+
+
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 
 {% include_relative
     examples/showcase.examples.md
-    option="basic_form_with_import_export"
+    option="nested_forms_with_load_save"
     notes=notes
 %}
 
@@ -169,38 +197,6 @@ and `📂` buttons and a little additional JavaScript code to mock the "save" an
   * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
   * Use the `📂` button to import new JSON data to the whole form.
     - You can use the previously exported JSON as a base for custom edits.
-
-{: .hint :}
-> Remember to check the `📝 Notes` tab for more insights and tips.
-
-
-👉 Despite of usability concerns, there is no limit in form nesting depth. For
-instance, the follwoing example shows a form with another level of nesting:
-
-
-
-
-
-{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
-{% capture notes %}
-👉 Again, despite importing and exporting the *demo* subform with `➡️ ` and `⬅️ `
-buttons you can, respectively:
-
-  * Use the `💾` button to see the whole form in a `window.alert(...)` dialog.
-  * And `📂` button to import a new JSON data to the whole form throught a
-    `window.prompt(...)`.
-    - This time the import event handler is a little more elaborated and
-      automatically performs an *export* to get existing data and allow you to
-      edit the JSON before importing it.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-
-{% include_relative
-    examples/showcase.examples.md
-    option="nested_forms"
-    notes=notes
-%}
 
 
 {: .hint :}
@@ -231,10 +227,11 @@ explicitly set by the option of the same name.
 
 {% raw %} <!-- capture basic_form_with_local_import_export_notes {{{ --> {% endraw %}
 {% capture notes %}
+
 If you compare the *JS* tab with the one in fhe former one,
 you'll see that there is a little difference between them.
 
-👉 In the first one, the "BeforeAction_import" and "AfterAction_export"
+👉 In the first one, the "BeforeActionImport" and "AfterActionExport"
 event handlers inhibits themselves depending on whether the context is the
 root form or not while, in the later, it just focus on the fact that the
 *target* is not provided.
@@ -242,6 +239,11 @@ root form or not while, in the later, it just focus on the fact that the
 👉 The second is a more generic approach for this kind of event handlers. But
 the first one serves as an alternative example showing how we can base those
 event handlers' behaviour on the specific context (path) of every trigger.
+
+🚀 Just for the sake of showing the power of event handlers, in this case, the
+*BeforeActionImport* event handler have been evolved to fill the prompt dialog
+with the JSON export of the form when the *target* is not provided.
+
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 

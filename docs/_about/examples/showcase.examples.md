@@ -235,16 +235,15 @@ endcapture %}
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- basic_form_with_import_export {{{ --> {% endraw %}
-{% capture basic_form_with_import_export %}<div id="myForm$$">
+{% raw %} <!-- nested_forms {{{ --> {% endraw %}
+{% capture nested_forms %}<div id="myForm$$">
     <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
-            basic_form_source
+            nested_forms_source
             | replace: "#indent#", "            "
-        }}        </div>
+        }}    </div>
         <div>
 {{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ load_save_buttons_stacked | replace: "#indent#", "            " }}
 {{ clear_button_stacked | replace: "#indent#", "            " }}
         </div>
 {{ json_editor | replace: "#indent#", "        " }}
@@ -252,8 +251,8 @@ endcapture %}
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- nested_forms {{{ --> {% endraw %}
-{% capture nested_forms %}<div id="myForm$$">
+{% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
+{% capture nested_forms_with_load_save %}<div id="myForm$$">
     <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             nested_forms_source
@@ -268,6 +267,10 @@ endcapture %}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+
+
+
 
 {% raw %} <!-- basic_form_with_local_import_export {{{ --> {% endraw %}
 {% capture basic_form_with_local_import_export %}<div id="myForm$$">
@@ -499,22 +502,22 @@ myForm.on("AfterAction_export", ({target, data})=>{
     %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% elsif include.option == "basic_form_with_import_export" %}
-
-    {% include components/sampletabs_tpl.md
-        formId="basic_form_with_import_export"
-        htmlSource=basic_form_with_import_export
-        jsSource=form_export_example_basic_import_export_js
-        notes=include.notes
-        selected="preview"
-    %}
-
 {% elsif include.option == "nested_forms" %}
 
     {% include components/sampletabs_tpl.md
         formId="nested_forms"
         htmlSource=nested_forms
-        jsSource=form_export_example_import_export_js
+        jsSource=form_export_example_js
+        notes=include.notes
+        selected="preview"
+    %}
+
+{% elsif include.option == "nested_forms_with_load_save" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="nested_forms_with_load_save"
+        htmlSource=nested_forms_with_load_save
+        jsSource=form_export_example_basic_import_export_js
         notes=include.notes
         selected="preview"
     %}
