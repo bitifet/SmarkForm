@@ -88,6 +88,8 @@ layout: default
   main>h2 {
     counter-reset: h3-counter;
     counter-increment: h2-counter;
+    padding-top: 1.5em;
+    margint-top: 0px; /* Does not work with scroll-padding-top */
   }
   main>h2::before {
     content: counter(h2-counter) ". ";
@@ -97,6 +99,8 @@ layout: default
   main>h3 {
     counter-reset: h4-counter;
     counter-increment: h3-counter;
+    padding-top: 1.5em;
+    margint-top: 0px; /* Does not work with scroll-padding-top */
   }
   main>h3::before {
     content: counter(h2-counter) "." counter(h3-counter) ". ";
@@ -108,6 +112,8 @@ layout: default
     line-height: 3em;
     font-size: 1.2em !important;
     text-transform: none !important;
+    padding-top: 1.5em;
+    margint-top: 0px; /* Does not work with scroll-padding-top */
   }
   main>h4::before {
     content: counter(h2-counter) "." counter(h3-counter) "." counter(h4-counter) ". ";
@@ -133,6 +139,17 @@ layout: default
   /* TOC */
   .main-content .chaptertoc {
     margin: 1.5em 0;
+    background: #f9f9f9;
+    padding: .2em 1em;
+  }
+  .main-content details.chaptertoc {
+    /* Stickty TOC when foldable */
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .body {
+    scroll-padding-top: 200px;
   }
   .main-content .chaptertoc>ul {
     margin-left: 1em;
@@ -184,6 +201,10 @@ layout: default
     margin-left: -2.8em !important;
   }
 
+  .go-to-top {
+    float: right;
+    margin-right: 1em;
+  }
 
 
 
@@ -298,3 +319,30 @@ layout: default
         </a>
     </div>
 </div>
+
+
+<script>
+    const smartToc = document.querySelector("details.chaptertoc");
+    if (!!smartToc) {
+        const tocLinks = document.querySelectorAll(".chaptertoc a");
+        tocLinks.forEach((link) => {
+            link.addEventListener('click', (event) => {
+                smartToc.open = false;
+            });
+        });
+
+        /* Create the "Go to top" anchor */
+        const goToTopLink = document.createElement("a");
+        goToTopLink.textContent = "Top ↑";
+        goToTopLink.title = "Go to Top";
+        goToTopLink.href = "#"; /* Navigates to top */
+        goToTopLink.className = "go-to-top"; /* For styling */
+        console.log({
+            goToTopLink,
+            smartToc,
+        });
+        smartToc.querySelector("summary").appendChild(goToTopLink);
+    };
+</script>
+
+
