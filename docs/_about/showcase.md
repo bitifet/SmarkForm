@@ -47,6 +47,7 @@ capabilities of SmarkForm.
 * [Basic Form](#basic-form)
 * [Nested forms](#nested-forms)
 * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
+    * [✋ **Don't panic!!**](#-dont-panic)
 * [Lists](#lists)
 * [Nested lists and forms](#nested-lists-and-forms)
 * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
@@ -269,7 +270,6 @@ additionally JS code.
 👌 If you want a clearer example on how the context affect the triggers, take a
 look to the following example:
 
-
 {% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
@@ -291,11 +291,25 @@ fields or the whole form.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-
 {% include_relative
     examples/showcase.examples.md
     option="context_comparsion"
     notes=notes
+%}
+
+
+### ✋ **Don't panic!!**
+
+If you felt overwhelmed by the previous example's JavaScript code, don't worry.
+It was just to show off the power of the *event handlers* and avoid you having
+to deal with quotations when importing/exporting scalars as JSON.
+
+Look at this other version of the former example with zero JavaScript (despite
+SmarkForm instantiation itself):
+
+{% include_relative
+    examples/showcase.examples.md
+    option="context_comparsion_simple"
 %}
 
 

@@ -337,10 +337,6 @@ layout: default
         goToTopLink.title = "Go to Top";
         goToTopLink.href = "#"; /* Navigates to top */
         goToTopLink.className = "go-to-top"; /* For styling */
-        console.log({
-            goToTopLink,
-            smartToc,
-        });
         smartToc.querySelector("summary").appendChild(goToTopLink);
     };
 </script>

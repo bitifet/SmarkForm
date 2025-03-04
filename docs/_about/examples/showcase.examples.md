@@ -354,18 +354,59 @@ endcapture %}
             <th>Whole Form:</th>
             <td><button data-smark='{"action":"import"}'>⬆️  Import</button></td>
             <td><button data-smark='{"action":"export"}'>⬇️  Export</button></td>
+            <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
         </tr>
         <tr>
             <th>Name field:</th>
             <td><button data-smark='{"action":"import","context":"name"}'>⬆️  Import</button></td>
             <td><button data-smark='{"action":"export","context":"name"}'>⬇️  Export</button></td>
+            <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
         </tr>
         <tr>
             <th>Surname field:</th>
             <td><button data-smark='{"action":"import","context":"surname"}'>⬆️  Import</button></td>
             <td><button data-smark='{"action":"export","context":"surname"}'>⬇️  Export</button></td>
+            <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
         </tr>
     </table>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture context_comparsion_example_simple {{{ --> {% endraw %}
+{% capture context_comparsion_example_simple %}<div id='myForm$$'>
+    <div data-smark='{"name":"demo"}'>
+        <p>
+            <label data-smark>Name:</label>
+            <input name='name' data-smark>
+        </p>
+        <p>
+            <label data-smark>Surname:</label>
+            <input name='surname' data-smark>
+        </p>
+        <table>
+            <tr>
+                <th>Whole Form:</th>
+                <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"export","target":"/editor"}'>⬇️  Export</button></td>
+                <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
+            </tr>
+            <tr>
+                <th>Name field:</th>
+                <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
+                <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
+            </tr>
+            <tr>
+                <th>Surname field:</th>
+                <td><button data-smark='{"action":"import","context":"surname","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"export","context":"surname","target":"/editor"}'>⬇️  Export</button></td>
+                <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
+            </tr>
+        </table>
+    </div>
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+{{ json_editor | replace: "#indent#", "        " }}
+    </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -538,6 +579,16 @@ myForm.on("AfterAction_export", ({target, data})=>{
         formId="context_comparsion"
         htmlSource=context_comparsion_example
         jsSource=context_comparsion_example_js
+        notes=include.notes
+        selected="preview"
+    %}
+
+{% elsif include.option == "context_comparsion_simple" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="context_comparsion_simple"
+        htmlSource=context_comparsion_example_simple
+        jsSource=form_export_example
         notes=include.notes
         selected="preview"
     %}
