@@ -350,23 +350,25 @@ endcapture %}
         <input name='surname' data-smark>
     </p>
     <table>
-        <tr>
-            <th>Whole Form:</th>
-            <td><button data-smark='{"action":"import"}'>⬆️  Import</button></td>
-            <td><button data-smark='{"action":"export"}'>⬇️  Export</button></td>
-            <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
-        </tr>
-        <tr>
+        <tr style="text-align:center">
             <th>Name field:</th>
-            <td><button data-smark='{"action":"import","context":"name"}'>⬆️  Import</button></td>
-            <td><button data-smark='{"action":"export","context":"name"}'>⬇️  Export</button></td>
-            <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
-        </tr>
-        <tr>
             <th>Surname field:</th>
+            <th>Whole Form:</th>
+        </tr>
+        <tr style="text-align:center">
+            <td><button data-smark='{"action":"import","context":"name"}'>⬆️  Import</button></td>
             <td><button data-smark='{"action":"import","context":"surname"}'>⬆️  Import</button></td>
+            <td><button data-smark='{"action":"import"}'>⬆️  Import</button></td>
+        </tr>
+        <tr style="text-align:center">
+            <td><button data-smark='{"action":"export","context":"name"}'>⬇️  Export</button></td>
             <td><button data-smark='{"action":"export","context":"surname"}'>⬇️  Export</button></td>
+            <td><button data-smark='{"action":"export"}'>⬇️  Export</button></td>
+        </tr>
+        <tr style="text-align:center">
+            <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
             <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
+            <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
         </tr>
     </table>
 </div>{% endcapture %}
@@ -384,27 +386,29 @@ endcapture %}
             <input name='surname' data-smark>
         </p>
         <table>
-            <tr>
-                <th>Whole Form:</th>
-                <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
-                <td><button data-smark='{"action":"export","target":"/editor"}'>⬇️  Export</button></td>
-                <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
-            </tr>
-            <tr>
+            <tr style="text-align:center">
                 <th>Name field:</th>
-                <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
-                <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
-                <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
-            </tr>
-            <tr>
                 <th>Surname field:</th>
+                <th>Whole Form:</th>
+            </tr>
+            <tr style="text-align:center">
+                <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
                 <td><button data-smark='{"action":"import","context":"surname","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
+            </tr>
+            <tr style="text-align:center">
+                <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
                 <td><button data-smark='{"action":"export","context":"surname","target":"/editor"}'>⬇️  Export</button></td>
+                <td><button data-smark='{"action":"export","target":"/editor"}'>⬇️  Export</button></td>
+            </tr>
+            <tr style="text-align:center">
+                <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
                 <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
+                <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
             </tr>
         </table>
     </div>
-    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; width: 100%">
 {{ json_editor | replace: "#indent#", "        " }}
     </div>
 </div>{% endcapture %}
@@ -457,47 +461,38 @@ myForm.on("AfterAction_export", ({context, data})=>{
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- form_export_example_basic_import_export_js {{{ --> {% endraw %}
-{% capture form_export_example_basic_import_export_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-myForm.on("BeforeAction_import", async (ev)=>{
-    if (ev.context.getPath() !== "/") return;           /* Only for the whole form */
-    let data = window.prompt("Provide JSON data");      /* Ask for JSON data */
-    if (data === null) return void ev.preventDefault(); /* User cancelled */
-    try {
-        ev.data = JSON.parse(data);
-    } catch(err) { /* Invalid JSON */
-        alert(err.message);
-        ev.preventDefault();
-    };
-});
-myForm.on("AfterAction_export", ({context, data})=>{
-    if (context.getPath() !== "/") return; /* Only for the whole form */
-    if (typeof data == "object") window.alert(
-        JSON.stringify(data, null, 4)      /* Show as pretty JSON */
-    );
-});{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
 {% raw %} <!-- form_export_example_import_export_js {{{ --> {% endraw %}
 {% capture form_export_example_import_export_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
 myForm.on("BeforeAction_import", async (ev)=>{
-    if (ev.context.getPath() !== "/") return; /* Importing the whole form */
-    /* Read previous value: */
+    /* Only for the whole form */
+    /* (avoiding to interfere with `⬅️ ` buttons */
+    if (ev.context.getPath() !== "/") return;
+
+    /* BONUS: Read previous value to use it as default value */
+    /*        so that you only need to edit it.              */
     let previous_value = await ev.context.export();
     let isObject = typeof previous_value == "object";
     if (isObject) previous_value = JSON.stringify(previous_value);
+    
+    /* Read new value: */
     let data = window.prompt("Edit JSON data", previous_value);
-    if (data === null) return void ev.preventDefault();
+    if (data === null) return void ev.preventDefault(); /* User cancelled */
+
+    /* Parse as JSON, warn if invalid and set */
     try {
         if (isObject) data = JSON.parse(data);
-        ev.data = data;
+        ev.data = data; /* ← Set the new value */
     } catch(err) {
-        alert(err.message);
+        alert(err.message); /* ← Show error message */
         ev.preventDefault();
     };
 });
 myForm.on("AfterAction_export", ({context, data})=>{
+    /* Only for the whole form */
+    /* (avoiding to interfere with `➡️ ` button) */
     if (context.getPath() !== "/") return; /* Only for root */
+
+    /* Pretty print and show */
     if (typeof data == "object") data = JSON.stringify(data, null, 4);
     window.alert(data);
 });{% endcapture %}
@@ -506,24 +501,39 @@ myForm.on("AfterAction_export", ({context, data})=>{
 {% raw %} <!-- form_export_example_with_local_import_export_js {{{ --> {% endraw %}
 {% capture form_export_example_with_local_import_export_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
 myForm.on("BeforeAction_import", async (ev)=>{
-    if (!! ev.target) return; /* Only for triggers without target */
-    /* Read previous value: */
+
+    /* Only for triggers without target */
+    if (!! ev.target) return;
+
+    /* BONUS: Read previous value to use it as default value */
+    /*        so that you only need to edit it.              */
     let previous_value = await ev.context.export();
     let isObject = typeof previous_value == "object";
     if (isObject) previous_value = JSON.stringify(previous_value);
+    
+    /* Read new value: */
     let data = window.prompt("Edit JSON data", previous_value);
-    if (data === null) return void ev.preventDefault();
+    if (data === null) return void ev.preventDefault(); /* User cancelled */
+
+    /* Parse as JSON, warn if invalid and set */
     try {
         if (isObject) data = JSON.parse(data);
-        ev.data = data;
+        ev.data = data; /* ← Set the new value */
     } catch(err) {
-        alert(err.message);
+        alert(err.message); /* ← Show error message */
         ev.preventDefault();
     };
+
 });
 myForm.on("AfterAction_export", ({target, data})=>{
-    if (!! target) return; /* Only for triggers without target */
-    if (typeof data == "object") window.alert(JSON.stringify(data, null, 4));
+
+    /* Only for triggers without target */
+    if (!! target) return;
+
+    /* Pretty print and show */
+    if (typeof data == "object") data = JSON.stringify(data, null, 4);
+    window.alert(data);
+
 });{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -558,7 +568,7 @@ myForm.on("AfterAction_export", ({target, data})=>{
     {% include components/sampletabs_tpl.md
         formId="nested_forms_with_load_save"
         htmlSource=nested_forms_with_load_save
-        jsSource=form_export_example_basic_import_export_js
+        jsSource=form_export_example_import_export_js
         notes=include.notes
         selected="preview"
     %}

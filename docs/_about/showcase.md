@@ -177,10 +177,9 @@ to the whole form throught a `window.prompt(...)`.
     it would be needed just to avoid interfering the '➡️ ' and ' ⬅️ ' that also
     rely on the *export* and *import* actions.
 
-  * Conversely, in the next example, we'll see an even more elaborated example
-    where '📂' (import action) performs a soft *export* to prefill the prompt
-    dialog (so that you can edit the JSON data instead of manually copying ot
-    writing it from scratch).
+  * And, as a BONUS, the *BeforeAction_import* event handler performs a soft
+    *export* to prefill the prompt dialog (so that you can edit the JSON data
+    instead of manually copying ot writing it from scratch).
 
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
@@ -248,7 +247,7 @@ with the JSON export of the form when the *target* is not provided.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-
+{: .hint :}
 {% include_relative
     examples/showcase.examples.md
     option="basic_form_with_local_import_export"
@@ -257,14 +256,16 @@ with the JSON export of the form when the *target* is not provided.
 
 👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
 they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
-without explicitly specifying their context.
+without explicitly specifying their context. **They just receive their context
+by the place they are in the form**.
+
 
 {: .info :}
-From now on, except for the following example, having we already demonstrated
-how to work with *import* and *export* actions' events, for the sake of
-simplicity we'll stick to the layout of the very first example (`➡️ `, `⬅️` and
-`❌` buttons targetting the "editor" textarea) that doesn't need any
-additionally JS code.
+> For the sake of simplicity (except for the following example) from now on,
+> having we already demonstrated how to work with *import* and *export*
+> actions' events, we'll stick to the layout of the very first example (`➡️ `,
+> `⬅️` and `❌` buttons targetting the "editor" textarea) that doesn't need any
+> additional JS code.
 
 
 👌 If you want a clearer example on how the context affect the triggers, take a
@@ -301,8 +302,7 @@ fields or the whole form.
 ### ✋ **Don't panic!!**
 
 If you felt overwhelmed by the previous example's JavaScript code, don't worry.
-It was just to show off the power of the *event handlers* and avoid you having
-to deal with quotations when importing/exporting scalars as JSON.
+It was just to show off the power of the *event handlers*.
 
 Look at this other version of the former example with zero JavaScript (despite
 SmarkForm instantiation itself):
@@ -311,6 +311,15 @@ SmarkForm instantiation itself):
     examples/showcase.examples.md
     option="context_comparsion_simple"
 %}
+
+🚀 As you can see, the same actions can be applied to different parts of the
+form just by placing the triggers in the right place or explicitly setting the
+right path to the desired *context*.
+
+👉 You can *import*, *export* or *clear* either the whole form or any of its
+fields. Try exporting / exporting / clearing the whole form or individual
+fields whith the help of the "JSON data viewer / editor".
+
 
 
 ## Lists
