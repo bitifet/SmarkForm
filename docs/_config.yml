@@ -92,21 +92,28 @@ enable_copy_code_button: true
 # https://mermaid.js.org/config/configuration.html
 
 aux_links:
-  "<span role='img' aria-label=''>🏠</span> Home": /
-  "<span role='img' aria-label=''>⚡</span> Quick Start": /getting_started/quick_start
-  "<span role='img' aria-label=''>🔍</span> Examples": /resources/examples
+
+  "<img src='/assets/github.svg' style='width:1.5em;padding-right:4px' alt='' aria-label=''> GitHub": https://github.com/bitifet/SmarkForm
+  "<span role='img' aria-label='' style='font-size:1.5em;color:white;background-color:#997777;font-weight:bold;line-height:.9em;padding:0px .2em; margin-right:.3em'>n</span> NPM": https://www.npmjs.com/package/smarkform
+  "<span role='img' aria-label=''>🔗</span> CDN": /resources/CDN
+
 aux_links_new_tab: false
 
 nav_external_links:
 
-  - title: NPM
-    url: https://www.npmjs.com/package/smarkform 
-    hide_icon: false
-  - title: GitHub
-    url: https://github.com/bitifet/SmarkForm
-    hide_icon: false
-  - title: Presentations
-    url: /presentations
-    hide_icon: false
+  - title: "<span role='img' aria-label=''>⚡</span> Quick Start"
+    url: /getting_started/quick_start
+    hide_icon: true
+  - title: "<span role='img' aria-label=''>💻</span> Examples"
+    url: /resources/examples
+    hide_icon: true
+  - title: <span role='img' aria-label=''>🥇</span> Showcase
+    url: /about/showcase
+    hide_icon: true
+  - title: 🤔 FAQ
+    url: /about/faq
+    hide_icon: true
 
 heading_anchors: true
+
+footer_content: "Hello footer"

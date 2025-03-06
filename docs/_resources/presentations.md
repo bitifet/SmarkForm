@@ -1,8 +1,8 @@
 ---
 title: Presentations
 layout: home
-permalink: /presentations
-nav_exclude: true
+permalink: /resources/presentations
+nav-order: 4
 
 ---
 
