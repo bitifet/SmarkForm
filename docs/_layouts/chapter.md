@@ -290,6 +290,12 @@ layout: default
     justify-content: flex-end;
 }
 
+ul li[data-bullet]::before {
+    content: attr(data-bullet);
+}
+
+
+
 @media print {
     .bottom-bar {
         display: none;

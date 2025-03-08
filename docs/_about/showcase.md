@@ -13,27 +13,16 @@ nav_order: 2
 This section provides a series of working examples to demonstrate the
 capabilities of SmarkForm.
 
-
 {: .info :}
-> The goal of this section is to showcase what SmarkForm can do rather than
-> explaining the underlying code even you can take a look at the HTML, CSS,
-> and JavaScript tabs to glimpse the simplicity of the implementation.
+> This section showcases SmarkForm’s capabilities without diving into code
+> details—check the HTML, CSS, and JS tabs for a peek at its simplicity.
 > 
-> 👉 Each example is designed to highlight different features and functionalities.
-> 
-> 👉 All examples are mostly unstyled to emphasize the fact that SmarkForm is
-> layout-agnostic.
-> 
-> 👉 If there is any further CSS, it is only in order to make more evident some
-> features and you could check the applied styles in the *CSS* tab of each
-> example.
-> 
-> 👉 HTML/CSS code used in the examples is meant to be short and readable to make
-> it easier to understand the concepts rather than to be best fit from the point
-> of view of UX or semantics.
-> 
-> 🚀 For detailed explanations and code walkthroughs, please refer to the other
-> sections of this manual.
+> - Highlights key features through examples.
+> - Mostly unstyled to show layout flexibility.
+> - Minimal or no CSS (if any you'll find it at the CSS tab).
+> - Short, readable code prioritizes clarity over UX/semantics.
+>   <li data-bullet="🚀 ">See <a href='{{ "getting_started/quick_start" | relative_url }}'>🔗 Quick Start</a> and the rest of sections for detailed explanations.</li>
+
 
 
 <details class="chaptertoc">
@@ -64,11 +53,14 @@ capabilities of SmarkForm.
 
 ## Basic Form
 
-In this first example, we'll start with a simple form that includes a few input
-fields (right side) and a textarea that will allow you to export the form in
-the left side as JSON, edit as you like, and import again to see the effects of
-your changes..
+To begin with the basics, we'll start with a simple form that includes a few
+input fields (left side) and a textarea (right side) which will allow you to:
 
+  * <li data-bullet="➡️ ">Export the form to the textarea in JSON format.
+    <li data-bullet="❌ ">Clear the form whenever you want.
+  * Edit the JSON as you like.
+    <li data-bullet="⬅️ "> Import the JSON back to the form.</li>
+  * See the effects of your changes.
 
 
 {% raw %} <!-- capture basic_form_notes {{{ --> {% endraw %}
@@ -109,18 +101,15 @@ unknown or indifferent.
 %}
 
 
-👉 In this example you can:
+{: .info :}
+> Every example in this section comes with many of the following tabs:
+> 
+>   * <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
+>   * <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
+>   * <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
+>   * <li data-bullet="👁️"><b>Preview:</b> (Default) This is where you can see the code in action.</li>
+>   * <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b>Don't miss it!!</b></li>
 
-  * Use the `➡️ ` buttorn to export the form as JSON into the textarea at the
-    right side.
-  * Clear the form using the `❌` button.
-  * Use the `⬅️ ` buttorn to import that JSON back to the form again.
-  * Edit the JSON in the textarea as you like and click `⬅️ ` again to
-    translate the changes to the form.
-
-
-{: .hint :}
-> Don’t miss the `📝 Notes` tab. There you'll find useful guidelines and tips to deepen your understanding.
 
 
 ## Nested forms
