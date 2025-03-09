@@ -15,14 +15,13 @@ capabilities of SmarkForm.
 
 {: .info :}
 > This section showcases SmarkForm’s capabilities without diving into code
-> details—check the HTML, CSS, and JS tabs for a peek at its simplicity.
+> details.
 > 
 > - Highlights key features through examples.
-> - Mostly unstyled to show layout flexibility.
-> - Minimal or no CSS (if any you'll find it at the CSS tab).
-> - Short, readable code prioritizes clarity over UX/semantics.
->   <li data-bullet="🚀 ">See <a href='{{ "getting_started/quick_start" | relative_url }}'>🔗 Quick Start</a> and the rest of sections for detailed explanations.</li>
-
+> - Short and readable code that prioritizes clarity over UX/semantics.
+> - Minimal or no CSS (if any you'll find it at the CSS tab) to show layout
+>   independence. (See 🔗 <a href='{{ "resources/examples" | relative_url }}'>Examples</a> section for more elaborated examples).
+>   <li data-bullet="🚀 ">See 🔗 <a href='{{ "getting_started/quick_start" | relative_url }}'>Quick Start</a> and the rest of sections for detailed explanations.</li>
 
 
 <details class="chaptertoc">
@@ -35,10 +34,10 @@ capabilities of SmarkForm.
 
 * [Basic Form](#basic-form)
 * [Nested forms](#nested-forms)
-* [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-    * [✋ **Don't panic!!**](#-dont-panic)
 * [Lists](#lists)
 * [Nested lists and forms](#nested-lists-and-forms)
+* [A note on context of the triggers](#a-note-on-context-of-the-triggers)
+    * [✋ Don't panic!!](#-dont-panic)
 * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
 * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Import and Export Data](#import-and-export-data)
@@ -108,7 +107,7 @@ unknown or indifferent.
 >   * <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
 >   * <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
 >   * <li data-bullet="👁️"><b>Preview:</b> (Default) This is where you can see the code in action.</li>
->   * <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b>Don't miss it!!</b></li>
+>   * <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
 
 
 
@@ -185,129 +184,14 @@ to the whole form throught a `window.prompt(...)`.
   * Repeat all the same trials as in the former example (with identical results).
   * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
   * Use the `📂` button to import new JSON data to the whole form.
-    - You can use the previously exported JSON as a base for custom edits.
+    - **BONUS:** You won't need to write the JSON data from scratch. Just edit
+      the JSON data in the prompt dialog.
+      <li data-bullet="👉">See the JS tab to see how the *BeforeAction_import* event handler prefill the prompt dialog with the JSON export of the whole form.</li>
 
 
 {: .hint :}
 🚀 See the [Nested lists and forms](#nested-lists-and-forms) section down below
 for more elaborated examples of nested forms.
-
-
-## A note on context of the triggers
-
-In the previous example, the `💾` and `📂` buttons operate on the whole form
-because it is their *natural* context.
-
-In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
-explicitly set by the option of the same name.
-
-{: .hint :}
-> We could have wanted to make the `💾` and `📂` buttons to operate only on the
-> *demo* subform.
-> 
-> To do so, we could have set their *context* property to "demo", in which case
-> then they would have exported/imported the same data than `➡️ ` and `⬅️ `
-> buttons.
->
-> Or, alternatively, 🚀 we could just have placed them inside of that context
-> **in the markup** as it is shown in the following example:
-
-
-
-{% raw %} <!-- capture basic_form_with_local_import_export_notes {{{ --> {% endraw %}
-{% capture notes %}
-
-If you compare the *JS* tab with the one in fhe former one,
-you'll see that there is a little difference between them.
-
-👉 In the first one, the "BeforeActionImport" and "AfterActionExport"
-event handlers inhibits themselves depending on whether the context is the
-root form or not while, in the later, it just focus on the fact that the
-*target* is not provided.
-
-👉 The second is a more generic approach for this kind of event handlers. But
-the first one serves as an alternative example showing how we can base those
-event handlers' behaviour on the specific context (path) of every trigger.
-
-🚀 Just for the sake of showing the power of event handlers, in this case, the
-*BeforeActionImport* event handler have been evolved to fill the prompt dialog
-with the JSON export of the form when the *target* is not provided.
-
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-{: .hint :}
-{% include_relative
-    examples/showcase.examples.md
-    option="basic_form_with_local_import_export"
-    notes=notes
-%}
-
-👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
-they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
-without explicitly specifying their context. **They just receive their context
-by the place they are in the form**.
-
-
-{: .info :}
-> For the sake of simplicity (except for the following example) from now on,
-> having we already demonstrated how to work with *import* and *export*
-> actions' events, we'll stick to the layout of the very first example (`➡️ `,
-> `⬅️` and `❌` buttons targetting the "editor" textarea) that doesn't need any
-> additional JS code.
-
-
-👌 If you want a clearer example on how the context affect the triggers, take a
-look to the following example:
-
-{% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
-{% capture notes %}
-👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
-by the same event handlers** (for "BeforeAction_import" and
-"AfterAction_export", respectively).
-
-👉 **They belong to different *SmarkForm* fields** determined by **(1)**
-where they are placed in the DOM and **(2)** the relative path from that
-place pointed by the *context* property.
-
-ℹ️  Different field types may import/export different data types (*forms*
-import/export JSON while regular *inputs* import/export text).
-
-🔧 For the sake of simplicity, the *BeforeAction_import* event handler
-reads the previous value of the field (no matter its type) and provides it
-stringified as JSON as default value for the window.prompt() call. Making
-it easy to edit the value no matter if we are importing one of the text
-fields or the whole form.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% include_relative
-    examples/showcase.examples.md
-    option="context_comparsion"
-    notes=notes
-%}
-
-
-### ✋ **Don't panic!!**
-
-If you felt overwhelmed by the previous example's JavaScript code, don't worry.
-It was just to show off the power of the *event handlers*.
-
-Look at this other version of the former example with zero JavaScript (despite
-SmarkForm instantiation itself):
-
-{% include_relative
-    examples/showcase.examples.md
-    option="context_comparsion_simple"
-%}
-
-🚀 As you can see, the same actions can be applied to different parts of the
-form just by placing the triggers in the right place or explicitly setting the
-right path to the desired *context*.
-
-👉 You can *import*, *export* or *clear* either the whole form or any of its
-fields. Try exporting / exporting / clearing the whole form or individual
-fields whith the help of the "JSON data viewer / editor".
 
 
 
@@ -453,6 +337,124 @@ Here is a more complex example with a deeply nested form:
 > section of this documentation.
 
 
+
+## A note on context of the triggers
+
+Let's return to the [Nested forms](#nested-forms)' example.
+
+In that example we had the `💾` and `📂` buttons opeating on the whole form
+because it is their *natural* context.
+
+In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
+explicitly set by the option of the same name.
+
+{: .hint :}
+> We could have wanted to make the `💾` and `📂` buttons to operate only on the
+> *demo* subform.
+> 
+> To do so, we could have set their *context* property to "demo", in which case
+> then they would have exported/imported the same data than `➡️ ` and `⬅️ `
+> buttons.
+>
+> Or, alternatively, 🚀 we could just have placed them inside of that context
+> **in the markup** as it is shown in the following example:
+
+
+
+{% raw %} <!-- capture basic_form_with_local_import_export_notes {{{ --> {% endraw %}
+{% capture notes %}
+
+If you compare the *JS* tab with the one in fhe former one,
+you'll see that there is a little difference between them.
+
+👉 In the first one, the "BeforeActionImport" and "AfterActionExport"
+event handlers inhibits themselves depending on whether the context is the
+root form or not while, in the later, it just focus on the fact that the
+*target* is not provided.
+
+👉 The second is a more generic approach for this kind of event handlers. But
+the first one serves as an alternative example showing how we can base those
+event handlers' behaviour on the specific context (path) of every trigger.
+
+🚀 Just for the sake of showing the power of event handlers, in this case, the
+*BeforeActionImport* event handler have been evolved to fill the prompt dialog
+with the JSON export of the form when the *target* is not provided.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+{: .hint :}
+{% include_relative
+    examples/showcase.examples.md
+    option="basic_form_with_local_import_export"
+    notes=notes
+%}
+
+👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
+they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
+without explicitly specifying their context. **They just receive their context
+by the place they are in the form**.
+
+
+{: .info :}
+> For the sake of simplicity (except for the following example) from now on,
+> having we already demonstrated how to work with *import* and *export*
+> actions' events, we'll stick to the layout of the very first example (`➡️ `,
+> `⬅️` and `❌` buttons targetting the "editor" textarea) that doesn't need any
+> additional JS code.
+
+
+👌 If you want a clearer example on how the context affect the triggers, take a
+look to the following example:
+
+{% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
+by the same event handlers** (for "BeforeAction_import" and
+"AfterAction_export", respectively).
+
+👉 **They belong to different *SmarkForm* fields** determined by **(1)**
+where they are placed in the DOM and **(2)** the relative path from that
+place pointed by the *context* property.
+
+ℹ️  Different field types may import/export different data types (*forms*
+import/export JSON while regular *inputs* import/export text).
+
+🔧 For the sake of simplicity, the *BeforeAction_import* event handler
+reads the previous value of the field (no matter its type) and provides it
+stringified as JSON as default value for the window.prompt() call. Making
+it easy to edit the value no matter if we are importing one of the text
+fields or the whole form.
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="context_comparsion"
+    notes=notes
+%}
+
+
+### ✋ Don't panic!!
+
+If you felt overwhelmed by the previous example's JavaScript code, don't worry.
+It was just to show off the power of the *event handlers*.
+
+Look at this other version of the former example with zero JavaScript (despite
+SmarkForm instantiation itself):
+
+{% include_relative
+    examples/showcase.examples.md
+    option="context_comparsion_simple"
+%}
+
+🚀 As you can see, the same actions can be applied to different parts of the
+form just by placing the triggers in the right place or explicitly setting the
+right path to the desired *context*.
+
+👉 You can *import*, *export* or *clear* either the whole form or any of its
+fields. Try exporting / exporting / clearing the whole form or individual
+fields whith the help of the "JSON data viewer / editor".
 
 
 
