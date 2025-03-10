@@ -36,11 +36,13 @@ capabilities of SmarkForm.
 * [Nested forms](#nested-forms)
 * [Lists](#lists)
 * [Nested lists and forms](#nested-lists-and-forms)
+* [Import and Export Data](#import-and-export-data)
+    * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
+    * [Submitting the form](#submitting-the-form)
 * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
     * [✋ Don't panic!!](#-dont-panic)
 * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
 * [Dynamic Dropdown Options](#dynamic-dropdown-options)
-* [Import and Export Data](#import-and-export-data)
 * [Smart value coercion](#smart-value-coercion)
 * [Advanced UX Improvements](#advanced-ux-improvements)
 * [Conclusion](#conclusion)
@@ -148,51 +150,11 @@ itself.
 >     JavaScript wiring is needed**.
 
 
-👉 Below these lines you can see **the exact same form** with additional `💾`
-and `📂` buttons and a little additional JavaScript code to mock the "save" and
-"load" operations through window's `alert()` and `prompt()`, reespectively.
-
-
-{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
-{% capture notes %}
-
-👉 Since `💾` and `📂` buttons are in the higher context level, in this case we
-used a litle JavaScript code intercepting the related events to, resepectively,
-show the whole form in a `window.alert(...)` dialog and import a new JSON data
-to the whole form throught a `window.prompt(...)`.
-
-  * The JavaScript code in this example is, in fact, a little more complex than
-    it would be needed just to avoid interfering the '➡️ ' and ' ⬅️ ' that also
-    rely on the *export* and *import* actions.
-
-  * And, as a BONUS, the *BeforeAction_import* event handler performs a soft
-    *export* to prefill the prompt dialog (so that you can edit the JSON data
-    instead of manually copying ot writing it from scratch).
-
-
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% include_relative
-    examples/showcase.examples.md
-    option="nested_forms_with_load_save"
-    notes=notes
-%}
-
-👉 Here you can:
-
-  * Repeat all the same trials as in the former example (with identical results).
-  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
-  * Use the `📂` button to import new JSON data to the whole form.
-    - **BONUS:** You won't need to write the JSON data from scratch. Just edit
-      the JSON data in the prompt dialog.
-      <li data-bullet="👉">See the JS tab to see how the *BeforeAction_import* event handler prefill the prompt dialog with the JSON export of the whole form.</li>
-
 
 {: .hint :}
-🚀 See the [Nested lists and forms](#nested-lists-and-forms) section down below
-for more elaborated examples of nested forms.
-
+> In the [Import and Export Data](#import-and-export-data) section we'll go
+> deeper into the *import* and *export* actions and how to get the most of
+> them.
 
 
 ## Lists
@@ -335,6 +297,93 @@ Here is a more complex example with a deeply nested form:
 > These are just simple examples to show the concept. You can see more
 > elaborated examples in the [Examples]({{ "resources/examples" | relative_url }})
 > section of this documentation.
+
+
+
+
+
+
+
+
+
+
+
+
+## Import and Export Data
+
+Exporting and importing data in SmarkForm cannot be easier. 
+
+Let's recall the example in the [Nested forms](#nested-forms) section.
+
+There we learnt that the `➡️ ` and `⬅️ ` buttons used in all examples in this
+chapter are just *triggers* that call the *export* and *import* actions on a
+subform called "demo" **(their *context*)**:
+
+  * 
+    <li data-bullet="➡️ ">Exports the "demo" subform to the "editor" textarea <b>(its target)</b>.</li>
+    <li data-bullet="⬅️ ">Imports the JSON data from the "editor" textarea to the "demo" subform <b>(its target)</b>.</li>
+
+{: .hint :}
+> This is a very handy use case for the *import* and *export* actions because
+> it does not require any additional JavaScript code.
+>
+> But this are not the only way to use the *import* and *export* actions.
+
+
+### Intercepting the *import* and *export* events
+
+Below these lines you can see **the exact same form** with additional `💾` and
+`📂` buttons and a little additional JavaScript code to mock the "save" and
+"load" operations through window's `alert()` and `prompt()`, reespectively.
+
+
+{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
+{% capture notes %}
+
+👉 Since `💾` and `📂` buttons are in the higher context level, in this case we
+used a litle JavaScript code intercepting the related events to, resepectively,
+show the whole form in a `window.alert(...)` dialog and import a new JSON data
+to the whole form throught a `window.prompt(...)`.
+
+  * The JavaScript code in this example is, in fact, a little more complex than
+    it would be needed just to avoid interfering the '➡️ ' and ' ⬅️ ' that also
+    rely on the *export* and *import* actions.
+
+  * And, as a **BONUS**, the *BeforeAction_import* event handler performs a soft
+    *export* to prefill the prompt dialog (so that you can edit the JSON data
+    instead of manually copying ot writing it from scratch).
+    <li data-bullet="👉">See the JS tab to see how the <em>BeforeAction_import</em> event handler prefills the prompt dialog with the JSON export of the whole form.</li>
+
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include_relative
+    examples/showcase.examples.md
+    option="nested_forms_with_load_save"
+    notes=notes
+%}
+
+👉 Here you can:
+
+  * Repeat all the same trials as in the beforementioned [Nested
+    forms](#nested-forms)' example (with identical results).
+  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
+  * Use the `📂` button to import new JSON data to the whole form.
+
+
+
+{: .hint :}
+> Remember to check the `📝 Notes` tab for more...
+
+
+
+### Submitting the form
+
+{: .warning :}
+> 🚧 Section still under construction...   🚧
+
+
 
 
 
@@ -483,18 +532,6 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 {% include_relative
     examples/showcase.examples.md
     option="dynamic_dropdown"
-%}
-
-## Import and Export Data
-
-{: .warning :}
-> Section still under construction...
-
-SmarkForm makes it easy to import and export form data in JSON format. This example will show how to load data into a form and export it, ensuring proper data handling and integration with other systems.
-
-{% include_relative
-    examples/showcase.examples.md
-    option="import_export"
 %}
 
 
