@@ -22,11 +22,11 @@ import {sortable} from "./list.decorators/sortable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {mutex} from "../decorators/mutex.deco.js";
-import {makeRoom, parseJSON} from "../lib/helpers.js";
+import {makeRoom, getRoots, parseJSON} from "../lib/helpers.js";
 
 
-// Helpers:
-// --------
+// Private helpers:
+// ----------------
 
 function makeNonNavigable(target) {//{{{
     if (
@@ -37,6 +37,50 @@ function makeNonNavigable(target) {//{{{
     };
 };//}}}
 
+function loadTemplates(me) {//{{{
+    const templates = {};
+    for (const child of [...me.targetNode.children]) {
+        const {role = "item"} = parseJSON(child.getAttribute("data-smark")) || {};
+        switch (role) {
+            case "empty_list":
+            case "header":
+            case "separator":
+            case "last_separator":
+            case "footer":
+            case "placeholder": // (Only with max_items defined)
+                child.setAttribute("data-role", role);
+            case "item": // (Default)
+                if (templates[role] !== undefined) throw me.renderError(
+                    'LIST_DUPLICATE_TEMPLATE'
+                    , `Repated list template role ${role}`
+                );
+                templates[role] = child;
+                templates[role].remove();
+            break;
+        };
+    };
+    if (me.targetNode.children.length) {
+        const {role = "(unspecified)"} = parseJSON(
+            me.targetNode.children[0].getAttribute("data-smark")
+        ) || {};
+        throw me.renderError(
+            'LIST_UNKNOWN_TEMPLATE_ROLE'
+            , `Unknown list template role ${role}`
+        );
+    };
+    if (! templates.last_separator) {
+        templates.last_separator = templates.separator; // (If any)
+    };
+    if (
+        templates.item.querySelector("[id]") !== null // Contains IDs
+    ) throw me.renderError(
+        'LIST_CONTAINS_ID'
+        , `List components are not allowed to contain elements with 'id' attribute`
+    );
+    return templates;
+};//}}}
+
+
 
 
 // List component type:
@@ -46,6 +90,14 @@ function makeNonNavigable(target) {//{{{
 @sortable
 @smartdisabling
 export class list extends SmarkField {
+    async #appendChild(child) {//{{{
+        const me = this;
+        if (me.templates.header) {
+            me.templates.header.after(child);
+        } else {
+            me.targetNode.appendChild(child);
+        };
+    };//}}}
     async render () {//{{{
         const me = this;
         me.originalDisplayProp = me.targetNode.style.display;
@@ -59,45 +111,8 @@ export class list extends SmarkField {
             : Infinity
         );
         me.children = [];
-        me.templates = {};
-        for (const child of [...me.targetNode.children]) {
-            const {role = "item"} = parseJSON(child.getAttribute("data-smark")) || {};
-            switch (role) {
-                case "empty_list":
-                ///case "header":
-                case "separator":
-                case "last_separator":
-                ///case "padding":
-                ///case "footer":
-                    child.setAttribute("data-role", role);
-                case "item": // (Default)
-                    if (me.templates[role] !== undefined) throw me.renderError(
-                        'LIST_DUPLICATE_TEMPLATE'
-                        , `Repated list template role ${role}`
-                    );
-                    me.templates[role] = child;
-                    me.templates[role].remove();
-                break;
-            };
-        };
-        if (! me.templates.last_separator) {
-            me.templates.last_separator = me.templates.separator; // (If any)
-        };
-        if (me.targetNode.children.length) {
-            const {role = "item"} = parseJSON(
-                me.targetNode.children[0].getAttribute("data-smark")
-            ) || {};
-            throw me.renderError(
-                'LIST_UNKNOWN_TEMPLATE_ROLE'
-                , `Unknown list template role ${role}`
-            );
-        };
-        if (
-            me.templates.item.querySelector("[id]") !== null // Contains IDs
-        ) throw me.renderError(
-            'LIST_CONTAINS_ID'
-            , `List components are not allowed to contain elements with 'id' attribute`
-        );
+        me.templates = loadTemplates(me);
+        me.placeholders = [];
         const tplOptions = me.getNodeOptions(
             me.templates.item
             , {
@@ -112,12 +127,32 @@ export class list extends SmarkField {
             , `List item type missmatch`
         );
 
+        for (const tpl of [
+            me.templates.header,
+            me.templates.footer,
+        ]) if (!! tpl) {
+            me.targetNode.appendChild(tpl);
+            // Enhance childs:
+            for (
+                const node
+                of getRoots(tpl, me.selector)
+            ) {
+                const newItem = await me.enhance(node);
+                if (!! newItem?._isField) {
+                    throw me.renderError(
+                        'FIELD_IN_WRONG_LIST_TEMPLATE'
+                        , `Fields are not allowed in list's template roles other than item.`
+                    );
+                };
+            };
+        };
+
         // onRendered tweaks:
         me.root.onRendered(async ()=>{
             for(let i=0; i<me.min_items; i++) await me.addItem();
 
             // Initialize "count" actions and reinject empty_list template:
-            if (me.min_items == 0) me.renum();
+            if (me.min_items == 0) await me.renum();
 
             // Let screen readers know lists may change.
             me.targetNode.setAttribute("aria-live", "polite");
@@ -125,7 +160,7 @@ export class list extends SmarkField {
         });
         return;
     };//}}}
-    onTriggerRender({action, origin, context, ...rest}) {//{{{
+    onTriggerRender({action, origin, context}) {//{{{
         switch (action) {
             case "addItem":
             case "removeItem":
@@ -257,7 +292,7 @@ export class list extends SmarkField {
         // Child component creation and insertion:{{{
         let newItem;
         if (! me.children.length) {
-            me.targetNode.appendChild(newItemTarget);
+            await me.#appendChild(newItemTarget);
             newItem = await me.enhance(newItemTarget, {type: "form", name: 0});
             await newItem.rendered;
             me.children.push(newItem);
@@ -282,7 +317,7 @@ export class list extends SmarkField {
                 .flat()
             ;
         };
-        me.renum();
+        await me.renum();
         //}}}
         // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newItem) {
@@ -400,7 +435,7 @@ export class list extends SmarkField {
 
             oldItem.targetNode.remove();
             me.children = newChildren;
-            me.renum();
+            await me.renum();
 
             // Execute "onRemoved" callbacks:{{{
             onRemovedCbks.forEach(cbk=>cbk());
@@ -438,7 +473,7 @@ export class list extends SmarkField {
     position({target, offset = 1} = {}) {//{{{
         return Number(target?.name) + Number(offset);
     };//}}}
-    renum(){//{{{
+    async renum(){//{{{
         const me = this;
 
         // Update child index:
@@ -480,10 +515,39 @@ export class list extends SmarkField {
             if (me.children.length) {
                 me.templates.empty_list.remove(); // (from DOM)
             } else {
-                me.targetNode.appendChild(me.templates.empty_list);
+                await me.#appendChild(me.templates.empty_list);
             };
         };
 
+        // Handle placeholder template:
+        if (
+            me.templates.placeholder
+            && !! me.max_items // (Only if we have a finite padding limit)
+        ) {
+            let placeHoldersCount = (me.max_items || 0) - me.children.length;
+            if (
+                placeHoldersCount > 0
+                && me.children.length === 0
+                && !! me.templates.empty_list
+            ) placeHoldersCount--; // Discount the hole occupied by empty_list
+            if (me.placeholders.length < placeHoldersCount) {
+                for (let i = me.placeholders.length; i < placeHoldersCount; i++) {
+                    const placeholder = me.templates.placeholder.cloneNode(true);
+                    if (me.templates.footer) {
+                        me.templates.footer.before(placeholder);
+                    } else {
+                        me.targetNode.appendChild(placeholder);
+                    };
+                    me.placeholders.push(placeholder);
+                };
+            } else { // me.placeholders.length >= placeHoldersCount
+                for (let i = me.placeholders.length; i > placeHoldersCount; i--) {
+                    me.placeholders.pop().remove();
+                };
+            };
+        };
+
+        // Update counter triggers:
         me.getTriggers("position").forEach(tgg=>{
             const me = this;
             const args = tgg.getTriggerArgs();

@@ -64,7 +64,7 @@ input fields (left side) and a textarea (right side) which will allow you to:
   * See the effects of your changes.
 
 
-{% raw %} <!-- capture basic_form_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 Notice that **most SmarkForm fields can be null**, meaning the data is
 unknown or indifferent.
@@ -166,7 +166,7 @@ having (and dealing with it) a fixed number of input fields, you can use a list
 that can grow or shrink as needed:
 
 
-{% raw %} <!-- capture simple_list_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
   * By default, empty items in lists are not expoted to keep data clean.
   * But for this very first example, we added the `{exportEmpties: true}`
@@ -207,7 +207,7 @@ list: It also allows us to include other controls within every list item, like
 in the following example:
 
 
-{% raw %} <!-- capture simple_list_singleton_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 In this example we:
   * Established a maximum of 5 items in the list.
@@ -231,21 +231,63 @@ in the following example:
 > Again, don't miss to check the `📝 Notes` tab for more powerful insights and
 > tips.
 
-👉 And there is a lot more... To begin with, another interesting use case for
-lists is to create a schedule list like the following example:
+👉 And there is a lot more...
+
+To begin with, another interesting use case for lists is to create a schedule
+list like the following example:
+
+
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Here we opted for a different layout.
+  * Usually lists are layed out with single HTML node inside which plays the
+    role of a template for every item in the list.
+  * But lists also support other templates with different roles.
+  * For this example we introduced the *empty_list*, *separator* and *last_separator* roles.
+    <li data-bullet="🚀">The <em>empty_list</em> role allows us to give some feedback when the list is empty.</li>
+    <li data-bullet="🚀">The <em>separator</em> role allows us to separate items in the list.</li>
+    <li data-bullet="🚀">The <em>last_separator</em> role allows us to specify a different separator for the last item in the list.</li>
+
+👉 Limiting the number of intervals in the list let set reasonable limits.
+  * A maximum of 3 intervals looks reasonable for a schedule (but it can be set
+    to any number).
+  * In case of not being enough, we can just increase *max_items* when needed.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include_relative
     examples/showcase.examples.md
     option="schedule_list"
+    notes=notes
 %}
 
+...This is fine for a simple case, and leaves the door open for easily
+increasing the number of intervals allowed in the schedule.
+
+But it could look kind of messy if you need to introduce several schedules that may have different number of intervals.
+
+👉 Let's imagine a hotel wanting to manage the scheduling of all the services it offers...
 
 
-👉 Or we could have wanted a more formal (or better aligned, in case of multiple schedules) layout such as a table:
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Here we organized the schedules in a table, using different cells for each interval.
+  * This keeps intervals aligned which is more readable.
+  * But, table cells have no equivalent to `<thead>`, `<tbody>` and `<tfoot>` for table rows.
+  * This would have made it hard to properly label each schedule or propperly position the add/remove buttons.
+
+👉 To address this, we used other *template roles*:
+  * The *header* role to label each schedule.
+  * The *footer* role to place the add/remove buttons.
+  * The *placeholder* role to fill the gaps avoiding the add/remove buttons to be
+    placed in the wrong place.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include_relative
     examples/showcase.examples.md
     option="schedule_table"
+    notes=notes
 %}
 
 
@@ -253,13 +295,28 @@ lists is to create a schedule list like the following example:
 ## Nested lists and forms
 
 
+Great! Now we have all the scheduling information of or houtel services.
+
+...or maybe not:
+
+Some services may have different schedules for different days of the week or
+depending on the season (think in the swimming pool in winter...).
+
 Since we can make lists of forms, we can also nest more forms and lists inside
 every list item and so forth to any depth.
+
+👉 Let's focus on the seasons for now:
+
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% include_relative
     examples/showcase.examples.md
     option="nested_lists"
+    notes=notes
 %}
 
 
@@ -279,7 +336,7 @@ Here is a more complex example with a deeply nested form:
 
 
 
-{% raw %} <!-- capture deeply_nested_forms_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 FIXME!!
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
@@ -337,7 +394,7 @@ Below these lines you can see **the exact same form** with additional `💾` and
 "load" operations through window's `alert()` and `prompt()`, reespectively.
 
 
-{% raw %} <!-- capture nested_forms_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 
 👉 Since `💾` and `📂` buttons are in the higher context level, in this case we
@@ -353,7 +410,6 @@ to the whole form throught a `window.prompt(...)`.
     *export* to prefill the prompt dialog (so that you can edit the JSON data
     instead of manually copying ot writing it from scratch).
     <li data-bullet="👉">See the JS tab to see how the <em>BeforeAction_import</em> event handler prefills the prompt dialog with the JSON export of the whole form.</li>
-
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -410,7 +466,7 @@ explicitly set by the option of the same name.
 
 
 
-{% raw %} <!-- capture basic_form_with_local_import_export_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 
 If you compare the *JS* tab with the one in fhe former one,
@@ -456,7 +512,7 @@ by the place they are in the form**.
 👌 If you want a clearer example on how the context affect the triggers, take a
 look to the following example:
 
-{% raw %} <!-- capture context_comparsion_example_notes {{{ --> {% endraw %}
+{% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
 by the same event handlers** (for "BeforeAction_import" and

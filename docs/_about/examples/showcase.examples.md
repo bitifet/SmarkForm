@@ -135,8 +135,8 @@ endcapture %}
 {% raw %} <!-- nested_forms_source {{{ --> {% endraw %}
 {% capture nested_forms_source
 %}{{ basic_form_source }}
-#indent#<p data-smark='{"name":"safety","type":"form"}'>
-#indent#    <label>Safety Features:</label>
+#indent#<label>Safety Features:</label>
+#indent#<fieldset data-smark='{"name":"safety","type":"form"}'>
 #indent#    <span>
 #indent#        <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
 #indent#    </span>
@@ -152,7 +152,7 @@ endcapture %}
 #indent#    <span>
 #indent#        <label><input type="checkbox" name="tc" data-smark />TC.</label>
 #indent#    </span>
-#indent#</p>{%
+#indent#</fieldset>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -212,6 +212,70 @@ endcapture %}
                     <span data-smark='{"role":"last_separator"}'> and </span>
                 </span>
             </p>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_table_source {{{ --> {% endraw %}
+{% capture schedule_table_source %}
+            <table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
+                <h2>Operating Hours:</h2>
+                <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3}'>
+                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
+                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+                    <td class='time_slot'>
+                        <input class='small' data-smark type='time' name='start'>
+                        to
+                        <input class='small' data-smark type='time' name='end'>
+                    </td>
+                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+                    <td data-smark='{"role":"footer"}' style='text-align: right'>
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+                    </td>
+                </tr>
+                <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3}'>
+                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
+                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+                    <td class='time_slot'>
+                        <input class='small' data-smark type='time' name='start'>
+                        to
+                        <input class='small' data-smark type='time' name='end'>
+                    </td>
+                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+                    <td data-smark='{"role":"footer"}' style='text-align: right'>
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+                    </td>
+                </tr>
+                <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3}'>
+                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
+                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+                    <td class='time_slot'>
+                        <input class='small' data-smark type='time' name='start'>
+                        to
+                        <input class='small' data-smark type='time' name='end'>
+                    </td>
+                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+                    <td data-smark='{"role":"footer"}' style='text-align: right'>
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+                    </td>
+                </tr>
+                <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3}'>
+                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
+                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+                    <td class='time_slot'>
+                        <input class='small' data-smark type='time' name='start'>
+                        to
+                        <input class='small' data-smark type='time' name='end'>
+                    </td>
+                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+                    <td data-smark='{"role":"footer"}' style='text-align: right'>
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+                    </td>
+                </tr>
+            </table>
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -338,6 +402,33 @@ endcapture %}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_table {{{ --> {% endraw %}
+{% capture schedule_table %}<div id="myForm$$">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
+            schedule_table_source
+}}
+        </div>
+        <div>
+{{ import_export_buttons | replace: "#indent#", "            " }}
+{{ clear_button | replace: "#indent#", "            " }}
+        </div>
+{{ json_editor | replace: "#indent#", "        " }}
+    </div>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
+{% capture schedule_table_css
+%}
+.time_slot {
+    white-space: nowrap;
+    width: 10em;
+}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 {% raw %} <!-- capture context_comparsion_example {{{ --> {% endraw %}
 {% capture context_comparsion_example %}<div id='myForm$$'>
@@ -629,6 +720,17 @@ myForm.on("AfterAction_export", ({target, data})=>{
         formId="schedule_list"
         htmlSource=schedule_list
         jsSource=form_export_example
+        notes=include.notes
+        selected="preview"
+    %}
+
+{% elsif include.option == "schedule_table" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="schedule_table"
+        htmlSource=schedule_table
+        jsSource=form_export_example
+        cssSource=schedule_table_css
         notes=include.notes
         selected="preview"
     %}
