@@ -81,7 +81,8 @@ Accepted arguments:
 </style>
 
 
-<div class="tab-container">
+<div id="example{{ formId }}" class="tab-container">
+  <a href="#example{{ formId }}" class="link-anchor" title="Link">🔗</a>
   <div class="tab-labels">
     {% if current_tab == "html" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
     <div class="tab-label {{active_class}}" title="HTML Source">🗒️ HTML</div>

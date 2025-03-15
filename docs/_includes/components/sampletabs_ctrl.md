@@ -25,6 +25,19 @@ document.addEventListener('DOMContentLoaded', function() {
   display: flex;
   flex-direction: column;
   max-width: 100%;
+  position: relative;
+  transition: opacity 0.2s;
+}
+
+.link-anchor {
+    position: absolute;
+    top: 5px;
+    left: -25px;
+    opacity: 0.20;
+}
+
+.link-anchor:hover {
+    opacity: 1;
 }
 
 .tab-labels {
