@@ -216,67 +216,66 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_table_source {{{ --> {% endraw %}
-{% capture schedule_table_source %}
-            <table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
-                <h2>Operating Hours:</h2>
-                <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3}'>
-                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
-                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-                    <td class='time_slot'>
-                        <input class='small' data-smark type='time' name='start'>
-                        to
-                        <input class='small' data-smark type='time' name='end'>
-                    </td>
-                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-                    <td data-smark='{"role":"footer"}' style='text-align: right'>
-                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-                    </td>
-                </tr>
-                <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3}'>
-                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
-                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-                    <td class='time_slot'>
-                        <input class='small' data-smark type='time' name='start'>
-                        to
-                        <input class='small' data-smark type='time' name='end'>
-                    </td>
-                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-                    <td data-smark='{"role":"footer"}' style='text-align: right'>
-                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-                    </td>
-                </tr>
-                <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3}'>
-                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
-                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-                    <td class='time_slot'>
-                        <input class='small' data-smark type='time' name='start'>
-                        to
-                        <input class='small' data-smark type='time' name='end'>
-                    </td>
-                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-                    <td data-smark='{"role":"footer"}' style='text-align: right'>
-                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-                    </td>
-                </tr>
-                <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3}'>
-                    <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
-                    <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-                    <td class='time_slot'>
-                        <input class='small' data-smark type='time' name='start'>
-                        to
-                        <input class='small' data-smark type='time' name='end'>
-                    </td>
-                    <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-                    <td data-smark='{"role":"footer"}' style='text-align: right'>
-                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-                        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-                    </td>
-                </tr>
-            </table>
-{% endcapture %}
+{% capture schedule_table_source
+%}#indent#<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
+#indent#    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3}'>
+#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
+#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+#indent#        <td class='time_slot'>
+#indent#            <input class='small' data-smark type='time' name='start'>
+#indent#            to
+#indent#            <input class='small' data-smark type='time' name='end'>
+#indent#        </td>
+#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
+#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+#indent#        </td>
+#indent#    </tr>
+#indent#    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3}'>
+#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
+#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+#indent#        <td class='time_slot'>
+#indent#            <input class='small' data-smark type='time' name='start'>
+#indent#            to
+#indent#            <input class='small' data-smark type='time' name='end'>
+#indent#        </td>
+#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
+#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+#indent#        </td>
+#indent#    </tr>
+#indent#    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3}'>
+#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
+#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+#indent#        <td class='time_slot'>
+#indent#            <input class='small' data-smark type='time' name='start'>
+#indent#            to
+#indent#            <input class='small' data-smark type='time' name='end'>
+#indent#        </td>
+#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
+#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+#indent#        </td>
+#indent#    </tr>
+#indent#    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3}'>
+#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
+#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+#indent#        <td class='time_slot'>
+#indent#            <input class='small' data-smark type='time' name='start'>
+#indent#            to
+#indent#            <input class='small' data-smark type='time' name='end'>
+#indent#        </td>
+#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
+#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+#indent#        </td>
+#indent#    </tr>
+#indent#</table>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -406,9 +405,9 @@ endcapture %}
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
 {% capture schedule_table %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
-        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
-            schedule_table_source
-}}
+        <div data-smark='{"name":"demo"}' style="flex-grow: 1">
+            <h2>Operating Hours:</h2>
+{{ schedule_table_source | replace: "#indent#", "            " }}
         </div>
         <div>
 {{ import_export_buttons | replace: "#indent#", "            " }}
@@ -418,6 +417,48 @@ endcapture %}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
+{% capture nested_schedule_table %}<div id="myForm$$">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+        <div data-smark='{"name":"demo"}' style="flex-grow: 1">
+            <h2>🗓️ Periods:</h2>
+            <div data-smark='{"type":"list","name":"periods","sortable":true}'>
+                <fieldset style='margin-top: 1em'>
+                    <h3>Period
+                        <span data-smark='{"action":"position"}'>N</span>
+                        of
+                        <span data-smark='{"action":"count"}'>M</span>
+                    </h3>
+                    <button
+                        data-smark='{"action":"removeItem","hotkey":"-"}'
+                        title='Remove this period'
+                        style="float: right"
+                    >➖</button>
+                    <p>
+                      <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
+                      <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+                    </p>
+{{ schedule_table_source | replace: "#indent#", "                    " }}
+                </fieldset>
+            </div>
+            <button
+                data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
+                style="float: right; margin-top: 1em"
+            >➕ Add Period</button>
+        </div>
+        <div>
+{{ import_export_buttons | replace: "#indent#", "            " }}
+{{ clear_button | replace: "#indent#", "            " }}
+        </div>
+{{ json_editor | replace: "#indent#", "        " }}
+    </div>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+
 
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
 {% capture schedule_table_css
@@ -735,7 +776,18 @@ myForm.on("AfterAction_export", ({target, data})=>{
         selected="preview"
     %}
 
-{% elsif include.option == "deeply_nested_forms" %}
+{% elsif include.option == "nested_schedule_table" %}
+
+    {% include components/sampletabs_tpl.md
+        formId="nested_schedule_table"
+        htmlSource=nested_schedule_table
+        jsSource=form_export_example
+        cssSource=schedule_table_css
+        notes=include.notes
+        selected="preview"
+    %}
+
+{% elsif include.option == "deeply_nested_forms_FIXME" %}
 
     {% include components/sampletabs_tpl.md
         formId="deeply_nested_forms"

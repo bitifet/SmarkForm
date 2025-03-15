@@ -305,35 +305,39 @@ depending on the season (think in the swimming pool in winter...).
 Since we can make lists of forms, we can also nest more forms and lists inside
 every list item and so forth to any depth.
 
-👉 Let's focus on the seasons for now:
+👉 Let's focus on the seasons by now:
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
+
+👉 Notice that you can manually sort the periods in the list by dragging and dropping them.
+
+{: .hint}
+> Drag and Drop events are not natively supported by touch devices.
+>
+> They can be emulated in serveral ways. A quite straighforward one is through
+> the *dragdroptouch* library from Bernardo Castilho:
+>
+> 🔗 [https://github.com/drag-drop-touch-js/dragdroptouch](https://github.com/drag-drop-touch-js/dragdroptouch)
+
+⚡ Not yet implemented but, in the future, SmarkForm lists will also support
+automatic sorting features that, in this case, would allow to automatically
+sort the periods by start date.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% include_relative
     examples/showcase.examples.md
-    option="nested_lists"
+    option="nested_schedule_table"
     notes=notes
 %}
-
-
-
-{: .warning :}
-> Section still under construction...
-
 
 
 There is no theoretical limit to the depth of nesting beyond the logical
 usability concerns.
 
-Here is a more complex example with a deeply nested form:
-
-
-
-
+Let's add to the former example contact data that may vary depending on the season and provide multiple phone numbers and emails for each of them.
 
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
