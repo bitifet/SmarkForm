@@ -38,12 +38,12 @@ simple_list_example_js: |
 simple_list_example_notes: |
     👉 This is a simple form to show the power of *SmarkForm*.
 
-    👉 Tinker with it modifying data, adding or removing items from the
+    👉 Tinker with it, modifying data, adding or removing items from the
        *Phones* list, sorting its items by dragging them and then clicking the
        `Export` button to see resulting data.
     
-    👉 Notice it inforces some default behaviours like a convenient minimum of
-       one item or not exporting empty items for lists. But it can be easily
+    👉 Note that it enforces default behaviors, such as requiring a minimum of
+       one item and excluding empty list items during export. But it can be easily
        changed, with properties like *min_items* and *exportEmpties*.
 
     👉 Check the *JS* tab to see the little JS just to initialize it as a
@@ -104,9 +104,9 @@ simple_list_example_notes: |
 **SmarkForm** is a powerful library for creating markup-driven and extendable
 forms in web applications.
 
-SmarkForm empowers designers to enhance their form templates with advanced
-capabilities, such as dynamic list manipulation and context-based interactions,
-with no need to deal with complex JavaScript code. \[[More...]({{
+SmarkForm enables designers to enhance form templates with advanced features
+like dynamic list manipulation and context-based interactions, without
+requiring complex JavaScript code. \[[More...]({{
     "about/about_smarkform" | relative_url }})\]
 
 
@@ -117,7 +117,7 @@ with no need to deal with complex JavaScript code. \[[More...]({{
   * **Imports/Exports JSON** supporting nested subforms (objects) and
     variable-length lists (arrays).
   * Configurable context-driven keyboard shortcuts (hotkeys)
-  * No reliance on a specific HTML structure: **Designers have complete freedom**.
+  * Does not depend on a specific HTML structure, **giving designers full flexibility**.
   * **No manual wiring** between controls and fields.
   * Lightweight (**Only {{ site.data.computed.bundleSizeKB }}KB** minified), flexible and extendable.
   * [More...](https://smarkform.bitifet.net/about/features)
@@ -140,9 +140,9 @@ The following code snippet shows *SmarkForm* simplicity.
 %}
 
 {: .hint}
-> Also check out our
+> Also, explore our
 > [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
-> to see what SmarkForm is capable of in a glance!!
+> to see SmarkForm capabilities at a glance!!
 
 
 ## Current Status

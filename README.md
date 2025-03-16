@@ -31,7 +31,7 @@ interactions, with no need to deal with complex JavaScript code.
   * **Imports/Exports JSON** supporting nested subforms (objects) and
     variable-length lists (arrays).
   * Configurable context-driven keyboard shortcuts (hotkeys).
-  * No reliance on a specific HTML structure: **Designers have complete freedom**.
+  * Does not depend on a specific HTML structure, **giving designers full flexibility**.
   * **No manual wiring** between controls and fields.
   * Lightweight (**Only ~35KB** minified), flexible and extendable.
   * [More...](https://smarkform.bitifet.net/about/features)

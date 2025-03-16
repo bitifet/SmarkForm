@@ -295,7 +295,7 @@ But it could look kind of messy if you need to introduce several schedules that 
 ## Nested lists and forms
 
 
-Great! Now we have all the scheduling information of or houtel services.
+Great! Now we have all the scheduling information of or hotel services.
 
 ...or maybe not:
 
@@ -449,10 +449,10 @@ to the whole form throught a `window.prompt(...)`.
 
 ## A note on context of the triggers
 
-Let's return to the [Nested forms](#nested-forms)' example.
+Let's return to the previous examples...
 
-In that example we had the `💾` and `📂` buttons opeating on the whole form
-because it is their *natural* context.
+There we had the `💾` and `📂` buttons opeating on the whole form because it is
+their *natural* context.
 
 In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
 explicitly set by the option of the same name.
