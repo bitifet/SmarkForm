@@ -91,7 +91,7 @@ simple_list_example_notes: |
 </div>
 
 
-## Powerful while effortless Markup-driven and Extendable forms.
+🚀 **Powerful while effortless Markup-driven and Extendable forms.**
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]
@@ -100,7 +100,7 @@ simple_list_example_notes: |
 [![License][license-image]][license-url]
 
 {: .info :}
-> 🚀 **SmarkForm** enhances HTML forms with advanced features like dynamic list
+> **SmarkForm** enhances HTML forms with advanced features like dynamic list
 manipulation and context-based interactions, **without requiring specific
 layout or complex JavaScript** code. \[[More...]({{ "about/introduction" |
 relative_url }})\]

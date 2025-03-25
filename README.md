@@ -1,6 +1,6 @@
 [![SmarkForm Logo](docs/assets/SmarkForm_logo.png)](https://www.npmjs.com/package/smarkform)
 
-> **Powerful while effortless Markup-driven and Extendable forms.**
+🚀 **Powerful while effortless Markup-driven and Extendable forms.**
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]
@@ -13,15 +13,15 @@
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
-> 🚀 **SmarkForm** enhances HTML forms with advanced features like dynamic list
+> **SmarkForm** enhances HTML forms with advanced features like dynamic list
 manipulation and context-based interactions, **without requiring specific
-layout or complex JavaScript** code. \[[More...]({{ "about/introduction" |
-relative_url }})\]
+layout or complex JavaScript** code.
+\[[More...](https://smarkform.bitifet.netabout/about/introduction)\]
 
 
 ## Main Features
 
-  * [Subforms](/https://smarkform.bitifet.netabout/showcase#nested-forms):
+  * [Subforms](https://smarkform.bitifet.netabout/showcase#nested-forms):
     Nested forms to any depth.
   * [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
     variable-length arrays either of scalars or subforms.
