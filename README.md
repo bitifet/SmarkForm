@@ -1,16 +1,6 @@
 [![SmarkForm Logo](docs/assets/SmarkForm_logo.png)](https://www.npmjs.com/package/smarkform)
 
-<details>
-<summary>Powerful while effortless Markup-driven and Extendable forms.</summary>
-
-SmarkForm is a powerful library for creating markup-driven and extendable forms
-in web applications.
-
-SmarkForm empowers designers to enhance their form templates with
-advanced capabilities, such as dynamic list manipulation and context-based
-interactions, with no need to deal with complex JavaScript code.
-
-</details>
+> **Powerful while effortless Markup-driven and Extendable forms.**
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]
@@ -23,18 +13,30 @@ interactions, with no need to deal with complex JavaScript code.
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
+> 🚀 **SmarkForm** enhances HTML forms with advanced features like dynamic list
+manipulation and context-based interactions, **without requiring specific
+layout or complex JavaScript** code. \[[More...]({{ "about/introduction" |
+relative_url }})\]
 
-## Features
 
-  * Easy to use **Markup-driven** and Intuitive API.
-  * **Responsive and accessible UX** across devices.
-  * **Imports/Exports JSON** supporting nested subforms (objects) and
-    variable-length lists (arrays).
-  * Configurable context-driven keyboard shortcuts (hotkeys).
-  * Does not depend on a specific HTML structure, **giving designers full flexibility**.
-  * **No manual wiring** between controls and fields.
-  * Lightweight (**Only ~35KB** minified), flexible and extendable.
-  * [More...](https://smarkform.bitifet.net/about/features)
+## Main Features
+
+  * [Subforms](/https://smarkform.bitifet.netabout/showcase#nested-forms):
+    Nested forms to any depth.
+  * [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
+    variable-length arrays either of scalars or subforms.
+  * [Conigurable hot
+    keys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts):
+    Context-driven keyboard shortcuts.
+  * [Low code](https://smarkform.bitifet.netabout/showcase#basic-form): No
+    manual wiring between controls and fields.
+  * [JSON
+    format](https://smarkform.bitifet.net/about/showcase#import-and-export-data):
+    Data is imported / exported as JSON.
+  * [Lightweight](https://smarkform.bitifet.net/resources/download): Only ~38KB
+    minified.
+  * Flexible, extendable and
+    [more...](https://smarkform.bitifet.net/about/features).
 
 
 ## Installation

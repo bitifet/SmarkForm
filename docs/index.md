@@ -98,32 +98,32 @@ simple_list_example_notes: |
 [![NPM Downloads][downloads-image]][downloads-url]
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
-<!-- Hilighting fix: []() -->
+
+{: .info :}
+> 🚀 **SmarkForm** enhances HTML forms with advanced features like dynamic list
+manipulation and context-based interactions, **without requiring specific
+layout or complex JavaScript** code. \[[More...]({{ "about/introduction" |
+relative_url }})\]
 
 
-**SmarkForm** is a powerful library for creating markup-driven and extendable
-forms in web applications.
+## Main Features
 
-SmarkForm enables designers to enhance form templates with advanced features
-like dynamic list manipulation and context-based interactions, without
-requiring complex JavaScript code. \[[More...]({{
-    "about/about_smarkform" | relative_url }})\]
-
-
-## Features
-
-  * Easy to use **Markup-driven** and Intuitive API.
-  * **Responsive and accessible UX** across devices.
-  * **Imports/Exports JSON** supporting nested subforms (objects) and
-    variable-length lists (arrays).
-  * Configurable context-driven keyboard shortcuts (hotkeys)
-  * Does not depend on a specific HTML structure, **giving designers full flexibility**.
-  * **No manual wiring** between controls and fields.
-  * Lightweight (**Only {{ site.data.computed.bundleSizeKB }}KB** minified), flexible and extendable.
-  * [More...](https://smarkform.bitifet.net/about/features)
+  * [Subforms]({{ "/about/showcase" | relative_url }}#nested-forms): Nested
+    forms to any depth.
+  * [Lists]({{ "/about/showcase" | relative_url }}#lists): Sortable and
+    variable-length arrays either of scalars or subforms.
+  * [Conigurable hot keys]({{ "/about/showcase" | relative_url
+    }}#context-driven-keyboard-shortcuts): Context-driven keyboard shortcuts.
+  * [Low code]({{ "about/showcase" |relative_url }}#basic-form): No manual
+    wiring between controls and fields.
+  * [JSON format]({{ "/about/showcase" | relative_url}}#import-and-export-data): Data
+    is imported / exported as JSON.
+  * [Lightweight]({{ "/resources/download" | relative_url }}): Only {{
+    site.data.computed.bundleSizeKB }}KB minified.
+  * Flexible, extendable and [more...]({{ "about/features" | relative_url }})
 
 
-## Sample Code:
+## Sample Code
 
 The following code snippet shows *SmarkForm* simplicity.
 
@@ -139,7 +139,7 @@ The following code snippet shows *SmarkForm* simplicity.
    selected="preview"
 %}
 
-{: .hint}
+{: .hint :}
 > Also, explore our
 > [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
 > to see SmarkForm capabilities at a glance!!
@@ -149,7 +149,7 @@ The following code snippet shows *SmarkForm* simplicity.
 
 SmarkForm implementation is stable and fully functional, but not all initially
 planned requirements are yet implemented. Hence, it's not yet in the 1.0.0
-version. \[[🔗 More...]({{ "about/about_smarkform" | relative_url }}#status)\]
+version. \[[🔗 More...]({{ "about/roadmap" | relative_url }}#current-status)\]
 
 **Last Updated:** {{ site.data.computed.lastUpdated }}.
 
@@ -159,6 +159,7 @@ version. \[[🔗 More...]({{ "about/about_smarkform" | relative_url }}#status)\]
 To get started with SmarkForm you can:
 
 
+| 👉 Take a look to our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
 | 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
 

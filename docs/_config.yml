@@ -101,11 +101,14 @@ aux_links_new_tab: false
 
 nav_external_links:
 
-  - title: "<span role='img' aria-label=''>⚡</span> Quick Start"
-    url: /getting_started/quick_start
-    hide_icon: true
   - title: <span role='img' aria-label=''>🥇</span> Showcase
     url: /about/showcase
+    hide_icon: true
+  - title: <span role='img' aria-label=''>🚀</span> Features
+    url: /about/features
+    hide_icon: true
+  - title: "<span role='img' aria-label=''>⚡</span> Quick Start"
+    url: /getting_started/quick_start
     hide_icon: true
   - title: "<span role='img' aria-label=''>💻</span> Examples"
     url: /resources/examples

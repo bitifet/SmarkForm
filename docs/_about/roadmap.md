@@ -17,9 +17,9 @@ nav_order: 5
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [👉 Current Status](#-current-status)
-* [🕒 Upcoming Features](#-upcoming-features)
-* [💡 Brainstorm](#-brainstorm)
+* [Current Status](#current-status)
+* [Upcoming Features](#upcoming-features)
+* [Brainstorm](#brainstorm)
     * [Implement "hint" component type](#implement-hint-component-type)
     * [Implement Table Of Contents component](#implement-table-of-contents-component)
     * [Implement download action](#implement-download-action)
@@ -30,7 +30,7 @@ nav_order: 5
 </details>
 
 
-## 👉 Current Status
+## Current Status
 
   * Actively developed and open to enhancements from contributors.
 
@@ -40,7 +40,7 @@ nav_order: 5
   * **Last Updated:** {{ site.data.computed.lastUpdated }}.
 
 
-## 🕒 Upcoming Features
+## Upcoming Features
 
   * Mixin feature to create new component types based on (but not limited to)
     *SmarkForm* template.
@@ -94,7 +94,7 @@ nav_order: 5
     - If provided (instead of "data"), the *import* action will get the value from the *export* action of the target component and vice-versa.
     - 🚀 This will allow easy data duplication between components (i.e. across lists' items).
 
-## 💡 Brainstorm
+## Brainstorm
 
 
 The following are spare and not yet mature ideas for possible future components

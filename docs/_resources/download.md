@@ -32,7 +32,8 @@ nav_order: 1
 
 ## SmarkForm
 
-*SmarkForm* is available both as *ES Module* and *UMD* formats.
+*SmarkForm* is available both as *ES Module* and *UMD* formats. Only {{
+site.data.computed.bundleSizeKB }}KB each.
 
 ### Latest version
 

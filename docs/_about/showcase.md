@@ -101,6 +101,7 @@ unknown or indifferent.
     notes=notes
 %}
 
+👉 Notice everything works **with no JS code** other than SmarkForm instantiation itself.
 
 {: .info :}
 > Every example in this section comes with many of the following tabs:
