@@ -438,6 +438,9 @@ to the whole form throught a `window.prompt(...)`.
 > Remember to check the `📝 Notes` tab for more...
 
 
+> 🚧 TODO: Add an example showcasing the use of the *target* property to
+> duplicate list items.
+
 
 ### Submitting the form
 

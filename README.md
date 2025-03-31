@@ -16,19 +16,19 @@
 > **SmarkForm** enhances HTML forms with advanced features like dynamic list
 manipulation and context-based interactions, **without requiring specific
 layout or complex JavaScript** code.
-\[[More...](https://smarkform.bitifet.netabout/about/introduction)\]
+\[[More...](https://smarkform.bitifet.net/about/introduction)\]
 
 
 ## Main Features
 
-  * [Subforms](https://smarkform.bitifet.netabout/showcase#nested-forms):
+  * [Subforms](https://smarkform.bitifet.net/about/showcase#nested-forms):
     Nested forms to any depth.
   * [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
     variable-length arrays either of scalars or subforms.
   * [Conigurable hot
     keys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts):
     Context-driven keyboard shortcuts.
-  * [Low code](https://smarkform.bitifet.netabout/showcase#basic-form): No
+  * [Low code](https://smarkform.bitifet.net/about/showcase#basic-form): No
     manual wiring between controls and fields.
   * [JSON
     format](https://smarkform.bitifet.net/about/showcase#import-and-export-data):
