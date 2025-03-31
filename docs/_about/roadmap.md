@@ -146,7 +146,7 @@ and the other for cities like in the following example:
 <select data-smark='{
     "name":"city",
     "src":[
-        "https/example.com/countries",
+        "https/example.com/cities",
         { "@country_id":"country" }
     ],
     "encoding":"json"
