@@ -21,6 +21,8 @@ nav_order: 5
 * [Upcoming Features](#upcoming-features)
     * [Mixins](#mixins)
     * [The «API interface»](#the-api-interface)
+        * [Circular references](#circular-references)
+        * [The callback method](#the-callback-method)
     * [The «select» component type](#the-select-component-type)
     * [Conditional forms](#conditional-forms)
     * [«form» tag enhancenment](#form-tag-enhancenment)
@@ -60,7 +62,7 @@ Mixin feature to create new component types based on (but not limited to)
 
 ### The «API interface»
 
-The *API interface* will allow, for instance, to use the values of other fields
+The *API interface* will allow to, for instance, use the values of other fields
 as arguments for an external API request to, say, fill the options of a
 `<select>` component.
 
@@ -97,7 +99,9 @@ relevant data changes.
 > 👉 One important feature here is the ability to perform the fetching process
 > through an interchangeable callback referred to as an 'adapter.'
 > 
-> By default, this adapter internally executes an HTTP request as explained earlier.
+> There will be a default adapter that will handle the fetching process by
+> issuing HTTP requests of specified method (GET by default) to the provided
+> URL.
 > 
 > However, it can be easily substituted with a custom implementation tailored
 > to different types of APIs, ranging from GraphQL APIs to mock implementations
@@ -122,6 +126,7 @@ The *src* property will accept two formats:
 > sending the request.
 
 
+#### Circular references
 
 Circular references will be automatically handled by preventing fetchings when
 the corresponding value doesn't change.
@@ -155,7 +160,6 @@ and the other for cities like in the following example:
 </select>
 ```
 
-
 {: .info :}
 > The `encoding: "json"` property allows the default option's value to be a
 > real *null* instead of a string with the word "null" in it.
@@ -178,12 +182,37 @@ and the other for cities like in the following example:
     loop).
 
 
+#### The callback method
+
+The *default adapter* will, additionally, accept a callback function as a
+method. This will avoid any server request and use that function to provide the
+results.
+
+This will allow, for instance, to feed the options of a `<select>` by remapping
+(through the callback) the contents of a list.
+
+{: .hint :}
+> **Use case example:**
+> 
+> Let's say we want to implement a simple shopping list application and we want
+> to categorize articles by selecting a category from a dropdown list.
+> 
+> Instead of manually implement the filling of the `<select>` with the list of
+> categories from somwere, we can just define the list of categories as a
+> simple *SmarkForm* list field and then map that data (through the callback)
+> to the options of the "categories" `<select>` of each item in the shopping
+> list..
+
+
+
 ### The «select» component type
 
-It's almost already explainid in the [previous section](#the-api-interface).
 
-It will be capable of dynamically loading its options from a remote API
-depending on other fields values and reacting to their changes.
+This is almost already explainid in the [previous section](#the-api-interface).
+
+Basically, the `<select>` component will be able to load its options (or even
+optgroups) through the [API Interface](#the-api-interface) which means they
+could depend on the values of other fields in the form.
 
 It will also allow for statically defined options, such as the *default*
 "Select a country/city" option.
