@@ -25,9 +25,9 @@ nav_order: 5
         * [The callback method](#the-callback-method)
     * [The «select» component type](#the-select-component-type)
     * [Conditional forms](#conditional-forms)
-    * [«form» tag enhancenment](#form-tag-enhancenment)
+    * [«form» tag enhancement](#form-tag-enhancement)
 * [Future Features](#future-features)
-    * [The UNDO component.](#the-undo-component)
+    * [The «UNDO» component.](#the-undo-component)
     * [Infinite lists](#infinite-lists)
     * [Recursive lists:](#recursive-lists)
 * [Brainstorm](#brainstorm)
@@ -45,8 +45,8 @@ nav_order: 5
 
   * Actively developed and open to enhancements from contributors.
 
-  * This Reference Manual is quite mature. But API documentation still needs a
-    lot of work...
+  * This Reference Manual is quite mature. However, the API documentation still
+    needs significant work.
 
   * **Last Updated:** {{ site.data.computed.lastUpdated }}.
 
@@ -85,13 +85,13 @@ Consider the following example:
 ```
 
 The *src* property will make use of the *API interface* to fetch data from a
-remote server to load the propper options of the `<select>` component and keep
+remote server to load the proper options of the `<select>` component and keep
 them up to date.
 
 The *API Interface* will be responsible for fetching the data based on the
 specified endpoint, arguments, and other parameters (such as the method), while
 also keeping track of changes in every field it depends on (those marked with
-initial '@') allowing the comsummer component (a *select* in this case, but there
+initial '@') allowing the consumer component (a *select* in this case, but there
 may be others in the future) to automatically update its options set every time
 relevant data changes.
 
@@ -128,7 +128,7 @@ The *src* property will accept two formats:
 
 #### Circular references
 
-Circular references will be automatically handled by preventing fetchings when
+Circular references will be automatically handled by preventing fetches when
 the corresponding value doesn't change.
 
 For instance, let's imagine we have two `<select>` fields, one for countries
@@ -174,7 +174,7 @@ and the other for cities like in the following example:
 
   * If the user selects a city, all but the corresponding country will be
     removed as country options and that country will be automatically selected
-    if it already weren't..
+    if it already wasn't..
 
   * If there is a country selected and after the user selecting a city, the
     resulting country list does not contain the selected country, an error
@@ -184,9 +184,9 @@ and the other for cities like in the following example:
 
 #### The callback method
 
-The *default adapter* will, additionally, accept a callback function as a
-method. This will avoid any server request and use that function to provide the
-results.
+The *default adapter* will, additionally, accept a callback function in place
+of the HTTP method. This will avoid any server request and use that function to
+provide the results.
 
 This will allow, for instance, to feed the options of a `<select>` by remapping
 (through the callback) the contents of a list.
@@ -229,10 +229,10 @@ changer for this specific cases.
 The idea is to be able to specify a set of one or more paths to other fields
 and an optional callback to transform them so that, whenever any of the pointed
 fields changes, the callback is evaluated and, in case of falsy result, the
-field will become disabled and vice versa.
+[field](field) will become disabled and vice versa.
 
 
-### «form» tag enhancenment
+### «form» tag enhancement
 
 By now, the use of the `<form>` tag is not mandatory and, in fact, discouraged
 in this documentation (even it's native behaviour is prevented by *SmarkForm*).
@@ -248,13 +248,13 @@ easy pattern for simple applications that just need the power of *SmarkForm* to
 handle complext data.
 
 In such scenario, mocking the native `<form>`'s *enctype*s could fit perfectly
-if only we find a way to send nested data through. Which could be eaily
+if only we find a way to send nested data through. Which could be early
 achieved with a simple naming conventions.
 
 
 ## Future Features
 
-### The UNDO component.
+### The «UNDO» component.
 
   * Contains single component (form, list, input...).
   * Acts as a "man in the middle".
