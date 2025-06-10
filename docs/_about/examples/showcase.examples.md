@@ -4,84 +4,49 @@
 {% comment %} →  Layout components:               {% endcomment %}
 {% comment %}    ==================               {% endcomment %}
 
-{% raw %} <!-- import_export_buttons_stacked {{{ --> {% endraw %}
-{% capture import_export_buttons_stacked
-%}#indent#<p><button
-#indent#    data-smark='{"action":"export","context":"demo","target":"../editor"}'
-#indent#    title="Export 'demo' subform to 'editor' textarea"
-#indent#    >➡️ </button></p>
-#indent#<p><button
-#indent#    data-smark='{"action":"import","context":"demo","target":"../editor"}'
-#indent#    title="Import 'editor' textarea contents to 'demo' subform"
-#indent#    >⬅️ </button></p>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
 {% raw %} <!-- import_export_buttons {{{ --> {% endraw %}
 {% capture import_export_buttons
-%}#indent#<span><button
-#indent#    data-smark='{"action":"export","context":"demo","target":"../editor"}'
-#indent#    title="Export 'demo' subform to 'editor' textarea"
-#indent#    >⬇️ </button></span>
-#indent#<span><button
-#indent#    data-smark='{"action":"import","context":"demo","target":"../editor"}'
-#indent#    title="Import 'editor' textarea contents to 'demo' subform"
-#indent#    >⬆️ </button></span>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- load_save_buttons_stacked {{{ --> {% endraw %}
-{% capture load_save_buttons_stacked
-%}#indent#<p><button
-#indent#    data-smark='{"action":"export"}'
-#indent#    title="Export the whole form as JSON (see JS tab)"
-#indent#    >💾</button></p>
-#indent#<p><button
-#indent#    data-smark='{"action":"import"}'
-#indent#    title="Import the whole form as JSON (see JS tab)"
-#indent#    >📂</button></p>{%
+%}█<span><button
+█    data-smark='{"action":"export","context":"demo","target":"../editor"}'
+█    title="Export 'demo' subform to 'editor' textarea"
+█    >⬇️ Export</button></span>
+█<span><button
+█    data-smark='{"action":"import","context":"demo","target":"../editor"}'
+█    title="Import 'editor' textarea contents to 'demo' subform"
+█    >⬆️ Import</button></span>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- load_save_buttons {{{ --> {% endraw %}
 {% capture load_save_buttons
-%}#indent#<button
-#indent#    data-smark='{"action":"export"}'
-#indent#    title="Export the whole form as JSON (see JS tab)"
-#indent#    >💾 Save</button>
-#indent#<button
-#indent#    data-smark='{"action":"import"}'
-#indent#    title="Import the whole form as JSON (see JS tab)"
-#indent#    >📂 Load</button>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- clear_button_stacked {{{ --> {% endraw %}
-{% capture clear_button_stacked
-%}#indent#<p><button
-#indent#    data-smark='{"action":"clear", "context":"demo"}'
-#indent#    title="Clear the whole form"
-#indent#    >❌</button></p>{%
+%}█<button
+█    data-smark='{"action":"export"}'
+█    title="Export the whole form as JSON (see JS tab)"
+█    >💾 Save</button>
+█<button
+█    data-smark='{"action":"import"}'
+█    title="Import the whole form as JSON (see JS tab)"
+█    >📂 Load</button>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- clear_button {{{ --> {% endraw %}
 {% capture clear_button
-%}#indent#<span><button
-#indent#    data-smark='{"action":"clear", "context":"demo"}'
-#indent#    title="Clear the whole form"
-#indent#    >❌</button></span>{%
+%}█<span><button
+█    data-smark='{"action":"clear", "context":"demo"}'
+█    title="Clear the whole form"
+█    >❌ Clear</button></span>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- json_editor {{{ --> {% endraw %}
 {% capture json_editor
-%}#indent#<textarea
-#indent#    cols="20"
-#indent#    placeholder="JSON data viewer / editor"
-#indent#    data-smark='{"name":"editor","type":"input"}'
-#indent#    style="resize: none; align-self: stretch; min-height: 8em; flex-grow: 1;"
-#indent#></textarea>{%
+%}█<textarea
+█    cols="20"
+█    placeholder="JSON data viewer / editor"
+█    data-smark='{"name":"editor","type":"input"}'
+█    style="resize: none; align-self: stretch; min-height: 8em; flex-grow: 1;"
+█></textarea>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -91,109 +56,109 @@ endcapture %}
 
 {% raw %} <!-- basic_form_source {{{ --> {% endraw %}
 {% capture basic_form_source
-%}#indent#<h2>Model details</h2>
-#indent#<p>
-#indent#    <label data-smark>Model Name:</label>
-#indent#    <input type="text" name="model" data-smark />
-#indent#</p>
-#indent#<p>
-#indent#    <label data-smark>Type:</label>
-#indent#    <select name="type" data-smark='{"encoding":"json"}'>
-#indent#        <option value='null'>👇 Please select...</option>
-#indent#        <!-- json encoding allow us return null values -->
-#indent#        <option value='"Car"'>Car</option>
-#indent#        <!-- ...but now we must wrap strings in double quotes -->
-#indent#        <!-- (it also gives us the ability to return objects and arrays) -->
-#indent#        <option>Bicycle</option>
-#indent#        <!-- ...but if we are Ok with inner text as value, we can just omit the value attribute -->
-#indent#        <option>Motorcycle</option>
-#indent#        <option>Van</option>
-#indent#        <option>Pickup</option>
-#indent#        <option>Quad</option>
-#indent#        <option>Truck</option>
-#indent#    </select>
-#indent#</p>
-#indent#<p>
-#indent#    <label data-smark>Seats:</label>
-#indent#    <input type="number" name="seats" min=4 max=9 data-smark />
-#indent#</p>
-#indent#<p>
-#indent#    <label data-smark>Driving Side:</label>
-#indent#    <input type="radio" name="side" value="left" data-smark /> Left
-#indent#    <input type="radio" name="side" value="right" data-smark /> Right
-#indent#</p>
-#indent#<p>
-#indent#    <label data-smark>Color:</label>
-#indent#    <span data-smark='{"type":"color", "name":"color"}'>
-#indent#        <input data-smark>
-#indent#        <button data-smark='{"action":"clear"}' title='Indifferent or unknown' >❌ </button>
-#indent#    </span>
-#indent#</p>{%
+%}█<h2>Model details</h2>
+█<p>
+█    <label data-smark>Model Name:</label>
+█    <input type="text" name="model" data-smark />
+█</p>
+█<p>
+█    <label data-smark>Type:</label>
+█    <select name="type" data-smark='{"encoding":"json"}'>
+█        <option value='null'>👇 Please select...</option>
+█        <!-- json encoding allow us return null values -->
+█        <option value='"Car"'>Car</option>
+█        <!-- ...but now we must wrap strings in double quotes -->
+█        <!-- (it also gives us the ability to return objects and arrays) -->
+█        <option>Bicycle</option>
+█        <!-- ...but if we are Ok with inner text as value, we can just omit the value attribute -->
+█        <option>Motorcycle</option>
+█        <option>Van</option>
+█        <option>Pickup</option>
+█        <option>Quad</option>
+█        <option>Truck</option>
+█    </select>
+█</p>
+█<p>
+█    <label data-smark>Seats:</label>
+█    <input type="number" name="seats" min=4 max=9 data-smark />
+█</p>
+█<p>
+█    <label data-smark>Driving Side:</label>
+█    <input type="radio" name="side" value="left" data-smark /> Left
+█    <input type="radio" name="side" value="right" data-smark /> Right
+█</p>
+█<p>
+█    <label data-smark>Color:</label>
+█    <span data-smark='{"type":"color", "name":"color"}'>
+█        <input data-smark>
+█        <button data-smark='{"action":"clear"}' title='Indifferent or unknown' >❌ </button>
+█    </span>
+█</p>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- nested_forms_source {{{ --> {% endraw %}
 {% capture nested_forms_source
 %}{{ basic_form_source }}
-#indent#<label>Safety Features:</label>
-#indent#<fieldset data-smark='{"name":"safety","type":"form"}'>
-#indent#    <span>
-#indent#        <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
-#indent#    </span>
-#indent#    &nbsp;&nbsp;
-#indent#    <span>
-#indent#        <label><input type="checkbox" name="abs" data-smark /> ABS.</label>
-#indent#    </span>
-#indent#    &nbsp;&nbsp;
-#indent#    <span>
-#indent#        <label><input type="checkbox" name="esp" data-smark /> ESP.</label>
-#indent#    </span>
-#indent#    &nbsp;&nbsp;
-#indent#    <span>
-#indent#        <label><input type="checkbox" name="tc" data-smark />TC.</label>
-#indent#    </span>
-#indent#</fieldset>{%
+█<label>Safety Features:</label>
+█<fieldset data-smark='{"name":"safety","type":"form"}'>
+█    <span>
+█        <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
+█    </span>
+█    &nbsp;&nbsp;
+█    <span>
+█        <label><input type="checkbox" name="abs" data-smark /> ABS.</label>
+█    </span>
+█    &nbsp;&nbsp;
+█    <span>
+█        <label><input type="checkbox" name="esp" data-smark /> ESP.</label>
+█    </span>
+█    &nbsp;&nbsp;
+█    <span>
+█        <label><input type="checkbox" name="tc" data-smark />TC.</label>
+█    </span>
+█</fieldset>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- deeply_nested_forms_source {{{ --> {% endraw %}
 {% capture deeply_nested_forms_source
-%}#indent#<h2>This is the nested</h2>
-#indent#<h3>Car owners</h3>
-#indent#<button data-smark='{"action":"addItem","context":"employee","hotkey":"+"}' title='Nuevo empleado'>👥</button>
-#indent#<label data-smark>Empleados:</label>
-#indent#<div data-smark='{"type":"list","name":"employee", "min_items":0,"sortable":true, "exportEmpties":true}'>
-#indent#    <div>
-{{ nested_forms_source | replace: "#indent#", "#indent#        " }}
-#indent#    </div>
-#indent#</div>{%
+%}█<h2>This is the nested</h2>
+█<h3>Car owners</h3>
+█<button data-smark='{"action":"addItem","context":"employee","hotkey":"+"}' title='Nuevo empleado'>👥</button>
+█<label data-smark>Empleados:</label>
+█<div data-smark='{"type":"list","name":"employee", "min_items":0,"sortable":true, "exportEmpties":true}'>
+█    <div>
+{{ nested_forms_source | replace: "█", "█        " }}
+█    </div>
+█</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_source {{{ --> {% endraw %}
 {% capture simple_list_source
-%}#indent#<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
-#indent#<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-#indent#<label data-smark>Phones:</label>
-#indent#<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
-#indent#    <input type="tel" style="display: block">
-#indent#</div>{%
+%}█<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
+█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█<label data-smark>Phones:</label>
+█<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
+█    <input type="tel" style="display: block">
+█</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_singleton_source {{{ --> {% endraw %}
 {% capture simple_list_singleton_source
-%}#indent#<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
-#indent#    <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
-#indent#    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-#indent#    <label data-smark>Phones:</label>
-#indent#    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
-#indent#        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
-#indent#        <li class="row">
-#indent#            <label data-smark>📞 </label><input type="tel" data-smark>
-#indent#            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
-#indent#        </li>
-#indent#    </ul>{%
+%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
+█    <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+█    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█    <label data-smark>Phones:</label>
+█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
+█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+█        <li class="row">
+█            <label data-smark>📞 </label><input type="tel" data-smark>
+█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
+█        </li>
+█    </ul>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -217,64 +182,64 @@ endcapture %}
 
 {% raw %} <!-- schedule_table_source {{{ --> {% endraw %}
 {% capture schedule_table_source
-%}#indent#<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
-#indent#    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3}'>
-#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
-#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-#indent#        <td class='time_slot'>
-#indent#            <input class='small' data-smark type='time' name='start'>
-#indent#            to
-#indent#            <input class='small' data-smark type='time' name='end'>
-#indent#        </td>
-#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
-#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-#indent#        </td>
-#indent#    </tr>
-#indent#    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3}'>
-#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
-#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-#indent#        <td class='time_slot'>
-#indent#            <input class='small' data-smark type='time' name='start'>
-#indent#            to
-#indent#            <input class='small' data-smark type='time' name='end'>
-#indent#        </td>
-#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
-#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-#indent#        </td>
-#indent#    </tr>
-#indent#    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3}'>
-#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
-#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-#indent#        <td class='time_slot'>
-#indent#            <input class='small' data-smark type='time' name='start'>
-#indent#            to
-#indent#            <input class='small' data-smark type='time' name='end'>
-#indent#        </td>
-#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
-#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-#indent#        </td>
-#indent#    </tr>
-#indent#    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3}'>
-#indent#        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
-#indent#        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-#indent#        <td class='time_slot'>
-#indent#            <input class='small' data-smark type='time' name='start'>
-#indent#            to
-#indent#            <input class='small' data-smark type='time' name='end'>
-#indent#        </td>
-#indent#        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-#indent#        <td data-smark='{"role":"footer"}' style='text-align: right'>
-#indent#            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-#indent#            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-#indent#        </td>
-#indent#    </tr>
-#indent#</table>{%
+%}█<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
+█    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█</table>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -284,49 +249,49 @@ endcapture %}
 
 {% raw %} <!-- basic_form {{{ --> {% endraw %}
 {% capture basic_form %}<div id="myForm$$">
-    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             basic_form_source
-            | replace: "#indent#", "            "
+            | replace: "█", "            "
         }}        </div>
-        <div>
-{{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ clear_button_stacked | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- nested_forms {{{ --> {% endraw %}
 {% capture nested_forms %}<div id="myForm$$">
-    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             nested_forms_source
-            | replace: "#indent#", "            "
+            | replace: "█", "            "
         }}    </div>
-        <div>
-{{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ clear_button_stacked | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
 {% capture nested_forms_with_load_save %}<div id="myForm$$">
-    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             nested_forms_source
-            | replace: "#indent#", "            "
+            | replace: "█", "            "
         }}    </div>
-        <div>
-{{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ load_save_buttons_stacked | replace: "#indent#", "            " }}
-{{ clear_button_stacked | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ load_save_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -334,93 +299,72 @@ endcapture %}
 
 
 
-
-{% raw %} <!-- basic_form_with_local_import_export {{{ --> {% endraw %}
-{% capture basic_form_with_local_import_export %}<div id="myForm$$">
-    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
-        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
-            nested_forms_source
-            | replace: "#indent#", "            "
-}}
-            <p>
-                <!-- Import and export triggers with implicit context -->
-{{ load_save_buttons | replace: "#indent#", "                " }}
-        </p>
-        </div>
-        <div>
-{{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ clear_button_stacked | replace: "#indent#", "            " }}
-        </div>
-{{ json_editor | replace: "#indent#", "        " }}
-    </div>
-</div>{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list {{{ --> {% endraw %}
 {% capture simple_list %}<div id="myForm$$">
-    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">
-{{ simple_list_source | replace: "#indent#", "            " }}
+{{ simple_list_source | replace: "█", "            " }}
         </div>
-        <div>
-{{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ clear_button_stacked | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_singleton {{{ --> {% endraw %}
 {% capture simple_list_singleton %}<div id="myForm$$">
-    <div style="display: flex; align-items:center; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">
-{{ simple_list_singleton_source | replace: "#indent#", "        " }}
+{{ simple_list_singleton_source | replace: "█", "        " }}
         </div>
-        <div>
-{{ import_export_buttons_stacked | replace: "#indent#", "            " }}
-{{ clear_button_stacked  | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button  | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_list {{{ --> {% endraw %}
 {% capture schedule_list %}<div id="myForm$$">
-    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             schedule_list_source
 }}
         </div>
-        <div>
-{{ import_export_buttons | replace: "#indent#", "            " }}
-{{ clear_button | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
 {% capture schedule_table %}<div id="myForm$$">
-    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">
             <h2>Operating Hours:</h2>
-{{ schedule_table_source | replace: "#indent#", "            " }}
+{{ schedule_table_source | replace: "█", "            " }}
         </div>
-        <div>
-{{ import_export_buttons | replace: "#indent#", "            " }}
-{{ clear_button | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
 {% capture nested_schedule_table %}<div id="myForm$$">
-    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; min-width: max(100%, 450px)">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">
             <h2>🗓️ Periods:</h2>
             <div data-smark='{"type":"list","name":"periods","sortable":true}'>
@@ -439,7 +383,7 @@ endcapture %}
                       <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
                       <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
                     </p>
-{{ schedule_table_source | replace: "#indent#", "                    " }}
+{{ schedule_table_source | replace: "█", "                    " }}
                 </fieldset>
             </div>
             <button
@@ -447,17 +391,14 @@ endcapture %}
                 style="float: right; margin-top: 1em"
             >➕ Add Period</button>
         </div>
-        <div>
-{{ import_export_buttons | replace: "#indent#", "            " }}
-{{ clear_button | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
-
-
-
 
 
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
@@ -468,6 +409,31 @@ endcapture %}
     width: 10em;
 }
 {% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+
+
+{% raw %} <!-- basic_form_with_local_import_export {{{ --> {% endraw %}
+{% capture basic_form_with_local_import_export %}<div id="myForm$$">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
+        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
+            nested_forms_source
+            | replace: "█", "            "
+}}
+            <p>
+                <!-- Import and export triggers with implicit context -->
+{{ load_save_buttons | replace: "█", "                " }}
+        </p>
+        </div>
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
+        </div>
+{{ json_editor | replace: "█", "        " }}
+    </div>
+</div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -541,7 +507,7 @@ endcapture %}
         </table>
     </div>
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; width: 100%">
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -550,13 +516,13 @@ endcapture %}
 {% capture deeply_nested_forms %}<div id="myForm$$">
     <div style="display: grid; grid-gap: 1em;">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">
-{{ deeply_nested_forms_source | replace: "#indent#", "            " }}
+{{ deeply_nested_forms_source | replace: "█", "            " }}
         </div>
-        <div>
-{{ import_export_buttons | replace: "#indent#", "            " }}
-{{ clear_button | replace: "#indent#", "            " }}
+        <div style="display: flex; justify-content: space-evenly">
+{{ import_export_buttons | replace: "█", "            " }}
+{{ clear_button | replace: "█", "            " }}
         </div>
-{{ json_editor | replace: "#indent#", "        " }}
+{{ json_editor | replace: "█", "        " }}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

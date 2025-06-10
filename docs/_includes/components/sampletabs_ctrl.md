@@ -81,4 +81,10 @@ document.addEventListener('DOMContentLoaded', function() {
   background-color: #e9ecef;
   border-bottom: none;
 }
+
+button[data-smark] {
+    padding: .5em;
+    margin: 0px 4px;
+}
+
 </style>
