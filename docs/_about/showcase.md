@@ -55,13 +55,14 @@ capabilities of SmarkForm.
 ## Basic Form
 
 To begin with the basics, we'll start with a simple form that includes a few
-input fields (left side) and a textarea (right side) which will allow you to:
+input fields and a textarea (at the bottom) which will allow you to:
 
-  * <li data-bullet="➡️ ">Export the form to the textarea in JSON format.
-    <li data-bullet="❌ ">Clear the form whenever you want.
-  * Edit the JSON as you like.
-    <li data-bullet="⬅️ "> Import the JSON back to the form.</li>
-  * See the effects of your changes.
+  * <li data-bullet="⌨️">Type some data in the form.</li>
+    <li data-bullet="⬇️">Export it to the textarea in JSON format.</li>
+    <li data-bullet="❌">Clear the form whenever you want.</li>
+    <li data-bullet="📝">Edit the JSON as you like.</li>
+    <li data-bullet="⬆️"> Import the JSON back to the form.</li>
+    <li data-bullet="👀">See the effects of your changes.</li>
 
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
@@ -132,9 +133,9 @@ the name "safety".
 instance, all the examples in this chapter are entirely built with SmarkForm
 itself.
 
-  * If you look closer to the HTML source, you will see that `⬅️` and `➡️`
-    buttons only imports/exports a subform called *demo* from/to a *textarea*
-    field called *editor*.
+  * If you look closer to the HTML source, you will see that `⬆️ Import` and
+    `⬇️ Export` buttons buttons only imports/exports a subform called *demo*
+     from/to a *textarea* field called *editor*.
 
   * ...And if you look at its *JS* tab you'll see that **there is no JavaScript
     code except for the SmarkForm instantiation** itself.
@@ -146,7 +147,7 @@ itself.
 >   * In fact, 🚀  **the whole *SmarkForm* form is a field of the type *form***
 >     that imports/exports JSON and 🚀  **they can be nested up to any depth**.
 >
->   * The `➡️ `, `⬅️ ` and `❌` buttons are *trigger* components that perform
+>   * The `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons are *trigger* components that perform
 >     specialized actions (look at the *HTML* tab to see how...). 🚀 **No
 >     JavaScript wiring is needed**.
 
@@ -377,13 +378,13 @@ Exporting and importing data in SmarkForm cannot be easier.
 
 Let's recall the example in the [Nested forms](#nested-forms) section.
 
-There we learnt that the `➡️ ` and `⬅️ ` buttons used in all examples in this
-chapter are just *triggers* that call the *export* and *import* actions on a
-subform called "demo" **(their *context*)**:
+There we learnt that the `⬇️ Export` and `⬆️ Import` buttons used in all
+examples in this chapter are just *triggers* that call the *export* and
+*import* actions on a subform called "demo" **(their *context*)**:
 
   * 
-    <li data-bullet="➡️ ">Exports the "demo" subform to the "editor" textarea <b>(its target)</b>.</li>
-    <li data-bullet="⬅️ ">Imports the JSON data from the "editor" textarea to the "demo" subform <b>(its target)</b>.</li>
+    <li data-bullet="⬇️ ">Exports the "demo" subform to the "editor" textarea <b>(its target)</b>.</li>
+    <li data-bullet="⬆️ ">Imports the JSON data from the "editor" textarea to the "demo" subform <b>(its target)</b>.</li>
 
 {: .hint :}
 > This is a very handy use case for the *import* and *export* actions because
@@ -408,8 +409,8 @@ show the whole form in a `window.alert(...)` dialog and import a new JSON data
 to the whole form throught a `window.prompt(...)`.
 
   * The JavaScript code in this example is, in fact, a little more complex than
-    it would be needed just to avoid interfering the '➡️ ' and ' ⬅️ ' that also
-    rely on the *export* and *import* actions.
+    it would be needed just to avoid interfering the `⬇️ Export` and
+    `⬆️ Import` that also rely on the *export* and *import* actions.
 
   * And, as a **BONUS**, the *BeforeAction_import* event handler performs a soft
     *export* to prefill the prompt dialog (so that you can edit the JSON data
@@ -429,8 +430,8 @@ to the whole form throught a `window.prompt(...)`.
 
   * Repeat all the same trials as in the beforementioned [Nested
     forms](#nested-forms)' example (with identical results).
-  * Use the `💾` button to export the whole form to a `window.alert(...)` dialog.
-  * Use the `📂` button to import new JSON data to the whole form.
+  * Use the `💾 Save` button to export the whole form to a `window.alert(...)` dialog.
+  * Use the `📂 Load` button to import new JSON data to the whole form.
 
 
 
@@ -455,19 +456,19 @@ to the whole form throught a `window.prompt(...)`.
 
 Let's return to the previous examples...
 
-There we had the `💾` and `📂` buttons opeating on the whole form because it is
+There we had the `💾 Save` and `📂 Load` buttons opeating on the whole form because it is
 their *natural* context.
 
-In the case of the `➡️ `, `⬅️ ` and `❌` buttons, they have their context
-explicitly set by the option of the same name.
+In the case of the `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons, they have
+their context explicitly set by the option of the same name.
 
 {: .hint :}
-> We could have wanted to make the `💾` and `📂` buttons to operate only on the
-> *demo* subform.
+> We could have wanted to make the `💾 Save` and `📂 Load` buttons to operate
+> only on the *demo* subform.
 > 
 > To do so, we could have set their *context* property to "demo", in which case
-> then they would have exported/imported the same data than `➡️ ` and `⬅️ `
-> buttons.
+> then they would have exported/imported the same data than `⬇️ Export` and
+> `⬆️ Import` buttons, respectively.
 >
 > Or, alternatively, 🚀 we could just have placed them inside of that context
 > **in the markup** as it is shown in the following example:
@@ -504,17 +505,17 @@ with the JSON export of the form when the *target* is not provided.
 %}
 
 👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
-they only import/export the "demo" subform) just like `➡️` and `⬅️` ones do but
-without explicitly specifying their context. **They just receive their context
-by the place they are in the form**.
+they only import/export the "demo" subform) just like `⬇️ Export` and
+`⬆️ Import` ones do but without explicitly specifying their context. **They
+just receive their context by the place they are in the form**.
 
 
 {: .info :}
 > For the sake of simplicity (except for the following example) from now on,
 > having we already demonstrated how to work with *import* and *export*
-> actions' events, we'll stick to the layout of the very first example (`➡️ `,
-> `⬅️` and `❌` buttons targetting the "editor" textarea) that doesn't need any
-> additional JS code.
+> actions' events, we'll stick to the layout of the very first example 
+> (`⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons targetting the "editor"
+> textarea) that doesn't need any additional JS code.
 
 
 👌 If you want a clearer example on how the context affect the triggers, take a
