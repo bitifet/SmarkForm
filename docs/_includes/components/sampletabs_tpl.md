@@ -9,6 +9,7 @@ Accepted arguments:
   * jsSource
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
+  * showEditor: Whether to show the editor textarea or not (defaults to false)
 
 {% endcomment %}
 
@@ -35,6 +36,77 @@ Accepted arguments:
 
 
 {% assign current_tab = include.selected | default: "html" %}
+{% assign showEditor = include.showEditor | default: false %}
+
+
+{% comment %} ### ################# ### {% endcomment %}
+{% comment %} ### Layout components ### {% endcomment %}
+{% comment %} ### ################# ### {% endcomment %}
+
+{% raw %} <!-- default_buttons {{{ --> {% endraw %}
+{% capture default_buttons
+%}█<span><button
+█    data-smark='{"action":"export","context":"demo","target":"../editor"}'
+█    title="Export 'demo' subform to 'editor' textarea"
+█    >⬇️ Export</button></span>
+█<span><button
+█    data-smark='{"action":"import","context":"demo","target":"../editor"}'
+█    title="Import 'editor' textarea contents to 'demo' subform"
+█    >⬆️ Import</button></span>
+█<span><button
+█    data-smark='{"action":"clear", "context":"demo"}'
+█    title="Clear the whole form"
+█    >❌ Clear</button></span>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- json_editor {{{ --> {% endraw %}
+{% capture json_editor
+%}█<textarea
+█    cols="20"
+█    placeholder="JSON data viewer / editor"
+█    data-smark='{"name":"editor","type":"input"}'
+█    style="resize: none; align-self: stretch; min-height: 8em; flex-grow: 1;"
+█></textarea>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% comment %} ### ######################## ### {% endcomment %}
+{% comment %} ### Render (optional) editor ### {% endcomment %}
+{% comment %} ### ######################## ### {% endcomment %}
+
+{% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
+{% capture full_htmlSource %}<div id="myForm$$">
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
+        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
+            htmlSource
+            | replace: "█", "            "
+        }}    </div>
+        <div style="display: flex; justify-content: space-evenly">
+{{ default_buttons | replace: "█", "            " }}
+{{ include.extraButtons | replace: "█", "            " }}
+        </div>
+{{ json_editor | replace: "█", "        " }}
+    </div>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+
+{% comment %}
+
+    🚧 FIXME!!
+    👉 Why the fuck the editor gets unconditionally rendered!!!
+  
+{% endcomment %}
+
+{% if showEditor == true %}
+{% assign preview_source = full_htmlSource %}
+{% else %}
+{% assign preview_source = htmlSource %}
+{% endif %}
+
 
 {% comment %} ### ##################### ### {% endcomment %}
 {% comment %} ### Capture rendered HTML ### {% endcomment %}
@@ -45,7 +117,6 @@ Accepted arguments:
 {{ htmlSource }}
 ```
 {% endcapture %}
-
 
 
 {% comment %} ### #################### ### {% endcomment %}
@@ -120,7 +191,7 @@ Accepted arguments:
   {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-preview {{active_class}}">
     <div class="smarkform_example" style="overflow: auto">
-      {{ htmlSource | replace: "$$", formId | raw }}
+      {{ preview_source | replace: "$$", formId | raw }}
     </div>
   </div>
   {% if notes != '-' %}

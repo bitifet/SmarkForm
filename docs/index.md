@@ -4,51 +4,6 @@ layout: home
 nav_order: 0
 permalink: /
 
-generic_sample_css: |
-    button:disabled {
-        opacity: .5;
-    }
-
-simple_list_example: |
-    <div id="myForm$$">
-        <p>
-            <label data-smark>Name:</label>
-            <input data-smark='{"name":"name"}' placeholder='Full name' type="text">
-        </p>
-        <p>
-            <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-            <label data-smark>Phones:</label>
-            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
-                <li>
-                    <label data-smark>📞 </label>
-                    <input placeholder='+34...' type="tel" data-smark>
-                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-                </li>
-            </ul>
-        </p>
-        <button data-smark='{"action":"export"}'>⬇️  Export</button>
-    </div>
-
-simple_list_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm$$"));
-    myForm.on("AfterAction_export", ({data})=>{
-        window.alert(JSON.stringify(data, null, 4));
-    });
-
-simple_list_example_notes: |
-    👉 This is a simple form to show the power of *SmarkForm*.
-
-    👉 Tinker with it, modifying data, adding or removing items from the
-       *Phones* list, sorting its items by dragging them and then clicking the
-       `Export` button to see resulting data.
-    
-    👉 Note that it enforces default behaviors, such as requiring a minimum of
-       one item and excluding empty list items during export. But it can be easily
-       changed, with properties like *min_items* and *exportEmpties*.
-
-    👉 Check the *JS* tab to see the little JS just to initialize it as a
-       *SmarkForm* and show you the data when exported.
-
 ---
 
 {% include components/sampletabs_ctrl.md %}
@@ -130,19 +85,68 @@ The following code snippet shows *SmarkForm* simplicity.
 👉 You will find similar examples working preview along this documentation.
 **Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
 
+
+
+
+{% capture generic_sample_css
+%}button:disabled {
+    opacity: .5;
+}{%
+endcapture %}
+
+{% capture simple_list_example
+%}<div id="myForm$$">
+    <p>
+        <label data-smark>Name:</label>
+        <input data-smark='{"name":"name"}' placeholder='Full name' type="text">
+    </p>
+    <p>
+        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
+        <label data-smark>Phones:</label>
+        <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
+            <li>
+                <label data-smark>📞 </label>
+                <input placeholder='+34...' type="tel" data-smark>
+                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+            </li>
+        </ul>
+    </p>
+</div>{%
+endcapture %}
+
+
+{% capture simple_list_example_notes %}
+  👉 This is a simple form to show the power of *SmarkForm*.
+
+  👉 Tinker with it, modifying data, adding or removing items from the
+     *Phones* list, sorting its items by dragging them and then clicking the
+     `Export` button to see resulting data.
+  
+  👉 Note that it enforces default behaviors, such as requiring a minimum of
+     one item and excluding empty list items during export. But it can be easily
+     changed, with properties like *min_items* and *exportEmpties*.
+
+  👉 Check the *JS* tab to see the little JS just to initialize it as a
+     *SmarkForm* and show you the data when exported.
+{%  endcapture %}
+
+
 {% include components/sampletabs_tpl.md
    formId="simple_list"
-   htmlSource=page.simple_list_example
-   jsSource=page.simple_list_example_js
-   cssSource=page.generic_sample_css
-   notes=page.simple_list_example_notes
+   htmlSource=simple_list_example
+   cssSource=generic_sample_css
+   notes=simple_list_example_notes
    selected="preview"
+   showEditor=true
 %}
 
+
 {: .hint :}
-> Also, explore our
-> [🔗 Complete Examples]({{ "resources/examples" | relative_url }})
-> to see SmarkForm capabilities at a glance!!
+> To minimize clutter, the `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons
+> implementation have been omitted from the source code, as they are common to
+> all examples and will be explained in detail in a
+> [🔗 later section]({{"about/showcase#nested-forms" | relative_url }}).
+
 
 
 ## Current Status
