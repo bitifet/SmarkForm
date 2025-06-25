@@ -349,25 +349,23 @@ actions:
 
 {% raw %} <!-- capture pets_list_example {{{ --> {% endraw %}
 {% capture pets_list_example %}<div id="myForm$$">
-    <div data-smark='{"type":"form","name":"personal_data"}'>
-        <b>Pets:</b>
-        <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
-            <li>
-                <select name='species' data-smark>
-                    <option value="cat">Cat</option>
-                    <option value="dog">Dog</option>
-                    <option value="hamster">Hamster</option>
-                    <option value="fish">Fish</option>
-                    <option value="bird">Bird</option>
-                    <option value="turtle">Turtle</option>
-                    <option value="turtle">Other</option>
-                </select>
-                <input name='name' placeholder="Name" data-smark>
-                <button data-smark='{"action":"removeItem"}' title="Remove Pet">❌</button>
-            </li>
-        </ul>
-        <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
-    </div>
+    <b>Pets:</b>
+    <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
+        <li>
+            <select name='species' data-smark>
+                <option value="cat">Cat</option>
+                <option value="dog">Dog</option>
+                <option value="hamster">Hamster</option>
+                <option value="fish">Fish</option>
+                <option value="bird">Bird</option>
+                <option value="turtle">Turtle</option>
+                <option value="turtle">Other</option>
+            </select>
+            <input name='name' placeholder="Name" data-smark>
+            <button data-smark='{"action":"removeItem"}' title="Remove Pet">❌</button>
+        </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

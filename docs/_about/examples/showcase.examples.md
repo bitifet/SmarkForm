@@ -100,8 +100,8 @@ endcapture %}
 {% raw %} <!-- nested_forms_source {{{ --> {% endraw %}
 {% capture nested_forms_source
 %}{{ basic_form_source }}
-█<label>Safety Features:</label>
 █<fieldset data-smark='{"name":"safety","type":"form"}'>
+█    <legend>Safety Features:</legend>
 █    <span>
 █        <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
 █    </span>
@@ -369,11 +369,11 @@ endcapture %}
             <h2>🗓️ Periods:</h2>
             <div data-smark='{"type":"list","name":"periods","sortable":true}'>
                 <fieldset style='margin-top: 1em'>
-                    <h3>Period
+                    <legend>Period
                         <span data-smark='{"action":"position"}'>N</span>
                         of
                         <span data-smark='{"action":"count"}'>M</span>
-                    </h3>
+                    </legend>
                     <button
                         data-smark='{"action":"removeItem","hotkey":"-"}'
                         title='Remove this period'
