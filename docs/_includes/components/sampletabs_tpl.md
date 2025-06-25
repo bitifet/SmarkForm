@@ -66,7 +66,7 @@ endcapture %}
 █    cols="20"
 █    placeholder="JSON data viewer / editor"
 █    data-smark='{"name":"editor","type":"input"}'
-█    style="resize: none; align-self: stretch; min-height: 8em; flex-grow: 1;"
+█    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"
 █></textarea>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

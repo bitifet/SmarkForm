@@ -82,7 +82,7 @@ The easiest way is using a CDN:
 
 {: .info}
 > Alternatively you can [use a local copy of
-> SmarkForm](#you-dont-need-a-form-tag) if you don't want to rely on external
+> SmarkForm](#using-your-own-copy-of-smarkform-library) if you don't want to rely on external
 > sources like a CDN.
 >
 > 👉 You can get and include SmarkForm in your code in [a lot of different

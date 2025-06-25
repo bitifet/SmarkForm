@@ -606,13 +606,9 @@ different value than "trigger".
 Every *SmarkForm* component have a *.find()* method that allows to navigate to
 other components throug their *relative path*.
 
-```javascript
-const form = new SmarkForm(
-    document.querySelector("#main-form")
-);
-```
 
 
+{% include_relative examples/core_concepts.examples.md option="components_paths" %}
 
 
 
