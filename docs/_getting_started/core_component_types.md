@@ -6,6 +6,8 @@ nav_order: 4
 
 ---
 
+{% include components/sampletabs_ctrl.md %}
+
 # Core Component Types
 
 Core component types are the backbone of *SmarkForm*:
@@ -80,7 +82,53 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
 
 **Example:**
 
-{% include_relative examples/core_component_types.examples.md option="input_example" %}
+
+{% raw %} <!-- input_example {{{ --> {% endraw %}
+{% capture input_example %}<div id="myForm$$">
+    <p>
+        <label data-smark>Name:</label>
+        <!-- Implicit (automatically inferred) component type: -->
+        <input type='text' name='name' data-smark>
+    </p>
+    <p>
+        <label data-smark>Surname:</label>
+        <!-- Explicitly specified component type: -->
+        <input type='text' name='surname' data-smark='{"type":"input"}'>
+    </p>
+    <p>
+        <label data-smark>User Name:</label>
+        <!-- Handy options-driven syntax:                                  -->
+        <!--   👉 type attribute ='text' is the default                    -->
+        <!--   👉 {"type":"input"} inferred by tag name and type attribute -->
+        <input data-smark='{"name":"user_name"}'>
+    </p>
+    <p>
+        <label data-smark>Phone:</label>
+        <!-- Explicit better than implicit:                                -->
+        <!--   👉 type='tel' is necessary here.                            -->
+        <!--   👉 {"type":"input"} may prevent an hypotetical future "tel" -->
+        <!--      component type from being inferred here.                 -->
+        <input type='tel' data-smark='{"type":"input","name":"phone"}'>
+    </p>
+    <p>
+        <label data-smark>Address:</label>
+        <!-- Non <input> fields:                                           -->
+        <textarea data-smark='{"type":"input","name":"address"}'></textarea>
+    </p>
+    <p>
+        <label data-smark>Email:</label>
+        <!-- Just another example:                                         -->
+        <input type='email' data-smark='{"type":"input","name":"email"}'>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="input_example"
+    htmlSource=input_example
+    showEditor=true
+%}
+
 
 
 #### The Singleton Pattern.
@@ -135,14 +183,53 @@ to specify any while *SmarkForm* component does.
 for the *clear* action since, otherwise, the whole form (its natural context)
 would be cleared.
 
-{% include_relative examples/core_component_types.examples.md option="no_singleton_example" %}
+
+
+{% raw %} <!-- no_singleton_example {{{ --> {% endraw %}
+{% capture no_singleton_example %}<div id="myForm$$">
+    <p>
+        <p>
+            <label data-smark>Pick a Color:</label>
+            <input type="color" name="color" data-smark>
+            <button data-smark='{"action":"clear","context":"color"}'>❌ Reset</button>
+        </p>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="no_singleton_example"
+    htmlSource=no_singleton_example
+    showEditor=true
+%}
+
 
 
 👉 Conversely, using the *Singleton Pattern*, not only the code looks clenaner
 but, also, **it could avoid future issues** in case of field name being changed
 (for instance after copying a block of code to reuse it somewhere else):
 
-{% include_relative examples/core_component_types.examples.md option="singleton_example" %}
+
+{% raw %} <!-- singleton_color_example {{{ --> {% endraw %}
+{% capture singleton_color_example %}<div id="myForm$$">
+    <p>
+        <p>
+            <label data-smark>Pick a Color:</label>
+            <span data-smark='{"type":"color", "name":"bgcolor"}'>
+                <input data-smark>
+                <button data-smark='{"action":"clear"}'>❌ Reset</button>
+            </span>
+        </p>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="singleton_example"
+    htmlSource=singleton_color_example
+    showEditor=true
+%}
+
 
 
 ### type: number and type: date
@@ -165,7 +252,25 @@ component type providding extra sanitation (when importing) and formatting
 
 **Example:**
 
-{% include_relative examples/core_component_types.examples.md option="number_and_date_example" %}
+
+{% raw %} <!-- number_and_date_example {{{ --> {% endraw %}
+{% capture number_and_date_example %}<div id="myForm$$">
+    <p>
+        <label data-smark>Price:</label>
+        <input data-smark='{"type":"number","name":"price"}'>
+    </p>
+    <p>
+        <label data-smark>Date:</label>
+        <input data-smark='{"type":"date","name":"date"}'>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="number_and_date_example"
+    htmlSource=number_and_date_example
+    showEditor=true
+%}
 
 
 
@@ -200,8 +305,26 @@ selected pure black (#000000) or simply overlooked the field altogether.
 
 **Example:**
 
-{% include_relative examples/core_component_types.examples.md option="color_example" %}
 
+{% raw %} <!-- color_example {{{ --> {% endraw %}
+{% capture color_example %}<div id="myForm$$">
+    <p>
+        <p>
+            <label data-smark>Pick a Color:</label>
+            <span data-smark='{"type":"color", "name":"bgcolor"}'>
+                <input data-smark>
+                <button data-smark='{"action":"clear"}'>❌ Reset</button>
+            </span>
+        </p>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="color_example"
+    htmlSource=color_example
+    showEditor=true
+%}
 
 
 <blockquote class="hint">
@@ -209,7 +332,39 @@ selected pure black (#000000) or simply overlooked the field altogether.
 
 <p><b>Example:</b></p>
 
-{% include_relative examples/core_component_types.examples.md option="clear_others_example" %}
+{% raw %} <!-- clear_others_example {{{ --> {% endraw %}
+{% capture clear_others_example %}<div id="myForm$$">
+    <p>
+        <p>
+            <label data-smark>A Color:</label>
+            <span data-smark='{"type":"color", "name":"color"}'>
+                <input data-smark>
+                <button data-smark='{"action":"clear"}'>❌ Reset</button>
+            </span>
+        </p>
+        <p>
+            <label data-smark>A Number:</label>
+            <span data-smark='{"type":"number", "name":"number"}'>
+                <input data-smark>
+                <button data-smark='{"action":"clear"}'>❌ Reset</button>
+            </span>
+        </p>
+        <p>
+            <label data-smark>A Date:</label>
+            <span data-smark='{"type":"date", "name":"date"}'>
+                <input data-smark>
+                <button data-smark='{"action":"clear"}'>❌ Reset</button>
+            </span>
+        </p>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="clear_others_example"
+    htmlSource=clear_others_example
+    showEditor=true
+%}
 
 </blockquote>
 
