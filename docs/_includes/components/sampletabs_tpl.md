@@ -143,6 +143,9 @@ endcapture %}
 
 
 
+
+
+
 {% comment %} ### ################################## ### {% endcomment %}
 {% comment %} ### Render tabbed layout with examples ### {% endcomment %}
 {% comment %} ### ################################## ### {% endcomment %}
@@ -151,6 +154,15 @@ endcapture %}
 {{ cssSource | raw }}
 </style>
 
+{% if htmlSource == default_htmlSource %}
+<div style="border: solid 3px yellow; padding: 0px 2em 1em 2em; border-radius: 0.5em;">
+    <h2>🚧  Missing Example 🚧</h2>
+    <p>This section is still under construction and this example is not yet available.</p>
+    <p style="opacity:.6">Example id: <b>{{ include.option }}</b>.</p>
+    <p>🙏 Thank you for your patience.</p>
+</div>
+
+{% else %}
 
 <div id="example{{ formId }}" class="tab-container">
   <a href="#example{{ formId }}" class="link-anchor" title="Link">🔗</a>
@@ -210,3 +222,5 @@ endcapture %}
     </script>
 {% endif %}
 </div>
+
+{% endif %}

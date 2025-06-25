@@ -874,8 +874,12 @@ Every *SmarkForm* component have a *.find()* method that allows to navigate to
 other components throug their *relative path*.
 
 
+{% include components/sampletabs_tpl.md
+    formId="components_paths"
+    htmlSource=null
+    showEditor=true
+%}
 
-{% include_relative examples/core_concepts.examples.md option="components_paths" %}
 
 
 
