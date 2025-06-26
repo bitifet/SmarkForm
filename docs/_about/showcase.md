@@ -45,6 +45,9 @@ capabilities of SmarkForm.
 * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Smart value coercion](#smart-value-coercion)
 * [Advanced UX Improvements](#advanced-ux-improvements)
+    * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
+    * [Hot Keys](#hot-keys)
+    * [Animations](#animations)
 * [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
@@ -617,12 +620,19 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 {: .warning :}
 > Section still under construction...
 
-Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enablement/disablement of controls and non-breaking unobtrusive keyboard navigation.
+Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation.
 
 {% include_relative
     examples/showcase.examples.md
     option="advanced_ux"
 %}
+
+### Auto enabling or disabling of actions
+
+### Hot Keys
+
+### Animations 
+
 
 
 ## Conclusion
