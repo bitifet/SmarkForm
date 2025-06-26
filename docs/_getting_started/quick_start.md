@@ -7,6 +7,7 @@ nav_order: 1
 ---
 
 {% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
@@ -117,9 +118,28 @@ Our complete layout may look as follows:
 Start by writing the form markup in plain HTML. For example, let's create a
 simple form like the following:
 
+{% raw %} <!-- html_source_legacy {{{ --> {% endraw %}
+{% capture html_source_legacy %}<div id="myForm$$">
+    <p>
+        <label for="nameField$$">Name:</label>
+        <input type="text" id="nameField$$" name="name">
+    </p>
+    <p>
+        <label for="emailField$$">Email:</label>
+        <input type="email" id="emailField$$" name="email">
+    </p>
+    <p>
+        <button>❌ Clear</button>
+        <button>💾 Submit</button>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-{% include_relative examples/simple_form.examples.md option="legacy" %}
-
+{% include components/sampletabs_tpl.md
+    formId="simple_legacy"
+    htmlSource=html_source_legacy
+    jsSource="-"
+%}
 
 {: .info}
 > You may notice that there is no `<form>` tag. Just a regular `<div>`, in this
@@ -135,8 +155,11 @@ simple form like the following:
 In your JavaScript tag, create a new instance of the SmarkForm class and pass
 the DOM node of the form container as parameter:
 
-{% include_relative examples/simple_form.examples.md option="initialized" %}
-
+{% include components/sampletabs_tpl.md
+    formId="simple_initialized"
+    htmlSource=html_source_legacy
+    selected="js"
+%}
 
 Ok: Nothing exciting happended by now...
 
@@ -155,7 +178,28 @@ attribute.
 
 Let's mark all fields, buttons and labels... with it:
 
-{% include_relative examples/simple_form.examples.md option="minimal" %}
+{% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
+{% capture html_source_enhanced %}<div id="myForm$$">
+    <p>
+        <label data-smark>Name:</label>
+        <input type="text" name="name" data-smark>
+    </p>
+    <p>
+        <label data-smark>Email:</label>
+        <input type="email" name="email" data-smark>
+    </p>
+    <p>
+        <button data-smark='{"action":"clear"}'>❌ Clear</button>
+        <button data-smark='{"action":"export"}'>💾 Submit</button>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="enhanced_simple_form"
+    htmlSource=html_source_enhanced
+%}
+
 
 
 Now, if you go to the *Preview* tab and fill some data in, you can then hit de
@@ -183,7 +227,21 @@ the *export* action but **we haven't told it what to do** with that data.
 To do so, we only need to listen the proper event:
 
 
-{% include_relative examples/simple_form.examples.md option="withExport" %}
+{% raw %} <!-- form_export_example_js {{{ --> {% endraw %}
+{% capture form_export_example_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+/* Show exported data in an alert() window */
+myForm.on("AfterAction_export", ({data})=>{
+    window.alert(JSON.stringify(data, null, 4));
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="enhanced_withExport"
+    htmlSource=html_source_enhanced
+    jsSource=form_export_example_js
+    selected="js"
+%}
 
 
 Now go to the *Preview* tab, fill some data in and try clicking the `💾 Submit`
@@ -207,7 +265,44 @@ Luckily, we can listen to the *BeforeAction_clear* event and gently ask users fo
 
 Let's see a simple example using a *window.confirm()* dialog:
 
-{% include_relative examples/simple_form.examples.md option="withConfirmCancel" %}
+{% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
+{% capture html_source_enhanced %}<div id="myForm$$">
+    <p>
+        <label data-smark>Name:</label>
+        <input type="text" name="name" data-smark>
+    </p>
+    <p>
+        <label data-smark>Email:</label>
+        <input type="email" name="email" data-smark>
+    </p>
+    <p>
+        <button data-smark='{"action":"clear"}'>❌ Clear</button>
+        <button data-smark='{"action":"export"}'>💾 Submit</button>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- confirm_cancel_example_js {{{ --> {% endraw %}
+{% capture confirm_cancel_example_js: %}{{ form_export_example_js }}
+/* Ask for confirmation unless form is already empty: */
+myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+    if (
+        ! await context.isEmpty()     /* Form is not empty */
+        && ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
+    ) {
+        /* Prevent default (clear form) behaviour: */
+        preventDefault();
+    };
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="enhanced_confirmCancel"
+    htmlSource=html_source_enhanced
+    jsSource=confirm_cancel_example_js
+    selected="js"
+%}
 
 
 {: .hint}
@@ -240,17 +335,127 @@ additional capabilities of the library:
 
 **List of telephones:**
 
-{% include_relative examples/lists.examples.md option="phones" %}
+{% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
+{% capture html_phone_list %}<div id="myForm$$">
+<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
+    <div>
+    <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
+    <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
+    <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+    </div>
+</div>
+<p>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark='{"action":"export"}'>💾 Submit</button>
+</p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture advanced_sample_css {{{ --> {% endraw %}
+{% capture advanced_sample_css %}/* Emphasize disabled buttons */
+button:disabled {
+    opacity: .5;
+}
+
+/* Reveal hotkey hints */
+button[data-hotkey] {
+    position: relative;
+    overflow-x: display;
+}
+button[data-hotkey]::before {
+    content: attr(data-hotkey);
+
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 10;
+
+    background-color: #ffd;
+    outline: 1px solid lightyellow;
+    padding: 1px 4px;
+    border-radius: 4px;
+    font-weight: bold;
+
+    transform: scale(1.4) translate(.1em, .1em);
+
+}{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture phone_list_form_example_notes {{{ --> {% endraw %}
+{%capture phone_list_form_example_notes %}👉 Limited to a **maximum of 6** numbers.
+
+👉 Notice trigger butons **get propperly disabled** when limits reached.
+
+👉 They are also excluded from keyboard navigation for better navigation with `tab` / `shift`+`tab`.
+
+👉 Even thought they can be triggered from keyboard through configured (`Ctrl`-`+` and `Ctrl-`-`) hot keys.
+
+👉 ...Notice what happen when you hit the `ctrl` key while editing...
+
+👉 Also note that, when you click the `💾 Submit` button **only non empty items get exported**.
+
+👉 ...You can prevent this behaviour by setting the *exportEmpties* property to *true*.
+
+👉 Change items order by just dragging and dropping them.
+
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="telephone_list"
+    htmlSource=html_phone_list
+    cssSource=advanced_sample_css
+    jsSource=confirm_cancel_example_js
+    notes=phone_list_form_example_notes
+%}
+
 
 
 **Simple schedule:**
 
-{% include_relative examples/lists.examples.md option="schedule" %}
+{% raw %} <!-- capture html_schedule_list {{{ --> {% endraw %}
+{% capture html_schedule_list %}<div id="myForm$$">
+<p>
+    <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
+        <span role='img' aria-label='Remove interval'>➖</span>
+    </button>
+    <button data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}' title='More intrevals'>
+        <span role='img' aria-label='Add new interval'>➕</span>
+    </button>
+    <label>Schedule:</label>
+    <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+        <span>
+            <input data-smark type='time' name='start'/>
+            to
+            <input data-smark type='time' name='end'/>
+        </span>
+        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+    </span>
+</p>
+<p>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark='{"action":"export"}'>💾 Submit</button>
+</p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="schedule_list"
+    htmlSource=html_schedule_list
+    cssSource="-"
+    jsSource=confirm_cancel_example_js
+%}
 
 
 {: .hint :}
-> Don't miss the [Examples]({{ "resources/examples" | relative_url }}) section
-> for more...
+> Now that you understand the basics maybe a good opportunity to revisit the
+> [Showcase]({{"about/showcase" | relative_url }}) section and examine the
+> source code of those examples.
+> 
+> 🚀 Also don't miss the [Examples]({{ "resources/examples" | relative_url }})
+> section for more complete and realistic use cases...
 
 
 ## Final notes
