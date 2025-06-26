@@ -80,7 +80,6 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     {% include components/sampletabs_tpl.md
         formId="enhanced_simple_form"
         htmlSource=html_source_enhanced
-        selected="js"
     %}
 
 {% elsif include.option == "withExport" %}
