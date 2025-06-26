@@ -6,6 +6,16 @@ nav_order: 2
 
 ---
 
+{% include components/sampletabs_ctrl.md %}
+
+{% raw %} <!-- capture generic_sample_css {{{ --> {% endraw %}
+{% capture generic_sample_css
+%}/* Make disabled buttons more evident to the eye */
+button:disabled {
+    opacity: .5;
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 # {{ page.title }}
 
@@ -76,7 +86,7 @@ list. This template is mandatory.
 
 👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
 inputs can be created over any HTML tag1️⃣  **except for actual HTML form
-elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
+field elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 
 
 ### List items
@@ -99,8 +109,38 @@ specified the *data-smark* attribute or not).
 
 **Example:**
 
-{% include_relative examples/type_list.examples.md option="simple_list" %}
 
+{% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
+{% capture simple_list_example %}<div id="myForm$$">
+    <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
+        <fieldset style="text-align:right"><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
+            <p><label>User name:</label><input name='name' type='text' data-smark/></p>
+            <p><label>Phone number:</label><input name='phone' type='tel' data-smark/></p>
+            <p><label>Email:</label><input name='email' type='text' data-smark/></p>
+            <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+        </fieldset>
+    </section>
+    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture simple_list_example_notes {{{ --> {% endraw %}
+{% capture simple_list_example_notes %}
+👉 With *exportEmpties* option set to false (default), lists won't export empty
+   items.
+
+👉 ...unless there is no enough non empty items to satisfy *minItems* option,
+    in which case up tu *minItems* empty items will be exported.
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list"
+    htmlSource=simple_list_example
+    cssSource=generic_sample_css
+    notes=simple_list_example_notes
+    showEditor=true
+%}
 
 
 ### Scalar item types
@@ -119,7 +159,22 @@ following example.
 
 **Example:**
 
-{% include_relative examples/type_list.examples.md option="scalar_list" %}
+{% raw %} <!-- capture scalar_list_example {{{ --> {% endraw %}
+{% capture scalar_list_example %}<div id="myForm$$">
+    <section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
+        <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
+    </section>
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+    <button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- 5️⃣  -->
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="scalar_list"
+    htmlSource=scalar_list_example
+    cssSource=generic_sample_css
+    showEditor=true
+%}
 
 {: .hint}
 > Notice that in this example, likewise the *fieldset* in the former, the
@@ -143,7 +198,25 @@ inside.
 
 **Example:**
 
-{% include_relative examples/type_list.examples.md option="singleton_list" %}
+{% raw %} <!-- capture singleton_list_example {{{ --> {% endraw %}
+{% capture singleton_list_example %}<div id="myForm$$">
+    <ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
+        <li>
+            <input placeholder='Phone Number' type="tel" data-smark>
+            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+        </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="singleton_list"
+    htmlSource=singleton_list_example
+    cssSource=generic_sample_css
+    showEditor=true
+%}
+
 
 {: .info}
 > In this example we have omitted the `type: "list"` bit and still works because
@@ -165,8 +238,41 @@ say, up to three phone numbers and up to three emails.
 
 **Example:**
 
-{% include_relative examples/type_list.examples.md option="nesting_list" %}
+{% raw %} <!-- capture nesting_list_example {{{ --> {% endraw %}
+{% capture nesting_list_example %}<div id="myForm$$">
+    <section data-smark='{"type":"list","name":"users"}'>
+        <fieldset>
+            <legend>User</legend>
+            <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+            <input name='name' placeholder='User name' type='text' data-smark/>
+            <fieldset>
+                <legend>
+                    <span
+                        data-smark='{"action":"addItem","context":"phones"}'
+                        title='Add Phone'
+                        style="background: lightgray; padding:.3em; border-radius:3px; margin: .4em"
+                    >➕</span>
+                    Phone Numbers
+                </legend>
+                <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
+                    <li>
+                        <input type="tel" data-smark>
+                        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+                    </li>
+                </ul>
+            </fieldset>
+        </fieldset>
+    </section>
+    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕ Add user</button>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% include components/sampletabs_tpl.md
+    formId="nesting_list"
+    htmlSource=nesting_list_example
+    cssSource=generic_sample_css
+    showEditor=true
+%}
 
 {: .hint}
 > As you can see here, phones and emails lists share almost the same layout.
@@ -360,7 +466,55 @@ action, plus the following properties:
 
 **Example:**
 
-{% include_relative examples/type_list.examples.md option="simple_list_animation_additem" %}
+
+{% raw %} <!-- capture simple_list_animation_example {{{ --> {% endraw %}
+{% capture simple_list_animation_example %}<div id="myForm$$">
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
+    <ul data-smark='{"name": "phones", "of": "input", "min_items": 0}'>
+        <li>
+            <input placeholder='Phone Number' type="tel" data-smark>
+            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+        </li>
+    </ul>
+    <!-- This is just a regular SmarkForm list. -->
+    <!-- See CSS and JS code to see what changes... -->
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture simple_list_animation_example_additem_css {{{ --> {% endraw %}
+{% capture simple_list_animation_example_additem_css %}.animated_item {
+    transform: scaleY(0) translateY(-50%);
+}
+.animated_item.ongoing {
+    transform: default;
+    transition:
+        transform 150ms ease-in
+    ;
+}{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture simple_list_animation_example_additem_js {{{ --> {% endraw %}
+{% capture simple_list_animation_example_additem_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+myForm.onAll("addItem", function({
+    newItemTarget, /* the targetNode of the future new item */
+    onRendered
+}) {
+    newItemTarget.classList.add("animated_item");
+    onRendered(async (newItem)=>{
+        await delay(1); /* Allow for default .animated_item style to be applied */
+        newItem.targetNode.classList.add("ongoing");
+        /* Here we could have used newItemTarget instead */
+    });
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_animation_additem"
+    htmlSource=simple_list_animation_example
+    cssSource=simple_list_animation_example_additem_css
+    jsSource=simple_list_animation_example_additem_js
+%}
 
 
 In this example, we add the CSS class `ingoing` to the new item before it is
@@ -394,8 +548,52 @@ action, plus the following properties:
 Following example extends the previous one adding a collapsing effect every
 time an item is removed from the list.
 
-{% include_relative examples/type_list.examples.md option="simple_list_animation_complete" %}
+{% raw %} <!-- capture simple_list_animation_example_complete_css {{{ --> {% endraw %}
+{% capture simple_list_animation_example_complete_css %}.animated_item {
+    transform: scaleY(0) translateY(-50%);
+    /* Add transition for removal effect */
+    transition:
+        transform 150ms ease-out
+    ;
+}
+.animated_item.ongoing {
+    transform: scaleY(1) translateY(0%);
+    transition:
+        transform 150ms ease-in
+    ;
+}{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- capture simple_list_animation_example_complete_js {{{ --> {% endraw %}
+{% capture simple_list_animation_example_complete_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+myForm.onAll("addItem", function({
+    newItemTarget, /* the targetNode of the future new item */
+    onRendered
+}) {
+    newItemTarget.classList.add("animated_item");
+    onRendered(async (newItem)=>{
+        await delay(1); /* Allow for default .animated_item style to be applied */
+        newItem.targetNode.classList.add("ongoing");
+        /* Here we could have used newItemTarget instead */
+    });
+});
+myForm.onAll("removeItem", async function({
+    oldItemTarget,
+    onRemmoved
+}) {
+    oldItemTarget.classList.remove("ongoing");
+    /* Await for transition to be finished before item removal: */
+    await delay(150);
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_animation_complete"
+    htmlSource=simple_list_animation_example
+    cssSource=simple_list_animation_example_complete_css
+    jsSource=simple_list_animation_example_complete_js
+%}
 
 
 In this example, we add the `outgoing` CSS class to the item being removed so
