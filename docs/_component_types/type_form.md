@@ -4,88 +4,6 @@ layout: chapter
 permalink: /component_types/type_form
 nav_order: 1
 
-simple_form_example: |
-    <div id='myForm$$'>
-    <p>
-        <label for='id'>Id:</label>
-        <input data-smark type='text' name='id' />
-    </p>
-    <hr />
-    <p><b>Personal Data:</b></p>
-    <div data-smark='{"type":"form","name":"personalData"}'>
-        <p>
-            <label for='name'>Name:</label>
-            <input data-smark type='text' name='name' placheolder='Family name'/>
-        </p>
-        <p>
-            <label for='surname'>Surname:</label>
-            <input data-smark type='text' name='surname' />
-        </p>
-        <p>
-            <label for='address'>Address:</label>
-            <input data-smark type='text' name='address' />
-        </p>
-    </div>
-    <hr />
-    <p><b>Business Data:</b></p>
-    <div data-smark='{"type":"form","name":"businessData"}'>
-        <p>
-            <label for='name'>Company Name:</label>
-            <input data-smark type='text' name='name' placheolder='Company Name'/>
-        </p>
-        <p>
-            <label for='address'>Address:</label>
-            <input data-smark type='text' name='address' />
-        </p>
-    </div>
-    <hr />
-    <button data-smark='{"action": "import"}'>Edit JSON</button>
-    <button data-smark='{"action": "clear"}'>Clear Data</button>
-    <button data-smark='{"action": "export"}'>Show JSON</button>
-    </div>
-
-simple_form_example_js: |
-    const myForm = new SmarkForm(document.getElementById("myForm$$"));
-    /* Export action: */
-    myForm.on("AfterAction_export", function ({data}) {
-        window.alert (JSON.stringify(data, null, 4));
-    });
-    /*Import action: */ 
-    myForm.on("BeforeAction_import", async function (ev) {
-        const prevData = JSON.stringify(await myForm.export());
-        const newData = window.prompt("Data to import", prevData);
-        try {
-            ev.data = JSON.parse(newData);
-        } catch (err) {
-            ev.preventDefault();
-            window.alert("Invalid data!");
-        };
-    });
-
-
-simple_form_example_notes: |
-
-    👉 Play* with `Edit JSON`, `Clear Data` and `Show JSON` butons.
-
-    👉 Check JS tab to see how easy is capturing or injecting data from/to the
-       form (or any inner form field).
-
-    👉 The outer form doesn't need the "data-smark" attribute having it is the
-       the one we passed to the SmarkForm constructor.
-    
-    👉 Notice that the *clear* action just works out of the box.
-       
-    ℹ️  In text fields the "name" attribute is naturally taken as field name.
-    
-    ℹ️  In the case of nested form, having <div> tags cannot have a "name"
-       attribute, it is provided as a data-smark object property (which is always
-       valid).
-
-    🚀 This is a simple showcase form. You can extend it with any valid
-       *SmarkForm* field.
-                  
-
-
 ---
 
 {% include components/sampletabs_ctrl.md %}
@@ -135,13 +53,65 @@ any number of *SmarkForm* fields, **including nested forms**.
 
 Following example shows a simple *SmarkForm* form with two nested forms:
 
+{% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
+{% capture simple_form_example %}
+<div id='myForm$$'>
+    <p>
+        <label for='id'>Id:</label>
+        <input data-smark type='text' name='id' />
+    </p>
+    <fieldset data-smark='{"type":"form","name":"personalData"}'>
+    <legend>Personal Data:</legend>
+        <p>
+            <label for='name'>Name:</label>
+            <input data-smark type='text' name='name' placheolder='Family name'/>
+        </p>
+        <p>
+            <label for='surname'>Surname:</label>
+            <input data-smark type='text' name='surname' />
+        </p>
+        <p>
+            <label for='address'>Address:</label>
+            <input data-smark type='text' name='address' />
+        </p>
+    </fieldset>
+    <fieldset data-smark='{"type":"form","name":"businessData"}'>
+    <legend>Business Data:</legend>
+        <p>
+            <label for='name'>Company Name:</label>
+            <input data-smark type='text' name='name' placheolder='Company Name'/>
+        </p>
+        <p>
+            <label for='address'>Address:</label>
+            <input data-smark type='text' name='address' />
+        </p>
+    </fieldset>
+</div>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture simple_form_example_notes {{{ --> {% endraw %}
+{% capture simple_form_example_notes %}
+👉 The outer form doesn't need the "data-smark" attribute having it is the
+   the one we passed to the SmarkForm constructor.
+
+ℹ️  In text fields the "name" attribute is naturally taken as field name.
+
+ℹ️  In the case of nested form, having `<fieldset>` tags cannot have a *name*
+   attribute, it is provided as a *data-smark* object property (which is always
+   valid).
+
+🚀 This is a simple showcase form. You can extend it with any valid
+   *SmarkForm* field.
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
    formId="simple_form"
-   htmlSource=page.simple_form_example
-   jsSource=page.simple_form_example_js
-   notes=page.simple_form_example_notes
+   htmlSource=simple_form_example
+   notes=simple_form_example_notes
+   showEditor=true
 %}
-
 
 
 
