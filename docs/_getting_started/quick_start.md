@@ -27,12 +27,17 @@ A SmarkForm form can be created by following a few simple steps:
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Quick Start](#quick-start)
+* [Basic setup](#basic-setup)
     * [Create an HTML document](#create-an-html-document)
     * [Include SmarkForm Library](#include-smarkform-library)
     * [Create a simple HTML form](#create-a-simple-html-form)
     * [Initialize the Form](#initialize-the-form)
-    * [Do the magic](#do-the-magic)
+* [Do the magic](#do-the-magic)
+    * [Actions and Triggers](#actions-and-triggers)
+    * [Exporting data](#exporting-data)
+    * [Importing data](#importing-data)
+    * [Form traversing](#form-traversing)
+    * [Context and Target](#context-and-target)
 * [Go further...](#go-further)
 * [Customize your form](#customize-your-form)
 * [Final notes](#final-notes)
@@ -48,7 +53,7 @@ A SmarkForm form can be created by following a few simple steps:
 </details>
 
 
-## Quick Start
+## Basic setup
 
 ### Create an HTML document
 
@@ -161,10 +166,12 @@ the DOM node of the form container as parameter:
     selected="js"
 %}
 
-Ok: Nothing exciting happended by now...
+Ok: Nothing exciting happended by now.
+
+👉 **But keep reading...** 🚀
 
 
-### Do the magic
+## Do the magic
 
 By default, *SmarkForm* ignores all DOM elements in its container unless they
 are marked with the [data-smark
@@ -176,7 +183,7 @@ attribute.
 > components or functionalities of the page and you don't want them to be taken
 > as part of the form.
 
-Let's mark all fields, buttons and labels... with it:
+Let's mark all fields, buttons and labels... by adding a *data-smark* attribute :
 
 {% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
 {% capture html_source_enhanced %}<div id="myForm$$">
@@ -205,6 +212,10 @@ Let's mark all fields, buttons and labels... with it:
 Now, if you go to the *Preview* tab and fill some data in, you can then hit de
 `❌ Clear` button and see that, **it already works!!** 🎉
 
+Okay, we actually assigned a specific value to the Clear button's *data-smark*
+attribute: `{"action":"clear"}`. But that's all we did!! (We will get back to
+this in the [next section](#actions-and-triggers)).
+
 Also notice that the *for* attribute of all `<label>`s had been removed and they
 still work (if you click on them, corresponging fields get focus anyway).
 
@@ -215,44 +226,401 @@ still work (if you click on them, corresponging fields get focus anyway).
 > attribute are *SmarkForm*
 > [components](/getting_started/core_concepts#components) of a certain type.
 
-*SmarkForm* components' type [is often
-implicit](/getting_started/core_concepts#syntax), either by their tag name (like the `<label>` elements), their *type* attribute in case of `<input>`s or by the presence of the *action* property that tell us they are action
+👉 *SmarkForm* components' type [is often
+implicit](/getting_started/core_concepts#syntax), either by their tag name
+(like the `<label>` elements), their *type* attribute in case of `<input>`s or
+by the presence of the *action* property that tell us they are action
 [triggers](getting_started/core_component_types#type-trigger).
 
 
 
-👉 The `💾 Submit` button is working too. It's just we configured it to trigger
-the *export* action but **we haven't told it what to do** with that data.
+### Actions and Triggers
 
-To do so, we only need to listen the proper event:
+SmarkForm components with the *action* property defined in their *data-smark*
+object, are called "triggers" and they serve to invoke so called "actions"
+typically when the trigger is clicked or pressed.
 
+For example, the `❌ Clear` button has the *action* property set to `"clear"`, so
+when it is clicked, it will trigger the *clear* action.
+
+However actions must be applied to some component. **That component is called the *context* of the action**.
+
+The context of actions called by triggers is, by default, their *natural context* unless other component is specified through the *context* property.
+
+{: .info :}
+> The *natural context* of a trigger is the innermost of its *SmarkForm*
+> component ancestors **that implements that action** (Which is the whole form
+> in the previous example since the *form component type* implements the
+> *clear* action).
+> 
+>  📌 In fact, the *clear* action is implemented by all *SmarkForm* component
+>  types.
+
+👉 That's why the `❌ Clear` button cleared the whole form in the previous example.
+
+{: .info :}
+> The *context* of a *trigger* can be specified either as a relative path from its
+> *natural conext* or as an absolute path from the form root.
+
+Let's add more `❌ Clear` buttons to clear each specific field:
+
+{% raw %} <!-- html_source_enhanced_with_clears {{{ --> {% endraw %}
+{% capture html_source_enhanced_with_clears %}<div id="myForm$$">
+    <p>
+        <label data-smark>Name:</label>
+        <input type="text" name="name" data-smark>
+        <button data-smark='{"action":"clear", "context":"name"}'>❌ Clear</button>
+    </p>
+    <p>
+        <label data-smark>Email:</label>
+        <input type="email" name="email" data-smark>
+        <button data-smark='{"action":"clear", "context":"email"}'>❌ Clear</button>
+    </p>
+    <p>
+        <button data-smark='{"action":"clear"}'>❌ Clear</button>
+        <button data-smark='{"action":"export"}'>💾 Submit</button>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="enhanced_simple_form_with_clears"
+    htmlSource=html_source_enhanced_with_clears
+%}
+
+
+Since we cannot insert the trigger buttons inside the `<input>` fields (unless
+using a
+[singleton]({{ "/getting_started/core_concepts#singletons" | relative_url }}))
+we had to explicitly set the *context* of those triggers by the *relative path* from their *natural context*.
+
+👉 Now you can either clear the whole form by clicking the `❌ Clear` button or just clear each field individually by clicking the `❌ Clear` button next to each field.
+
+
+
+### Exporting data
+
+Although it may seem the opposite, the `💾 Submit` button is already working.
+It's just we configured it to trigger the *export* action but **we haven't told
+it what to do** with exported data.
+
+👉 This can be done by **listening to the *AfterAction_export* event**.
+
+The export of the form comes as JSON in the *data* property of the *event* object.
+
+**Example:**
 
 {% raw %} <!-- form_export_example_js {{{ --> {% endraw %}
-{% capture form_export_example_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+{% capture form_export_example_js
+%}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+
 /* Show exported data in an alert() window */
-myForm.on("AfterAction_export", ({data})=>{
-    window.alert(JSON.stringify(data, null, 4));
+myForm.on("AfterAction_export", (event)=>{
+    window.alert(JSON.stringify(event.data, null, 4));
 });{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- capture form_export_example_notes {{{ --> {% endraw %}
+{%capture form_export_example_notes
+%}👉 Alternatively, most event handlers can be provided at once through the [options
+object](#the-options-object).
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="enhanced_withExport"
     htmlSource=html_source_enhanced
     jsSource=form_export_example_js
+    notes=form_export_example_notes
     selected="js"
 %}
 
 
-Now go to the *Preview* tab, fill some data in and try clicking the `💾 Submit`
-button.
-
-
-{: .info :}
-> Alternatively, most event handlers can be provided at once through the
-> [options object](#the-options-object).
+👉 Now go to the *Preview* tab, fill some data in and try clicking the `💾
+Submit` button.
 
 Everything works now. 🎉
+
+
+{: .hint :}
+> All *SmarkForm* actions are just special methods that can be called from
+> properly placed *trigger* components avoiding all the burden of manually
+> wiring user interactions.
+> 
+> This enormously simplifies form controllers' implementation, but they can
+> also be be programatically invoked whenever required.
+> 
+> ```javascript
+> const {data} = await myForm.export();
+> ```
+
+
+### Importing data
+
+To load (JSON) data into the form, we use the *import* action which works in a
+similar way to the *export* action but in the opposite direction.
+
+{% raw %} <!-- html_source_enhanced_withImport {{{ --> {% endraw %}
+{% capture html_source_enhanced_withImport %}<div id="myForm$$">
+    <p>
+        <label data-smark>Name:</label>
+        <input type="text" name="name" data-smark>
+    </p>
+    <p>
+        <label data-smark>Email:</label>
+        <input type="email" name="email" data-smark>
+    </p>
+    <p>
+        <button data-smark='{"action":"import"}'>📂 Import</button>
+        <button data-smark='{"action":"clear"}'>❌ Clear</button>
+        <button data-smark='{"action":"export"}'>💾 Submit</button>
+    </p>
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% raw %} <!-- form_export_example_withImport_js {{{ --> {% endraw %}
+{% capture form_export_example_withImport_js
+%}{{ form_export_example_js }}
+
+/* Import data from prompt() window */
+myForm.on("BeforeAction_import", async (ev)=>{
+    /* Read new value: */
+    const json_template = '{"name": "", "email": ""}'; /* Little help to edit */
+    let data = window.prompt("Edit JSON data", json_template);
+    if (data === null) return void ev.preventDefault(); /* User cancelled */
+    /* Parse as JSON, warn if invalid and set */
+    try {
+        data = JSON.parse(data); ev.data = data; /* ← Set the new value */
+    } catch(err) {
+        alert(err.message); /* ← Show error message */
+        ev.preventDefault();
+    };
+});{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="enhanced_withImport"
+    htmlSource=html_source_enhanced_withImport
+    jsSource=form_export_example_withImport_js
+    selected="js"
+%}
+
+
+
+### Form traversing
+
+As we already stated, *actions* can be triggered both by interacting with
+trigger components or by calling them programatically like in the following
+example we already saw before:
+
+
+```javascript
+const {data} = await myForm.export();
+```
+
+And the *SmarkForm* root form is just a field of the type "form".
+
+What if we want to interact directly with a specific part of the form?
+
+Here the `.find()` method of every *SmarkForm* field comes to the rescue:
+
+It takes a single argument with a "path-like" route to the field we want to access.
+
+This path can be either relative (to the current field) or absolute (to the form root).
+
+{% raw %} <!-- capture traversing_form_example {{{ --> {% endraw %}
+{% capture traversing_form_example %}
+<div id='myForm$$'>
+    <p>
+        <label for='id'>Id:</label>
+        <input data-smark type='text' name='id' />
+    </p>
+    <fieldset data-smark='{"type":"form","name":"personalData"}'>
+    <legend>Personal Data:</legend>
+        <p>
+            <label for='name'>Name:</label>
+            <input data-smark type='text' name='name' placheolder='Family name'/>
+        </p>
+        <p>
+            <label for='surname'>Surname:</label>
+            <input data-smark type='text' name='surname' />
+        </p>
+        <p>
+            <label for='address'>Address:</label>
+            <input data-smark type='text' name='address' />
+        </p>
+    </fieldset>
+    <fieldset data-smark='{"type":"form","name":"businessData"}'>
+    <legend>Business Data:</legend>
+        <p>
+            <label for='name'>Company Name:</label>
+            <input data-smark type='text' name='name' placheolder='Company Name'/>
+        </p>
+        <p>
+            <label for='address'>Address:</label>
+            <input data-smark type='text' name='address' />
+        </p>
+    </fieldset>
+</div>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
+{% capture traversing_form_example_js
+%}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+/* Set business name */
+myForm.onRendered(async ()=>{
+    myForm.find("/businessData").import({data: {name: "Bitifet"}});
+     /* 👉 Since we don't provide the address field, it will be cleared */
+});{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="traversing_example"
+    htmlSource=traversing_form_example
+    jsSource=traversing_form_example_js
+    selected="js"
+%}
+
+
+
+### Context and Target
+
+As [we've seen](#actions-and-triggers), when we trigger an action, we
+(implicitly or explicitly) provide a *context* to it.
+
+👉 The *context* of an action **is the component over which the action will be
+applied**.
+
+→  When called from a trigger component, the *context* is determined by the
+property of the same name in the *data-smark* object of the trigger if
+provided, or by the *natural context* of the trigger otherwise.
+
+→  When called programatically, the *context* is simply the component over
+which the *action* method is called.
+
+
+👉 In addition to the *context* many actions also accept another parameter
+called "target".
+
+→  **The *target* is the *context*'s child over which the action will be
+applied.**
+
+→ ...it is determined in a similar way to the *context*: If the direct parent
+of the trigger component does not implement the action (and hence cannot be the
+*context*), then the greandparent is checked in turn and, if so, the direct
+parent is picked as the *target*. And so on until the *context* is found.
+
+{: .hint :}
+> This may seem confusing at first but, as you get used to it, you get the
+> superpower of connecting actions to their context and target just by placing
+> them in the propper place in the DOM tree.
+> 
+> 📌 And, whenever it is not possible, you only need to specify the relative
+> (or absolute) path in the *context* and/or *target* properties of the
+> *data-smark* object of the trigger component..
+
+
+**Example 1:** Lists
+
+For instance, the *addItem* and *removeItem* actions are implemented only by
+the *list* component type so, if you put a *removeItem* trigger inside a list
+item, it will remove that item from the list. **No wiring code needed!**
+
+{% capture simple_list_example
+%}<div id="myForm$$">
+    <p>
+        <label data-smark>Phones:</label>
+        <ul data-smark='{"name": "phones", "of": "input"}'>
+            <li>
+                <label data-smark>📞 </label>
+                <input placeholder='+34...' type="tel" data-smark>
+                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+            </li>
+        </ul>
+        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
+    </p>
+</div>{%
+endcapture %}
+
+
+{% capture simple_list_example_notes %}
+👉 This example uses the *singleton* pattern which is out of the scope of this
+   section. But, by now, you can just think of the list items as *SmarkForm*
+   field components of the type specified in the *of* property of the list
+   component.
+{%  endcapture %}
+
+
+{% include components/sampletabs_tpl.md
+   formId="simple_list"
+   htmlSource=simple_list_example
+   notes=simple_list_example_notes
+%}
+
+{: .info :}
+> In the case of the *addItem* action, it will add a new item to the list after
+> the *SmarkForm* field in which is placed (or before if the
+> [*position* option]({{ "/component_types/type_list#async-additem-action" | relative_url }})
+> is set to "before").
+> 
+> I won't repeat the previous example now, but you will find several examples
+> of this across this manual.
+
+
+
+**Example 2:** Import and Export targets
+
+Even all *SmarkForm* field compoenent types implement both the *export* and
+*import* actions, so that the *target* will always default to null, we can
+explicitly set the target in *import* and/or *export* triggers:
+
+{: .info :}
+> 👉 When the *import* action is called with an explicit *target*, it will call
+> the export action of the target and import the data to its context.
+> 
+> 👉 Similarly, when the *export* action is called with an explicit *target*,
+> it will call the import action of the target with the exported data.
+
+🚀 This means we can clone list items or import/export whole subforms into
+other fields (no matter their type -since they will do their best to import
+received data-) **with no single line of JS code** like in the following
+example:
+
+{% raw %} <!-- html_source_simplified {{{ --> {% endraw %}
+{% capture html_source_simplified
+%}
+█<div id="myForm$$">
+█    <p>
+█        <label data-smark>Name:</label>
+█        <input type="text" name="name" data-smark>
+█    </p>
+█    <p>
+█        <label data-smark>Email:</label>
+█        <input type="email" name="email" data-smark>
+█    </p>
+█</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simplified"
+    htmlSource=html_source_simplified
+    showEditor=true
+    showEditorSource=true
+%}
+
+⚡ Check the JS tab to see there is no import/export JS code at all and the
+preview tab to see how it works perfectly.
+
+{: .hint :}
+>  This trick is used in almost all the examples in the rest of this manual to
+>  provide the export/edit/import facilities except for that, unlike here, the
+>  surrounding layout is hidden for the sake of clarity.
+
 
 
 ## Go further...
@@ -265,25 +633,10 @@ Luckily, we can listen to the *BeforeAction_clear* event and gently ask users fo
 
 Let's see a simple example using a *window.confirm()* dialog:
 
-{% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
-{% capture html_source_enhanced %}<div id="myForm$$">
-    <p>
-        <label data-smark>Name:</label>
-        <input type="text" name="name" data-smark>
-    </p>
-    <p>
-        <label data-smark>Email:</label>
-        <input type="email" name="email" data-smark>
-    </p>
-    <p>
-        <button data-smark='{"action":"clear"}'>❌ Clear</button>
-        <button data-smark='{"action":"export"}'>💾 Submit</button>
-    </p>
-</div>{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
 {% raw %} <!-- confirm_cancel_example_js {{{ --> {% endraw %}
-{% capture confirm_cancel_example_js: %}{{ form_export_example_js }}
+{% capture confirm_cancel_example_js
+%}{{ form_export_example_withImport_js }}
+
 /* Ask for confirmation unless form is already empty: */
 myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     if (
@@ -299,17 +652,18 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
 
 {% include components/sampletabs_tpl.md
     formId="enhanced_confirmCancel"
-    htmlSource=html_source_enhanced
+    htmlSource=html_source_enhanced_withImport
     jsSource=confirm_cancel_example_js
     selected="js"
 %}
 
 
-{: .hint}
-> Notice that, if you go to the *Preview* tab and click the `❌ Clear` button
-> nothing seems to happen (since the form is already empty so there is no need
-> to bother the user asking for confirmation) while, if you fill some data in
-> and then click again, it will effectively ask before clearing the data.
+👉 Notice that now, if you go to the *Preview* tab and click the `❌ Clear`
+button before introducing any data nothing seems to happen (since the form is
+already empty).
+
+🚀 But, if you fill some data in and then click again, it will effectively ask
+before clearing the data.
 
 ## Customize your form
 
@@ -385,7 +739,7 @@ button[data-hotkey]::before {
 {% raw %} <!-- capture phone_list_form_example_notes {{{ --> {% endraw %}
 {%capture phone_list_form_example_notes %}👉 Limited to a **maximum of 6** numbers.
 
-👉 Notice trigger butons **get propperly disabled** when limits reached.
+👉 Notice trigger butons **get properly disabled** when limits reached.
 
 👉 They are also excluded from keyboard navigation for better navigation with `tab` / `shift`+`tab`.
 
@@ -542,7 +896,7 @@ constructor.
 
 {: .hint :}
 > The only differrence here is that *AfterAction_xxx* and *BeforeAction_xxx*
-> events **can be attached to any *SmarkForm* field**.
+> events **can be locally attached to any *SmarkForm* field**.
 > 
 > Handlers passed through that options are attached to the *root form*.
 

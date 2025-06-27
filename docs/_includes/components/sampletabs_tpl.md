@@ -10,6 +10,7 @@ Accepted arguments:
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
   * showEditor: Whether to show the editor textarea or not (defaults to false)
+  * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
 
 {% endcomment %}
 
@@ -37,6 +38,7 @@ Accepted arguments:
 
 {% assign current_tab = include.selected | default: "html" %}
 {% assign showEditor = include.showEditor | default: false %}
+{% assign showEditorSource = include.showEditorSource | default: false %}
 
 
 {% comment %} ### ################# ### {% endcomment %}
@@ -82,10 +84,10 @@ endcapture %}
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
             htmlSource
             | replace: "█", "            "
-        }}    </div>
+        }}
+        </div>
         <div style="display: flex; justify-content: space-evenly">
 {{ default_buttons | replace: "█", "            " }}
-{{ include.extraButtons | replace: "█", "            " }}
         </div>
 {{ json_editor | replace: "█", "        " }}
     </div>
@@ -108,13 +110,21 @@ endcapture %}
 {% endif %}
 
 
+
+
+
 {% comment %} ### ##################### ### {% endcomment %}
 {% comment %} ### Capture rendered HTML ### {% endcomment %}
 {% comment %} ### ##################### ### {% endcomment %}
 
 {% capture rendered_htmlSource | raw %}
 ```html
-{{ htmlSource }}
+{% if showEditorSource
+%}{{
+    full_htmlSource
+}}{% else %}{{
+    htmlSource
+}}{% endif %}
 ```
 {% endcapture %}
 
