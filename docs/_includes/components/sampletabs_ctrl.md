@@ -73,6 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
   background-color: #fff;
 }
 
+.tab-content pre.highlight {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
 .tab-active {
   display: block;
 }
