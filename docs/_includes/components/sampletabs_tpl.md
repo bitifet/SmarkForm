@@ -6,11 +6,14 @@ Accepted arguments:
   * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
   * htmlSource (mandatory)
   * cssSource
-  * jsSource
+  * jsHead: JS initialization code.
+  * jsHidden: JS source already discussed (not shown in the "JS Source" tab).
+  * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
+  * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
 
 {% endcomment %}
 
@@ -21,17 +24,20 @@ Accepted arguments:
 
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
-{% assign default_jsSource = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+{% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+{% assign default_jsHidden = '-' %}
+{% assign default_jsSource = '-' %}
 {% assign default_notes = '-' %}
 
 
-{% assign formId = include.formId | default: "FIXME" %}
 {% assign formId = include.formId | default: "FIXME" %}
 {% assign formId = "-" | append: formId %}
 
 
 {% assign htmlSource = include.htmlSource | default: default_htmlSource %}
 {% assign cssSource = include.cssSource | default: default_cssSource %}
+{% assign jsHead = include.jsHead | default: default_jsHead %}
+{% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
 
@@ -39,6 +45,7 @@ Accepted arguments:
 {% assign current_tab = include.selected | default: "html" %}
 {% assign showEditor = include.showEditor | default: false %}
 {% assign showEditorSource = include.showEditorSource | default: false %}
+{% assign addLoadSaveButtons = include.addLoadSaveButtons | default: false %}
 
 
 {% comment %} ### ################# ### {% endcomment %}
@@ -73,6 +80,19 @@ endcapture %}
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- load_save_buttons {{{ --> {% endraw %}
+{% capture load_save_buttons
+%}█<button
+█    data-smark='{"action":"export"}'
+█    title="Export the whole form as JSON (see JS tab)"
+█    >💾 Save</button>
+█<button
+█    data-smark='{"action":"import"}'
+█    title="Import the whole form as JSON (see JS tab)"
+█    >📂 Load</button>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 {% comment %} ### ######################## ### {% endcomment %}
 {% comment %} ### Render (optional) editor ### {% endcomment %}
@@ -82,18 +102,33 @@ endcapture %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
         <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
-            htmlSource
-            | replace: "█", "            "
-        }}
-        </div>
+htmlSource | replace: "█", "            "
+}}        </div>
         <div style="display: flex; justify-content: space-evenly">
-{{ default_buttons | replace: "█", "            " }}
-        </div>
-{{ json_editor | replace: "█", "        " }}
+{{ default_buttons | replace: "█", "            "
+}}        </div>
+{{
+    json_editor | replace: "█", "        "
+}}{%
+    if addLoadSaveButtons==true
+%}
+        <div style="display: flex; justify-content: space-evenly">
+{{ load_save_buttons | replace: "█", "            " }}
+        </div>{%
+endif
+%}
     </div>
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- partial_htmlSource {{{ --> {% endraw %}
+{% capture partial_htmlSource %}<div id="myForm$$">
+{{
+    htmlSource
+    | replace: "█", "    "
+}}
+</div>{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% comment %}
@@ -106,7 +141,7 @@ endcapture %}
 {% if showEditor == true %}
 {% assign preview_source = full_htmlSource %}
 {% else %}
-{% assign preview_source = htmlSource %}
+{% assign preview_source = partial_htmlSource %}
 {% endif %}
 
 
@@ -123,7 +158,7 @@ endcapture %}
 %}{{
     full_htmlSource
 }}{% else %}{{
-    htmlSource
+    partial_htmlSource
 }}{% endif %}
 ```
 {% endcapture %}
@@ -135,22 +170,38 @@ endcapture %}
 
 {% capture rendered_cssSource | raw %}
 ```css
-{{ cssSource }}
+{{ cssSource | replace: " !important", "" }}
 ```
 {% endcapture %}
-
+{% comment %}
+    👉 We use !important in some css snippets to avoid Jekyll layout's rules
+       precedence in the preview tab.
+       But those examples would work in a real page outside of Jekyll so we
+       hide it in the source window.
+{% endcomment %}
 
 
 {% comment %} ### ################### ### {% endcomment %}
 {% comment %} ### Capture rendered JS ### {% endcomment %}
 {% comment %} ### ################### ### {% endcomment %}
 
+{% if jsHead != '-' or jsSource != '-' %}
 {% capture rendered_jsSource %}
 ```javascript
-{{ jsSource }}
+{% if jsHead != '-'
+%}{{ jsHead }}{%
+endif %}{% if jsHidden != '-'
+%}
+/* ... (Code already discussed) ... */
+{% endif
+%}{% if jsSource != '-' %}{{
+    jsSource
+}}{% endif %}
 ```
 {% endcapture %}
-
+{% else %}
+{% assign rendered_jsSource = '' %}
+{% endif %}
 
 
 
@@ -161,7 +212,7 @@ endcapture %}
 {% comment %} ### ################################## ### {% endcomment %}
 
 <style>
-{{ cssSource | raw }}
+{{ cssSource | replace: "$$", formId | raw }}
 </style>
 
 {% if htmlSource == default_htmlSource %}
@@ -171,9 +222,7 @@ endcapture %}
     <p style="opacity:.6">Example id: <b>{{ include.option }}</b>.</p>
     <p>🙏 Thank you for your patience.</p>
 </div>
-
 {% else %}
-
 <div id="example{{ formId }}" class="tab-container">
   <a href="#example{{ formId }}" class="link-anchor" title="Link">🔗</a>
   <div class="tab-labels">
@@ -183,7 +232,7 @@ endcapture %}
         {% if current_tab == "css" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
         <div class="tab-label {{active_class}}" title="CSS Source">🎨 CSS</div>
     {% endif %}
-    {% if jsSource != '-' %}
+    {% if jsHead != '-' or jsSource != '-' %}
         {% if current_tab == "js" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
         <div class="tab-label {{active_class}}" title="JS Source">⚙️  JS</div>
     {% endif %}
@@ -204,7 +253,7 @@ endcapture %}
           {{ rendered_cssSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
-  {% if jsSource != '-' %}
+  {% if jsHead != '-' or jsSource != '-' %}
       {% if current_tab == "js" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
       <div class="tab-content tab-content-js {{active_class}}">
           {{ rendered_jsSource | replace: "$$", "" | markdownify }}
@@ -224,13 +273,21 @@ endcapture %}
   {% endif %}
 </div>
 <div>
-{% if jsSource != '-' %}
+{% if jsHead != '-' or jsHidden != '-' or jsSource != '-' %}
     <script>
         (function() {
-            {{ jsSource | replace: "$$", formId }}
+            {% if jsHead != '-' %}
+{{ jsHead  | replace: "$$", formId }}
+            {% endif %}
+            {% if jsHidden != '-' %}
+{{ jsHidden  | replace: "$$", formId }}
+            {% endif %}
+            {% if jsSource != '-' %}
+{{ jsSource | replace: "$$", formId }}
+            {% endif %}
         })();
     </script>
 {% endif %}
 </div>
-
 {% endif %}
+

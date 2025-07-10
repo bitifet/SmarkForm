@@ -6,7 +6,9 @@ permalink: /
 
 ---
 
-{% include components/sampletabs_ctrl.md %}
+{% include components/sampletabs_ctrl.md
+   noShowHint=true
+%}
 
 <style>
 .SmarkForm-Hero {

@@ -7,13 +7,12 @@ nav_order: 1
 ---
 
 {% include links.md %}
-{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
 A SmarkForm form can be created by following a few simple steps:
 
-{: .hint}
+{: .info :}
 > This section is meant to be educational. If you are eager to get your hands
 > dirty, 🏁 go straight to the
 > [Examples]({{ "resources/examples" | relative_url }}) section, download the
@@ -39,6 +38,9 @@ A SmarkForm form can be created by following a few simple steps:
     * [Form traversing](#form-traversing)
     * [Context and Target](#context-and-target)
 * [Go further...](#go-further)
+    * [Event handling](#event-handling)
+    * [Hot Keys](#hot-keys)
+    * [Animated and sortable lists](#animated-and-sortable-lists)
 * [Customize your form](#customize-your-form)
 * [Final notes](#final-notes)
     * [Boilerplate file](#boilerplate-file)
@@ -52,6 +54,7 @@ A SmarkForm form can be created by following a few simple steps:
 
 </details>
 
+{% include components/sampletabs_ctrl.md %}
 
 ## Basic setup
 
@@ -258,10 +261,6 @@ The context of actions called by triggers is, by default, their *natural context
 
 👉 That's why the `❌ Clear` button cleared the whole form in the previous example.
 
-{: .info :}
-> The *context* of a *trigger* can be specified either as a relative path from its
-> *natural conext* or as an absolute path from the form root.
-
 Let's add more `❌ Clear` buttons to clear each specific field:
 
 {% raw %} <!-- html_source_enhanced_with_clears {{{ --> {% endraw %}
@@ -292,28 +291,47 @@ Let's add more `❌ Clear` buttons to clear each specific field:
 Since we cannot insert the trigger buttons inside the `<input>` fields (unless
 using a
 [singleton]({{ "/getting_started/core_concepts#singletons" | relative_url }}))
-we had to explicitly set the *context* of those triggers by the *relative path* from their *natural context*.
+we had to explicitly set the *context* of those triggers by the *relative path*
+from their *natural context*.
 
-👉 Now you can either clear the whole form by clicking the `❌ Clear` button or just clear each field individually by clicking the `❌ Clear` button next to each field.
+{: .info :}
+> The *context* of a *trigger* can be specified either as a relative path from its
+> *natural conext* or as an absolute path from the form root.
+
+👉 Now you can either clear the whole form by clicking the `❌ Clear` button or
+just clear each field individually by clicking the `❌ Clear` button next to
+each field.
 
 
 
 ### Exporting data
 
-Although it may seem the opposite, the `💾 Submit` button is already working.
-It's just we configured it to trigger the *export* action but **we haven't told
-it what to do** with exported data.
+Although it may seem the opposite, the `💾 Submit` button in the previous
+example is already working. It's just we set it to trigger the *export* action
+but **we haven't told it what to do** with exported data.
 
-👉 This can be done by **listening to the *AfterAction_export* event**.
+👉 This can be done by **listening to the *AfterAction_export* event**. See
+[Event handling](#event-handling) below...
 
 The export of the form comes as JSON in the *data* property of the *event* object.
+
+{: .hint :}
+> Alternatively, as we will explore in the [Context and
+> Target](#context-and-target) section later, we could have just set the
+> "target" property pointing to to another object since all actions can be
+> applied to any component as their context.
+> 
+> But, having we want to export the whole form, we'd probably prefer to listen
+> the export event and validate and/or bring the data somewhere else.
+
+In the following example we listen to the *AfterAction_export* event and show the exported data in an alert window:
+
 
 **Example:**
 
 {% raw %} <!-- form_export_example_js {{{ --> {% endraw %}
 {% capture form_export_example_js
-%}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-
+%}
 /* Show exported data in an alert() window */
 myForm.on("AfterAction_export", (event)=>{
     window.alert(JSON.stringify(event.data, null, 4));
@@ -381,9 +399,7 @@ similar way to the *export* action but in the opposite direction.
 
 {% raw %} <!-- form_export_example_withImport_js {{{ --> {% endraw %}
 {% capture form_export_example_withImport_js
-%}{{ form_export_example_js }}
-
-/* Import data from prompt() window */
+%}/* Import data from prompt() window */
 myForm.on("BeforeAction_import", async (ev)=>{
     /* Read new value: */
     const json_template = '{"name": "", "email": ""}'; /* Little help to edit */
@@ -404,6 +420,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="enhanced_withImport"
     htmlSource=html_source_enhanced_withImport
+    jsHidden=form_export_example_js 
     jsSource=form_export_example_withImport_js
     selected="js"
 %}
@@ -470,8 +487,7 @@ This path can be either relative (to the current field) or absolute (to the form
 
 {% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
 {% capture traversing_form_example_js
-%}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-/* Set business name */
+%}/* Set business name */
 myForm.onRendered(async ()=>{
     myForm.find("/businessData").import({data: {name: "Bitifet"}});
      /* 👉 Since we don't provide the address field, it will be cleared */
@@ -547,6 +563,20 @@ item, it will remove that item from the list. **No wiring code needed!**
 </div>{%
 endcapture %}
 
+{% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
+{% capture simple_list_js
+%}
+
+/* Nothing to se here...
+
+   removeItem triggers(s) are inside the list items so both their context and
+   targeet are propperly set just by it's placement in the SmarkForm tree.
+
+   👉 See the "Notes" tab for more details...
+
+*/{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture simple_list_example_notes %}
 👉 This example uses the *singleton* pattern which is out of the scope of this
@@ -559,6 +589,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
    formId="simple_list"
    htmlSource=simple_list_example
+   jsSource=simple_list_js
    notes=simple_list_example_notes
 %}
 
@@ -625,18 +656,72 @@ preview tab to see how it works perfectly.
 
 ## Go further...
 
+
+
+
+### Event handling
+
+We've already seen how to listen to the *AfterAction_export* and
+*BeforeAction_import* events to handle the exported data and to provide the
+data to be imported, respectively.
+
+{: .info :}
+> Every *SmarkForm* action triggers *BeforeAction_<action_name>* and
+> *AfterAction_<action_name>* events respectively before and after the action
+> is executed.
+>
+> Their event handlers receive an *event* object providing at least the
+> *action* name, *preventDefault* and *stopPropagation* methods, and
+> references to the *origin* (the trigger component that invoked the action)
+> and, if applicable, the *context* and *target* components.
+
+
+Let's say we want to prevent accidentally clearing the form with the `❌ Clear`
+button.
+
 However, if it were a larger form, we might not feel so comfortable with the
 `❌ Clear` button ("clear" action trigger) clearing everything in case of an
 accidental click.
 
-Luckily, we can listen to the *BeforeAction_clear* event and gently ask users for confirmation before they lose all their work.
+Listening to the *BeforeAction_clear* event we can ask the user for
+confirmation and prevent the action if they don't confirm.
 
-Let's see a simple example using a *window.confirm()* dialog:
+**Example:**
 
-{% raw %} <!-- confirm_cancel_example_js {{{ --> {% endraw %}
-{% capture confirm_cancel_example_js
-%}{{ form_export_example_withImport_js }}
+{% raw %} <!-- simple_confirm_cancel_example_js {{{ --> {% endraw %}
+{% capture simple_confirm_cancel_example_js
+%}/* Ask for confirmation unless form is already empty: */
+myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+    if (
+        ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
+    ) {
+        /* Prevent default (clear form) behaviour: */
+        preventDefault();
+    };
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
+
+{% assign simple_confirm_cancel_example_hidden_js=form_export_example_js | append: form_export_example_withImport_js %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="enhanced_confirmCancel"
+    htmlSource=html_source_enhanced_withImport
+    jsHidden=simple_confirm_cancel_example_hidden_js
+    jsSource=simple_confirm_cancel_example_js
+    selected="js"
+%}
+
+{: .hint : }
+> If you want to take it a step further, you can also check if the form is
+> already empty before asking for confirmation, so that it only asks when there
+> is data to clear.
+
+
+{% raw %} <!-- confirm_cancel_example_with_confirm_js {{{ --> {% endraw %}
+{% capture confirm_cancel_example_with_confirm_js
+%}
 /* Ask for confirmation unless form is already empty: */
 myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     if (
@@ -651,11 +736,14 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
 
 
 {% include components/sampletabs_tpl.md
-    formId="enhanced_confirmCancel"
+    formId="enhanced_confirmCancel_non_empty"
     htmlSource=html_source_enhanced_withImport
-    jsSource=confirm_cancel_example_js
+    jsHidden=simple_confirm_cancel_example_hidden_js
+    jsSource=confirm_cancel_example_with_confirm_js
     selected="js"
 %}
+
+
 
 
 👉 Notice that now, if you go to the *Preview* tab and click the `❌ Clear`
@@ -664,6 +752,17 @@ already empty).
 
 🚀 But, if you fill some data in and then click again, it will effectively ask
 before clearing the data.
+
+
+
+
+### Hot Keys
+
+
+### Animated and sortable lists
+
+
+
 
 ## Customize your form
 
@@ -810,6 +909,7 @@ button[data-hotkey]::before {
 > 
 > 🚀 Also don't miss the [Examples]({{ "resources/examples" | relative_url }})
 > section for more complete and realistic use cases...
+
 
 
 ## Final notes

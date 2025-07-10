@@ -1,4 +1,29 @@
 {% include links.md %}
+
+{% assign noShowHint = include.noShowHint | default: false %}
+
+{% if noShowHint == false %}
+
+{: .hint :}
+> Every example in this section comes with many of the following tabs:
+> 
+>   * <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
+>   * <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
+>   * <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
+>   * <li data-bullet="👁️"><b>Preview:</b> This is where you can see the code in action.</li>
+>   * <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
+> 
+> ✨ Additionally, in the **Preview** tab, yow will find handy buttons:
+>   * `⬇️ Export` to export the form data to the *JSON data viewer/editor*.
+>   * `⬆️ Import` to import data into the form from the *JSON data viewer/editor*.
+>   * `❌ Clear` to reset the form to its initial state.
+
+{% endif %}
+
+
+{% if sampletabs_ctrl_already_loaded != true %}
+{% assign sampletabs_ctrl_already_loaded = true %}
+
 <script src="{{ smarkform_umd_dld_link }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -92,4 +117,21 @@ button[data-smark] {
     margin: 0px 4px;
 }
 
+ 
+/* Reset Jekyll styles for the preview tab */
+#main-content .tab-content.tab-content-preview ul > li::before {
+  position: initial;
+  margin-left: initial;
+  color: initial;
+  content: "";
+}
+#main-content .tab-content-preview li {
+    list-style-type: initial;
+}
+
+
 </style>
+
+{% endif %}
+
+

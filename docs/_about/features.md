@@ -11,7 +11,7 @@ nav_order: 3
 
 <br />
 <div class="chaptertoc toplevel">
-<p>A web form must:</p>
+<p>A web form must be:</p>
 
   {{ "
 <!-- vim-markdown-toc GitLab -->

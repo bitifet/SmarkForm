@@ -6,22 +6,22 @@ nav_order: 2
 
 ---
 
-
 # {{ page.title }}
 
 
 This section provides a series of working examples to demonstrate the
-capabilities of SmarkForm.
+capabilities of *SmarkForm* without diving into code details.
 
-{: .info :}
-> This section showcases SmarkForm’s capabilities without diving into code
-> details.
-> 
-> - Highlights key features through examples.
-> - Short and readable code that prioritizes clarity over UX/semantics.
-> - Minimal or no CSS (if any you'll find it at the CSS tab) to show layout
->   independence. (See 🔗 <a href='{{ "resources/examples" | relative_url }}'>Examples</a> section for more elaborated examples).
->   <li data-bullet="🚀 ">See 🔗 <a href='{{ "getting_started/quick_start" | relative_url }}'>Quick Start</a> and the rest of sections for detailed explanations.</li>
+It highlights key features through examples, using short and readable code that
+prioritizes clarity over UX/semantics. The examples use minimal or no CSS (if
+any you'll find it at the CSS tab) to show layout independence.
+
+
+👉 For a detailed explanation of the basics, see the 🔗 <a href='{{ "getting_started/quick_start" | relative_url }}'>Quick Start</a>.
+
+👉 For more more realisteic examples, refer to the 🔗 <a href='{{ "resources/examples" | relative_url }}'>Examples</a>.
+
+
 
 
 <details class="chaptertoc">
@@ -40,7 +40,6 @@ capabilities of SmarkForm.
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
 * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-    * [✋ Don't panic!!](#-dont-panic)
 * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
 * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Smart value coercion](#smart-value-coercion)
@@ -55,18 +54,14 @@ capabilities of SmarkForm.
 
 </details>
 
+
+{% include components/sampletabs_ctrl.md %}
+
+
 ## Basic Form
 
 To begin with the basics, we'll start with a simple form that includes a few
-input fields and a textarea (at the bottom) which will allow you to:
-
-  * <li data-bullet="⌨️">Type some data in the form.</li>
-    <li data-bullet="⬇️">Export it to the textarea in JSON format.</li>
-    <li data-bullet="❌">Clear the form whenever you want.</li>
-    <li data-bullet="📝">Edit the JSON as you like.</li>
-    <li data-bullet="⬆️"> Import the JSON back to the form.</li>
-    <li data-bullet="👀">See the effects of your changes.</li>
-
+input fields.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
@@ -99,22 +94,70 @@ unknown or indifferent.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% include_relative
-    examples/showcase.examples.md
-    option="basic_form"
+{% raw %} <!-- basic_form {{{ --> {% endraw %}
+{% capture basic_form
+%}█<h2>Model details</h2>
+█<p>
+█    <label data-smark>Model Name:</label>
+█    <input type="text" name="model" data-smark />
+█</p>
+█<p>
+█    <label data-smark>Type:</label>
+█    <select name="type" data-smark='{"encoding":"json"}'>
+█        <option value='null'>👇 Please select...</option>
+█        <!-- json encoding allow us return null values -->
+█        <option value='"Car"'>Car</option>
+█        <!-- ...but now we must wrap strings in double quotes -->
+█        <!-- (it also gives us the ability to return objects and arrays) -->
+█        <option>Bicycle</option>
+█        <!-- ...but if we are Ok with inner text as value, we can just omit the value attribute -->
+█        <option>Motorcycle</option>
+█        <option>Van</option>
+█        <option>Pickup</option>
+█        <option>Quad</option>
+█        <option>Truck</option>
+█    </select>
+█</p>
+█<p>
+█    <label data-smark>Seats:</label>
+█    <input type="number" name="seats" min=4 max=9 data-smark />
+█</p>
+█<p>
+█    <label data-smark>Driving Side:</label>
+█    <input type="radio" name="side" value="left" data-smark /> Left
+█    <input type="radio" name="side" value="right" data-smark /> Right
+█</p>
+█<p>
+█    <label data-smark>Color:</label>
+█    <span data-smark='{"type":"color", "name":"color"}'>
+█        <input data-smark>
+█        <button data-smark='{"action":"clear"}' title='Indifferent or unknown' >❌ </button>
+█    </span>
+█</p>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="basic_form"
+    htmlSource=basic_form
     notes=notes
+    selected="preview"
+    showEditor=true
 %}
 
-👉 Notice everything works **with no JS code** other than SmarkForm instantiation itself.
 
-{: .info :}
-> Every example in this section comes with many of the following tabs:
-> 
->   * <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
->   * <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
->   * <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
->   * <li data-bullet="👁️"><b>Preview:</b> (Default) This is where you can see the code in action.</li>
->   * <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
+👉 Notice everything works **with no JS code** other than SmarkForm
+instantiation itself ([I swear](#i_said_nested_forms)).
+
+For instance, you can:
+
+  * <li data-bullet="⌨️">Type some data in the form.</li>
+    <li data-bullet="⬇️">Export it to the textarea in JSON format.</li>
+    <li data-bullet="❌">Clear the form whenever you want.</li>
+    <li data-bullet="📝">Edit the JSON as you like.</li>
+    <li data-bullet="⬆️"> Import the JSON back to the form.</li>
+    <li data-bullet="👀">See the effects of your changes.</li>
 
 
 
@@ -125,16 +168,62 @@ included safety equipment. This time we'll group them in a nested subform under
 the name "safety".
 
 
-{% include_relative
-    examples/showcase.examples.md
-    option="nested_forms"
+{% raw %} <!-- nested_forms {{{ --> {% endraw %}
+{% capture nested_forms
+%}{{ basic_form }}
+█<fieldset data-smark='{"name":"safety","type":"form"}'>
+█    <legend>Safety Features:</legend>
+█    <span>
+█        <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
+█    </span>
+█    &nbsp;&nbsp;
+█    <span>
+█        <label><input type="checkbox" name="abs" data-smark /> ABS.</label>
+█    </span>
+█    &nbsp;&nbsp;
+█    <span>
+█        <label><input type="checkbox" name="esp" data-smark /> ESP.</label>
+█    </span>
+█    &nbsp;&nbsp;
+█    <span>
+█        <label><input type="checkbox" name="tc" data-smark />TC.</label>
+█    </span>
+█</fieldset>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="nested_forms"
+    htmlSource=nested_forms
+    selected="preview"
+    showEditor=true
 %}
 
 
+<span id="i_said_nested_forms" style="font-size: xx-large">I said: <b>nested forms</b>...</span>
 
-👉 Despite of usability concerns, there is no limit in form nesting depth. For
-instance, all the examples in this chapter are entirely built with SmarkForm
-itself.
+👉 Despite of usability concerns, there is no limit in form nesting depth.
+
+🚀 In fact, all examples in this chapter, including `⬇️ Export`, `⬆️ Import`
+and `❌ Clear` buttons, are entirely built with SmarkForm itself **with no
+additonal JS code**.
+
+🤔 ...it's just that part is ommited in the HTML source to keep the examples
+simple and focused on the subject they are intended to illustrate.
+
+🕵️ Below this line you can explore the previous example again with all the HTML
+source code:
+
+
+{% include components/sampletabs_tpl.md
+    formId="nested_forms_full"
+    htmlSource=nested_forms
+    selected="preview"
+    showEditor=true
+    showEditorSource=true
+    selected="html"
+%}
+
 
   * If you look closer to the HTML source, you will see that `⬆️ Import` and
     `⬇️ Export` buttons buttons only imports/exports a subform called *demo*
@@ -179,37 +268,79 @@ that can grow or shrink as needed:
     or not.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% include_relative
-    examples/showcase.examples.md
-    option="simple_list"
+{% raw %} <!-- simple_list {{{ --> {% endraw %}
+{% capture simple_list
+%}█<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
+█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█<label data-smark>Phones:</label>
+█<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
+█    <input type="tel" style="display: block">
+█</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list"
+    htmlSource=simple_list
     notes=notes
+    selected="preview"
+    showEditor=true
 %}
+
 
 
 Here we used a simpple `<input>` field for each item in the list and had to
 trick them with `style="display: block;"` to make them to stack gracefully.
 
-But **lists are even more powerful** than that:
+<span id="i_said_nested_forms" style="font-size: xx-large">But <b>lists are even more powerful</b> than that...</span>
 
 For instance, we could have used a *form* field instead, but in this case we
-would had get a JSON object for each item in the list, which is not what we
+would had got a JSON object for each item in the list, which is not what we
 want in this specific case.
 
-👉 To address this issue, we can take advantage of the *singleton pattern* to make
-any HTML element to become a regular *input* field.
+👉 To address this issue, we can take advantage of the *singleton pattern*
+which allows us to make any HTML element to work as a regular *input* field.
 
 
 {: .info :}
 > We call the *singleton pattern* when we use any HTML element different from
-> `<input>`, `<select>`, `<textarea>`, etc., as a regular input field.
+> `<input>`, `<select>`, `<textarea>`, etc., as a regular *SmarkForm* field.
 >
-> For this to work we only need to place one **and only one** of these elements
-> (with the "data-smark" attribute since otherwise they are ignored) in its
-> contents.
+> For this to work we only need define the *data-smark* property on it
+> specifying the appropriate type and place one **and only one** of these
+> elements (with the "data-smark" attribute since otherwise they are ignored)
+> in its contents.
 
 This way we can not only use a more elaborated structure for each item in the
 list: It also allows us to include other controls within every list item, like
 in the following example:
+
+
+{% raw %} <!-- simple_list_singleton {{{ --> {% endraw %}
+{% capture simple_list_singleton
+%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
+█    <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+█    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█    <label data-smark>Phones:</label>
+█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
+█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+█        <li class="row">
+█            <label data-smark>📞 </label><input type="tel" data-smark>
+█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
+█        </li>
+█    </ul>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- simple_list_singleton_css {{{ --> {% endraw %}
+{% capture simple_list_singleton_css
+%}#myForm$$ ul li {
+    list-style-type: none !important;
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
@@ -226,11 +357,16 @@ in the following example:
   * Made it sortable (by dragging and dropping items).
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% include_relative
-    examples/showcase.examples.md
-    option="simple_list_singleton"
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_singleton"
+    htmlSource=simple_list_singleton
+    cssSource=simple_list_singleton_css
     notes=notes
+    selected="preview"
+    showEditor=true
 %}
+
 
 {: .hint :}
 > Again, don't miss to check the `📝 Notes` tab for more powerful insights and
@@ -241,6 +377,23 @@ in the following example:
 To begin with, another interesting use case for lists is to create a schedule
 list like the following example:
 
+{% raw %} <!-- schedule_list {{{ --> {% endraw %}
+{% capture schedule_list %}
+            <p>
+                <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
+                <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
+                <label>Schedule:</label>
+                <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3}'>
+                    <span>
+                        <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
+                    </span>
+                    <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+                    <span data-smark='{"role":"separator"}'>, </span>
+                    <span data-smark='{"role":"last_separator"}'> and </span>
+                </span>
+            </p>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
@@ -260,11 +413,13 @@ list like the following example:
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% include_relative
-    examples/showcase.examples.md
-    option="schedule_list"
-    notes=notes
+{% include components/sampletabs_tpl.md
+    formId="schedule_list"
+    htmlSource=schedule_list
+    notes=include.notes
+    selected="preview"
 %}
+
 
 ...This is fine for a simple case, and leaves the door open for easily
 increasing the number of intervals allowed in the schedule.
@@ -273,6 +428,79 @@ But it could look kind of messy if you need to introduce several schedules that 
 
 👉 Let's imagine a hotel wanting to manage the scheduling of all the services it offers...
 
+
+{% raw %} <!-- schedule_table {{{ --> {% endraw %}
+{% capture schedule_table
+%}█<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
+█    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3}'>
+█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
+█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
+█        <td class='time_slot'>
+█            <input class='small' data-smark type='time' name='start'>
+█            to
+█            <input class='small' data-smark type='time' name='end'>
+█        </td>
+█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
+█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
+█        </td>
+█    </tr>
+█</table>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
+{% capture schedule_table_css
+%}
+.time_slot {
+    white-space: nowrap;
+    width: 10em;
+}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
@@ -289,12 +517,14 @@ But it could look kind of messy if you need to introduce several schedules that 
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% include_relative
-    examples/showcase.examples.md
-    option="schedule_table"
+{% include components/sampletabs_tpl.md
+    formId="schedule_table"
+    htmlSource=schedule_table
+    cssSource=schedule_table_css
     notes=notes
+    selected="preview"
+    showEditor=true
 %}
-
 
 
 ## Nested lists and forms
@@ -311,6 +541,38 @@ Since we can make lists of forms, we can also nest more forms and lists inside
 every list item and so forth to any depth.
 
 👉 Let's focus on the seasons by now:
+
+{% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
+{% capture nested_schedule_table
+%}<h2>🗓️ Periods:</h2>
+<div data-smark='{"type":"list","name":"periods","sortable":true}'>
+    <fieldset style='margin-top: 1em'>
+        <legend>Period
+            <span data-smark='{"action":"position"}'>N</span>
+            of
+            <span data-smark='{"action":"count"}'>M</span>
+        </legend>
+        <button
+            data-smark='{"action":"removeItem","hotkey":"-"}'
+            title='Remove this period'
+            style="float: right"
+        >➖</button>
+        <p>
+          <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
+          <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+        </p>
+{{ schedule_table | replace: "█", "                    " }}
+    </fieldset>
+</div>
+<button
+    data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
+    style="float: right; margin-top: 1em"
+>➕ Add Period</button>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
@@ -331,12 +593,17 @@ sort the periods by start date.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-
-{% include_relative
-    examples/showcase.examples.md
-    option="nested_schedule_table"
+{% include components/sampletabs_tpl.md
+    formId="nested_schedule_table"
+    htmlSource=nested_schedule_table
+    cssSource=schedule_table_css
     notes=notes
+    selected="preview"
+    showEditor=true
 %}
+
+
+
 
 
 There is no theoretical limit to the depth of nesting beyond the logical
@@ -344,6 +611,59 @@ usability concerns.
 
 Let's add to the former example contact data that may vary depending on the season and provide multiple phone numbers and emails for each of them.
 
+{% raw %} <!-- deeply_nested_forms {{{ --> {% endraw %}
+{% capture deeply_nested_forms
+%}█<h2>🚧 This is the nested</h2>
+█<h3>Car owners</h3>
+█<button data-smark='{"action":"addItem","context":"employee","hotkey":"+"}' title='Nuevo empleado'>👥</button>
+█<label data-smark>Empleados:</label>
+█<div data-smark='{"type":"list","name":"employee", "min_items":0,"sortable":true, "exportEmpties":true}'>
+█    <div>
+{{ nested_forms | replace: "█", "█        " }}
+█    </div>
+█</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- form_export_example_import_export_js {{{ --> {% endraw %}
+{% capture form_export_example_import_export_js
+%}
+
+myForm.on("AfterAction_export", ({context, data})=>{
+    /* Only for the whole form */
+    /* (avoiding to interfere with `⬇️ Export` button) */
+    if (context.getPath() !== "/") return; /* Only for root */
+
+    /* Pretty print and show */
+    if (typeof data == "object") data = JSON.stringify(data, null, 4);
+    window.alert(data);
+});
+
+myForm.on("BeforeAction_import", async (ev)=>{
+    /* Only for the whole form */
+    /* (avoiding to interfere with `⬆️ Import ` button */
+    if (ev.context.getPath() !== "/") return;
+
+    /* BONUS: Read previous data to use it as default value */
+    /*        so that you only need to edit it.              */
+    let previous_value = await ev.context.export();
+    let isObject = typeof previous_value == "object";
+    if (isObject) previous_value = JSON.stringify(previous_value);
+    
+    /* Read new value: */
+    let data = window.prompt("Edit JSON data", previous_value);
+    if (data === null) return void ev.preventDefault(); /* User cancelled */
+
+    /* Parse as JSON, warn if invalid, and set */
+    try {
+        if (isObject) data = JSON.parse(data);
+        ev.data = data; /* ← Set the new value */
+    } catch(err) {
+        alert(err.message); /* ← Show error message */
+        ev.preventDefault();
+    };
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
@@ -351,11 +671,17 @@ Let's add to the former example contact data that may vary depending on the seas
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-{% include_relative
-    examples/showcase.examples.md
-    option="deeply_nested_forms"
+
+{% include components/sampletabs_tpl.md
+    formId="deeply_nested_forms"
+    htmlSource=deeply_nested_forms
+    jsSource=form_export_example_import_export_js
     notes=notes
+    selected="preview"
+    showEditor=true
 %}
+
+
 
 
 
@@ -366,42 +692,56 @@ Let's add to the former example contact data that may vary depending on the seas
 
 
 
-
-
-
-
-
-
-
-
-
 ## Import and Export Data
 
 Exporting and importing data in SmarkForm cannot be easier. 
 
-Let's recall the example in the [Nested forms](#nested-forms) section.
+Let's recall the example in the [Nested forms](#nested-forms) section:
+
+{% include components/sampletabs_tpl.md
+    formId="nested_forms_bis"
+    htmlSource=nested_forms
+    selected="preview"
+    showEditor=true
+    showEditorSource=true
+%}
+
 
 There we learnt that the `⬇️ Export` and `⬆️ Import` buttons used in all
-examples in this chapter are just *triggers* that call the *export* and
+examples in this documentation are just *triggers* that call the *export* and
 *import* actions on a subform called "demo" **(their *context*)**:
 
-  * 
-    <li data-bullet="⬇️ ">Exports the "demo" subform to the "editor" textarea <b>(its target)</b>.</li>
-    <li data-bullet="⬆️ ">Imports the JSON data from the "editor" textarea to the "demo" subform <b>(its target)</b>.</li>
+  * `⬇️ Export` Exports the "demo" subform to the "editor" textarea **(its target)**.
+  * `⬆️ Import` Imports the JSON data from the "editor" textarea to the "demo" subform **(its target)**.
+
 
 {: .hint :}
 > This is a very handy use case for the *import* and *export* actions because
 > it does not require any additional JavaScript code.
 >
-> But this are not the only way to use the *import* and *export* actions.
+> But this is not the only way to use the *import* and *export* actions.
 
 
 ### Intercepting the *import* and *export* events
 
-Below these lines you can see **the exact same form** with additional `💾` and
-`📂` buttons and a little additional JavaScript code to mock the "save" and
-"load" operations through window's `alert()` and `prompt()`, reespectively.
+Below these lines you can see **the exact same form** with additional `💾 Save`
+and `📂 Load` buttons.
 
+They are *export* and *import* triggers, but placed outside of any subform so
+that their natural context is the whole form.
+
+In the *JS* tab there is a simple JavaScript code that:
+
+  * Intercepts the *onAfterAction_export* and *onBeforeAction_import* events.
+  * Shows the JSON of the whole form in a `window.alert(...)` window in the
+    case of *export* (💾) action.
+  * Prompts with a `window.prompt(...)` dialog for JSON data to import into the
+    whole form.
+
+{% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
+{% capture nested_forms_with_load_save %}
+{{ nested_forms | replace: "█", "            " }}
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
@@ -423,23 +763,42 @@ to the whole form throught a `window.prompt(...)`.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-{% include_relative
-    examples/showcase.examples.md
-    option="nested_forms_with_load_save"
+{% include components/sampletabs_tpl.md
+    formId="nested_forms_with_load_save"
+    htmlSource=nested_forms_with_load_save
+    jsSource=form_export_example_import_export_js
     notes=notes
+    selected="preview"
+    showEditor=true
+    addLoadSaveButtons=true
+    showEditorSource=true
 %}
 
-👉 Here you can:
-
-  * Repeat all the same trials as in the beforementioned [Nested
-    forms](#nested-forms)' example (with identical results).
-  * Use the `💾 Save` button to export the whole form to a `window.alert(...)` dialog.
-  * Use the `📂 Load` button to import new JSON data to the whole form.
+👉 Remember to check the `📝 Notes` tab for more...
 
 
+{: .info :}
+> In this case, the JS code goes a little further than the essential to:
+> 
+>   * Inhibit themselves when context is not the root form to avoid
+>     interferring with the `⬇️ Export` and `⬆️ Import` buttons.
+>  
+>   * Pretty-print the JSON data in the *export* action making it more
+>     readable.
+>  
+>   * Prefill the `window.prompt(...)` dialog with the JSON of current data in
+>     the *import* allowing you to edit it instead of having to write it from
+>     scratch.
+> 
+> 👌 But you get the idea: This is just a simple mock of how you can interact
+> with your application logic or server APIs.
+> 
+> {: .hint :}
+> > Notice you can even abort the *import* action by calling
+> > `ev.preventDefault()` in case of failure or, like in this case, user
+> > cancellation.
 
-{: .hint :}
-> Remember to check the `📝 Notes` tab for more...
+
 
 
 > 🚧 TODO: Add an example showcasing the use of the *target* property to
@@ -457,68 +816,27 @@ to the whole form throught a `window.prompt(...)`.
 
 ## A note on context of the triggers
 
-Let's return to the previous examples...
+As we have seen in the previous examples:
 
-There we had the `💾 Save` and `📂 Load` buttons opeating on the whole form because it is
-their *natural* context.
+   * We can use the *export* and *import* actions to export/import data from/to
+     any *context*: The whole form, any of its subforms or even a single field.
 
-In the case of the `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons, they have
-their context explicitly set by the option of the same name.
+   * That *context* is, by default, determined by the place where the
+     *trigger* is placed in the DOM tree, but it can be explicitly set by the
+     *context* property of the *trigger* component.
 
-{: .hint :}
-> We could have wanted to make the `💾 Save` and `📂 Load` buttons to operate
-> only on the *demo* subform.
-> 
-> To do so, we could have set their *context* property to "demo", in which case
-> then they would have exported/imported the same data than `⬇️ Export` and
-> `⬆️ Import` buttons, respectively.
->
-> Or, alternatively, 🚀 we could just have placed them inside of that context
-> **in the markup** as it is shown in the following example:
-
-
-
-{% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
-
-If you compare the *JS* tab with the one in fhe former one,
-you'll see that there is a little difference between them.
-
-👉 In the first one, the "BeforeActionImport" and "AfterActionExport"
-event handlers inhibits themselves depending on whether the context is the
-root form or not while, in the later, it just focus on the fact that the
-*target* is not provided.
-
-👉 The second is a more generic approach for this kind of event handlers. But
-the first one serves as an alternative example showing how we can base those
-event handlers' behaviour on the specific context (path) of every trigger.
-
-🚀 Just for the sake of showing the power of event handlers, in this case, the
-*BeforeActionImport* event handler have been evolved to fill the prompt dialog
-with the JSON export of the form when the *target* is not provided.
-
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
-
-
-{: .hint :}
-{% include_relative
-    examples/showcase.examples.md
-    option="basic_form_with_local_import_export"
-    notes=notes
-%}
-
-👉 Now the `💾 Save` and `📂 Load` buttons work on the "/demo" path (that is:
-they only import/export the "demo" subform) just like `⬇️ Export` and
-`⬆️ Import` ones do but without explicitly specifying their context. **They
-just receive their context by the place they are in the form**.
+   * We can use the *target* property to set the destination/source of that
+     data or intercept the *afterAction_export* and *beforeAction_import* events
+     to programatically handle the data.
 
 
 {: .info :}
-> For the sake of simplicity (except for the following example) from now on,
-> having we already demonstrated how to work with *import* and *export*
-> actions' events, we'll stick to the layout of the very first example 
-> (`⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons targetting the "editor"
-> textarea) that doesn't need any additional JS code.
+> For the sake of simplicity, from now on, we'll stick to the layout of the
+> very first example (`⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons
+> targetting the "editor" textarea) that doesn't need any additional JS code.
+> 
+> That part of the layout will also be ommitted in the HTML source since we've
+> already know how it works.
 
 
 👌 If you want a clearer example on how the context affect the triggers, take a
@@ -530,40 +848,64 @@ look to the following example:
 by the same event handlers** (for "BeforeAction_import" and
 "AfterAction_export", respectively).
 
-👉 **They belong to different *SmarkForm* fields** determined by **(1)**
-where they are placed in the DOM and **(2)** the relative path from that
-place pointed by the *context* property.
+👉 **All *Import* and *Export* buttons (triggers) belong to different
+*SmarkForm* fields** determined by **(1)** where they are placed in the DOM and
+**(2)** the relative path from that place pointed by the *context* property.
 
 ℹ️  Different field types may import/export different data types (*forms*
-import/export JSON while regular *inputs* import/export text).
+import/export JSON while regular *inputs* import/export text --or number--).
 
-🔧 For the sake of simplicity, the *BeforeAction_import* event handler
-reads the previous value of the field (no matter its type) and provides it
-stringified as JSON as default value for the window.prompt() call. Making
-it easy to edit the value no matter if we are importing one of the text
-fields or the whole form.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-{% include_relative
-    examples/showcase.examples.md
-    option="context_comparsion"
+{% raw %} <!-- capture context_comparsion_example {{{ --> {% endraw %}
+{% capture context_comparsion_example
+%}    <div data-smark='{"name":"demo"}'>
+        <p>
+            <label data-smark>Name:</label>
+            <input name='name' data-smark>
+        </p>
+        <p>
+            <label data-smark>Surname:</label>
+            <input name='surname' data-smark>
+        </p>
+        <table>
+            <tr style="text-align:center">
+                <th>Name field:</th>
+                <th>Surname field:</th>
+                <th>Whole Form:</th>
+            </tr>
+            <tr style="text-align:center">
+                <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","context":"surname","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
+            </tr>
+            <tr style="text-align:center">
+                <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
+                <td><button data-smark='{"action":"export","context":"surname","target":"/editor"}'>⬇️  Export</button></td>
+                <td><button data-smark='{"action":"export","target":"/editor"}'>⬇️  Export</button></td>
+            </tr>
+            <tr style="text-align:center">
+                <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
+                <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
+                <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
+            </tr>
+        </table>
+    </div>
+    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; width: 100%">
+{{ json_editor | replace: "█", "        " }}
+    </div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="context_comparsion"
+    htmlSource=context_comparsion_example
     notes=notes
+    selected="preview"
 %}
 
-
-### ✋ Don't panic!!
-
-If you felt overwhelmed by the previous example's JavaScript code, don't worry.
-It was just to show off the power of the *event handlers*.
-
-Look at this other version of the former example with zero JavaScript (despite
-SmarkForm instantiation itself):
-
-{% include_relative
-    examples/showcase.examples.md
-    option="context_comparsion_simple"
-%}
 
 🚀 As you can see, the same actions can be applied to different parts of the
 form just by placing the triggers in the right place or explicitly setting the
@@ -584,10 +926,13 @@ fields whith the help of the "JSON data viewer / editor".
 
 SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
 
-{% include_relative
-    examples/showcase.examples.md
-    option="keyboard_shortcuts"
+
+{% include components/sampletabs_tpl.md
+    formId="keyboard_shortcuts"
+    htmlSource=keyboard_shortcuts
+    selected="preview"
 %}
+
 
 
 ## Dynamic Dropdown Options
@@ -597,9 +942,11 @@ SmarkForm supports context-driven keyboard shortcuts, enhancing the user experie
 
 In this example, we'll illustrate how to create dropdown menus with dynamic options. This is particularly useful for forms that need to load options based on user input or external data sources.
 
-{% include_relative
-    examples/showcase.examples.md
-    option="dynamic_dropdown"
+
+{% include components/sampletabs_tpl.md
+    formId="dynamic_dropdown"
+    htmlSource=dynamic_dropdown
+    selected="preview"
 %}
 
 
@@ -610,9 +957,10 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 > Section still under construction...
 
 
-{% include_relative
-    examples/showcase.examples.md
-    option="smart_value_coercion"
+{% include components/sampletabs_tpl.md
+    formId="smart_value_coercion"
+    htmlSource=smart_value_coercion
+    selected="preview"
 %}
 
 ## Advanced UX Improvements
@@ -622,10 +970,13 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 
 Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation.
 
-{% include_relative
-    examples/showcase.examples.md
-    option="advanced_ux"
+
+{% include components/sampletabs_tpl.md
+    formId="advanced_ux"
+    htmlSource=advanced_ux
+    selected="preview"
 %}
+
 
 ### Auto enabling or disabling of actions
 
