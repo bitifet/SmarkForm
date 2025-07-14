@@ -16,16 +16,16 @@ concentrate on business logic.
 
 It imports and exports data in JSON format, supports nested forms and
 variable-length lists, properly sanitizes and formats values according to its
-field type, implements declarative restrictions like wether null is allowed or
+field type, implements declarative restrictions like whether null is allowed or
 not, maximum and minimum length for lists, etc...
 
 SmarkForm provides a smooth and intuitive user experience while addressing some
 native HTML limitations; such as forcing `type="color"` fields to always hold a
-valid color value, which makes it impossible to tell wether the user selected the
+valid color value, which makes it impossible to tell whether the user selected the
 black color on purpose or if he just meant that the actual color is unknown.
 
 Other features include context-driven keyboard shortcuts, smart
-auto-enablement/disablement of controls depending on wether they are applicable
+auto-enablement/disablement of controls depending on whether they are applicable
 or not, among others...
 
 All that in a 100% declarative approach providing a consistent UX across very
@@ -51,7 +51,7 @@ connecting multiple form components together. Additionally, it places the
 burden of dealing with templating and styling details on developers, while
 designers lose control over the appearance of inner components. As a result,
 this approach leads to non-reusable and bespoke (unless you are Ok with
-sticking to the same appearence) implementations for each form.
+sticking to the same appearance) implementations for each form.
 
 Repeatedly reinventing components or adapting complex frameworks with every
 design change, along with struggles in importing/exporting JSON, managing

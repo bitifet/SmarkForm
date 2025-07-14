@@ -71,7 +71,7 @@ Introduction
 The List component in SmarkForm allows you to dynamically manage a list of
 items within your form.
 
-👉 All lists direct childs (before rendering) are considered *templates* with
+👉 All lists direct children (before rendering) are considered *templates* with
 different *roles*.
 
 👉 Default role is "item", which is used as a template for each item in the
@@ -82,7 +82,7 @@ list. This template is mandatory.
   * `empty_list`: Displayed when the list is empty.
   * `separator`: To visually separate items.
   * `last_separator`: That, if provided, replaces *separator* for last item.
-  * More commig soon like `header`, `padding` or `footer`.
+  * More coming soon like `header`, `padding` or `footer`.
 
 👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
 inputs can be created over any HTML tag1️⃣  **except for actual HTML form
@@ -95,7 +95,7 @@ field elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 type.
 
 👉 However, in its html source, **lists must only contain templates of supported roles as direct
-childs**2️⃣ , being the "item" role required and the rest optional.
+children**2️⃣ , being the "item" role required and the rest optional.
 
 👉 The user will (or won't) be able to, at its own discretion (and according
 certain configurable rules), add or remove items to the list.
