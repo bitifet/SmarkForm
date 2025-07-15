@@ -16,7 +16,7 @@ around edge cases or features that might catch you off guard at first.
 {: .warning :}
 > 🚧 **Work in Progress** 🚧
 >
-> This FAQ is still under constructon. All **the following text is just a
+> This FAQ is still under construction. All **the following text is just a
 > draft!!**
 > 
 > If it helps you, great! But don't trust it as the final word just yet...

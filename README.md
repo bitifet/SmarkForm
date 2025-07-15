@@ -7,7 +7,7 @@
 [![NPM Downloads][downloads-image]][downloads-url]
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
-<!-- Hilighting fix: []() -->
+<!-- Highlighting fix: []() -->
 
 <a href="https://smarkform.bitifet.net">
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
@@ -25,7 +25,7 @@ layout or complex JavaScript** code.
     Nested forms to any depth.
   * [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
     variable-length arrays either of scalars or subforms.
-  * [Conigurable hot
+  * [Configurable hot
     keys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts):
     Context-driven keyboard shortcuts.
   * [Low code](https://smarkform.bitifet.net/about/showcase#basic-form): No
