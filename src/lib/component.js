@@ -248,6 +248,7 @@ export class SmarkComponent {
     };//}}}
     find(path="") { // {{{
         let base=this;
+        path = String(path); // Allow numbers (arrays simply won't match).
         if (path[0] == "/") while (base.parent) base = base.parent;
         const parts = path
             .split("/")
@@ -273,11 +274,19 @@ export class SmarkComponent {
         // Straight search (wildcardless path)
         // (Returns single component)
         return parts.reduce(
-            ((current, name)=>(
-                current === undefined ? null
-                : name == ".." ? current.parent
-                : current.children[name]
-            ))
+            (current, name)=>{
+                if (current === undefined) return null;   // No match.
+                if (name == "..") return current.parent;  // Go up one level.
+                if ( // Special syntax for list siblings (.+n / .-n)
+                    name[0] == "."
+                    && current.parent?.options?.type == "list"
+                ) {
+                    const delta = parseInt(name.slice(1));
+                    const n = parseInt(current.name) + delta;
+                    if (! isNaN(n)) return current.parent.children[n];
+                };
+                return current.children[name];
+            }
             , base
         )
     ;
