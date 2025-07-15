@@ -2,7 +2,7 @@
 title: Form Traversing
 layout: chapter
 permalink: /advanced_concepts/form_traversing
-nav_order: 4
+nav_order: 1
 
 ---
 
@@ -36,7 +36,13 @@ nav_order: 4
     * [Syntax](#syntax)
     * [Navigation Direction](#navigation-direction)
     * [Use Cases](#use-cases)
+        * [Data Duplication and Synchronization](#data-duplication-and-synchronization)
+        * [Comparative Operations](#comparative-operations)
+        * [Sequential Data Processing](#sequential-data-processing)
     * [Examples](#examples)
+        * [Copy Data Between Adjacent List Items](#copy-data-between-adjacent-list-items)
+        * [Sequential Form Validation](#sequential-form-validation)
+        * [Dynamic List Navigation UI](#dynamic-list-navigation-ui)
 * [Advanced Path Features](#advanced-path-features)
     * [Wildcard Patterns](#wildcard-patterns)
     * [Multi-Match Results](#multi-match-results)
@@ -45,7 +51,14 @@ nav_order: 4
     * [Complex Form Navigation](#complex-form-navigation)
     * [Dynamic Context Resolution](#dynamic-context-resolution)
 * [Best Practices](#best-practices)
+    * [Path Construction](#path-construction)
+    * [Sibling Navigation Guidelines](#sibling-navigation-guidelines)
+    * [Performance Considerations](#performance-considerations)
 * [Common Patterns and Idioms](#common-patterns-and-idioms)
+    * [Sequential Processing Pattern](#sequential-processing-pattern)
+    * [Bidirectional Data Sync Pattern](#bidirectional-data-sync-pattern)
+    * [Conditional Navigation Pattern](#conditional-navigation-pattern)
+    * [Form Section Coordination Pattern](#form-section-coordination-pattern)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
