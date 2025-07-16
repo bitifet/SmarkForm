@@ -37,26 +37,25 @@ featured ones.
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-    * [Basic Form](#basic-form)
-    * [Nested forms](#nested-forms)
-    * [Lists](#lists)
-* [myForm$$ :disabled {](#myform-disabled-)
-    * [Deeply nested forms](#deeply-nested-forms)
-    * [More on lists](#more-on-lists)
-    * [Nested lists and forms](#nested-lists-and-forms)
-        * [Item duplication](#item-duplication)
-    * [Import and Export Data](#import-and-export-data)
-        * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
-        * [Submitting the form](#submitting-the-form)
-    * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-    * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
-    * [Dynamic Dropdown Options](#dynamic-dropdown-options)
-    * [Smart value coercion](#smart-value-coercion)
-    * [Advanced UX Improvements](#advanced-ux-improvements)
-        * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-        * [Hot Keys](#hot-keys)
-        * [Animations](#animations)
-    * [Conclusion](#conclusion)
+* [Basic Form](#basic-form)
+* [Nested forms](#nested-forms)
+* [Lists](#lists)
+* [Deeply nested forms](#deeply-nested-forms)
+* [More on lists](#more-on-lists)
+* [Nested lists and forms](#nested-lists-and-forms)
+    * [Item duplication](#item-duplication)
+* [Import and Export Data](#import-and-export-data)
+    * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
+    * [Submitting the form](#submitting-the-form)
+* [A note on context of the triggers](#a-note-on-context-of-the-triggers)
+* [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
+* [Dynamic Dropdown Options](#dynamic-dropdown-options)
+* [Smart value coercion](#smart-value-coercion)
+* [Advanced UX Improvements](#advanced-ux-improvements)
+    * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
+    * [Hot Keys](#hot-keys)
+    * [Animations](#animations)
+* [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -297,7 +296,7 @@ endcapture %}
 %}#myForm$$ ul li {
     list-style-type: none !important;
 }
-#myForm$$ :disabled {
+{{}}#myForm$$ :disabled {
     opacity: 0.5; /* Make disabled buttons more evident */
 }{%
 endcapture %}
