@@ -403,6 +403,9 @@ The `list` component type supports the following actions:
   * {{ site.data.definitions.actions.options.context }}
   * **target:** Path★  (absolute or relative to its *context*) to a component to be used as a base reference to calculate the position of the new item. If not provided, the last item in the list will be used.
   * **position:** (= "after" (default) / "before") Determines where the new item will be inserted in relation to the target.
+  * **source:** (Path★  (absolute or relative **to the newly created item**).
+    If provided, the matched component value (result of its *export* action)
+    will be imported to the new item.
   * **autoscroll:**,   = "elegant" / "self" / "parent" / *falsy*
   * **failback:** (= "none" / "throw" (default)) Avoid emitting the "LIST_MAX_ITEMS_REACHED" event when the maximum number of items is reached.
 

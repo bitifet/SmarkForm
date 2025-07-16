@@ -244,6 +244,7 @@ export class list extends SmarkField {
             action,
             origin = null, // (Internal call)
             context = me,  // (Internal call)
+            source = null,
             target,
             position = "after",
             autoscroll,   // "elegant" / "self" / "parent" / (falsy)
@@ -318,6 +319,15 @@ export class list extends SmarkField {
             ;
         };
         await me.renum();
+        //}}}
+        // Copy data from source component if specified:{{{
+        if (source) {
+            const sourceComponent = newItem.find(source);
+            if (!! sourceComponent) {
+                const data = await sourceComponent.export();
+                newItem.import({data});
+            };
+        };
         //}}}
         // Autoscroll handling:{{{
         if (autoscroll == "elegant" && !! newItem) {

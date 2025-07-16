@@ -37,25 +37,26 @@ featured ones.
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Basic Form](#basic-form)
-* [Nested forms](#nested-forms)
-* [Lists](#lists)
-* [Deeply nested forms](#deeply-nested-forms)
-* [More on lists](#more-on-lists)
-* [Nested lists and forms](#nested-lists-and-forms)
-	* [Item duplication](#item-duplication)
-* [Import and Export Data](#import-and-export-data)
-	* [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
-	* [Submitting the form](#submitting-the-form)
-* [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-* [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
-* [Dynamic Dropdown Options](#dynamic-dropdown-options)
-* [Smart value coercion](#smart-value-coercion)
-* [Advanced UX Improvements](#advanced-ux-improvements)
-	* [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-	* [Hot Keys](#hot-keys)
-	* [Animations](#animations)
-* [Conclusion](#conclusion)
+    * [Basic Form](#basic-form)
+    * [Nested forms](#nested-forms)
+    * [Lists](#lists)
+* [myForm$$ :disabled {](#myform-disabled-)
+    * [Deeply nested forms](#deeply-nested-forms)
+    * [More on lists](#more-on-lists)
+    * [Nested lists and forms](#nested-lists-and-forms)
+        * [Item duplication](#item-duplication)
+    * [Import and Export Data](#import-and-export-data)
+        * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
+        * [Submitting the form](#submitting-the-form)
+    * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
+    * [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
+    * [Dynamic Dropdown Options](#dynamic-dropdown-options)
+    * [Smart value coercion](#smart-value-coercion)
+    * [Advanced UX Improvements](#advanced-ux-improvements)
+        * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
+        * [Hot Keys](#hot-keys)
+        * [Animations](#animations)
+    * [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -295,6 +296,9 @@ endcapture %}
 {% capture simple_list_singleton_css
 %}#myForm$$ ul li {
     list-style-type: none !important;
+}
+#myForm$$ :disabled {
+    opacity: 0.5; /* Make disabled buttons more evident */
 }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -313,6 +317,10 @@ endcapture %}
   * Added a `❌` button to each item to cherry-pick which items to remove.
   * Returned to the default behaviour of not exporting empty items.
   * Made it sortable (by dragging and dropping items).
+  * Also notice that when the maxItems limit is reached, every *addItem*
+    trigger, like the `➕` button is automatically disabled.
+  * ...Samme applies to *removeItem* triggers when the minItems limit is
+    reached.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -565,7 +573,7 @@ every list item and so forth to any depth.
 {% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
 {% capture nested_schedule_table
 %}<h2>🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true}'>
+<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
     <fieldset style='margin-top: 1em'>
         <legend>Period
             <span data-smark='{"action":"position"}'>N</span>
@@ -627,13 +635,58 @@ sort the periods by start date.
 
 ### Item duplication
 
-...
+Adding similar items to a list—like periods—can be tedious if users have to
+re-enter all fields each time. To make this easier, SmarkForm lets you add a
+new item prefilled with data from an existing one by using an addItem trigger
+button with the *source* property set to another item in the list (for
+inxtance, the previous item -specified by  the special path `.-1`-).
 
+This way, users can duplicate an entry and just edit what’s different.
 
+Below is the same example as before, but with an additional `✨` button to
+*duplicate* the data from the previous one.
 
+{% raw %} <!-- nested_schedule_table_duplicable {{{ --> {% endraw %}
+{% capture nested_schedule_table_duplicable
+%}<h2>🗓️ Periods:</h2>
+<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
+    <fieldset style='margin-top: 1em'>
+        <legend>Period
+            <span data-smark='{"action":"position"}'>N</span>
+            of
+            <span data-smark='{"action":"count"}'>M</span>
+        </legend>
+        <button
+            data-smark='{"action":"removeItem","hotkey":"-"}'
+            title='Remove this period'
+            style="float: right"
+        >➖</button>
+        <button
+            data-smark='{"action":"addItem","source":".-1","hotkey":"d"}'
+            title='Duplicate this period'
+            style="float: right"
+        >✨</button>
+        <p>
+          <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
+          <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+        </p>
+{{ schedule_table | replace: "█", "                    " }}
+    </fieldset>
+</div>
+<button
+    data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
+    style="float: right; margin-top: 1em"
+>➕ Add Period</button>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-> 🚧 TODO: Add an example showcasing the use of the *target* property to
-> duplicate list items.
+{% include components/sampletabs_tpl.md
+    formId="nested_schedule_table_duplicable"
+    htmlSource=nested_schedule_table_duplicable
+    cssSource=schedule_table_css
+    selected="preview"
+    showEditor=true
+%}
 
 
 ## Import and Export Data
