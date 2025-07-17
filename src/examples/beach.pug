@@ -115,6 +115,11 @@ block mainForm
                         .form-group
                             label(data-smark) Indications:
                             textarea(rows=4, data-smark, name='indications', placeholder='Where it is')
+            .form-group.aside
+                span
+                button.inline(data-smark='{"action":"addItem","source":".-1","hotkey":"+"}', style='float: right')
+                    span(role='img', aria-label='Duplicate this item') ✨
+                    | Clone this Period
     .form-group.aside.reverse
         button.inline(data-smark='{"action":"addItem","hotkey":"+","context":"periods"}')
             span(role='img', alt) ➕
