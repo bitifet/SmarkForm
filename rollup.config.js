@@ -76,7 +76,7 @@ export default [
         plugins: [
             del({
                 targets: delTargets,
-                runOnce: true,
+                runSync: true,
             }),
             babel({
                 babelHelpers: 'bundled',
@@ -101,7 +101,7 @@ export default [
             }),
             copy({
                 targets: copyTargets,
-                copyOnce: true,
+                copySync: true,
             }),
         ]
     },
@@ -126,6 +126,7 @@ export default [
             }),
             copy({
                 targets: copyTargets,
+                copySync: true,
             }),
         ],
     },
