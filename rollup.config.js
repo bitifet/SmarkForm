@@ -93,12 +93,7 @@ export default [
                 ]
             }),
             cleanup(),
-            terser({
-                compress: {
-                    // Fix terser bug removing actually used assignment:
-                    unused: false,
-                },
-            }),
+            terser(),
             copy({
                 targets: copyTargets,
                 copySync: true,
