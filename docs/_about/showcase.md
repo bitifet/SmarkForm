@@ -156,7 +156,7 @@ endcapture %}
 
 
 👉 Notice everything works **with no JS code** other than SmarkForm
-instantiation itself ([I swear](#i_said_nested_forms)).
+instantiation itself ([I swear](#deeply-nested-forms)).
 
 For instance, you can:
 
@@ -251,7 +251,7 @@ endcapture %}
 Here we used a simpple `<input>` field for each item in the list and had to
 trick them with `style="display: block;"` to make them to stack gracefully.
 
-<span id="i_said_nested_forms" style="font-size: xx-large">But <b>lists are even more powerful</b> than that...</span>
+<span id="singleton_list_example" style="font-size: xx-large">But <b>lists are even more powerful</b> than that...</span>
 
 For instance, we could have used a *form* field instead, but in this case we
 would had got a JSON object for each item in the list, which is not what we
@@ -295,9 +295,6 @@ endcapture %}
 {% capture simple_list_singleton_css
 %}#myForm$$ ul li {
     list-style-type: none !important;
-}
-{{}}#myForm$$ :disabled {
-    opacity: 0.5; /* Make disabled buttons more evident */
 }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -522,7 +519,7 @@ endcapture %}
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
 {% capture schedule_table_css
 %}
-.time_slot {
+{{}}#myForm$$ .time_slot {
     white-space: nowrap;
     width: 10em;
 }
@@ -996,19 +993,53 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 {: .warning :}
 > Section still under construction...
 
-Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation.
-
-
-{% include components/sampletabs_tpl.md
-    formId="advanced_ux"
-    htmlSource=advanced_ux
-    selected="preview"
-%}
+Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation among others.
 
 
 ### Auto enabling or disabling of actions
 
+As you may have already noticed, SmarkForm automatically enables or disables actions based on the current state of the form. For example, if a list has reached its maximum number of items, the "Add Item" button will be disabled until an item is removed.
+
+
+Let's recall our [Singleton List Example](#singleton_list_example), this time keeping the *min_items* to its default value of 1, so that the list cannot be empty and add a little CSS to make the disabled buttons more evident:
+
+{% raw %} <!-- simple_list_autodisable {{{ --> {% endraw %}
+{% capture simple_list_autodisable
+%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
+█    <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+█    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█    <label data-smark>Phones:</label>
+█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+█        <li class="row">
+█            <label data-smark>📞 </label><input type="tel" data-smark>
+█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
+█        </li>
+█    </ul>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- simple_list_autodisable_css {{{ --> {% endraw %}
+{% capture simple_list_autodisable_css
+%}#myForm$$ ul li {
+    list-style-type: none !important;
+}
+{{}}#myForm$$ :disabled {
+    opacity: 0.4; /* Make disabled buttons more evident */
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_autodisable"
+    htmlSource=simple_list_autodisable
+    cssSource=simple_list_autodisable_css
+    selected="preview"
+    showEditor=true
+%}
+
 ### Hot Keys
+
 
 ### Animations 
 
