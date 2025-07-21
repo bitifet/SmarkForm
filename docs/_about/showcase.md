@@ -37,23 +37,23 @@ featured ones.
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Basic Form](#basic-form)
-* [Nested forms](#nested-forms)
-* [Lists](#lists)
-* [Deeply nested forms](#deeply-nested-forms)
-* [More on lists](#more-on-lists)
-* [Nested lists and forms](#nested-lists-and-forms)
-    * [Item duplication](#item-duplication)
+* [Basics](#basics)
+    * [Simple plain form](#simple-plain-form)
+    * [Nested forms](#nested-forms)
+    * [Lists](#lists)
+    * [Deeply nested forms](#deeply-nested-forms)
+    * [More on lists](#more-on-lists)
+    * [Nested lists and forms](#nested-lists-and-forms)
+        * [Item duplication](#item-duplication)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
-* [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-* [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts)
-* [Dynamic Dropdown Options](#dynamic-dropdown-options)
-* [Smart value coercion](#smart-value-coercion)
+    * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Advanced UX Improvements](#advanced-ux-improvements)
+    * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
     * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-    * [Hot Keys](#hot-keys)
+    * [Smart value coercion](#smart-value-coercion)
+    * [Dynamic Dropdown Options](#dynamic-dropdown-options)
     * [Animations](#animations)
 * [Conclusion](#conclusion)
 
@@ -66,7 +66,9 @@ featured ones.
 {% include components/sampletabs_ctrl.md %}
 
 
-## Basic Form
+## Basics
+
+### Simple plain form
 
 To begin with the basics, we'll start with a simple form that includes a few
 input fields.
@@ -169,7 +171,7 @@ For instance, you can:
 
 
 
-## Nested forms
+### Nested forms
 
 Let's add a few more fields to the form to provide information regarding
 included safety equipment. This time we'll group them in a nested subform under
@@ -209,7 +211,7 @@ endcapture %}
 
 
 
-## Lists
+### Lists
 
 One of the most powerful features of SmarkForm is its ability to handle variable-length lists.
 
@@ -285,7 +287,7 @@ in the following example:
 █        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
 █            <label data-smark>📞 </label><input type="tel" data-smark>
-█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
+█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
 █        </li>
 █    </ul>{%
 endcapture %}
@@ -310,7 +312,7 @@ endcapture %}
   * Made the `➖` button a little smarter so that it removes empty items, if
     any, first.
   * Added a `🧹` button to remove all empty items.
-  * Added a `❌` button to each item to cherry-pick which items to remove.
+  * Added a `➖` button to each item to cherry-pick which items to remove.
   * Returned to the default behaviour of not exporting empty items.
   * Made it sortable (by dragging and dropping items).
   * Also notice that when the maxItems limit is reached, every *addItem*
@@ -336,7 +338,7 @@ endcapture %}
 
 
 
-## Deeply nested forms
+### Deeply nested forms
 
 Despite of usability concerns, there is no limit in form nesting depth.
 
@@ -391,7 +393,7 @@ source code:
 
 
 
-## More on lists
+### More on lists
 
 *SmarkForm*'s lists are incredibly powerful and flexible. They can be used to
 create complex data structures, such as schedules, inventories, or any other
@@ -551,7 +553,7 @@ endcapture %}
 %}
 
 
-## Nested lists and forms
+### Nested lists and forms
 
 
 Great! Now we have all the scheduling information of or hotel services.
@@ -629,7 +631,7 @@ sort the periods by start date.
 
 
 
-### Item duplication
+#### Item duplication
 
 Adding similar items to a list—like periods—can be tedious if users have to
 re-enter all fields each time. To make this easier, SmarkForm lets you add a
@@ -839,7 +841,7 @@ prefills the prompt dialog with the JSON export of the whole form.
 
 
 
-## A note on context of the triggers
+### A note on context of the triggers
 
 As we have seen in the previous examples:
 
@@ -941,53 +943,6 @@ fields. Try exporting / exporting / clearing the whole form or individual
 fields whith the help of the "JSON data viewer / editor".
 
 
-
-
-
-## Context-Driven Keyboard Shortcuts
-
-{: .warning :}
-> Section still under construction...
-
-SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
-
-
-{% include components/sampletabs_tpl.md
-    formId="keyboard_shortcuts"
-    htmlSource=keyboard_shortcuts
-    selected="preview"
-%}
-
-
-
-## Dynamic Dropdown Options
-
-{: .warning :}
-> Section still under construction...
-
-In this example, we'll illustrate how to create dropdown menus with dynamic options. This is particularly useful for forms that need to load options based on user input or external data sources.
-
-
-{% include components/sampletabs_tpl.md
-    formId="dynamic_dropdown"
-    htmlSource=dynamic_dropdown
-    selected="preview"
-%}
-
-
-
-## Smart value coercion
-
-{: .warning :}
-> Section still under construction...
-
-
-{% include components/sampletabs_tpl.md
-    formId="smart_value_coercion"
-    htmlSource=smart_value_coercion
-    selected="preview"
-%}
-
 ## Advanced UX Improvements
 
 {: .warning :}
@@ -995,13 +950,60 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 
 Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation among others.
 
+### Context-Driven Keyboard Shortcuts (Hot Keys)
+
+{: .warning :}
+> Section still under construction...
+
+SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
+
+
+
+
+{% raw %} <!-- test_schedule_table_css {{{ --> {% endraw %}
+{% capture test_schedule_table_css
+%}{{ schedule_table_css }}
+    #myForm$$ button[data-hotkey] {
+      position: relative;
+      overflow-x: display;
+    }
+    #myForm$$ button[data-hotkey]::before {
+      content: attr(data-hotkey);
+      display: inline-block;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      z-index: 10;
+      pointer-events: none;
+      background-color: #ffd;
+      outline: 1px solid lightyellow;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-family: sans-serif;
+      font-size: 0.8em;
+      white-space: nowrap;
+      transform: scale(1.8) translate(0.1em, 0.1em);
+    }
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+
 
 ### Auto enabling or disabling of actions
 
-As you may have already noticed, SmarkForm automatically enables or disables actions based on the current state of the form. For example, if a list has reached its maximum number of items, the "Add Item" button will be disabled until an item is removed.
+As you may have already noticed, SmarkForm automatically enables or disables
+actions based on the current state of the form. For example, if a list has
+reached its maximum number of items specified by the *max_items* option, the
+"Add Item" button will be disabled until an item is removed.
 
+The same happen with the "Remove Item" button when the list has reached its
+minimum number of items specified by *min_items*.
 
-Let's recall our [Singleton List Example](#singleton_list_example), this time keeping the *min_items* to its default value of 1, so that the list cannot be empty and add a little CSS to make the disabled buttons more evident:
+Let's recall our [Singleton List Example](#singleton_list_example), this time
+keeping the *min_items* to its default value of 1, so that the list cannot be
+empty and add a little CSS to make the disabled buttons more evident:
 
 {% raw %} <!-- simple_list_autodisable {{{ --> {% endraw %}
 {% capture simple_list_autodisable
@@ -1013,7 +1015,7 @@ Let's recall our [Singleton List Example](#singleton_list_example), this time ke
 █        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
 █            <label data-smark>📞 </label><input type="tel" data-smark>
-█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>❌</button>
+█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
 █        </li>
 █    </ul>{%
 endcapture %}
@@ -1038,7 +1040,40 @@ endcapture %}
     showEditor=true
 %}
 
-### Hot Keys
+👉 Notice that the `🧹` and `➖` buttons are disebled then the list has only
+one item (at the beginning or afger removing enouth items to reach *min_items*'
+value).
+
+
+### Smart value coercion
+
+{: .warning :}
+> Section still under construction...
+
+
+{% include components/sampletabs_tpl.md
+    formId="smart_value_coercion"
+    htmlSource=smart_value_coercion
+    selected="preview"
+%}
+
+
+
+### Dynamic Dropdown Options
+
+{: .warning :}
+> Section still under construction...
+
+In this example, we'll illustrate how to create dropdown menus with dynamic options. This is particularly useful for forms that need to load options based on user input or external data sources.
+
+
+{% include components/sampletabs_tpl.md
+    formId="dynamic_dropdown"
+    htmlSource=dynamic_dropdown
+    selected="preview"
+%}
+
+
 
 
 ### Animations 

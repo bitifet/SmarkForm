@@ -91,8 +91,11 @@ The following code snippet shows *SmarkForm* simplicity.
 
 
 {% capture generic_sample_css
-%}button:disabled {
-    opacity: .5;
+%}#myForm$$ ul li {
+    list-style-type: none !important;
+}
+{{}}#myForm$$ button:disabled {
+    opacity: .4;
 }{%
 endcapture %}
 
@@ -118,18 +121,26 @@ endcapture %}
 
 
 {% capture simple_list_example_notes %}
-  👉 This is a simple form to show the power of *SmarkForm*.
+👉 This is a simple form to show the power of *SmarkForm*.
 
-  👉 Tinker with it, modifying data, adding or removing items from the
+  * Tinker with it, modifying data, adding or removing items from the
      *Phones* list, sorting its items by dragging them and then clicking the
      `Export` button to see resulting data.
   
-  👉 Note that it enforces default behaviors, such as requiring a minimum of
-     one item and excluding empty list items during export. But it can be easily
-     changed, with properties like *min_items* and *exportEmpties*.
+👉 Its behavior is driven by the *data-smark* attributes, which are declarative
+and intuitive with straightforward defaults to match most common use cases.
 
-  👉 Check the *JS* tab to see the little JS just to initialize it as a
-     *SmarkForm* and show you the data when exported.
+  * ...for instance, *min_items* is set to 1 by default, so you cannot
+     remove the last item from the *Phones* list. But you can change it by
+     setting *min_items* to 0, allowing an empty list.
+
+  * Another interesting case is the *exportEmpties* property, which is set to
+     `false` by default, so empty items are not usually exported. In this
+     example, it is set to `true` since, for a first contact, it might seem
+     counterintuitive.
+
+👉 Check the *JS* tab to see the little JS just to initialize it as a
+*SmarkForm* and show you the data when exported.
 {%  endcapture %}
 
 
