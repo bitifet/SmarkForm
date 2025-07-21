@@ -286,8 +286,12 @@ in the following example:
 █    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
 █        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
-█            <label data-smark>📞 </label><input type="tel" data-smark>
+█            <label data-smark>📞 Telephone
+             <span data-smark='{"action":"position"}'>N</span>
+             </label>
 █            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+█            <input type="tel" data-smark>
+█            <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
 █        </li>
 █    </ul>{%
 endcapture %}
@@ -312,7 +316,8 @@ endcapture %}
   * Made the `➖` button a little smarter so that it removes empty items, if
     any, first.
   * Added a `🧹` button to remove all empty items.
-  * Added a `➖` button to each item to cherry-pick which items to remove.
+  * Prepended a `➖` button to each item to cherry-pick which items to remove.
+  * Appended a `➕` button to each item to allow inserting items at a given position.
   * Returned to the default behaviour of not exporting empty items.
   * Made it sortable (by dragging and dropping items).
   * Also notice that when the maxItems limit is reached, every *addItem*
@@ -333,8 +338,14 @@ endcapture %}
 
 
 {: .hint :}
-> Again, don't miss to check the `📝 Notes` tab for more powerful insights and
-> tips.
+> This example may look a bit bloated, but it is just to show the power and
+> flexibility of *SmarkForm* trigger components.
+> 
+> In a real application you will be able to pick those controls that best suit
+> your needs and use them as you like.
+> 
+> 👉 And, again, don't miss to check the `📝 Notes` tab for more powerful
+> insights and tips.
 
 
 
@@ -944,9 +955,6 @@ fields whith the help of the "JSON data viewer / editor".
 
 
 ## Advanced UX Improvements
-
-{: .warning :}
-> Section still under construction...
 
 Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation among others.
 

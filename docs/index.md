@@ -110,7 +110,9 @@ endcapture %}
         <label data-smark>Phones:</label>
         <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
             <li>
-                <label data-smark>📞 </label>
+                <label data-smark>📞 Tel.
+                <span data-smark='{"action":"position"}'>N</span>
+                </label>
                 <input placeholder='+34...' type="tel" data-smark>
                 <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
             </li>
@@ -158,7 +160,7 @@ and intuitive with straightforward defaults to match most common use cases.
 > To minimize clutter, the `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons
 > implementation have been omitted from the source code, as they are common to
 > all examples and will be explained in detail in a
-> [🔗 later section]({{"about/showcase#nested-forms" | relative_url }}).
+> [🔗 later section]({{"about/showcase#deeply-nested-forms" | relative_url }}).
 
 
 
