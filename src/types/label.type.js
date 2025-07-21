@@ -2,6 +2,7 @@
 // ===================
 import {SmarkComponent} from "../lib/component.js";
 import {randomId} from "../lib/helpers.js";
+import {getRoots} from "../lib/helpers.js";
 
 // TODO:
 // =====
@@ -26,8 +27,21 @@ export class label extends SmarkComponent {
         delete options.name; // Labels are always unnamed.
         return super(node, {allow_select, ...options}, ...args);
     };
-    render(){
+    async render(){
         const me = this;
+        // Enhance acctions:
+        for (
+            const node
+            of getRoots(me.targetNode, me.selector)
+        ) {
+            const newItem = await me.enhance(node);
+            if (!! newItem?._isField) {
+                throw me.renderError(
+                    'FIELD_IN_LABEL'
+                    , `Non action components not allowed in labels, found ${newItem.name} in form ${me.getPath()}.`
+                );
+            };
+        };
         me.parent.onRendered(()=>{
             const labelArgs = me.getLabelArgs();
             const {targetFieldNode} = labelArgs.target || {};
