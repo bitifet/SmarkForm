@@ -94,7 +94,7 @@ The following code snippet shows *SmarkForm* simplicity.
 %}#myForm$$ ul li {
     list-style-type: none !important;
 }
-{{}}#myForm$$ button:disabled {
+{{""}}#myForm$$ button:disabled {
     opacity: .4;
 }{%
 endcapture %}

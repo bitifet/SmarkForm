@@ -287,8 +287,8 @@ in the following example:
 █        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
 █            <label data-smark>📞 Telephone
-             <span data-smark='{"action":"position"}'>N</span>
-             </label>
+█            <span data-smark='{"action":"position"}'>N</span>
+█            </label>
 █            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
 █            <input type="tel" data-smark>
 █            <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
@@ -532,7 +532,7 @@ endcapture %}
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
 {% capture schedule_table_css
 %}
-{{}}#myForm$$ .time_slot {
+{{""}}#myForm$$ .time_slot {
     white-space: nowrap;
     width: 10em;
 }
@@ -1034,7 +1034,7 @@ endcapture %}
 %}#myForm$$ ul li {
     list-style-type: none !important;
 }
-{{}}#myForm$$ :disabled {
+{{""}}#myForm$$ :disabled {
     opacity: 0.4; /* Make disabled buttons more evident */
 }{%
 endcapture %}
