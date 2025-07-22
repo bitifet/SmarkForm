@@ -839,8 +839,11 @@ prefills the prompt dialog with the JSON export of the whole form.
 > 
 > {: .hint :}
 > > Notice you can even abort the *import* action by calling
-> > `ev.preventDefault()` in case of failure or, like in this case, user
-> > cancellation.
+> > `ev.preventDefault()` in case of failure or, as shown for the `❌ Clear`
+> > button in the
+> > [🔗 Quick Start]({{"getting_started/quick_start#event-handling" | relative_url }})
+> > section, in case of user cancellation.
+
 
 
 ### Submitting the form
@@ -1009,9 +1012,11 @@ reached its maximum number of items specified by the *max_items* option, the
 The same happen with the "Remove Item" button when the list has reached its
 minimum number of items specified by *min_items*.
 
-Let's recall our [Singleton List Example](#singleton_list_example), this time
-keeping the *min_items* to its default value of 1, so that the list cannot be
-empty and add a little CSS to make the disabled buttons more evident:
+Let's recall our [Singleton List Example](#singleton_list_example) with just
+slight modifications:
+
+  1. Keep the *min_items* to its default value of 1, so that the list cannot be empty.
+  2. Add a little CSS to make the disabled buttons more evident.
 
 {% raw %} <!-- simple_list_autodisable {{{ --> {% endraw %}
 {% capture simple_list_autodisable
@@ -1022,8 +1027,12 @@ empty and add a little CSS to make the disabled buttons more evident:
 █    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
 █        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
-█            <label data-smark>📞 </label><input type="tel" data-smark>
+█            <label data-smark>📞 Telephone
+█            <span data-smark='{"action":"position"}'>N</span>
+█            </label>
 █            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+█            <input type="tel" data-smark>
+█            <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
 █        </li>
 █    </ul>{%
 endcapture %}
@@ -1048,9 +1057,10 @@ endcapture %}
     showEditor=true
 %}
 
-👉 Notice that the `🧹` and `➖` buttons are disebled then the list has only
+👉 Notice that the `🧹` and `➖` buttons get disabled then the list has only
 one item (at the beginning or afger removing enouth items to reach *min_items*'
-value).
+value) and the same happens with the `➕` button when the list reaches its
+*max_items* limit.
 
 
 ### Smart value coercion
