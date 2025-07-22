@@ -50,8 +50,8 @@ featured ones.
     * [Submitting the form](#submitting-the-form)
     * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Advanced UX Improvements](#advanced-ux-improvements)
-    * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
     * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
+    * [Context-Driven Keyboard Shortcuts (Hot Keys) and smart navigation](#context-driven-keyboard-shortcuts-hot-keys-and-smart-navigation)
     * [Smart value coercion](#smart-value-coercion)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
     * [Animations](#animations)
@@ -961,47 +961,6 @@ fields whith the help of the "JSON data viewer / editor".
 
 Finally, we'll showcase some advanced user experience improvements that SmarkForm offers, such as smart auto-enabling/disabling of controls and non-breaking unobtrusive keyboard navigation among others.
 
-### Context-Driven Keyboard Shortcuts (Hot Keys)
-
-{: .warning :}
-> Section still under construction...
-
-SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
-
-
-
-
-{% raw %} <!-- test_schedule_table_css {{{ --> {% endraw %}
-{% capture test_schedule_table_css
-%}{{ schedule_table_css }}
-    #myForm$$ button[data-hotkey] {
-      position: relative;
-      overflow-x: display;
-    }
-    #myForm$$ button[data-hotkey]::before {
-      content: attr(data-hotkey);
-      display: inline-block;
-      position: absolute;
-      top: 2px;
-      left: 2px;
-      z-index: 10;
-      pointer-events: none;
-      background-color: #ffd;
-      outline: 1px solid lightyellow;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-weight: bold;
-      font-family: sans-serif;
-      font-size: 0.8em;
-      white-space: nowrap;
-      transform: scale(1.8) translate(0.1em, 0.1em);
-    }
-{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-
-
-
 ### Auto enabling or disabling of actions
 
 As you may have already noticed, SmarkForm automatically enables or disables
@@ -1061,6 +1020,76 @@ endcapture %}
 one item (at the beginning or afger removing enouth items to reach *min_items*'
 value) and the same happens with the `➕` button when the list reaches its
 *max_items* limit.
+
+
+### Context-Driven Keyboard Shortcuts (Hot Keys) and smart navigation
+
+{: .warning :}
+> Section still under construction...
+
+SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
+
+{% raw %} <!-- simple_list_hotkeys {{{ --> {% endraw %}
+{% capture simple_list_hotkeys
+%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
+█    <button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+█    <button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
+█    <label data-smark>Phones:</label>
+█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+█        <li class="row">
+█            <label data-smark>📞 Telephone
+█            <span data-smark='{"action":"position"}'>N</span>
+█            </label>
+█            <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
+█            <input type="tel" data-smark>
+█            <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
+█        </li>
+█    </ul>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_css
+%}
+{{""}}#myForm$$ button[data-hotkey] {
+  position: relative;
+  overflow-x: display;
+}
+{{""}}#myForm$$ button[data-hotkey]::before {
+  content: attr(data-hotkey);
+  display: inline-block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 10;
+  pointer-events: none;
+  background-color: #ffd;
+  outline: 1px solid lightyellow;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  white-space: nowrap;
+  transform: scale(1.8) translate(0.1em, 0.1em);
+}
+{{ simple_list_autodisable_css }}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_hotkeys"
+    htmlSource=simple_list_hotkeys
+    cssSource=simple_list_hotkeys_css
+    selected="preview"
+    showEditor=true
+%}
+
+
+
 
 
 ### Smart value coercion
