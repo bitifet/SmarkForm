@@ -62,7 +62,7 @@ export class trigger extends SmarkComponent {
         );
 
         const target = (
-            targetPath ? context.find(targetPath) // Explicit target (context relative)
+            targetPath ? context?.find(targetPath) // Explicit target (context relative)
             : contextPath ? null // Explicit context path => don't mind component position
             : (
                 parents

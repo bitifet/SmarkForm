@@ -15,12 +15,6 @@ import {getRoots} from "../lib/helpers.js";
 //         which is not allowed by <label> tag.
 //      💡 But we can use different tag (with {data-smark="label"}) and just
 //         create the native <label> tag around the text.
-//
-//   🚀 Implement "text templating" feature.
-//      👉 This should allow to include contextual data in the text of the
-//         label.
-//      ⚡ For example, list item position for list items...
-//
 
 export class label extends SmarkComponent {
     constructor(node, {allow_select = false, ...options}, ...args){
