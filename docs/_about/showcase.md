@@ -51,7 +51,11 @@ featured ones.
     * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Advanced UX Improvements](#advanced-ux-improvements)
     * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-    * [Context-Driven Keyboard Shortcuts (Hot Keys) and smart navigation](#context-driven-keyboard-shortcuts-hot-keys-and-smart-navigation)
+    * [Hotkeys and smart keyboard navigation](#hotkeys-and-smart-keyboard-navigation)
+        * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
+        * [Reveal of hot keys](#reveal-of-hot-keys)
+        * [Hotkeys and context](#hotkeys-and-context)
+        * [Smart navigation](#smart-navigation)
     * [Smart value coercion](#smart-value-coercion)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
     * [Animations](#animations)
@@ -984,7 +988,6 @@ slight modifications:
 █    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
 █    <label data-smark>Phones:</label>
 █    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
-█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
 █            <label data-smark>📞 Telephone
 █            <span data-smark='{"action":"position"}'>N</span>
@@ -1022,33 +1025,37 @@ value) and the same happens with the `➕` button when the list reaches its
 *max_items* limit.
 
 
-### Context-Driven Keyboard Shortcuts (Hot Keys) and smart navigation
+### Hotkeys and smart keyboard navigation
 
-{: .warning :}
-> Section still under construction...
+#### Context-Driven Keyboard Shortcuts (Hot Keys)
 
-SmarkForm supports context-driven keyboard shortcuts, enhancing the user experience by allowing quick navigation and actions. This example will demonstrate how to configure and use these shortcuts in your forms.
+All *SmarkForm* triggers can be assigned a *hotkey* property to
+make them accessible via keyboard shortcuts.
+
+To trigger an action using a keyboard shortcut the user only needs to press the
+*Ctrl* key and the key defined in the *hotkey* property of the trigger.
+
+In the following example you can use the `Ctrl`+`+` and `Ctrl`+`-` combinations
+to add or remove phone numbers from the list, respectively.
 
 {% raw %} <!-- simple_list_hotkeys {{{ --> {% endraw %}
 {% capture simple_list_hotkeys
 %}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
-█    <button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "keep_non_empty":true}' title='Remove phone number'>➖</button>
-█    <button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
-█    <label data-smark>Phones:</label>
-█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
-█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
-█        <li class="row">
-█            <label data-smark>📞 Telephone
-█            <span data-smark='{"action":"position"}'>N</span>
-█            </label>
-█            <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
-█            <input type="tel" data-smark>
-█            <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
-█        </li>
-█    </ul>{%
+█<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+█<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
+█<label data-smark>Phones:</label>
+█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+█    <li class="row">
+█        <label data-smark>📞 Telephone
+█        <span data-smark='{"action":"position"}'>N</span>
+█        </label>
+█        <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
+█        <input type="tel" data-smark>
+█        <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
+█    </li>
+█</ul>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
-
 
 {% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
 {% capture simple_list_hotkeys_css
@@ -1079,7 +1086,6 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys"
     htmlSource=simple_list_hotkeys
@@ -1088,6 +1094,107 @@ endcapture %}
     showEditor=true
 %}
 
+#### Reveal of hot keys
+
+If you tinkered a bit with the previous example, you may have noticed that as
+soon as you press the `Ctrl` key, the related hot keys are revealed beside
+corresponding buttons.
+
+🚀 This means that **the user does not need to know every hotkeys in advance**,
+but can discover them on the fly by pressing the `Ctrl` key.
+
+For instance I bet you already discovered that you can use the `Ctrl`+`Delete`
+combination to activate the `🧹` button and remove all unused phone number
+fields in the list.
+
+{: .warning :}
+> For this to work, **a little CSS setup is needed** to define how the hint
+> will look like.
+> 
+> {: .info :}
+> > Hotkey hints are dynamically revealed/unrevealied by setting/removing the
+> > `data-hotkey` attribute in the trigger's DOM node.
+>
+> {: .hint :}
+> > Check the *CSS* tab of the exaple above to see an example of how to style
+> > the hot keys hints.
+
+
+
+#### Hotkeys and context
+
+In *SmarkForm*, hotkeys are context-aware, meaning that the same hotkey can
+trigger different actions depending on the context in which the focus is.
+
+If you dug a bit into the HTML source of the previous example, you may have
+noticed that the outer `➕` and `➖` buttons have the *hotkey* property set as
+well but, unlike the `🧹` button, they are not announced when pressing the
+`Ctrl` key.
+
+The reason behind this is that the value of their *hotkey* property is the same
+of their inner counterparts and hotkeys are discovered from the inner focused
+field to the outside, **giving preference to the innermost ones in case of
+conflict**.
+
+Let's see the same example with a few additional fields outside the list:
+
+If you focus one of them and press the `Ctrl` key, you'll see that nothing
+happens. But if you navigate to any phone number in the list (for instance by
+repeatedly pressing the `Tab` key) and press the `Ctrl` key, you'll see that
+now the hotkeys we defined are available again.
+
+{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_with_context
+%}█<p>
+█    <label data-smark='{"type": "label"}'>Name:</label>
+█    <input name='name' data-smark='{"type": "input"}' />
+█</p>
+█<p>
+█    <label data-smark='{"type": "label"}'>Surname:</label>
+█    <input name='surname' data-smark='{"type": "input"}' />
+█</p>
+{{ simple_list_hotkeys }}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_hotkeys_with_context"
+    htmlSource=simple_list_hotkeys_with_context
+    cssSource=simple_list_hotkeys_css
+    selected="preview"
+    showEditor=true
+%}
+
+
+#### Smart navigation
+
+Last but not least, if you played a bit with keyboard navigation in the
+previous example, you may have noticed that you can navigate through the outer
+`🧹`, `➕` and `➖` buttons using the `Tab` key, but you cannot navigate to the
+inner `➖` and `➕` buttons in every list item.
+
+This is automatically handled by *SmarkForm* to improve User Experience:
+
+  * Passing throug all `➖` and `➕` buttons in every list item would
+    make it hard to navigate through the list.
+
+  * *SmarkForm* detects that they have a *hotkey* defined and take them out of
+    the navigation flow since the user only needs to press the `Ctrl` key to
+    discover a handy alternative to activate them from the keyboard.
+
+  * The outer ones, by contrast, are always kept in the navigation flow since
+    they are outside of their actual context and their functionality may be
+    required before having chance to bring the focus inside their context.
+    - Put in other words, with *min_items* set to 0, it would be impossible to
+      create the first item without resorting to the mouse.
+
+
+
+To sum up, ...
+
+> 🚧 TODO: Add example wrapping the previous one in a nested list to show how
+> focus effectively changes the hotkeys that are being activated/revealed.
 
 
 
