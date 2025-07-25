@@ -48,8 +48,12 @@ export class hotKeys_handler {
         // (Re)activation:
         if (activation) {
             const level = altKey ? 2 : 1;
-            me.reveal(ev.target, level); // Activate and reveal.
-        } else if (me.revealed instanceof Array) {
+            // Activate and reveal:
+            return void me.reveal(ev.target, level);
+        };
+
+        // Hotkey stroke:
+        if (me.revealed instanceof Array) {
             const targettedTrigger = me.revealed.find(
                 t=>t.options.hotkey == ev.key
             );
@@ -59,6 +63,7 @@ export class hotKeys_handler {
                 targettedTrigger.targetNode.click();
             };
         };
+
     };
     reveal(target, level = 1) {
         const me = this;
@@ -83,11 +88,11 @@ export class hotKeys_handler {
             const activeContextsSet = new Set(activeContexts);
 
             const candidateTriggers = activeContexts
-                .map((c, lv)=>(
-                    c.getTriggers('*')    // All triggers.
+                .map((ctx, distance)=>(
+                    ctx.getTriggers('*')    // All triggers.
                     .map(tg=>({
                         tg,
-                        lv,   // Ancestor level.
+                        distance,   // Number of ancestors levels.
                         args: tg.getTriggerArgs() || {},
                         hotkey: String(tg.options.hotkey || ""),
                     }))
@@ -100,23 +105,32 @@ export class hotKeys_handler {
                 .sort((ta,tb)=>(
                     activeContextsSet.has(tb.args.target)
                     - activeContextsSet.has(ta.args.target)
-                    - tb.lv
-                    + ta.lv
+                    - tb.distance
+                    + ta.distance
                 ))
             ;
 
-            const usedKeys = new Set();
+            const seen = new Map(); // hotkey => [times seen, distance from target]
             me.revealed = [];
 
             for (const candidate of candidateTriggers) {
-                if (usedKeys.has(candidate.hotkey)) continue; // Used by more preferent tg.
-                if (! candidate.tg.targetNode.disabled) {
-                    candidate.tg.targetNode.setAttribute("data-hotkey", candidate.hotkey);
+                const [times, distance] = seen.get(candidate.hotkey) || [1, 0];
+                if (times < level) {
+                    seen.set(candidate.hotkey, [times + 1, candidate.distance]);
+                    continue; // Level not reached.
                 };
-                // (UX): Perform the following even if disabled for behavioral
-                // consistency...
-                usedKeys.add(candidate.hotkey); // ...don't activate others in place.
-                me.revealed.push(candidate.tg); // ...keep preventing event propagation.
+                if (times > level) {
+                    continue; // Used by more preferent tg.
+                };
+                if (candidate.distance > distance) { // Don't pick more than one per "ancestory" level.
+                    if (! candidate.tg.targetNode.disabled) {
+                        candidate.tg.targetNode.setAttribute("data-hotkey", candidate.hotkey);
+                        me.revealed.push(candidate.tg);
+                    };
+                    // Avoid activating the following candidates by "oveflowing" their times seen count:
+                    // (UX): Do it even if disabled for behavioral consistency...
+                    seen.set(candidate.hotkey, [times + 1, candidate.distance]);
+                };
             };
 
         };
