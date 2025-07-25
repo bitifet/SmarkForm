@@ -6,32 +6,50 @@ export class hotKeys_handler {
         const me = this;
         me.form = form;
         me.revealed = null;
-        me.form.targetNode.addEventListener(
-            "keydown"
-            , me.onKeydown.bind(me)
-            , true
-        );
-        me.form.targetNode.addEventListener(
-            "keyup"
-            , me.onKeyup.bind(me)
-            , true
-        );
-        me.form.targetNode.addEventListener(
-            "focusout"
-            , me.onFocusout.bind(me)
-            , true
-        );
-        me.form.targetNode.addEventListener(
-            "focusin"
-            , me.onFocusin.bind(me)
-            , true
-        );
+        const onStatusChange = hotKeys_handler.onStatusChange.bind(me);
+        me.form.targetNode.addEventListener("keydown", onStatusChange, true);
+        me.form.targetNode.addEventListener("keyup", onStatusChange, true);
+        me.form.targetNode.addEventListener("focusout", onStatusChange, true);
+        me.form.targetNode.addEventListener("focusin", onStatusChange, true);
     };
-    onKeydown(ev) {
+    static onStatusChange(ev) {
         const me = this;
-        if (ev.key == "Control") {
-            me.reveal(ev.target); // Activate and reveal.
-        } else if (ev.ctrlKey) {
+
+        // Deactivation:
+        if (ev.type == "keyup") {
+            if (ev.key == "Control") me.reveal(false);
+            return;
+        };
+
+        // Focus leave:
+        if (ev.type == "focusout") {
+            if (me.revealed !== null) {
+                me.reveal(); // Unreveal, but keep activated.
+            };
+            return;
+        };
+
+        // Focus enter:
+        if (ev.type == "focusin" && me.revealed === null) {
+            return; // No hotkeys revealed.
+            // Otherwise behave as new activation
+        };
+
+        // ev.type is "keydown" or "focusin"
+        const ctrlKey = ev.ctrlKey || ev.key == "Control";
+        const altKey = ev.altKey || ev.key == "Alt";
+        const activation = (
+            // Pressing ctrl key with or without alt key
+            ctrlKey && (ev.key == "Control" || ev.key == "Alt")
+            // Reentering focus after some action without deactivation
+            || ev.type == "focusin"
+        );
+
+        // (Re)activation:
+        if (activation) {
+            const level = altKey ? 2 : 1;
+            me.reveal(ev.target, level); // Activate and reveal.
+        } else if (me.revealed instanceof Array) {
             const targettedTrigger = me.revealed.find(
                 t=>t.options.hotkey == ev.key
             );
@@ -42,25 +60,7 @@ export class hotKeys_handler {
             };
         };
     };
-    onKeyup(ev) {
-        const me = this;
-        if (ev.key == "Control") {
-            me.reveal(false); // Deactivate
-        };
-    };
-    onFocusout(ev) {
-        const me = this;
-        if (me.revealed !== null) {
-            me.reveal(); // Unreveal, keep activated.
-        };
-    };
-    onFocusin(ev) {
-        const me = this;
-        if (me.revealed !== null) {
-            me.reveal(ev.target); // Update revealed triggers
-        };
-    };
-    reveal(target) {
+    reveal(target, level = 1) {
         const me = this;
 
         // Conceal previous target triggers' hotkeys if any:
