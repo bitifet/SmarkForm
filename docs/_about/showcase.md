@@ -51,11 +51,12 @@ featured ones.
     * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Advanced UX Improvements](#advanced-ux-improvements)
     * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-    * [Hotkeys and smart keyboard navigation](#hotkeys-and-smart-keyboard-navigation)
-        * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
-        * [Reveal of hot keys](#reveal-of-hot-keys)
-        * [Hotkeys and context](#hotkeys-and-context)
-        * [Smart navigation](#smart-navigation)
+    * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
+    * [Reveal of hot keys](#reveal-of-hot-keys)
+    * [Hotkeys and context](#hotkeys-and-context)
+    * [Smooth navigation](#smooth-navigation)
+    * [2nd level hotkeys](#2nd-level-hotkeys)
+    * [Hidden actions](#hidden-actions)
     * [Smart value coercion](#smart-value-coercion)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
     * [Animations](#animations)
@@ -719,7 +720,7 @@ forms](#deeply-nested-forms) section:
 %}
 
 
-There we learnt that the `⬇️ Export`, `⬆️ Import` and `❌  Clear` buttons used
+There we learned that the `⬇️ Export`, `⬆️ Import` and `❌  Clear` buttons used
 in all examples in this documentation are just *triggers* that call the
 *export* and *import* actions on a subform called "demo" **(their *context*)**:
 
@@ -1025,9 +1026,7 @@ value) and the same happens with the `➕` button when the list reaches its
 *max_items* limit.
 
 
-### Hotkeys and smart keyboard navigation
-
-#### Context-Driven Keyboard Shortcuts (Hot Keys)
+### Context-Driven Keyboard Shortcuts (Hot Keys)
 
 All *SmarkForm* triggers can be assigned a *hotkey* property to
 make them accessible via keyboard shortcuts.
@@ -1060,11 +1059,11 @@ endcapture %}
 {% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
 {% capture simple_list_hotkeys_css
 %}
-{{""}}#myForm$$ button[data-hotkey] {
+{{""}}#myForm$$ [data-hotkey] {
   position: relative;
   overflow-x: display;
 }
-{{""}}#myForm$$ button[data-hotkey]::before {
+{{""}}#myForm$$ [data-hotkey]::before {
   content: attr(data-hotkey);
   display: inline-block;
   position: absolute;
@@ -1094,7 +1093,7 @@ endcapture %}
     showEditor=true
 %}
 
-#### Reveal of hot keys
+### Reveal of hot keys
 
 If you tinkered a bit with the previous example, you may have noticed that as
 soon as you press the `Ctrl` key, the related hot keys are revealed beside
@@ -1121,7 +1120,7 @@ fields in the list.
 
 
 
-#### Hotkeys and context
+### Hotkeys and context
 
 In *SmarkForm*, hotkeys are context-aware, meaning that the same hotkey can
 trigger different actions depending on the context in which the focus is.
@@ -1167,17 +1166,17 @@ endcapture %}
 %}
 
 
-#### Smart navigation
+### Smooth navigation
 
 Last but not least, if you played a bit with keyboard navigation in the
 previous example, you may have noticed that you can navigate through the outer
 `🧹`, `➕` and `➖` buttons using the `Tab` key, but you cannot navigate to the
 inner `➖` and `➕` buttons in every list item.
 
-This is automatically handled by *SmarkForm* to improve User Experience:
+👉 This is automatically handled by *SmarkForm* to improve User Experience:
 
   * Passing throug all `➖` and `➕` buttons in every list item would
-    make it hard to navigate through the list.
+    have made it hard to navigate through the list.
 
   * *SmarkForm* detects that they have a *hotkey* defined and take them out of
     the navigation flow since the user only needs to press the `Ctrl` key to
@@ -1191,12 +1190,77 @@ This is automatically handled by *SmarkForm* to improve User Experience:
 
 
 
-To sum up, ...
+### 2nd level hotkeys
 
-> 🚧 TODO: Add example wrapping the previous one in a nested list to show how
-> focus effectively changes the hotkeys that are being activated/revealed.
+Let's recall the previous example with few personal data and a list of phones
+and wrap it in a list to build a simple phonebook.
+
+As we've learned, we can use "+" and "-" hotkeys to add or remove entries in
+our phonebook without causing any conflict. When the user presses the `Ctrl`
+key the proper hotkeys are revealed depending on the context of the current
+focus.
+
+🤔 But now let's say you filled in the last phone number in the current entry
+and you want to add a new contact to the phonebook without turning to the
+mouse. **You cannot reach the outer `➕` button to add a new contact because
+its hotkey is the same as the inner `➕` button to add a new phone number.**
+
+🚀 For this kind of situations, *SmarkForm* provides a *2nd level hotkey
+access*:
+
+👉 Just combine the `Alt` key with the `Ctrl` key and the hotkeys in
+their nearest level will be automatically inhibited allowing those in the next
+higher level to reveal.
+
+Try it in the following example:
+
+{% raw %} <!-- nested_simple_list_hotkeys_with_context {{{ --> {% endraw %}
+{% capture nested_simple_list_hotkeys_with_context
+%}█<div data-smark='{"type": "list", "name": "phonelist", "sortable": true}'>
+█    <fieldset>
+█        <legend>
+█            <span data-smark='{"action":"removeItem", "hotkey":"-"}' title='Delete this phonebook entry' style='cursor:pointer'>[➖]</span>
+█            <strong>
+█                Contact
+█                <span data-smark='{"action":"position"}'>N</span>
+█            </strong>
+█        </legend>{{
+         simple_list_hotkeys_with_context | replace: "█", "█        "
+}}█    </fieldset>
+█</div>
+█<p style="text-align: right; margin-top: 1em">
+█    <b>Total entries:</b>
+█    <span data-smark='{"action":"count", "context": "phonelist"}'>M</span>
+█</p>
+█<button
+█    data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}'
+█    style="float: right; margin-top: 1em"
+█>➕ Add Contact</button>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_hotkeys_with_context_nested"
+    htmlSource=nested_simple_list_hotkeys_with_context
+    cssSource=simple_list_hotkeys_css
+    selected="preview"
+    showEditor=true
+%}
+
+
+### Hidden actions
+
+{: .warning :}
+> Section still under construction...
+
+
+{% include components/sampletabs_tpl.md
+    formId="hidden_actions"
+    htmlSource=hidden_actions
+    selected="preview"
+%}
 
 
 ### Smart value coercion
