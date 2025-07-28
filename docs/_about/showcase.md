@@ -325,9 +325,9 @@ endcapture %}
   * Appended a `➕` button to each item to allow inserting items at a given position.
   * Returned to the default behaviour of not exporting empty items.
   * Made it sortable (by dragging and dropping items).
-  * Also notice that when the maxItems limit is reached, every *addItem*
+  * Also notice that when the max_items limit is reached, every *addItem*
     trigger, like the `➕` button is automatically disabled.
-  * ...Samme applies to *removeItem* triggers when the minItems limit is
+  * ...Samme applies to *removeItem* triggers when the min_items limit is
     reached.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -1252,15 +1252,76 @@ Try it in the following example:
 
 ### Hidden actions
 
+
+As we already learned, *SmarkForm* hotkeys are defined over trigger components
+so, to define a hotkey to perform some action, we need to place a trigger
+component that calls that action somewhere in the form.
+
+{: .info :}
+> This aligns well with the *SmarkForm* philosophy of providing a consistent
+> functionality no matter the device or input method used. For instance, if you
+> use a touch device, you will hardly use the keyboard, let alone a hotkey. But
+> you will always be able to tap the button to perform the action.
+
+Nevertheless there are exceptions where hotkeys can be convenient but flooding
+the form with triggers for, maybe non essential, actions would make the form
+cluttered more than needed.
+
+👉 This is the case of the `➖` and `➕` buttons surrounding every phone number
+field in the previous examples which allowed to cherry pick the position where
+to remove or add a new phone: For small devices would be enough with the
+general  `➖` and `➕` buttons that removes or adds a phone number from/to the
+end of the list.
+
+💡 In this scenario **we can use CSS to hide the triggers** while keeping them
+accessible through their hotkeys.
+
 {: .warning :}
-> Section still under construction...
+> Keep in mind that if, [like in our examples](#reveal-of-hot-keys), you use a
+> `::before` (or `::after`) pseudo-element to show the hotkey hint, you
+> shouldn't use a property that completely removes it from the DOM, like
+> `display: none;`, since it will also prevent the `::before` or `::after`
+> pseudo-element from appearing too.
+> 
+> {: .hint :}
+> > Better use `visibility: hidden;` or `opacity: 0;` to hide the button
+> > and `width: 0px;` and/or `height: 0px;` as needed to prevent them from
+> > taking space in the layout.
+
+
+{% raw %} <!-- hidden_actions_css {{{ --> {% endraw %}
+{% capture hidden_actions_css
+%}
+{{""}}#myForm$$ li.row button[data-smark] {
+    visibility: hidden;
+    width: 0px;
+    pointer-events: none;
+}
+{{""}}#myForm$$ li.row button[data-smark]::before {
+    visibility: visible;
+}
+{{ simple_list_hotkeys_css }}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% include components/sampletabs_tpl.md
     formId="hidden_actions"
-    htmlSource=hidden_actions
+    htmlSource=nested_simple_list_hotkeys_with_context
+    cssSource=hidden_actions_css
     selected="preview"
 %}
+
+This is just a simple trick and not any new *SmarkForm* feature, but it is
+worth to mention it here since it helps to build smoother and cleaner forms.
+
+If you try to fill the former example you'll notice that, when hitting the
+`Ctrl` key, the "+" and "-" hotkey hints are shown beside the position of the,
+now hidden, `➕` and `➖` buttons.
+
+...And, at the same time, the ones still visible in the outer context will
+allow touch device users to add or remove phone numbers even only to/from the
+end of the list.
 
 
 ### Smart value coercion
