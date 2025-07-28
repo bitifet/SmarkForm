@@ -247,7 +247,8 @@ export class SmarkComponent {
         );
     };//}}}
     find(path="") { // {{{
-        let base=this;
+        const me = this;
+        let base = me;
         path = String(path); // Allow numbers (arrays simply won't match).
         if (path[0] == "/") while (base.parent) base = base.parent;
         const parts = path
@@ -275,17 +276,27 @@ export class SmarkComponent {
         // (Returns single component)
         return parts.reduce(
             (current, name)=>{
-                if (current === undefined) return null;   // No match.
+                if (current === undefined) return;   // No match.
                 if (name == "..") return current.parent;  // Go up one level.
                 if ( // Special syntax for list siblings (.+n / .-n)
                     name[0] == "."
-                    && current.parent?.options?.type == "list"
                 ) {
+                    if (name == ".") return current; // Current node.
+                    if (! current.parent) return; // Root node => no siblings.
                     const delta = parseInt(name.slice(1));
-                    const n = parseInt(current.name) + delta;
-                    if (! isNaN(n)) return current.parent.children[n];
+                    if (isNaN(delta)) return; // Invalid sibling syntax.
+                    if (current.parent.options.type == "list") {
+                        const n = parseInt(current.name) + delta
+                        if (! isNaN(n)) return current.parent.children[n];
+                    } else {
+                        const keys = Object.keys(current.parent.children);
+                        const currentPosition = keys.findIndex(key=>key==current.name);
+                        const newKey = keys[currentPosition + delta];
+                        return current.parent.children[newKey];
+                    };
+                } else {
+                    return current.children[name];
                 };
-                return current.children[name];
             }
             , base
         )
