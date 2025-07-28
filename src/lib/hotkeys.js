@@ -58,9 +58,17 @@ export class hotKeys_handler {
                 t=>t.options.hotkey == ev.key
             );
             if (targettedTrigger) {
+                // Prevent default and stop propagation:
+                //   Even if disabled to avoid weird behaviour with repetitions
+                //   (Ex. using "+" to add items to a list would zoom in
+                //   some browsers when max_items is reached).
                 ev.preventDefault();
                 ev.stopPropagation();
-                targettedTrigger.targetNode.click();
+                // Perform the action:
+                if (! targettedTrigger.targetNode.disabled) {
+                    // Unless trigger is disabled
+                    targettedTrigger.targetNode.click();
+                };
             };
         };
 
@@ -125,8 +133,8 @@ export class hotKeys_handler {
                 if (candidate.distance > distance) { // Don't pick more than one per "ancestory" level.
                     if (! candidate.tg.targetNode.disabled) {
                         candidate.tg.targetNode.setAttribute("data-hotkey", candidate.hotkey);
-                        me.revealed.push(candidate.tg);
                     };
+                    me.revealed.push(candidate.tg); // Let stroke detection know it matched.
                     // Avoid activating the following candidates by "oveflowing" their times seen count:
                     // (UX): Do it even if disabled for behavioral consistency...
                     seen.set(candidate.hotkey, [times + 1, candidate.distance]);
