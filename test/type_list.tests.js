@@ -171,21 +171,23 @@ const TheSimpsons = {//{{{
 
 describe('List Component Type Test', function() {
     let browser, page, onClosed;
+    const test_title = this.title;
 
-    before(async () => {
+    before(async function() {
+        this.timeout(4000);
         0, {browser, page, onClosed} = await renderPug({
-            title: this.title,
+            title: test_title,
             src: pugSrc,
             headless: dev ? false : undefined,
         });
     });
 
-    after(async () => {
+    after(async function() {
         if (! dev) await browser.close();
         if (onClosed) await onClosed();
     });
 
-    it('addItem action works', async () => {//{{{
+    it('addItem action works', async function() {//{{{
         const listLength = await page.evaluate(async () => {
             const list = form.find("/employees");
             await list.addItem();
@@ -196,7 +198,7 @@ describe('List Component Type Test', function() {
         assert.strictEqual(listLength, 3);
     });//}}}
 
-    it('removeItem action works', async () => {//{{{
+    it('removeItem action works', async function() {//{{{
         const listLength = await page.evaluate(async () => {
             const list = form.find("/employees");
             await list.removeItem();
@@ -206,7 +208,7 @@ describe('List Component Type Test', function() {
     });//}}}
 
 
-    it('min_items limit applies', async () => {//{{{
+    it('min_items limit applies', async function() {//{{{
         const lengths = await page.evaluate(async () => {
             let error, bubbledError;
             form.onAll("error", err=>bubbledError=err);
@@ -239,7 +241,7 @@ describe('List Component Type Test', function() {
         );
     });//}}}
 
-    it('max_items limit applies', async () => {//{{{
+    it('max_items limit applies', async function() {//{{{
         const lengths = await page.evaluate(async () => {
             let error, bubbledError;
             form.onAll("error", err=>bubbledError=err);
@@ -276,7 +278,7 @@ describe('List Component Type Test', function() {
         );
     });//}}}
 
-    it('Imports correctly', async () => {//{{{
+    it('Imports correctly', async function() {//{{{
         const picks = await page.evaluate(async data => {
 
             // Let's make some changes...
@@ -306,7 +308,7 @@ describe('List Component Type Test', function() {
         assert.strictEqual(picks.lisaImportedPhones, 3, "Empty phones in list weren't imported");
     });//}}}
 
-    it('Exports correctly', async () => {//{{{
+    it('Exports correctly', async function() {//{{{
         const exported = await page.evaluate(async () => {
 
             // Fix Hommer's email.

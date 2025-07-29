@@ -185,10 +185,12 @@ mixin inputlist(label="Annonymous")
 
 describe('General Functionality Tests', function() {
     let browser, page, onClosed;
+    const test_title = this.title;
 
-    before(async () => {
+    before(async function() {
+        this.timeout(4000);
         0, {browser, page, onClosed} = await renderPug({
-            title: this.title,
+            title: test_title,
             src: pugSrc,
             headless: dev ? false : undefined,
         });
@@ -201,7 +203,7 @@ describe('General Functionality Tests', function() {
 
     it('Document loaded', async () => {
         const pageTitle = await page.title();
-        assert.strictEqual(pageTitle, this.title);
+        assert.strictEqual(pageTitle, test_title);
     });
 
     it('Basic introspection works', async () => {
