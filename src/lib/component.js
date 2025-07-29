@@ -77,6 +77,8 @@ export class SmarkComponent {
         me.validName = (function nameGenerator() {//{{{
             let counter = 0;
             return function(...names){
+                if (me.parent.isSingleton) return "";
+                    // Singleton target components are unnamed.
                 for (
                     let n0 of names
                 ) if (
@@ -249,6 +251,8 @@ export class SmarkComponent {
     find(path="") { // {{{
         const me = this;
         let base = me;
+        if (base.name === "" && base.parent.isSingleton) base = base.parent;
+             // Always detect singleton fields instead of their child.
         path = String(path); // Allow numbers (arrays simply won't match).
         if (path[0] == "/") while (base.parent) base = base.parent;
         const parts = path
