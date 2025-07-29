@@ -7,6 +7,20 @@ const re_actionEvHandler = /^on(?:Before|After)Action_/;
 const re_localEvHandler = /^onLocal_/;
 const re_allEvHandler = /^onAll_/;
 
+const supportedFieldEventTypes = [
+    "keydown", "keyup", "keypress",
+    "beforeinput", "input", "change",
+    "focus", "blur",
+    "click", "dblclick", "contextmenu",
+    "mousedown", "mouseup", "mousemove", "mouseenter", "mouseleave", "mouseover", "mouseout",
+    "focusin", "focusout",
+
+    // "select", "dragstart", "dragend", "dragover", "dragenter", "dragleave", "drop",
+    // "touchstart", "touchend", "touchmove", "touchcancel",
+    // "wheel", "scroll", "resize",
+    // "copy", "cut", "paste",
+];
+
 function registerEvHandler(evList, evType, evHandler) {
     const me = this;
     if (! evList.has(evType)) evList.set(evType, []);
@@ -14,10 +28,11 @@ function registerEvHandler(evList, evType, evHandler) {
     return me; // Make chainable.
 };
 
-export const events = function events_decorator(target, {kind}) {
+
+export const events = function events_decorator(targetComponentType, {kind}) {
     if (kind == "class") {
-        return class eventEnebledTarget extends target {
-            constructor(target, optionsSrc, ...args) {
+        return class eventEnabledTarget extends targetComponentType {
+            constructor(target, optionsSrc, ...args) {// {{{
 
                 // Capture before/after action event hanlers through
                 // onBeforeAction_xxx / onAfterAction_xxx options
@@ -43,6 +58,7 @@ export const events = function events_decorator(target, {kind}) {
 
                 // Events enhancing:
                 const me = this;
+                if (! me.eventHooks) me.eventHooks = {}; // Ensure eventHooks is defined.
                 const ImRoot = Object.is(me, me.root);
                 me[sym_local_events] = new Map();
                 if (ImRoot) me.root[sym_all_events] = new Map();
@@ -50,14 +66,41 @@ export const events = function events_decorator(target, {kind}) {
                 me.onAll = registerEvHandler.bind(me.root, me.root[sym_all_events]);
                 me.on = me.onLocal; // Handy and readable alias for local events.
 
+                // Field events detection:
+                if (ImRoot) {
+                    for (const evType of supportedFieldEventTypes) {
+                        me.targetNode.addEventListener(evType, ev=>{
+                            const targetComponent = me.getComponent(ev.target);
+                            const {targetNode} = targetComponent;
+
+
+                            // TODO: Implement per-component event hooks to be called here and being able to be preventdefaulted.
+                            const evData = {
+                                type: evType,
+                                originalEvent: ev,
+                                target: targetComponent,
+                                targetNode,
+                            };
+
+                            const eventHook = targetComponent.eventHooks[evType];
+
+                            if (
+                                targetComponent.emit(evType, evData)  // Not default prevented
+                                && typeof eventHook == "function"     // Has a hook for this event
+                            ) eventHook.call(null, evData); ////////////////////
+
+                        });
+                    };
+                };
+
                 // Setup action handlers provided through options:
                 for (
                     const [evt, handler, listenLevel]
                     of onOptionCallbacks
                 ) me[listenLevel](evt, handler);
 
-            };
-            async emit(evType, evData) {
+            };// }}}
+            async emit(evType, evData) {// {{{
                 const me = this;
                 const handlers = [ // Local handlers, then global ones:
                     ...(me[sym_local_events].get(evType) || []),
@@ -74,7 +117,7 @@ export const events = function events_decorator(target, {kind}) {
                     };
                 };
                 return ! defaultPrevented;
-            };
+            };// }}}
         };
     };
 };
