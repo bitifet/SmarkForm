@@ -44,7 +44,7 @@ featured ones.
     * [Deeply nested forms](#deeply-nested-forms)
     * [More on lists](#more-on-lists)
     * [Nested lists and forms](#nested-lists-and-forms)
-        * [Item duplication](#item-duplication)
+    * [Item duplication](#item-duplication)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
@@ -80,16 +80,16 @@ input fields.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
-👉 Notice that **most SmarkForm fields can be null**, meaning the data is
-unknown or indifferent.
+👉 Notice that **most SmarkForm fields can be null**, to explicitly mean that
+the information is unknown or indifferent.
 
   * In the case of radio buttons, if no option is selected, they evaluate to
-    null. Even after a value is set, they allow unselectiong the selected option
-    either by clicking on it again or by pressing the `Delete` key.
+    null.
+    - Even after a value is set, they allow unselectiong the selected option
+      either by clicking on it again or by pressing the `Delete` key.
   * Even color pickers can be null even [native HTML color inputs
     can't](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value).
-  * To reset a color picker after a color being set, you can use the `❌`
-    button to call it's "clear" *action*.
+    - Just press the `Delete`key or use the `❌` button to call it's "clear" *action*.
 
 👉 **This kind of *SmarkForm* components** intended to call *actions* on
 *SmarkForm* fields **are called *triggers*.**
@@ -134,6 +134,10 @@ unknown or indifferent.
 █    </select>
 █</p>
 █<p>
+█    <label data-smark>Detailed description:</label>
+█    <textarea name="longdesc" data-smark ></textarea>
+█</p>
+█<p>
 █    <label data-smark>Seats:</label>
 █    <input type="number" name="seats" min=4 max=9 data-smark />
 █</p>
@@ -173,7 +177,6 @@ For instance, you can:
     <li data-bullet="📝">Edit the JSON as you like.</li>
     <li data-bullet="⬆️"> Import the JSON back to the form.</li>
     <li data-bullet="👀">See the effects of your changes.</li>
-
 
 
 ### Nested forms
@@ -647,7 +650,7 @@ sort the periods by start date.
 
 
 
-#### Item duplication
+### Item duplication
 
 Adding similar items to a list—like periods—can be tedious if users have to
 re-enter all fields each time. To make this easier, SmarkForm lets you add a
@@ -1168,12 +1171,33 @@ endcapture %}
 
 ### Smooth navigation
 
-Last but not least, if you played a bit with keyboard navigation in the
-previous example, you may have noticed that you can navigate through the outer
+As you may have already noticed in the preceding examples, *SmarkForm* provides
+an intuitive interface to facilitate users effortlessly discover how to
+fluently fill all the data in the form without bothering with the interface.
+
+👉 Notice you can navigate smoothly between form fields by typing `Enter`
+(forward) and `Shift`+`Enter` (backward).
+
+So, when you finish filling a field, you can just press `Enter` to
+move to the next one.
+
+This is not only more convenient than `Tab` and `Shift`+`Tab`. More than that:
+**it skips controls providing a more fluid experience** when you are just
+filling data in.
+
+{: .info :}
+> In case of a textarea, use `Ctrl`+`Enter` insetead, since `Enter` alone is
+> used to insert a new line in the text.
+
+Take a look to the `📝 Notes` tab of the previous example for more interesting
+insights and tips.
+
+👉 Last but not least, if you still prefer using `Tab` and `Shift`+`Tab`, in the
+previous example you may have noticed that you can navigate through the outer
 `🧹`, `➕` and `➖` buttons using the `Tab` key, but you cannot navigate to the
 inner `➖` and `➕` buttons in every list item.
 
-👉 This is automatically handled by *SmarkForm* to improve User Experience:
+This is automatically handled by *SmarkForm* to improve User Experience:
 
   * Passing throug all `➖` and `➕` buttons in every list item would
     have made it hard to navigate through the list.
@@ -1185,9 +1209,8 @@ inner `➖` and `➕` buttons in every list item.
   * The outer ones, by contrast, are always kept in the navigation flow since
     they are outside of their actual context and their functionality may be
     required before having chance to bring the focus inside their context.
-    - Put in other words, with *min_items* set to 0, it would be impossible to
-      create the first item without resorting to the mouse.
-
+    - Put in other words: otherwise, with *min_items* set to 0, it would be
+      impossible to create the first item without resorting to the mouse.
 
 
 ### 2nd level hotkeys
