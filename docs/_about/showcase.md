@@ -102,7 +102,7 @@ the information is unknown or indifferent.
 👉 Also notice the `{"encoding":"json"}` bit in the `<select>` dropdown.
 
   * This allow it to return a Null value when the first option is selected.
-  * It also foreces to wrap other values in double quotes to make them valid
+  * It also forces to wrap other values in double quotes to make them valid
     JSON strings.
   * ...unless the *value* property is omitted, in which case inner text is
     used "as is".
@@ -258,7 +258,7 @@ endcapture %}
 
 
 
-Here we used a simpple `<input>` field for each item in the list and had to
+Here we used a simple `<input>` field for each item in the list and had to
 trick them with `style="display: block;"` to make them to stack gracefully.
 
 <span id="singleton_list_example" style="font-size: xx-large">But <b>lists are even more powerful</b> than that...</span>
@@ -330,7 +330,7 @@ endcapture %}
   * Made it sortable (by dragging and dropping items).
   * Also notice that when the max_items limit is reached, every *addItem*
     trigger, like the `➕` button is automatically disabled.
-  * ...Samme applies to *removeItem* triggers when the min_items limit is
+  * ...Same applies to *removeItem* triggers when the min_items limit is
     reached.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -362,7 +362,7 @@ endcapture %}
 Despite of usability concerns, there is no limit in form nesting depth.
 
 In fact, all examples in this chapter are entirely built with SmarkForm itself
-**with no additonal JS code**.
+**with no additional JS code**.
 
 🚀 Including `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons are just
 *SmarkForm* trigger components that work out of the box.
@@ -442,7 +442,7 @@ endcapture %}
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 Here we opted for a different layout.
-  * Usually lists are layed out with single HTML node inside which plays the
+  * Usually lists are laid out with single HTML node inside which plays the
     role of a template for every item in the list.
   * But lists also support other templates with different roles.
   * For this example we introduced the *empty_list*, *separator* and *last_separator* roles.
@@ -552,7 +552,7 @@ endcapture %}
 👉 Here we organized the schedules in a table, using different cells for each interval.
   * This keeps intervals aligned which is more readable.
   * But, table cells have no equivalent to `<thead>`, `<tbody>` and `<tfoot>` for table rows.
-  * This would have made it hard to properly label each schedule or propperly position the add/remove buttons.
+  * This would have made it hard to properly label each schedule or properly position the add/remove buttons.
 
 👉 To address this, we used other *template roles*:
   * The *header* role to label each schedule.
@@ -634,7 +634,7 @@ usability concerns.
 {: .warning :}
 > Drag and Drop events are not natively supported by touch devices.
 >
-> They can be emulated in serveral ways. A quite straighforward one is through
+> They can be emulated in several ways. A quite straightforward one is through
 > the
 > [drag-drop-touch](https://drag-drop-touch-js.github.io/dragdroptouch/demo/)
 > library from Bernardo Castilho:
@@ -656,7 +656,7 @@ Adding similar items to a list—like periods—can be tedious if users have to
 re-enter all fields each time. To make this easier, SmarkForm lets you add a
 new item prefilled with data from an existing one by using an addItem trigger
 button with the *source* property set to another item in the list (for
-inxtance, the previous item -specified by  the special path `.-1`-).
+instance, the previous item -specified by  the special path `.-1`-).
 
 This way, users can duplicate an entry and just edit what’s different.
 
@@ -710,7 +710,7 @@ Below is the same example as before, but with an additional `✨` button to
 
 Exporting and importing data in SmarkForm cannot be easier. 
 
-Let's recall the example showing the full HTML sourece in the [Deeply nested
+Let's recall the example showing the full HTML source in the [Deeply nested
 forms](#deeply-nested-forms) section:
 
 
@@ -805,9 +805,9 @@ myForm.on("BeforeAction_import", async (ev)=>{
 {% capture notes %}
 
 👉 Since `💾` and `📂` buttons are in the higher context level, in this case we
-used a litle JavaScript code intercepting the related events to, resepectively,
+used a little JavaScript code intercepting the related events to, respectively,
 show the whole form in a `window.alert(...)` dialog and import a new JSON data
-to the whole form throught a `window.prompt(...)`.
+to the whole form through a `window.prompt(...)`.
 
 👉 See the JS tab to see how the <em>BeforeAction_import</em> event handler
 prefills the prompt dialog with the JSON export of the whole form.
@@ -884,7 +884,7 @@ As we have seen in the previous examples:
 > very first example (`⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons
 > targetting the "editor" textarea) that doesn't need any additional JS code.
 > 
-> That part of the layout will also be ommitted in the HTML source since we've
+> That part of the layout will also be omitted in the HTML source since we've
 > already know how it works.
 
 
@@ -962,7 +962,7 @@ right path to the desired *context*.
 
 👉 You can *import*, *export* or *clear* either the whole form or any of its
 fields. Try exporting / exporting / clearing the whole form or individual
-fields whith the help of the "JSON data viewer / editor".
+fields with the help of the "JSON data viewer / editor".
 
 
 ## Advanced UX Improvements
@@ -1024,7 +1024,7 @@ endcapture %}
 %}
 
 👉 Notice that the `🧹` and `➖` buttons get disabled then the list has only
-one item (at the beginning or afger removing enouth items to reach *min_items*'
+one item (at the beginning or after removing enough items to reach *min_items*'
 value) and the same happens with the `➕` button when the list reaches its
 *max_items* limit.
 
@@ -1118,7 +1118,7 @@ fields in the list.
 > > `data-hotkey` attribute in the trigger's DOM node.
 >
 > {: .hint :}
-> > Check the *CSS* tab of the exaple above to see an example of how to style
+> > Check the *CSS* tab of the example above to see an example of how to style
 > > the hot keys hints.
 
 
@@ -1186,7 +1186,7 @@ This is not only more convenient than `Tab` and `Shift`+`Tab`. More than that:
 filling data in.
 
 {: .info :}
-> In case of a textarea, use `Ctrl`+`Enter` insetead, since `Enter` alone is
+> In case of a textarea, use `Ctrl`+`Enter` instead, since `Enter` alone is
 > used to insert a new line in the text.
 
 Take a look to the `📝 Notes` tab of the previous example for more interesting
@@ -1199,7 +1199,7 @@ inner `➖` and `➕` buttons in every list item.
 
 This is automatically handled by *SmarkForm* to improve User Experience:
 
-  * Passing throug all `➖` and `➕` buttons in every list item would
+  * Passing through all `➖` and `➕` buttons in every list item would
     have made it hard to navigate through the list.
 
   * *SmarkForm* detects that they have a *hotkey* defined and take them out of
