@@ -2,7 +2,6 @@
 // ===================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
-import {parseJSON} from "../lib/helpers.js";
 const re_color = /^#([a-f0-9]{3}){1,2}$/i;
 const disabled_style = `
     opacity: .5;
@@ -17,6 +16,17 @@ const disabled_style = `
     background-blend-mode: difference;
 `;
 export class color extends input {
+    constructor(...args) {
+        super(...args);
+        // Replace keydown hook to handle "Delete" key:
+        const parent_keydownHook = this.eventHooks.keydown;
+        this.eventHooks.keydown = ev => {
+            parent_keydownHook(ev); // Manually call parent keydown hook
+            if (ev.originalEvent.key === "Delete") {
+                ev.target.clear();
+            };
+        };
+    };
     async render() {//{{{
         await super.render();
         const me = this;
