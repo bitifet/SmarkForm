@@ -22,6 +22,7 @@ export class input extends form {
                 if (nextField) {
                     nextField.focus();
                     ev.originalEvent.preventDefault();
+                    ev.originalEvent.stopPropagation();
                 };
             };
         },

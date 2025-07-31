@@ -89,7 +89,7 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                                 && typeof eventHook == "function"     // Has a hook for this event
                             ) eventHook.call(null, evData); ////////////////////
 
-                        });
+                        }, true); // Capture phase
                     };
                 };
 
