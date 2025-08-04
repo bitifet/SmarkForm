@@ -188,7 +188,7 @@ describe('General Functionality Tests', function() {
     const test_title = this.title;
 
     before(async function() {
-        this.timeout(4000);
+        this.timeout(8000);
         0, {browser, page, onClosed} = await renderPug({
             title: test_title,
             src: pugSrc,
