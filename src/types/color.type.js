@@ -18,14 +18,12 @@ const disabled_style = `
 export class color extends input {
     constructor(...args) {
         super(...args);
-        // Replace keydown hook to handle "Delete" key:
-        const parent_keydownHook = this.eventHooks.keydown;
-        this.eventHooks.keydown = ev => {
-            parent_keydownHook(ev); // Manually call parent keydown hook
+        // Add keydown hook to handle "Delete" key:
+        this.eventHooks.keydown.push ( ev => {
             if (ev.originalEvent.key === "Delete") {
                 ev.target.clear();
             };
-        };
+        });
     };
     async render() {//{{{
         await super.render();

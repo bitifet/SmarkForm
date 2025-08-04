@@ -48,3 +48,27 @@ export function parseJSON(str) {//{{{
         return JSON.parse(str);
     } catch (err) {};
 };//}}}
+
+export function createArrayPuller(parentStore) {//{{{
+    // Create an object that populates arrays to each accessed property
+    const arrayStore = {};
+    for (const prop in parentStore) {
+        arrayStore[prop] = [...parentStore[prop]]; // Copy existing arrays
+        // This allows to remove inherited properties individually if needed
+    }
+    // Dynamically create an array per each accessed property:
+    Object.defineProperty(arrayStore, '_dynamic', {
+      get() {
+        return new Proxy(this, {
+          get(target, prop) {
+            if (prop in target) {
+              return target[prop];
+            }
+            target[prop] = [];
+            return target[prop];
+          }
+        });
+      }
+    });
+    return arrayStore._dynamic;
+};//}}}

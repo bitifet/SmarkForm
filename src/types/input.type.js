@@ -6,26 +6,30 @@ import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {parseJSON} from "../lib/helpers.js";
 export class input extends form {
-    eventHooks = {
-        keydown(ev) {
-            if (ev.originalEvent.key === "Enter") {
-                const backwards = ev.originalEvent.shiftKey;
-                if (
-                    ev.target.targetNode.tagName === "TEXTAREA"
-                    && ! ev.originalEvent.ctrlKey
-                    && ! backwards
-                ) return; // Require Ctrl key to escape textareas.
-                let nextField = (
-                    ! backwards ? ev.target.find(".+1") || ev.target.find("../.+1")
-                    : ev.target.find(".-1") || ev.target.find("../.-1")
-                );
-                if (nextField) {
-                    nextField.focus();
-                    ev.originalEvent.preventDefault();
-                    ev.originalEvent.stopPropagation();
+    constructor(...args) {//{{{
+        super(...args);
+        const me = this;
+        me.eventHooks.keydown.push(
+            function keydown_hook(ev) {
+                if (ev.originalEvent.key === "Enter") {
+                    const backwards = ev.originalEvent.shiftKey;
+                    if (
+                        ev.target.targetNode.tagName === "TEXTAREA"
+                        && ! ev.originalEvent.ctrlKey
+                        && ! backwards
+                    ) return; // Require Ctrl key to escape textareas.
+                    let nextField = (
+                        ! backwards ? ev.target.find(".+1") || ev.target.find("../.+1")
+                        : ev.target.find(".-1") || ev.target.find("../.-1")
+                    );
+                    if (nextField) {
+                        nextField.focus();
+                        ev.originalEvent.preventDefault();
+                        ev.originalEvent.stopPropagation();
+                    };
                 };
-            };
-        },
+            },
+        );
     };
     async render() {//{{{
         const me = this;

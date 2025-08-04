@@ -7,6 +7,8 @@ const re_actionEvHandler = /^on(?:Before|After)Action_/;
 const re_localEvHandler = /^onLocal_/;
 const re_allEvHandler = /^onAll_/;
 
+import {createArrayPuller} from "./helpers.js";
+
 const supportedFieldEventTypes = [
     "keydown", "keyup", "keypress",
     "beforeinput", "input", "change",
@@ -58,13 +60,17 @@ export const events = function events_decorator(targetComponentType, {kind}) {
 
                 // Events enhancing:
                 const me = this;
-                if (! me.eventHooks) me.eventHooks = {}; // Ensure eventHooks is defined.
                 const ImRoot = Object.is(me, me.root);
                 me[sym_local_events] = new Map();
                 if (ImRoot) me.root[sym_all_events] = new Map();
                 me.onLocal = registerEvHandler.bind(me, me[sym_local_events]);
                 me.onAll = registerEvHandler.bind(me.root, me.root[sym_all_events]);
                 me.on = me.onLocal; // Handy and readable alias for local events.
+
+                // Create event hooks object:
+                me.eventHooks = createArrayPuller(super.eventHooks);
+                    // eventHooks are eventHandlers provided by the component type.
+                    // They are processed after regular events if not default prevented.
 
                 // Field events detection:
                 if (ImRoot) {
@@ -73,8 +79,6 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             const targetComponent = me.getComponent(ev.target);
                             const {targetNode} = targetComponent;
 
-
-                            // TODO: Implement per-component event hooks to be called here and being able to be preventdefaulted.
                             const evData = {
                                 type: evType,
                                 originalEvent: ev,
@@ -82,12 +86,7 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                                 targetNode,
                             };
 
-                            const eventHook = targetComponent.eventHooks[evType];
-
-                            if (
-                                targetComponent.emit(evType, evData)  // Not default prevented
-                                && typeof eventHook == "function"     // Has a hook for this event
-                            ) eventHook.call(null, evData); ////////////////////
+                            targetComponent.emit(evType, evData)  // Not default prevented
 
                         }, true); // Capture phase
                     };
@@ -105,6 +104,7 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                 const handlers = [ // Local handlers, then global ones:
                     ...(me[sym_local_events].get(evType) || []),
                     ...(me.root[sym_all_events].get(evType) || []),
+                    ...me.eventHooks[evType] || []
                 ];
                 let defaultPrevented = false;
                 if (handlers.length) {
