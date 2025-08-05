@@ -11,6 +11,7 @@ export class input extends form {
         const me = this;
         me.eventHooks.keydown.push(
             function keydown_hook(ev) {
+                if (ev.defaultPrevented) return;
                 if (ev.originalEvent.key === "Enter") {
                     const backwards = ev.originalEvent.shiftKey;
                     if (
@@ -30,7 +31,7 @@ export class input extends form {
                 };
             },
         );
-    };
+    }; // }}}
     async render() {//{{{
         const me = this;
         me.isSingleton = ! (

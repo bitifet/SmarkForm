@@ -20,6 +20,7 @@ export class color extends input {
         super(...args);
         // Add keydown hook to handle "Delete" key:
         this.eventHooks.keydown.push ( ev => {
+            if (ev.defaultPrevented) return;
             if (ev.originalEvent.key === "Delete") {
                 ev.target.clear();
             };

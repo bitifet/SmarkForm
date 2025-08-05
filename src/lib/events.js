@@ -60,11 +60,10 @@ export const events = function events_decorator(targetComponentType, {kind}) {
 
                 // Events enhancing:
                 const me = this;
-                const ImRoot = Object.is(me, me.root);
                 me[sym_local_events] = new Map();
-                if (ImRoot) me.root[sym_all_events] = new Map();
+                me[sym_all_events] = new Map();
                 me.onLocal = registerEvHandler.bind(me, me[sym_local_events]);
-                me.onAll = registerEvHandler.bind(me.root, me.root[sym_all_events]);
+                me.onAll = registerEvHandler.bind(me, me[sym_all_events]);
                 me.on = me.onLocal; // Handy and readable alias for local events.
 
                 // Create event hooks object:
@@ -72,8 +71,11 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     // eventHooks are eventHandlers provided by the component type.
                     // They are processed after regular events if not default prevented.
 
-                // Field events detection:
-                if (ImRoot) {
+                // Field events redirection:
+                if (
+                    // Do it only once and from root component target:
+                    Object.is(me, me.root)
+                ) {
                     for (const evType of supportedFieldEventTypes) {
                         me.targetNode.addEventListener(evType, ev=>{
                             const targetComponent = me.getComponent(ev.target);
@@ -86,9 +88,9 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                                 targetNode,
                             };
 
-                            targetComponent.emit(evType, evData)  // Not default prevented
+                            targetComponent.emit(evType, evData);
 
-                        }, true); // Capture phase
+                        }, true); // Use capture phase
                     };
                 };
 
@@ -101,22 +103,43 @@ export const events = function events_decorator(targetComponentType, {kind}) {
             };// }}}
             async emit(evType, evData) {// {{{
                 const me = this;
-                const handlers = [ // Local handlers, then global ones:
+                let propagationStopped = false;
+                let immediatePropagationStopped = false;
+                const event = {
+                    ...evData,
+                    type: evType,
+                    defaultPrevented: false,
+                    preventDefault: () => event.defaultPrevented = true,
+                    stopPropagation: () => propagationStopped = true,
+                    stopImmediatePropagation: () => immediatePropagationStopped = true,
+                };
+                // Event target phase:
+                const targetHandlers = [ // Local handlers, then global ones:
                     ...(me[sym_local_events].get(evType) || []),
-                    ...(me.root[sym_all_events].get(evType) || []),
-                    ...me.eventHooks[evType] || []
+                    ...(me[sym_all_events].get(evType) || []),
                 ];
-                let defaultPrevented = false;
-                if (handlers.length) {
-                    let propagationStopped = false;
-                    evData.preventDefault = () => defaultPrevented = true;
-                    evData.stopPropagation = () => propagationStopped = true;
-                    for (const handler of handlers) {
-                        if (propagationStopped) break;
+                for (const handler of targetHandlers) {
+                    if (immediatePropagationStopped) break;
+                    await handler(evData);
+                };
+                // Event hooks (default behavior hooks)::
+                for (const eventHook of me.eventHooks[evType]) {
+                    // WARNING: eventHooks are called inconditionally!
+                    // They should check if event.defaultPrevented is set by themselves.
+                    // This may seem counter-intuitive and unhandy, but it will allow, for instance,
+                    // to implement a fake default prevention to "change" events (which are not natively cancelable) by restoring previous value.
+                    await eventHook(evData);
+                };
+                // Events bubbling phase:
+                for (const parent of me.parents) {
+                    if (propagationStopped) break;
+                    const parentHandlers = parent[sym_all_events].get(evType) || [];
+                    for (const handler of parentHandlers) {
+                        if (immediatePropagationStopped) break;
                         await handler(evData);
                     };
-                };
-                return ! defaultPrevented;
+                }
+                return ! event.defaultPrevented;
             };// }}}
         };
     };
