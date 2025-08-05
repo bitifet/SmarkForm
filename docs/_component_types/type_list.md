@@ -497,8 +497,7 @@ action, plus the following properties:
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_list_animation_example_additem_js {{{ --> {% endraw %}
-{% capture simple_list_animation_example_additem_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+{% capture simple_list_animation_example_additem_js %}const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
 myForm.onAll("addItem", function({
     newItemTarget, /* the targetNode of the future new item */
     onRendered
@@ -568,8 +567,7 @@ time an item is removed from the list.
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_list_animation_example_complete_js {{{ --> {% endraw %}
-{% capture simple_list_animation_example_complete_js %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+{% capture simple_list_animation_example_complete_js %}const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
 myForm.onAll("addItem", function({
     newItemTarget, /* the targetNode of the future new item */
     onRendered
