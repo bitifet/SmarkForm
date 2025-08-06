@@ -34,21 +34,9 @@ permalink: /
 
 # SmarkForm
 
-<div class="SmarkForm-Hero">
-<a
-    href='{{ "resources/examples" | relative_url }}'
-    title="Click to see Live Examples..."
->
-<img
-    src="assets/SmarkForm_hero.png"
-    alt=""
-><br />
-🔗 Live Examples
-</a>
-</div>
 
 
-🚀 **Powerful while effortless Markup-driven and Extendable forms.**
+🚀 **Powerful while effortless Markup-driven and Extendable form controller.**
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]
@@ -56,12 +44,29 @@ permalink: /
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 
-{: .info :}
-> **SmarkForm** enhances HTML forms with advanced features like dynamic list
-manipulation and context-based interactions, **without requiring specific
-layout or complex JavaScript** code. \[[More...]({{ "about/introduction" |
-relative_url }})\]
 
+*SmarkForm* is a lightweight and *extendable* form controller that enhances
+HTML forms to support **subforms** and variable-length **lists** without tying
+the layout to any specific structure. This enable it to **import and export
+data in JSON** format, while providing a smooth navigation with configurable
+hotkeys and a low-code experience among other features.
+
+\[[More...]({{ "about/introduction" | relative_url }})\]
+
+
+<div class="SmarkForm-Hero">
+<a
+    href='{{ "resources/examples" | relative_url }}'
+    title="Click to see Live Examples..."
+>
+<picture>
+    <source srcset="assets/SmarkForm_hero.webp" type="image/webp">
+    <img src="assets/SmarkForm_hero.png" alt="">
+</picture>
+<br />
+🔗 Live Examples
+</a>
+</div>
 
 ## Main Features
 

@@ -9,15 +9,28 @@ nav_order: 1
 
 # {{ page.title }}
 
-**SmarkForm** is a powerful yet effortless markup-driven form library that
-simplifies the creation of interactive forms in web applications. It grants
-designers full control over the form’s appearance, enabling developers to
-concentrate on business logic.
 
-It imports and exports data in JSON format, supports nested forms and
-variable-length lists, properly sanitizes and formats values according to its
-field type, implements declarative restrictions like whether null is allowed or
-not, maximum and minimum length for lists, etc...
+*SmarkForm* is a lightweight and *extendable* form controller that enhances
+HTML forms to support **subforms** and variable-length **lists** without tying
+the layout to any specific structure. This enables it to **import and export
+data in JSON** format, while providing a smooth navigation with configurable
+hotkeys and a low-code experience among other features.
+
+In *SmarkForm*, *(sub)forms* and *lists* are just form fields that
+import/export their data as JSON, number fields return numbers, checkboxes
+return booleans, radio buttons sharing the same name are threated as single
+field, color pickers can return null to distinguish when the color is unknown,
+and so on...
+
+Special components called *triggers* can be placed along the form to call
+specified *actions* like adding or removing items from lists, importing or
+exporting data, etc... **They automatically connect to the proper fields** just
+by their *context* (i.e., their position in the form) which can be altered
+through specific properties..
+
+Forms and lists can be nested to any depth, lists can dynamically grow or
+shrink. This allow to generate any possible JSON structure, from simple
+form.
 
 SmarkForm provides a smooth and intuitive user experience while addressing some
 native HTML limitations; such as forcing `type="color"` fields to always hold a

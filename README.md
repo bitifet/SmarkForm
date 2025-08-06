@@ -13,9 +13,11 @@
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
-> **SmarkForm** enhances HTML forms with advanced features like dynamic list
-manipulation and context-based interactions, **without requiring specific
-layout or complex JavaScript** code.
+> *SmarkForm* is a lightweight and *extendable* form controller that enhances
+HTML forms to support **subforms** and variable-length **lists** without tying
+the layout to any specific structure. This enable it to **import and export
+data in JSON** format, while providing a smooth navigation with configurable
+hotkeys and a low-code experience among other features.
 \[[More...](https://smarkform.bitifet.net/about/introduction)\]
 
 
