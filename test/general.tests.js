@@ -196,19 +196,20 @@ describe('General Functionality Tests', function() {
         });
     });
 
-    after(async () => {
+    after(async function() {
+        this.timeout(8000);
         if (! dev) await browser.close();
         if (onClosed) await onClosed();
     });
 
-    it('Document loaded', async () => {
+    it('Document loaded', async function() {
         const pageTitle = await page.title();
         assert.strictEqual(pageTitle, test_title);
     });
 
-    it('Basic introspection works', async () => {
+    it('Basic introspection works', async function () {
         const form_obj = await page.evaluate(
-                async () =>    form.find("company").getPath()
+                async () => form.find("company").getPath()
         );
         assert.strictEqual(form_obj, '/company');
     });
