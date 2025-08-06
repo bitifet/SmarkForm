@@ -122,14 +122,6 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     if (immediatePropagationStopped) break;
                     await handler(evData);
                 };
-                // Event hooks (default behavior hooks)::
-                for (const eventHook of me.eventHooks[evType]) {
-                    // WARNING: eventHooks are called inconditionally!
-                    // They should check if event.defaultPrevented is set by themselves.
-                    // This may seem counter-intuitive and unhandy, but it will allow, for instance,
-                    // to implement a fake default prevention to "change" events (which are not natively cancelable) by restoring previous value.
-                    await eventHook(evData);
-                };
                 // Events bubbling phase:
                 for (const parent of me.parents) {
                     if (propagationStopped) break;
@@ -139,6 +131,14 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         await handler(evData);
                     };
                 }
+                // Event hooks (default behavior hooks)::
+                for (const eventHook of me.eventHooks[evType]) {
+                    // WARNING: eventHooks are called inconditionally!
+                    // They should check if event.defaultPrevented is set by themselves.
+                    // This may seem counter-intuitive and unhandy, but it will allow, for instance,
+                    // to implement a fake default prevention to "change" events (which are not natively cancelable) by restoring previous value.
+                    await eventHook(evData);
+                };
                 return ! event.defaultPrevented;
             };// }}}
         };
