@@ -47,11 +47,11 @@ permalink: /
 
 *SmarkForm* is a lightweight and *extendable* form controller that enhances
 HTML forms to support **subforms** and variable-length **lists** without tying
-the layout to any specific structure. This enable it to **import and export
+the layout to any specific structure. This enables it to **import and export
 data in JSON** format, while providing a smooth navigation with configurable
 hotkeys and a low-code experience among other features.
 
-\[[More...]({{ "about/introduction" | relative_url }})\]
+\[[🔗 More...]({{ "about/introduction" | relative_url }})\]
 
 
 <div class="SmarkForm-Hero">
@@ -74,11 +74,11 @@ hotkeys and a low-code experience among other features.
     forms to any depth.
   * [Lists]({{ "/about/showcase" | relative_url }}#lists): Sortable and
     variable-length arrays either of scalars or subforms.
-  * [Conigurable hot keys]({{ "/about/showcase" | relative_url
+  * [Configurable hotkeys]({{ "/about/showcase" | relative_url
     }}#context-driven-keyboard-shortcuts): Context-driven keyboard shortcuts.
-  * [Low code]({{ "about/showcase" |relative_url }}#basic-form): No manual
+  * [Low code]({{ "about/showcase" | relative_url }}#basic-form): No manual
     wiring between controls and fields.
-  * [JSON format]({{ "/about/showcase" | relative_url}}#import-and-export-data): Data
+  * [JSON format]({{ "/about/showcase" | relative_url }}#import-and-export-data): Data
     is imported / exported as JSON.
   * [Lightweight]({{ "/resources/download" | relative_url }}): Only {{
     site.data.computed.bundleSizeKB }}KB minified.
@@ -89,7 +89,7 @@ hotkeys and a low-code experience among other features.
 
 The following code snippet shows *SmarkForm* simplicity.
 
-👉 You will find similar examples working preview along this documentation.
+👉 You will find similar examples with working previews throughout this documentation.
 **Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
 
 
@@ -183,8 +183,8 @@ version. \[[🔗 More...]({{ "about/roadmap" | relative_url }}#current-status)\]
 To get started with SmarkForm you can:
 
 
-| 👉 Take a look to our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
-| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
+| 👉 Take a look at our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
+| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to dive right in. |
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
 
 
