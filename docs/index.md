@@ -51,7 +51,7 @@ the layout to any specific structure. This enables it to **import and export
 data in JSON** format, while providing a smooth navigation with configurable
 hotkeys and a low-code experience among other features.
 
-\[[More...]({{ "about/introduction" | relative_url }})\]
+\[[🔗 More...]({{ "about/introduction" | relative_url }})\]
 
 
 <div class="SmarkForm-Hero">
@@ -184,7 +184,7 @@ To get started with SmarkForm you can:
 
 
 | 👉 Take a look at our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
-| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
+| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to dive right in. |
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
 
 
