@@ -1,4 +1,13 @@
-# just-the-docs-template
+# SmarkForm Documentation Site
+
+> **Note**: This README is about setting up and building the SmarkForm documentation website. 
+> If you're looking for information about **using SmarkForm** itself, please see the main documentation at [index.md](index.md).
+
+This documentation site is built using Jekyll and the [Just the Docs] theme. The content below explains how to set up, build, and maintain this documentation site.
+
+---
+
+## Documentation Site Setup
 
 This is a *bare-minimum* template to create a [Jekyll] site that:
 
@@ -24,8 +33,8 @@ After completing the creation of your new site on GitHub, update it as needed:
 
 Update the following files to your own content:
 
-- `index.md` (your new home page)
-- `README.md` (information for those who access your site repo on GitHub)
+- `index.md` (your new home page) - **Note: This is the main SmarkForm documentation**
+- `README.md` (information for those who access your site repo on GitHub) - **This file you're reading now**
 
 ## Changing the version of the theme and/or Jekyll
 
