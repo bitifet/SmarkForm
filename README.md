@@ -23,21 +23,21 @@ hotkeys and a low-code experience among other features.
 
 ## Main Features
 
-  * [Subforms](https://smarkform.bitifet.net/about/showcase#nested-forms):
+  * `🗂` [Subforms](https://smarkform.bitifet.net/about/showcase#nested-forms):
     Nested forms to any depth.
-  * [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
+  * `📑` [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
     variable-length arrays either of scalars or subforms.
-  * [Configurable hot
+  * `🫳` [Configurable hot
     keys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts):
     Context-driven keyboard shortcuts.
-  * [Low code](https://smarkform.bitifet.net/about/showcase#basic-form): No
+  * `🧩` [Low code](https://smarkform.bitifet.net/about/showcase#basic-form): No
     manual wiring between controls and fields.
-  * [JSON
+  * `{}` [JSON
     format](https://smarkform.bitifet.net/about/showcase#import-and-export-data):
     Data is imported / exported as JSON.
-  * [Lightweight](https://smarkform.bitifet.net/resources/download): Only ~38KB
+  * `🪶` [Lightweight](https://smarkform.bitifet.net/resources/download): Only ~38KB
     minified.
-  * Flexible, extendable and
+  * `💪` Flexible, extendable and
     [more...](https://smarkform.bitifet.net/about/features).
 
 
