@@ -1,6 +1,6 @@
 [![SmarkForm Logo](docs/assets/SmarkForm_logo.png)](https://www.npmjs.com/package/smarkform)
 
-🚀 **Powerful while effortless Markup-driven and Extendable forms.**
+🚀 **Powerful while effortless Markup-driven and Extendable form controller.**
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]
@@ -13,32 +13,35 @@
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
-> *SmarkForm* is a lightweight and *extendable* form controller that enhances
-HTML forms to support **subforms** and variable-length **lists** without tying
-the layout to any specific structure. This enable it to **import and export
-data in JSON** format, while providing a smooth navigation with configurable
-hotkeys and a low-code experience among other features.
-\[[More...](https://smarkform.bitifet.net/about/introduction)\]
+> *SmarkForm* is a lightweight form library designed for front-end developers
+> to enhance HTML forms with powerful features like **subforms** and dynamic,
+> variable-length **lists**. As a form controller, it seamlessly integrates
+> with the DOM to provide a CSS-agnostic solution, freeing your form layout
+> from rigid styling constraints. This no-dependencies vanilla JavaScript
+> library enables **JSON form data import and export**, ensuring compatibility
+> with modern workflows. With a focus on accessibility (a11y), SmarkForm offers
+> configurable hotkeys, **smooth navigation**, and a **low-code experience**,
+> making it an extendable and versatile tool for building HTML form
+> applications.
+> \[[More...](https://smarkform.bitifet.net/about/introduction)\]
 
 
 ## Main Features
 
-  * `🗂` [Subforms](https://smarkform.bitifet.net/about/showcase#nested-forms):
+  * `🗂` [Subforms](https://smarkform.bitifet.net/about/features#nestable-forms):
     Nested forms to any depth.
-  * `📑` [Lists](https://smarkform.bitifet.net/about/showcase#lists): Sortable and
-    variable-length arrays either of scalars or subforms.
-  * `🫳` [Configurable hot
-    keys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts):
-    Context-driven keyboard shortcuts.
-  * `🧩` [Low code](https://smarkform.bitifet.net/about/showcase#basic-form): No
-    manual wiring between controls and fields.
-  * `{}` [JSON
-    format](https://smarkform.bitifet.net/about/showcase#import-and-export-data):
+  * `📑` [Lists](https://smarkform.bitifet.net/about/features#variable-length-lists):
+    Sortable and variable-length lists (arrays) either of scalars or subforms.
+  * `🫳` [Configurable hot keys](https://smarkform.bitifet.net/about/features#context-driven-hotkeys):
+    Context-driven and discoverable keyboard shortcuts.
+  * `🧩` [Low code](https://smarkform.bitifet.net/about/features#easy-to-use):
+    No manual wiring between controls and fields.
+  * `{}` [JSON format](https://smarkform.bitifet.net/about/features#json-based):
     Data is imported / exported as JSON.
-  * `🪶` [Lightweight](https://smarkform.bitifet.net/resources/download): Only ~38KB
-    minified.
+  * `🪶` [Lightweight](https://smarkform.bitifet.net/about/features#lightweight-yet-highly-compatible):
+    Only ~38KB minified.
   * `💪` Flexible, extendable and
-    [more...](https://smarkform.bitifet.net/about/features).
+    [more...](https://smarkform.bitifet.net/about/features ).
 
 
 ## Installation
@@ -104,6 +107,12 @@ instructions:
 
 Then you will be able to see the documentation at `http://localhost:4000` or
 `http://<your-ip>:4000`.
+
+
+## Keywords
+
+front-end – form – form-controller – form-library – json-form – lightweight –
+vanilla – css-agnostic – DOM – html-form – no-dependencies – a11y
 
 
 ## License

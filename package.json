@@ -32,7 +32,7 @@
     "DOM",
     "html-form",
     "no-dependencies",
-    "a11y",
+    "a11y"
   ],
   "author": "Joan Miquel Torres <joanmi@bitifet.net>",
   "license": "MIT",

@@ -44,14 +44,12 @@ permalink: /
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 
-
 *SmarkForm* is a lightweight and *extendable* form controller that enhances
 HTML forms to support **subforms** and variable-length **lists** without tying
-the layout to any specific structure. This enables it to **import and export
+the layout to any specific structure. This enable it to **import and export
 data in JSON** format, while providing a smooth navigation with configurable
 hotkeys and a low-code experience among other features.
-
-\[[🔗 More...]({{ "about/introduction" | relative_url }})\]
+\[[More...]({{ "about/introduction" | relative_url }})\]
 
 
 <div class="SmarkForm-Hero">
@@ -70,26 +68,26 @@ hotkeys and a low-code experience among other features.
 
 ## Main Features
 
-  * [Subforms]({{ "/about/showcase" | relative_url }}#nested-forms): Nested
+  * `🗂` [Subforms]({{ "/about/features" | relative_url }}#nestable-forms): Nested
     forms to any depth.
-  * [Lists]({{ "/about/showcase" | relative_url }}#lists): Sortable and
-    variable-length arrays either of scalars or subforms.
-  * [Configurable hotkeys]({{ "/about/showcase" | relative_url
-    }}#context-driven-keyboard-shortcuts): Context-driven keyboard shortcuts.
-  * [Low code]({{ "about/showcase" | relative_url }}#basic-form): No manual
+  * `📑` [Lists]({{ "/about/features" | relative_url }}#variable-length-lists):
+    Sortable and variable-length lists (arrays) either of scalars or subforms.
+  * `🫳` [Configurable hot keys]({{ "/about/features" | relative_url }}#context-driven-hotkeys):
+    Context-driven and discoverable keyboard shortcuts.
+  * `🧩` [Low code]({{ "about/features" |relative_url }}#easy-to-use): No manual
     wiring between controls and fields.
-  * [JSON format]({{ "/about/showcase" | relative_url }}#import-and-export-data): Data
+  * `{}` [JSON format]({{ "/about/features" | relative_url}}#json-based): Data
     is imported / exported as JSON.
-  * [Lightweight]({{ "/resources/download" | relative_url }}): Only {{
-    site.data.computed.bundleSizeKB }}KB minified.
-  * Flexible, extendable and [more...]({{ "about/features" | relative_url }})
+  * `🪶` [Lightweight]({{ "/about/features" | relative_url }}#lightweight-yet-highly-compatible):
+    Only {{ site.data.computed.bundleSizeKB }}KB minified.
+  * `💪` Flexible, extendable and [more...]({{ "about/features" | relative_url }})
 
 
 ## Sample Code
 
 The following code snippet shows *SmarkForm* simplicity.
 
-👉 You will find similar examples with working previews throughout this documentation.
+👉 You will find similar examples working preview along this documentation.
 **Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
 
 
@@ -183,8 +181,8 @@ version. \[[🔗 More...]({{ "about/roadmap" | relative_url }}#current-status)\]
 To get started with SmarkForm you can:
 
 
-| 👉 Take a look at our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
-| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to dive right in. |
+| 👉 Take a look to our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
+| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
 
 
