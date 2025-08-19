@@ -91,47 +91,26 @@ The following code snippet shows *SmarkForm* simplicity.
 **Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
 
 
-
-
-{% capture generic_sample_css
-%}#myForm$$ ul li {
-    list-style-type: none !important;
-}
-{{""}}#myForm$$ button:disabled {
-    opacity: .4;
-}{%
-endcapture %}
-
-{% capture simple_list_example
-%}<div id="myForm$$">
-    <p>
-        <label data-smark>Name:</label>
-        <input data-smark='{"name":"name"}' placeholder='Full name' type="text">
-    </p>
-    <p>
-        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-        <label data-smark>Phones:</label>
-        <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
-            <li>
-                <label data-smark>📞 Tel.
-                <span data-smark='{"action":"position"}'>N</span>
-                </label>
-                <input placeholder='+34...' type="tel" data-smark>
-                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-            </li>
-        </ul>
-    </p>
-</div>{%
-endcapture %}
-
-
-{% capture simple_list_example_notes %}
+{% capture notes %}
 👉 This is a simple form to show the power of *SmarkForm*.
 
-  * Tinker with it, modifying data, adding or removing items from the
-     *Phones* list, sorting its items by dragging them and then clicking the
-     `Export` button to see resulting data.
-  
+  * Tinker with it in the **Preview** tab, modifying data, etc...
+    - Add or remove items from the *Phones* list.
+    - Sort the list by dragging them with the mouse.
+    - Use the `⬇️` to export the data as JSON.
+    - Use the `❌` to clear the form.
+    - Use the `⬆️` to import the JSON back to the form. **You can modify the
+      JSON before importing it back**.
+
+  * Notice you can navigate forward and backward using the keyboard:
+    - Using the `Enter` and `Shift`+`Enter` from field to field **bypassing
+      control buttons**.
+    - Using the `Tab` and `Shift`+`Tab` as usual, to reach **both fields and
+      control buttons**.
+    - Don't miss the hotkeys! Move the focus to a telephone field and hit the
+      `Ctrl` key to see the avaliable ones (depending on focused context)
+      revealed.
+
 👉 Its behavior is driven by the *data-smark* attributes, which are declarative
 and intuitive with straightforward defaults to match most common use cases.
 
@@ -146,16 +125,94 @@ and intuitive with straightforward defaults to match most common use cases.
 
 👉 Check the *JS* tab to see the little JS just to initialize it as a
 *SmarkForm* and show you the data when exported.
+
+👉 In the *CSS* tab you will find some non-essential CSS primarily to
+materialize hotkeys' revealing feature when pressing the `Ctrl` key.
 {%  endcapture %}
 
 
+{% raw %} <!-- simple_list_hotkeys {{{ --> {% endraw %}
+{% capture simple_list_hotkeys
+%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
+█<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+█<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
+█<label data-smark>Phones:</label>
+█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
+█    <li class="row">
+█        <label data-smark>📞 Telephone
+█        <span data-smark='{"action":"position"}'>N</span>
+█        </label>
+█        <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
+█        <input type="tel" data-smark>
+█        <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
+█    </li>
+█</ul>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_with_context
+%}█<p>
+█    <label data-smark='{"type": "label"}'>Name:</label>
+█    <input name='name' data-smark='{"type": "input"}' />
+█</p>
+█<p>
+█    <label data-smark='{"type": "label"}'>Surname:</label>
+█    <input name='surname' data-smark='{"type": "input"}' />
+█</p>
+{{ simple_list_hotkeys }}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- simple_list_autodisable_css {{{ --> {% endraw %}
+{% capture simple_list_autodisable_css
+%}/* Hide list bullets */
+#myForm$$ ul li {
+    list-style-type: none !important;
+}
+/* Make disabled buttons more evident: */
+{{""}}#myForm$$ :disabled {
+    opacity: 0.4;
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_css
+%}/* Materialize hotkey hints from data-hotkey attribute */
+{{""}}#myForm$$ [data-hotkey] {
+  position: relative;
+  overflow-x: display;
+}
+{{""}}#myForm$$ [data-hotkey]::before {
+  content: attr(data-hotkey);
+  display: inline-block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 10;
+  pointer-events: none;
+  background-color: #ffd;
+  outline: 1px solid lightyellow;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  white-space: nowrap;
+  transform: scale(1.8) translate(0.1em, 0.1em);
+}
+{{ simple_list_autodisable_css }}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
-   formId="simple_list"
-   htmlSource=simple_list_example
-   cssSource=generic_sample_css
-   notes=simple_list_example_notes
-   selected="preview"
-   showEditor=true
+    formId="simple_list_hotkeys_with_context"
+    htmlSource=simple_list_hotkeys_with_context
+    cssSource=simple_list_hotkeys_css
+    notes=notes
+    selected="preview"
+    showEditor=true
 %}
 
 

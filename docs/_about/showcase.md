@@ -37,30 +37,31 @@ featured ones.
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Basics](#basics)
-    * [Simple plain form](#simple-plain-form)
-    * [Nested forms](#nested-forms)
-    * [Lists](#lists)
-    * [Deeply nested forms](#deeply-nested-forms)
-    * [More on lists](#more-on-lists)
-    * [Nested lists and forms](#nested-lists-and-forms)
-    * [Item duplication](#item-duplication)
-* [Import and Export Data](#import-and-export-data)
-    * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
-    * [Submitting the form](#submitting-the-form)
-    * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-* [Advanced UX Improvements](#advanced-ux-improvements)
-    * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-    * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
-    * [Reveal of hot keys](#reveal-of-hot-keys)
-    * [Hotkeys and context](#hotkeys-and-context)
-    * [Smooth navigation](#smooth-navigation)
-    * [2nd level hotkeys](#2nd-level-hotkeys)
-    * [Hidden actions](#hidden-actions)
-    * [Smart value coercion](#smart-value-coercion)
-    * [Dynamic Dropdown Options](#dynamic-dropdown-options)
-    * [Animations](#animations)
-* [Conclusion](#conclusion)
+    * [Basics](#basics)
+        * [Simple plain form](#simple-plain-form)
+        * [Nested forms](#nested-forms)
+        * [Lists](#lists)
+        * [Deeply nested forms](#deeply-nested-forms)
+        * [More on lists](#more-on-lists)
+        * [Nested lists and forms](#nested-lists-and-forms)
+        * [Item duplication](#item-duplication)
+    * [Import and Export Data](#import-and-export-data)
+        * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
+        * [Submitting the form](#submitting-the-form)
+        * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
+    * [Advanced UX Improvements](#advanced-ux-improvements)
+        * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
+* [myForm$$ ul li {](#myform-ul-li-)
+        * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
+        * [Reveal of hot keys](#reveal-of-hot-keys)
+        * [Hotkeys and context](#hotkeys-and-context)
+        * [Smooth navigation](#smooth-navigation)
+        * [2nd level hotkeys](#2nd-level-hotkeys)
+        * [Hidden actions](#hidden-actions)
+        * [Smart value coercion](#smart-value-coercion)
+        * [Dynamic Dropdown Options](#dynamic-dropdown-options)
+        * [Animations](#animations)
+    * [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -1006,11 +1007,13 @@ endcapture %}
 
 {% raw %} <!-- simple_list_autodisable_css {{{ --> {% endraw %}
 {% capture simple_list_autodisable_css
-%}#myForm$$ ul li {
+%}/* Hide list bullets */
+#myForm$$ ul li {
     list-style-type: none !important;
 }
+/* Make disabled buttons more evident: */
 {{""}}#myForm$$ :disabled {
-    opacity: 0.4; /* Make disabled buttons more evident */
+    opacity: 0.4;
 }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -1061,7 +1064,7 @@ endcapture %}
 
 {% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
 {% capture simple_list_hotkeys_css
-%}
+%}/* Materialize hotkey hints from data-hotkey attribute */
 {{""}}#myForm$$ [data-hotkey] {
   position: relative;
   overflow-x: display;
