@@ -127,20 +127,20 @@ Start by writing the form markup in plain HTML. For example, let's create a
 simple form like the following:
 
 {% raw %} <!-- html_source_legacy {{{ --> {% endraw %}
-{% capture html_source_legacy %}<div id="myForm$$">
-    <p>
-        <label for="nameField$$">Name:</label>
-        <input type="text" id="nameField$$" name="name">
-    </p>
-    <p>
-        <label for="emailField$$">Email:</label>
-        <input type="email" id="emailField$$" name="email">
-    </p>
-    <p>
-        <button>❌ Clear</button>
-        <button>💾 Submit</button>
-    </p>
-</div>{% endcapture %}
+{% capture html_source_legacy
+%}<p>
+    <label for="nameField$$">Name:</label>
+    <input type="text" id="nameField$$" name="name">
+</p>
+<p>
+    <label for="emailField$$">Email:</label>
+    <input type="email" id="emailField$$" name="email">
+</p>
+<p>
+    <button>❌ Clear</button>
+    <button>💾 Submit</button>
+</p>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -189,20 +189,19 @@ attribute.
 Let's mark all fields, buttons and labels... by adding a *data-smark* attribute :
 
 {% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
-{% capture html_source_enhanced %}<div id="myForm$$">
-    <p>
-        <label data-smark>Name:</label>
-        <input type="text" name="name" data-smark>
-    </p>
-    <p>
-        <label data-smark>Email:</label>
-        <input type="email" name="email" data-smark>
-    </p>
-    <p>
-        <button data-smark='{"action":"clear"}'>❌ Clear</button>
-        <button data-smark='{"action":"export"}'>💾 Submit</button>
-    </p>
-</div>{% endcapture %}
+{% capture html_source_enhanced
+%}<p>
+    <label data-smark>Name:</label>
+    <input type="text" name="name" data-smark>
+</p>
+<p>
+    <label data-smark>Email:</label>
+    <input type="email" name="email" data-smark>
+</p>
+<p>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark='{"action":"export"}'>💾 Submit</button>
+</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -264,22 +263,21 @@ The context of actions called by triggers is, by default, their *natural context
 Let's add more `❌ Clear` buttons to clear each specific field:
 
 {% raw %} <!-- html_source_enhanced_with_clears {{{ --> {% endraw %}
-{% capture html_source_enhanced_with_clears %}<div id="myForm$$">
-    <p>
-        <label data-smark>Name:</label>
-        <input type="text" name="name" data-smark>
-        <button data-smark='{"action":"clear", "context":"name"}'>❌ Clear</button>
-    </p>
-    <p>
-        <label data-smark>Email:</label>
-        <input type="email" name="email" data-smark>
-        <button data-smark='{"action":"clear", "context":"email"}'>❌ Clear</button>
-    </p>
-    <p>
-        <button data-smark='{"action":"clear"}'>❌ Clear</button>
-        <button data-smark='{"action":"export"}'>💾 Submit</button>
-    </p>
-</div>{% endcapture %}
+{% capture html_source_enhanced_with_clears
+%}<p>
+    <label data-smark>Name:</label>
+    <input type="text" name="name" data-smark>
+    <button data-smark='{"action":"clear", "context":"name"}'>❌ Clear</button>
+</p>
+<p>
+    <label data-smark>Email:</label>
+    <input type="email" name="email" data-smark>
+    <button data-smark='{"action":"clear", "context":"email"}'>❌ Clear</button>
+</p>
+<p>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark='{"action":"export"}'>💾 Submit</button>
+</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -379,21 +377,20 @@ To load (JSON) data into the form, we use the *import* action which works in a
 similar way to the *export* action but in the opposite direction.
 
 {% raw %} <!-- html_source_enhanced_withImport {{{ --> {% endraw %}
-{% capture html_source_enhanced_withImport %}<div id="myForm$$">
-    <p>
-        <label data-smark>Name:</label>
-        <input type="text" name="name" data-smark>
-    </p>
-    <p>
-        <label data-smark>Email:</label>
-        <input type="email" name="email" data-smark>
-    </p>
-    <p>
-        <button data-smark='{"action":"import"}'>📂 Import</button>
-        <button data-smark='{"action":"clear"}'>❌ Clear</button>
-        <button data-smark='{"action":"export"}'>💾 Submit</button>
-    </p>
-</div>{% endcapture %}
+{% capture html_source_enhanced_withImport
+%}<p>
+    <label data-smark>Name:</label>
+    <input type="text" name="name" data-smark>
+</p>
+<p>
+    <label data-smark>Email:</label>
+    <input type="email" name="email" data-smark>
+</p>
+<p>
+    <button data-smark='{"action":"import"}'>📂 Import</button>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark='{"action":"export"}'>💾 Submit</button>
+</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -449,40 +446,38 @@ It takes a single argument with a "path-like" route to the field we want to acce
 This path can be either relative (to the current field) or absolute (to the form root).
 
 {% raw %} <!-- capture traversing_form_example {{{ --> {% endraw %}
-{% capture traversing_form_example %}
-<div id='myForm$$'>
+{% capture traversing_form_example
+%}<p>
+    <label for='id'>Id:</label>
+    <input data-smark type='text' name='id' />
+</p>
+<fieldset data-smark='{"type":"form","name":"personalData"}'>
+<legend>Personal Data:</legend>
     <p>
-        <label for='id'>Id:</label>
-        <input data-smark type='text' name='id' />
+        <label for='name'>Name:</label>
+        <input data-smark type='text' name='name' placheolder='Family name'/>
     </p>
-    <fieldset data-smark='{"type":"form","name":"personalData"}'>
-    <legend>Personal Data:</legend>
-        <p>
-            <label for='name'>Name:</label>
-            <input data-smark type='text' name='name' placheolder='Family name'/>
-        </p>
-        <p>
-            <label for='surname'>Surname:</label>
-            <input data-smark type='text' name='surname' />
-        </p>
-        <p>
-            <label for='address'>Address:</label>
-            <input data-smark type='text' name='address' />
-        </p>
-    </fieldset>
-    <fieldset data-smark='{"type":"form","name":"businessData"}'>
-    <legend>Business Data:</legend>
-        <p>
-            <label for='name'>Company Name:</label>
-            <input data-smark type='text' name='name' placheolder='Company Name'/>
-        </p>
-        <p>
-            <label for='address'>Address:</label>
-            <input data-smark type='text' name='address' />
-        </p>
-    </fieldset>
-</div>
-{% endcapture %}
+    <p>
+        <label for='surname'>Surname:</label>
+        <input data-smark type='text' name='surname' />
+    </p>
+    <p>
+        <label for='address'>Address:</label>
+        <input data-smark type='text' name='address' />
+    </p>
+</fieldset>
+<fieldset data-smark='{"type":"form","name":"businessData"}'>
+<legend>Business Data:</legend>
+    <p>
+        <label for='name'>Company Name:</label>
+        <input data-smark type='text' name='name' placheolder='Company Name'/>
+    </p>
+    <p>
+        <label for='address'>Address:</label>
+        <input data-smark type='text' name='address' />
+    </p>
+</fieldset>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
@@ -548,19 +543,17 @@ the *list* component type so, if you put a *removeItem* trigger inside a list
 item, it will remove that item from the list. **No wiring code needed!**
 
 {% capture simple_list_example
-%}<div id="myForm$$">
-    <p>
-        <label data-smark>Phones:</label>
-        <ul data-smark='{"name": "phones", "of": "input"}'>
-            <li>
-                <label data-smark>📞 </label>
-                <input placeholder='+34...' type="tel" data-smark>
-                <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-            </li>
-        </ul>
-        <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-    </p>
-</div>{%
+%}<p>
+    <label data-smark>Phones:</label>
+    <ul data-smark='{"name": "phones", "of": "input"}'>
+        <li>
+            <label data-smark>📞 </label>
+            <input placeholder='+34...' type="tel" data-smark>
+            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+        </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
+</p>{%
 endcapture %}
 
 {% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
@@ -624,17 +617,14 @@ example:
 
 {% raw %} <!-- html_source_simplified {{{ --> {% endraw %}
 {% capture html_source_simplified
-%}
-█<div id="myForm$$">
-█    <p>
-█        <label data-smark>Name:</label>
-█        <input type="text" name="name" data-smark>
-█    </p>
-█    <p>
-█        <label data-smark>Email:</label>
-█        <input type="email" name="email" data-smark>
-█    </p>
-█</div>{% endcapture %}
+%}█<p>
+█    <label data-smark>Name:</label>
+█    <input type="text" name="name" data-smark>
+█</p>
+█<p>
+█    <label data-smark>Email:</label>
+█    <input type="email" name="email" data-smark>
+█</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -789,19 +779,19 @@ additional capabilities of the library:
 **List of telephones:**
 
 {% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
-{% capture html_phone_list %}<div id="myForm$$">
-<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
-    <div>
+{% capture html_phone_list
+%}<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
+  <div>
     <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
     <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
     <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
-    </div>
+  </div>
 </div>
 <p>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
-    <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
-</div>{% endcapture %}
+  <button data-smark='{"action":"clear"}'>❌ Clear</button>
+  <button data-smark='{"action":"export"}'>💾 Submit</button>
+</p>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture advanced_sample_css {{{ --> {% endraw %}
@@ -869,8 +859,8 @@ button[data-hotkey]::before {
 **Simple schedule:**
 
 {% raw %} <!-- capture html_schedule_list {{{ --> {% endraw %}
-{% capture html_schedule_list %}<div id="myForm$$">
-<p>
+{% capture html_schedule_list
+%}<p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
         <span role='img' aria-label='Remove interval'>➖</span>
     </button>
@@ -890,8 +880,7 @@ button[data-hotkey]::before {
 <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
-</div>{% endcapture %}
+</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

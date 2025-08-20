@@ -28,14 +28,18 @@
 
 ## Main Features
 
+  * `<>` [Markup agnostic](https://smarkform.bitifet.net/about/features#markup-agnostic):
+    Maximum decoupling between design and development teams.
+  * `🧩` [Low code](https://smarkform.bitifet.net/about/features#easy-to-use-low-code):
+    Markup driven. No manual wiring between controls and fields.
   * `🗂` [Subforms](https://smarkform.bitifet.net/about/features#nestable-forms):
     Nested forms to any depth.
   * `📑` [Lists](https://smarkform.bitifet.net/about/features#variable-length-lists):
     Sortable and variable-length lists (arrays) either of scalars or subforms.
   * `🫳` [Configurable hot keys](https://smarkform.bitifet.net/about/features#context-driven-hotkeys):
     Context-driven and discoverable keyboard shortcuts.
-  * `🧩` [Low code](https://smarkform.bitifet.net/about/features#easy-to-use):
-    No manual wiring between controls and fields.
+  * `🫶` [Consistent UX](https://smarkform.bitifet.net/about/features#consistent-user-experience):
+    Smooth navigation and consistent behaviour across all forms.
   * `{}` [JSON format](https://smarkform.bitifet.net/about/features#json-based):
     Data is imported / exported as JSON.
   * `🪶` [Lightweight](https://smarkform.bitifet.net/about/features#lightweight-yet-highly-compatible):

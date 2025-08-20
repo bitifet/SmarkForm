@@ -68,16 +68,20 @@ hotkeys and a low-code experience among other features.
 
 ## Main Features
 
+  * `<>` [Markup agnostic]({{ "/about/features" | relative_url }}#markup-agnostic):
+    Maximum decoupling between design and development teams.
+  * `🧩` [Low code]({{ "about/features" |relative_url }}#easy-to-use-low-code): No manual
+    wiring between controls and fields.
   * `🗂` [Subforms]({{ "/about/features" | relative_url }}#nestable-forms): Nested
     forms to any depth.
   * `📑` [Lists]({{ "/about/features" | relative_url }}#variable-length-lists):
     Sortable and variable-length lists (arrays) either of scalars or subforms.
   * `🫳` [Configurable hot keys]({{ "/about/features" | relative_url }}#context-driven-hotkeys):
     Context-driven and discoverable keyboard shortcuts.
-  * `🧩` [Low code]({{ "about/features" |relative_url }}#easy-to-use): No manual
-    wiring between controls and fields.
-  * `{}` [JSON format]({{ "/about/features" | relative_url}}#json-based): Data
-    is imported / exported as JSON.
+  * `🫶` [Consistent UX]({{ "/about/features" | relative_url }}#consistent-user-experience):
+    Smooth navigation and consistent behaviour across all forms.
+  * `{}` [JSON format]({{ "/about/features" | relative_url }}#json-based):
+    Data is imported / exported as JSON.
   * `🪶` [Lightweight]({{ "/about/features" | relative_url }}#lightweight-yet-highly-compatible):
     Only {{ site.data.computed.bundleSizeKB }}KB minified.
   * `💪` Flexible, extendable and [more...]({{ "about/features" | relative_url }})
@@ -167,7 +171,7 @@ endcapture %}
 {% raw %} <!-- simple_list_autodisable_css {{{ --> {% endraw %}
 {% capture simple_list_autodisable_css
 %}/* Hide list bullets */
-#myForm$$ ul li {
+{{""}}#myForm$$ ul li {
     list-style-type: none !important;
 }
 /* Make disabled buttons more evident: */
