@@ -41,24 +41,16 @@ export class trigger extends SmarkComponent {
         const parents = [...me.parents];
         const {
             // property: local variable
-            action: actionSpec,
+            action,
             context: contextPath,     // Define context component
             target: targetPath,       // Define targetted child component
             ...otherOptions
         } = me.options;
-        if (! actionSpec) return; // Not a trigger component.
-
-        // Allow binding triggers to specific component types:
-        // (Syntax "type:action")
-        let [actionName, targetType] = actionSpec.split(":").reverse();
+        if (! action) return; // Not a trigger component.
 
         const context = (
             contextPath ? me.parent.find(contextPath)
-            : parents.find(p=>{
-                if (targetType && p.options.type != targetType) return false;
-                if (typeof p.actions[actionName] != "function") return false;
-                return true;
-            })
+            : parents.find(p=>(typeof p.actions[action] == "function"))
         );
 
         const target = (
@@ -73,7 +65,7 @@ export class trigger extends SmarkComponent {
         );
 
         return {
-            action: actionName,
+            action,
             origin: me,
             context,
             target,
