@@ -79,6 +79,9 @@ layout: default
     position: sticky;
     top: 0;
     z-index: 100;
+    max-height: 100vh;
+    overflow-y: auto;
+    box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.1);
   }
   .body {
     scroll-padding-top: 200px;
