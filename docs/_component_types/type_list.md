@@ -111,17 +111,17 @@ specified the *data-smark* attribute or not).
 
 
 {% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
-{% capture simple_list_example %}<div id="myForm$$">
-    <section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
-        <fieldset style="text-align:right"><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
-            <p><label>User name:</label><input name='name' type='text' data-smark/></p>
-            <p><label>Phone number:</label><input name='phone' type='tel' data-smark/></p>
-            <p><label>Email:</label><input name='email' type='text' data-smark/></p>
-            <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
-        </fieldset>
-    </section>
-    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
-</div>{% endcapture %}
+{% capture simple_list_example
+%}<section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
+    <fieldset style="text-align:right"><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
+        <p><label>User name:</label><input name='name' type='text' data-smark/></p>
+        <p><label>Phone number:</label><input name='phone' type='tel' data-smark/></p>
+        <p><label>Email:</label><input name='email' type='text' data-smark/></p>
+        <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+    </fieldset>
+</section>
+<button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_list_example_notes {{{ --> {% endraw %}
@@ -199,15 +199,15 @@ inside.
 **Example:**
 
 {% raw %} <!-- capture singleton_list_example {{{ --> {% endraw %}
-{% capture singleton_list_example %}<div id="myForm$$">
-    <ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
-        <li>
-            <input placeholder='Phone Number' type="tel" data-smark>
-            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
-        </li>
-    </ul>
-    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-</div>{% endcapture %}
+{% capture singleton_list_example
+%}<ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
+    <li>
+        <input placeholder='Phone Number' type="tel" data-smark>
+        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+    </li>
+</ul>
+<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -239,32 +239,32 @@ say, up to three phone numbers and up to three emails.
 **Example:**
 
 {% raw %} <!-- capture nesting_list_example {{{ --> {% endraw %}
-{% capture nesting_list_example %}<div id="myForm$$">
-    <section data-smark='{"type":"list","name":"users"}'>
+{% capture nesting_list_example
+%}<section data-smark='{"type":"list","name":"users"}'>
+    <fieldset>
+        <legend>User</legend>
+        <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+        <input name='name' placeholder='User name' type='text' data-smark/>
         <fieldset>
-            <legend>User</legend>
-            <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
-            <input name='name' placeholder='User name' type='text' data-smark/>
-            <fieldset>
-                <legend>
-                    <span
-                        data-smark='{"action":"addItem","context":"phones"}'
-                        title='Add Phone'
-                        style="background: lightgray; padding:.3em; border-radius:3px; margin: .4em"
-                    >➕</span>
-                    Phone Numbers
-                </legend>
-                <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
-                    <li>
-                        <input type="tel" data-smark>
-                        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
-                    </li>
-                </ul>
-            </fieldset>
+            <legend>
+                <span
+                    data-smark='{"action":"addItem","context":"phones"}'
+                    title='Add Phone'
+                    style="background: lightgray; padding:.3em; border-radius:3px; margin: .4em"
+                >➕</span>
+                Phone Numbers
+            </legend>
+            <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
+                <li>
+                    <input type="tel" data-smark>
+                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+                </li>
+            </ul>
         </fieldset>
-    </section>
-    <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕ Add user</button>
-</div>{% endcapture %}
+    </fieldset>
+</section>
+<button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕ Add user</button>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -471,17 +471,17 @@ action, plus the following properties:
 
 
 {% raw %} <!-- capture simple_list_animation_example {{{ --> {% endraw %}
-{% capture simple_list_animation_example %}<div id="myForm$$">
-    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
-    <ul data-smark='{"name": "phones", "of": "input", "min_items": 0}'>
-        <li>
-            <input placeholder='Phone Number' type="tel" data-smark>
-            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
-        </li>
-    </ul>
-    <!-- This is just a regular SmarkForm list. -->
-    <!-- See CSS and JS code to see what changes... -->
-</div>{% endcapture %}
+{% capture simple_list_animation_example
+%}<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ Add Phone</button>
+<ul data-smark='{"name": "phones", "of": "input", "min_items": 0}'>
+    <li>
+        <input placeholder='Phone Number' type="tel" data-smark>
+        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+    </li>
+</ul>
+<!-- This is just a regular SmarkForm list. -->
+<!-- See CSS and JS code to see what changes... -->{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_list_animation_example_additem_css {{{ --> {% endraw %}
@@ -567,7 +567,8 @@ time an item is removed from the list.
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_list_animation_example_complete_js {{{ --> {% endraw %}
-{% capture simple_list_animation_example_complete_js %}const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+{% capture simple_list_animation_example_complete_js %}
+const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
 myForm.onAll("addItem", function({
     newItemTarget, /* the targetNode of the future new item */
     onRendered

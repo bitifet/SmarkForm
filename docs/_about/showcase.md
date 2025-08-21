@@ -57,9 +57,9 @@ featured ones.
     * [Smooth navigation](#smooth-navigation)
     * [2nd level hotkeys](#2nd-level-hotkeys)
     * [Hidden actions](#hidden-actions)
+    * [Animations](#animations)
     * [Smart value coercion](#smart-value-coercion)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
-    * [Animations](#animations)
 * [Random Examples](#random-examples)
     * [Calculator](#calculator)
 * [Conclusion](#conclusion)
@@ -1358,6 +1358,79 @@ allow touch device users to add or remove phone numbers even only to/from the
 end of the list.
 
 
+### Animations
+
+Since *SmarkForm is markup agnostic, it does not provide any built-in animation
+feature since it is an entirely design concern.
+
+Nevertheless, you can use event handlers to add or remove CSS classes that can
+be managed through CSS transitions.
+
+{: .warning :}
+> The following example code is legacy.
+> 
+> It relies on legacy *addItem* and *removeItem* events that will be deprecated
+> in favour of more clear beforeAction_addItem, afterAction_addItem,
+> beforeAction_removeItem and afterAction_removeItem events in the future.
+>
+> But it still works and is a good example of how to use CSS transitions with
+> *SmarkForm*.
+
+{% raw %} <!-- capture animations_css {{{ --> {% endraw %}
+{% capture animations_css %}.animated_item {
+    transform: scaleY(0) translateY(-50%);
+    /* Add transition for removal effect */
+    transition:
+        transform 150ms ease-out
+    ;
+}
+.animated_item.ongoing {
+    transform: scaleY(1) translateY(0%);
+    transition:
+        transform 150ms ease-in
+    ;
+}
+{{ hidden_actions_css }}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture animations_js {{{ --> {% endraw %}
+{% capture animations_js %}
+const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+{{""}}myForm.onAll("addItem", function({
+    newItemTarget, /* the targetNode of the future new item */
+    onRendered
+}) {
+    newItemTarget.classList.add("animated_item");
+    onRendered(async (newItem)=>{
+        await delay(1); /* Allow for default .animated_item style to be applied */
+        newItem.targetNode.classList.add("ongoing");
+        /* Here we could have used newItemTarget instead */
+    });
+});
+{{""}}myForm.onAll("removeItem", async function({
+    oldItemTarget,
+    onRemmoved
+}) {
+    oldItemTarget.classList.remove("ongoing");
+    /* Await for transition to be finished before item removal: */
+    await delay(150);
+});{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% include components/sampletabs_tpl.md
+    formId="animations"
+    htmlSource=nested_simple_list_hotkeys_with_context
+    cssSource=animations_css
+    jsSource=animations_js
+    selected="preview"
+%}
+
+
+
+
+
 ### Smart value coercion
 
 {: .warning :}
@@ -1386,10 +1459,6 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
     selected="preview"
 %}
 
-
-
-
-### Animations 
 
 
 
