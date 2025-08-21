@@ -1376,6 +1376,10 @@ be managed through CSS transitions.
 > But it still works and is a good example of how to use CSS transitions with
 > *SmarkForm*.
 
+🚀 Notice that we don't need to implement the animations for each list. In the
+following example there are two nested lists and all item additions and
+removals are animated the same way.
+
 {% raw %} <!-- capture animations_css {{{ --> {% endraw %}
 {% capture animations_css %}.animated_item {
     transform: scaleY(0) translateY(-50%);
@@ -1657,6 +1661,7 @@ myForm.on("BeforeAction_import", async (ev)=>{
                 ev.data = eval(prevValue.replace(invalidChars, '')); /* Evaluate expression */
             } catch (e) {
                 alert("Invalid expression");
+                ev.preventDefault(); /* Keep existing data */
             }
             break;
         default:
