@@ -60,6 +60,8 @@ featured ones.
     * [Smart value coercion](#smart-value-coercion)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
     * [Animations](#animations)
+* [Random Examples](#random-examples)
+    * [Calculator](#calculator)
 * [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
@@ -1061,8 +1063,8 @@ to add or remove phone numbers from the list, respectively.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_css
+{% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
+{% capture hotkeys_reveal_css
 %}/* Materialize hotkey hints from data-hotkey attribute */
 {{""}}#myForm$$ [data-hotkey] {
   position: relative;
@@ -1077,6 +1079,7 @@ endcapture %}
   z-index: 10;
   pointer-events: none;
   background-color: #ffd;
+  color: #44f;
   outline: 1px solid lightyellow;
   padding: 2px 8px;
   border-radius: 4px;
@@ -1086,6 +1089,12 @@ endcapture %}
   white-space: nowrap;
   transform: scale(1.8) translate(0.1em, 0.1em);
 }
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_css
+%}{{ hotkeys_reveal_css }}
 {{ simple_list_autodisable_css }}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -1382,6 +1391,230 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
 
 ### Animations 
 
+
+
+## Random Examples
+
+Here are some random examples to showcase the flexibility of SmarkForm and how
+it can be used to create various types of forms or even more complex interfaces
+with different functionalities.
+
+### Calculator
+
+The following example implements a simple calculator with just single input
+field and several buttons triggering the *import* action over that field.
+
+It leverages the *singleton* pattern to avoid specifying the context for every
+button and uses the *data* property to provide the proper value.
+
+A single event handler over the *onAfterAction_import* does all the magic by
+intercepting the new value and appending it to the current one and handling the
+few special cases like the `C` button to clear the input, the `Del` button to
+remove the last character, and the `=` button to evaluate the expression.
+
+Check the *JS* tab to see the little JavaScript code that does the job.
+
+The best thing is that you can either use the calculator buttons or directly
+type in the input field: Every time you use a button, the *import* action will
+bring the focus back to the input field so you can continue typing.
+
+
+{% raw %} <!-- calculator {{{ --> {% endraw %}
+{% capture calculator %}
+<div class="calculator" data-smark='{"type": "input", "name": "display"}'>
+    <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
+    <input
+        data-smark
+        type="text"
+        class="display"
+        value="0"
+        pattern="[0-9+\-*\/\(\).]+"
+    >
+    <div class="buttons">
+        <button
+            data-smark='{"action": "import", "data": "C", "hotkey": "c"}'
+            class="clear"
+        >C</button>
+        <button
+            data-smark='{"action": "import", "data": "("}'
+        >(</button>
+        <button
+            data-smark='{"action": "import", "data": ")"}'
+        >)</button>
+        <button
+            data-smark='{"action": "import", "data": "/", "hotkey": "/"}'
+            class="operator"
+        >÷</button>
+        <button
+            data-smark='{"action": "import", "data": "7"}'
+        >7</button>
+        <button
+            data-smark='{"action": "import", "data": "8"}'
+        >8</button>
+        <button
+            data-smark='{"action": "import", "data": "9"}'
+        >9</button>
+        <button
+            data-smark='{"action": "import", "data": "*", "hotkey": "*"}'
+            class="operator"
+        >×</button>
+        <button
+            data-smark='{"action": "import", "data": "4"}'
+        >4</button>
+        <button
+            data-smark='{"action": "import", "data": "5"}'
+        >5</button>
+        <button
+            data-smark='{"action": "import", "data": "6"}'
+        >6</button>
+        <button
+            data-smark='{"action": "import", "data": "-", "hotkey": "-"}'
+            class="operator"
+        >-</button>
+        <button
+            data-smark='{"action": "import", "data": "1"}'
+        >1</button>
+        <button
+            data-smark='{"action": "import", "data": "2"}'
+        >2</button>
+        <button
+            data-smark='{"action": "import", "data": "3"}'
+        >3</button>
+        <button
+            data-smark='{"action": "import", "data": "+", "hotkey": "+"}'
+            class="operator"
+        >+</button>
+        <button
+            data-smark='{"action": "import", "data": "0"}'
+        >0</button>
+        <button
+            data-smark='{"action": "import", "data": "."}'
+        >.</button>
+        <button
+            data-smark='{"action": "import", "data": "Del"}'
+        >←</button>
+        <button
+            data-smark='{"action": "import", "data": "=", "hotkey": "Enter"}'
+            class="equals"
+        >=</button>
+    </div>
+</div>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- calculator_css {{{ --> {% endraw %}
+{% capture calculator_css %}
+{{""}}#myForm$$ .calculator {
+    background-color: #333;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+}
+{{""}}#myForm$$ .display {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    text-align: right;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+{{""}}#myForm$$ .display:invalid {
+    background-color: #fcc;
+}
+{{""}}#myForm$$ .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+{{""}}#myForm$$ button {
+    padding: 15px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #555;
+    color: white;
+    transition: background-color 0.2s;
+}
+{{""}}#myForm$$ button:hover {
+    background-color: #777;
+}
+{{""}}#myForm$$ .operator {
+    background-color: #f9a825;
+}
+{{""}}#myForm$$ .operator:hover {
+    background-color: #ffb300;
+}
+{{""}}#myForm$$ .equals {
+    background-color: #4caf50;
+}
+{{""}}#myForm$$ .equals:hover {
+    background-color: #66bb6a;
+}
+{{""}}#myForm$$ .clear {
+    background-color: #d32f2f;
+}
+{{""}}#myForm$$ .clear:hover {
+    background-color: #ef5350;
+}
+{{ hotkeys_reveal_css }}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- calculator_js {{{ --> {% endraw %}
+{% capture calculator_js %}
+
+const invalidChars = /[^0-9+\-*/().]+/g;
+
+myForm.on("BeforeAction_import", async (ev)=>{
+    const prevValue = await ev.context.export();
+    const key = ev.data;
+    switch (key) {
+        case "C":
+            ev.data = "0"; /* Clear display */
+            break;
+        case "Del":
+            ev.data = prevValue.slice(0, -1) || "0"; /* Remove last character */
+            break;
+        case "=":
+            try {
+                ev.data = eval(prevValue.replace(invalidChars, '')); /* Evaluate expression */
+            } catch (e) {
+                alert("Invalid expression");
+            }
+            break;
+        default:
+            if (prevValue.trim() === "0") {
+                ev.data = key; /* Replace 0 with new input */
+            } else {
+                ev.data = prevValue + key; /* Append to existing value */
+            };
+    };
+});
+{% endcapture %}
+
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="calculator"
+    htmlSource=calculator
+    jsSource=calculator_js
+    cssSource=calculator_css
+    selected="preview"
+%}
+
+
+{: .hint :}
+> Notice this calculator has *the power superpower* for free:
+> 
+> Expressions like `2**10` are valid, so you can calculate any power.
 
 
 ## Conclusion
