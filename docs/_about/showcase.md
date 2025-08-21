@@ -1658,7 +1658,9 @@ myForm.on("BeforeAction_import", async (ev)=>{
             break;
         case "=":
             try {
-                ev.data = eval(prevValue.replace(invalidChars, '')); /* Evaluate expression */
+                /* Evaluate expression */
+                const sanitized = prevValue.replace(invalidChars, '');
+                ev.data = eval(sanitized);
             } catch (e) {
                 alert("Invalid expression");
                 ev.preventDefault(); /* Keep existing data */
