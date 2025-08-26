@@ -24,7 +24,7 @@
 {% if sampletabs_ctrl_already_loaded != true %}
 {% assign sampletabs_ctrl_already_loaded = true %}
 
-<script src="{{ smarkform_umd_dld_link }}"></script>
+<script src="{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const tabContainers = document.querySelectorAll('.tab-container');
