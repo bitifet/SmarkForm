@@ -210,14 +210,14 @@ describe('List Component Type Test', function() {
 
     it('min_items limit applies', async function() {//{{{
         const lengths = await page.evaluate(async () => {
-            let error, bubbledError;
-            form.onAll("error", err=>bubbledError=err);
+            let errorCode, bubbledErrorCode;
+            form.onAll("error", err=>bubbledErrorCode=err.code);
             const list = form.find("/employees/0/phones");
-            list.onAll("error", err=>error=err);
+            list.onAll("error", err=>errorCode=err.code);
             const initial = list.count(); // Items after initial render.
             await list.removeItem();
             const final = list.count(); // Items after removal attempt.
-            return {initial, final, error, bubbledError};
+            return {initial, final, errorCode, bubbledErrorCode};
         });
         assert.strictEqual(
             lengths.initial
@@ -230,12 +230,12 @@ describe('List Component Type Test', function() {
             , "Could remove items below min_items value"
         );
         assert.strictEqual(
-            lengths.error.code
+            lengths.errorCode
             , "LIST_MIN_ITEMS_REACHED"
             , "LIST_MIN_ITEMS_REACHED error not emmited"
         );
         assert.strictEqual(
-            lengths.bubbledError.code
+            lengths.bubbledErrorCode
             , "LIST_MIN_ITEMS_REACHED"
             , "LIST_MIN_ITEMS_REACHED error didn't bubble"
         );
@@ -243,10 +243,10 @@ describe('List Component Type Test', function() {
 
     it('max_items limit applies', async function() {//{{{
         const lengths = await page.evaluate(async () => {
-            let error, bubbledError;
-            form.onAll("error", err=>bubbledError=err);
+            let errorCode, bubbledErrorCode;
+            form.onAll("error", err=>bubbledErrorCode=err.code);
             const list = form.find("/employees/0/phones");
-            list.onAll("error", err=>error=err);
+            list.onAll("error", err=>errorCode=err.code);
             const initial = list.count(); // Items after initial render.
             await list.addItem();
             await list.addItem();
@@ -254,6 +254,7 @@ describe('List Component Type Test', function() {
             await list.addItem();
             await new Promise(resolve=>setTimeout(resolve, 0)); // (bubbling...)
             const final = list.count(); // Items after removal attempt.
+            return {initial, final, errorCode, bubbledErrorCode};
             return {initial, final, error, bubbledError};
         });
         assert.strictEqual(
@@ -267,12 +268,12 @@ describe('List Component Type Test', function() {
             , "Could add items above max_items"
         );
         assert.strictEqual(
-            lengths.error.code
+            lengths.errorCode
             , "LIST_MAX_ITEMS_REACHED"
             , "LIST_MAX_ITEMS_REACHED error not emmited"
         );
         assert.strictEqual(
-            lengths.bubbledError.code
+            lengths.bubbledErrorCode
             , "LIST_MAX_ITEMS_REACHED"
             , "LIST_MAX_ITEMS_REACHED error didn't bubble"
         );
