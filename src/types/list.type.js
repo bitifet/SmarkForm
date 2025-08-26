@@ -149,7 +149,7 @@ export class list extends SmarkField {
 
         // onRendered tweaks:
         me.root.onRendered(async ()=>{
-            for(let i=0; i<me.min_items; i++) await me.addItem();
+            for(let i=0; i<me.min_items; i++) await me.addItem({silent: true});
 
             // Initialize "count" actions and reinject empty_list template:
             if (me.min_items == 0) await me.renum();
@@ -188,10 +188,10 @@ export class list extends SmarkField {
                 if (list.length < me.min_items) emptyChilds.push(child);
                 continue;
             };
-            list.push(await child.export())
+            list.push(await child.export({silent: true}));
         };
         for (let i=0; list.length < me.min_items; i++) {
-            list.push(await emptyChilds[i].export());
+            list.push(await emptyChilds[i].export({silent: true}));
         };
         return list;
     };//}}}
@@ -207,14 +207,14 @@ export class list extends SmarkField {
             i < Math.min(data.length, me.max_items); // Limit to allowed items
             i++
         ) {
-            if (me.children.length <= i) await me.addItem(); // Make room on demand
-            await me.children[i].import({data: data[i], focus});
+            if (me.children.length <= i) await me.addItem({silent: true}); // Make room on demand
+            await me.children[i].import({data: data[i], focus, silent: true});
         };
         // Remove extra items if possible (over min_items):
         for (
             let i = Math.max(data.length, me.min_items);
             i < me.children.length;
-        ) await me.removeItem();
+        ) await me.removeItem({silent: true});
         // Report if data doesn't fit:
         if (data.length > me.max_items) {
             me.emit("error", {
@@ -230,9 +230,9 @@ export class list extends SmarkField {
             let i = data.length;
             i < me.children.length; // (Due to min_items)
             i++
-        ) me.children[i].clear();
+        ) me.children[i].clear({silent: true});
         if (focus) me.focus();
-        return; // await me.export();
+        return; // await me.export({silent: true});
     };//}}}
     @action
     @mutex("list_mutating")
@@ -240,22 +240,20 @@ export class list extends SmarkField {
     async addItem(options = {}) {//{{{
         const me = this;
         // Parameters checking and resolution:{{{
-        let {
-            action,
-            origin = null, // (Internal call)
-            context = me,  // (Internal call)
-            source = null,
-            target,
-            position = "after",
-            autoscroll,   // "elegant" / "self" / "parent" / (falsy)
-            failback,
-        } = options;
-        if (position != "after" && position != "before") throw me.renderError(
+        options.action = "addItem";
+        options.origin ||= null; // (Internal call)
+        options.context ||= me;  // (Internal call)
+        options.source ||= null; // Source component to copy data from.
+        options.target ||= null; // Target child component to insert before/after.
+        options.position ||= "after";
+        options.autoscroll ||= null;   // "elegant" / "self" / "parent" / (falsy)
+        options.failback ||= "throw";  // "none" / "throw" (default)
+        if (options.position != "after" && options.position != "before") throw me.renderError(
             'LIST_WRONG_ADDITEM_POSITION'
-            , `Invalid value for addItem() position property: ${position}`
+            , `Invalid value for addItem() position property: ${options.position}`
         );
         if (me.children.length >= me.max_items) {
-            switch (failback) {
+            switch (options.failback) {
                 case "none":
                     break;
                 case "throw":
@@ -268,8 +266,8 @@ export class list extends SmarkField {
             };
             return;
         };
-        if (me.children.length && ! target) target = ( // Auto target:
-            position == "before" ?  me.children[0] // Insert at the beginning
+        if (me.children.length && ! options.target) options.target = ( // Auto target:
+            options.position == "before" ?  me.children[0] // Insert at the beginning
             : me.children[me.children.length - 1]  // Append at the end
         );
         //}}}
@@ -280,11 +278,11 @@ export class list extends SmarkField {
         const onRenderedCbks = [];
             // Allow for handy callback instead of two separate event handlers
         await me.emit("addItem", {
-                action,
-                origin,
-                context,
-                target,  // <--- Effective target.
-                position,
+            action: options.action,
+                origin: options.origin,
+                context: options.context,
+                target: options.target,
+                position: options.position,
                 newItemTarget,
                 options, // <- Original options (including target)
                 onRendered: cbk => onRenderedCbks.push(cbk),
@@ -301,8 +299,8 @@ export class list extends SmarkField {
         } else {
             me.children = (await Promise.all(
                 me.children.map(async (child, i)=>{
-                    if (! child.targetNode.isSameNode(target.targetNode)) return child;
-                    if (position == "after") {
+                    if (! child.targetNode.isSameNode(options.target.targetNode)) return child;
+                    if (options.position == "after") {
                         child.targetNode.after(newItemTarget);
                         newItem = await me.enhance(newItemTarget, {type: "form"});
                         await newItem.rendered;
@@ -321,22 +319,22 @@ export class list extends SmarkField {
         await me.renum();
         //}}}
         // Copy data from source component if specified:{{{
-        if (source) {
-            const sourceComponent = newItem.find(source);
+        if (options.source) {
+            const sourceComponent = newItem.find(options.source);
             if (!! sourceComponent) {
                 const data = await sourceComponent.export();
-                newItem.import({data});
+                newItem.import({data, silent: true});
             };
         };
         //}}}
         // Autoscroll handling:{{{
-        if (autoscroll == "elegant" && !! newItem) {
+        if (options.autoscroll == "elegant" && !! newItem) {
             makeRoom(newItem.targetNode, - newItem.offsetHeight);
         } else {
             const moveTarget = (
                 ! newItem ? null
-                : autoscroll == "self" ? newItem
-                : autoscroll == "parent" ? newItem.parent
+                : options.autoscroll == "self" ? newItem
+                : options.autoscroll == "parent" ? newItem.parent
                 : null
             );
             if (moveTarget) moveTarget.moveTo();
@@ -346,47 +344,46 @@ export class list extends SmarkField {
         onRenderedCbks.forEach(cbk=>cbk(newItem));
         //}}}
         if (me.renderedSync) newItem.focus();
+        return newItem;
     };//}}}
     @action
     @mutex("list_mutating")
     @smartdisabling
     async removeItem(options = {}) {//{{{
         const me = this;
-        let {
-            action,
-            origin = null, // (Internal call)
-            context = me,  // (Internal call)
-            target,
-            autoscroll,   // "elegant" / "self" / "parent" / (falsy)
-            keep_non_empty,
-            failback,
-        } = options;
-        if (! target) {
-            if (keep_non_empty) for (
+        options.action = "removeItem";
+        options.origin ||= null; // (Internal call)
+        options.context ||= me;  // (Internal call)
+        options.target ||= null; // Target child component to remove.
+        options.autoscroll ||= null;   // "elegant" / "self" / "parent" / (falsy)
+        options.keep_non_empty ||= false;
+        options.failback ||= "throw";  // "none" / "clear" / "throw" (default)
+        if (! options.target) {
+            if (options.keep_non_empty) for (
                 const t of [...me.children]
                 .reverse() // Pick last first
             ) if (await t.isEmpty()) {
-                target = t;
+                options.target = t;
                 break;
             };
-            if (! target) {
-                target = me.children[me.children.length - 1];
-                keep_non_empty = false;
+            if (! options.target) {
+                options.target = me.children[me.children.length - 1];
+                options.keep_non_empty = false;
                 // Allow non empty removal as last chance if no target
                 // specified.
             };
         };
         const targets = (
-            target instanceof Array ? target
-            : [target]
+            options.target instanceof Array ? options.target
+            : [options.target]
         );
         for (const currentTarget of [...targets].reverse()) {
             if (me.children.length <= me.min_items) {
-                switch (failback) {
+                switch (options.failback) {
                     case "none":
                         break;
                     case "clear":
-                        await currentTarget.clear();
+                        await currentTarget.clear({silent: true});
                         return;
                     case "throw":
                     default:
@@ -398,18 +395,18 @@ export class list extends SmarkField {
                         return;
                 };
             };
-            if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
+            if (options.keep_non_empty && ! await currentTarget.isEmpty()) continue;
             let oldItem = null;
             let newFocusPosition = null;
             const newChildren = me.children
                 .filter((child, i, all)=>{
                     if (child.targetNode.isSameNode(currentTarget.targetNode)) {
-                        if (autoscroll == "elegant") {
+                        if (options.autoscroll == "elegant") {
                             makeRoom(child.targetNode, child.targetNode.offsetHeight);
                         } else {
                             const moveTarget = (
-                                autoscroll == "self" ? child
-                                : autoscroll == "parent" ? child.parent
+                                options.autoscroll == "self" ? child
+                                : options.autoscroll == "parent" ? child.parent
                                 : null
                             );
                             if (moveTarget) moveTarget.moveTo();
@@ -432,9 +429,9 @@ export class list extends SmarkField {
             const onRemovedCbks = [];
                 // Allow for handy callback instead of two separate event handlers
             await me.emit("removeItem", {
-                action,
-                origin,
-                context,
+                action: options.action,
+                origin: options.origin,
+                context: options.context,
                 target: currentTarget,  // <--- Effective target.
                 oldItem,                 // Child going to be removed.
                 oldItemTarget: oldItem.targetNode, // Its target (analogous to addItem event).
@@ -470,7 +467,7 @@ export class list extends SmarkField {
     @action
     async clear({focus} = {}) {//{{{
         const me = this;
-        return await me.import({data: [], focus});
+        return await me.import({data: [], focus, silent: true});
     };//}}}
     @action
     count({delta = 0} = {}) {//{{{
@@ -561,12 +558,12 @@ export class list extends SmarkField {
         me.getTriggers("position").forEach(tgg=>{
             const me = this;
             const args = tgg.getTriggerArgs();
-            tgg.targetNode.innerText = me.position(args);
+            tgg.targetNode.innerText = me.position({...args, silent: true});
         });
         me.getTriggers("count").forEach(tgg=>{
             const me = this;
             const args = tgg.getTriggerArgs();
-            tgg.targetNode.innerText = me.count(args);
+            tgg.targetNode.innerText = me.count({...args, silent: true});
         });
     };//}}}
 };

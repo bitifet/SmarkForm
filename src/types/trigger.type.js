@@ -2,17 +2,23 @@
 // =====================
 import {SmarkComponent} from "../lib/component.js";
 
-const beforeEvent = Symbol("beforeEventName");
-const afterEvent = Symbol("afterEventName");
-
 export const action = function action_decorator(targetMtd, {kind, name, addInitializer}) {
     if (kind == "method") addInitializer(function registerAction() {
-        this.actions[name] = targetMtd.bind(this);
-        this.actions[name][beforeEvent] = `BeforeAction_${name}`;
-        this.actions[name][afterEvent] = `AfterAction_${name}`;
+        const me = this;
+        this.actions[name] = async function (options = {}) {
+            let defaultPrevented = false;
+            if (! options.silent) {
+                defaultPrevented = ! await me.emit(`BeforeAction_${name}`, options);
+            };
+            if (defaultPrevented) return; // Action cancelled by event handler.
+            const data = await targetMtd.apply(me, options);
+            if (! options.silent) {
+                me.emit(`AfterAction_${name}`, {...options, data});
+            };
+            return data;
+        };
     });
 };
-
 
 export class trigger extends SmarkComponent {
     constructor(node, options, ...args){
@@ -89,10 +95,7 @@ export async function onTriggerClick(ev) {
         , `Unknown action ${action}`
         + (context ? ` for ${context.options.type}` : "")
     );
-    if (await me.emit(mtd[beforeEvent], options)) {
-        const data = await mtd(options);
-        me.emit(mtd[afterEvent], {...options, data});
-    };
+    return await mtd(options);
 };
 
 
