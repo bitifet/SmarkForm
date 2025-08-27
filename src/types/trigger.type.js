@@ -11,7 +11,7 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
                 defaultPrevented = ! await me.emit(`BeforeAction_${name}`, options);
             };
             if (defaultPrevented) return; // Action cancelled by event handler.
-            const data = await targetMtd.apply(me, options);
+            const data = await targetMtd.call(me, options);
             if (! options.silent) {
                 me.emit(`AfterAction_${name}`, {...options, data});
             };
