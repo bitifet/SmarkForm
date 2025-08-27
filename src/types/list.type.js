@@ -299,17 +299,18 @@ export class list extends SmarkField {
         } else {
             me.children = (await Promise.all(
                 me.children.map(async (child, i)=>{
-                    if (! child.targetNode.isSameNode(options.target.targetNode)) return child;
-                    if (options.position == "after") {
-                        child.targetNode.after(newItemTarget);
-                        newItem = await me.enhance(newItemTarget, {type: "form"});
-                        await newItem.rendered;
-                        return [child, newItem]; // Right order, flatted later...
+                    if (! child.targetNode.isSameNode(options.target.targetNode)) {
+                        return child;
                     } else {
-                        child.targetNode.before(newItemTarget);
+                        // Append or prepend new item to the target child:
+                        child.targetNode[options.position](newItemTarget);
+                            // Note that options.position is ensured to be "after" or "before" above.
                         newItem = await me.enhance(newItemTarget, {type: "form"});
                         await newItem.rendered;
-                        return [newItem, child]; // Right order, flatted later...
+                        const chunk = [child, newItem];
+                        // Ensure correct order:
+                        if (options.position == "before") chunk.reverse();
+                        return chunk; // Array that will be flattened later...
                     };
                 })
             ))
