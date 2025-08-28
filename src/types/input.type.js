@@ -65,13 +65,12 @@ export class input extends form {
     };//}}}
     @action
     @export_to_target
-    async export() {//{{{
+    async export(options) {//{{{
         const me = this;
+        if (me.isSingleton) return await me.children[""].export(options);
         const nodeFld = me.targetFieldNode;
         let retv;
-        if (me.isSingleton) {
-            retv = Object.values(await super.export())[0];
-        } else if (me.isCheckbox) {
+        if (me.isCheckbox) {
             retv = !! nodeFld.checked;
         } else if (
             me.options.encoding === "json"
@@ -91,8 +90,10 @@ export class input extends form {
     };//}}}
     @action
     @import_from_target
-    async import({data = "", focus = true} = {}) {//{{{
+    async import(options) {//{{{
         const me = this;
+        if (me.isSingleton) return await me.children[""].import(options);
+        let {data = "", focus = true} = options || {};
         const nodeFld = me.targetFieldNode;
         if (
             typeof data === "object"
@@ -106,11 +107,7 @@ export class input extends form {
                 : JSON.stringify(data) // Compact print
             ) || "";
         };
-        if (me.isSingleton) {
-            return await super.import({data: Object.fromEntries(
-                [[Object.keys(me.children)[0], data]]
-            ), focus});
-        } else if (me.isCheckbox) {
+        if (me.isCheckbox) {
             me.targetNode.checked = !! data;
         } else if (
             me.options.encoding === "json"

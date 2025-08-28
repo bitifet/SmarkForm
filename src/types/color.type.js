@@ -107,7 +107,7 @@ export class color extends input {
                 me.targetFieldNode.setAttribute("style", me.defaultStyleAttr);
             };
         };
-        if (data.length == 4) data = `#${data[1]}${data[1]}${data[2]}${data[2]}${data[3]}${data[3]}`;
+        if (data?.length == 4) data = `#${data[1]}${data[1]}${data[2]}${data[2]}${data[3]}${data[3]}`;
         const value = await super.import({data, focus});
         return (
             me.isDefined ? value
