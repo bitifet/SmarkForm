@@ -1646,36 +1646,39 @@ bring the focus back to the input field so you can continue typing.
 
 const invalidChars = /[^0-9+\-*/().]+/g;
 
-myForm.on("BeforeAction_import", async (ev)=>{
-    const prevValue = await ev.context.export();
-    const key = ev.data;
-    switch (key) {
-        case "C":
-            ev.data = "0"; /* Clear display */
-            break;
-        case "Del":
-            ev.data = prevValue.slice(0, -1) || "0"; /* Remove last character */
-            break;
-        case "=":
-            try {
-                /* Evaluate expression */
-                const sanitized = prevValue.replace(invalidChars, '');
-                ev.data = eval(sanitized);
-            } catch (e) {
-                alert("Invalid expression");
-                ev.preventDefault(); /* Keep existing data */
-            }
-            break;
-        default:
-            if (prevValue.trim() === "0") {
-                ev.data = key; /* Replace 0 with new input */
-            } else {
-                ev.data = prevValue + key; /* Append to existing value */
-            };
-    };
-});
-{% endcapture %}
-
+myForm.onRendered(()=>{
+    /* Now display field is rendered */
+    const display = myForm.find("/display");
+    display.on("BeforeAction_import", async (ev)=>{
+        const prevValue = await ev.context.export();
+        const key = ev.data;
+        switch (key) {
+            case "C":
+                ev.data = "0"; /* Clear display */
+                break;
+            case "Del":
+                ev.data = prevValue.slice(0, -1) || "0"; /* Remove last character */
+                break;
+            case "=":
+                try {
+                    /* Evaluate expression */
+                    const sanitized = prevValue.replace(invalidChars, '');
+                    ev.data = eval(sanitized);
+                } catch (e) {
+                    alert("Invalid expression");
+                    ev.preventDefault(); /* Keep existing data */
+                }
+                break;
+            default:
+                if (prevValue.trim() === "0") {
+                    ev.data = key; /* Replace 0 with new input */
+                } else {
+                    ev.data = prevValue + key; /* Append to existing value */
+                };
+        };
+    });
+});{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
