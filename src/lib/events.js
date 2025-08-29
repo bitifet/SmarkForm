@@ -64,7 +64,7 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                 me[sym_all_events] = new Map();
                 me.onLocal = registerEvHandler.bind(me, me[sym_local_events]);
                 me.onAll = registerEvHandler.bind(me, me[sym_all_events]);
-                me.on = me.onLocal; // Handy and readable alias for local events.
+                me.on = me.onAll; // Handy alias for listening all events.
 
                 // Create event hooks object:
                 me.eventHooks = createArrayPuller(super.eventHooks);
