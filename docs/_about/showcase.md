@@ -61,7 +61,8 @@ featured ones.
     * [Smart value coercion](#smart-value-coercion)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Random Examples](#random-examples)
-    * [Calculator](#calculator)
+    * [Simple Calculator](#simple-calculator)
+    * [Calculator (UX improved)](#calculator-ux-improved)
 * [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
@@ -1472,25 +1473,14 @@ Here are some random examples to showcase the flexibility of SmarkForm and how
 it can be used to create various types of forms or even more complex interfaces
 with different functionalities.
 
-### Calculator
+### Simple Calculator
 
 The following example implements a simple calculator with just single input
-field and several buttons triggering the *import* action over that field.
+field and several buttons triggering the *import* action over that field with
+the *data* property accordingly set.
 
 It leverages the *singleton* pattern to avoid specifying the context for every
-button and uses the *data* property to provide the proper value.
-
-A single event handler over the *onAfterAction_import* does all the magic by
-intercepting the new value and appending it to the current one and handling the
-few special cases like the `C` button to clear the input, the `Del` button to
-remove the last character, and the `=` button to evaluate the expression.
-
-Check the *JS* tab to see the little JavaScript code that does the job.
-
-The best thing is that you can either use the calculator buttons or directly
-type in the input field: Every time you use a button, the *import* action will
-bring the focus back to the input field so you can continue typing.
-
+button. Then a very simple JavaScript code makes the rest...
 
 {% raw %} <!-- calculator {{{ --> {% endraw %}
 {% capture calculator %}
@@ -1575,8 +1565,8 @@ bring the focus back to the input field so you can continue typing.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- calculator_css {{{ --> {% endraw %}
-{% capture calculator_css %}
+{% raw %} <!-- calculatorStyles_css {{{ --> {% endraw %}
+{% capture calculatorStyles_css %}
 {{""}}#myForm$$ .calculator {
     background-color: #333;
     border-radius: 10px;
@@ -1641,59 +1631,322 @@ bring the focus back to the input field so you can continue typing.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- calculator_css {{{ --> {% endraw %}
+{% capture calculator_css %}
+{{ calculatorStyles_css }}
+{{ hotkeys_reveal_css }}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% raw %} <!-- calculator_js {{{ --> {% endraw %}
 {% capture calculator_js %}
 
-const invalidChars = /[^0-9+\-*/().]+/g;
+const invalidChars = /[^0-9+\-*\/().]+/g;
 
-myForm.onRendered(()=>{
-    /* Now display field is rendered */
-    const display = myForm.find("/display");
-    display.on("BeforeAction_import", async (ev)=>{
-        const prevValue = await ev.context.export();
-        const key = ev.data;
-        switch (key) {
-            case "C":
-                ev.data = "0"; /* Clear display */
-                break;
-            case "Del":
-                ev.data = prevValue.slice(0, -1) || "0"; /* Remove last character */
-                break;
-            case "=":
-                try {
-                    /* Evaluate expression */
-                    const sanitized = prevValue.replace(invalidChars, '');
-                    ev.data = eval(sanitized);
-                } catch (e) {
-                    alert("Invalid expression");
-                    ev.preventDefault(); /* Keep existing data */
-                }
-                break;
-            default:
-                if (prevValue.trim() === "0") {
-                    ev.data = key; /* Replace 0 with new input */
-                } else {
-                    ev.data = prevValue + key; /* Append to existing value */
-                };
-        };
-    });
+myForm.on("BeforeAction_import", async (ev)=>{
+    const prevValue = await ev.context.export();
+    const key = ev.data;
+    switch (key) {
+        case "C":
+            ev.data = "0"; /* Clear display */
+            break;
+        case "Del":
+            ev.data = prevValue.slice(0, -1) || "0"; /* Remove last character */
+            break;
+        case "=":
+            try {
+                /* Evaluate expression */
+                const sanitized = prevValue.replace(invalidChars, '');
+                ev.data = eval(sanitized);
+            } catch (e) {
+                alert("Invalid expression");
+                ev.preventDefault(); /* Keep existing data */
+            }
+            break;
+        default:
+            if (prevValue.trim() === "0") {
+                ev.data = key; /* Replace 0 with new input */
+            } else {
+                ev.data = prevValue + key; /* Append to existing value */
+            };
+    };
 });{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 The code in this example is listening to all *import* actions in the whole
+form.
+
+This isn't an issue for this simple example. But if we had other fields in
+the form (unless they were intended to be additional calculators) would be
+affected too.
+
+In that case, we could have attached the listener directly to the *display*
+field like this:
+
+```javascript
+myForm.onRendered(()=>{
+    /* Now display field is rendered */
+    const display = myForm.find("/display");
+    display.onLocal("BeforeAction_import", async (ev)=>{
+        /* ... */
+    });
+});
+```
+
+👉 Using `.on()`or `.onLocal()` here is indifferent since inputs have no
+children.
+
+...But in case of forms (or lists of forms) using `.on()` would have lead to
+intercept every "BeforeAcction_import" event in it **or its children** while
+.onLocal() will only intercept those triggered by the form itself.  Not from
+any of its descendants.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="calculator"
     htmlSource=calculator
     jsSource=calculator_js
     cssSource=calculator_css
+    notes=notes
     selected="preview"
 %}
 
-
 {: .hint :}
-> Notice this calculator has *the power superpower* for free:
+> Notice that this calculator has *the power superpower* for free:
 > 
 > Expressions like `2**10` are valid, so you can calculate any power.
+
+👉 A single event handler over the *onAfterAction_import* does all the magic by
+intercepting the new value and appending it to the current one except for the
+few special cases like `C`, `Del` and `=` where the value is handled
+accordingly.
+
+Check the *JS* tab to see the little JavaScript code that does the job.
+
+Don't miss the *Notes* tab too for some additional insights.
+
+
+👌 The best thing is that you can either use the calculator buttons or directly
+type in the input field: Every time you use a button, the *import* action will
+bring the focus back to the input field so you can continue typing.
+
+
+### Calculator (UX improved)
+
+The UX feeling of the previous example isn't perfect since it was intended to
+be a very simple implementation.
+
+Let's handle the keydown event too and notice the so little effort is needed to
+reach a perfect UX.
+
+{% raw %} <!-- supercalculator {{{ --> {% endraw %}
+{% capture supercalculator %}
+<div class="calculator" data-smark='{"type": "input", "name": "display"}'>
+    <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
+    <input
+        data-smark
+        type="text"
+        class="display"
+        value="0"
+        pattern="[0-9+\-*\/\(\).]+"
+    >
+    <div class="buttons">
+        <button
+            data-smark='{"action": "import", "data": "C"}'
+            class="clear"
+        >C</button>
+        <button
+            data-smark='{"action": "import", "data": "("}'
+        >(</button>
+        <button
+            data-smark='{"action": "import", "data": ")"}'
+        >)</button>
+        <button
+            data-smark='{"action": "import", "data": "/"}'
+            class="operator"
+        >÷</button>
+        <button
+            data-smark='{"action": "import", "data": "7"}'
+        >7</button>
+        <button
+            data-smark='{"action": "import", "data": "8"}'
+        >8</button>
+        <button
+            data-smark='{"action": "import", "data": "9"}'
+        >9</button>
+        <button
+            data-smark='{"action": "import", "data": "*"}'
+            class="operator"
+        >×</button>
+        <button
+            data-smark='{"action": "import", "data": "4"}'
+        >4</button>
+        <button
+            data-smark='{"action": "import", "data": "5"}'
+        >5</button>
+        <button
+            data-smark='{"action": "import", "data": "6"}'
+        >6</button>
+        <button
+            data-smark='{"action": "import", "data": "-"}'
+            class="operator"
+        >-</button>
+        <button
+            data-smark='{"action": "import", "data": "1"}'
+        >1</button>
+        <button
+            data-smark='{"action": "import", "data": "2"}'
+        >2</button>
+        <button
+            data-smark='{"action": "import", "data": "3"}'
+        >3</button>
+        <button
+            data-smark='{"action": "import", "data": "+"}'
+            class="operator"
+        >+</button>
+        <button
+            data-smark='{"action": "import", "data": "0"}'
+        >0</button>
+        <button
+            data-smark='{"action": "import", "data": "."}'
+        >.</button>
+        <button
+            data-smark='{"action": "import", "data": "Backspace"}'
+        >←</button>
+        <button
+            data-smark='{"action": "import", "data": "="}'
+            class="equals"
+        >=</button>
+    </div>
+</div>
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- supercalculator_js {{{ --> {% endraw %}
+{% capture supercalculator_js %}
+
+var invalidChars = /[^0-9+\-*\/().]+/g;
+
+function updateDisplay(prevValue, key) {
+    switch (key.toLowerCase()) {
+        case "c":
+        case "delete":
+            return "0"; /* Clear display */
+            break;
+        case "backspace":
+            return prevValue.slice(0, -1) || "0"; /* Remove last character */
+            break;
+        case "=":
+        case "enter": /* Keyboard enter key */
+            try {
+                /* Evaluate expression */
+                const sanitized = prevValue.replaceAll(invalidChars, '');
+                return eval(sanitized);
+            } catch (e) {
+                return "Error!";
+            }
+            break;
+        default:
+            if (!! key.match(invalidChars)) {
+                return prevValue; /* Keep existing data */
+            };
+            if (prevValue.replace(/[0\s]+/, "") === "") {
+                return key; /* Replace 0 with new input */
+            };
+            return prevValue + key; /* Append to existing value */
+    };
+};
+
+myForm.on("BeforeAction_import", async (ev)=>{
+    const prevValue = await ev.context.export();
+    const key = ev.data;
+    ev.data = updateDisplay(prevValue, key);
+});
+
+myForm.on("keydown", async (ev)=>{
+    const prevValue = await ev.context.export();
+    const key = ev.originalEvent.key;
+    ev.preventDefault();
+    const data = updateDisplay(prevValue, key);
+    await ev.context.import({data});
+});{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- supercalculator_css {{{ --> {% endraw %}
+{% capture supercalculator_css %}
+{{""}}#myForm$$ .calculator input.display  {
+    caret-color: transparent; /* Hide caret */
+}
+{{ calculatorStyles_css }}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+
+🕵️ It's off-topic but worth to mention the trick of doing `!!
+key.match(invalidChars))` instead of `invalidChars.test(key)` is not arbitrary
+since *invalidChars* is a regex with the global flag set, which makes it
+suitable for 'String.replaceAll()'.
+
+With `test()`, the internal *lastIndex* property won't be reset making it to
+fail after first usage.
+
+The `!!` bit is just stylistic to note we want to evaluate the result of
+`.match()` as a boolean.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="supercalculator"
+    htmlSource=supercalculator
+    jsSource=supercalculator_js
+    cssSource=supercalculator_css
+    notes=notes
+    selected="preview"
+%}
+
+In this example we no longer need to define hotkeys since we are directly
+listening to all keydown events.
+
+If you check the *JS* tab you'll see that we extracted the key processing logic
+to a function called `updateDisplay()` that receives thwo arguments
+(*prevValue* and *key*) to calculate the new value of the display.
+
+It returns null for invalid keystrokes and can report the "Error!" condition
+directly to the display (like a real calculator) since it will be cleared with
+the next keystroke (no matter which event it comes from).
+
+Then the *BeforeAction_import* event handler just calls that function and sets
+the *ev.data* property with its result.
+
+The *keydown* event handler does call the `updateDisplay()` function but:
+
+  * It takes the key from the original keydown event.
+  * Calls the `.preventDefault()` method to avoid the keystroke effectively
+    reaching the display.
+  * Programmatically triggers the *import* action over the display with the
+    new value calculated.
+
+{: .hint :}
+> Since now all keyboard strokes are processed by to `updateDisplay()`
+> function, this allows us to define handy aliases which will feel more natural
+> in a PC keyboard for some keys like:
+>
+>   * `Enter` as an alias for `=`
+>   * `Delete` as an alias for `C`
+> 
+>  In the case of the formerly named `Del` key, we just renamed it to
+>  `Backspace` to match the real key since `Del` was just a random name to void
+>  using en Emojii (←) as a key name.
+
+We also added a little CSS rule to hide the caret in the input field since the
+display will no longer be directly editable.
 
 
 ## Conclusion
