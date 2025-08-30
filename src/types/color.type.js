@@ -22,7 +22,7 @@ export class color extends input {
         this.eventHooks.keydown.push ( ev => {
             if (ev.defaultPrevented) return;
             if (ev.originalEvent.key === "Delete") {
-                ev.target.clear();
+                ev.context.clear();
             };
         });
     };

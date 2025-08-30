@@ -79,17 +79,15 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     for (const evType of supportedFieldEventTypes) {
                         me.targetNode.addEventListener(evType, ev=>{
                             const targetComponent = me.getComponent(ev.target);
-                            const {targetNode} = targetComponent;
-
                             const evData = {
                                 type: evType,
                                 originalEvent: ev,
-                                target: targetComponent,
-                                targetNode,
+                                context: targetComponent,
+                                preventDefault: ev.preventDefault.bind(ev),
+                                stopPropagation: ev.stopPropagation.bind(ev),
+                                stopImmediatePropagation: ev.stopImmediatePropagation.bind(ev),
                             };
-
                             targetComponent.emit(evType, evData);
-
                         }, true); // Use capture phase
                     };
                 };

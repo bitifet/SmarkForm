@@ -15,13 +15,13 @@ export class input extends form {
                 if (ev.originalEvent.key === "Enter") {
                     const backwards = ev.originalEvent.shiftKey;
                     if (
-                        ev.target.targetNode.tagName === "TEXTAREA"
+                        ev.context.targetNode.tagName === "TEXTAREA"
                         && ! ev.originalEvent.ctrlKey
                         && ! backwards
                     ) return; // Require Ctrl key to escape textareas.
                     let nextField = (
-                        ! backwards ? ev.target.find(".+1") || ev.target.find("../.+1")
-                        : ev.target.find(".-1") || ev.target.find("../.-1")
+                        ! backwards ? ev.context.find(".+1") || ev.context.find("../.+1")
+                        : ev.context.find(".-1") || ev.context.find("../.-1")
                     );
                     if (nextField) {
                         nextField.focus();
