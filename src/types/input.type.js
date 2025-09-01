@@ -61,7 +61,6 @@ export class input extends form {
         } else {
             me.targetFieldNode = me.targetNode;
         };
-        return;
     };//}}}
     @action
     @export_to_target

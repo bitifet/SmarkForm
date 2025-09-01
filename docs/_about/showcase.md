@@ -1382,19 +1382,24 @@ following example there are two nested lists and all item additions and
 removals are animated the same way.
 
 {% raw %} <!-- capture animations_css {{{ --> {% endraw %}
-{% capture animations_css %}.animated_item {
-    transform: scaleY(0) translateY(-50%);
-    /* Add transition for removal effect */
-    transition:
-        transform 150ms ease-out
-    ;
+{% capture animations_css %}
+.animated_item {
+    transform: translateX(-100%); /* Start off-screen to the left */
+    opacity: 0; /* Optional: Start invisible for smoother effect */
+    /* Transition for removal effect */
+    transition: 
+        transform 200ms ease-out,
+        opacity 200ms ease-out;
 }
+
 .animated_item.ongoing {
-    transform: scaleY(1) translateY(0%);
-    transition:
-        transform 150ms ease-in
-    ;
+    transform: translateX(0); /* End at original position */
+    opacity: 1; /* Optional: Fully visible */
+    transition: 
+        transform 200ms ease-in,
+        opacity 200ms ease-in;
 }
+
 {{ hidden_actions_css }}{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -1402,22 +1407,17 @@ endcapture %}
 {% raw %} <!-- capture animations_js {{{ --> {% endraw %}
 {% capture animations_js %}
 const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
-{{""}}myForm.onAll("addItem", function({
-    newItemTarget, /* the targetNode of the future new item */
-    onRendered
-}) {
-    newItemTarget.classList.add("animated_item");
-    onRendered(async (newItem)=>{
-        await delay(1); /* Allow for default .animated_item style to be applied */
-        newItem.targetNode.classList.add("ongoing");
-        /* Here we could have used newItemTarget instead */
-    });
+{{""}}myForm.onAll("afterRender", async function(ev) {
+    if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+    const item = ev.context.targetNode;
+    item.classList.add("animated_item");
+    await delay(1); /* Important: Allow DOM to update */
+    item.classList.add("ongoing");
 });
-{{""}}myForm.onAll("removeItem", async function({
-    oldItemTarget,
-    onRemmoved
-}) {
-    oldItemTarget.classList.remove("ongoing");
+{{""}}myForm.onAll("beforeUnrender", async function(ev) {
+    if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+    const item = ev.context.targetNode;
+    item.classList.remove("ongoing");
     /* Await for transition to be finished before item removal: */
     await delay(150);
 });{% endcapture %}

@@ -99,7 +99,7 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                 ) me[listenLevel](evt, handler);
 
             };// }}}
-            async emit(evType, evData) {// {{{
+            async emit(evType, evData, preventable = true) {// {{{
                 const me = this;
                 let propagationStopped = false;
                 let immediatePropagationStopped = false;
@@ -107,9 +107,11 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     ...evData,
                     type: evType,
                     defaultPrevented: false,
-                    preventDefault: () => event.defaultPrevented = true,
-                    stopPropagation: () => propagationStopped = true,
-                    stopImmediatePropagation: () => immediatePropagationStopped = true,
+                };
+                if (preventable) {
+                    event.preventDefault = () => event.defaultPrevented = true;
+                    event.stopPropagation = () => propagationStopped = true;
+                    event.stopImmediatePropagation = () => immediatePropagationStopped = true;
                 };
                 // Event target phase:
                 const targetHandlers = [ // Local handlers, then global ones:

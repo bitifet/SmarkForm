@@ -151,10 +151,20 @@ export class SmarkComponent {
             me.onRenderedTasks = null;
             setRendered(true);
             setTimeout(()=>me.renderedSync = true, 1);
+            await me.emit("afterRender", {
+                context: me
+            }, false);
         })();
         if (me.options.onRendered) me.onRendered(me.options.onRendered);
 
     };//}}}
+    async unrender() {
+        const me = this;
+        await me.emit("beforeUnrender", {
+            context: me
+        }, false);
+        me.targetNode.remove();
+    };
     onRendered(cbk) {//{{{
         const me = this;
         if (me.onRenderedTasks) {
