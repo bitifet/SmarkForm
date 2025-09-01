@@ -1,19 +1,6 @@
 // types/list.type.js
 // ==================
 
-// TODO:
-// =====
-//
-// 👉 Keep first item in place:
-//    -------------------------
-//     
-//    For lists allowing 0 items, make first element disabled and not visible
-//    instead of completely removing from DOM.
-//
-//    This would avoid lots of visual layout issues.
-//
-
-
 import {SmarkField} from "../lib/component.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
 import {action} from "./trigger.type.js";
@@ -23,7 +10,6 @@ import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {mutex} from "../decorators/mutex.deco.js";
 import {makeRoom, getRoots, parseJSON} from "../lib/helpers.js";
-
 
 // Private helpers:
 // ----------------
@@ -79,8 +65,6 @@ function loadTemplates(me) {//{{{
     );
     return templates;
 };//}}}
-
-
 
 
 // List component type:
@@ -273,24 +257,6 @@ export class list extends SmarkField {
         // DOM element creation:{{{
         const newItemTarget = me.templates.item.cloneNode(true);
         //}}}
-
-        /// <DEPRECATE>:{{{
-        // addItem event emitting:{{{
-        const onRenderedCbks = [];
-            // Allow for handy callback instead of two separate event handlers
-        await me.emit("addItem", {
-            action: options.action,
-                origin: options.origin,
-                context: options.context,
-                target: options.target,
-                position: options.position,
-                newItemTarget,
-                options, // <- Original options (including target)
-                onRendered: cbk => onRenderedCbks.push(cbk),
-        });
-        //}}}
-        /// </DEPRECATE>}}}
-
         // Child component creation and insertion:{{{
         let newItem;
         if (! me.children.length) {
@@ -344,13 +310,6 @@ export class list extends SmarkField {
             if (moveTarget) moveTarget.moveTo();
         };
         //}}}
-
-        /// <DEPRECATE>:{{{
-        // Execute "onRendered" callbacks:{{{
-        onRenderedCbks.forEach(cbk=>cbk(newItem));
-        //}}}
-        /// </DEPRECATE>}}}
-
         if (me.renderedSync) newItem.focus();
         return newItem;
     };//}}}
@@ -406,6 +365,7 @@ export class list extends SmarkField {
                 };
             };
             if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
+            // Locate target child and rebuild children array without it:{{{
             let oldItem = null;
             let newFocusPosition = null;
             const newChildren = me.children
@@ -421,72 +381,37 @@ export class list extends SmarkField {
                             );
                             if (moveTarget) moveTarget.moveTo();
                         };
-
                         oldItem = child;
-
                         newFocusPosition = (
                             (all.length -i > 1) ? newFocusPosition = i // More above
                             : i == 0 ? null           // No items left
                             : i - 1                   // Removing last item
                         );
-
                         return false;
                     };
                     return true;
                 })
             ;
-
-            /// <DEPRECATE>:{{{
-            // removeItem event emitting:{{{
-            const onRemovedCbks = [];
-            // Allow for handy callback instead of two separate event handlers
-            await me.emit("removeItem", {
-                action: options.action,
-                origin: options.origin,
-                context: options.context,
-                target: currentTarget,  // <--- Effective target.
-                oldItem,                // Child going to be removed.
-                oldItemTarget: oldItem.targetNode, // Its target (analogous to addItem event).
-                options,
-                onRemoved: cbk => onRemovedCbks.push(cbk),
-            });
-            //}}}
-            /// </DEPRECATE>}}}
-
-            // Perform removal:
-            // ----------------
-
+            // }}}
+            // Perform removal:{{{
             await me.emit("removeItem_beforeRender", {
                 ...options,
                 target: oldItem,
                 targetNode: oldItem.targetNode,
             }, false);
-
             await oldItem.unrender();
             me.children = newChildren;
             await me.renum();
-
             await me.emit("removeItem_afterRender", {
                 ...options,
                 target: oldItem,
                 targetNode: oldItem.targetNode,
             }, false);
-
             if (newFocusPosition !== null) {
                 me.children[newFocusPosition].focus();
             };
-
-            // ----------------
-
-            /// <DEPRECATE>:{{{
-            // Execute "onRemoved" callbacks:{{{
-            onRemovedCbks.forEach(cbk=>cbk());
-            //}}}
-            /// </DEPRECATE>}}}
-
-
+            // }}}
         };
-
     };//}}}
     async isEmpty() {//{{{
         const me = this;
