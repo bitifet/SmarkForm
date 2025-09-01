@@ -53,22 +53,17 @@ script.
         // Allow for list items addition/removal CSS animation:
         // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
         const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
-        myForm.onAll("addItem", function({
-            newItemTarget, /* the target of the future new item */
-            onRendered
-        }) {
-            newItemTarget.classList.add("animated_item");
-            onRendered(async (newItem)=>{
-                await delay(1); /* Allow for default .animated_item style to be applied */
-                newItem.targetNode.classList.add("ongoing");
-                /* Here we could have used newItemTarget instead */
-            });
+        myForm.on("afterRender", async function(ev) {
+            if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+            const item = ev.context.targetNode;
+            item.classList.add("animated_item");
+            await delay(1); /* Important: Allow DOM to update */
+            item.classList.add("ongoing");
         });
-        myForm.onAll("removeItem", async function({
-            oldItemTarget,
-            onRemmoved
-        }) {
-            oldItemTarget.classList.remove("ongoing");
+        myForm.on("beforeUnrender", async function(ev) {
+            if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+            const item = ev.context.targetNode;
+            item.classList.remove("ongoing");
             /* Await for transition to be finished before item removal: */
             await delay(150);
         });

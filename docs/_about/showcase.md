@@ -1432,8 +1432,17 @@ const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     selected="preview"
 %}
 
+In this example we listen to the `afterRender` event to add the `animated_item`
+class so that we hde them through CSS.
 
+{: .info :}
+> Of course we could have added the *animated_item* class directly in the HTML
+> source, but this way we ensure that it is only applied when the form is
+> actually enhanced. Allowing for smooth degradation in case of JS being
+> disabled.
 
+Then we wait for a moment to allow the DOM to update and add the `ongoing`
+class when the item is added and remove it before the item is removed.
 
 
 ### Smart value coercion

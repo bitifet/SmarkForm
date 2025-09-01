@@ -28,7 +28,6 @@ nav_order: 1
             * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
             * [Options (clear)](#options-clear)
-    * [Events](#events)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -162,10 +161,5 @@ The `form` component type supports the following actions:
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
   * **target:**
-
-
-### Events
-
-
 
 
