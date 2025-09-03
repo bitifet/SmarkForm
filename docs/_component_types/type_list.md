@@ -417,7 +417,7 @@ The `list` component type supports the following actions:
   * {{ site.data.definitions.actions.options.context }}
   * **target:**
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
-  * **keep_non_empty:** (boolean)
+  * **preserve_non_empty:** (boolean)
   * **failback:** (= "none" / "clear" / "throw" )
 
 

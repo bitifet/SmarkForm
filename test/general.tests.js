@@ -82,13 +82,13 @@ block mainForm
             button(data-smark = {
                 action: "removeItem",
                 context: "employees",
-                keep_non_empty: true,
+                preserve_non_empty: true,
             }, title="Remove last non-empty employee") ➖
             button(data-smark = {
                 action: "removeItem",
                 context: "employees",
                 target: "*",
-                keep_non_empty: true,
+                preserve_non_empty: true,
             }, title="Clear all empty employee") 🧹
         div
             .form-group(data-smark = {
@@ -143,7 +143,7 @@ block mainForm
             button(data-smark = {
                 action: "removeItem",
                 context: "employees",
-                keep_non_empty: true,
+                preserve_non_empty: true,
                 autoscroll: "elegant",
             }, title="Remove last non-empty employee") ➖
             button(data-smark = {
@@ -151,7 +151,7 @@ block mainForm
                 context: "employees",
                 target: "*",
                 autoscroll: "elegant",
-                keep_non_empty: true,
+                preserve_non_empty: true,
             }, title="Clear all empty employees") 🧹
 mixin inputlist(label="Annonymous")
     .form-group

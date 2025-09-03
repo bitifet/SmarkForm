@@ -506,7 +506,7 @@ items allowing users to cherry-pick which item to remove:
 👉 A special case for the "to" property is specifying it as "\*". In this case,
 the *trigger* button's target will be all items of the list.
 
-Which combined (or not) with the *keep_non_empty* property of *list* component
+Which combined (or not) with the *preserve_non_empty* property of *list* component
 type's *removeItem* action, may lead to several interesting combinations:
 
 ➡️  Remove last empty pet. If none is empty, remove last one:
@@ -516,7 +516,7 @@ type's *removeItem* action, may lead to several interesting combinations:
     data-smark='{
         "action":"removeItem",
         "context":"pets",
-        "keep_non_empty":true
+        "preserve_non_empty":true
     }'
 >Remove Pet</button>
 ```
@@ -528,7 +528,7 @@ type's *removeItem* action, may lead to several interesting combinations:
         "action":"removeItem",
         "context":"pets",
         "to":"*",
-        "keep_non_empty":true
+        "preserve_non_empty":true
     }'
 >Clear Empty Pets</button>
 ```

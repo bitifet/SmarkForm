@@ -323,12 +323,10 @@ export class list extends SmarkField {
         options.context ||= me;  // (Internal call)
         options.target ||= null; // Target child component to remove.
         options.autoscroll ||= null;   // "elegant" / "self" / "parent" / (falsy)
-        let keep_non_empty = options.keep_non_empty ||= false;
-            // TODO: Rename to "preserve_non_empty" since they are only kept if
-            // there are other empty ones.
+        let preserve_non_empty = options.preserve_non_empty ||= false;
         options.failback ||= "throw";  // "none" / "clear" / "throw" (default)
         if (! options.target) {
-            if (keep_non_empty) for (
+            if (preserve_non_empty) for (
                 const t of [...me.children]
                 .reverse() // Pick last first
             ) if (await t.isEmpty()) {
@@ -337,7 +335,7 @@ export class list extends SmarkField {
             };
             if (! options.target) {
                 options.target = me.children[me.children.length - 1];
-                keep_non_empty = false;
+                preserve_non_empty = false;
                 // Allow non empty removal as last chance if no target
                 // specified.
             };
@@ -364,7 +362,7 @@ export class list extends SmarkField {
                         return;
                 };
             };
-            if (keep_non_empty && ! await currentTarget.isEmpty()) continue;
+            if (preserve_non_empty && ! await currentTarget.isEmpty()) continue;
             // Locate target child and rebuild children array without it:{{{
             let oldItem = null;
             let newFocusPosition = null;

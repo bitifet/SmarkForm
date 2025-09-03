@@ -105,8 +105,8 @@ power_example: |
             <label data-smark>Edad:</label><input data-smark='{"name":"age"}' type="number">
         </p>
         <fieldset class="row" data-smark='{"name":"conatact_data"}'>
-            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "keep_non_empty":true}' title='Limpiar vacíos'>🧹</button>
-            <button data-smark='{"action":"removeItem", "context":"phones", "keep_non_empty":true}' title='Eliminar teléfono'>➖</button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Limpiar vacíos'>🧹</button>
+            <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Eliminar teléfono'>➖</button>
             <button data-smark='{"action":"addItem","context":"phones"}' title='Añadir teléfono'>➕ </button>
             <label data-smark>Teléfonos:</label>
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>

@@ -73,7 +73,6 @@ export class color extends input {
         me.targetFieldNode.addEventListener("keydown", resetDefined);
         me.targetFieldNode.addEventListener("click", resetDefined);
         me.targetFieldNode.addEventListener("change", resetDefined);
-
     };//}}}
     @action
     // (Done in parent class) @export_to_target

@@ -137,8 +137,8 @@ materialize hotkeys' revealing feature when pressing the `Ctrl` key.
 
 {% raw %} <!-- simple_list_hotkeys {{{ --> {% endraw %}
 {% capture simple_list_hotkeys
-%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "keep_non_empty":true}' title='Remove unused fields'>🧹</button>
-█<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "keep_non_empty":true}' title='Remove phone number'>➖</button>
+%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+█<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
 █<label data-smark>Phones:</label>
 █<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>

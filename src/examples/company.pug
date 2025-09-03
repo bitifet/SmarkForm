@@ -78,7 +78,7 @@ block mainForm
                     action: "removeItem",
                     hotkey: "-",
                     context: "employees",
-                    keep_non_empty: true,
+                    preserve_non_empty: true,
                 }, title="Remove employees from bottom priorizing empties")
                     span(role='img', aria-label='Wisely shrink employee list') ➖
                 button(data-smark = {
@@ -86,7 +86,7 @@ block mainForm
                     hotkey: "*",
                     context: "employees",
                     target: "*",
-                    keep_non_empty: true,
+                    preserve_non_empty: true,
                 }, title="Clear all empty employees")
                     span(role='img', aria-label='Remove all empty employees') 🧹
         .form-group
@@ -174,7 +174,7 @@ block mainForm
                 action: "removeItem",
                 hotkey: "-",
                 context: "employees",
-                keep_non_empty: true,
+                preserve_non_empty: true,
                 autoscroll: "elegant",
                 failback: "clear",
             }, title="Remove employees from bottom priorizing empties")
@@ -185,7 +185,7 @@ block mainForm
                 context: "employees",
                 target: "*",
                 autoscroll: "elegant",
-                keep_non_empty: true,
+                preserve_non_empty: true,
             }, title="Clear all empty employees")
                 span(role='img', aria-label='') 🧹
     section
