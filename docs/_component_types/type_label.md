@@ -28,9 +28,14 @@ nav_order: 10001
 
 </details>
 
+{% include components/sampletabs_ctrl.md noShowHint=true %}
+
 ## Introduction
 
-The `label` component type is a special enhancement component that extends `SmarkComponent` (not the typical `input` component). It provides intelligent labeling capabilities with automatic field association and enhanced accessibility features.
+The `label` component type is a special enhancement component that extends
+`SmarkComponent` (not the typical `input` component). It provides intelligent
+labeling capabilities with automatic field association and enhanced
+accessibility features.
 
 - **Purpose:** Enhances HTML label elements with automatic field targeting and improved accessibility
 - **Naming:** Labels are always unnamed components (they don't have a `name` property)
@@ -39,34 +44,82 @@ The `label` component type is a special enhancement component that extends `Smar
 
 ## Usage
 
-The `label` component can be used to create enhanced labels that automatically associate themselves with form fields. It works with both explicit targeting and automatic field detection.
+The `label` component can be used to create enhanced labels that automatically
+associate themselves with form fields. It works with both explicit targeting
+and automatic field detection.
 
 **Example - Automatic Association:**
 
-```html
-<!-- Label automatically associates with the next form field -->
-<label data-smark>Username:</label>
-<input type="text" data-smark name="username" placeholder="Enter username">
-```
+
+{% raw %} <!-- auto_association {{{ --> {% endraw %}
+{% capture auto_association
+%}<!-- Label automatically associates with the next form field -->
+<label data-smark>Click me!</label>
+<div><!-- Intermediate DOM nodes are transparent to SmarkForm's fields tree -->
+    <input type="text" data-smark name="username" placeholder="...and focus will come here">
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="auto_association"
+    htmlSource=auto_association
+    showEditor=true
+%}
+
 
 **Example - Explicit Targeting:**
 
-```html
-<!-- Label explicitly targets a specific field -->
-<label data-smark='{"target":"myField"}'>Email Address:</label>
-<div>
-    <input type="email" data-smark name="myField" placeholder="Enter email">
-</div>
-```
 
-**Example - With Options:**
+{% raw %} <!-- explicit_targetting {{{ --> {% endraw %}
+{% capture explicit_targetting
+%}<!-- Label explicitly targets a specific field -->
+<label data-smark='{"target":"myField"}'>Click me!</label>
+<div><!-- Intermediate DOM nodes are transparent to SmarkForm's fields tree -->
+    <input type="text" data-smark name="myField" placeholder="...and focus will come here">
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="explicit_targetting"
+    htmlSource=explicit_targetting
+    showEditor=true
+%}
+
+
+
+**Example - Singleton-like pattern:**
+
+🚧  Not yet supported 🚧
 
 ```html
-<!-- Label with custom options -->
-<label data-smark='{"allow_select": true, "context": "myForm"}'>
-    Selectable Label Text
+<label data-smark>Click me!
+    <input type="text" data-smark name="myField" placeholder="...and focus will come here">
 </label>
 ```
+
+🩹 Workaround 🩹 
+
+As a workaround, you can just not enhance the label as a *SmarkForm* component
+since this is a native feature of the HTML `<label>`:
+
+{% raw %} <!-- workaround_targetting {{{ --> {% endraw %}
+{% capture workaround_targetting
+%}<label>Click me!
+<div>
+    <input type="text" data-smark name="myField" placeholder="...and focus will come here">
+</div>
+</label>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="workaround_targetting"
+    htmlSource=workaround_targetting
+    showEditor=true
+%}
+
 
 ## Automatic Field Association
 

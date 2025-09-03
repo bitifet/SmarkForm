@@ -18,8 +18,8 @@ nav_order: 6
 
 * [Introduction](#introduction)
 * [Usage](#usage)
-* [Data Formats](#data-formats)
-* [Validations](#validations)
+    * [Data Formats](#data-formats)
+* [Requirements](#requirements)
 * [API Reference](#api-reference)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
@@ -34,29 +34,50 @@ nav_order: 6
 
 </details>
 
+{% include components/sampletabs_ctrl.md noShowHint=true %}
+
 ## Introduction
 
-The `date` component type extends the [Input](/component_types/type_input) component type, providing specialized handling for date input fields with enhanced parsing and formatting capabilities.
+The `date` component type extends the [Input](/component_types/type_input)
+component type, providing specialized handling for date input fields with
+enhanced parsing and formatting capabilities.
 
 - **Imports and Exports:** ISO date string (`YYYY-MM-DD`) or `null` (when empty)
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_types/type_input#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern](/getting_started/core_component_types#the-singleton-pattern)
 - **Data Conversion:** Converts between various date formats and ISO date strings
 
 ## Usage
 
-To use the `date` component type, ensure that the target field is an `INPUT` element of type `date`. If the type attribute is not specified, it will be set to `date` automatically.
+Just add the *data-smark* attribute to the `<input">` element specifying the type:
+
+```html
+<input data-smark='{"type":"date", "name":"birthdate"}'>
+```
+
+Alternatively, you can also use the shorthand notation inferring the type from the `<input>` element type:
+
+```html
+<input type="date" name="birthdate" data-smark>
+```
+
 
 **Example:**
 
-```html
-<!-- Example of date input field -->
-<input type="date" data-smark='{"name":"birthdate"}' placeholder="Select your birth date">
 
-<!-- Date field with explicit type specification -->
-<input data-smark='{"type":"date","name":"appointmentDate"}' placeholder="Appointment date">
-```
+{% raw %} <!-- simple_color {{{ --> {% endraw %}
+{% capture simple_color
+%}<input type="date" name="birthdate" data-smark>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-## Data Formats
+{% include components/sampletabs_tpl.md
+    formId="simple_color"
+    htmlSource=simple_color
+    showEditor=true
+%}
+
+
+### Data Formats
 
 The `date` component accepts multiple input formats for maximum flexibility:
 
@@ -66,11 +87,28 @@ The `date` component accepts multiple input formats for maximum flexibility:
 - **Epoch Timestamp:** `1703462400000` (milliseconds since Unix epoch)
 - **Empty/Null Values:** `null`, `""`, or `undefined` (clears the field)
 
-All valid dates are normalized to ISO date format (`YYYY-MM-DD`) for export, ensuring consistency across your application.
+All valid dates are normalized to ISO date format (`YYYY-MM-DD`) for export,
+ensuring consistency across your application.
 
-## Validations
+## Requirements
 
-The date component will throw an error if the target field is not an INPUT element of type date. Invalid date strings that cannot be parsed will result in a `null` value rather than throwing an error.
+The date component will throw an error if the target field is not an INPUT
+element or its type is explicitly defined and different to "date". Invalid date
+strings that cannot be parsed will result in a `null` value rather than
+throwing an error.
+
+{% raw %} <!-- date_error {{{ --> {% endraw %}
+{% capture date_error
+%}<input type="text" name="birthday" data-smark='{"type":"date"}'>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="date_error"
+    htmlSource=date_error
+    showEditor=true
+%}
+
 
 ## API Reference
 

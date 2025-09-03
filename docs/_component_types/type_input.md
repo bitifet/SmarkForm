@@ -37,7 +37,7 @@ nav_order: 3
 The `input` component type is a fundamental building block for form elements in SmarkForm. It allows you to create and manage various types of input fields within your forms.
 
 - **Imports and Exports:** `String`
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_types/type_input#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern](/getting_started/core_component_types#the-singleton-pattern)
 - **Data Conversion:** No data conversion is performed. The value is returned as a `String`.
 
 

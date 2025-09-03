@@ -18,7 +18,7 @@ nav_order: 4
 
 * [Introduction](#introduction)
 * [Usage](#usage)
-* [Validations](#validations)
+* [Requirements](#requirements)
 * [API Reference](#api-reference)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
@@ -38,7 +38,7 @@ nav_order: 4
 The `number` component type extends the [Input](/component_types/type_input) component type, providing additional sanitation (when importing) and formatting (when exporting).
 
 - **Imports and Exports:** `Number`
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_types/type_input#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern](/getting_started/core_component_types#the-singleton-pattern)
 - **Data Conversion:** Converts inappropriate types (like `String`) to `Number` on the fly.
 
 ## Usage
@@ -52,9 +52,9 @@ To use the `number` component type, ensure that the target field is an `INPUT` e
 <input type="number" data-smark='{"name":"age"}' placeholder="Enter your age">
 ```
 
-## Validations
+## Requirements
 
-The number component will throw an error if the target field is not an INPUT element of type number.
+The number component will throw an error if the target field is not an INPUT element or its type is explicitly defined and different to "number".
 
 ## API Reference
 

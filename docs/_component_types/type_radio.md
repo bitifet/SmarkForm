@@ -20,7 +20,7 @@ nav_order: 8
 * [Usage](#usage)
 * [Radio Button Groups](#radio-button-groups)
 * [Special Interactions](#special-interactions)
-* [Validations](#validations)
+* [Requirements](#requirements)
 * [API Reference](#api-reference)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
@@ -40,7 +40,7 @@ nav_order: 8
 The `radio` component type extends the [Input](/component_types/type_input) component type, providing enhanced functionality for radio button groups with automatic name management and special interaction behaviors.
 
 - **Imports and Exports:** Selected radio button value (`String`) or `null` (when no selection)
-- **Singleton Pattern:** Implements a master-slave pattern where the first radio button in a group becomes the master
+- **Multiple instances:** Implements a master-slave pattern where the first radio button in a group becomes the master
 - **Data Conversion:** No data conversion is performed. The selected value is returned as a `String`.
 
 ## Usage
@@ -84,9 +84,10 @@ The `radio` component provides enhanced user interaction capabilities beyond sta
 - **Keyboard Support:** Pressing the `Delete` key when a radio button has focus will clear the selection
 - **Consistent Behavior:** These interactions work across all radio buttons in the group, regardless of which specific button is interacted with
 
-## Validations
+## Requirements
 
-The radio component will throw an error if the target field is not an INPUT element of type radio.
+The radio component will throw an error if the target field is not an INPUT element or its type is explicitly defined and different to "radio".
+
 
 ## API Reference
 

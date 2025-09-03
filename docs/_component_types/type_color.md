@@ -18,7 +18,7 @@ nav_order: 5
 
 * [Introduction](#introduction)
 * [Usage](#usage)
-* [Validations](#validations)
+* [Requirements](#requirements)
 * [API Reference](#api-reference)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
@@ -33,6 +33,7 @@ nav_order: 5
 
 </details>
 
+{% include components/sampletabs_ctrl.md noShowHint=true %}
 
 ## Introduction
 
@@ -48,28 +49,108 @@ But native HTML color input fields does not allow even empty string so, if we
 receive a `#000000` value, we cannot tell if the user has intentionally
 selected the black color or if he just didn't select any color at all.
 
-The `color` component type, on the other hand, allows the user to clear the color field by setting it to null.
+The `color` component type, on the other hand, can take null as value (being it
+its default value).
 
-
-- **Imports and Exports:** `String` (Valid "#RRGGBB" Hex value) or null (when not selected).
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_types/type_input#the-singleton-pattern).
+- **Imports:** `String` (Valid "#RRGGBB" or "#RGB" Hex value) or null (meaning not selected).
+- **Exports:** `String` (Valid "#RRGGBB" Hex value) or null (when not selected).
+- **Singleton Pattern:** Implements the [Singleton Pattern](/getting_started/core_component_types#the-singleton-pattern)
 - **Data Conversion:** None, but accepts null as value.
 
 ## Usage
 
+Just add the *data-smark* attribute to the `<input">` element specifying the type:
+
+```html
+<input data-smark='{"type":"color", "name":"myColor"}'>
+```
+
+Alternatively, you can also use the shorthand notation inferring the type from the `<input>` element type:
+
+```html
+<input type="color" name="myColor" data-smark>
+```
 
 **Example:**
 
+{% raw %} <!-- simple_color {{{ --> {% endraw %}
+{% capture simple_color
+%}<input type="color" name="myColor" data-smark>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_color"
+    htmlSource=simple_color
+    showEditor=true
+%}
+
+
+👉 Notice that, after selecting a color, you can clear the input field by
+pressing the `Delete` key.
+
+But, in order to allow clearing the field from touch devices it's advisable to
+add a trigger button with the `clear` action.
+
+The following example uses the [Singleton
+Pattern](/getting_started/core_component_types#the-singleton-pattern) to group
+the input field and the clear button:
+
+
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 Without recurring to the [Singleton
+Pattern](/getting_started/core_component_types#the-singleton-pattern), you
+would have to specify the context in the button action, like this:
+
 ```html
-<span data-smark='{"type":"color", "name":"myColor"}'>
-    <input data-smark>
-    <button data-smark='{"action":"clear"}'>❌ Reset</button>
-</span>
+<input type="color" name="myColor" data-smark>
+<button data-smark='{"action":"clear","context":"./myColor"}'>❌ Clear</button>
 ```
 
-## Validations
+👉 Here we used a explicitly relative path for the context. But you could also use:
+   → `"context":"myColor"` (non explicit relative path)
+   → `"context":"/myColor"` (absolute path)
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-The number component will throw an error if the target field is not an INPUT element of type number.
+
+{% raw %} <!-- singleton_color {{{ --> {% endraw %}
+{% capture singleton_color
+%}<span data-smark='{"type":"color", "name":"myColor"}'>
+    <input data-smark>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+</span>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="singleton_color"
+    htmlSource=singleton_color
+    notes=notes
+    showEditor=true
+%}
+
+
+## Requirements
+
+The number component will throw an error if the target field is not an INPUT
+element or its type is explicitly defined and different to "color".
+
+{% raw %} <!-- singleton_color_error {{{ --> {% endraw %}
+{% capture singleton_color_error
+%}<span data-smark='{"type":"color", "name":"myColor"}'>
+    <input type="text" name="myColor" data-smark>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+</span>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="singleton_color_error"
+    htmlSource=singleton_color_error
+    showEditor=true
+%}
+
 
 ## API Reference
 
