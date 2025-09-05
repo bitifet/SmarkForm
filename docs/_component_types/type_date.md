@@ -63,7 +63,6 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 
 **Example:**
 
-
 {% raw %} <!-- simple_color {{{ --> {% endraw %}
 {% capture simple_color
 %}<input type="date" name="birthdate" data-smark>{%
@@ -99,7 +98,7 @@ throwing an error.
 
 {% raw %} <!-- date_error {{{ --> {% endraw %}
 {% capture date_error
-%}<input type="text" name="birthday" data-smark='{"type":"date"}'>{%
+%}<input type="text" name="birthdate" data-smark='{"type":"date"}'>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -108,6 +107,20 @@ endcapture %}
     htmlSource=date_error
     showEditor=true
 %}
+
+
+{: .info :}
+> When a *SmarkForm* component fails to render due to a *RenderError*, it is
+> replaced by a flamboyant placeholder that shows the error code and provides a
+> handy button to "replay" it to the console making it easier to debug the
+> issue.
+> 
+> 👉 Take a look to the *Preview* tab of the previous example to see it in
+> action.
+>
+> {: .hint :}
+> > Notice that you'll need to open your browser console if you want to see the
+> > error details when pressing the "Replay Error" button.
 
 
 ## API Reference

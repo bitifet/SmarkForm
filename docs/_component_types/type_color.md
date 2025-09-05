@@ -133,8 +133,8 @@ endcapture %}
 
 ## Requirements
 
-The number component will throw an error if the target field is not an INPUT
-element or its type is explicitly defined and different to "color".
+The number component will throw a *RenderError* if the target field is not an
+INPUT element or its type is explicitly defined and different to "color".
 
 {% raw %} <!-- singleton_color_error {{{ --> {% endraw %}
 {% capture singleton_color_error
@@ -150,6 +150,20 @@ endcapture %}
     htmlSource=singleton_color_error
     showEditor=true
 %}
+
+
+{: .info :}
+> When a *SmarkForm* component fails to render due to a *RenderError*, it is
+> replaced by a flamboyant placeholder that shows the error code and provides a
+> handy button to "replay" it to the console making it easier to debug the
+> issue.
+> 
+> 👉 Take a look to the *Preview* tab of the previous example to see it in
+> action.
+>
+> {: .hint :}
+> > Notice that you'll need to open your browser console if you want to see the
+> > error details when pressing the "Replay Error" button.
 
 
 ## API Reference
