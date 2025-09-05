@@ -72,3 +72,24 @@ export function createArrayPuller(parentStore) {//{{{
     });
     return arrayStore._dynamic;
 };//}}}
+
+export function replaceWrongNode(targetNode, error) {// {{{
+    // Create the outer <div> element
+    const errorNode = document.createElement('div');
+    errorNode.setAttribute('title', error.message);
+    errorNode.setAttribute('style', "display: inline-block; padding: .5em 1em; background: red; color: yellow; border-radius: 50% 0%");
+    // Add the text with the error code
+    errorNode.appendChild(document.createTextNode(error.code));
+    // Create the inner clicable button
+    const clicableNode = document.createElement('span');
+    clicableNode.setAttribute('title', 'Log the error again');
+    clicableNode.setAttribute('style', 'cursor: pointer; font-weight: bold; background-color: white; color: red; border-radius: 50%; padding: 0 4px; margin-left: 8px;');
+    clicableNode.textContent = '↧';
+    clicableNode.addEventListener('click', () => {
+        console.error(error);
+    });
+    errorNode.appendChild(clicableNode);
+    // Replace the targetNode with the errorNode
+    targetNode.replaceWith(errorNode);
+};// }}}
+

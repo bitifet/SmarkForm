@@ -4,6 +4,7 @@ const componentTypes = {};
 
 import {events} from "./events.js";
 import legacy from "./legacy.js";
+import {replaceWrongNode} from "./helpers.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
@@ -56,7 +57,7 @@ function inferType(node, parentComponent) {//{{{
         case "label":
             return "label";
         default:
-            //if (parentComponent.options.type == "list") return "form";
+            //(implicit)//if (parentComponent.options.type == "list") return "form";
         case "form":
             return "form";
     };
@@ -383,7 +384,13 @@ export class SmarkComponent {
     // Error types:
     renderError(code, message) {//{{{
         const me = this;
-        return new errors.renderError(code, message, me.getPath());
+        const targetNode = (
+            me.parent?.isSingleton ? me.parent.targetNode
+            : me.targetNode
+        );
+        const error = new errors.renderError(code, message, me.getPath());
+        replaceWrongNode(targetNode, error);
+        return error;
     };//}}}
 };
 
