@@ -292,7 +292,7 @@ describe('List Component Type Test', function() {
             );
             data.employees[3].phones.push("", "");
 
-            await form.import({data});
+            await form.import(data);
 
             return {
                 overallLength: await form.find("/employees").count(),

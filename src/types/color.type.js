@@ -87,7 +87,7 @@ export class color extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import({data = null, focus = true} = {}) {//{{{
+    async import(data = null, options = {}) {//{{{
         const me = this;
         if (
             ! me.isSingleton // Only for real field
@@ -107,7 +107,7 @@ export class color extends input {
             };
         };
         if (data?.length == 4) data = `#${data[1]}${data[1]}${data[2]}${data[2]}${data[3]}${data[3]}`;
-        const value = await super.import({data, focus});
+        const value = await super.import(data, options);
         return (
             me.isDefined ? value
             : null
@@ -115,7 +115,7 @@ export class color extends input {
     };//}}}
     async isEmpty() {//{{{
         const me = this;
-        const value = await me.export();
+        const value = await me.export(null, {silent: true});
         return value === null;
     };//}}}
 };

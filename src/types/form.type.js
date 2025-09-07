@@ -35,13 +35,13 @@ export class form extends SmarkField {
         const me = this;
         return Object.fromEntries(
             await Promise.all(Object.entries(me.children).map(
-                async ([key, child])=>[key, await child.export({silent: true})]
+                async ([key, child])=>[key, await child.export(null, {silent: true})]
             ))
         );
     };//}}}
     @action
     @import_from_target
-    async import({data = {}, focus = true} = {}) {//{{{
+    async import(data = {}, {focus = true} = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (
@@ -62,7 +62,7 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import({data: data[key], focus, silent: true});
+                        const value = await target.import(data[key], {focus, silent: true});
                         return [key, value];
                     }
                 )
@@ -81,8 +81,8 @@ export class form extends SmarkField {
         return true;
     };//}}}
     @action
-    async clear({focus} = {}) {//{{{
+    async clear(_data, {focus} = {}) {//{{{
         const me = this;
-        return await me.import({data: {}, focus, silent: true});
+        return await me.import({}, {focus, silent: true});
     };//}}}
 };

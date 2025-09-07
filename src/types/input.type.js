@@ -64,9 +64,9 @@ export class input extends form {
     };//}}}
     @action
     @export_to_target
-    async export(options) {//{{{
+    async export(_data, options) {//{{{
         const me = this;
-        if (me.isSingleton) return await me.children[""].export(options);
+        if (me.isSingleton) return await me.children[""].export(_data, options);
         const nodeFld = me.targetFieldNode;
         let retv;
         if (me.isCheckbox) {
@@ -89,10 +89,10 @@ export class input extends form {
     };//}}}
     @action
     @import_from_target
-    async import(options) {//{{{
+    async import(data = "", options = {}) {//{{{
         const me = this;
-        if (me.isSingleton) return await me.children[""].import(options);
-        let {data = "", focus = true} = options || {};
+        if (me.isSingleton) return await me.children[""].import(data, options);
+        let {focus = true} = options;
         const nodeFld = me.targetFieldNode;
         if (
             typeof data === "object"
@@ -131,17 +131,17 @@ export class input extends form {
         const me = this;
         const value = (
             me.isCheckbox ? "" // Do not consider checkboxes.
-            : await me.export()
+            : await me.export(null, {silent: true})
         );
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
     @action
-    async clear({focus} = {}) {//{{{
+    async clear(_data, {focus} = {}) {//{{{
         const me = this;
-        await me.import({
-            data: me.options.encoding === "json" ? null : "",
-            focus,
-        });
+        await me.import(
+            me.options.encoding === "json" ? null : ""
+            , {focus}
+        );
     };//}}}
 };

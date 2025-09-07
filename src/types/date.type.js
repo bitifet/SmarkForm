@@ -62,24 +62,24 @@ export class date extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import({data = null, focus = true} = {}) {//{{{
+    async import(data = null, {focus = true} = {}) {//{{{
         const me = this;
-        if (me.isSingleton) return await super.import({data, focus}); // Overload only inner field
+        if (me.isSingleton) return await super.import(data, {focus}); // Overload only inner field
         const value = (
             data instanceof Date ? data // Accept Date instance
             : typeof data == "number" ? new Date(data) // Accept epoch
             : ! data || (typeof data != "string") ? NaN // Reject nullish
             : parseDateStr(data) // Handle strings
         );
-        const retv = await super.import({data:(
+        const retv = await super.import((
             isNaN(value) ? null
             : ISODate(value)
-        ), focus});
+        ), {focus});
         return retv;
     };//}}}
     async isEmpty() {//{{{
         const me = this;
-        const value = await me.export();
+        const value = await me.export(null, {silent: true});
         return value === null;
     };//}}}
 };

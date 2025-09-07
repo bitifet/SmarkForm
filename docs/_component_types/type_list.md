@@ -382,7 +382,7 @@ The `list` component type supports the following actions:
 
 #### (Async) clear (Action)
 
-(Shorhand for `import({data: []})`)
+(Shorhand for `import([])`)
 
 ##### Options (clear)
 

@@ -171,16 +171,16 @@ export class list extends SmarkField {
                 if (list.length < me.min_items) emptyChilds.push(child);
                 continue;
             };
-            list.push(await child.export({silent: true}));
+            list.push(await child.export(null, {silent: true}));
         };
         for (let i=0; list.length < me.min_items; i++) {
-            list.push(await emptyChilds[i].export({silent: true}));
+            list.push(await emptyChilds[i].export(null, {silent: true}));
         };
         return list;
     };//}}}
     @action
     @import_from_target
-    async import({data = [], focus} = {}) {//{{{
+    async import(data = [], {focus} = {}) {//{{{
         const me = this;
         // Auto-update in case of scalar to array template upgrade:
         if (! (data instanceof Array)) data = [data];
@@ -191,7 +191,7 @@ export class list extends SmarkField {
             i++
         ) {
             if (me.children.length <= i) await me.addItem({silent: true}); // Make room on demand
-            await me.children[i].import({data: data[i], focus, silent: true});
+            await me.children[i].import(data[i], {focus, silent: true});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -215,12 +215,12 @@ export class list extends SmarkField {
             i++
         ) me.children[i].clear({silent: true});
         if (focus) me.focus();
-        return; // await me.export({silent: true});
+        return; // await me.export(null, {silent: true});
     };//}}}
     @action
     @mutex("list_mutating")
     @smartdisabling
-    async addItem(options = {}) {//{{{
+    async addItem(_data, options = {}) {//{{{
         const me = this;
         // Parameters checking and resolution:{{{
         options.action = "addItem";
@@ -293,7 +293,7 @@ export class list extends SmarkField {
             const sourceComponent = newItem.find(options.source);
             if (!! sourceComponent) {
                 const data = await sourceComponent.export();
-                await newItem.import({data, silent: true});
+                await newItem.import(data, {silent: true});
             };
         };
         //}}}
@@ -316,7 +316,7 @@ export class list extends SmarkField {
     @action
     @mutex("list_mutating")
     @smartdisabling
-    async removeItem(options = {}) {//{{{
+    async removeItem(_data, options = {}) {//{{{
         const me = this;
         options.action = "removeItem";
         options.origin ||= null; // (Internal call)
@@ -421,19 +421,19 @@ export class list extends SmarkField {
         return true;
     };//}}}
     @action
-    async clear({focus} = {}) {//{{{
+    async clear(_data, {focus} = {}) {//{{{
         const me = this;
-        return await me.import({data: [], focus, silent: true});
+        return await me.import([], {focus, silent: true});
     };//}}}
     @action
-    count({delta = 0} = {}) {//{{{
+    count(_data, {delta = 0} = {}) {//{{{
         // Return number of children.
         // But also it's sole existence allow reinjecting contents to it.
         const me = this;
         return me.children.length + Number(delta);
     };//}}}
     @action
-    position({target, offset = 1} = {}) {//{{{
+    position(_data, {target, offset = 1} = {}) {//{{{
         return Number(target?.name) + Number(offset);
     };//}}}
     async renum(){//{{{
@@ -514,12 +514,12 @@ export class list extends SmarkField {
         me.getTriggers("position").forEach(tgg=>{
             const me = this;
             const args = tgg.getTriggerArgs();
-            tgg.targetNode.innerText = me.position({...args, silent: true});
+            tgg.targetNode.innerText = me.position(args.data, {...args, silent: true});
         });
         me.getTriggers("count").forEach(tgg=>{
             const me = this;
             const args = tgg.getTriggerArgs();
-            tgg.targetNode.innerText = me.count({...args, silent: true});
+            tgg.targetNode.innerText = me.count(args.data, {...args, silent: true});
         });
     };//}}}
 };

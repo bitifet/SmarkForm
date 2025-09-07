@@ -1881,7 +1881,7 @@ myForm.on("keydown", async (ev)=>{
     const key = ev.originalEvent.key;
     ev.preventDefault();
     const data = updateDisplay(prevValue, key);
-    await ev.context.import({data});
+    await ev.context.import(data);
 });{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

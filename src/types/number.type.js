@@ -30,23 +30,20 @@ export class number extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import({data = null, focus = true} = {}) {//{{{
+    async import(data = null, options = {}) {//{{{
         const me = this;
         const typename = typeof data;
-        if (me.isSingleton) return await super.import({data, focus}); // Overload only inner field
-        const retv =  await super.import({data:(
+        if (me.isSingleton) return await super.import(data, options); // Overload only inner field
+        const retv =  await super.import((
             typename == "number" ? data
-            : typename == "string"
-                && data.length
-                && ! isNaN(data)
-                ? Number(data)
+            : typename == "string" && data.length && ! isNaN(data) ? Number(data)
             : null
-        ), focus});
+        ), options);
         return retv;
     };//}}}
     async isEmpty() {//{{{
         const me = this;
-        const value = await me.export();
+        const value = await me.export(null, {silent: true});
         return value === null;
     };//}}}
 };

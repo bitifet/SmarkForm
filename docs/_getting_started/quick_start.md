@@ -484,7 +484,7 @@ endcapture %}
 {% capture traversing_form_example_js
 %}/* Set business name */
 myForm.onRendered(async ()=>{
-    myForm.find("/businessData").import({data: {name: "Bitifet"}});
+    myForm.find("/businessData").import({name: "Bitifet"});
      /* 👉 Since we don't provide the address field, it will be cleared */
 });{%
 endcapture %}

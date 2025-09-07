@@ -290,7 +290,7 @@ Sibling navigation enables powerful patterns for list manipulation and data mana
 const currentData = await currentItem.export();
 const nextItem = currentItem.find(".+1");
 if (nextItem) {
-    await nextItem.import({data: currentData});
+    await nextItem.import(currentData);
 }
 ```
 
@@ -501,7 +501,7 @@ class FormSynchronizer {
         if (nextEmployee) {
             const nextData = await nextEmployee.export();
             nextData.department = employeeData.department; // Sync department
-            await nextEmployee.import({data: nextData});
+            await nextEmployee.import(nextData);
         }
     }
 }
@@ -574,13 +574,13 @@ async function syncBidirectional(item, field) {
     // Sync with previous item
     const prevItem = item.find(".-1");
     if (prevItem) {
-        await prevItem.find(field).import({data: value});
+        await prevItem.find(field).import(value);
     }
     
     // Sync with next item
     const nextItem = item.find(".+1");
     if (nextItem) {
-        await nextItem.find(field).import({data: value});
+        await nextItem.find(field).import(value);
     }
 }
 ```
