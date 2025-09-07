@@ -367,7 +367,7 @@ Everything works now. 🎉
 > also be be programatically invoked whenever required.
 > 
 > ```javascript
-> const {data} = await myForm.export();
+> const data = await myForm.export();
 > ```
 
 
@@ -432,7 +432,7 @@ example we already saw before:
 
 
 ```javascript
-const {data} = await myForm.export();
+const data = await myForm.export();
 ```
 
 And the *SmarkForm* root form is just a field of the type "form".

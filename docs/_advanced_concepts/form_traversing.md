@@ -165,13 +165,13 @@ The **context** of an action is the component over which the action will be appl
 2. **Natural Context**: The nearest ancestor component that implements the requested action
 3. **Default Context**: The form root if no suitable ancestor is found
 
-```javascript
-// Explicit context specification
+```html
+<!-- Explicit context specification -->
 <button data-smark='{"action":"clear", "context":"personalData"}'>
     Clear Personal Data
 </button>
 
-// Natural context (nearest implementing ancestor)
+<!-- Natural context (nearest implementing ancestor) -->
 <div data-smark='{"name":"personalData", "type":"form"}'>
     <button data-smark='{"action":"clear"}'>Clear</button>
     <!-- Context resolves to personalData -->
@@ -182,13 +182,13 @@ The **context** of an action is the component over which the action will be appl
 
 The **target** represents a specific child component within the context that should receive the action. Target resolution follows similar principles to context resolution:
 
-```javascript
-// Explicit target specification
+```html
+<!-- Explicit target specification -->
 <button data-smark='{"action":"export", "context":"personalData", "target":"address"}'>
     Export Address
 </button>
 
-// Natural target resolution based on DOM hierarchy
+<!-- Natural target resolution based on DOM hierarchy -->
 <div data-smark='{"name":"addresses", "type":"list"}'>
     <div>
         <button data-smark='{"action":"removeItem"}'>Remove</button>
@@ -201,7 +201,7 @@ The **target** represents a specific child component within the context that sho
 
 Natural context resolution examines the component hierarchy to find the most appropriate context for an action:
 
-```javascript
+```
 // Example hierarchy:
 // Form Root
 //   ├── personalData (form)
@@ -221,15 +221,15 @@ This automatic resolution eliminates the need for explicit wiring in most common
 
 For complex forms or specific interaction patterns, you can explicitly specify both context and target:
 
-```javascript
-// Copy data from one section to another
+```html
+<!-- Copy data from one section to another -->
 <button data-smark='{
     "action": "export",
     "context": "personalData",
     "target": "/businessData"
 }'>Copy Personal to Business</button>
 
-// Import data with specific targeting
+<!-- Import data with specific targeting -->
 <button data-smark='{
     "action": "import",
     "context": "businessData",
