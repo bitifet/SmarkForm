@@ -18,9 +18,6 @@
 .smarkForm {
   flex: 1;
   margin: var(--layout-paddings);
-  /* Optional: Hover effect for non-disabled buttons */
-  /* Headers and Footers */
-  /* List items animation */
 }
 .smarkForm section, .smarkForm header {
   margin: var(--layout-paddings);
@@ -120,10 +117,12 @@
 .smarkForm input, .smarkForm textarea, .smarkForm select, .smarkForm button {
   margin: var(--form-gap);
   border-radius: var(--round-radius);
-  font-size: inherit;
 }
 .smarkForm input:not(.small), .smarkForm textarea:not(.small), .smarkForm select:not(.small), .smarkForm button:not(.small) {
   padding: 0.5rem 1rem;
+}
+.smarkForm input, .smarkForm textarea, .smarkForm select, .smarkForm button {
+  font-size: inherit;
 }
 .smarkForm button {
   min-width: 2rem;
@@ -142,6 +141,9 @@
   color: #6c757d; /* Light gray text */
   cursor: not-allowed;
   opacity: 0.5;
+}
+.smarkForm {
+  /* Optional: Hover effect for non-disabled buttons */
 }
 .smarkForm button:hover:not(:disabled) {
   background-color: ivory;
@@ -190,6 +192,9 @@
 .smarkForm textarea:focus:not([tabindex="-1"]) {
   outline: dotted #ffd 4px;
   outline-offset: 0.05em;
+}
+.smarkForm {
+  /* Headers and Footers */
 }
 .smarkForm h1, .smarkForm h2, .smarkForm h3, .smarkForm h4, .smarkForm h5, .smarkForm h6 {
   user-select: none;
@@ -248,6 +253,9 @@
   .smarkForm .foldButton:hover:not(.folded) {
     transform: translateY(0.2em) rotate(-135deg);
   }
+}
+.smarkForm {
+  /* List items animation */
 }
 .smarkForm .animated_item {
   transform: scaleY(0) translateY(-50%);
