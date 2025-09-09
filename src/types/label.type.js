@@ -54,7 +54,6 @@ export class label extends SmarkComponent {
     };
     getLabelArgs() {//{{{
         const me = this;
-        const parents = [...me.parents];
         let context, target;
 
         const {

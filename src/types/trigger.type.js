@@ -64,7 +64,7 @@ export class trigger extends SmarkComponent {
     };//}}}
     getTriggerArgs() {//{{{
         const me = this;
-        const parents = [...me.parents];
+        const parents = [me, ...me.parents];
         const {
             // property: local variable
             action,

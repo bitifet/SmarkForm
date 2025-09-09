@@ -113,7 +113,7 @@ export class SmarkComponent {
         // Parents iterator:
         me.parents = {};
         me.parents[Symbol.iterator] = function* () {
-            let current = me;
+            let current = me.parent;
             while (current) {
                 yield current;
                 current = current.parent;
@@ -253,7 +253,7 @@ export class SmarkComponent {
     getPath() {//{{{
         const me = this;
         return (
-            [...me.parents].map(p=>p.name)
+            [me, ...me.parents].map(p=>p.name)
             .reverse()
             .join("/") // Root parent being "" => Starting "/".
             || "/" // No join (0 parents => root node)
@@ -320,7 +320,7 @@ export class SmarkComponent {
     inherittedOption(optName, defaultValue) {//{{{
         const me = this;
         for (
-            const p of me.parents
+            const p of [me, ...me.parents]
         ) if (
             p.options[optName] !== undefined
         ) return p.options[optName];
