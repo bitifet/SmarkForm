@@ -8,7 +8,7 @@ export const foldable = function foldable_decorator(target, {kind}) {
                 const retv = super.render(...args);
                 const me = this;
                 me.root.onRendered(()=>{
-                    me.fold({operation: (
+                    me.fold(null, {operation: (
                         !! me.options.folded ? "fold"
                         : "unfold"
                     )});
@@ -16,8 +16,9 @@ export const foldable = function foldable_decorator(target, {kind}) {
                 return retv;
             };//}}}
             @action
-            fold({//{{{
+            fold(_data, {//{{{
                 operation = "toggle", // Values: "fold" / "unfold" / "toggle"
+                origin,
             } = {}) {
                 const me = this;
                 const wasFolded = me.targetNode.style.display == "none";
@@ -47,6 +48,9 @@ export const foldable = function foldable_decorator(target, {kind}) {
                     isFolded ? tgg => tgg.disable()
                     : tgg => tgg.enable()
                 );
+
+                // Set focus accordingly:
+                (isFolded ? origin : me)?.focus();
             };//}}}
         };
     };
