@@ -50,14 +50,14 @@ block mainForm
             )
     section
         .form-group.h2
-            span.foldButton(
+            button.foldButton(
                 data-smark={
                     action: "fold",
                     hotkey: "f",
                     context: "employees",
                     foldedClass: "folded",
                 }
-            )
+            ) ⬇
             span
                 span Employees (
                 span(data-smark={

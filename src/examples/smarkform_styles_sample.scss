@@ -270,28 +270,22 @@
 
 
     .foldButton {
-        border: solid black;
-        border-width: 0 3px 3px 0;
-        display: inline-block;
-        padding: .2em;
+        border: none;
         background: none;
-        font-size: 1.3em;
-
-
-        transition: transform .5s;
-        transform: translateY(.2em) rotate(45deg);
+        height: 1.2em;
+        padding: inherit !important;
+        display: inline-block;  // Allow transforms
+        transition: transform 150ms ease-in-out;
         &.folded {
-            transform: translateY(.2em) rotate(-135deg);
+            transform: rotate(-180deg);
+            &::before {
+                transform: rotate(180deg); // Revert rotation for the hotkey hint
+            }
         }
         @media (hover:hover) {
             &:hover {
-                opacity: .5;
-                &.folded {
-                    transform: translateY(.2em) rotate(45deg);
-                }
-                &:not(.folded) {
-                    transform: translateY(.2em) rotate(-135deg);
-                }
+                background: none !important;
+                transform: rotate(-90deg) !important;
             }
         }
     }

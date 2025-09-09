@@ -231,27 +231,23 @@
   padding-top: 0.2em;
 }
 .smarkForm .foldButton {
-  border: solid black;
-  border-width: 0 3px 3px 0;
-  display: inline-block;
-  padding: 0.2em;
+  border: none;
   background: none;
-  font-size: 1.3em;
-  transition: transform 0.5s;
-  transform: translateY(0.2em) rotate(45deg);
+  height: 1.2em;
+  padding: inherit !important;
+  display: inline-block;
+  transition: transform 150ms ease-in-out;
 }
 .smarkForm .foldButton.folded {
-  transform: translateY(0.2em) rotate(-135deg);
+  transform: rotate(-180deg);
+}
+.smarkForm .foldButton.folded::before {
+  transform: rotate(180deg);
 }
 @media (hover: hover) {
   .smarkForm .foldButton:hover {
-    opacity: 0.5;
-  }
-  .smarkForm .foldButton:hover.folded {
-    transform: translateY(0.2em) rotate(45deg);
-  }
-  .smarkForm .foldButton:hover:not(.folded) {
-    transform: translateY(0.2em) rotate(-135deg);
+    background: none !important;
+    transform: rotate(-90deg) !important;
   }
 }
 .smarkForm {
