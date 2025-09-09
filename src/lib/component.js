@@ -378,7 +378,12 @@ export class SmarkComponent {
         for (const fname in me.children) {
             return me.children[fname].focus();
         };
-        if (me.targetFieldNode) me.targetFieldNode.focus();
+        if (me.targetFieldNode) {
+            // Prefer fields over triggers, forms, etc...
+            me.targetFieldNode.focus();
+        } else {
+            me.targetNode.focus();
+        }
     };//}}}
     getTriggerArgs() {}; // Let's easily filter out non trigger compoenents.
     // Error types:
