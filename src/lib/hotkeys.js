@@ -92,9 +92,8 @@ export class hotKeys_handler {
 
             // Reveal new target triggers' hotkeys:
             const component = me.form.getComponent(target);
-            const activeContexts = [component, ...component.parents];
+            const activeContexts = getActiveContexts(component);
             const activeContextsSet = new Set(activeContexts);
-
             const candidateTriggers = activeContexts
                 .map((ctx, distance)=>(
                     ctx.getTriggers('*')    // All triggers.
@@ -106,9 +105,12 @@ export class hotKeys_handler {
                     }))
                 ))
                 .flat()
-                .filter(({args, hotkey})=>(
+                .filter(({args, hotkey, tg})=>(
                     hotkey.length
-                    && activeContextsSet.has(args.context)
+                    && (
+                        activeContextsSet.has(args.context)
+                        || Object.is(tg, me) // Reveal focused triggers no matter their context
+                    )
                 ))
                 .sort((ta,tb)=>(
                     activeContextsSet.has(tb.args.target)
@@ -145,3 +147,21 @@ export class hotKeys_handler {
 
     };
 };
+
+function getComponentSiblings(component) {
+    const children = component.parent?.children || [];
+    const position = Object.keys(children).findIndex((name)=>(name === component.name));
+    const brothers = Object.values(children);
+    const backwards = brothers.slice(0, position).reverse();
+    const forwards = brothers.slice(position + 1);
+    return [...forwards, ...backwards];
+};
+
+function getActiveContexts(component) {
+    return [
+        component,
+        ...component.parents,
+        ...[component, ...component.parents].map(getComponentSiblings).flat()
+    ];
+};
+

@@ -346,13 +346,16 @@ export class SmarkComponent {
         const returnAll = actionKeys.has("*");
         for (
             const tgg
-            of [...me.root.targetNode.querySelectorAll(me.selector)]
+            of [me, ...me.root.targetNode.querySelectorAll(me.selector)]
                 .map(target=>target[sym_smart])
                 .filter(x=>x) // Ignore not yet rendered.
         ) {
             const options = tgg.getTriggerArgs()
             if (! options) continue; // Not a trigger
-            if (! Object.is(options.context, me)) continue;
+            if (
+                ! Object.is(options.context, me) // Current context
+                && ! Object.is(tgg, me)          // Trigger focused itself
+            ) continue;
             if (
                 returnAll
                 || actionKeys.has(options.action)
