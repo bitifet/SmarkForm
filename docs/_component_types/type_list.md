@@ -415,7 +415,7 @@ The `list` component type supports the following actions:
   * **action:** (= "removeItem")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-  * **target:**
+  * **target:** Path★  (absolute or relative to its *context*) to the component to be removed. If not provided, the last item in the list will be used.
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **preserve_non_empty:** (boolean)
   * **failback:** (= "none" / "clear" / "throw" )
