@@ -101,10 +101,10 @@ block mainForm
                 })
                     button.inline(data-smark = {
                         action: "removeItem",
-                        hotkey: "-",
+                        hotkey: "Delete",
                         failback: "clear",
                     }, title="Remove this employee")
-                        span(role='img', aria-label='Remove this employee') ➖
+                        span(role='img', aria-label='Remove this employee') ❌
                     .form-group.spacer
                         .form-group
                             .input-group
@@ -176,7 +176,6 @@ block mainForm
                 context: "employees",
                 preserve_non_empty: true,
                 autoscroll: "elegant",
-                failback: "clear",
             }, title="Remove employees from bottom priorizing empties")
                 span(role='img', aria-label='Wisely shrink employee list') ➖
             button(data-smark = {
