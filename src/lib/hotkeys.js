@@ -1,6 +1,8 @@
 // lib/hotkeys.js
 // ==============
 
+// const l = (label, cbk=x=>x)=>d=>(console.log(`${label}: `, cbk(d)), d);
+
 export class hotKeys_handler {
     constructor(form) {
         const me = this;
@@ -93,31 +95,45 @@ export class hotKeys_handler {
             // Reveal new target triggers' hotkeys:
             const component = me.form.getComponent(target);
             const activeContexts = getActiveContexts(component);
-            const activeContextsSet = new Set(activeContexts);
             const candidateTriggers = activeContexts
-                .map((ctx, distance)=>(
-                    ctx.getTriggers('*')    // All triggers.
-                    .map(tg=>({
-                        tg,
-                        distance,   // Number of ancestors levels.
-                        args: tg.getTriggerArgs() || {},
-                        hotkey: String(tg.options.hotkey || ""),
-                    }))
-                ))
+                // .map(l("activeContexts", ({name, targetNode})=>({name, targetNode})))
+                .map((ctx, distance)=>{
+                    const candidates = [];
+                    for (const tg of ctx.getTriggers('*')) {
+                        const hotkey = String(tg.options.hotkey || "");
+                        if (hotkey == "") continue; // Ignore triggers without hotkey.
+                        const args = tg.getTriggerArgs() || {};
+                        candidates.push({
+                            tg,
+                            distance,   // Number of ancestors levels.
+                            args,
+                            hotkey,
+                        });
+                    };
+                    return candidates;
+                })
+                // .map(l("Triggers", tlist=>tlist.map(({hotkey, distance, tg, args})=>({hotkey, distance, tg, args}))))
                 .flat()
-                .filter(({args, hotkey, tg})=>(
-                    hotkey.length
-                    && (
-                        activeContextsSet.has(args.context)
-                        || Object.is(tg, me) // Reveal focused triggers no matter their context
-                    )
-                ))
-                .sort((ta,tb)=>(
-                    activeContextsSet.has(tb.args.target)
-                    - activeContextsSet.has(ta.args.target)
-                    - tb.distance
-                    + ta.distance
-                ))
+                .sort((ta,tb)=>{
+                    const atargetnode = ta.args.target?.targetNode;
+                    const btargetnode = tb.args.target?.targetNode;
+                    const bcontained = btargetnode ? .5 * btargetnode.contains(component.targetNode) : 0;
+                    const acontained = atargetnode ? .5 * atargetnode.contains(component.targetNode) : 0;
+                    const retv = (
+                        // Prefer triggers with nearest context:
+                        + ta.distance - tb.distance
+                        // Prefer triggers contained in ancestors (not siblings):
+                        + bcontained - acontained
+                    );
+                    // if (true || ta.hotkey == "-" && tb.hotkey == "-") {
+                    //     console.log(`--(${ta.hotkey} - ${tb.hotkey})------------------------------------------------`);
+                    //     console.log("--", ta.tg.targetNode, tb.tg.targetNode, component.targetNode);
+                    //     console.log("--", ta.distance, tb.distance, - tb.distance + ta.distance);
+                    //     console.log("--", + acontained, + bcontained, + bcontained - acontained);
+                    //     console.log(`===========> ${retv}`);
+                    // };
+                    return retv;
+                })
             ;
 
             const seen = new Map(); // hotkey => [times seen, distance from target]
@@ -132,7 +148,10 @@ export class hotKeys_handler {
                 if (times > level) {
                     continue; // Used by more preferent tg.
                 };
-                if (candidate.distance > distance) { // Don't pick more than one per "ancestory" level.
+                if (
+                    Object.is(candidate.tg.targetNode, target)
+                    || candidate.distance > distance
+                ) { // Don't pick more than one per "ancestory" level.
                     if (! candidate.tg.targetNode.disabled) {
                         candidate.tg.targetNode.setAttribute("data-hotkey", candidate.hotkey);
                     };
@@ -148,9 +167,9 @@ export class hotKeys_handler {
     };
 };
 
-function getComponentSiblings(component) {
-    const children = component.parent?.children || [];
-    const position = Object.keys(children).findIndex((name)=>(name === component.name));
+function getComponentSiblings(context) {
+    const children = context.parent?.children || [];
+    const position = Object.keys(children).findIndex((name)=>(name === context.name));
     const brothers = Object.values(children);
     const backwards = brothers.slice(0, position).reverse();
     const forwards = brothers.slice(position + 1);
@@ -158,10 +177,10 @@ function getComponentSiblings(component) {
 };
 
 function getActiveContexts(component) {
+    const upwards = [component, ...component.parents];
     return [
-        component,
-        ...component.parents,
-        ...[component, ...component.parents].map(getComponentSiblings).flat()
+        ...upwards,
+        ...upwards.map(getComponentSiblings).flat()
     ];
 };
 
