@@ -4,22 +4,19 @@ import {SmarkComponent} from "../lib/component.js";
 import {randomId} from "../lib/helpers.js";
 import {getRoots} from "../lib/helpers.js";
 
-// TODO:
-// =====
-//
-//   🚀 Add support for (smarkform) fields contained in the label.
-//      👉 Now we can just not enhance the label (<label>Bla bla bla<input
-//         data-smark></label>) and it will (in this case natively) work.
-//      👉 ...but this does not allow us to use other SmarkForm fields such as
-//         forms and lists (since they can contain more than one native field
-//         which is not allowed by <label> tag.
-//      💡 But we can use different tag (with {data-smark="label"}) and just
-//         create the native <label> tag around the text.
-
 export class label extends SmarkComponent {
     constructor(node, {allow_select = false, ...options}, ...args){
         delete options.name; // Labels are always unnamed.
-        return super(node, {allow_select, ...options}, ...args);
+        super(node, {allow_select, ...options}, ...args);
+        const me = this;
+        me.eventHooks.click.push(
+            function click_hook(ev) {
+                // Mimic native label behavior for non-native fields:
+                if (ev.defaultPrevented) return;
+                const {target} = me.getLabelArgs();
+                if (! target?.targetFieldNode) target.focus();
+            },
+        );
     };
     async render(){
         const me = this;
