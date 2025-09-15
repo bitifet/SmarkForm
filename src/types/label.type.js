@@ -41,6 +41,13 @@ export class label extends SmarkComponent {
                     targetFieldNode.id = randomId();
                 };
                 me.targetNode.setAttribute("for", targetFieldNode.id);
+                // Automatically link label and field for screen readers:
+                if (! me.targetNode.id) { // Ensure label has an Id
+                    me.targetNode.id = randomId();
+                };
+                if (! targetFieldNode.hasAttribute("aria-labelledby")) {
+                    targetFieldNode.setAttribute("aria-labelledby", me.targetNode.id);
+                };
             };
             if (! me.options.allow_select) {
                 // Make labels non-selectable unless "allow_select" option
