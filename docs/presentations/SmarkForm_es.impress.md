@@ -108,7 +108,7 @@ power_example: |
             <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Limpiar vacíos'>🧹</button>
             <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Eliminar teléfono'>➖</button>
             <button data-smark='{"action":"addItem","context":"phones"}' title='Añadir teléfono'>➕ </button>
-            <label data-smark>Teléfonos:</label>
+            <strong data-smark='label'>Teléfonos:</strong>
             <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>
                 <li data-smark='{"role": "empty_list"}' class="row">(No dispone)</li>
                 <li class="row">
@@ -175,7 +175,7 @@ power_example_js: |
 usability_example: |
     <div id="myForm$$">
         <button data-smark='{"action":"addItem","context":"employee","hotkey":"+"}' title='Nuevo empleado'>👥</button>
-        <label data-smark>Empleados:</label>
+        <strong data-smark='label'>Empleados:</strong>
         <div data-smark='{"type":"list","name":"employee", "min_items":0,"sortable":true}'>
             <fieldset class="row">
                 <p class="row">
@@ -184,7 +184,7 @@ usability_example: |
                     <input data-smark='{"name":"name"}' type="text" placeholder='Nombre...'>
                     <button data-smark='{"action":"removeItem","hotkey":"-"}' style='float: right;' title='Baja empleado'>🔥</button>
                 </p>
-                <label data-smark>📞 Teléfonos:</label>
+                <strong data-smark='label'>📞 Teléfonos:</strong>
                 <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":3}'>
                     <li class="row">
                         <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Eliminar Teléfono'>➖</button>

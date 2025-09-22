@@ -140,7 +140,7 @@ materialize hotkeys' revealing feature when pressing the `Ctrl` key.
 %}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
-█<label data-smark>Phones:</label>
+█<strong data-smark='label'>Phones:</strong>
 █<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
 █    <li class="row">
 █        <label data-smark>📞 Telephone

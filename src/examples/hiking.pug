@@ -32,7 +32,7 @@ block mainForm
             )
 
         h2 Planning
-        label(data-smark) Origin
+        h3(data-smark="label") Origin
         .form-group(data-smark={
             type: "form",
             name: "origin",
@@ -68,7 +68,7 @@ block mainForm
                 name="city"
                 placeholder='City'
             )
-        label(data-smark) Stops
+        h3(data-smark="label") Stops
         .form-group(data-smark={
             type: "list",
             name: "stops",
@@ -120,7 +120,7 @@ block mainForm
                 hotkey: "+",
                 context: "stops",
             }) #[span(role='img', aria-label='') ➕] Add Stop Place
-        label(data-smark) Destination
+        h3(data-smark="label") Destination
         .form-group(data-smark={
             type: "form",
             name: "destination",
@@ -159,7 +159,7 @@ block mainForm
     section
         h2 Participants
 
-        label(data-smark) Organizers
+        h3(data-smark="label") Organizers
         .form-group(data-smark={
             type: "list",
             name: "organizers",
@@ -186,7 +186,7 @@ block mainForm
                 context: "organizers",
             }) #[span(role='img', aria-label='') ➕] Add Organizer
 
-        label(data-smark) Participants:
+        h3(data-smark="label") Participants
         .form-group(data-smark={
             type: "list",
             name: "participants",

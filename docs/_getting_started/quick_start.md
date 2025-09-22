@@ -544,7 +544,7 @@ item, it will remove that item from the list. **No wiring code needed!**
 
 {% capture simple_list_example
 %}<p>
-    <label data-smark>Phones:</label>
+    <strong data-smark='label'>Phones:</strong>
     <ul data-smark='{"name": "phones", "of": "input"}'>
         <li>
             <label data-smark>📞 </label>
@@ -867,7 +867,7 @@ button[data-hotkey]::before {
     <button data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}' title='More intrevals'>
         <span role='img' aria-label='Add new interval'>➕</span>
     </button>
-    <label>Schedule:</label>
+    <strong data-smark='label'>Schedule:</strong>
     <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
         <span>
             <input data-smark type='time' name='start'/>
