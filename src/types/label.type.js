@@ -20,7 +20,7 @@ export class label extends SmarkComponent {
     };
     async render(){
         const me = this;
-        // Enhance acctions:
+        // Enhance triggers inside the label:
         for (
             const node
             of getRoots(me.targetNode, me.selector)
@@ -33,25 +33,55 @@ export class label extends SmarkComponent {
                 );
             };
         };
-        me.parent.onRendered(()=>{
+        me.parent.onRendered(async ()=>{
+            const nodeType = String(me.targetNode.tagName).toLowerCase();
             const labelArgs = me.getLabelArgs();
-            const {targetFieldNode} = labelArgs.target || {};
-            if (targetFieldNode) { // Apply only to native inputs (scalars)
-                if (! targetFieldNode.id) { // Ensure targetted field has an Id
-                    targetFieldNode.id = randomId();
+            const labelledField = labelArgs.target || {};
+            await labelledField.rendered; // Ensure target field is rendered.
+            if (labelledField.targetFieldNode) { // Apply only to native inputs (scalars)
+                if (! labelledField.targetFieldNode.id) { // Ensure targetted field has an Id
+                    labelledField.targetFieldNode.id = randomId();
                 };
-                me.targetNode.setAttribute("for", targetFieldNode.id);
-                // Automatically link label and field for screen readers:
-                if (! me.targetNode.id) { // Ensure label has an Id
+                me.targetNode.setAttribute("for", labelledField.targetFieldNode.id);
+            };
+
+            // Automatically link label and field for screen readers:
+            if (
+                nodeType != "label"   // Not a native <label>
+            ) {
+                // Ensure label has an Id:
+                if (! me.targetNode.id) {
                     me.targetNode.id = randomId();
                 };
-                if (! targetFieldNode.hasAttribute("aria-labelledby")) {
-                    targetFieldNode.setAttribute("aria-labelledby", me.targetNode.id);
+                // Get previous aria-labelledby values:
+                const alb_arr = (
+                    labelledField.targetNode.getAttribute("aria-labelledby")
+                    || ""
+                )
+                    .split(" ")
+                    .filter(id => id)
+                ;
+                // Add label id if not already present:
+                if (0 > alb_arr.indexOf(me.targetNode.id)) {
+                    alb_arr.push(me.targetNode.id);
+                };
+                // Reinject updated list:
+                labelledField.targetNode.setAttribute(
+                    "aria-labelledby"
+                    , alb_arr.join(" ")
+                );
+            } else {
+                if (! labelledField.targetFieldNode) {
+                    throw me.renderError(
+                        'LABEL_FOR_NONFIELD'
+                        , `Native <label> tags targetting non native field are not allowed in HTML, you should use different tag.`
+                    );
                 };
             };
+
+            // Make labels non-selectable unless "allow_select" option is set
+            // to true.
             if (! me.options.allow_select) {
-                // Make labels non-selectable unless "allow_select" option
-                // is set  to true.
                 me.targetNode.style["user-select"] = "none";
             };
         });

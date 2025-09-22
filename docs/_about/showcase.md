@@ -243,7 +243,7 @@ that can grow or shrink as needed:
 {% capture simple_list
 %}█<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
 █<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█<label data-smark>Phones:</label>
+█<strong data-smark="label">Phones:</strong>
 █<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
 █    <input type="tel" style="display: block">
 █</div>{%
@@ -293,7 +293,7 @@ in the following example:
 %}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █    <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█    <label data-smark>Phones:</label>
+█    <strong data-smark="label">Phones:</strong>
 █    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
 █        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
 █        <li class="row">
@@ -429,7 +429,7 @@ list like the following example:
 %}<p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
     <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
-    <label>Schedule:</label>
+    <strong data-smark="label">Schedule:</strong>
     <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
         <span>
             <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
@@ -592,7 +592,7 @@ every list item and so forth to any depth.
 
 {% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
 {% capture nested_schedule_table
-%}<h2>🗓️ Periods:</h2>
+%}<h2 data-smark="label">🗓️ Periods:</h2>
 <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
     <fieldset style='margin-top: 1em'>
         <legend>Period
@@ -993,7 +993,7 @@ slight modifications:
 %}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █    <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█    <label data-smark>Phones:</label>
+█    <strong data-smark="label">Phones:</strong>
 █    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
 █        <li class="row">
 █            <label data-smark>📞 Telephone
@@ -1050,7 +1050,7 @@ to add or remove phone numbers from the list, respectively.
 %}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
-█<label data-smark>Phones:</label>
+█<strong data-smark="label">Phones:</strong>
 █<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
 █    <li class="row">
 █        <label data-smark>📞 Telephone
@@ -1069,7 +1069,7 @@ endcapture %}
 %}/* Materialize hotkey hints from data-hotkey attribute */
 {{""}}#myForm$$ [data-hotkey] {
   position: relative;
-  overflow-x: display;
+  overflow-x: visible;
 }
 {{""}}#myForm$$ [data-hotkey]::before {
   content: attr(data-hotkey);
