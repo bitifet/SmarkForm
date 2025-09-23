@@ -344,6 +344,7 @@ describe('List Component Type Test', function() {
             const list = form.find("/employees");
             const countTrigger = document.querySelector('[data-smark*="count"]');
             
+            await list.import([]); // Start from empty list
             const initialCount = countTrigger.textContent;
             
             await list.addItem();
