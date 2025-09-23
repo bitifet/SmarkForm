@@ -339,4 +339,52 @@ describe('List Component Type Test', function() {
         );
     });//}}}
 
+    it('list\'s "count" action triggers to be updated', async function() {//{{{
+        const countUpdates = await page.evaluate(async () => {
+            const list = form.find("/employees");
+            const countTrigger = document.querySelector('[data-smark*="count"]');
+            
+            const initialCount = countTrigger.textContent;
+            
+            await list.addItem();
+            const afterAddCount = countTrigger.textContent;
+            
+            await list.removeItem();
+            const afterRemoveCount = countTrigger.textContent;
+            
+            return {
+                initial: parseInt(initialCount),
+                afterAdd: parseInt(afterAddCount),
+                afterRemove: parseInt(afterRemoveCount)
+            };
+        });
+        
+        // Assuming we start with 0 items (min_items: 0)
+        assert.strictEqual(countUpdates.initial, 0, "Initial count should be 0");
+        assert.strictEqual(countUpdates.afterAdd, 1, "Count should be 1 after adding item");
+        assert.strictEqual(countUpdates.afterRemove, 0, "Count should be 0 after removing item");
+    });//}}}
+
+    it('list\'s addItem and removeItem triggers to be non navigable', async function() {//{{{
+        const navigationResult = await page.evaluate(async () => {
+            const addButton = document.querySelector('[data-smark*="addItem"]');
+            const removeButton = document.querySelector('[data-smark*="removeItem"]');
+            
+            return {
+                addTabIndex: addButton.tabIndex,
+                removeTabIndex: removeButton.tabIndex,
+                addHasTabIndex: addButton.hasAttribute('tabindex'),
+                removeHasTabIndex: removeButton.hasAttribute('tabindex')
+            };
+        });
+        
+        // Check that trigger buttons are not navigable (should have tabindex -1 or not be focusable)
+        if (navigationResult.addHasTabIndex) {
+            assert.strictEqual(navigationResult.addTabIndex, -1, "addItem trigger should have tabindex -1 to be non-navigable");
+        }
+        if (navigationResult.removeHasTabIndex) {
+            assert.strictEqual(navigationResult.removeTabIndex, -1, "removeItem trigger should have tabindex -1 to be non-navigable");
+        }
+    });//}}}
+
 });
