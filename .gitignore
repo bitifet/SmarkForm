@@ -15,6 +15,7 @@ docs/_resources/dist/
 
 # Temporary files
 tmp
+test/tmp
 
 # Logs
 logs

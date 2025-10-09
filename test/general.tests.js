@@ -1,6 +1,4 @@
-
-const dev = false;
-import assert from 'assert';
+import { test, expect } from '@playwright/test';
 import {renderPug} from '../src/lib/test/helpers.js';
 
 const pugSrc = (//{{{
@@ -183,35 +181,43 @@ mixin inputlist(label="Annonymous")
                 }) ➖
 `);//}}}
 
-describe('General Functionality Tests', function() {
-    let browser, page, onClosed;
-    const test_title = this.title;
+test.describe('General Functionality Tests', () => {
+    const test_title = 'General Functionality Tests';
 
-    before(async function() {
-        this.timeout(8000);
-        0, {browser, page, onClosed} = await renderPug({
-            title: test_title,
-            src: pugSrc,
-            headless: dev ? false : undefined,
-        });
+    test('Document loaded', async ({ page }) => {
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const pageTitle = await page.title();
+            expect(pageTitle).toBe(test_title);
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });
 
-    after(async function() {
-        this.timeout(8000);
-        if (! dev) await browser.close();
-        if (onClosed) await onClosed();
-    });
+    test('Basic introspection works', async ({ page }) => {
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
 
-    it('Document loaded', async function() {
-        const pageTitle = await page.title();
-        assert.strictEqual(pageTitle, test_title);
-    });
-
-    it('Basic introspection works', async function () {
-        const form_obj = await page.evaluate(
-                async () => form.find("company").getPath()
-        );
-        assert.strictEqual(form_obj, '/company');
+            const form_obj = await page.evaluate(
+                    async () => form.find("company").getPath()
+            );
+            expect(form_obj).toBe('/company');
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });
 
 });

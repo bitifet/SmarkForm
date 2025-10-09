@@ -1,9 +1,9 @@
-import assert from 'assert';
+import { test, expect } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
-describe('Distribution Directory Synchronization Tests', function() {
+test.describe('Distribution Directory Synchronization Tests', () => {
     const distPath = path.resolve('dist');
     const docsDistPath = path.resolve('docs/_resources/dist');
 
@@ -74,73 +74,57 @@ describe('Distribution Directory Synchronization Tests', function() {
         return dirs.sort();
     }
 
-    it('Both dist and docs/_resources/dist directories should exist', function() {
-        assert.ok(
+    test('Both dist and docs/_resources/dist directories should exist', () => {
+        expect(
             fs.existsSync(distPath) && fs.statSync(distPath).isDirectory(),
             `Directory ${distPath} does not exist or is not a directory`
-        );
+        ).toBe(true);
         
-        assert.ok(
+        expect(
             fs.existsSync(docsDistPath) && fs.statSync(docsDistPath).isDirectory(),
             `Directory ${docsDistPath} does not exist or is not a directory`
-        );
+        ).toBe(true);
     });
 
-    it('Both directories should have the same tree structure', function() {
+    test('Both directories should have the same tree structure', () => {
         const distDirs = getDirectoryStructure(distPath);
         const docsDistDirs = getDirectoryStructure(docsDistPath);
 
-        assert.deepStrictEqual(
-            docsDistDirs,
-            distDirs,
-            'Directory structures do not match'
-        );
+        expect(docsDistDirs).toEqual(distDirs);
     });
 
-    it('Both directories should contain the same files', function() {
+    test('Both directories should contain the same files', () => {
         const distFiles = getAllFiles(distPath);
         const docsDistFiles = getAllFiles(docsDistPath);
 
-        assert.deepStrictEqual(
-            docsDistFiles,
-            distFiles,
-            'File lists do not match between directories'
-        );
+        expect(docsDistFiles).toEqual(distFiles);
     });
 
-    it('All files should be binary equal to their counterparts', function() {
+    test('All files should be binary equal to their counterparts', () => {
         const distFiles = getAllFiles(distPath);
 
         for (const relativePath of distFiles) {
             const distFilePath = path.join(distPath, relativePath);
             const docsDistFilePath = path.join(docsDistPath, relativePath);
 
-            assert.ok(
+            expect(
                 fs.existsSync(docsDistFilePath),
                 `File ${relativePath} exists in dist but not in docs/_resources/dist`
-            );
+            ).toBe(true);
 
             const distHash = getFileHash(distFilePath);
             const docsDistHash = getFileHash(docsDistFilePath);
 
-            assert.strictEqual(
-                docsDistHash,
-                distHash,
-                `File ${relativePath} has different content in docs/_resources/dist`
-            );
+            expect(docsDistHash).toBe(distHash);
         }
     });
 
-    it('There should be no extra files in docs/_resources/dist', function() {
+    test('There should be no extra files in docs/_resources/dist', () => {
         const distFiles = getAllFiles(distPath);
         const docsDistFiles = getAllFiles(docsDistPath);
 
         const extraFiles = docsDistFiles.filter(file => !distFiles.includes(file));
 
-        assert.strictEqual(
-            extraFiles.length,
-            0,
-            `Found extra files in docs/_resources/dist: ${extraFiles.join(', ')}`
-        );
+        expect(extraFiles.length).toBe(0);
     });
 });

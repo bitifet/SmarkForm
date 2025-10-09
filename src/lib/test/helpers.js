@@ -1,7 +1,8 @@
-import puppeteer from "puppeteer";
 import path from "path";
 import Fs from "fs";
 import Pug from "pug";
+import http from "http";
+import { fileURLToPath } from 'url';
 
 const tmpDir = "test/tmp";
 if (! Fs.existsSync(tmpDir)){
@@ -9,28 +10,70 @@ if (! Fs.existsSync(tmpDir)){
 };
 const dirname__ = "src/lib/test";
 
+// Singleton HTTP server
+let server = null;
+let serverPort = null;
 
-
-
-export async function openFile(filePath, {headless="new"} = {}) {
-    const browser = await puppeteer.launch({
-        headless,
-    });
-    const page = await browser.newPage();
-
-    const url = "file://"+path.resolve(filePath);
-    await page.goto(url);
-    return {browser, page};
+// Content-type mapping
+const contentTypes = {
+    '.html': 'text/html',
+    '.js': 'application/javascript',
+    '.css': 'text/css',
+    '.json': 'application/json',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
 };
 
+function getContentType(filePath) {
+    const ext = path.extname(filePath).toLowerCase();
+    return contentTypes[ext] || 'application/octet-stream';
+}
 
+async function ensureServer() {
+    if (server && serverPort) {
+        return serverPort;
+    }
+
+    return new Promise((resolve, reject) => {
+        server = http.createServer((req, res) => {
+            // Remove query string and decode URI
+            const urlPath = decodeURIComponent(req.url.split('?')[0]);
+            const filePath = path.join(process.cwd(), urlPath);
+
+            Fs.readFile(filePath, (err, data) => {
+                if (err) {
+                    res.writeHead(404, { 'Content-Type': 'text/plain' });
+                    res.end('Not Found');
+                    return;
+                }
+
+                res.writeHead(200, { 'Content-Type': getContentType(filePath) });
+                res.end(data);
+            });
+        });
+
+        server.listen(0, '127.0.0.1', () => {
+            serverPort = server.address().port;
+            resolve(serverPort);
+        });
+
+        server.on('error', reject);
+    });
+}
+
+export async function getServerPort() {
+    return await ensureServer();
+}
 
 export async function renderPug({title, src, ...options} = {}) {
 
     try {
-
         const baseFileName = title.replace(/\s+/g, "_");
-        const htmlFilePath = path.join(tmpDir, `${baseFileName}.html`);
+        const randomSuffix = Math.random().toString(36).substring(2, 8);
+        const htmlFileName = `${baseFileName}_${randomSuffix}.html`;
+        const htmlFilePath = path.join(tmpDir, htmlFileName);
 
         const html = Pug.render(src, {
             filename: `${dirname__}/${baseFileName}.pug`,
@@ -42,11 +85,13 @@ export async function renderPug({title, src, ...options} = {}) {
 
         await Fs.promises.writeFile(htmlFilePath, html);
 
+        const port = await ensureServer();
+        const url = `http://127.0.0.1:${port}/test/tmp/${htmlFileName}`;
 
         return {
-            ...await openFile(htmlFilePath, options),
+            url,
             async onClosed(){
-                await Fs.promises.unlink(htmlFilePath);
+                await Fs.promises.unlink(htmlFilePath).catch(() => {});
             },
         };
 
@@ -54,6 +99,7 @@ export async function renderPug({title, src, ...options} = {}) {
         console.error(" 💣 Failed to render PUG test template!!!_____________________________");
         console.error(err);
         console.error(" 💣 __________________________________________________________________");
+        throw err;
     };
 
 };

@@ -1,6 +1,4 @@
-
-const dev = false;
-import assert from 'assert';
+import { test, expect } from '@playwright/test';
 import {renderPug} from '../src/lib/test/helpers.js';
 
 const pugSrc = (// {{{
@@ -171,206 +169,261 @@ const TheSimpsons = {//{{{
 };//}}}
 
 
-describe('List Component Type Test', function() {
-    let browser, page, onClosed;
-    const test_title = this.title;
+test.describe('List Component Type Test', () => {
+    const test_title = 'List Component Type Test';
 
-    before(async function() {
-        this.timeout(8000);
-        0, {browser, page, onClosed} = await renderPug({
-            title: test_title,
-            src: pugSrc,
-            headless: dev ? false : undefined,
-        });
-    });
+    // Configure tests to run serially to maintain state replay logic
+    test.describe.configure({ mode: 'serial' });
 
-    after(async function() {
-        if (! dev) await browser.close();
-        if (onClosed) await onClosed();
-    });
-
-    it('addItem action works', async function() {//{{{
-        const listLength = await page.evaluate(async () => {
-            const list = form.find("/employees");
-            await list.addItem();
-            await list.addItem();
-            await list.addItem();
-            return list.count();
-        });
-        assert.strictEqual(listLength, 3);
+    test('addItem action works', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            const listLength = await page.evaluate(async () => {
+                const list = form.find("/employees");
+                await list.addItem();
+                await list.addItem();
+                await list.addItem();
+                return list.count();
+            });
+            expect(listLength).toBe(3);
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
-    it('removeItem action works', async function() {//{{{
-        const listLength = await page.evaluate(async () => {
-            const list = form.find("/employees");
-            await list.removeItem();
-            return list.count();
-        });
-        assert.strictEqual(listLength, 2);
+    test('removeItem action works', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const listLength = await page.evaluate(async () => {
+                const list = form.find("/employees");
+                // Replay ops from previous test
+                await list.addItem();
+                await list.addItem();
+                await list.addItem();
+                // Current test operation
+                await list.removeItem();
+                return list.count();
+            });
+            expect(listLength).toBe(2);
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
 
-    it('min_items limit applies', async function() {//{{{
-        const lengths = await page.evaluate(async () => {
-            let errorCode, bubbledErrorCode;
-            form.onAll("error", err=>bubbledErrorCode=err.code);
-            const list = form.find("/employees/0/phones");
-            list.onAll("error", err=>errorCode=err.code);
-            const initial = list.count(); // Items after initial render.
-            await list.removeItem();
-            const final = list.count(); // Items after removal attempt.
-            return {initial, final, errorCode, bubbledErrorCode};
-        });
-        assert.strictEqual(
-            lengths.initial
-            , 1
-            , "min_items not satisfied after initial rendering"
-        );
-        assert.strictEqual(
-            lengths.final
-            , 1
-            , "Could remove items below min_items value"
-        );
-        assert.strictEqual(
-            lengths.errorCode
-            , "LIST_MIN_ITEMS_REACHED"
-            , "LIST_MIN_ITEMS_REACHED error not emmited"
-        );
-        assert.strictEqual(
-            lengths.bubbledErrorCode
-            , "LIST_MIN_ITEMS_REACHED"
-            , "LIST_MIN_ITEMS_REACHED error didn't bubble"
-        );
+    test('min_items limit applies', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const lengths = await page.evaluate(async () => {
+                // Replay ops from previous tests
+                const list = form.find("/employees");
+                await list.addItem();
+                await list.addItem();
+                await list.addItem();
+                await list.removeItem();
+                // Current test operation
+                let errorCode, bubbledErrorCode;
+                form.onAll("error", err=>bubbledErrorCode=err.code);
+                const phonesList = form.find("/employees/0/phones");
+                phonesList.onAll("error", err=>errorCode=err.code);
+                const initial = phonesList.count(); // Items after initial render.
+                await phonesList.removeItem();
+                const final = phonesList.count(); // Items after removal attempt.
+                return {initial, final, errorCode, bubbledErrorCode};
+            });
+            expect(lengths.initial).toBe(1);
+            expect(lengths.final).toBe(1);
+            expect(lengths.errorCode).toBe("LIST_MIN_ITEMS_REACHED");
+            expect(lengths.bubbledErrorCode).toBe("LIST_MIN_ITEMS_REACHED");
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
-    it('max_items limit applies', async function() {//{{{
-        const lengths = await page.evaluate(async () => {
-            let errorCode, bubbledErrorCode;
-            form.onAll("error", err=>bubbledErrorCode=err.code);
-            const list = form.find("/employees/0/phones");
-            list.onAll("error", err=>errorCode=err.code);
-            const initial = list.count(); // Items after initial render.
-            await list.addItem();
-            await list.addItem();
-            await list.addItem();
-            await list.addItem();
-            await new Promise(resolve=>setTimeout(resolve, 0)); // (bubbling...)
-            const final = list.count(); // Items after removal attempt.
-            return {initial, final, errorCode, bubbledErrorCode};
-            return {initial, final, error, bubbledError};
-        });
-        assert.strictEqual(
-            lengths.initial
-            , 1
-            , "Not started from one item as expected"
-        );
-        assert.strictEqual(
-            lengths.final
-            , 4
-            , "Could add items above max_items"
-        );
-        assert.strictEqual(
-            lengths.errorCode
-            , "LIST_MAX_ITEMS_REACHED"
-            , "LIST_MAX_ITEMS_REACHED error not emmited"
-        );
-        assert.strictEqual(
-            lengths.bubbledErrorCode
-            , "LIST_MAX_ITEMS_REACHED"
-            , "LIST_MAX_ITEMS_REACHED error didn't bubble"
-        );
+    test('max_items limit applies', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const lengths = await page.evaluate(async () => {
+                // Replay ops from previous tests
+                const list = form.find("/employees");
+                await list.addItem();
+                await list.addItem();
+                await list.addItem();
+                await list.removeItem();
+                // Current test operation
+                let errorCode, bubbledErrorCode;
+                form.onAll("error", err=>bubbledErrorCode=err.code);
+                const phonesList = form.find("/employees/0/phones");
+                phonesList.onAll("error", err=>errorCode=err.code);
+                const initial = phonesList.count(); // Items after initial render.
+                await phonesList.addItem();
+                await phonesList.addItem();
+                await phonesList.addItem();
+                await phonesList.addItem();
+                await new Promise(resolve=>setTimeout(resolve, 0)); // (bubbling...)
+                const final = phonesList.count(); // Items after removal attempt.
+                return {initial, final, errorCode, bubbledErrorCode};
+            });
+            expect(lengths.initial).toBe(1);
+            expect(lengths.final).toBe(4);
+            expect(lengths.errorCode).toBe("LIST_MAX_ITEMS_REACHED");
+            expect(lengths.bubbledErrorCode).toBe("LIST_MAX_ITEMS_REACHED");
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
-    it('Imports correctly', async function() {//{{{
-        const picks = await page.evaluate(async data => {
+    test('Imports correctly', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
 
-            // Let's make some changes...
-            data.foo = "Some ignored data";
-            data.employees[2].emails.push(
-                "bart@simpsons.home",
-                "barty@simpsons.home",
-                "bartisgreat@simpsons.home",
-                "onlybart@simpsons.home",
-            );
-            data.employees[3].phones.push("", "");
+            const picks = await page.evaluate(async data => {
 
-            await form.import(data);
+                // Let's make some changes...
+                data.foo = "Some ignored data";
+                data.employees[2].emails.push(
+                    "bart@simpsons.home",
+                    "barty@simpsons.home",
+                    "bartisgreat@simpsons.home",
+                    "onlybart@simpsons.home",
+                );
+                data.employees[3].phones.push("", "");
 
-            return {
-                overallLength: await form.find("/employees").count(),
-                housePhone: await form.find("/employees/0/phones/1").export(),
-                bartEmailsCount: await form.find("/employees/2/emails").count(),
-                lisaImportedPhones: await form.find("/employees/3/phones").count(),
-            };
+                await form.import(data);
 
-        }, TheSimpsons);
+                return {
+                    overallLength: await form.find("/employees").count(),
+                    housePhone: await form.find("/employees/0/phones/1").export(),
+                    bartEmailsCount: await form.find("/employees/2/emails").count(),
+                    lisaImportedPhones: await form.find("/employees/3/phones").count(),
+                };
 
-        assert.strictEqual(picks.overallLength, 4, "Employees length does not match");
-        assert.strictEqual(picks.housePhone, "555000555", "Hommer's house phone does not match");
-        assert.strictEqual(picks.bartEmailsCount, 4, "Bart could import more than 4 emails");
-        assert.strictEqual(picks.lisaImportedPhones, 3, "Empty phones in list weren't imported");
+            }, TheSimpsons);
+
+            expect(picks.overallLength).toBe(4);
+            expect(picks.housePhone).toBe("555000555");
+            expect(picks.bartEmailsCount).toBe(4);
+            expect(picks.lisaImportedPhones).toBe(3);
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
-    it('Exports correctly', async function() {//{{{
-        const exported = await page.evaluate(async () => {
+    test('Exports correctly', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
 
-            // Fix Hommer's email.
-            form.find("/employees/0/emails/0")
-                .targetNode
-                .querySelector("input")
-                .value = "homer@simpsons.home"
-            ;
+            const exported = await page.evaluate(async data => {
+                // Replay import from previous test
+                data.foo = "Some ignored data";
+                data.employees[2].emails.push(
+                    "bart@simpsons.home",
+                    "barty@simpsons.home",
+                    "bartisgreat@simpsons.home",
+                    "onlybart@simpsons.home",
+                );
+                data.employees[3].phones.push("", "");
+                await form.import(data);
 
-            return await form.export();
+                // Current test operation: Fix Hommer's email.
+                form.find("/employees/0/emails/0")
+                    .targetNode
+                    .querySelector("input")
+                    .value = "homer@simpsons.home"
+                ;
 
-        }, TheSimpsons);
+                return await form.export();
 
-        assert.strictEqual(
-            exported.employees[0].emails[0]
-            , "homer@simpsons.home", "Hommer's email did not get corrected"
-        );
-        assert.deepEqual(
-            exported.employees[1]
-            , TheSimpsons.employees[1]
-            , "Untouched employee did not match"
-        );
-        assert.deepEqual(
-            exported.employees[1]
-            , TheSimpsons.employees[1]
-            , "Empty list items got exported being exportEmpties = false"
-        );
+            }, TheSimpsons);
+
+            expect(exported.employees[0].emails[0]).toBe("homer@simpsons.home");
+            expect(exported.employees[1]).toEqual(TheSimpsons.employees[1]);
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
-    it('list\'s "count" action triggers to be updated', async function() {//{{{
-        const countUpdates = await page.evaluate(async () => {
-            const list = form.find("/employees");
-            const countTrigger = document.querySelector('[data-smark*="count"]');
+    test('list\'s "count" action triggers to be updated', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const countUpdates = await page.evaluate(async () => {
+                const list = form.find("/employees");
+                const countTrigger = document.querySelector('[data-smark*="count"]');
+                
+                await list.import([]); // Start from empty list
+                const initialCount = countTrigger.textContent;
+                
+                await list.addItem();
+                const afterAddCount = countTrigger.textContent;
+                
+                await list.addItem();  
+                const afterSecondAddCount = countTrigger.textContent;
+                
+                await list.removeItem();
+                const afterRemoveCount = countTrigger.textContent;
+                
+                return {
+                    initial: parseInt(initialCount) || 0,
+                    afterAdd: parseInt(afterAddCount) || 0,
+                    afterSecondAdd: parseInt(afterSecondAddCount) || 0,
+                    afterRemove: parseInt(afterRemoveCount) || 0
+                };
+            });
             
-            await list.import([]); // Start from empty list
-            const initialCount = countTrigger.textContent;
-            
-            await list.addItem();
-            const afterAddCount = countTrigger.textContent;
-            
-            await list.addItem();  
-            const afterSecondAddCount = countTrigger.textContent;
-            
-            await list.removeItem();
-            const afterRemoveCount = countTrigger.textContent;
-            
-            return {
-                initial: parseInt(initialCount) || 0,
-                afterAdd: parseInt(afterAddCount) || 0,
-                afterSecondAdd: parseInt(afterSecondAddCount) || 0,
-                afterRemove: parseInt(afterRemoveCount) || 0
-            };
-        });
-        
-        // The list starts with min_items: 0, so should start with 0 items
-        assert.strictEqual(countUpdates.initial, 0, "Initial count should be 0");
-        assert.strictEqual(countUpdates.afterAdd, 1, "Count should be 1 after adding first item");
-        assert.strictEqual(countUpdates.afterSecondAdd, 2, "Count should be 2 after adding second item");
-        assert.strictEqual(countUpdates.afterRemove, 1, "Count should be 1 after removing one item");
+            // The list starts with min_items: 0, so should start with 0 items
+            expect(countUpdates.initial).toBe(0);
+            expect(countUpdates.afterAdd).toBe(1);
+            expect(countUpdates.afterSecondAdd).toBe(2);
+            expect(countUpdates.afterRemove).toBe(1);
+        } finally {
+            if (onClosed) await onClosed();
+        }
     });//}}}
 
     // TODO: Review this test.  (It passes unconditionally...)
