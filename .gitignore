@@ -17,6 +17,10 @@ docs/_resources/dist/
 tmp
 test/tmp
 
+# Playwright
+playwright-report/
+test-results/
+
 # Logs
 logs
 *.log
