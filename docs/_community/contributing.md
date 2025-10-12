@@ -16,11 +16,7 @@ nav_order: 2
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Scripts](#scripts)
-    * [npm run build](#npm-run-build)
-    * [npm run dev](#npm-run-dev)
-    * [npm run test](#npm-run-test)
-    * [npm run doc](#npm-run-doc)
+* [Setup](#setup)
 * [Code of Conduct](#code-of-conduct)
 * [Help](#help)
 
@@ -39,6 +35,161 @@ project.
 > 
 > This guide is still in early stage. Please, contact me if you have any
 > questions or suggestions.
+
+
+## Setup
+
+1. Clone the repository
+  ```bash
+  git clone https://github.com/bitifet/SmarkForm.git
+  ```
+
+{: .hint :}
+> You may want to fork the repository to your GitHub profile first and then
+> clone it.
+> 
+> Adjust the url accordingly in this case...
+
+2. Install dev dependencies
+  ```bash
+  npm install
+  ```
+
+3. Install playwright dependencies
+  ```bash
+  npx playwright install
+  ```
+
+4. Install system dependencies to run browsers.
+  ```bash
+  npx playwright install-deps
+  ```
+
+5. Run tests
+  ```bash
+  npm run test
+  ```
+
+
+╔══════════════════════════════════════════════════════╗
+║ Host system is missing dependencies to run browsers. ║
+║ Please install them with the following command:      ║
+║                                                      ║
+║     sudo npx playwright install-deps                 ║
+║                                                      ║
+║ Alternatively, use apt:                              ║
+║     sudo apt-get install libavif16                   ║
+║                                                      ║
+║ <3 Playwright Team                                   ║
+╚══════════════════════════════════════════════════════╝
+```
+
+
+
+
+
+
+joanmi@lenon:~/prj/lib/SmarkForm (main)$ npm run test
+
+> smarkform@0.12.4 pretest
+> npm run build
+
+
+> smarkform@0.12.4 build
+> scripts/build_production_smarkform.sh
+
+
+src/main.js → dist/SmarkForm.esm.js, dist/SmarkForm.umd.js...
+created dist/SmarkForm.esm.js, dist/SmarkForm.umd.js in 3.8s
+
+src/examples/index.js → tmp/index.js...
+(!) Generated an empty chunk
+"index"
+created tmp/index.js in 773ms
+
+> smarkform@0.12.4 test
+> playwright test
+
+
+Running 60 tests using 4 workers
+
+  ✓   1 …ynchronization Tests › Both dist and docs/_resources/dist directories should exist (34ms)
+  ✓   2 …ctory Synchronization Tests › Both directories should have the same tree structure (22ms)
+  ✓   3 …n Directory Synchronization Tests › Both directories should contain the same files (15ms)
+  ✓   4 … › test/type_list.tests.js:178:5 › List Component Type Test › addItem action works (1.2s)
+  ✓   5 …ium] › test/general.tests.js:187:5 › General Functionality Tests › Document loaded (1.1s)
+  ✓   6 … › test/type_date.tests.js:46:5 › Date Component Type Test › Check import coercion (1.1s)
+  ✓   7 …ry Synchronization Tests › All files should be binary equal to their counterparts (106ms)
+  ✓   8 …ory Synchronization Tests › There should be no extra files in docs/_resources/dist (10ms)
+  ✓   9 …st/type_number.tests.js:47:5 › Number Component Type Test › Check import coercion (986ms)
+  ✓  10 …/type_number.tests.js:98:5 › Number Component Type Test › Check it exports number (641ms)
+  ✓  11 …_date.tests.js:110:5 › Date Component Type Test › Check it exports valid ISO Date (700ms)
+  ✓  12 …/general.tests.js:204:5 › General Functionality Tests › Basic introspection works (732ms)
+  ✓  13 …est/type_list.tests.js:200:5 › List Component Type Test › removeItem action works (818ms)
+  ✓  14 …ype_number.tests.js:128:5 › Number Component Type Test › Check works as singleton (532ms)
+  ✓  15 …st/type_date.tests.js:142:5 › Date Component Type Test › Check works as singleton (537ms)
+  ✓  16 …est/type_list.tests.js:227:5 › List Component Type Test › min_items limit applies (602ms)
+  ✓  17 …est/type_list.tests.js:263:5 › List Component Type Test › max_items limit applies (624ms)
+  ✓  18 …m] › test/type_list.tests.js:303:5 › List Component Type Test › Imports correctly (624ms)
+  ✓  19 …m] › test/type_list.tests.js:345:5 › List Component Type Test › Exports correctly (725ms)
+  ✓  20 …ynchronization Tests › Both dist and docs/_resources/dist directories should exist (52ms)
+  ✓  21 …ctory Synchronization Tests › Both directories should have the same tree structure (27ms)
+  ✓  22 …n Directory Synchronization Tests › Both directories should contain the same files (16ms)
+  ✓  23 …ory Synchronization Tests › All files should be binary equal to their counterparts (93ms)
+  ✓  24 …ory Synchronization Tests › There should be no extra files in docs/_resources/dist (10ms)
+  ✓  25 …s:385:5 › List Component Type Test › list's "count" action triggers to be updated (512ms)
+  ✓  26 …fox] › test/general.tests.js:187:5 › General Functionality Tests › Document loaded (3.5s)
+  ✓  27 … › test/type_list.tests.js:178:5 › List Component Type Test › addItem action works (5.4s)
+  ✓  28 … › test/type_date.tests.js:46:5 › Date Component Type Test › Check import coercion (4.7s)
+  ✓  29 …est/type_number.tests.js:47:5 › Number Component Type Test › Check import coercion (5.4s)
+  ✓  30 …t/general.tests.js:204:5 › General Functionality Tests › Basic introspection works (2.2s)
+  ✓  31 …e_date.tests.js:110:5 › Date Component Type Test › Check it exports valid ISO Date (2.0s)
+  ✓  32 …test/type_list.tests.js:200:5 › List Component Type Test › removeItem action works (2.2s)
+  ✓  33 …est/type_date.tests.js:142:5 › Date Component Type Test › Check works as singleton (1.9s)
+  ✓  34 …t/type_number.tests.js:98:5 › Number Component Type Test › Check it exports number (1.7s)
+  ✓  35 …test/type_list.tests.js:227:5 › List Component Type Test › min_items limit applies (1.8s)
+  ✓  36 …ynchronization Tests › Both dist and docs/_resources/dist directories should exist (43ms)
+  ✓  37 …ctory Synchronization Tests › Both directories should have the same tree structure (27ms)
+  ✓  38 …n Directory Synchronization Tests › Both directories should contain the same files (31ms)
+  ✓  39 …ry Synchronization Tests › All files should be binary equal to their counterparts (154ms)
+  ✓  40 …ory Synchronization Tests › There should be no extra files in docs/_resources/dist (20ms)
+  ✓  41 …type_number.tests.js:128:5 › Number Component Type Test › Check works as singleton (1.5s)
+  ✓  42 … › test/type_date.tests.js:46:5 › Date Component Type Test › Check import coercion (2.8s)
+  ✓  43 …test/type_list.tests.js:263:5 › List Component Type Test › max_items limit applies (1.8s)
+  ✓  44 …ox] › test/type_list.tests.js:303:5 › List Component Type Test › Imports correctly (1.7s)
+  ✓  45 …kit] › test/general.tests.js:187:5 › General Functionality Tests › Document loaded (2.6s)
+  ✓  46 …ox] › test/type_list.tests.js:345:5 › List Component Type Test › Exports correctly (2.2s)
+  ✓  47 …e_date.tests.js:110:5 › Date Component Type Test › Check it exports valid ISO Date (1.6s)
+  ✓  48 …t/general.tests.js:204:5 › General Functionality Tests › Basic introspection works (1.7s)
+  ✓  49 … › test/type_list.tests.js:178:5 › List Component Type Test › addItem action works (2.2s)
+  ✓  50 …js:385:5 › List Component Type Test › list's "count" action triggers to be updated (2.4s)
+  ✓  51 …est/type_date.tests.js:142:5 › Date Component Type Test › Check works as singleton (1.7s)
+  ✓  52 …est/type_number.tests.js:47:5 › Number Component Type Test › Check import coercion (1.6s)
+  ✓  53 …test/type_list.tests.js:200:5 › List Component Type Test › removeItem action works (1.4s)
+  ✓  54 …t/type_number.tests.js:98:5 › Number Component Type Test › Check it exports number (1.1s)
+  ✓  55 …test/type_list.tests.js:227:5 › List Component Type Test › min_items limit applies (1.2s)
+  ✓  56 …ype_number.tests.js:128:5 › Number Component Type Test › Check works as singleton (902ms)
+  ✓  57 …test/type_list.tests.js:263:5 › List Component Type Test › max_items limit applies (1.1s)
+  ✓  58 …it] › test/type_list.tests.js:303:5 › List Component Type Test › Imports correctly (1.3s)
+  ✓  59 …it] › test/type_list.tests.js:345:5 › List Component Type Test › Exports correctly (1.2s)
+  ✓  60 …js:385:5 › List Component Type Test › list's "count" action triggers to be updated (1.0s)
+
+  60 passed (38.9s)
+
+To open last HTML report run:
+
+  npx playwright show-report
+
+
+
+
+
+
+
+
+
+
+
 
 
 
