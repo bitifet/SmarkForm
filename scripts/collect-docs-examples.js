@@ -85,17 +85,47 @@ function extractCaptures(content) {
 
 /**
  * Interpolate {{ varName }} in text using capture variables
+ * Handles nested interpolation, Jekyll filters, and special cases like {{""}}
  */
-function interpolateVariables(text, captures) {
+function interpolateVariables(text, captures, depth = 0) {
   if (!text || typeof text !== 'string') return text;
+  if (depth > 10) return text; // Prevent infinite recursion
   
-  // Replace {{ varName }} with captured content
-  return text.replace(/{{\s*(\w+)\s*}}/g, (match, varName) => {
+  // Replace {{""}} with empty string (Jekyll hack to prevent newlines)
+  let result = text.replace(/{{\s*""\s*}}/g, '');
+  
+  // Replace {{ varName | filter: args }} with captured content
+  // This handles Jekyll filters like: {{ var | replace: "old", "new" }}
+  result = result.replace(/{{\s*(\w+)\s*\|[^}]+}}/gs, (match, varName) => {
     if (captures[varName] !== undefined) {
-      return captures[varName];
+      // Extract the filter and its arguments - handle both "string" and special chars
+      const filterMatch = match.match(/\|\s*(\w+)\s*:\s*"([^"]*)"\s*,\s*"([^"]*)"/s);
+      if (filterMatch) {
+        const [, filterName, oldStr, newStr] = filterMatch;
+        if (filterName === 'replace') {
+          // Apply the replace filter
+          const content = interpolateVariables(captures[varName], captures, depth + 1);
+          // Escape special regex characters in oldStr
+          const escapedOld = oldStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return content.replace(new RegExp(escapedOld, 'g'), newStr);
+        }
+      }
+      // If filter not recognized, just return the interpolated content
+      return interpolateVariables(captures[varName], captures, depth + 1);
     }
     return match;
   });
+  
+  // Replace {{ varName }} with captured content (without filters)
+  result = result.replace(/{{\s*(\w+)\s*}}/g, (match, varName) => {
+    if (captures[varName] !== undefined) {
+      // Recursively interpolate the captured content
+      return interpolateVariables(captures[varName], captures, depth + 1);
+    }
+    return match;
+  });
+  
+  return result;
 }
 
 /**
@@ -187,6 +217,15 @@ function extractExamples(filePath) {
     // Interpolate variables in resolved content
     for (const [key, value] of Object.entries(resolvedParams)) {
       resolvedParams[key] = interpolateVariables(value, captures);
+    }
+    
+    // Remove any remaining unresolved Jekyll template variables
+    // These are usually template-level helpers (like json_editor, default_buttons)
+    // that don't affect the core example functionality
+    for (const [key, value] of Object.entries(resolvedParams)) {
+      if (typeof value === 'string') {
+        resolvedParams[key] = value.replace(/{{\s*[^}]+\s*}}/gs, '');
+      }
     }
     
     const formId = resolvedParams.formId || `example_${exampleIndex}`;
