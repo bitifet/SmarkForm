@@ -193,7 +193,7 @@ function extractExamples(filePath) {
     
     // Apply transformations
     const htmlSource = applyTransformations(resolvedParams.htmlSource, `-${formId}`);
-    const cssSource = stripImportant(resolvedParams.cssSource || '');
+    const cssSource = stripImportant(applyTransformations(resolvedParams.cssSource || '', `-${formId}`));
     const jsHead = applyTransformations(resolvedParams.jsHead, `-${formId}`);
     const jsHidden = applyTransformations(resolvedParams.jsHidden, `-${formId}`);
     const jsSource = applyTransformations(resolvedParams.jsSource, `-${formId}`);
