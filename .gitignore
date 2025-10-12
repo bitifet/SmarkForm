@@ -16,6 +16,7 @@ docs/_resources/dist/
 # Temporary files
 tmp
 test/tmp
+test/.cache
 
 # Playwright
 playwright-report/

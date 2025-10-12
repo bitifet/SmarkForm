@@ -7,7 +7,7 @@
   "module": "dist/SmarkForm.esm.js",
   "umd": "dist/SmarkForm.umd.js",
   "scripts": {
-    "pretest": "npm run build",
+    "pretest": "npm run build && node scripts/collect-docs-examples.js",
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "build": "scripts/build_production_smarkform.sh",
