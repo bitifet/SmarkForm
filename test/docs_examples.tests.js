@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getServerPort } from '../src/lib/test/helpers.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,8 +96,12 @@ for (const example of examples) {
       pageErrors.push(error.message);
     });
     
+    // Use HTTP server to serve the file (like existing tests do)
+    const port = await getServerPort();
+    const url = `http://127.0.0.1:${port}/test/tmp/${tmpFileName}`;
+    
     // Navigate to the test page
-    await page.goto(`file://${tmpFilePath}`);
+    await page.goto(url);
     
     // Wait for SmarkForm to be available and initialized
     await page.waitForFunction(() => {
