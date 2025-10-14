@@ -122,17 +122,25 @@ for (const example of examples) {
     const formContainer = await page.locator(`#myForm-${example.formId}`);
     await expect(formContainer).toBeVisible();
     
-    // Verify no console errors
+    // Verify console errors match expectations
+    const expectedConsoleErrors = example.expectedConsoleErrors || 0;
     if (consoleErrors.length > 0) {
       console.log('Console errors:', consoleErrors);
     }
-    expect(consoleErrors, `No console errors expected in example ${example.id}`).toHaveLength(0);
+    expect(
+      consoleErrors, 
+      `Expected ${expectedConsoleErrors} console error(s) in example ${example.id}, got ${consoleErrors.length}`
+    ).toHaveLength(expectedConsoleErrors);
     
-    // Verify no page errors
+    // Verify page errors match expectations
+    const expectedPageErrors = example.expectedPageErrors || 0;
     if (pageErrors.length > 0) {
       console.log('Page errors:', pageErrors);
     }
-    expect(pageErrors, `No page errors expected in example ${example.id}`).toHaveLength(0);
+    expect(
+      pageErrors, 
+      `Expected ${expectedPageErrors} page error(s) in example ${example.id}, got ${pageErrors.length}`
+    ).toHaveLength(expectedPageErrors);
     
     // Enforce tests presence check
     if (!example.tests || example.tests === '') {

@@ -64,3 +64,36 @@ export default async ({ page, expect, id, helpers }) => {
     htmlSource=custom_test_example_html
     tests=custom_test_example_tests
 %}
+
+## Example with expected errors (demonstrates error handling)
+
+{% capture error_example_html %}
+<p>
+    <label>Field:</label>
+    <input type="text" name="field" data-smark />
+</p>
+{% endcapture %}
+
+{% capture error_example_js %}
+// This intentionally logs an error to demonstrate error handling
+console.error("Expected error: This is a test error");
+{% endcapture %}
+
+{% capture error_example_tests %}
+export default async ({ page, expect, id, helpers }) => {
+  const root = helpers.root(page, id);
+  await expect(root).toBeVisible();
+  
+  // Check that input exists
+  const input = page.locator('input[name="field"]');
+  await expect(input).toBeVisible();
+};
+{% endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="test_with_expected_error"
+    htmlSource=error_example_html
+    jsSource=error_example_js
+    tests=error_example_tests
+    expectedConsoleErrors=1
+%}

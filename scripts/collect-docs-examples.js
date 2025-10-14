@@ -254,6 +254,14 @@ function extractExamples(filePath) {
     // Default jsHead if not provided
     const defaultJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"));`;
     
+    // Parse expected error counts if provided
+    const expectedConsoleErrors = resolvedParams.expectedConsoleErrors 
+      ? parseInt(resolvedParams.expectedConsoleErrors, 10) 
+      : 0;
+    const expectedPageErrors = resolvedParams.expectedPageErrors 
+      ? parseInt(resolvedParams.expectedPageErrors, 10) 
+      : 0;
+    
     examples.push({
       id: `${relativePath.replace(/\//g, '_').replace(/\.md$/, '')}_${formId}`,
       file: relativePath,
@@ -264,6 +272,8 @@ function extractExamples(filePath) {
       jsHidden: jsHidden || '',
       jsSource: jsSource || '',
       tests: tests,
+      expectedConsoleErrors: expectedConsoleErrors,
+      expectedPageErrors: expectedPageErrors,
       notes: resolvedParams.notes || '',
       showEditor: resolvedParams.showEditor === 'true',
       showEditorSource: resolvedParams.showEditorSource === 'true',
