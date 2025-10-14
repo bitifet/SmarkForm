@@ -61,6 +61,7 @@ endcapture %}
     formId="simple_number"
     htmlSource=simple_number
     showEditor=true
+    tests=false
 %}
 
 
@@ -84,6 +85,7 @@ endcapture %}
     formId="number_error"
     htmlSource=number_error
     showEditor=true
+    tests=false
 %}
 
 

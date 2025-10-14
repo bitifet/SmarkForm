@@ -147,6 +147,7 @@ endcapture %}
     formId="simple_legacy"
     htmlSource=html_source_legacy
     jsSource="-"
+    tests=false
 %}
 
 {: .info}
@@ -167,6 +168,7 @@ the DOM node of the form container as parameter:
     formId="simple_initialized"
     htmlSource=html_source_legacy
     selected="js"
+    tests=false
 %}
 
 Ok: Nothing exciting happended by now.
@@ -207,6 +209,7 @@ Let's mark all fields, buttons and labels... by adding a *data-smark* attribute 
 {% include components/sampletabs_tpl.md
     formId="enhanced_simple_form"
     htmlSource=html_source_enhanced
+    tests=false
 %}
 
 
@@ -283,6 +286,7 @@ Let's add more `❌ Clear` buttons to clear each specific field:
 {% include components/sampletabs_tpl.md
     formId="enhanced_simple_form_with_clears"
     htmlSource=html_source_enhanced_with_clears
+    tests=false
 %}
 
 
@@ -349,6 +353,7 @@ object](#the-options-object).
     jsSource=form_export_example_js
     notes=form_export_example_notes
     selected="js"
+    tests=false
 %}
 
 
@@ -420,6 +425,7 @@ endcapture %}
     jsHidden=form_export_example_js 
     jsSource=form_export_example_withImport_js
     selected="js"
+    tests=false
 %}
 
 
@@ -495,6 +501,7 @@ endcapture %}
     htmlSource=traversing_form_example
     jsSource=traversing_form_example_js
     selected="js"
+    tests=false
 %}
 
 
@@ -584,6 +591,7 @@ endcapture %}
    htmlSource=simple_list_example
    jsSource=simple_list_js
    notes=simple_list_example_notes
+    tests=false
 %}
 
 {: .info :}
@@ -632,6 +640,7 @@ example:
     htmlSource=html_source_simplified
     showEditor=true
     showEditorSource=true
+    tests=false
 %}
 
 ⚡ Check the JS tab to see there is no import/export JS code at all and the
@@ -701,6 +710,7 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     jsHidden=simple_confirm_cancel_example_hidden_js
     jsSource=simple_confirm_cancel_example_js
     selected="js"
+    tests=false
 %}
 
 {: .hint : }
@@ -731,6 +741,7 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     jsHidden=simple_confirm_cancel_example_hidden_js
     jsSource=confirm_cancel_example_with_confirm_js
     selected="js"
+    tests=false
 %}
 
 
@@ -852,6 +863,7 @@ button[data-hotkey]::before {
     cssSource=advanced_sample_css
     jsSource=confirm_cancel_example_js
     notes=phone_list_form_example_notes
+    tests=false
 %}
 
 
@@ -888,6 +900,7 @@ button[data-hotkey]::before {
     htmlSource=html_schedule_list
     cssSource="-"
     jsSource=confirm_cancel_example_js
+    tests=false
 %}
 
 

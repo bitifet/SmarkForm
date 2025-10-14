@@ -83,6 +83,7 @@ endcapture %}
     formId="simple_color"
     htmlSource=simple_color
     showEditor=true
+    tests=false
 %}
 
 
@@ -128,6 +129,7 @@ endcapture %}
     htmlSource=singleton_color
     notes=notes
     showEditor=true
+    tests=false
 %}
 
 
@@ -149,6 +151,7 @@ endcapture %}
     formId="singleton_color_error"
     htmlSource=singleton_color_error
     showEditor=true
+    tests=false
 %}
 
 

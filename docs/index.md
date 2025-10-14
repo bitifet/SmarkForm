@@ -217,6 +217,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 

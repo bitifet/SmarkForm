@@ -166,6 +166,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -218,6 +219,7 @@ endcapture %}
     htmlSource=nested_forms
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -257,6 +259,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -345,6 +348,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -384,6 +388,7 @@ source code:
     showEditor=true
     showEditorSource=true
     selected="html"
+    tests=false
 %}
 
 
@@ -466,6 +471,7 @@ endcapture %}
     notes=include.notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -572,6 +578,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -626,6 +633,7 @@ every list item and so forth to any depth.
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -706,6 +714,7 @@ Below is the same example as before, but with an additional `✨` button to
     cssSource=schedule_table_css
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -723,6 +732,7 @@ forms](#deeply-nested-forms) section:
     selected="preview"
     showEditor=true
     showEditorSource=true
+    tests=false
 %}
 
 
@@ -827,6 +837,7 @@ prefills the prompt dialog with the JSON export of the whole form.
     showEditor=true
     addLoadSaveButtons=true
     showEditorSource=true
+    tests=false
 %}
 
 👉 Remember to check the `📝 Notes` tab for more...
@@ -956,6 +967,7 @@ endcapture %}
     htmlSource=context_comparsion_example
     notes=notes
     selected="preview"
+    tests=false
 %}
 
 
@@ -1026,6 +1038,7 @@ endcapture %}
     cssSource=simple_list_autodisable_css
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 👉 Notice that the `🧹` and `➖` buttons get disabled then the list has only
@@ -1106,6 +1119,7 @@ endcapture %}
     cssSource=simple_list_hotkeys_css
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 ### Reveal of hot keys
@@ -1178,6 +1192,7 @@ endcapture %}
     cssSource=simple_list_hotkeys_css
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -1282,6 +1297,7 @@ Try it in the following example:
     cssSource=simple_list_hotkeys_css
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -1345,6 +1361,7 @@ accessible through their hotkeys.
     htmlSource=nested_simple_list_hotkeys_with_context
     cssSource=hidden_actions_css
     selected="preview"
+    tests=false
 %}
 
 This is just a simple trick and not any new *SmarkForm* feature, but it is
@@ -1430,6 +1447,7 @@ const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     cssSource=animations_css
     jsSource=animations_js
     selected="preview"
+    tests=false
 %}
 
 In this example we listen to the `afterRender` event to add the `animated_item`
@@ -1455,6 +1473,7 @@ class when the item is added and remove it before the item is removed.
     formId="smart_value_coercion"
     htmlSource=smart_value_coercion
     selected="preview"
+    tests=false
 %}
 
 
@@ -1471,6 +1490,7 @@ In this example, we'll illustrate how to create dropdown menus with dynamic opti
     formId="dynamic_dropdown"
     htmlSource=dynamic_dropdown
     selected="preview"
+    tests=false
 %}
 
 
@@ -1722,6 +1742,7 @@ any of its descendants.
     cssSource=calculator_css
     notes=notes
     selected="preview"
+    tests=false
 %}
 
 {: .hint :}
@@ -1918,6 +1939,7 @@ The `!!` bit is just stylistic to note we want to evaluate the result of
     cssSource=supercalculator_css
     notes=notes
     selected="preview"
+    tests=false
 %}
 
 In this example we no longer need to define hotkeys since we are directly

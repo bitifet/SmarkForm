@@ -137,6 +137,7 @@ endcapture %}
     cssSource=generic_sample_css
     notes=simple_list_example_notes
     showEditor=true
+    tests=false
 %}
 
 
@@ -171,6 +172,7 @@ following example.
     htmlSource=scalar_list_example
     cssSource=generic_sample_css
     showEditor=true
+    tests=false
 %}
 
 {: .hint}
@@ -212,6 +214,7 @@ endcapture %}
     htmlSource=singleton_list_example
     cssSource=generic_sample_css
     showEditor=true
+    tests=false
 %}
 
 
@@ -269,6 +272,7 @@ endcapture %}
     htmlSource=nesting_list_example
     cssSource=generic_sample_css
     showEditor=true
+    tests=false
 %}
 
 {: .hint}

@@ -65,6 +65,7 @@ endcapture %}
     formId="auto_association"
     htmlSource=auto_association
     showEditor=true
+    tests=false
 %}
 
 
@@ -85,6 +86,7 @@ endcapture %}
     formId="explicit_targetting"
     htmlSource=explicit_targetting
     showEditor=true
+    tests=false
 %}
 
 
@@ -118,6 +120,7 @@ endcapture %}
     formId="workaround_targetting"
     htmlSource=workaround_targetting
     showEditor=true
+    tests=false
 %}
 
 

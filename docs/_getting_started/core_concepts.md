@@ -106,6 +106,7 @@ JSON data and see what happen.
     htmlSource=simple_form_example
     notes=simple_form_example_notes
     showEditor=true
+    tests=false
 %}
 
 
@@ -200,6 +201,7 @@ fields or the whole form.
     formId="context_comparsion_simple"
     htmlSource=context_comparsion_example_simple
     notes=notes
+    tests=false
 %}
 
 
@@ -268,6 +270,7 @@ and/or emails).
     notes=notes
     selected="preview"
     showEditor=true
+    tests=false
 %}
 
 
@@ -332,6 +335,7 @@ phones: not an array of objects with a phone...
     htmlSource=fixed_list_example
     notes=fixed_list_example_notes
     showEditor=true
+    tests=false
 %}
 
 
@@ -396,6 +400,7 @@ actions:
     cssSource=pets_list_example_css
     notes=pets_list_example_notes
     showEditor=true
+    tests=false
 %}
 
 
@@ -876,6 +881,7 @@ other components throug their *relative path*.
     formId="components_paths"
     htmlSource=null
     showEditor=true
+    tests=false
 %}
 
 

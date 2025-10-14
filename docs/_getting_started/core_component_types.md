@@ -127,6 +127,7 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
     formId="input_example"
     htmlSource=input_example
     showEditor=true
+    tests=false
 %}
 
 
@@ -201,6 +202,7 @@ would be cleared.
     formId="no_singleton_example"
     htmlSource=no_singleton_example
     showEditor=true
+    tests=false
 %}
 
 
@@ -228,6 +230,7 @@ but, also, **it could avoid future issues** in case of field name being changed
     formId="singleton_example"
     htmlSource=singleton_color_example
     showEditor=true
+    tests=false
 %}
 
 
@@ -270,6 +273,7 @@ component type providding extra sanitation (when importing) and formatting
     formId="number_and_date_example"
     htmlSource=number_and_date_example
     showEditor=true
+    tests=false
 %}
 
 
@@ -324,6 +328,7 @@ selected pure black (#000000) or simply overlooked the field altogether.
     formId="color_example"
     htmlSource=color_example
     showEditor=true
+    tests=false
 %}
 
 
@@ -364,6 +369,7 @@ selected pure black (#000000) or simply overlooked the field altogether.
     formId="clear_others_example"
     htmlSource=clear_others_example
     showEditor=true
+    tests=false
 %}
 
 </blockquote>

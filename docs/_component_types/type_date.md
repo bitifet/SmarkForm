@@ -73,6 +73,7 @@ endcapture %}
     formId="simple_color"
     htmlSource=simple_color
     showEditor=true
+    tests=false
 %}
 
 
@@ -106,6 +107,7 @@ endcapture %}
     formId="date_error"
     htmlSource=date_error
     showEditor=true
+    tests=false
 %}
 
 

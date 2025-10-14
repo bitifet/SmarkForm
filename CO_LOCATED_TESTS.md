@@ -100,7 +100,25 @@ See `docs/_test_examples.md` for complete examples of:
 
 ## Migration Guide
 
-For existing examples without tests:
+### Automated Migration (Recommended)
+
+A helper script is provided to automatically add `tests=false` to all existing examples:
+
+```bash
+node scripts/add-tests-false-to-examples.js
+```
+
+This will scan all documentation files and add `tests=false` to any examples that don't already have a `tests` parameter.
+
+After running the script, regenerate the manifest:
+
+```bash
+node scripts/collect-docs-examples.js
+```
+
+### Manual Migration
+
+For existing examples without tests, you can manually update them:
 
 1. **Simple examples**: Add `tests=false` to the include block if no custom behavior needs testing beyond the default smoke tests
 2. **Interactive examples**: Write custom tests that exercise the interactive behavior

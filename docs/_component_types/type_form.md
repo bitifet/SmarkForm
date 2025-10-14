@@ -110,6 +110,7 @@ Following example shows a simple *SmarkForm* form with two nested forms:
    htmlSource=simple_form_example
    notes=simple_form_example_notes
    showEditor=true
+    tests=false
 %}
 
 
