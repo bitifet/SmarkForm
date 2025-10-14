@@ -61,6 +61,13 @@ function generateTestHTML(example) {
 </html>`;
 }
 
+/**
+ * Helper object for co-located tests
+ */
+const helpers = {
+  root: (page, id) => page.locator(`#myForm-${id}`)
+};
+
 // Generate tests for each example
 for (const example of examples) {
   test(`[${example.file}] ${example.formId}`, async ({ page }) => {
@@ -126,6 +133,53 @@ for (const example of examples) {
       console.log('Page errors:', pageErrors);
     }
     expect(pageErrors, `No page errors expected in example ${example.id}`).toHaveLength(0);
+    
+    // Enforce tests presence check
+    if (!example.tests || example.tests === '') {
+      throw new Error(
+        `Example ${example.id} is missing co-located tests. ` +
+        `Please add a tests= parameter to the {% include %} block, or use tests=false to explicitly disable testing.`
+      );
+    }
+    
+    // Run co-located custom tests if defined and not explicitly disabled
+    if (example.tests && example.tests !== 'false') {
+      // Create temporary test module file
+      const testModuleFileName = `docs_example_test_${example.id}.mjs`;
+      const testModulePath = path.join(tmpDir, testModuleFileName);
+      
+      try {
+        fs.writeFileSync(testModulePath, example.tests);
+        
+        // Dynamic import the test module
+        const testModuleUrl = `file://${testModulePath}`;
+        const testModule = await import(testModuleUrl);
+        
+        // Verify default export exists and is a function
+        if (typeof testModule.default !== 'function') {
+          throw new Error(
+            `Test module for ${example.id} must export a default function. ` +
+            `Found: ${typeof testModule.default}`
+          );
+        }
+        
+        // Execute the custom test
+        await testModule.default({
+          page,
+          expect,
+          id: example.formId,
+          helpers
+        });
+        
+      } finally {
+        // Clean up test module
+        try {
+          fs.unlinkSync(testModulePath);
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+      }
+    }
     
     // Clean up
     try {

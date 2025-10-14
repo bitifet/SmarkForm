@@ -206,6 +206,10 @@ function extractExamples(filePath) {
       if (key === 'formId') {
         resolvedParams[key] = cleanValue;
       }
+      // tests=false is a special case - keep as literal string 'false'
+      else if (key === 'tests' && cleanValue === 'false') {
+        resolvedParams[key] = 'false';
+      }
       // Check if it's a reference to a capture variable
       else if (captures[cleanValue]) {
         resolvedParams[key] = captures[cleanValue];
@@ -237,6 +241,16 @@ function extractExamples(filePath) {
     const jsHidden = applyTransformations(resolvedParams.jsHidden, `-${formId}`);
     const jsSource = applyTransformations(resolvedParams.jsSource, `-${formId}`);
     
+    // Handle tests parameter - apply transformations unless it's the literal 'false'
+    let tests = '';
+    if (resolvedParams.tests !== undefined) {
+      if (resolvedParams.tests === 'false') {
+        tests = 'false';
+      } else {
+        tests = applyTransformations(resolvedParams.tests, `-${formId}`);
+      }
+    }
+    
     // Default jsHead if not provided
     const defaultJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"));`;
     
@@ -249,6 +263,7 @@ function extractExamples(filePath) {
       jsHead: jsHead || defaultJsHead,
       jsHidden: jsHidden || '',
       jsSource: jsSource || '',
+      tests: tests,
       notes: resolvedParams.notes || '',
       showEditor: resolvedParams.showEditor === 'true',
       showEditorSource: resolvedParams.showEditorSource === 'true',
