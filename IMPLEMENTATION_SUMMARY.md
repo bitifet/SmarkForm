@@ -11,7 +11,7 @@ Successfully implemented a comprehensive test pipeline that automatically extrac
 A Node.js script that:
 - Scans all markdown files in `docs/` directory (excluding presentations and build artifacts)
 - Finds `{% include components/sampletabs_tpl.md ... %}` blocks
-- Extracts parameters: `formId`, `htmlSource`, `cssSource`, `jsHead`, `jsHidden`, `jsSource`
+- Extracts parameters: `formId`, `htmlSource`, `cssSource`, `jsHead`, `jsHidden`, `jsSource`, `tests`, `expectedConsoleErrors`, `expectedPageErrors`
 - Resolves `{% capture %}` blocks with content
 - Performs recursive interpolation of `{{ variables }}`
 - Supports Jekyll filters like `{{ var | replace: "old", "new" }}`
@@ -20,6 +20,12 @@ A Node.js script that:
   - `█` → spaces (indentation hack)
   - `$$` → `-${formId}` (unique ID suffix)
   - Strips `!important` from CSS
+- **NEW**: Processes `tests=` parameter for co-located custom tests
+  - Resolves test code from capture blocks
+  - Applies transformations (█ and $$)
+  - Handles `tests=false` as literal string
+  - Sets `tests` to empty string if not provided
+- **NEW**: Parses `expectedConsoleErrors` and `expectedPageErrors` for error assertions
 - Cleans up unresolved template-level variables
 - Outputs a JSON manifest to `test/.cache/docs_examples.json`
 
@@ -36,8 +42,17 @@ A Playwright test file that:
 - Runs smoke tests for each example:
   - Verifies the page loads without errors
   - Verifies the form container is visible
-  - Verifies no console errors occurred
-  - Verifies no page errors occurred
+  - Verifies console errors match expectations (default: 0)
+  - Verifies page errors match expectations (default: 0)
+- **NEW**: Enforces tests presence/validity
+  - Fails if `tests` is missing or empty
+  - Provides clear error message to add `tests=` parameter
+  - Allows `tests=false` to explicitly disable custom tests
+- **NEW**: Executes co-located custom tests when defined
+  - Writes test code to temporary `.mjs` file
+  - Dynamically imports test module
+  - Executes test function with: `{ page, expect, id, helpers }`
+  - Provides `helpers.root(page, id)` utility for form root locator
 
 ### 3. Integration
 
@@ -97,14 +112,33 @@ npx playwright test test/docs_examples.tests.js
 npm run test:headed
 ```
 
+## Co-Located Custom Tests (NEW)
+
+The pipeline now supports co-located custom tests defined directly in documentation:
+
+### Features
+- **Custom Test Definition**: Define Playwright test code in Jekyll capture blocks
+- **Test Execution**: Tests are dynamically imported and executed for each example
+- **Helper Functions**: Built-in utilities like `helpers.root(page, id)`
+- **Explicit Opt-Out**: Use `tests=false` to explicitly disable custom tests
+- **Error Expectations**: Support for `expectedConsoleErrors` and `expectedPageErrors`
+- **Enforcement**: All examples must define `tests` (either custom or `false`)
+
+### Documentation
+- See `CO_LOCATED_TESTS.md` for complete usage guide
+- See `docs/_test_examples.md` for working examples
+- See `scripts/add-tests-false-to-examples.js` for migration tool
+
+### Migration
+All existing examples have been updated with `tests=false` to maintain backwards compatibility while enabling future custom tests.
+
 ## Future Enhancements
 
-The foundation is in place for:
-- Co-located tests via `tests=` parameter in documentation
-- Custom assertions for specific examples
+Additional features that could be added:
 - Visual regression testing
 - Accessibility testing
 - Performance benchmarks
+- Snapshot testing for form state
 
 ## Technical Highlights
 
