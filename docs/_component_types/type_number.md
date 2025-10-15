@@ -86,6 +86,7 @@ endcapture %}
     htmlSource=number_error
     showEditor=true
     tests=false
+    expectedPageErrors=1
 %}
 
 

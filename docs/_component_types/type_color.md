@@ -152,6 +152,7 @@ endcapture %}
     htmlSource=singleton_color_error
     showEditor=true
     tests=false
+    expectedPageErrors=1
 %}
 
 

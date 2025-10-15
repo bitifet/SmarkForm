@@ -108,6 +108,7 @@ endcapture %}
     htmlSource=date_error
     showEditor=true
     tests=false
+    expectedPageErrors=1
 %}
 
 
