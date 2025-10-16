@@ -864,7 +864,6 @@ button[data-hotkey]::before {
     formId="telephone_list"
     htmlSource=html_phone_list
     cssSource=advanced_sample_css
-    jsSource=confirm_cancel_example_js
     notes=phone_list_form_example_notes
     tests=false
 %}
@@ -902,7 +901,6 @@ button[data-hotkey]::before {
     formId="schedule_list"
     htmlSource=html_schedule_list
     cssSource="-"
-    jsSource=confirm_cancel_example_js
     tests=false
 %}
 

@@ -53,40 +53,38 @@ any number of *SmarkForm* fields, **including nested forms**.
 Following example shows a simple *SmarkForm* form with two nested forms:
 
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
-{% capture simple_form_example %}
-<div id='myForm$$'>
-    <p>
-        <label for='id'>Id:</label>
-        <input data-smark type='text' name='id' />
-    </p>
-    <fieldset data-smark='{"type":"form","name":"personalData"}'>
+{% capture simple_form_example
+%}<p>
+    <label for='id'>Id:</label>
+    <input data-smark type='text' name='id' />
+</p>
+<fieldset data-smark='{"type":"form","name":"personalData"}'>
     <legend>Personal Data:</legend>
-        <p>
-            <label for='name'>Name:</label>
-            <input data-smark type='text' name='name' placheolder='Family name'/>
-        </p>
-        <p>
-            <label for='surname'>Surname:</label>
-            <input data-smark type='text' name='surname' />
-        </p>
-        <p>
-            <label for='address'>Address:</label>
-            <input data-smark type='text' name='address' />
-        </p>
-    </fieldset>
-    <fieldset data-smark='{"type":"form","name":"businessData"}'>
+    <p>
+        <label for='name'>Name:</label>
+        <input data-smark type='text' name='name' placheolder='Family name'/>
+    </p>
+    <p>
+        <label for='surname'>Surname:</label>
+        <input data-smark type='text' name='surname' />
+    </p>
+    <p>
+        <label for='address'>Address:</label>
+        <input data-smark type='text' name='address' />
+    </p>
+</fieldset>
+<fieldset data-smark='{"type":"form","name":"businessData"}'>
     <legend>Business Data:</legend>
-        <p>
-            <label for='name'>Company Name:</label>
-            <input data-smark type='text' name='name' placheolder='Company Name'/>
-        </p>
-        <p>
-            <label for='address'>Address:</label>
-            <input data-smark type='text' name='address' />
-        </p>
-    </fieldset>
-</div>
-{% endcapture %}
+    <p>
+        <label for='name'>Company Name:</label>
+        <input data-smark type='text' name='name' placheolder='Company Name'/>
+    </p>
+    <p>
+        <label for='address'>Address:</label>
+        <input data-smark type='text' name='address' />
+    </p>
+</fieldset>{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_form_example_notes {{{ --> {% endraw %}

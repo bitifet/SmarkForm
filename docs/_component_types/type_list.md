@@ -158,13 +158,13 @@ following example.
 **Example:**
 
 {% raw %} <!-- capture scalar_list_example {{{ --> {% endraw %}
-{% capture scalar_list_example %}<div id="myForm$$">
-    <section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
-        <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
-    </section>
-    <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-    <button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- 5️⃣  -->
-</div>{% endcapture %}
+{% capture scalar_list_example
+%}<section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
+    <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
+</section>
+<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+<button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- 5️⃣  -->{%
+endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
