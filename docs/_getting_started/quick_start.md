@@ -701,8 +701,11 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
 {% raw %} <!-- }}} --> {% endraw %}
 
 
-{% assign simple_confirm_cancel_example_hidden_js=form_export_example_js | append: form_export_example_withImport_js %}
-
+{% raw %} <!-- simple_confirm_cancel_example_hidden_js {{{ --> {% endraw %}
+{% capture simple_confirm_cancel_example_hidden_js
+%}{{ form_export_example_js }}{{ form_export_example_withImport_js }}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="enhanced_confirmCancel"
