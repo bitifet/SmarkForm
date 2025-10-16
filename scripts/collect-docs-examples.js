@@ -193,7 +193,7 @@ function extractExamples(filePath) {
   let exampleIndex = 0;
   
   while ((match = includeRegex.exec(content)) !== null) {
-    const [fullMatch, paramsBlock] = match;
+    const [_fullMatch, paramsBlock] = match;
     const params = parseIncludeParams(paramsBlock);
     
     // Resolve parameter values from captures or use directly
@@ -232,6 +232,10 @@ function extractExamples(filePath) {
       }
     }
     
+    // Skip examples with JavaScript explicitly disabled (jsSource="-")
+    // (They are introductory stuff and not fully functional SmarkForm examples)
+    if (resolvedParams.jsSource === "-") continue;
+
     const formId = resolvedParams.formId || `example_${exampleIndex}`;
     
     // Apply transformations
