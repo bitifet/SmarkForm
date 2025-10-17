@@ -82,7 +82,7 @@ list. This template is mandatory.
   * More coming soon like `header`, `padding` or `footer`.
 
 👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
-inputs can be created over any HTML tag1️⃣  **except for actual HTML form
+inputs can be created over any HTML tag <a aria-hidden="true" href="#example-simple_list" style="cursor:pointer" title="Search for «☛ 1» in the code comments">(☛ 1)</a>  **except for actual HTML form
 field elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 
 
@@ -92,7 +92,7 @@ field elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
 type.
 
 👉 However, in its html source, **lists must only contain templates of supported roles as direct
-children**2️⃣ , being the "item" role required and the rest optional.
+children** <a aria-hidden="true" href="#example-simple_list" style="cursor:pointer" title ="Search for «☛ 2» in the code comments">(☛ 2)</a>, being the "item" role required and the rest optional.
 
 👉 The user will (or won't) be able to, at its own discretion (and according
 certain configurable rules), add or remove items to the list.
@@ -102,15 +102,14 @@ automatically rendered as a *SmarkForm* field** (no matter if we explicitly
 specified the *data-smark* attribute or not).
 
 👉 If *data-smark* attribute is not provided (or it does not specify the
-*type* property), the type "form" is automatically taken by default3️⃣ .
+*type* property), the type "form" is automatically taken by default <a aria-hidden="true" href="#example-simple_list" style="cursor:pointer" title ="Search for «☛ 3» in the code comments">(☛ 3)</a>.
 
 **Example:**
 
-
 {% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
 {% capture simple_list_example
-%}<section data-smark='{"type":"list","name":"users"}'><!-- 1️⃣  -->
-    <fieldset style="text-align:right"><!-- 2️⃣ , 3️⃣ , 6️⃣  -->
+%}<section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
+    <fieldset style="text-align:right"><!-- ☛ 2, 3, 6 -->
         <p><label>User name:</label><input name='name' type='text' data-smark/></p>
         <p><label>Phone number:</label><input name='phone' type='tel' data-smark/></p>
         <p><label>Email:</label><input name='email' type='text' data-smark/></p>
@@ -143,7 +142,8 @@ endcapture %}
 
 ### Scalar item types
 
-👉 Other field types can be used too as *item template*4️⃣ .
+👉 Other field types can be used too as *item template*
+<a aria-hidden="true" href="#example-scalar_list" style="cursor:pointer" title ="Search for «☛ 4» in the code comments">(☛ 4)</a>.
 
 👉 ...but, in the case of
 ([scalar field types]({{ "getting_started/core_component_types#scalar-field-types" | relative_url }}))
@@ -151,8 +151,9 @@ it may look like we are limited when it comes to inserting labels **and
 triggers** in the item template and hence we can only remove last item every
 time in the list.
 
-This would force us to move the *Remove Item* button outside the list5️⃣  like in the
-following example.
+This would force us to move the *Remove Item* button outside the list
+<a aria-hidden="true" href="#example-scalar_list" style="cursor:pointer" title ="Search for «☛ 5» in the code comments">(☛ 5)</a>
+like in the following example.
 
 
 **Example:**
@@ -160,10 +161,10 @@ following example.
 {% raw %} <!-- capture scalar_list_example {{{ --> {% endraw %}
 {% capture scalar_list_example
 %}<section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
-    <input placeholder='Phone number' type='tel'/><!-- 4️⃣ , 6️⃣  -->
+    <input placeholder='Phone number' type='tel'/><!-- ☛ 4, 6 -->
 </section>
 <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-<button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- 5️⃣  -->{%
+<button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- ☛ 5 -->{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -177,7 +178,9 @@ endcapture %}
 
 {: .hint}
 > Notice that in this example, likewise the *fieldset* in the former, the
-> *input* tag has no "name" attribute6️⃣ . This is because it is a list item
+> *input* tag has no "name" attribute
+> <a aria-hidden="true" href="#example-scalar_list" style="cursor:pointer" title="Search for «☛ 6» in the code comments">(☛ 6)</a>.
+> This is because it is a list item
 > template and it's actual name attribute will be automatically set depending
 > on its position in the array every time a new item is added, moved or
 > removed.
