@@ -15,6 +15,25 @@ Accepted arguments:
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
 
+Additional arguments
+--------------------
+
+Arguments other than the above will be ignored by the documentation renderer.
+But you may find others like the following:
+
+  * tests
+  * expectedConsoleErrors.
+  * expectedPageErrors.
+
+This is because examples in documentation are collected for testing purposes. Those additional
+arguments are used by the test runner.
+
+For further details, please refer to the following documentation files:
+
+  * test/WRITING_TESTS.md
+  * test/CO_LOCATED_TESTS.md
+  * test/IMPLEMENTATION_DETAILS.md
+
 {% endcomment %}
 
 

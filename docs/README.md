@@ -1,183 +1,100 @@
 # SmarkForm Documentation Site
 
-> **Note**: This README is about setting up and building the SmarkForm documentation website. 
-> If you're looking for information about **using SmarkForm** itself, please see the main documentation at [index.md](index.md).
+> **Note**: This README is about setting up and building the SmarkForm
+> documentation website. If you're looking for information about **using
+> SmarkForm** itself, please see the main documentation at
+> [index.md](index.md).
 
-This documentation site is built using Jekyll and the [Just the Docs] theme. The content below explains how to set up, build, and maintain this documentation site.
 
----
+## Documentation Source
 
-## Documentation Site Setup
+Documentation source can be found in [/docs](/docs) directory of this
+repository.
 
-This is a *bare-minimum* template to create a [Jekyll] site that:
+It uses [Jekyll](https://jekyllrb.com/) and
+[just-the-docs](https://just-the-docs.github.io/just-the-docs/) Jekyll layout
+and it is automatically deployed by GitHub infrastructure anytime new revision
+is pushed..
 
-- uses the [Just the Docs] theme;
-- can be built and published on [GitHub Pages];
-- can be built and previewed locally, and published on other platforms.
 
-More specifically, the created site:
+## Documentation Building
 
-- uses a gem-based approach, i.e. uses a `Gemfile` and loads the `just-the-docs` gem;
-- uses the [GitHub Pages / Actions workflow] to build and publish the site on GitHub Pages.
+To build SmarkForm documentation localloy you first need to install follow this
+instructions:
 
-To get started with creating a site, simply:
+  * [Install Jekyll prerequisites](https://jekyllrb.com/docs/installation/)
 
-1. click "[use this template]" to create a GitHub repository
-2. go to Settings > Pages > Build and deployment > Source, and select GitHub Actions
+  * Execute `gem install jekyll bundler`.
 
-If you want to maintain your docs in the `docs` directory of an existing project repo, see [Hosting your docs from an existing project repo](#hosting-your-docs-from-an-existing-project-repo).
+  * Run `npm run doc`.
 
-After completing the creation of your new site on GitHub, update it as needed:
+Then you will be able to see the documentation at `http://localhost:4000` or
+`http://<your-ip>:4000`.
 
-## Replace the content of the template pages
 
-Update the following files to your own content:
+## Code Snippets
 
-- `index.md` (your new home page) - **Note: This is the main SmarkForm documentation**
-- `README.md` (information for those who access your site repo on GitHub) - **This file you're reading now**
+Code snippets included in the documentation are defined inline through Jekyll
+`{% capture %}` blocks and then included in the documentation. They are
+rendered by including the `docs/_includes/components/sampletabs_tpl.md`.
 
-## Changing the version of the theme and/or Jekyll
+> 📌 For this to work, also the file
+> `docs/_includes/components/sampletabs_ctrl.md` need to be included earlier in
+> the document (typically at the begginning of the file).
 
-Simply edit the relevant line(s) in the `Gemfile`.
+Parameters supported by `sampletabs_tpl.md` include:
 
-## Adding a plugin
+  * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
+  * htmlSource (mandatory)
+  * cssSource
+  * jsHead: JS initialization code.
+  * jsHidden: JS source already discussed (not shown in the "JS Source" tab).
+  * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
+  * notes: Optional notes for further clarifications.
+  * selected: Default selected tab (defaults to "html").
+  * showEditor: Whether to show the editor textarea or not (defaults to false)
+  * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
+  * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
 
-The Just the Docs theme automatically includes the [`jekyll-seo-tag`] plugin.
+Every example automaically includes a JavaScript line to enhance a form with
+predefined `formId` So that *jsSource* can be omitted for simple examples.
 
-To add an extra plugin, you need to add it in the `Gemfile` *and* in `_config.yml`. For example, to add [`jekyll-default-layout`]:
+This means that, for introductory examples that don't have to be enhanced as
+SmarkForm forms, *jsSource* should be set to `-` to explicitly disable
+SmarkForm enhancement.
 
-- Add the following to your site's `Gemfile`:
 
-  ```ruby
-  gem "jekyll-default-layout"
-  ```
+## Smoke Tests for Documentation Examples
 
-- And add the following to your site's `_config.yml`:
+All documentation examples are automatically collected and tested through a
+custom test suite.
 
-  ```yaml
-  plugins:
-    - jekyll-default-layout
-  ```
+Smoke tests are automatically performed for all documentation examples to ensure
+that they render without errors.
 
-Note: If you are using a Jekyll version less than 3.5.0, use the `gems` key instead of `plugins`.
+The only exceptions are examples that explicitly disables SmarkForm
+enhancenment by setting `jsSource="-"` in the include block.
 
-## Publishing your site on GitHub Pages
+For more information about the implementation of the test suite, please see
+[WRITING_TESTS.md](WRITING_TESTS.md).
 
-1.  If your created site is `YOUR-USERNAME/YOUR-SITE-NAME`, update `_config.yml` to:
 
-    ```yaml
-    title: YOUR TITLE
-    description: YOUR DESCRIPTION
-    theme: just-the-docs
+## Co-Located Custom Tests
 
-    url: https://YOUR-USERNAME.github.io/YOUR-SITE-NAME
+Additionally, documentation examples are expected to include co-located custom
+tests to validate their specific behavior.
 
-    aux_links: # remove if you don't want this link to appear on your pages
-      Template Repository: https://github.com/YOUR-USERNAME/YOUR-SITE-NAME
-    ```
+Those tests are defined inline in the documentation using Jekyll
+`{% capture %}` blocks and then referenced in the `tests=` parameter of the
+`sampletabs_tpl.md` include.
 
-2.  Push your updated `_config.yml` to your site on GitHub.
+In case of examples that don't need custom tests (e.g., simple illustrative
+examples or some that could be repetitive), tests can be explicitly disabled by
+setting `tests=false` in the include block.
 
-3.  In your newly created repo on GitHub:
-    - go to the `Settings` tab -> `Pages` -> `Build and deployment`, then select `Source`: `GitHub Actions`.
-    - if there were any failed Actions, go to the `Actions` tab and click on `Re-run jobs`.
+For a detailed explanation of how to write co-located custom tests, please see
+[CO_LOCATED_TESTS.md](CO_LOCATED_TESTS.md).
 
-## Building and previewing your site locally
 
-Assuming [Jekyll] and [Bundler] are installed on your computer:
 
-1.  Change your working directory to the root directory of your site.
 
-2.  Run `bundle install`.
-
-3.  Run `bundle exec jekyll serve` to build your site and preview it at `localhost:4000`.
-
-    The built site is stored in the directory `_site`.
-
-## Publishing your built site on a different platform
-
-Just upload all the files in the directory `_site`.
-
-## Customization
-
-You're free to customize sites that you create with this template, however you like!
-
-[Browse our documentation][Just the Docs] to learn more about how to use this theme.
-
-## Hosting your docs from an existing project repo
-
-You might want to maintain your docs in an existing project repo. Instead of creating a new repo using the [just-the-docs template](https://github.com/just-the-docs/just-the-docs-template), you can copy the template files into your existing repo and configure the template's Github Actions workflow to build from a `docs` directory. You can clone the template to your local machine or download the `.zip` file to access the files.
-
-### Copy the template files
-
-1.  Create a `.github/workflows` directory at your project root if your repo doesn't already have one. Copy the `pages.yml` file into this directory. GitHub Actions searches this directory for workflow files.
-
-2.  Create a `docs` directory at your project root and copy all remaining template files into this directory.
-
-### Modify the GitHub Actions workflow
-
-The GitHub Actions workflow that builds and deploys your site to Github Pages is defined by the `pages.yml` file. You'll need to edit this file to that so that your build and deploy steps look to your `docs` directory, rather than the project root.
-
-1.  Set the default `working-directory` param for the build job.
-
-    ```yaml
-    build:
-      runs-on: ubuntu-latest
-      defaults:
-        run:
-          working-directory: docs
-    ```
-
-2.  Set the `working-directory` param for the Setup Ruby step.
-
-    ```yaml
-    - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1'
-          bundler-cache: true
-          cache-version: 0
-          working-directory: '${{ github.workspace }}/docs'
-    ```
-
-3.  Set the path param for the Upload artifact step:
-
-    ```yaml
-    - name: Upload artifact
-        uses: actions/upload-pages-artifact@v1
-        with:
-          path: "docs/_site/"
-    ```
-
-4.  Modify the trigger so that only changes within the `docs` directory start the workflow. Otherwise, every change to your project (even those that don't affect the docs) would trigger a new site build and deploy.
-
-    ```yaml
-    on:
-      push:
-        branches:
-          - "main"
-        paths:
-          - "docs/**"
-    ```
-
-## Licensing and Attribution
-
-This repository is licensed under the [MIT License]. You are generally free to reuse or extend upon this code as you see fit; just include the original copy of the license (which is preserved when you "make a template"). While it's not necessary, we'd love to hear from you if you do use this template, and how we can improve it for future use!
-
-The deployment GitHub Actions workflow is heavily based on GitHub's mixed-party [starter workflows]. A copy of their MIT License is available in [actions/starter-workflows].
-
-----
-
-[^1]: [It can take up to 10 minutes for changes to your site to publish after you push the changes to GitHub](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-your-site).
-
-[Jekyll]: https://jekyllrb.com
-[Just the Docs]: https://just-the-docs.github.io/just-the-docs/
-[GitHub Pages]: https://docs.github.com/en/pages
-[GitHub Pages / Actions workflow]: https://github.blog/changelog/2022-07-27-github-pages-custom-github-actions-workflows-beta/
-[Bundler]: https://bundler.io
-[use this template]: https://github.com/just-the-docs/just-the-docs-template/generate
-[`jekyll-default-layout`]: https://github.com/benbalter/jekyll-default-layout
-[`jekyll-seo-tag`]: https://jekyll.github.io/jekyll-seo-tag
-[MIT License]: https://en.wikipedia.org/wiki/MIT_License
-[starter workflows]: https://github.com/actions/starter-workflows/blob/main/pages/jekyll.yml
-[actions/starter-workflows]: https://github.com/actions/starter-workflows/blob/main/LICENSE

@@ -1,67 +1,130 @@
 # SmarkForm Test Suite
 
-## Overview
+This document explains how to install dependencies and run the test suite efficiently. For how to write tests and how the suite works under the hood, see:
+- Writing tests: [WRITING_TESTS.md](./WRITING_TESTS.md)
+- Implementation details: [IMPLEMENTATION_DETAILS.md](./IMPLEMENTATION_DETAILS.md)
 
-This directory contains the test suite for SmarkForm, including:
+## Prerequisites
 
-1. **Unit/Integration Tests** - Testing specific component types and functionality
-2. **Documentation Examples Tests** - Automated tests extracted from documentation
+- Node.js 18+ recommended
+- Install dependencies and Playwright browsers:
+  ```bash
+  npm install
+  npx playwright install
+  ```
 
-## Documentation Examples Test Pipeline
+## Quick start
 
-The documentation examples test pipeline automatically extracts examples from the `docs/` directory and converts them into Playwright tests.
+- Run the full suite (build + collect docs examples + run Playwright):
+  ```bash
+  npm test
+  ```
+  This runs:
+  - Build: scripts/build_production_smarkform.sh
+  - Collector: node scripts/collect-docs-examples.js
+  - Playwright tests: playwright test (all projects: chromium, firefox, webkit)
 
-### How It Works
+- Run only the collector:
+  ```bash
+  node scripts/collect-docs-examples.js
+  ```
 
-1. **Collection Phase** (`scripts/collect-docs-examples.js`)
-   - Scans all markdown files in `docs/` (excluding presentations and other special folders)
-   - Finds `{% include components/sampletabs_tpl.md ... %}` blocks
-   - Extracts parameters: `formId`, `htmlSource`, `cssSource`, `jsHead`, `jsHidden`, `jsSource`
-   - Resolves `{% capture %}` blocks and interpolates `{{ variables }}`
-   - Applies Jekyll transformations:
-     - `█` → spaces (indentation hack used in docs)
-     - `$$` → `-${formId}` (unique ID suffix)
-   - Strips `!important` from CSS (used for Jekyll styling override)
-   - Outputs manifest to `test/.cache/docs_examples.json`
+- Run only tests (assumes build + collector already ran):
+  ```bash
+  npx playwright test
+  ```
 
-2. **Test Execution Phase** (`test/docs_examples.tests.js`)
-   - Loads the manifest JSON
-   - For each example, generates a minimal HTML page with:
-     - The example's HTML source
-     - The example's CSS (transformed)
-     - SmarkForm library (`dist/SmarkForm.umd.js`)
-     - The example's JavaScript (jsHead + jsHidden + jsSource)
-   - Runs smoke tests:
-     - ✓ Page loads without errors
-     - ✓ Form container is visible
-     - ✓ No console errors
-     - ✓ No page errors
+## Running specific tests
 
-### Running Tests
+- Run by file:
+  ```bash
+  npx playwright test test/docs_examples.tests.js
+  ```
 
-```bash
-# Run all tests (includes building and collecting examples)
-npm test
+- Run one browser (project):
+  ```bash
+  npx playwright test --project=chromium
+  ```
 
-# Run only the collector
-node scripts/collect-docs-examples.js
+- Filter by test title (regex). Docs examples are named "[<file>] <formId>":
+  ```bash
+  # Example: only the example with formId "test_with_custom_tests"
+  npx playwright test -g "test_with_custom_tests"
 
-# Run specific test file
-npx playwright test test/docs_examples.tests.js
-```
+  # Or by file tag
+  npx playwright test -g "\\[_test_examples\\.md\\]"
+  ```
 
-### Test Output
+- Run a single worker (useful on low-resource environments):
+  ```bash
+  npx playwright test --workers=1
+  ```
 
-- Manifest: `test/.cache/docs_examples.json` (gitignored)
-- Temporary HTML files: `test/tmp/` (gitignored, created during test runs)
+## Debugging
 
-### Adding New Documentation Examples
+- Headed mode:
+  ```bash
+  npm run test:headed
+  # or selectively
+  npx playwright test --project=chromium --headed
+  ```
 
-Simply add or modify examples in the `docs/` directory using the standard `{% include components/sampletabs_tpl.md %}` pattern. The tests will automatically pick them up on the next run.
+- Debug with inspector:
+  ```bash
+  npx playwright test --debug
+  # or
+  PWDEBUG=1 npx playwright test
+  ```
 
-### Future Enhancements
+- Pause in the middle of a test (custom tests or your own .tests.js):
+  ```js
+  await page.pause();
+  ```
 
-- Support for co-located tests via `tests=` parameter
-- Custom assertions for specific examples
-- Visual regression testing
-- Accessibility testing
+## Reports, traces, and artifacts
+
+- HTML report:
+  - Open after a run:
+    ```bash
+    npx playwright show-report
+    ```
+  - Or open: playwright-report/index.html
+- Traces on failure (enabled via playwright.config.js: trace=retain-on-failure):
+  - Show a saved trace:
+    ```bash
+    npx playwright show-trace path/to/trace.zip
+    ```
+
+## Troubleshooting
+
+- “Failed to load examples manifest” or empty manifest:
+  - Run the collector:
+    ```bash
+    node scripts/collect-docs-examples.js
+    ```
+  - Ensure the build produced dist/SmarkForm.umd.js (npm test runs build first).
+
+- “Example … is missing co-located tests” error:
+  - Add tests to the include block in the docs using a capture, or add tests=false.
+  - See test/WRITING_TESTS.md for how to add co-located tests.
+
+- Unexpected console/page errors mismatch:
+  - Set expectedConsoleErrors / expectedPageErrors in the include block for examples that intentionally error. See test/WRITING_TESTS.md.
+
+- A docs example is purely illustrative and not an enhanced SmarkForm example:
+  - Use jsSource="-" in the include block to skip it from the test manifest.
+
+- Headed mode or CI resource constraints:
+  - Run a single browser with --project=chromium.
+  - Reduce workers: --workers=1.
+  - Use --debug or page.pause() to step through.
+
+## Minimal Playwright cheatsheet
+
+- Selectors: `page.locator('css')`, `page.getByRole('button', { name: 'Save' })`
+- Actions: `click()`, `fill()`, `press()`, `selectOption()`, `check()`, `uncheck()`
+- Assertions: `await expect(locator).toBeVisible()`, `toHaveText()`, `toHaveCount()`, `toHaveValue()`
+- Waits: `locator.waitFor()`, `page.waitForTimeout(ms)`
+
+See test/WRITING_TESTS.md for co-located tests and examples, and test/IMPLEMENTATION_DETAILS.md for internals (collection pipeline, transformations, enforcement rules).
+

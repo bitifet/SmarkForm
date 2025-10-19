@@ -9,21 +9,20 @@
 [![License][license-image]][license-url]
 <!-- Highlighting fix: []() -->
 
-<a href="https://smarkform.bitifet.net">
-<img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
-</a>
+*SmarkForm* is a lightweight form library designed for front-end developers to
+enhance HTML forms with powerful features like **subforms** and dynamic,
+variable-length **lists**.
 
-> *SmarkForm* is a lightweight form library designed for front-end developers
-> to enhance HTML forms with powerful features like **subforms** and dynamic,
-> variable-length **lists**. As a form controller, it seamlessly integrates
-> with the DOM to provide a CSS-agnostic solution, freeing your form layout
-> from rigid styling constraints. This no-dependencies vanilla JavaScript
-> library enables **JSON form data import and export**, ensuring compatibility
-> with modern workflows. With a focus on accessibility (a11y), SmarkForm offers
-> configurable hotkeys, **smooth navigation**, and a **low-code experience**,
-> making it an extendable and versatile tool for building HTML form
-> applications.
-> \[[More...](https://smarkform.bitifet.net/about/introduction)\]
+🔧 As a form controller, it seamlessly integrates with the DOM to provide a
+CSS-agnostic solution, freeing your form layout from rigid styling constraints.
+This no-dependencies vanilla JavaScript library enables **JSON form data import
+and export**, ensuring compatibility with modern workflows.
+
+♿ With a focus on accessibility (a11y), SmarkForm offers configurable hotkeys,
+**smooth navigation**, and a **low-code experience**, making it an extendable
+and versatile tool for building HTML form applications.
+
+\[[More...](https://smarkform.bitifet.net/about/introduction)\]
 
 
 ## Main Features
@@ -48,29 +47,46 @@
     [more...](https://smarkform.bitifet.net/about/features ).
 
 
-## Installation
-
-  * As NPM package: `npm install smarkform`.
-
-  * Alternatively you can get SmarkForm through [several other resources such
-    as CDN and
-    more...](https://smarkform.bitifet.net/getting_started/getting_smarkform)
-
-## Usage
+## Usage and Documentation
 
 For detailed usage instructions and API reference check out [📔 SmarkForm
 Reference Manual](https://smarkform.bitifet.net).
 
+<a href="https://smarkform.bitifet.net">
+<img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
+</a>
 
-## Try it yourself!!
+  * Check our [Showcase](https://smarkform.bitifet.net/about/showcase) for a 
+    quick overview of what SmarkForm can do.
 
-  * See our [Live Examples](https://smarkform.bitifet.net/resources/examples).
-    - You can download each one and modify as you like.
+  * The [Quick Start
+    Guide](https://smarkform.bitifet.net/getting_started/quick_start) provides
+    a fast introduction to get you up and running quickly.
 
-  * See also interactive code snippets across the [Reference Manual](https://smarkform.bitifet.net).
-    - They show relevant HTML, JS (and sometimes CSS).
-    - Try them out in the *Preview* tab.
-    - Don't miss the *Notes* tabs for relevant insights.
+  * Don't miss our [Live
+    Examples](https://smarkform.bitifet.net/resources/examples). You can
+    download each one and modify as you like.
+
+  * *SmarkForm* is available as ESM and UMD modules via NPM or GitHub or via
+    CDN. See [Getting
+    SmarkForm](https://smarkform.bitifet.net/getting_started/getting_smarkform)
+    for more details.
+
+
+## Troubleshooting and FAQ
+
+For troubleshooting tips and frequently asked questions, please visit
+SmarkForm's [Frequently Asked Questions
+(FAQ)](https://smarkform.bitifet.net/about/faq)
+
+
+## Community and Support
+
+If you don't find a solution there, feel free to open a [discussion on our
+GitHub repository](https://github.com/bitifet/SmarkForm/discussions).
+
+For further support, you can contact me through our [Contact
+Page](https://smarkform.bitifet.net/community/contact) or reach out via email at [smarkform@bitifet.net](mailto:smarkform@bitifet.net).
 
 
 ## Contributing
@@ -80,37 +96,9 @@ Contributions are welcome! If you find any issues or have suggestions for improv
 Before contributing, make sure to read our [contribution guidelines](https://smarkform.bitifet.net/community/contributing).
 
 
-## Documentation
+## License
 
-You can find official *SmarkForm* documentation at:
-
-  👉 [https://smarkform.bitifet.net](https://smarkform.bitifet.net)
-
-
-### Documentation Source:
-
-Documentation source can be found in [/docs](/docs) directory of this
-repository.
-
-It uses [Jekyll](https://jekyllrb.com/) and
-[just-the-docs](https://just-the-docs.github.io/just-the-docs/) Jekyll layout
-and it is automatically deployed by GitHub infrastructure anytime new revision
-is pushed..
-
-
-### Documentation Building:
-
-To build SmarkForm documentation localloy you first need to install follow this
-instructions:
-
-  * [Install Jekyll prerequisites](https://jekyllrb.com/docs/installation/)
-
-  * Execute `gem install jekyll bundler`.
-
-  * Run `npm run doc`.
-
-Then you will be able to see the documentation at `http://localhost:4000` or
-`http://<your-ip>:4000`.
+  [MIT](LICENSE)
 
 
 ## Keywords
@@ -119,14 +107,6 @@ front-end – form – form-controller – form-library – json-form – lightw
 vanilla – css-agnostic – DOM – html-form – no-dependencies – a11y
 
 
-## License
-
-  [MIT](LICENSE)
-
-
-# Acknowledgements
-
-We would like to express our gratitude to the open source community for their valuable contributions and feedback.
 
 
 [npm-image]: https://img.shields.io/npm/v/smarkform.svg
