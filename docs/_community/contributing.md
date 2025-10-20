@@ -10,7 +10,8 @@ nav_order: 2
 Thanks for your interest in contributing to SmarkForm!
 
 For the complete and up-to-date contribution guidelines, please see the repository’s CONTRIBUTING.md:
-- GitHub: https://github.com/bitifet/SmarkForm/blob/main/CONTRIBUTING.md
+- GitHub:
+[https://github.com/bitifet/SmarkForm/blob/main/CONTRIBUTING.md](https://github.com/bitifet/SmarkForm/blob/main/CONTRIBUTING.md).
 
 Quick start:
 1. Clone/fork the repo and install dependencies:
@@ -22,10 +23,18 @@ Quick start:
    ```bash
    npm test
    ```
-3. Open a PR following the checklist in CONTRIBUTING.md.
+3. Live build/watch SmarkForm and Documentation during development:
+   ```bash
+   npm run dev
+   ```
+4. Make your changes in a feature branch.
+   - Consider adding examples to the docs to illustrate new features.
+   - This will serve as a development playground.
+   - ...and you could also add tests (see WRITING_TESTS.md).
+5. Open a PR following the checklist in CONTRIBUTING.md.
 
 Questions? Start a discussion:
-- https://github.com/bitifet/SmarkForm/discussions
+- [https://github.com/bitifet/SmarkForm/discussions](https://github.com/bitifet/SmarkForm/discussions)
 
 Or email us at [smarkform@bitifet.net](mailto:smarkform@bitifet.net).
 
