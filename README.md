@@ -93,7 +93,7 @@ Page](https://smarkform.bitifet.net/community/contact) or reach out via email at
 
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
 
-Before contributing, make sure to read our [contribution guidelines](https://smarkform.bitifet.net/community/contributing).
+Before contributing, make sure to read our [contribution guidelines](CONTRIBUTING.md).
 
 
 ## License
