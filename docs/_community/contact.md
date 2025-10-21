@@ -17,7 +17,11 @@ Got questions, feedback, or ideas for SmarkForm? We’d love to hear from you.
   [https://github.com/bitifet/SmarkForm/issues](https://github.com/bitifet/SmarkForm/issues)
 - **Suggest a feature:** Discussions → Ideas  
   [https://github.com/bitifet/SmarkForm/discussions/categories/ideas](https://github.com/bitifet/SmarkForm/discussions/categories/ideas)
-- **Email** (general or private contact):  
+- **Announcements (releases, news):** Telegram Channel
+  [https://t.me/smarkform](https://t.me/smarkform)
+- **Community chat (informal):** Telegram Group
+  [https://t.me/SmarkFormCommunity](https://t.me/SmarkFormCommunity)
+- **Email** (general or private contact):
   [smarkform@bitifet.net](mailto:smarkform@bitifet.net)
 
 For detailed guidance on what to include and where to post, see Support: /community/support
@@ -30,6 +34,8 @@ Want to contribute? Start here:
 
 ## Community and updates
 
+- **Telegram Channel (announcements):** [https://t.me/smarkform](https://t.me/smarkform)
+- **Telegram Group (community chat):** [https://t.me/SmarkFormCommunity](https://t.me/SmarkFormCommunity)
 - **GitHub Discussions:**
   [https://github.com/bitifet/SmarkForm/discussions](https://github.com/bitifet/SmarkForm/discussions)
 - **Stay updated:** Watch the repository for releases and announcements

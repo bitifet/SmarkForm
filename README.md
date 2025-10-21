@@ -89,6 +89,24 @@ For further support, you can contact me through our [Contact
 Page](https://smarkform.bitifet.net/community/contact) or reach out via email at [smarkform@bitifet.net](mailto:smarkform@bitifet.net).
 
 
+### 🚀 Stay tuned
+
+<div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; padding: 1rem;">
+  <div style="flex: 1; max-width: 40%; min-width: 250px; text-align: center;">
+    <b>News and announcements:</b>
+    <a href="https://t.me/smarkform" rel="noopener noreferrer">
+    <img src="https://raw.githubusercontent.com/bitifet/SmarkForm/main/docs/assets/Telegram_Channel.png" alt="SmarkForm Telegram Channel" style="width: 100%; height: auto;">
+    </a>
+  </div>
+  <div style="flex: 1; max-width: 40%; min-width: 250px; text-align: center;">
+    <b>Community Chat:</b>
+    <a href="https://t.me/SmarkFormCommunity" rel="noopener noreferrer">
+    <img src="https://raw.githubusercontent.com/bitifet/SmarkForm/main/docs/assets/Telegram_Community.png" alt="SmarkForm Telegram Community" style="width: 100%; height: auto;">
+    </a>
+  </div>
+</div>
+
+
 ## Contributing
 
 Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.

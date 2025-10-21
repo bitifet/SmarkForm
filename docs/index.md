@@ -248,10 +248,56 @@ To get started with SmarkForm you can:
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
 
 
+## Community and Support
 
-## License
+If you don't find a solution there, feel free to open a [discussion on our
+GitHub repository](https://github.com/bitifet/SmarkForm/discussions).
 
-[🔗 MIT]({{ "community/license" | relative_url }})
+For further support, you can contact me through our [Contact
+Page](https://smarkform.bitifet.net/community/contact) or reach out via email at [smarkform@bitifet.net](mailto:smarkform@bitifet.net).
+
+If you want to stay updated with the latest news, releases, and announcements,
+or join the community chat, you can follow us on Telegram:
+
+### 🚀 Stay tuned
+
+<style>
+  .qr--container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .qr--image-box {
+    flex: 1;
+    max-width: 40%;
+    min-width: 250px; /* Ensures a minimum width for readability */
+    text-align: center;
+  }
+
+  /* Media query for smaller screens */
+  @media (max-width: 768px) {
+    .qr--image-box {
+      max-width: 100%; /* Full width on smaller screens */
+    }
+  }
+</style>
+<div class="qr--container">
+  <div class="qr--image-box">
+    <b>News and announcements:</b>
+    <a href="https://t.me/smarkform" rel="noopener noreferrer">
+    <img src="/assets/Telegram_Channel.png" alt="SmarkForm Telegram Channel" style="width: 100%; height: auto;">
+    </a>
+  </div>
+  <div class="qr--image-box">
+    <b>Community Chat:</b>
+    <a href="https://t.me/SmarkFormCommunity" rel="noopener noreferrer">
+    <img src="/assets/Telegram_Community.png" alt="SmarkForm Telegram Community" style="width: 100%; height: auto;">
+    </a>
+  </div>
+</div>
 
 
 ## Contributing
@@ -263,6 +309,12 @@ and expand the functionality of SmarkForm.
 {: .info}
 >   * See the [🔗 Contributing Section]({{ "community/contributing" | relative_url }})
 >     for more details...
+
+
+## License
+
+[🔗 MIT]({{ "community/license" | relative_url }})
+
 
 
 [npm-image]: https://img.shields.io/npm/v/smarkform.svg
