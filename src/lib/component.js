@@ -121,7 +121,7 @@ export class SmarkComponent {
         };
 
         // Calculate prefix or disable autoId:
-        const autoId = me.inherittedOption("autoId", false);
+        const autoId = me.inheritedOption("autoId", false);
         me.genId = (
             autoId === false ? false
                 // Do not auto-generate IDs.
@@ -317,7 +317,7 @@ export class SmarkComponent {
         )
     ;
     };//}}}
-    inherittedOption(optName, defaultValue) {//{{{
+    inheritedOption(optName, defaultValue) {//{{{
         const me = this;
         for (
             const p of [me, ...me.parents]

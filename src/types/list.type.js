@@ -165,7 +165,7 @@ export class list extends SmarkField {
         const me = this;
         const list = [];
         const emptyChilds = [];
-        const stripEmpties = ! me.inherittedOption("exportEmpties", false);
+        const stripEmpties = ! me.inheritedOption("exportEmpties", false);
         for (const child of me.children) {
             if (stripEmpties && await child.isEmpty()) {
                 if (list.length < me.min_items) emptyChilds.push(child);
