@@ -44,11 +44,20 @@ permalink: /
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 
-*SmarkForm* is a lightweight and *extendable* form controller that enhances
-HTML forms to support **subforms** and variable-length **lists** without tying
-the layout to any specific structure. This enable it to **import and export
-data in JSON** format, while providing a smooth navigation with configurable
-hotkeys and a low-code experience among other features.
+
+*SmarkForm* is a lightweight library designed for front-end developers and
+designers to enhance HTML forms with powerful features like **subforms** and
+dynamic, variable-length **lists**, context driveh **hotkeys** and more...
+
+🔧 It seamlessly integrates with the DOM to provide a markup-agnostic solution,
+freeing your form layout from rigid structure and styling constraints while
+enabling **JSON form data import and export** and ensuring compatibility with
+modern workflows.
+
+♿ With a focus on accessibility (a11y), SmarkForm offers configurable hotkeys,
+**smooth navigation**, and a **low-code experience**, making it an extendable
+and versatile tool for building HTML form applications.
+
 \[[More...]({{ "about/introduction" | relative_url }})\]
 
 
@@ -84,6 +93,10 @@ hotkeys and a low-code experience among other features.
     Data is imported / exported as JSON.
   * `🪶` [Lightweight]({{ "/about/features" | relative_url }}#lightweight-yet-highly-compatible):
     Only {{ site.data.computed.bundleSizeKB }}KB minified.
+  * `♿` [Accessibility]({{ "about/features" | relative_url }}#a11y-friendly):
+    Focus on UX and accessibility (a11y).
+  * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):
+    No external dependencies required.
   * `💪` Flexible, extendable and [more...]({{ "about/features" | relative_url }})
 
 
@@ -91,9 +104,13 @@ hotkeys and a low-code experience among other features.
 
 The following code snippet shows *SmarkForm* simplicity.
 
-👉 You will find similar examples working preview along this documentation.
-**Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
+✅ Click everywhere in the form to focus it.
 
+✅ Hit the `Ctrl` key to see the available hotkeys revealed. Notice they may change depending on the focused context.
+
+✅ Check the `JS` tab to see that **there is no JS code** other than the library instantiation.
+
+✅ Check the `HTML` tab to see that how **straightforward and simple** it is.
 
 {% capture notes %}
 👉 This is a simple form to show the power of *SmarkForm*.
@@ -183,7 +200,12 @@ endcapture %}
 
 {% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
 {% capture simple_list_hotkeys_css
-%}/* Materialize hotkey hints from data-hotkey attribute */
+%}/* *******************************************************************
+✔ The only `CSS` code is almost just to materialize the hotkeys hints
+when pressing the `Ctrl` key (Remember SmarkForm is HTML agnostic).
+******************************************************************* */
+
+/* Materialize hotkey hints from data-hotkey attribute */
 {{""}}#myForm$$ [data-hotkey] {
   position: relative;
   overflow-x: display;
@@ -219,6 +241,10 @@ endcapture %}
     showEditor=true
     tests=false
 %}
+
+👉 You will find similar examples working preview along this documentation.
+**Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
+
 
 
 {: .hint :}
@@ -305,10 +331,7 @@ or join the community chat, you can follow us on Telegram:
 We welcome any feedback, suggestions, or improvements as we continue to enhance
 and expand the functionality of SmarkForm.
 
-
-{: .info}
->   * See the [🔗 Contributing Section]({{ "community/contributing" | relative_url }})
->     for more details...
+👉 See the [🔗 Contributing Section]({{ "community/contributing" | relative_url }}) for more details.
 
 
 ## License

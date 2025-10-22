@@ -9,14 +9,14 @@
 [![License][license-image]][license-url]
 <!-- Highlighting fix: []() -->
 
-*SmarkForm* is a lightweight form library designed for front-end developers to
-enhance HTML forms with powerful features like **subforms** and dynamic,
-variable-length **lists**.
+*SmarkForm* is a lightweight library designed for front-end developers and
+designers to enhance HTML forms with powerful features like **subforms** and
+dynamic, variable-length **lists**, context driveh **hotkeys** and more...
 
-🔧 As a form controller, it seamlessly integrates with the DOM to provide a
-CSS-agnostic solution, freeing your form layout from rigid styling constraints.
-This no-dependencies vanilla JavaScript library enables **JSON form data import
-and export**, ensuring compatibility with modern workflows.
+🔧 It seamlessly integrates with the DOM to provide a markup-agnostic solution,
+freeing your form layout from rigid structure and styling constraints while
+enabling **JSON form data import and export** and ensuring compatibility with
+modern workflows.
 
 ♿ With a focus on accessibility (a11y), SmarkForm offers configurable hotkeys,
 **smooth navigation**, and a **low-code experience**, making it an extendable
@@ -43,6 +43,10 @@ and versatile tool for building HTML form applications.
     Data is imported / exported as JSON.
   * `🪶` [Lightweight](https://smarkform.bitifet.net/about/features#lightweight-yet-highly-compatible):
     Only ~38KB minified.
+  * `♿` [Accessibility]({{ "about/features" | relative_url }}#a11y-friendly):
+    Focus on UX and accessibility (a11y).
+  * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):
+    No external dependencies required.
   * `💪` Flexible, extendable and
     [more...](https://smarkform.bitifet.net/about/features ).
 

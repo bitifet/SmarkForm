@@ -22,6 +22,7 @@ nav_order: 3
 * [Variable-length lists](#variable-length-lists)
 * [Context driven hotkeys](#context-driven-hotkeys)
 * [Consistent User Experience](#consistent-user-experience)
+* [A11Y friendly](#a11y-friendly)
 * [JSON based](#json-based)
 * [Lightweight yet highly compatible](#lightweight-yet-highly-compatible)
 * [Flexible and extendable](#flexible-and-extendable)
@@ -163,6 +164,23 @@ JavaScript code.
       disabled when the list is full or empty, respectively.
 
 👉 [Learn more...]({{ "/about/showcase" | relative_url }}#smooth-navigation).
+
+
+## A11Y friendly
+
+Its markup-agnostic nature allows developers and designers to implement their own
+accessible designs without interference.
+
+Additionally, it attempts to help with accessibility whenever possible:
+
+  * Ensuring keyboard navigability across all form elements.
+
+  * Auto-filling some ARIA attributes if they are missing
+
+Anyway, in this regard, feedback is welcome to improve SmarkForm's
+accessibility. If you have suggestions or find any issues, please open tell us
+via our [A11Y Discussion](https://github.com/bitifet/SmarkForm/discussions/25)
+in GitHub.
 
 
 ## JSON based
