@@ -43,7 +43,7 @@ and versatile tool for building HTML form applications.
     Data is imported / exported as JSON.
   * `🪶` [Lightweight](https://smarkform.bitifet.net/about/features#lightweight-yet-highly-compatible):
     Only ~38KB minified.
-  * `♿` [Accessibility]({{ "about/features" | relative_url }}#a11y-friendly):
+  * `♿` [Accessibility](https://smarkform.bitifet.net/about/features#a11y-friendly):
     Focus on UX and accessibility (a11y).
   * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):
     No external dependencies required.
