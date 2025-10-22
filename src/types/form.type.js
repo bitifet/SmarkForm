@@ -10,6 +10,19 @@ import {getRoots, parseJSON} from "../lib/helpers.js";
 
 @foldable
 export class form extends SmarkField {
+    constructor(...args) {
+        super(...args);
+        const me = this;
+        // Focus forms on click (likewise to field types):
+        this.eventHooks.click.push ( ev => {
+            if (
+                ev.defaultPrevented
+                // Unless focus_on_click explicitly set to false
+                || ! me.inheritedOption('focus_on_click', true)
+            ) return;
+            this.focus();
+        });
+    };
     async render() {//{{{
         const me = this;
         me.originalDisplayProp = me.targetNode.style.display;

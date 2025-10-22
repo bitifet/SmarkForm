@@ -21,6 +21,7 @@ nav_order: 1
 * [Introduction](#introduction)
 * [API Reference](#api-reference)
     * [Options](#options)
+        * [focus_on_click](#focus_on_click)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
             * [Options (export)](#options-export)
@@ -118,6 +119,13 @@ API Reference
 
 
 ### Options
+
+#### focus_on_click
+
+Make forms get focused when clicked anywhere inside them.
+
+  * **Type:** Boolean
+  * **Default value:** true
 
 
 ### Actions
