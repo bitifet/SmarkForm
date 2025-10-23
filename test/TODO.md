@@ -25,6 +25,12 @@ Files to review::
 - `docs/index.md` (1 example)
 
 
+Miscellaneous Tests
+-------------------
+
+  * Check that form does not get focused at render time.
+
+
 List component type
 -------------------
 
