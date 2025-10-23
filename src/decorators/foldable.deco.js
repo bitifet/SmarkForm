@@ -8,10 +8,10 @@ export const foldable = function foldable_decorator(target, {kind}) {
                 const retv = super.render(...args);
                 const me = this;
                 me.root.onRendered(()=>{
-                    me.fold(null, {operation: (
-                        !! me.options.folded ? "fold"
-                        : "unfold"
-                    )});
+                    me.fold(null, {
+                        operation: ( !! me.options.folded ? "fold" : "unfold"),
+                        autofocus: false, // Never focus during initial render
+                    });
                 });
                 return retv;
             };//}}}
@@ -19,6 +19,7 @@ export const foldable = function foldable_decorator(target, {kind}) {
             fold(_data, {//{{{
                 operation = "toggle", // Values: "fold" / "unfold" / "toggle"
                 origin,
+                autofocus = true,
             } = {}) {
                 const me = this;
                 const wasFolded = me.targetNode.style.display == "none";
@@ -50,7 +51,7 @@ export const foldable = function foldable_decorator(target, {kind}) {
                 );
 
                 // Set focus accordingly:
-                (isFolded ? origin : me)?.focus();
+                autofocus && (isFolded ? origin : me)?.focus();
             };//}}}
         };
     };
