@@ -201,6 +201,26 @@ test.describe('General Functionality Tests', () => {
         }
     });
 
+    test('Form does not get unexpectedly focused', async ({ page }) => {
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const bodyFocused = await page.evaluate(
+                    async () => document.activeElement === document.body
+            );
+            expect(bodyFocused).toBe(true);
+
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });
+
     test('Basic introspection works', async ({ page }) => {
         let onClosed;
         try {
