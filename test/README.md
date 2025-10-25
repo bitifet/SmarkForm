@@ -47,6 +47,11 @@ This document explains how to install dependencies and run the test suite effici
   npm test test/docs_examples.tests.js
   ```
 
+- Run only tests of specific file (from the docs/ folder):
+  ```bash
+  npm test test/docs_examples.tests.js ../docs/_about/showcase.md
+  ```
+
 - Run one browser (project):
   ```bash
   npm test --project=chromium

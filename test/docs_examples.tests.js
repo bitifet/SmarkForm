@@ -3,9 +3,17 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getServerPort } from '../src/lib/test/helpers.js';
+import { minimatch } from 'minimatch';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const filePattern = process.argv[4] || "";
+const skipFile = (
+    !filePattern.trim() ? ()=>false
+    : (file)=>!minimatch(file, filePattern)
+);
+
 
 // Load the manifest of documentation examples
 const manifestPath = path.join(__dirname, '.cache', 'docs_examples.json');
@@ -18,6 +26,7 @@ try {
   console.error('Failed to load examples manifest:', error.message);
   console.error('Make sure to run: node scripts/collect-docs-examples.js');
 }
+
 
 /**
  * Generate a minimal HTML page for testing an example
@@ -53,8 +62,9 @@ function generateTestHTML(example) {
   
   <script src="/dist/SmarkForm.umd.js"></script>
   <script>
-    (function() {
+    window.myForm = (function() {
       ${combinedJS}
+       return myForm;
     })();
   </script>
 </body>
@@ -70,6 +80,7 @@ const helpers = {
 
 // Generate tests for each example
 for (const example of examples) {
+  if (skipFile(example.file)) continue;
   test(`[${example.file}] ${example.formId}`, async ({ page }) => {
     const testHTML = generateTestHTML(example);
     
