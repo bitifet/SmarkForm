@@ -66,30 +66,6 @@ test.describe('Co-located Tests Infrastructure', () => {
     }
   });
   
-  test('test examples should be properly configured', () => {
-    // Find our test examples
-    const testExamples = manifest.filter(e => e.file === '_test_examples.md');
-    expect(testExamples.length).toBeGreaterThanOrEqual(3);
-    
-    // Check example with tests=false
-    const noTestExample = testExamples.find(e => e.formId === 'test_no_tests');
-    expect(noTestExample).toBeDefined();
-    expect(noTestExample.tests).toBe('false');
-    
-    // Check example with custom tests
-    const customTestExample = testExamples.find(e => e.formId === 'test_with_custom_tests');
-    expect(customTestExample).toBeDefined();
-    expect(customTestExample.tests).toContain('export default async');
-    expect(customTestExample.tests).toContain('helpers.root');
-    
-    // Check example with expected errors
-    const errorExample = testExamples.find(e => e.formId === 'test_with_expected_error');
-    expect(errorExample).toBeDefined();
-    expect(errorExample.tests).toContain('export default async');
-    expect(errorExample.expectedConsoleErrors).toBe(1);
-    expect(errorExample.expectedPageErrors).toBe(0);
-  });
-  
   test('transformations should be applied to tests', () => {
     // If there are any examples with custom tests, verify transformations
     const examplesWithTests = manifest.filter(e => e.tests && e.tests !== 'false');

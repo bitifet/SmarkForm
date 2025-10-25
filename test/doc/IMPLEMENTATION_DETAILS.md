@@ -1,6 +1,6 @@
 # Test Suite – Implementation Details
 
-This document explains how the documentation examples pipeline works under the hood and consolidates details that were previously scattered across IMPLEMENTATION_NOTES.md, IMPLEMENTATION_SUMMARY.md, and CO_LOCATED_TESTS.md.
+This document explains how the documentation examples pipeline works under the hood.
 
 Sections:
 - Pipeline overview (“How it works”)
