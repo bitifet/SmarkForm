@@ -132,7 +132,7 @@ Naming convention:
 
 Run:
 ```bash
-npx playwright test test/my_feature.tests.js
+npm test test/my_feature.tests.js
 ```
 
 ## 3) Running a single docs example test quickly
@@ -146,29 +146,29 @@ So you can filter by formId or by file tag:
 
 ```bash
 # formId
-npx playwright test -g "test_with_custom_tests"
+npm test -g "test_with_custom_tests"
 
 # file tag (note escaping)
-npx playwright test -g "\\[_test_examples\\.md\\]"
+npm test -g "\\[_test_examples\\.md\\]"
 ```
 
 Or run the file directly:
 ```bash
-npx playwright test test/docs_examples.tests.js
+npm test test/co_located_tests.tests.js
 ```
 
 ## 4) Debugging tips
 
 - Headed mode:
   ```bash
-  npx playwright test --project=chromium --headed
+  npm test --project=chromium --headed
   ```
 
 - Inspector:
   ```bash
-  npx playwright test --debug
+  npm test --debug
   # or
-  PWDEBUG=1 npx playwright test
+  PWDEBUG=1 npm test
   ```
 
 - Pause execution inside your co-located test:
@@ -192,8 +192,8 @@ npx playwright test test/docs_examples.tests.js
 - Waiting:
   - `locator.waitFor()`, `page.waitForTimeout(ms)`
 - Traces & report:
-  - `npx playwright show-report`
-  - `npx playwright show-trace path/to/trace.zip`
+  - `npm show-report`
+  - `npm show-trace path/to/trace.zip`
 
 ## 6) Special cases summary
 

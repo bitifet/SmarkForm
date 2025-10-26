@@ -25,7 +25,7 @@ Sections:
 - Skips examples with `jsSource="-"`
 - Writes a JSON manifest to `test/.cache/docs_examples.json`
 
-2) Execution phase (test/docs_examples.tests.js)
+2) Execution phase (test/co_located_tests.tests.js)
 - Loads the manifest
 - For each example:
   - Generates a minimal HTML page with the example’s HTML/CSS and SmarkForm library
@@ -128,15 +128,7 @@ Validation tests at test/co_located_tests_validation.tests.js verify:
 - Transformations (no `█`, no stray `$$`)
 
 References:
-- Live examples: docs/_test_examples.md
+- Examples: test/doc/_test_examples.md
 - Collector: scripts/collect-docs-examples.js
-- Runner: test/docs_examples.tests.js
-- Migration tool: scripts/add-tests-false-to-examples.js
+- Runner: test/co_located_tests.tests.js
 
-## Future enhancements (not implemented)
-
-- Visual regression testing
-- Accessibility testing
-- Performance benchmarking
-- Snapshot/state testing
-- Additional helpers in the custom tests context

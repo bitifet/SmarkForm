@@ -44,12 +44,7 @@ This document explains how to install dependencies and run the test suite effici
 
 - Run by file:
   ```bash
-  npm test test/docs_examples.tests.js
-  ```
-
-- Run only tests of specific file (from the docs/ folder):
-  ```bash
-  npm test test/docs_examples.tests.js ../docs/_about/showcase.md
+  npm test test/type_list.tests.js
   ```
 
 - Run one browser (project):
@@ -70,6 +65,25 @@ This document explains how to install dependencies and run the test suite effici
   ```bash
   npm test --workers=1
   ```
+
+
+## Co-located tests
+
+
+
+
+- Run by file:
+  ```bash
+  npm test test/co_located_tests.tests.js
+  ```
+
+- Run only tests of specific file (from the docs/ folder):
+  ```bash
+  npm test test/co_located_tests.tests.js ../docs/_about/showcase.md
+  ```
+
+
+
 
 ## Debugging
 
