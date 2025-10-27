@@ -3,13 +3,16 @@
 This document explains how the documentation examples pipeline works under the hood.
 
 Sections:
-- Pipeline overview (“How it works”)
-- Collector internals and transformations
-- Manifest schema
-- Test runner internals and enforcement
-- Special behaviors and edge cases
-- Validation and references
-- Future enhancements
+<!-- vim-markdown-toc GitLab -->
+
+* [Pipeline overview (“How it works”)](#pipeline-overview-how-it-works)
+* [Collector internals](#collector-internals)
+* [Manifest schema (selected)](#manifest-schema-selected)
+* [Test runner internals](#test-runner-internals)
+* [Special behaviors and notes](#special-behaviors-and-notes)
+* [Validation and references](#validation-and-references)
+
+<!-- vim-markdown-toc -->
 
 ## Pipeline overview (“How it works”)
 

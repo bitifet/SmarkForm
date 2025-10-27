@@ -8,11 +8,21 @@ import { minimatch } from 'minimatch';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const filePattern = process.argv[4] || "";
+
+const testArgsStart = process.argv.indexOf(path.basename(__filename)) + 1;
+
+
+const [filePattern] = (
+    testArgsStart > 0 ? process.argv.slice(testArgsStart) // First call
+    : [] // Subsequent executions that take no arguments (¿workers?)
+);
+
 const skipFile = (
-    !filePattern.trim() ? ()=>false
+    !(filePattern || "").trim() ? ()=>false
     : (file)=>!minimatch(file, filePattern)
 );
+
+
 
 
 // Load the manifest of documentation examples

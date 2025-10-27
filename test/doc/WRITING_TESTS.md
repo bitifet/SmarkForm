@@ -1,10 +1,23 @@
 # Writing Tests
 
 This guide covers:
-- Co-located custom tests for documentation examples
-- Classic Playwright tests inside test/*.tests.js
-- Expected error counts and special switches
-- Handy tips, examples, and a mini cheatsheet
+
+<!-- vim-markdown-toc GitLab -->
+
+* [1) Co-located tests for documentation examples](#1-co-located-tests-for-documentation-examples)
+    * [Disabling custom tests](#disabling-custom-tests)
+    * [Expected error counts](#expected-error-counts)
+    * [Enforcement](#enforcement)
+    * [Other include flags gathered](#other-include-flags-gathered)
+    * [Examples](#examples)
+* [2) Classic Playwright tests in test/*.tests.js](#2-classic-playwright-tests-in-testtestsjs)
+* [3) Running a single docs example test quickly](#3-running-a-single-docs-example-test-quickly)
+* [4) Debugging tips](#4-debugging-tips)
+* [5) Minimal Playwright cheatsheet](#5-minimal-playwright-cheatsheet)
+* [6) Special cases summary](#6-special-cases-summary)
+
+<!-- vim-markdown-toc -->
+
 
 ## 1) Co-located tests for documentation examples
 
@@ -132,7 +145,7 @@ Naming convention:
 
 Run:
 ```bash
-npm test test/my_feature.tests.js
+npm run test test/my_feature.tests.js
 ```
 
 ## 3) Running a single docs example test quickly
@@ -146,29 +159,29 @@ So you can filter by formId or by file tag:
 
 ```bash
 # formId
-npm test -g "test_with_custom_tests"
+npm run test -g "test_with_custom_tests"
 
 # file tag (note escaping)
-npm test -g "\\[_test_examples\\.md\\]"
+npm run test -g "\\[_test_examples\\.md\\]"
 ```
 
 Or run the file directly:
 ```bash
-npm test test/co_located_tests.tests.js
+npm run test test/co_located_tests.tests.js
 ```
 
 ## 4) Debugging tips
 
 - Headed mode:
   ```bash
-  npm test --project=chromium --headed
+  npm run test --project=chromium --headed
   ```
 
 - Inspector:
   ```bash
-  npm test --debug
+  npm run test --debug
   # or
-  PWDEBUG=1 npm test
+  PWDEBUG=1 npm run test
   ```
 
 - Pause execution inside your co-located test:
@@ -201,3 +214,6 @@ npm test test/co_located_tests.tests.js
 - Disable custom test but keep smoke checks: set `tests=false`
 - Intentional errors: set `expectedConsoleErrors` / `expectedPageErrors`
 - All examples must declare `tests` (either custom or `false`)
+
+
+
