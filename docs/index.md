@@ -232,6 +232,132 @@ when pressing the `Ctrl` key (Remember SmarkForm is HTML agnostic).
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- simple_list_hotkeys_with_context_tests {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_with_context_tests %}
+export default async ({ page, expect, id, helpers }) => {
+    const root = helpers.root(page, id);
+    await expect(root).toBeVisible();
+    
+    // Check that both inputs exist
+    const nameFld = page.locator('input[name="name"]');
+    const surnameFld = page.locator('input[name="surname"]');
+    const addPhoneBtn = page.locator('button[title="Add phone number"]');
+    // const phoneFields = page.locator('input[type="tel"]');
+    const editorFld = page.locator('textarea[data-smark]');
+    
+    await expect(nameFld).toBeVisible();
+    
+    // Fill name and surname fields:
+    await nameFld.fill('John');
+    await surnameFld.fill('Doe');
+
+    // Add a phone field to the list (it will get ghe focus)
+    await addPhoneBtn.click();
+
+    // Fill in
+    await page.keyboard.type('1234567890');
+
+    // Use Shift+Enter to navigate back to the first phone filed
+    await page.keyboard.down('Shift'); 
+    await page.keyboard.press('Enter');
+    await page.keyboard.up('Shift'); 
+
+    // Fill in the first phone field
+    await page.keyboard.type('0987654321');
+
+    // Reveal available hotkeys by pressing and holding Control
+    await page.keyboard.down('Control');
+
+    // // 👀 Uncomment to see the hotkey hint revealed in --heded mode
+    // //    - Hit Ctrl key to release it and check the test to fail.
+    await page.pause();
+   
+
+
+    // Function to read the hotkey hint content (if displayed)
+    async function readHotkeyHint(locator) {
+        const box = await locator.boundingBox();
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+        return await page.evaluate(({x, y}) => {
+            const element = document.elementFromPoint(x, y);
+            const beforeStyle = window.getComputedStyle(element, '::before');
+            if (beforeStyle.display === 'none' || beforeStyle.content === '') return null;
+            return element.getAttribute('data-hotkey') || null;
+        }, {x, y}); 
+    }
+
+
+
+
+    // Check the hotkey hint is visible for the "Add phone number" button
+
+    const removeEmptyBtn = page.getByRole('button', { name: '🧹' }).nth(0);
+    const removeLastBtn = page.getByRole('button', { name: '➖' }).nth(0);
+    const appendItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
+
+    const removeItemBtn1 = page.getByRole('button', { name: '➖' }).nth(1);
+    const addItemBtn1 = page.getByRole('button', { name: '➕' }).nth(1);
+    const removeItemBtn2 = page.getByRole('button', { name: '➖' }).nth(2);
+    const addItemBtn2 = page.getByRole('button', { name: '➕' }).nth(2);
+
+
+    expect(await readHotkeyHint(removeEmptyBtn)).toBe('Delete');
+    expect(await readHotkeyHint(removeLastBtn)).toBe(null);
+    expect(await readHotkeyHint(appendItemBtn)).toBe(null);
+
+
+    expect(await readHotkeyHint(addItemBtn1)).toBe('+');
+    expect(await readHotkeyHint(addItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(removeItemBtn1)).toBe('-');
+    expect(await readHotkeyHint(removeItemBtn2)).toBe(null);
+
+
+    // 2nd level hotkeys
+    await page.keyboard.down('Shift');
+     // TODO: Check...
+
+    await page.pause();
+
+    await page.keyboard.up('Shift');
+
+
+
+   
+    // Use 'Control' + '+' to add another phone field in between
+    await page.keyboard.press('+');
+    await page.keyboard.up('Control');
+    await page.keyboard.type('1122334455');
+   
+    // Add another phone field to the end of the list (it will get ghe focus)
+    await addPhoneBtn.click();
+
+    // Fil in
+    await page.keyboard.type('6677889900');
+   
+    // Export the data
+    const data = await page.evaluate(async() => {
+        return await myForm.export();
+    });
+
+    // Verify the exported data
+    const expectedData = {
+        name: 'John',
+        surname: 'Doe',
+        phones: [
+            '0987654321',
+            '1122334455',
+            '1234567890',
+            '6677889900'
+        ]
+    };
+    expect(data).toEqual(expectedData);
+
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context
@@ -239,7 +365,7 @@ when pressing the `Ctrl` key (Remember SmarkForm is HTML agnostic).
     notes=notes
     selected="preview"
     showEditor=true
-    tests=false
+    tests=simple_list_hotkeys_with_context_tests
 %}
 
 👉 You will find similar examples working preview along this documentation.
