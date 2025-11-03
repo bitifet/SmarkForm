@@ -9,7 +9,7 @@
   "scripts": {
     "pretest": "npm run build && node scripts/collect-docs-examples.js",
     "test": "playwright test",
-    "test:only": "playwright test",
+    "test:pick": "npm run pretest && scripts/test_pick.sh",
     "build": "scripts/build_production_smarkform.sh",
     "doc": "scripts/build_documentation_site.sh",
     "bundle": "scripts/build_all.sh",
