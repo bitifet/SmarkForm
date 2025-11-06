@@ -19,8 +19,8 @@ export class hotKeys_handler {
 
         // Deactivation:
         if (ev.type == "keyup") {
-            if (ev.key == "Control") me.reveal(false);
-            return;
+            if (ev.key == "Control") return void me.reveal(false);
+            if (ev.key != "Alt") return;
         };
 
         // Focus leave:
@@ -37,19 +37,17 @@ export class hotKeys_handler {
             // Otherwise behave as new activation
         };
 
-        // ev.type is "keydown" or "focusin"
-        const ctrlKey = ev.ctrlKey || ev.key == "Control";
-        const altKey = ev.altKey || ev.key == "Alt";
+        // ev.type is "keydown" (or "keyup" in case of Alt) or "focusin"
         const activation = (
             // Pressing ctrl key with or without alt key
-            ctrlKey && (ev.key == "Control" || ev.key == "Alt")
+            ev.ctrlKey && (ev.key == "Control" || ev.key == "Alt")
             // Reentering focus after some action without deactivation
             || ev.type == "focusin"
         );
 
         // (Re)activation:
         if (activation) {
-            const level = altKey ? 2 : 1;
+            const level = ev.altKey ? 2 : 1;
             // Activate and reveal:
             return void me.reveal(ev.target, level);
         };
