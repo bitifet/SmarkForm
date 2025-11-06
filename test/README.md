@@ -65,12 +65,17 @@ details.
 
 - Run the full suite (build + collect docs examples + run Playwright):
   ```bash
-  npm test
+  npm run test
   ```
   This runs:
   - Build: scripts/build_production_smarkform.sh
   - Collector: node scripts/collect-docs-examples.js
   - Playwright tests: playwright test (all projects: chromium, firefox, webkit)
+
+> 📌 Shothand `npm test` can be used instead of `npm run test`. We consisteltly
+> use the longer form for consistency with the `npm run test:pick` command
+> which can only be run this way.
+
 
 - Run only the collector:
   ```bash
@@ -155,6 +160,7 @@ details.
   npm run test:pick -- --repeat
   # Without running the build + collection steps:
   ./scripts/pick_test.sh --repeat
+  # ...or just select the "Repeat last choice" option in the picker
   ```
 
 

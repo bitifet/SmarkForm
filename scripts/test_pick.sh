@@ -64,24 +64,6 @@ if [ "${#MISSING[@]}" -ne 0 ]; then
   exit 2
 fi
 
-# If --repeat requested: run last saved command
-if [ "$REPEAT_MODE" -eq 1 ]; then
-  if [ ! -f "$LAST_CMD_FILE" ]; then
-    die "No last command saved ($LAST_CMD_FILE). Run the picker first."
-  fi
-  # shellcheck source=/dev/null
-  source "$LAST_CMD_FILE"
-  if [ -z "${SAVED_CMD:-}" ]; then
-    die "Saved command file malformed."
-  fi
-  echo "Re-running last saved command:"
-  echo "$SAVED_CMD"
-  # Uncomment to ask confirmation interactively (kept commented by default)
-  # dialog --yesno "Re-run the last command?\n\n$SAVED_CMD" 12 70 || exit 0
-  eval "$SAVED_CMD"
-  exit $?
-fi
-
 # Verify repo expected files/dirs
 [ -f "$CONFIG_FILE" ] || die "Missing $CONFIG_FILE in repo root."
 [ -d "$TEST_DIR" ] || die "Missing test/ directory at $TEST_DIR."
@@ -100,25 +82,64 @@ if [ "${PIPESTATUS[1]:-0}" -ne 0 ] || [ "${#PROJECTS_ARRAY[@]}" -eq 0 ]; then
   die "Failed to parse projects from $CONFIG_FILE or no projects found."
 fi
 
-# Build dialog menu entries for projects: "tag value tag value ..."
-# dialog menu expects pairs: tag item
-PROJECT_MENU_ARGS=()
-for p in "${PROJECTS_ARRAY[@]}"; do
-  # use same string for tag and display
-  PROJECT_MENU_ARGS+=("$p" "$p")
-done
 
-# Dialog to select browser/project
-exec 3>&1
-BROWSER_CHOICE=$(dialog --clear --backtitle "Playwright Test Picker" \
-  --title "Select Browser/Project" \
-  --menu "Select a browser/project:" 15 60 10 \
-  "${PROJECT_MENU_ARGS[@]}" \
-  2>&1 1>&3)
-exec 3>&-
-if [ -z "${BROWSER_CHOICE:-}" ]; then
-  die "No browser selected."
+if [ "$REPEAT_MODE" -eq 0 ]; then
+
+    # Build dialog menu entries for projects: "tag value tag value ..."
+    # dialog menu expects pairs: tag item
+    PROJECT_MENU_ARGS=()
+
+    # Prepend "Repeat last choice"
+    PROJECT_MENU_ARGS=("LAST" "Repeat last choice (--repeat)")
+
+    for p in "${PROJECTS_ARRAY[@]}"; do
+      # use same string for tag and display
+      PROJECT_MENU_ARGS+=("$p" "Test with $p")
+    done
+
+    # Append "Test with all"
+    PROJECT_MENU_ARGS+=("ALL" "Test with all")
+
+    # Dialog to select browser/project
+    exec 3>&1
+    BROWSER_CHOICE=$(dialog --clear --backtitle "Playwright Test Picker" \
+      --title "Operation Mode" \
+      --menu "Select an option:" 15 60 10 \
+      "${PROJECT_MENU_ARGS[@]}" \
+      2>&1 1>&3)
+    exec 3>&-
+    if [ -z "${BROWSER_CHOICE:-}" ]; then
+      die "No option selected."
+    fi
+
+    if [ "${BROWSER_CHOICE}" =  "ALL" ]; then
+        BROWSER_CHOICE=""
+    elif [ "${BROWSER_CHOICE}" = "LAST" ]; then
+        REPEAT_MODE=1
+    else
+        BROWSER_CHOICE="--project=${BROWSER_CHOICE}"
+    fi
+
+fi;
+
+# If --repeat requested: run last saved command
+if [ "$REPEAT_MODE" -eq 1 ]; then
+  if [ ! -f "$LAST_CMD_FILE" ]; then
+    die "No last command saved ($LAST_CMD_FILE). Run the picker first."
+  fi
+  # shellcheck source=/dev/null
+  source "$LAST_CMD_FILE"
+  if [ -z "${SAVED_CMD:-}" ]; then
+    die "Saved command file malformed."
+  fi
+  echo "Re-running last saved command:"
+  echo "$SAVED_CMD"
+  # Uncomment to ask confirmation interactively (kept commented by default)
+  # dialog --yesno "Re-run the last command?\n\n$SAVED_CMD" 12 70 || exit 0
+  eval "$SAVED_CMD"
+  exit $?
 fi
+
 
 # 2) Ask regular vs co-located
 exec 3>&1
@@ -164,7 +185,7 @@ if [ "$TEST_TYPE" = "regular" ]; then
     # Use the same order as the original: playwright test -- --project=firefox -g ' 2nd_level_hotkeys$' co_located_tests.tests.js _about/showcase.md
     # Escape single quotes for safe embedding in single-quoted string: we'll use printf %q for a safe shell-escaped representation when saving/executing.
     # But for readability when printing we create a human-friendly line.
-    CMD="npx playwright test ${@} --project=${BROWSER_CHOICE} \"${TEST_IMPL_PATH}\""
+    CMD="npx playwright test ${@} ${BROWSER_CHOICE} \"${TEST_IMPL_PATH}\""
 
 else
     # co-located
@@ -217,7 +238,7 @@ else
     GREP_PATTERN=" \[${CHOSEN_MD_FILE}\] ${CHOSEN_FORM_ID}\$"
     # Escape single quotes for safe embedding in single-quoted string: we'll use printf %q for a safe shell-escaped representation when saving/executing.
     # But for readability when printing we create a human-friendly line.
-    CMD="npx playwright test ${@} --project=${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
+    CMD="npx playwright test ${@} ${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
 
 
 fi
