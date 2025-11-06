@@ -1322,8 +1322,19 @@ export default async ({ page, expect, id, helpers }) => {
     // Fill in the first phone field
     await page.keyboard.type('0987654321');
 
-    // Reveal available hotkeys by pressing and holding Control
-    await page.keyboard.down('Control');
+
+    // Check the propper hotkey hints got revealed
+    // -------------------------------------------
+
+    // Get locators:
+    const removeEmptyBtn = page.getByRole('button', { name: '🧹' }).nth(0);
+    const removeLastBtn = page.getByRole('button', { name: '➖' }).nth(0);
+    const appendItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
+    const removeItemBtn1 = page.getByRole('button', { name: '➖' }).nth(1);
+    const addItemBtn1 = page.getByRole('button', { name: '➕' }).nth(1);
+    const removeItemBtn2 = page.getByRole('button', { name: '➖' }).nth(2);
+    const addItemBtn2 = page.getByRole('button', { name: '➕' }).nth(2);
+    const addContactBtn = page.getByRole('button', { name: '➕ Add Contact' })
 
     // Function to read the hotkey hint content (if displayed)
     async function readHotkeyHint(locator) {
@@ -1338,14 +1349,10 @@ export default async ({ page, expect, id, helpers }) => {
         }, {x, y}); 
     }
 
-    // Check the propper hotkey hints got revealed
-    const removeEmptyBtn = page.getByRole('button', { name: '🧹' }).nth(0);
-    const removeLastBtn = page.getByRole('button', { name: '➖' }).nth(0);
-    const appendItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
-    const removeItemBtn1 = page.getByRole('button', { name: '➖' }).nth(1);
-    const addItemBtn1 = page.getByRole('button', { name: '➕' }).nth(1);
-    const removeItemBtn2 = page.getByRole('button', { name: '➖' }).nth(2);
-    const addItemBtn2 = page.getByRole('button', { name: '➕' }).nth(2);
+    // Reveal 1st level hotkey hints by pressing and holding Control
+    await page.keyboard.down('Control');
+
+    // Check 1st level hotkey hints
     expect(await readHotkeyHint(removeEmptyBtn)).toBe('Delete');
     expect(await readHotkeyHint(removeLastBtn)).toBe(null);
     expect(await readHotkeyHint(appendItemBtn)).toBe(null);
@@ -1353,22 +1360,52 @@ export default async ({ page, expect, id, helpers }) => {
     expect(await readHotkeyHint(addItemBtn2)).toBe(null);
     expect(await readHotkeyHint(removeItemBtn1)).toBe('-');
     expect(await readHotkeyHint(removeItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(addContactBtn)).toBe(null);
 
+    // Reveal 2nd level hotkey hints by also pressing Alt
+    await page.keyboard.down('Alt');
 
-    // 2nd level hotkeys
-    await page.keyboard.down('Shift');
-     // TODO: Check...
+    expect(await readHotkeyHint(removeEmptyBtn)).toBe(null);
+    expect(await readHotkeyHint(removeLastBtn)).toBe(null);
+    expect(await readHotkeyHint(appendItemBtn)).toBe(null);
+    expect(await readHotkeyHint(addItemBtn1)).toBe(null);
+    expect(await readHotkeyHint(addItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(removeItemBtn1)).toBe(null);
+    expect(await readHotkeyHint(removeItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(addContactBtn)).toBe('+');
 
-    await page.pause();
+    // Return to 1st level hotkeys by releasing Alt
+    await page.keyboard.up('Alt');
 
-    await page.keyboard.up('Shift');
+    // Check hotkey hints reverted to 1st level
+    expect(await readHotkeyHint(removeEmptyBtn)).toBe('Delete');
+    expect(await readHotkeyHint(removeLastBtn)).toBe(null);
+    expect(await readHotkeyHint(appendItemBtn)).toBe(null);
+    expect(await readHotkeyHint(addItemBtn1)).toBe('+');
+    expect(await readHotkeyHint(addItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(removeItemBtn1)).toBe('-');
+    expect(await readHotkeyHint(removeItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(addContactBtn)).toBe(null);
 
-
-
+    // (Here Control key is sitll hold)
    
     // Use 'Control' + '+' to add another phone field in between
     await page.keyboard.press('+');
+
+    // Release 'Control' key (end hotkeys functionality)
     await page.keyboard.up('Control');
+
+    // Check all hotkey revealing are gone
+    expect(await readHotkeyHint(removeEmptyBtn)).toBe(null);
+    expect(await readHotkeyHint(removeLastBtn)).toBe(null);
+    expect(await readHotkeyHint(appendItemBtn)).toBe(null);
+    expect(await readHotkeyHint(addItemBtn1)).toBe(null);
+    expect(await readHotkeyHint(addItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(removeItemBtn1)).toBe(null);
+    expect(await readHotkeyHint(removeItemBtn2)).toBe(null);
+    expect(await readHotkeyHint(addContactBtn)).toBe(null);
+
+    // Fill in the phone number
     await page.keyboard.type('1122334455');
    
     // Add another phone field to the end of the list (it will get ghe focus)
@@ -1384,13 +1421,17 @@ export default async ({ page, expect, id, helpers }) => {
 
     // Verify the exported data
     const expectedData = {
-        name: 'John',
-        surname: 'Doe',
-        phones: [
-            '0987654321',
-            '1122334455',
-            '1234567890',
-            '6677889900'
+        phonelist: [
+            {
+                name: 'John',
+                surname: 'Doe',
+                phones: [
+                    '0987654321',
+                    '1122334455',
+                    '1234567890',
+                    '6677889900'
+                ]
+            }
         ]
     };
     expect(data).toEqual(expectedData);
@@ -1406,7 +1447,6 @@ export default async ({ page, expect, id, helpers }) => {
     cssSource=simple_list_hotkeys_css
     selected="preview"
     showEditor=true
-    tests=false
     tests=2nd_level_hotkeys_tests
 %}
 
