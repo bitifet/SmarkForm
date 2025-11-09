@@ -37,17 +37,21 @@ export class hotKeys_handler {
             // Otherwise behave as new activation
         };
 
+        // Determine ctrlKey and altKey status properly:
+        // (Found differences between versions of the same browser)
+        const ctrlKey = ev.ctrlKey || ev.key == "Control";
+        const altKey = ev.altKey && ev.type != "keyup" || ev.key == "Alt" && ev.type == "keydown";
         // ev.type is "keydown" (or "keyup" in case of Alt) or "focusin"
         const activation = (
             // Pressing ctrl key with or without alt key
-            ev.ctrlKey && (ev.key == "Control" || ev.key == "Alt")
+            ctrlKey && (ev.key == "Control" || ev.key == "Alt")
             // Reentering focus after some action without deactivation
             || ev.type == "focusin"
         );
 
         // (Re)activation:
         if (activation) {
-            const level = ev.altKey ? 2 : 1;
+            const level = altKey ? 2 : 1;
             // Activate and reveal:
             return void me.reveal(ev.target, level);
         };
