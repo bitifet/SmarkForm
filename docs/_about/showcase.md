@@ -159,6 +159,84 @@ the information is unknown or indifferent.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- basic_form_tests {{{ --> {% endraw %}
+{% capture basic_form_tests %}
+export default async ({ page, expect, id, helpers }) => {
+    const root = helpers.root(page, id);
+    await expect(root).toBeVisible();
+    
+    const readField = async (fldName) => page.evaluate(async(fldName) => {
+        return (await myForm.export())[fldName];
+    }, fldName);
+
+    const writeField = async (fldName, value) => page.evaluate(async({fldName, value}) => {
+        return (await myForm.find(fldName).import(value));
+    }, {fldName, value});
+
+    // Check that clicking everywhere in the form focuses its first field.
+    page.getByRole('heading', { name: 'Model details' }).click();
+    await expect(page.getByRole('textbox', { name: 'Model Name:' })).toBeFocused();
+
+    await page.keyboard.type('Yaris');
+    await page.keyboard.press('Enter');
+    expect(await readField('model')).toStrictEqual("Yaris");
+
+    const typeSelector = page.getByLabel('Type:');
+    await expect(typeSelector).toBeFocused();
+    await typeSelector.selectOption('Motorcycle');
+    expect(await readField('type')).toStrictEqual("Motorcycle");
+
+    await page.keyboard.press('Enter'); // Navigate to next field
+    await page.keyboard.type('First row');
+    await page.keyboard.press('Enter'); // Should not navigate outside textarea
+    await page.keyboard.type('Second row');
+    expect(await readField('longdesc')).toStrictEqual("First row\nSecond row");
+
+    await page.keyboard.down('Control'); 
+    await page.keyboard.press('Enter'); 
+    await page.keyboard.up('Control'); // Now we should be out of textarea
+
+    expect(await readField('seats')).toStrictEqual(null);
+    await page.keyboard.type('35');
+    await page.keyboard.press('Enter'); 
+    expect(await readField('seats')).toStrictEqual(35);
+
+    expect(await readField('side')).toStrictEqual(null);
+    await page.keyboard.press('ArrowRight'); // Select "Right"
+    expect(await readField('side')).toStrictEqual("right");
+    await page.keyboard.press('Delete'); // Unselect
+    expect(await readField('side')).toStrictEqual(null);
+    await page.keyboard.press('Enter'); 
+
+    expect(await readField('color'), 'Exports null by default').toStrictEqual(null);
+    await writeField('color', '#ff0000'); // Browser color picker UX may differ
+    expect(await readField('color'), 'Can be set').toStrictEqual('#ff0000');
+    await writeField('color', '#fea'); // Browser color picker UX may differ
+    expect(await readField('color'), 'Accepts short format').toStrictEqual('#ffeeaa');
+    await page.keyboard.press('Delete'); 
+    expect(await readField('color'), 'Can be cleared').toStrictEqual(null);
+
+
+    // Export the data
+    const data = await page.evaluate(async () => {
+        return await myForm.export();
+    });
+
+    // Verify the exported data
+    const expectedData = {
+      "model": "Yaris",
+      "type": "Motorcycle",
+      "longdesc": "First row\nSecond row",
+      "seats": 35,
+      "side": null,
+      "color": null
+    };
+
+    expect(data).toEqual(expectedData);
+
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="basic_form"
@@ -166,7 +244,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
-    tests=false
+    tests=basic_form_tests
 %}
 
 
