@@ -36,7 +36,7 @@ EDIT_LAST_MODE=0     # menu option (edit then execute)
 SKIP_SELECTION=0     # skip building a new command when editing last
 
 if [ "$#" -gt 0 ]; then
-  if [ ""; then
+  if [ "$1" = "--repeat" ]; then
     REPEAT_MODE=1
     # ignore remaining args for now
   fi
