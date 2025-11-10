@@ -249,7 +249,7 @@ if [ "$SKIP_SELECTION" -eq 0 ]; then
     fi
 
     GREP_PATTERN=" \[${CHOSEN_MD_FILE}\] ${CHOSEN_FORM_ID}$"
-    CMD="npx playwright test ${@} ${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
+    CMD="npx playwright test ${*} ${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
   fi
 fi
 
