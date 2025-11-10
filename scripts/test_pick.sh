@@ -14,7 +14,9 @@
 # - Builds a playwright command like:
 #     npx playwright test -- --project=firefox -g ' 2nd_level_hotkeys$' test/co_located_tests.tests.js _about/showcase.md
 # - Saves the last built command to test/.cache/last_playwright_cmd.sh
-# - Supports --repeat to re-run the last saved command
+# - Supports:
+#     --repeat (direct re-run of last saved command)
+#     Menu "Repeat last choice" (edit last saved command before running)
 #
 # Usage:
 #   ./test_pick.sh          # run the interactive picker and execute the selected command
@@ -29,21 +31,21 @@ die() {
 }
 
 # Check arguments
-REPEAT_MODE=0       # --repeat flag behaviour (execute last command directly)
-EDIT_LAST_MODE=0    # Menu option "Repeat last choice" behaviour (edit then run)
-SKIP_SELECTION=0    # When editing last command we skip further test picking steps
-if [ "">${#}" -gt 0 ]; then
-    if [ "$1" = "--repeat" ]; then
-        REPEAT_MODE=1
-        # Rest of arguments will be ignored
-    fi
-    # Else they will be passed to the playwright command later
+REPEAT_MODE=0        # --repeat flag (direct execute last command)
+EDIT_LAST_MODE=0     # menu option (edit then execute)
+SKIP_SELECTION=0     # skip building a new command when editing last
+
+if [ "$#" -gt 0 ]; then
+  if [ "$1" = "--repeat" ]; then
+    REPEAT_MODE=1
+    # ignore remaining args for now
+  fi
 fi
 
 # Ensure script is executed from repo root (we assume this file is in repo root)
 # Determine REPO_ROOT as the parent directory of the one containing this script
-SCRIPT_DIR=$(dirname "${0}");
-REPO_ROOT=$(realpath "${SCRIPT_DIR}/..");
+SCRIPT_DIR=$(dirname "${0}")
+REPO_ROOT=$(realpath "${SCRIPT_DIR}/..")
 TEST_DIR="$REPO_ROOT/test"
 DOCS_CACHE_DIR="$TEST_DIR/.cache"
 DOCS_EXAMPLES="$DOCS_CACHE_DIR/docs_examples.json"
@@ -73,95 +75,96 @@ fi
 
 # 1) Read projects (browser names) from playwright.config.js using node
 mapfile -t PROJECTS_ARRAY < <(
-    cat "${CONFIG_FILE}" \
-        | awk '/projects:/{found=1} found' \
-        | grep name: \
-        | perl -pe "s/^.*?'(.*?)'.*$/\\1/" \
-);
+  awk '/projects:/{found=1} found' "$CONFIG_FILE" \
+    | grep "name:" \
+    | perl -pe "s/^.*?'(.*?)'.*$/\\1/"
+)
+[ "${#PROJECTS_ARRAY[@]}" -gt 0 ] || die "Failed to parse projects from $CONFIG_FILE."
 
-if [ "${PIPESTATUS[1]:-0}" -ne 0 ] || [ "${#PROJECTS_ARRAY[@]}" -eq 0 ]; then
-  die "Failed to parse projects from $CONFIG_FILE or no projects found."
-fi
-
-if [ "$REPEAT_MODE" -eq 0 ]; then
-
-    # Build dialog menu entries for projects: "tag value tag value ..."
-    # dialog menu expects pairs: tag item
-    PROJECT_MENU_ARGS=()
-
-    # Prepend "Repeat last choice"
-    PROJECT_MENU_ARGS=("LAST" "Repeat last choice (edit & run last command)")
-
-    for p in "${PROJECTS_ARRAY[@]}"; do
-      # use same string for tag and display
-      PROJECT_MENU_ARGS+=("$p" "Test with $p")
-    done
-
-    # Append "Test with all"
-    PROJECT_MENU_ARGS+=("ALL" "Test with all")
-
-    # Dialog to select browser/project
-    exec 3>&1
-    BROWSER_CHOICE=$(dialog --clear --backtitle "Playwright Test Picker" \
-      --title "Operation Mode" \
-      --menu "Select an option:" 15 60 10 \
-      "${PROJECT_MENU_ARGS[@]}" \
-      2>&1 1>&3)
-    exec 3>&-
-    if [ -z "">${BROWSER_CHOICE:-} ]; then
-      die "No option selected."
-    fi
-
-    if [ "${BROWSER_CHOICE}" =  "ALL" ]; then
-        BROWSER_CHOICE=""
-    elif [ "${BROWSER_CHOICE}" = "LAST" ]; then
-        EDIT_LAST_MODE=1
-        SKIP_SELECTION=1
-    else
-        BROWSER_CHOICE="--project=${BROWSER_CHOICE}"
-    fi
-fi;
-
-# If --repeat requested: run last saved command (unchanged behaviour)
+# If --repeat requested: try to run last saved command; if not found, warn and go to picker
 if [ "$REPEAT_MODE" -eq 1 ]; then
-  if [ ! -f "$LAST_CMD_FILE" ]; then
-    die "No last command saved ($LAST_CMD_FILE). Run the picker first."
+  if [ -f "$LAST_CMD_FILE" ]; then
+    # shellcheck source=/dev/null
+    source "$LAST_CMD_FILE"
+    [ -n "${SAVED_CMD:-}" ] || die "Saved command file malformed."
+    echo "Re-running last saved command:"  
+    echo "$SAVED_CMD"  
+    eval "$SAVED_CMD"
+    exit $?
+  else
+    # Show warning then continue to picker
+    dialog --msgbox "No last command found. You'll be returned to the main menu." 7 70 || true
+    REPEAT_MODE=0
   fi
-  # shellcheck source=/dev/null
-  source "$LAST_CMD_FILE"
-  if [ -z "">${SAVED_CMD:-} ]; then
-    die "Saved command file malformed."
-  fi
-  echo "Re-running last saved command:"\n"$SAVED_CMD"
-  eval "$SAVED_CMD"
-  exit $?
 fi
 
-# If menu Repeat last choice chosen: allow editing the command before running
-if [ "$EDIT_LAST_MODE" -eq 1 ]; then
-  if [ ! -f "$LAST_CMD_FILE" ]; then
-    die "No last command saved ($LAST_CMD_FILE). Run the picker first."
-  fi
-  # shellcheck source=/dev/null
-  source "$LAST_CMD_FILE"
-  if [ -z "">${SAVED_CMD:-} ]; then
-    die "Saved command file malformed."
-  fi
+# Operation Mode picker (loop to support cancel from edit returning to picker)
+BROWSER_CHOICE=""
+CMD=""
+while true; do
+  # Build dialog menu entries for projects: tag item tag item ...
+  PROJECT_MENU_ARGS=()
+  PROJECT_MENU_ARGS+=("LAST" "Repeat last choice (edit before run)")
+  for p in "${PROJECTS_ARRAY[@]}"; do
+    PROJECT_MENU_ARGS+=("$p" "Test with $p")
+  done
+  PROJECT_MENU_ARGS+=("ALL" "Test with all")
+
   exec 3>&1
-  EDITED_CMD=$(dialog --clear --backtitle "Playwright Test Picker" \
-    --title "Edit last command" \
-    --inputbox "Edit the last saved Playwright command, then press OK to run:" 15 100 "$SAVED_CMD" \
+  BROWSER_SELECTION=$(dialog --clear --backtitle "Playwright Test Picker" \
+    --title "Operation Mode" \
+    --menu "Select an option:" 15 60 10 \
+    "${PROJECT_MENU_ARGS[@]}" \
     2>&1 1>&3)
-  EDIT_STATUS=$?
+  STATUS=$?
   exec 3>&-
-  if [ $EDIT_STATUS -ne 0 ]; then
-    echo "Aborted."; exit 0
-  fi
-  [ -n "">${EDITED_CMD:-} ] || die "Empty command after edit."
-  CMD="$EDITED_CMD"
-fi
 
-if [ $SKIP_SELECTION -eq 0 ]; then
+  if [ $STATUS -ne 0 ]; then
+    # Cancel exits script for this menu
+    exit 0
+  fi
+
+  if [ "$BROWSER_SELECTION" = "ALL" ]; then
+    BROWSER_CHOICE=""
+    break
+  elif [ "$BROWSER_SELECTION" = "LAST" ]; then
+    # Load and edit last command; if not present, start with empty
+    INITIAL_CMD=""
+    if [ -f "$LAST_CMD_FILE" ]; then
+      # shellcheck source=/dev/null
+      source "$LAST_CMD_FILE" || true
+      INITIAL_CMD="${SAVED_CMD:-}"
+    fi
+    exec 3>&1
+    EDITED_CMD=$(dialog --clear --backtitle "Playwright Test Picker" \
+      --title "Edit last command" \
+      --inputbox "Edit the last saved Playwright command, then press OK to run:" 15 100 "$INITIAL_CMD" \
+      2>&1 1>&3)
+    EDIT_STATUS=$?
+    exec 3>&-
+
+    if [ $EDIT_STATUS -ne 0 ]; then
+      # Cancel: return to Operation Mode picker
+      continue
+    fi
+    if [ -z "$EDITED_CMD" ]; then
+      dialog --msgbox "Command cannot be empty. Returning to main menu." 7 70 || true
+      continue
+    fi
+
+    CMD="$EDITED_CMD"
+    EDIT_LAST_MODE=1
+    SKIP_SELECTION=1
+    break
+  else
+    BROWSER_CHOICE="--project=${BROWSER_SELECTION}"
+    break
+  fi
+
+done
+
+# If we didn't edit last command, continue the normal flow to build the command
+if [ "$SKIP_SELECTION" -eq 0 ]; then
   # 2) Ask regular vs co-located
   exec 3>&1
   TEST_TYPE=$(dialog --clear --backtitle "Playwright Test Picker" \
@@ -170,19 +173,18 @@ if [ $SKIP_SELECTION -eq 0 ]; then
     "regular" "Regular tests (individual .tests.js files)" \
     "colocated" "Co-located tests (co_located_tests.tests.js)" \
     2>&1 1>&3)
+  STATUS=$?
   exec 3>&-
-  if [ -z "">${TEST_TYPE:-} ]; then
-    die "No test type selected."
+  if [ $STATUS -ne 0 ]; then
+    exit 0
   fi
 
   # 3) If regular: list *.tests.js files in test/ (exclude co_located_tests.tests.js)
   if [ "$TEST_TYPE" = "regular" ]; then
-    # Collect files
     mapfile -t TEST_FILE_BASENAMES < <(find "$TEST_DIR" -maxdepth 1 -type f -name '*.tests.js' ! -name 'co_located_tests.tests.js' -printf '%f\n' | sort)
     if [ "${#TEST_FILE_BASENAMES[@]}" -eq 0 ]; then
       die "No regular .tests.js files found in $TEST_DIR."
     fi
-    # Build menu args
     TEST_MENU_ARGS=()
     for f in "${TEST_FILE_BASENAMES[@]}"; do
       TEST_MENU_ARGS+=("$f" "$f")
@@ -193,16 +195,19 @@ if [ $SKIP_SELECTION -eq 0 ]; then
       --menu "Select a test implementation file:" 20 80 12 \
       "${TEST_MENU_ARGS[@]}" \
       2>&1 1>&3)
+    STATUS=$?
     exec 3>&-
-    [ -n "">${CHOSEN_TEST_BASENAME:-} ] || die "No test file selected."
+    if [ $STATUS -ne 0 ]; then
+      exit 0
+    fi
     TEST_IMPL_PATH="$TEST_DIR/$CHOSEN_TEST_BASENAME"
 
-    CMD="npx playwright test ${@} ${BROWSER_CHOICE} \"${TEST_IMPL_PATH}\""
+    CMD="npx playwright test "$@" ${BROWSER_CHOICE} \"${TEST_IMPL_PATH}\""
+
   else
     # co-located
     TEST_IMPL_PATH="$CO_LOCATED_TEST"
 
-    # 4) List unique markdown 'file' values from docs_examples.json
     mapfile -t MD_FILES_ARRAY < <(jq -r '.[].file' "$DOCS_EXAMPLES" | sort -u)
     if [ "${#MD_FILES_ARRAY[@]}" -eq 0 ]; then
       die "No markdown files found in $DOCS_EXAMPLES."
@@ -217,10 +222,12 @@ if [ $SKIP_SELECTION -eq 0 ]; then
       --menu "Select a documentation (markdown) file:" 20 80 12 \
       "${MD_MENU_ARGS[@]}" \
       2>&1 1>&3)
+    STATUS=$?
     exec 3>&-
-    [ -n "">${CHOSEN_MD_FILE:-} ] || die "No markdown file selected."
+    if [ $STATUS -ne 0 ]; then
+      exit 0
+    fi
 
-    # 5) Extract formId values for the chosen markdown file
     mapfile -t FORM_IDS_ARRAY < <(jq -r --arg f "$CHOSEN_MD_FILE" '.[] | select(.file == $f) | .formId' "$DOCS_EXAMPLES" | grep -v '^null$' | sort -u)
     if [ "${#FORM_IDS_ARRAY[@]}" -eq 0 ]; then
       die "No formId entries found in $DOCS_EXAMPLES for file '$CHOSEN_MD_FILE'."
@@ -235,24 +242,29 @@ if [ $SKIP_SELECTION -eq 0 ]; then
       --menu "Select a formId (test identifier) from the selected markdown file:" 20 80 12 \
       "${FORM_MENU_ARGS[@]}" \
       2>&1 1>&3)
+    STATUS=$?
     exec 3>&-
-    [ -n "">${CHOSEN_FORM_ID:-} ] || die "No formId selected."
+    if [ $STATUS -ne 0 ]; then
+      exit 0
+    fi
 
     GREP_PATTERN=" \[${CHOSEN_MD_FILE}\] ${CHOSEN_FORM_ID}$"
-    CMD="npx playwright test ${@} ${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
+    CMD="npx playwright test "$@" ${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
   fi
 fi
 
 # Ensure cache dir exists before saving
 mkdir -p "$DOCS_CACHE_DIR"
 
-# Save the command to last_playwright_cmd.sh as a variable SAVED_CMD so it can be sourced by --repeat mode.
-printf '%s\n' "# Last saved Playwright command (generated by test_pick.sh)" > "$LAST_CMD_FILE"
-printf '%s\n' "# DO NOT EDIT unless you know what you're doing." >> "$LAST_CMD_FILE"
-printf "SAVED_CMD=%s\n" "$(printf %q "$CMD")" >> "$LAST_CMD_FILE"
+# Save the command to last_playwright_cmd.sh as a variable SAVED_CMD so it can be sourced later.
+{
+  echo "# Last saved Playwright command (generated by test_pick.sh)"
+  echo "# DO NOT EDIT unless you know what you're doing."
+  printf "SAVED_CMD=%s\n" "$(printf %q "$CMD")"
+} > "$LAST_CMD_FILE"
 chmod 0644 "$LAST_CMD_FILE"
 
-# 7) Show the final command and run it
+# Show and run
 clear
 echo "About to run:"
 echo
