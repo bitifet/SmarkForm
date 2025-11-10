@@ -22,7 +22,6 @@
 #
 set -euo pipefail
 
-
 # Helper: die with message
 die() {
   echo "Error: $*" >&2
@@ -30,8 +29,10 @@ die() {
 }
 
 # Check arguments
-REPEAT_MODE=0
-if [ "${#}" -gt 0 ]; then
+REPEAT_MODE=0       # --repeat flag behaviour (execute last command directly)
+EDIT_LAST_MODE=0    # Menu option "Repeat last choice" behaviour (edit then run)
+SKIP_SELECTION=0    # When editing last command we skip further test picking steps
+if [ "">${#}" -gt 0 ]; then
     if [ "$1" = "--repeat" ]; then
         REPEAT_MODE=1
         # Rest of arguments will be ignored
@@ -82,7 +83,6 @@ if [ "${PIPESTATUS[1]:-0}" -ne 0 ] || [ "${#PROJECTS_ARRAY[@]}" -eq 0 ]; then
   die "Failed to parse projects from $CONFIG_FILE or no projects found."
 fi
 
-
 if [ "$REPEAT_MODE" -eq 0 ]; then
 
     # Build dialog menu entries for projects: "tag value tag value ..."
@@ -90,7 +90,7 @@ if [ "$REPEAT_MODE" -eq 0 ]; then
     PROJECT_MENU_ARGS=()
 
     # Prepend "Repeat last choice"
-    PROJECT_MENU_ARGS=("LAST" "Repeat last choice (--repeat)")
+    PROJECT_MENU_ARGS=("LAST" "Repeat last choice (edit & run last command)")
 
     for p in "${PROJECTS_ARRAY[@]}"; do
       # use same string for tag and display
@@ -108,86 +108,97 @@ if [ "$REPEAT_MODE" -eq 0 ]; then
       "${PROJECT_MENU_ARGS[@]}" \
       2>&1 1>&3)
     exec 3>&-
-    if [ -z "${BROWSER_CHOICE:-}" ]; then
+    if [ -z "">${BROWSER_CHOICE:-} ]; then
       die "No option selected."
     fi
 
     if [ "${BROWSER_CHOICE}" =  "ALL" ]; then
         BROWSER_CHOICE=""
     elif [ "${BROWSER_CHOICE}" = "LAST" ]; then
-        REPEAT_MODE=1
+        EDIT_LAST_MODE=1
+        SKIP_SELECTION=1
     else
         BROWSER_CHOICE="--project=${BROWSER_CHOICE}"
     fi
-
 fi;
 
-# If --repeat requested: run last saved command
+# If --repeat requested: run last saved command (unchanged behaviour)
 if [ "$REPEAT_MODE" -eq 1 ]; then
   if [ ! -f "$LAST_CMD_FILE" ]; then
     die "No last command saved ($LAST_CMD_FILE). Run the picker first."
   fi
   # shellcheck source=/dev/null
   source "$LAST_CMD_FILE"
-  if [ -z "${SAVED_CMD:-}" ]; then
+  if [ -z "">${SAVED_CMD:-} ]; then
     die "Saved command file malformed."
   fi
-  echo "Re-running last saved command:"
-  echo "$SAVED_CMD"
-  # Uncomment to ask confirmation interactively (kept commented by default)
-  # dialog --yesno "Re-run the last command?\n\n$SAVED_CMD" 12 70 || exit 0
+  echo "Re-running last saved command:"\n"$SAVED_CMD"
   eval "$SAVED_CMD"
   exit $?
 fi
 
-
-# 2) Ask regular vs co-located
-exec 3>&1
-TEST_TYPE=$(dialog --clear --backtitle "Playwright Test Picker" \
-  --title "Test Type" \
-  --menu "Run regular tests or co-located tests?" 10 60 4 \
-  "regular" "Regular tests (individual .tests.js files)" \
-  "colocated" "Co-located tests (co_located_tests.tests.js)" \
-  2>&1 1>&3)
-exec 3>&-
-if [ -z "${TEST_TYPE:-}" ]; then
-  die "No test type selected."
+# If menu Repeat last choice chosen: allow editing the command before running
+if [ "$EDIT_LAST_MODE" -eq 1 ]; then
+  if [ ! -f "$LAST_CMD_FILE" ]; then
+    die "No last command saved ($LAST_CMD_FILE). Run the picker first."
+  fi
+  # shellcheck source=/dev/null
+  source "$LAST_CMD_FILE"
+  if [ -z "">${SAVED_CMD:-} ]; then
+    die "Saved command file malformed."
+  fi
+  exec 3>&1
+  EDITED_CMD=$(dialog --clear --backtitle "Playwright Test Picker" \
+    --title "Edit last command" \
+    --inputbox "Edit the last saved Playwright command, then press OK to run:" 15 100 "$SAVED_CMD" \
+    2>&1 1>&3)
+  EDIT_STATUS=$?
+  exec 3>&-
+  if [ $EDIT_STATUS -ne 0 ]; then
+    echo "Aborted."; exit 0
+  fi
+  [ -n "">${EDITED_CMD:-} ] || die "Empty command after edit."
+  CMD="$EDITED_CMD"
 fi
 
-# 3) If regular: list *.tests.js files in test/ (exclude co_located_tests.tests.js)
-if [ "$TEST_TYPE" = "regular" ]; then
-  # Collect files
-  mapfile -t TEST_FILE_BASENAMES < <(find "$TEST_DIR" -maxdepth 1 -type f -name '*.tests.js' ! -name 'co_located_tests.tests.js' -printf '%f\n' | sort)
-  if [ "${#TEST_FILE_BASENAMES[@]}" -eq 0 ]; then
-    die "No regular .tests.js files found in $TEST_DIR."
-  fi
-  # Build menu args
-  TEST_MENU_ARGS=()
-  for f in "${TEST_FILE_BASENAMES[@]}"; do
-    TEST_MENU_ARGS+=("$f" "$f")
-  done
+if [ $SKIP_SELECTION -eq 0 ]; then
+  # 2) Ask regular vs co-located
   exec 3>&1
-  CHOSEN_TEST_BASENAME=$(dialog --clear --backtitle "Playwright Test Picker" \
-    --title "Select Test Implementation File" \
-    --menu "Select a test implementation file:" 20 80 12 \
-    "${TEST_MENU_ARGS[@]}" \
+  TEST_TYPE=$(dialog --clear --backtitle "Playwright Test Picker" \
+    --title "Test Type" \
+    --menu "Run regular tests or co-located tests?" 10 60 4 \
+    "regular" "Regular tests (individual .tests.js files)" \
+    "colocated" "Co-located tests (co_located_tests.tests.js)" \
     2>&1 1>&3)
   exec 3>&-
-  [ -n "${CHOSEN_TEST_BASENAME:-}" ] || die "No test file selected."
-  TEST_IMPL_PATH="$TEST_DIR/$CHOSEN_TEST_BASENAME"
+  if [ -z "">${TEST_TYPE:-} ]; then
+    die "No test type selected."
+  fi
 
-    # 6) Build the command
-    # The original user's pattern included a leading space before the id in -g and a trailing $ anchor.
-    # We preserve that: -g ' <formId>$'
-    # Also include the test implementation path and the markdown file path (relative to docs dir per original example).
-    # We'll quote paths properly.
-    # Build command string in a variable so we can save it.
-    # Use the same order as the original: playwright test -- --project=firefox -g ' 2nd_level_hotkeys$' co_located_tests.tests.js _about/showcase.md
-    # Escape single quotes for safe embedding in single-quoted string: we'll use printf %q for a safe shell-escaped representation when saving/executing.
-    # But for readability when printing we create a human-friendly line.
+  # 3) If regular: list *.tests.js files in test/ (exclude co_located_tests.tests.js)
+  if [ "$TEST_TYPE" = "regular" ]; then
+    # Collect files
+    mapfile -t TEST_FILE_BASENAMES < <(find "$TEST_DIR" -maxdepth 1 -type f -name '*.tests.js' ! -name 'co_located_tests.tests.js' -printf '%f\n' | sort)
+    if [ "${#TEST_FILE_BASENAMES[@]}" -eq 0 ]; then
+      die "No regular .tests.js files found in $TEST_DIR."
+    fi
+    # Build menu args
+    TEST_MENU_ARGS=()
+    for f in "${TEST_FILE_BASENAMES[@]}"; do
+      TEST_MENU_ARGS+=("$f" "$f")
+    done
+    exec 3>&1
+    CHOSEN_TEST_BASENAME=$(dialog --clear --backtitle "Playwright Test Picker" \
+      --title "Select Test Implementation File" \
+      --menu "Select a test implementation file:" 20 80 12 \
+      "${TEST_MENU_ARGS[@]}" \
+      2>&1 1>&3)
+    exec 3>&-
+    [ -n "">${CHOSEN_TEST_BASENAME:-} ] || die "No test file selected."
+    TEST_IMPL_PATH="$TEST_DIR/$CHOSEN_TEST_BASENAME"
+
     CMD="npx playwright test ${@} ${BROWSER_CHOICE} \"${TEST_IMPL_PATH}\""
-
-else
+  else
     # co-located
     TEST_IMPL_PATH="$CO_LOCATED_TEST"
 
@@ -207,7 +218,7 @@ else
       "${MD_MENU_ARGS[@]}" \
       2>&1 1>&3)
     exec 3>&-
-    [ -n "${CHOSEN_MD_FILE:-}" ] || die "No markdown file selected."
+    [ -n "">${CHOSEN_MD_FILE:-} ] || die "No markdown file selected."
 
     # 5) Extract formId values for the chosen markdown file
     mapfile -t FORM_IDS_ARRAY < <(jq -r --arg f "$CHOSEN_MD_FILE" '.[] | select(.file == $f) | .formId' "$DOCS_EXAMPLES" | grep -v '^null$' | sort -u)
@@ -225,44 +236,19 @@ else
       "${FORM_MENU_ARGS[@]}" \
       2>&1 1>&3)
     exec 3>&-
-    [ -n "${CHOSEN_FORM_ID:-}" ] || die "No formId selected."
+    [ -n "">${CHOSEN_FORM_ID:-} ] || die "No formId selected."
 
-    # 6) Build the command
-    # The original user's pattern included a leading space before the id in -g and a trailing $ anchor.
-    # We preserve that: -g ' <formId>$'
-    # Also include the test implementation path and the markdown file path (relative to docs dir per original example).
-    # We'll quote paths properly.
-    # Build command string in a variable so we can save it.
-    # Use the same order as the original: playwright test -- --project=firefox -g ' 2nd_level_hotkeys$' co_located_tests.tests.js _about/showcase.md
-    # Note: The single quotes in the -g parameter must be preserved as part of the evaluated command string.
-    GREP_PATTERN=" \[${CHOSEN_MD_FILE}\] ${CHOSEN_FORM_ID}\$"
-    # Escape single quotes for safe embedding in single-quoted string: we'll use printf %q for a safe shell-escaped representation when saving/executing.
-    # But for readability when printing we create a human-friendly line.
+    GREP_PATTERN=" \[${CHOSEN_MD_FILE}\] ${CHOSEN_FORM_ID}$"
     CMD="npx playwright test ${@} ${BROWSER_CHOICE} -g '${GREP_PATTERN}' \"${TEST_IMPL_PATH}\" \"${CHOSEN_MD_FILE}\""
-
-
+  fi
 fi
 
 # Ensure cache dir exists before saving
 mkdir -p "$DOCS_CACHE_DIR"
 
 # Save the command to last_playwright_cmd.sh as a variable SAVED_CMD so it can be sourced by --repeat mode.
-# Use a here-doc with proper escaping to preserve the command exactly.
-cat > "$LAST_CMD_FILE" <<EOF
-# Last saved Playwright command (generated by test_pick.sh)
-# DO NOT EDIT unless you know what you're doing.
-SAVED_CMD=$(printf %q "%s") 
-# The actual command:
-SAVED_CMD=$(printf %q "%s")
-# Human-friendly:
-# ${CMD}
-EOF
-
-# Actually write SAVED_CMD properly (we need to rewrite file so SAVED_CMD variable contains the exact command)
-# Overwrite with safe quoting:
 printf '%s\n' "# Last saved Playwright command (generated by test_pick.sh)" > "$LAST_CMD_FILE"
 printf '%s\n' "# DO NOT EDIT unless you know what you're doing." >> "$LAST_CMD_FILE"
-# Use printf %q to produce shell-escaped single-line assignment
 printf "SAVED_CMD=%s\n" "$(printf %q "$CMD")" >> "$LAST_CMD_FILE"
 chmod 0644 "$LAST_CMD_FILE"
 
@@ -273,11 +259,7 @@ echo
 echo "$CMD"
 echo
 
-# Optionally: ask for confirmation (commented out by default). Uncomment the dialog block to enable prompt.
-# dialog --yesno "Run the following command?\n\n$CMD" 12 80 || { echo "Aborted."; exit 0; }
-
 # Execute the command
-# We use eval so the saved quoting (in CMD string) is respected.
 eval "$CMD"
 EXIT_STATUS=$?
 
