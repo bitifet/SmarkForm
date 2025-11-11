@@ -283,12 +283,84 @@ the name "safety".
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- nested_forms_tests {{{ --> {% endraw %}
+{% capture nested_forms_tests %}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+
+    expect(await readField('safety')).toStrictEqual({
+        "airbag": false,
+        "abs": false,
+        "esp": false,
+        "tc": false
+    });
+
+    await page.getByRole('checkbox', { name: 'Airbag.' }).click();
+    expect(await readField('safety')).toStrictEqual({
+        "airbag": true,
+        "abs": false,
+        "esp": false,
+        "tc": false
+    });
+
+    await page.getByRole('checkbox', { name: 'ABS.' }).click();
+    expect(await readField('safety')).toStrictEqual({
+        "airbag": true,
+        "abs": true,
+        "esp": false,
+        "tc": false
+    });
+
+    await page.getByRole('checkbox', { name: 'ESP.' }).click();
+    expect(await readField('safety')).toStrictEqual({
+        "airbag": true,
+        "abs": true,
+        "esp": true,
+        "tc": false
+    });
+
+    await page.getByRole('checkbox', { name: 'TC.' }).click();
+    expect(await readField('safety')).toStrictEqual({
+        "airbag": true,
+        "abs": true,
+        "esp": true,
+        "tc": true
+    });
+
+    // Export the data
+    const data = await page.evaluate(async() => {
+        return await myForm.export();
+    });
+
+    // Verify the exported data
+    const expectedData = {
+      "model": "",
+      "type": null,
+      "longdesc": "",
+      "seats": null,
+      "side": null,
+      "color": null,
+      "safety": {
+        "airbag": true,
+        "abs": true,
+        "esp": true,
+        "tc": true
+      }
+    };
+
+    expect(data).toEqual(expectedData);
+
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms"
     htmlSource=nested_forms
     selected="preview"
     showEditor=true
-    tests=false
+    tests=nested_forms_tests
 %}
 
 
