@@ -39,7 +39,7 @@ Sections:
   - Enforces tests presence (must be `tests=false` or valid code)
   - If custom tests are provided:
     - Writes the code to a temporary .mjs file
-    - Dynamically imports it and invokes the default export with `{ page, expect, id, helpers }`
+    - Dynamically imports it and invokes the default export with `{ page, expect, id, ...helpers }`
 
 ## Collector internals
 
@@ -91,7 +91,7 @@ Location: `test/.cache/docs_examples.json` (gitignored).
 
 ## Test runner internals
 
-- Builds a temporary HTML page per example under `test/tmp/` and serves it via the local test server (helpers).
+- Builds a temporary HTML page per example under `test/tmp/` and serves it via the local test server (...helpers).
 - Injects `dist/SmarkForm.umd.js` and the example’s JS (jsHead + jsHidden + jsSource).
 - Records:
   - Console messages (collects .type() and .text())
@@ -107,8 +107,8 @@ Location: `test/.cache/docs_examples.json` (gitignored).
   - Written to a temporary `.mjs` module
   - Imported dynamically (`file://...`)
   - Must export a default async function
-  - Receives `{ page, expect, id, helpers }`
-  - `helpers.root(page, id)` → `#myForm-${id}` locator
+  - Receives `{ page, expect, id, root, ...helpers }`
+  - `root` → `#myForm-${id}` locator
 
 ## Special behaviors and notes
 

@@ -161,17 +161,8 @@ endcapture %}
 
 {% raw %} <!-- basic_form_tests {{{ --> {% endraw %}
 {% capture basic_form_tests %}
-export default async ({ page, expect, id, helpers }) => {
-    const root = helpers.root(page, id);
+export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
-    
-    const readField = async (fldName) => page.evaluate(async(fldName) => {
-        return (await myForm.export())[fldName];
-    }, fldName);
-
-    const writeField = async (fldName, value) => page.evaluate(async({fldName, value}) => {
-        return (await myForm.find(fldName).import(value));
-    }, {fldName, value});
 
     // Check that clicking everywhere in the form focuses its first field.
     page.getByRole('heading', { name: 'Model details' }).click();
@@ -1369,8 +1360,7 @@ Try it in the following example:
 
 {% raw %} <!-- 2nd_level_hotkeys_tests {{{ --> {% endraw %}
 {% capture 2nd_level_hotkeys_tests %}
-export default async ({ page, expect, id, helpers }) => {
-    const root = helpers.root(page, id);
+export default async ({ page, expect, id, root }) => {
     await expect(root).toBeVisible();
     
     // Check that both inputs exist

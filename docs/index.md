@@ -234,8 +234,7 @@ when pressing the `Ctrl` key (Remember SmarkForm is HTML agnostic).
 
 {% raw %} <!-- simple_list_hotkeys_with_context_tests {{{ --> {% endraw %}
 {% capture simple_list_hotkeys_with_context_tests %}
-export default async ({ page, expect, id, helpers }) => {
-    const root = helpers.root(page, id);
+export default async ({ page, expect, id, root }) => {
     await expect(root).toBeVisible();
     
     // Check that both inputs exist

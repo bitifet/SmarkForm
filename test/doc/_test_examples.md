@@ -38,8 +38,7 @@ This file is for testing the co-located tests functionality.
 {% endcapture %}
 
 {% capture custom_test_example_tests %}
-export default async ({ page, expect, id, helpers }) => {
-  const root = helpers.root(page, id);
+export default async ({ page, expect, id, root }) => {
   await expect(root).toBeVisible();
   
   // Check that both inputs exist
@@ -80,8 +79,7 @@ console.error("Expected error: This is a test error");
 {% endcapture %}
 
 {% capture error_example_tests %}
-export default async ({ page, expect, id, helpers }) => {
-  const root = helpers.root(page, id);
+export default async ({ page, expect, id, root }) => {
   await expect(root).toBeVisible();
   
   // Check that input exists

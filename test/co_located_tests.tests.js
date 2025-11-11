@@ -82,10 +82,22 @@ function generateTestHTML(example) {
 }
 
 /**
- * Helper object for co-located tests
+ * Helper functions for interacting with the form on the page
  */
-const helpers = {
-  root: (page, id) => page.locator(`#myForm-${id}`)
+function helpers(id, page) {
+    return {
+      root: page.locator(`#myForm-${id}`),
+      readField: async (fldName) => {
+        return page.evaluate(async(fldName) => {
+        return (await myForm.export())[fldName];
+        }, fldName);
+      },
+      writeField: async (fldName, value) => {
+        return page.evaluate(async({fldName, value}) => {
+        return (await myForm.find(fldName).import(value));
+        }, {fldName, value});
+      },
+    };
 };
 
 // Generate tests for each example
@@ -197,7 +209,7 @@ for (const example of examples) {
           page,
           expect,
           id: example.formId,
-          helpers
+          ...helpers(example.formId, page),
         });
         
       } finally {

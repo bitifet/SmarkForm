@@ -40,9 +40,10 @@ capture with ES module code and then referencing it via tests=:
 
 ```markdown
 {% capture my_example_tests %}
-export default async ({ page, expect, id, helpers }) => {
-  // 'id' is the formId, 'helpers.root' locates the form container
-  const root = helpers.root(page, id);
+export default async ({ page, expect, id, root }) => {
+  // 'id' is the formId, 'root' locates the form container
+  // More helpers are available / can be added in the
+  // tests/co_located_tests.tests.js file by modifying the helpers() builder.
   await expect(root).toBeVisible();
 
   // Your assertions here
@@ -65,7 +66,10 @@ Parameters passed to your test function:
 - page: Playwright Page
 - expect: Playwright assertions
 - id: example formId (string)
-- helpers: currently includes helpers.root(page, id) returning the locator for #myForm-${id}
+- root: the locator for #myForm-${id}
+- async readField(fldname): exports the form and returns the value of the specified field of the resulting JSON.
+- async writeField(fldName, value): fills the specified field with the given value.
+- others...: you can add more helpers in tests/co_located_tests.tests.js by modifying the helpers() builder.
 
 Transformations applied (same as HTML/CSS/JS sources):
 - $$ → -${formId} (unique suffix for per-example IDs)
@@ -90,8 +94,8 @@ For examples that intentionally log errors (e.g., to demonstrate behavior), set 
 
 ```markdown
 {% capture error_example_tests %}
-export default async ({ page, expect, id, helpers }) => {
-  await expect(helpers.root(page, id)).toBeVisible();
+export default async ({ page, expect, id, root }) => {
+  await expect(root).toBeVisible();
 };
 {% endcapture %}
 
