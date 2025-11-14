@@ -67,8 +67,8 @@ Parameters passed to your test function:
 - expect: Playwright assertions
 - id: example formId (string)
 - root: the locator for #myForm-${id}
-- async readField(fldname): exports the form and returns the value of the specified field of the resulting JSON.
-- async writeField(fldName, value): fills the specified field with the given value.
+- async readField(fldPath): exports specified field and returns its value. Can be the whole form (/) or anything.
+- async writeField(fldPath, value): fills the specified field with the given value. Can be the whole form too...
 - others...: you can add more helpers in tests/co_located_tests.tests.js by modifying the helpers() builder.
 
 Transformations applied (same as HTML/CSS/JS sources):

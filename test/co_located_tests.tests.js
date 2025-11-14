@@ -87,15 +87,15 @@ function generateTestHTML(example) {
 function helpers(id, page) {
     return {
       root: page.locator(`#myForm-${id}`),
-      readField: async (fldName) => {
-        return page.evaluate(async(fldName) => {
-        return (await myForm.export())[fldName];
-        }, fldName);
+      readField: async (fldPath) => {
+        return page.evaluate(async(fldPath) => {
+            return await myForm.find(fldPath).export();
+        }, fldPath);
       },
-      writeField: async (fldName, value) => {
-        return page.evaluate(async({fldName, value}) => {
-        return (await myForm.find(fldName).import(value));
-        }, {fldName, value});
+      writeField: async (fldPath, value) => {
+        return page.evaluate(async({fldPath, value}) => {
+        return (await myForm.find(fldPath).import(value));
+        }, {fldPath, value});
       },
     };
 };
