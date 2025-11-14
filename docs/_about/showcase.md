@@ -393,6 +393,70 @@ that can grow or shrink as needed:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- simple_list_tests {{{ --> {% endraw %}
+{% capture simple_list_tests %}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    const removeItemBtn = page.getByRole('button', { name: '➖' }).nth(0);
+    const addItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
+
+    expect(
+        (await readField('phones')).length
+        , "Form with min_items = 1 renders with one item by default"
+    ).toStrictEqual(1);
+
+    expect(removeItemBtn.isDisabled()
+        , "removeItem is disabled at min_items"
+    ).toBeTruthy();
+
+    // Try removing an item via direct API call
+    // (Shouldn't work neither throw errors)
+    await page.evaluate(() => {
+        myForm.find('/phones').removeItem();
+    });
+
+    expect(
+        (await readField('phones')).length
+        , "min_items is enforced"
+    ).toStrictEqual(1);
+
+    await addItemBtn.click();
+    expect(
+        (await readField('phones')).length
+        , "Adding an item works"
+    ).toStrictEqual(2);
+
+
+    await page.keyboard.type('1234567890');
+    await page.keyboard.press('Enter');
+    expect(
+        await readField('/phones')
+        , "The targetted item was the last one"
+    ).toEqual(['', '1234567890']);
+
+
+    await removeItemBtn.click();
+    expect(
+        (await readField('/phones')).length
+        , "Removing an item works"
+    ).toStrictEqual(1);
+
+    expect(
+        (await readField('/phones'))
+        , "The remaining item is the first one (still empty)"
+    ).toEqual(['']);
+
+    await page.keyboard.type('0987654321');
+
+    expect(
+        (await readField('/'))
+        , "Whole form contains expected data"
+    ).toEqual({ phones: ['0987654321'] });
+
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_list"
@@ -400,7 +464,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
-    tests=false
+    tests=simple_list_tests
 %}
 
 
