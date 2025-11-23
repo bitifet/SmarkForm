@@ -558,6 +558,22 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         return container.querySelectorAll('input[type=tel]').length;
     }));
 
+    // Helper to get labels text
+    const getLabels = async () => (await page.evaluate(() => {
+        const container = myForm.find('/phones').targetNode
+        const labels = [...container.querySelectorAll('label')]
+            .map(
+                label => label.textContent
+                    .trim()
+                    .replace(/\s+/g, " "
+                )
+            )
+            .join("/")
+        ;
+        return labels;
+    }));
+
+
     const removeUnusedItemsBtn = page.getByRole('button', { name: '🧹' }).nth(0);
     const removeItemBtn = page.getByRole('button', { name: '➖' }).nth(0);
     const addItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
@@ -655,7 +671,17 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     ).toStrictEqual(2);
 
 
+    expect(
+        await getLabels()
+        , "Labels reflect item positions"
+    ).toStrictEqual("📞 Telephone 1/📞 Telephone 2/📞 Telephone 3/📞 Telephone 4/📞 Telephone 5");
+
     await removeUnusedItemsBtn.click(); // Clean up empty items
+
+    expect(
+        await getLabels()
+        , "Labels still correctly reflect item positions after cleanup"
+    ).toStrictEqual("📞 Telephone 1/📞 Telephone 2");
 
     expect(
         await countPhones()
