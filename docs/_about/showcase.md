@@ -403,7 +403,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
     expect(
         (await readField('phones')).length
-        , "Form with min_items = 1 renders with one item by default"
+        , "Form with (default) min_items = 1 renders with one item by default"
     ).toStrictEqual(1);
 
     expect(removeItemBtn.isDisabled()
@@ -524,8 +524,6 @@ endcapture %}
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-
-
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
 👉 In this example we:
@@ -545,6 +543,136 @@ endcapture %}
     reached.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- simple_list_singleton_tests {{{ --> {% endraw %}
+{% capture simple_list_singleton_tests %}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+
+    // Helper to count actual phone fields in the list
+    // Relying on phones field export won't work here as we have
+    // exportEmpties = false
+    // Should use DOM inspection to "see" the actual fields inside the list!!
+    const countPhones = async () => (await page.evaluate(() => {
+        const container = myForm.find('/phones').targetNode
+        return container.querySelectorAll('input[type=tel]').length;
+    }));
+
+    const removeUnusedItemsBtn = page.getByRole('button', { name: '🧹' }).nth(0);
+    const removeItemBtn = page.getByRole('button', { name: '➖' }).nth(0);
+    const addItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
+
+    expect(
+        await countPhones()
+        , "Form with min_items = 0 renders with no items"
+    ).toStrictEqual(0);
+
+    expect(removeItemBtn.isDisabled()
+        , "Remove item button is disabled at min_items"
+    ).toBeTruthy();
+
+    expect(removeUnusedItemsBtn.isDisabled()
+        , "Remove all empty items button is disabled at min_items"
+    ).toBeTruthy();
+
+
+    // Try removing an item via direct API call
+    // (Shouldn't work neither throw errors)
+    await page.evaluate(() => {
+        myForm.find('/phones').removeItem();
+    });
+
+    expect(
+        await countPhones()
+        , "min_items is enforced"
+    ).toStrictEqual(0);
+
+    await addItemBtn.click();
+
+    expect(
+        await countPhones()
+        , "Adding an item works"
+    ).toStrictEqual(1);
+
+
+    expect(
+        (await readField('phones')).length
+        , "Phone field not exported when empty"
+    ).toStrictEqual(0);
+
+
+    await page.keyboard.type('1234567890');
+    await page.keyboard.press('Enter');
+    expect(
+        await readField('/phones')
+        , "Phones list contains the typed number and nothing more"
+    ).toEqual(['1234567890']);
+
+
+    await removeItemBtn.click();
+    expect(
+        await countPhones()
+        , "Removing an item works"
+    ).toStrictEqual(0);
+
+    expect(removeItemBtn.isDisabled()
+        , "removeItem gets disabled when min_items is reached"
+    ).toBeTruthy();
+
+    expect(
+        (await readField('/phones'))
+        , "The list is empty again"
+    ).toEqual([]);
+
+
+    // Fill the list again:
+    await addItemBtn.click();  // 1st item
+    await page.keyboard.type('0987654321');
+    await addItemBtn.click();  // 2nd item
+    await addItemBtn.click();  // 3nd item
+    await page.keyboard.type('1234567890');
+    await addItemBtn.click();  // 4th item
+    await addItemBtn.click();  // 5th item
+    expect(addItemBtn.isDisabled()
+        , "addItem gets disabled when max_items is reached"
+    ).toBeTruthy();
+
+
+    // Try adding an item via direct API call
+    // (Shouldn't work neither throw errors)
+    await page.evaluate(() => {
+        myForm.find('/phones').addItem();
+    });
+
+    expect(
+        await countPhones()
+        , "max_items is enforced"
+    ).toStrictEqual(5);
+
+    expect(
+        (await readField('/phones')).length
+        , "Only non-empty items are exported when exportEmpties = false"
+    ).toStrictEqual(2);
+
+
+    await removeUnusedItemsBtn.click(); // Clean up empty items
+
+    expect(
+        await countPhones()
+        , "Removing unused items works"
+    ).toStrictEqual(2);
+
+
+    expect(
+        (await readField('/'))
+        , "Whole form contains expected data"
+    ).toEqual({ phones: ['0987654321', '1234567890'] });
+
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
 
 {% include components/sampletabs_tpl.md
     formId="simple_list_singleton"
@@ -553,7 +681,7 @@ endcapture %}
     notes=notes
     selected="preview"
     showEditor=true
-    tests=false
+    tests=simple_list_singleton_tests
 %}
 
 
