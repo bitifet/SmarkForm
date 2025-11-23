@@ -163,6 +163,13 @@ details.
   # ...or just select the "Repeat last choice" option in the picker
   ```
 
+> 💡 **Hint:**
+>   * Use the test picker to quickly select a browser and run the test you are
+>     working on.
+>   * Use it again and select "Repeat last choice" to re-run adding or removing
+>     options (like `--headed`, `--debug`, etc...).
+>   * Use it with the `--repeat` to quickly re-run with the exact same options as
+>     last time.
 
 ## Debugging
 
@@ -233,6 +240,7 @@ details.
 - `--reporter=<name>`: specify reporter (list, dot, html, etc.)
 - `--timeout=<ms>`: set test timeout in milliseconds
 - `--retries=<number>`: number of retries on failure
+- `--ui`: [Playwright Test Runner UI mode](https://playwright.dev/docs/test-ui-mode).
 
 See Playwright docs for more: [https://playwright.dev/docs/test-cli](https://playwright.dev/docs/test-cli)
 
