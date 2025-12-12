@@ -23,6 +23,17 @@ export class form extends SmarkField {
             this.focus();
         });
     };
+    mountField(newItem) {
+        const me = this;
+        if (!! newItem?._isField) {
+            if (me.children[newItem.name] !== undefined) throw me.renderError(
+                'REPEATED_FIELD_NAME'
+                , `Field name '${newItem.name}' used more than once in this form level.`
+            );
+            me.children[newItem.name] = newItem;
+            newItem.updateId();
+        };
+    };
     async render() {//{{{
         const me = this;
         me.originalDisplayProp = me.targetNode.style.display;
@@ -32,14 +43,7 @@ export class form extends SmarkField {
             of getRoots(me.targetNode, me.selector)
         ) {
             const newItem = await me.enhance(node);
-            if (!! newItem?._isField) {
-                if (me.children[newItem.name] !== undefined) throw me.renderError(
-                    'REPEATED_FIELD_NAME'
-                    , `Field name '${newItem.name}' used more than once in this form level.`
-                );
-                me.children[newItem.name] = newItem;
-                newItem.updateId();
-            };
+            me.mountField(newItem);
         };
     };//}}}
     @action

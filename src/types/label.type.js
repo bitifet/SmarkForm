@@ -21,16 +21,26 @@ export class label extends SmarkComponent {
     async render(){
         const me = this;
         // Enhance triggers inside the label:
+        let childField = null;
         for (
             const node
             of getRoots(me.targetNode, me.selector)
         ) {
             const newItem = await me.enhance(node);
             if (!! newItem?._isField) {
-                throw me.renderError(
-                    'FIELD_IN_LABEL'
-                    , `Non action components not allowed in labels, found ${newItem.name} in form ${me.getPath()}.`
+                if (childField !== null) throw me.renderError(
+                    'EXTRA_FIELD_IN_LABEL'
+                    , `Labels can wrap only one target field, but multiple fields found in form ${me.getPath()}.`
                 );
+                if (me.options.target !== undefined) {
+                    throw me.renderError(
+                        'LABEL_EXPLICIT_TARGET'
+                        , `Labels wrapping their target field cannot define explicit target option in form ${me.getPath()}.`
+                    );
+                };
+                childField = newItem;
+                childField.parent = me.parent;
+                me.parent.mountField(childField);
             };
         };
         me.parent.onRendered(async ()=>{
