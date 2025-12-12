@@ -4,6 +4,7 @@ Accepted arguments:
 -------------------
 
   * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
+  * formOptions: JSON object with SmarkForm initialization options (if any);
   * htmlSource (mandatory)
   * cssSource
   * jsHead: JS initialization code.
@@ -47,6 +48,7 @@ For further details, please refer to the following documentation files:
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
 {% assign default_notes = '-' %}
+{% assign default_formOptions = '-' %}
 
 
 {% assign formId = include.formId | default: "FIXME" %}
@@ -59,6 +61,17 @@ For further details, please refer to the following documentation files:
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
+{% assign formOptions = include.formOptions | default: default_formOptions %}
+
+{% if formOptions == '-' %}
+{% assign formOptions_source = "" %}
+{% assign formOptions_inner = "" %}
+{% else %}
+{% assign formOptions_source = " data-smark='" | append: formOptions | append: "'" %}
+    {% assign s = formOptions %}
+    {% assign inner_len = s | size | minus: 2 %}
+    {% assign formOptions_inner = s | slice: 1, inner_len | prepend: ', ' %}
+{% endif %}
 
 
 {% assign current_tab = include.selected | default: "html" %}
@@ -120,7 +133,7 @@ endcapture %}
 {% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"}' style="flex-grow: 1">{{
+        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
 htmlSource | replace: "█", "            "
 }}        </div>
         <div style="display: flex; justify-content: space-evenly">
@@ -141,7 +154,7 @@ endif
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- partial_htmlSource {{{ --> {% endraw %}
-{% capture partial_htmlSource %}<div id="myForm$$">
+{% capture partial_htmlSource %}<div id="myForm$$"{{ formOptions_source | raw }}>
 {{
     htmlSource
     | replace: "█", "    "
