@@ -1,4 +1,4 @@
-[![SmarkForm Logo](docs/assets/SmarkForm_logo.png)](https://www.npmjs.com/package/smarkform)
+[![SmarkForm Logo](docs/assets/SmarkForm_logo.png)](https://smarkform.bitifet.net)
 
 🚀 **Powerful while effortless Markup-driven and Extendable form controller.**
 
