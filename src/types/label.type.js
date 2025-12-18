@@ -14,7 +14,10 @@ export class label extends SmarkComponent {
                 // Mimic native label behavior for non-native fields:
                 if (ev.defaultPrevented) return;
                 const {target} = me.getLabelArgs();
-                if (! target?.targetFieldNode) target.focus();
+                if (
+                    ! target?.targetFieldNode
+                    || (me.nodeType === "legend")
+                ) target.focus();
             },
         );
     };
@@ -44,7 +47,8 @@ export class label extends SmarkComponent {
             };
         };
         me.parent.onRendered(async ()=>{
-            const nodeType = String(me.targetNode.tagName).toLowerCase();
+            const me = this;
+            me.nodeType = String(me.targetNode.tagName).toLowerCase();
             const labelArgs = me.getLabelArgs();
             const labelledField = labelArgs.target || {};
             await labelledField.rendered; // Ensure target field is rendered.
@@ -57,7 +61,7 @@ export class label extends SmarkComponent {
 
             // Automatically link label and field for screen readers:
             if (
-                nodeType != "label"   // Not a native <label>
+                me.nodeType != "label"   // Not a native <label>
             ) {
                 // Ensure label has an Id:
                 if (! me.targetNode.id) {
@@ -110,23 +114,26 @@ export class label extends SmarkComponent {
         if (! contextPath && ! targetPath) {
             // Guess ;-)
             context = me.parent;
-            const candidates = context.targetNode.querySelectorAll(me.selector);
-            let found = false;
-            for (const childName in candidates) {
-                if (found) {
-                    let targetComponent = me.getComponent(candidates[childName]);
-                    if (targetComponent?._isField) {
-                        // FIXME : Dig deeper in case of non native field tags
-                        // (forms, lists, singletons...)
-                        // It may require to await for rendering or even listen
-                        // to events (lists with minItems = 0);
-                        target = targetComponent;
-                        break;
+            if (
+                me.nodeType === "legend"
+                && context.targetNode.tagName.toLowerCase() === "fieldset"
+            ) {
+                target = Object.values(context.children)[0]; // First child of fieldset
+            } else {
+                const candidates = context.targetNode.querySelectorAll(me.selector);
+                let found = false;
+                for (const childName in candidates) {
+                    if (found) {
+                        let targetComponent = me.getComponent(candidates[childName]);
+                        if (targetComponent?._isField) {
+                            target = targetComponent;
+                            break;
+                        };
+                    } else if (
+                        Object.is(candidates[childName], me.targetNode)
+                    ) {
+                        found = true;
                     };
-                } else if (
-                    Object.is(candidates[childName], me.targetNode)
-                ) {
-                    found = true;;
                 };
             };
         } else {
