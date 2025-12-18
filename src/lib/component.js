@@ -252,25 +252,25 @@ export class SmarkComponent {
     };//}}}
     getPath() {//{{{
         const me = this;
-        return (
-            [me, ...me.parents].map(p=>p.name)
-            .reverse()
-            .join("/") // Root parent being "" => Starting "/".
-            || "/" // No join (0 parents => root node)
-        );
+        const ancestors = [...me.parents].map(p=>p.name).reverse();
+        if (me.name) ancestors.push(me.name); // Compute parent path inside labels (or singletons?).
+        return ancestors.join("/") || "/";
     };//}}}
     find(path="") { // {{{
         const me = this;
         let base = me;
-        if (base.name === "" && base.parent.isSingleton) base = base.parent;
-             // Always detect singleton fields instead of their child.
+        while ( // Always detect real fields in singletons, labels and triggers.
+            ! base.name
+            && base.parent !== null // Not root form
+        ) {
+            base = base.parent;
+        };
         path = String(path); // Allow numbers (arrays simply won't match).
         if (path[0] == "/") while (base.parent) base = base.parent;
         const parts = path
             .split("/")
             .filter(x=>x)
         ;
-
         // (Recursive) Multi-match search (path with '*' wildcards):
         // (Returns array of components)
         const firstWildcardPos = parts.findIndex(p=>p.match(re_has_wildcards));
@@ -286,7 +286,6 @@ export class SmarkComponent {
                 .flat(Infinity)
             ;
         };
-
         // Straight search (wildcardless path)
         // (Returns single component)
         return parts.reduce(
@@ -314,8 +313,7 @@ export class SmarkComponent {
                 };
             }
             , base
-        )
-    ;
+        );
     };//}}}
     inheritedOption(optName, defaultValue) {//{{{
         const me = this;
