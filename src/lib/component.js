@@ -416,7 +416,13 @@ export class SmarkField extends SmarkComponent {
                         , `Initial value specied both as "value" option and HTML "value" attribute.`
                     );
                 };
-                this.targetNode.setAttribute("value", this.options.value);
+                if (! this.targetFieldNode) {
+                    this.onRendered(()=>{
+                        this.import(this.options.value);
+                    });
+                } else {
+                    this.targetNode.setAttribute("value", this.options.value);
+                };
             };
         };
     };
