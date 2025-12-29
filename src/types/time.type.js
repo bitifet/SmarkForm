@@ -108,7 +108,7 @@ export class time extends input {
         const value = (
             data instanceof Date ? ISOTime(data) // Accept Date instance
             : typeof data == "number" ? ISOTime(new Date(data)) // Accept epoch
-            : ! data || (typeof data != "string") ? null // Reject nullish
+            : ! data || (typeof data != "string") ? null // Reject nullish or non-strings
             : parseTimeStr(data) // Handle strings
         );
         const retv = await super.import(value, {focus});
