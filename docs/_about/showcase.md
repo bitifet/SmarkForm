@@ -1151,16 +1151,16 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             end_date: null,
             schedules: {
                 rcpt_schedule: [
-                    { start: "", end: "" }
+                    { start: null, end: null }
                 ],
                 bar_schedule: [
-                    { start: "", end: "" },
-                    { start: "", end: "" }
+                    { start: null, end: null },
+                    { start: null, end: null }
                 ],
                 restaurant_schedule: [
-                    { start: "", end: "" },
-                    { start: "", end: "" },
-                    { start: "", end: "" }
+                    { start: null, end: null },
+                    { start: null, end: null },
+                    { start: null, end: null }
                 ],
                 pool_schedule: []
             }
@@ -1196,16 +1196,16 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             end_date: null,
             schedules: {
                 rcpt_schedule: [
-                    { start: "", end: "" }
+                    { start: null, end: null }
                 ],
                 bar_schedule: [
-                    { start: "", end: "" },
-                    { start: "", end: "" }
+                    { start: null, end: null },
+                    { start: null, end: null }
                 ],
                 restaurant_schedule: [
-                    { start: "", end: "" },
-                    { start: "", end: "" },
-                    { start: "", end: "" }
+                    { start: null, end: null },
+                    { start: null, end: null },
+                    { start: null, end: null }
                 ],
                 pool_schedule: []
             }
@@ -1215,16 +1215,16 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             end_date: null,
             schedules: {
                 rcpt_schedule: [
-                    { start: "", end: "" }
+                    { start: null, end: null }
                 ],
                 bar_schedule: [
-                    { start: "", end: "" },
-                    { start: "", end: "" }
+                    { start: null, end: null },
+                    { start: null, end: null }
                 ],
                 restaurant_schedule: [
-                    { start: "", end: "" },
-                    { start: "", end: "" },
-                    { start: "", end: "" }
+                    { start: null, end: null },
+                    { start: null, end: null },
+                    { start: null, end: null }
                 ],
                 pool_schedule: []
             }

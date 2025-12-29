@@ -47,6 +47,7 @@ function inferType(node, parentComponent) {//{{{
             switch(type) {
                 case "number":
                 case "date":
+                case "time":
                 case "radio":
                 case "color":
                     return type;
