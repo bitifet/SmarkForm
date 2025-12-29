@@ -165,7 +165,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
     // Check that clicking everywhere in the form focuses its first field.
-    page.getByRole('heading', { name: 'Model details' }).click();
+    await page.getByRole('heading', { name: 'Model details' }).click();
     await expect(page.getByRole('textbox', { name: 'Model Name:' })).toBeFocused();
 
     await page.keyboard.type('Yaris');
@@ -406,9 +406,9 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         , "Form with (default) min_items = 1 renders with one item by default"
     ).toStrictEqual(1);
 
-    expect(removeItemBtn.isDisabled()
+    expect(removeItemBtn
         , "removeItem is disabled at min_items"
-    ).toBeTruthy();
+    ).toBeDisabled();
 
     // Try removing an item via direct API call
     // (Shouldn't work neither throw errors)
@@ -580,16 +580,16 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
     expect(
         await countPhones()
-        , "Form with min_items = 0 renders with no items"
+        , "List with min_items = 0 renders with no items"
     ).toStrictEqual(0);
 
-    expect(removeItemBtn.isDisabled()
+    expect(removeItemBtn
         , "Remove item button is disabled at min_items"
-    ).toBeTruthy();
+    ).toBeDisabled();
 
-    expect(removeUnusedItemsBtn.isDisabled()
+    expect(removeUnusedItemsBtn
         , "Remove all empty items button is disabled at min_items"
-    ).toBeTruthy();
+    ).toBeDisabled();
 
 
     // Try removing an item via direct API call
@@ -631,9 +631,9 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         , "Removing an item works"
     ).toStrictEqual(0);
 
-    expect(removeItemBtn.isDisabled()
+    expect(removeItemBtn
         , "removeItem gets disabled when min_items is reached"
-    ).toBeTruthy();
+    ).toBeDisabled();
 
     expect(
         (await readField('/phones'))
@@ -649,9 +649,9 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     await page.keyboard.type('1234567890');
     await addItemBtn.click();  // 4th item
     await addItemBtn.click();  // 5th item
-    expect(addItemBtn.isDisabled()
+    expect(addItemBtn
         , "addItem gets disabled when max_items is reached"
-    ).toBeTruthy();
+    ).toBeDisabled();
 
 
     // Try adding an item via direct API call
@@ -1104,6 +1104,148 @@ usability by default:
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- nested_schedule_table_duplicable_tests {{{ --> {% endraw %}
+{% capture nested_schedule_table_duplicable_tests %}
+export default async ({ page, expect, id, root, readField, writeField}) => {
+    await expect(root).toBeVisible();
+
+    // Helper to count actual phone fields in the list:
+    const countPeriods = async () => (await readField('/periods')).length;
+
+    const formContainer = await page.getByRole("document").nth(0);
+
+    const removePeriodBtn = await page.getByRole('button', { name: '➖' }).nth(0);
+    const duplicatePeriodBtn = await page.getByRole('button', { name: '✨' }).nth(0);
+    ///const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
+    const schtbl = await page.getByRole('table').nth(0);
+    const addIntervalBtns = await schtbl.getByRole('button', { name: '➕' });
+    const removeIntervalBtns = await schtbl.getByRole('button', { name: '➖' });
+
+    expect(
+        await countPeriods()
+        , "List with an item in its value render with that value no matter smaller min_items value"
+    ).toStrictEqual(1);
+
+    expect(await removePeriodBtn
+        , "Remove item button is not yet disabled"
+    ).toBeEnabled();
+
+    await addIntervalBtns.nth(0).click(); // Add an interval to the reception schedule
+
+    await addIntervalBtns.nth(1).click(); // Add two intervals to the bar schedule
+    await addIntervalBtns.nth(1).click();
+
+
+    await addIntervalBtns.nth(2).click(); // Add three intervals to the restaurant schedule
+    await addIntervalBtns.nth(2).click();
+    await addIntervalBtns.nth(2).click();
+
+
+
+    expect(
+        await readField('/periods')
+        , "Laying the first period out works as expected"
+    ).toEqual([
+        {
+            start_date: null,
+            end_date: null,
+            schedules: {
+                rcpt_schedule: [
+                    { start: "", end: "" }
+                ],
+                bar_schedule: [
+                    { start: "", end: "" },
+                    { start: "", end: "" }
+                ],
+                restaurant_schedule: [
+                    { start: "", end: "" },
+                    { start: "", end: "" },
+                    { start: "", end: "" }
+                ],
+                pool_schedule: []
+            }
+        }
+    ]);
+
+
+    expect(addIntervalBtns.nth(1)
+        , "Add interval button for bar schedule is not disabled yet"
+    ).toBeEnabled();
+
+    expect(addIntervalBtns.nth(2)
+        , "Add interval button for restaurant schedule is disabled at max_items"
+    ).toBeDisabled();
+
+    expect(removeIntervalBtns.nth(2)
+        , "Remove interval button for restaurant schedule is not disabled yet"
+    ).toBeEnabled();
+
+    expect(removeIntervalBtns.nth(3)
+        , "Remove interval button for pool schedule is disabled at min_items"
+    ).toBeDisabled();
+
+
+    await duplicatePeriodBtn.click();
+
+    expect(
+        await readField('/periods')
+        , "Duplicating the period works as expected"
+    ).toEqual([
+        {
+            start_date: null,
+            end_date: null,
+            schedules: {
+                rcpt_schedule: [
+                    { start: "", end: "" }
+                ],
+                bar_schedule: [
+                    { start: "", end: "" },
+                    { start: "", end: "" }
+                ],
+                restaurant_schedule: [
+                    { start: "", end: "" },
+                    { start: "", end: "" },
+                    { start: "", end: "" }
+                ],
+                pool_schedule: []
+            }
+        },
+        {
+            start_date: null,
+            end_date: null,
+            schedules: {
+                rcpt_schedule: [
+                    { start: "", end: "" }
+                ],
+                bar_schedule: [
+                    { start: "", end: "" },
+                    { start: "", end: "" }
+                ],
+                restaurant_schedule: [
+                    { start: "", end: "" },
+                    { start: "", end: "" },
+                    { start: "", end: "" }
+                ],
+                pool_schedule: []
+            }
+        }
+    ]);
+
+
+    // Remove all periods:
+    await removePeriodBtn.click();
+    expect(formContainer
+        , "Empty list message is not shown when there are items"
+    ).not.toHaveText(/Out of Service/);
+    await removePeriodBtn.click();
+    expect(formContainer
+        , "Empty list message is shown when all items are removed"
+    ).toHaveText(/Out of Service/);
+
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table_duplicable"
     htmlSource=nested_schedule_table_duplicable
@@ -1111,7 +1253,7 @@ usability by default:
     cssSource=schedule_table_css
     selected="preview"
     showEditor=true
-    tests=false
+    tests=nested_schedule_table_duplicable_tests
 %}
 
 
@@ -1695,7 +1837,6 @@ export default async ({ page, expect, id, root }) => {
     const nameFld = page.locator('input[name="name"]');
     const surnameFld = page.locator('input[name="surname"]');
     const addPhoneBtn = page.locator('button[title="Add phone number"]');
-    // const phoneFields = page.locator('input[type="tel"]');
     const editorFld = page.locator('textarea[data-smark]');
     
     await expect(nameFld).toBeVisible();
