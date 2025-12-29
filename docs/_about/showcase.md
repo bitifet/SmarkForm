@@ -44,7 +44,7 @@ featured ones.
     * [Deeply nested forms](#deeply-nested-forms)
     * [More on lists](#more-on-lists)
     * [Nested lists and forms](#nested-lists-and-forms)
-    * [Item duplication](#item-duplication)
+    * [Item duplication and closure state](#item-duplication-and-closure-state)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
@@ -1020,23 +1020,47 @@ sort the periods by start date.
 
 
 
-### Item duplication
+### Item duplication and closure state
 
-Adding similar items to a list—like periods—can be tedious if users have to
-re-enter all fields each time. To make this easier, SmarkForm lets you add a
-new item prefilled with data from an existing one by using an addItem trigger
-button with the *source* property set to another item in the list (for
-instance, the previous item -specified by  the special path `.-1`-).
+Adding similar items to a list of complex and configurable subforms —like the
+periods list in our example— can be tedious if users have to re-enter all
+fields each time.
 
-This way, users can duplicate an entry and just edit what’s different.
+On the other hand, if we need to allow the list to be empty, just setting
+*min_items* to 0 will cause that no item is presented by default which leads to
+poor usability.
+
+To address these issues we can do the following:
+
+  * **To ease adding new items:** Add a custom *addItem* trigger with the
+    *source* property so that users can duplicate an entry and just edit what’s
+    different. To do so:
+    - Use the *source* property in that *addItem* trigger so that the
+      *import* action will be automatically called with its value passed as its
+      *target* after the new item being rendered.
+    - I.e. with `data-smark='{"source":".-1"}`, the new item will be prefilled
+      with the data from its previous item in the list.
+
+  * **To support empty lists without hurting usability:**
+    - Allow the list to be empty by setting its *min_items* to 0.
+    - Set the lists's *value* property to an array with one empty item (we can
+      use an empty object to allow item defaults).
+    - Optionally, we can also set *exportEmpties* to true to avoid the list
+      being exported (and possibly imported in the future) empty if the initial
+      item does not get filled.
+    - I.e. `data-smark='{"min_items":0,"value": [{}]}'`.
+
 
 Below is the same example as before, but with an additional `✨` button to
-*duplicate* the data from the previous one.
+*duplicate* the data from the previous one and the before mentioned tweaks to
+allow the list to be empty emptied even showing one initial item for better
+usability by default:
 
 {% raw %} <!-- nested_schedule_table_duplicable {{{ --> {% endraw %}
 {% capture nested_schedule_table_duplicable
 %}<h2>🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
+<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+    <fieldset data-smark='{"role": "empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
     <fieldset style='margin-top: 1em'>
         <legend>Period
             <span data-smark='{"action":"position"}'>N</span>
@@ -1067,9 +1091,23 @@ Below is the same example as before, but with an additional `✨` button to
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+
+👉 Customize a period by adding different schedules for each service.
+
+👉 Use the `✨` button (or press `Ctrl+d`) to duplicate that period and notice
+   the newly created one is prefilled with the same data.
+
+👉 Remove all pereiods and notice the `🔒 Out of Service` message shown when
+   the list is empty.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table_duplicable"
     htmlSource=nested_schedule_table_duplicable
+    notes=notes
     cssSource=schedule_table_css
     selected="preview"
     showEditor=true
