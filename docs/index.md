@@ -47,7 +47,7 @@ permalink: /
 
 *SmarkForm* is a lightweight library designed for front-end developers and
 designers to enhance HTML forms with powerful features like **subforms** and
-dynamic, variable-length **lists**, context driveh **hotkeys** and more...
+dynamic, variable-length **lists**, context driven **hotkeys** and more...
 
 🔧 It seamlessly integrates with the DOM to provide a markup-agnostic solution,
 freeing your form layout from rigid structure and styling constraints while
