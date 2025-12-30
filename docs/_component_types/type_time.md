@@ -48,7 +48,7 @@ enhanced parsing and formatting capabilities.
 
 ## Usage
 
-Just add the *data-smark* attribute to the `<input">` element specifying the type:
+Just add the *data-smark* attribute to the `<input>` element specifying the type:
 
 ```html
 <input data-smark='{"type":"time", "name":"meetingTime"}'>
