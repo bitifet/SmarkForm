@@ -13,6 +13,7 @@ import {input} from "./types/input.type.js";
 import {number} from "./types/number.type.js";
 import {date} from "./types/date.type.js";
 import {time} from "./types/time.type.js";
+import {datetimeLocal} from "./types/datetime-local.type.js";
 import {radio} from "./types/radio.type.js";
 import {color} from "./types/color.type.js";
 
@@ -27,6 +28,7 @@ for (const [name, controller] of Object.entries({
     number,
     date,
     time,
+    datetimeLocal,
     radio,
     color,
 })) createType(name,controller);

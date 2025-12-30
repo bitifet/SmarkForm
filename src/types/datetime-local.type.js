@@ -1,0 +1,131 @@
+// types/datetime-local.type.js
+// ==============================
+import {input} from "./input.type.js";
+import {action} from "./trigger.type.js";
+
+function parseDateTimeStr(str) {//{{{
+    // Accept "YYYYMMDDTHHmmss" format
+    if (str.length === 15 && str[8] === "T") {
+        const date = [
+            str.substring(0, 4),
+            str.substring(4, 6),
+            str.substring(6, 8),
+        ].join("-");
+        const time = [
+            str.substring(9, 11),
+            str.substring(11, 13),
+            str.substring(13, 15),
+        ].join(":");
+        return new Date(`${date}T${time}`);
+    }
+    
+    // Accept "YYYYMMDDTHHmm" format
+    if (str.length === 13 && str[8] === "T") {
+        const date = [
+            str.substring(0, 4),
+            str.substring(4, 6),
+            str.substring(6, 8),
+        ].join("-");
+        const time = [
+            str.substring(9, 11),
+            str.substring(11, 13),
+            "00",
+        ].join(":");
+        return new Date(`${date}T${time}`);
+    }
+    
+    // Accept "YYYY-MM-DDTHH:mm:ss" format (standard datetime-local format)
+    if (
+        str.length === 19
+        && str[4] === "-"
+        && str[7] === "-"
+        && str[10] === "T"
+        && str[13] === ":"
+        && str[16] === ":"
+    ) {
+        return new Date(str);
+    }
+    
+    // Accept "YYYY-MM-DDTHH:mm" format (datetime-local without seconds)
+    if (
+        str.length === 16
+        && str[4] === "-"
+        && str[7] === "-"
+        && str[10] === "T"
+        && str[13] === ":"
+    ) {
+        return new Date(str + ":00");
+    }
+    
+    // Accept ISO 8601 strings with timezone info (like .toISOString() output)
+    // Example: "2023-12-25T14:30:45.789Z"
+    const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/);
+    if (isoMatch) {
+        return new Date(str);
+    }
+    
+    return NaN;
+};//}}}
+
+function ISODateTimeLocal(value) {//{{{
+    // Format as YYYY-MM-DDTHH:mm:ss (local time, no timezone)
+    const year = String(value.getFullYear()).padStart(4, '0');
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const day = String(value.getDate()).padStart(2, '0');
+    const hours = String(value.getHours()).padStart(2, '0');
+    const minutes = String(value.getMinutes()).padStart(2, '0');
+    const seconds = String(value.getSeconds()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+};//}}}
+
+export class datetimeLocal extends input {
+    async render() {//{{{
+        await super.render();
+        const me = this;
+        const targetTag = me.targetFieldNode.tagName;
+        const targetType = me.targetFieldNode.getAttribute("type");
+        if (
+            targetTag != "INPUT"
+            || (targetType || "datetime-local").toLowerCase() != "datetime-local"
+        ) throw me.renderError(
+            'NOT_A_DATETIME_LOCAL_FIELD'
+            , `Datetime-local inputs require an INPUT tag of type "datetime-local".`
+        );
+        if (! targetType) me.targetFieldNode.type = "datetime-local"; // Autofill
+    };//}}}
+    @action
+    // (Done in parent class) @export_to_target
+    async export(...args) {//{{{
+        const me = this;
+        const data = await super.export(...args);
+        if (me.isSingleton) return data; // Overload only inner field
+        if (! data.length) return null;
+        const value = parseDateTimeStr(data);
+        return (
+            isNaN(value) ? null
+            : ISODateTimeLocal(value)
+        );
+    };//}}}
+    @action
+    // (Done in parent class) @import_from_target
+    async import(data = null, {focus = true} = {}) {//{{{
+        const me = this;
+        if (me.isSingleton) return await super.import(data, {focus}); // Overload only inner field
+        const value = (
+            data instanceof Date ? data // Accept Date instance
+            : typeof data == "number" ? new Date(data) // Accept epoch
+            : ! data || (typeof data != "string") ? NaN // Reject nullish
+            : parseDateTimeStr(data) // Handle strings
+        );
+        const retv = await super.import((
+            isNaN(value) ? null
+            : ISODateTimeLocal(value)
+        ), {focus});
+        return retv;
+    };//}}}
+    async isEmpty() {//{{{
+        const me = this;
+        const value = await me.export(null, {silent: true});
+        return value === null;
+    };//}}}
+};
