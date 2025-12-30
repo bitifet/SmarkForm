@@ -2,7 +2,7 @@
 title: «select» Component Type
 layout: chapter
 permalink: /component_types/type_select
-nav_order: 7
+nav_order: 8
 
 ---
 

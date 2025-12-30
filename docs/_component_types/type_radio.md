@@ -2,7 +2,7 @@
 title: «radio» Component Type
 layout: chapter
 permalink: /component_types/type_radio
-nav_order: 8
+nav_order: 9
 
 ---
 

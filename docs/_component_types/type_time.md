@@ -2,7 +2,7 @@
 title: «time» Component Type
 layout: chapter
 permalink: /component_types/type_time
-nav_order: 9
+nav_order: 7
 
 ---
 
