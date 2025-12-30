@@ -64,7 +64,7 @@ export class form extends SmarkField {
         if (
             dataConstructor !== {}.constructor // Not a plain object
             && ! (data = parseJSON(data))      // Neither a (valid) JSON string
-        ) throw me.renderError(
+        ) throw new Error(
             'FORM_NOT_PLAIN_OBJECT'
             , `Expected plain object or vailid JSON for form import, ${dataConstructor.name} given.`
         );
