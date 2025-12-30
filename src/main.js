@@ -28,7 +28,7 @@ for (const [name, controller] of Object.entries({
     number,
     date,
     time,
-    datetimeLocal,
+    "datetime-local": datetimeLocal,
     radio,
     color,
 })) createType(name,controller);

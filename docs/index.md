@@ -352,6 +352,14 @@ export default async ({ page, expect, id, root }) => {
     };
     expect(data).toEqual(expectedData);
 
+
+    await page.evaluate(() => {
+        myForm.import("");
+    });
+    await expect(nameFld
+        , "Importing invalid data should not trigger a render error."
+    ).toBeVisible();
+
 };
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
