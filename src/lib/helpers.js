@@ -93,3 +93,131 @@ export function replaceWrongNode(targetNode, error) {// {{{
     targetNode.replaceWith(errorNode);
 };// }}}
 
+export function parseTime(str) {//{{{
+    // Accept "HH:mm" format (5 characters)
+    if (str.length === 5 && str[2] === ":") {
+        const hours = parseInt(str.substring(0, 2), 10);
+        const minutes = parseInt(str.substring(3, 5), 10);
+        if (
+            hours >= 0 && hours <= 23
+            && minutes >= 0 && minutes <= 59
+        ) {
+            return str + ":00"; // Add seconds
+        }
+    }
+    
+    // Accept "HH:mm:ss" format (8 characters)
+    if (str.length === 8 && str[2] === ":" && str[5] === ":") {
+        const hours = parseInt(str.substring(0, 2), 10);
+        const minutes = parseInt(str.substring(3, 5), 10);
+        const seconds = parseInt(str.substring(6, 8), 10);
+        if (
+            hours >= 0 && hours <= 23
+            && minutes >= 0 && minutes <= 59
+            && seconds >= 0 && seconds <= 59
+        ) {
+            return str;
+        }
+    }
+    
+    // Accept "HHmmss" format (6 characters)
+    if (str.length === 6) {
+        const hours = parseInt(str.substring(0, 2), 10);
+        const minutes = parseInt(str.substring(2, 4), 10);
+        const seconds = parseInt(str.substring(4, 6), 10);
+        if (
+            hours >= 0 && hours <= 23
+            && minutes >= 0 && minutes <= 59
+            && seconds >= 0 && seconds <= 59
+        ) {
+            return [
+                str.substring(0, 2),
+                str.substring(2, 4),
+                str.substring(4, 6),
+            ].join(":");
+        }
+    }
+    
+    // Accept "HHmm" format (4 characters)
+    if (str.length === 4) {
+        const hours = parseInt(str.substring(0, 2), 10);
+        const minutes = parseInt(str.substring(2, 4), 10);
+        if (
+            hours >= 0 && hours <= 23
+            && minutes >= 0 && minutes <= 59
+        ) {
+            return [
+                str.substring(0, 2),
+                str.substring(2, 4),
+                "00"
+            ].join(":");
+        }
+    }
+    
+    return null;
+};//}}}
+
+export function parseDateTime(str) {//{{{
+    // Accept "YYYYMMDDTHHmmss" format
+    if (str.length === 15 && str[8] === "T") {
+        const date = [
+            str.substring(0, 4),
+            str.substring(4, 6),
+            str.substring(6, 8),
+        ].join("-");
+        const time = [
+            str.substring(9, 11),
+            str.substring(11, 13),
+            str.substring(13, 15),
+        ].join(":");
+        return new Date(`${date}T${time}`);
+    }
+    
+    // Accept "YYYYMMDDTHHmm" format
+    if (str.length === 13 && str[8] === "T") {
+        const date = [
+            str.substring(0, 4),
+            str.substring(4, 6),
+            str.substring(6, 8),
+        ].join("-");
+        const time = [
+            str.substring(9, 11),
+            str.substring(11, 13),
+            "00",
+        ].join(":");
+        return new Date(`${date}T${time}`);
+    }
+    
+    // Accept "YYYY-MM-DDTHH:mm:ss" format (standard datetime-local format)
+    if (
+        str.length === 19
+        && str[4] === "-"
+        && str[7] === "-"
+        && str[10] === "T"
+        && str[13] === ":"
+        && str[16] === ":"
+    ) {
+        return new Date(str);
+    }
+    
+    // Accept "YYYY-MM-DDTHH:mm" format (datetime-local without seconds)
+    if (
+        str.length === 16
+        && str[4] === "-"
+        && str[7] === "-"
+        && str[10] === "T"
+        && str[13] === ":"
+    ) {
+        return new Date(str + ":00");
+    }
+    
+    // Accept ISO 8601 strings with timezone info (like .toISOString() output)
+    // Example: "2023-12-25T14:30:45.789Z"
+    const isoMatch = str.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.\d+)?(?:Z|[+-]\d{2}:\d{2})?$/);
+    if (isoMatch) {
+        return new Date(str);
+    }
+    
+    return NaN;
+};//}}}
+
