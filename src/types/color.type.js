@@ -2,6 +2,7 @@
 // ===================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
+import {validateInputType} from "../lib/helpers.js";
 const re_color = /^#([a-f0-9]{3}){1,2}$/i;
 const disabled_style = `
     opacity: .5;
@@ -33,16 +34,16 @@ export class color extends input {
         if (me.isSingleton) return; // (Only for real field)
 
         // Check targetField's type attribute:
-        const targetTag = me.targetFieldNode.tagName;
-        const targetType = me.targetFieldNode.getAttribute("type");
-        if (
-            targetTag != "INPUT"
-            || (targetType || "color").toLowerCase() != "color"
-        ) throw me.renderError(
-            'NOT_A_COLOR_FIELD'
-            , `Color inputs require an INPUT tag of type "color".`
-        );
-        if (! targetType) me.targetFieldNode.type = "color"; // Autofill
+        try {
+            validateInputType(
+                me.targetFieldNode,
+                "color",
+                'NOT_A_COLOR_FIELD',
+                `Color inputs require an INPUT tag of type "color".`
+            );
+        } catch (error) {
+            throw me.renderError(error.code, error.message);
+        }
 
         // Iniitialize me.isDefined flag:
         const valueAttr = me.targetFieldNode.getAttribute("value");
