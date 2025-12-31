@@ -2,20 +2,21 @@
 // ====================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
+import {validateInputType} from "../lib/helpers.js";
 export class number extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetFieldNode.tagName;
-        const targetType = me.targetFieldNode.getAttribute("type");
-        if (
-            targetTag != "INPUT"
-            || (targetType || "number").toLowerCase() != "number"
-        ) throw me.renderError(
-            'NOT_A_NUMBER_FIELD'
-            , `Number inputs require an INPUT tag of type "number".`
-        );
-        if (! targetType) me.targetFieldNode.type = "number"; // Autofill
+        try {
+            validateInputType(
+                me.targetFieldNode,
+                "number",
+                'NOT_A_NUMBER_FIELD',
+                `Number inputs require an INPUT tag of type "number".`
+            );
+        } catch (error) {
+            throw me.renderError(error.code, error.message);
+        }
     };//}}}
     @action
     // (Done in parent class) @export_to_target

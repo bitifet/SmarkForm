@@ -2,6 +2,7 @@
 // ==================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
+import {validateInputType} from "../lib/helpers.js";
 const re_timePart = /T.*/;
 function parseDateStr(str) {//{{{
     // Accept "YYYYMMDD":
@@ -36,16 +37,16 @@ export class date extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetFieldNode.tagName;
-        const targetType = me.targetFieldNode.getAttribute("type");
-        if (
-            targetTag != "INPUT"
-            || (targetType || "date").toLowerCase() != "date"
-        ) throw me.renderError(
-            'NOT_A_DATE_FIELD'
-            , `Date inputs require an INPUT tag of type "date".`
-        );
-        if (! targetType) me.targetFieldNode.type = "date"; // Autofill
+        try {
+            validateInputType(
+                me.targetFieldNode,
+                "date",
+                'NOT_A_DATE_FIELD',
+                `Date inputs require an INPUT tag of type "date".`
+            );
+        } catch (error) {
+            throw me.renderError(error.code, error.message);
+        }
     };//}}}
     @action
     // (Done in parent class) @export_to_target

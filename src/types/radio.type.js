@@ -4,7 +4,7 @@ import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {randomId} from "../lib/helpers.js";
+import {randomId, validateInputType} from "../lib/helpers.js";
 export class radio extends input {
     constructor(...args) {
         super(...args);
@@ -32,16 +32,16 @@ export class radio extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetFieldNode.tagName;
-        const targetType = me.targetFieldNode.getAttribute("type");
-        if (
-            targetTag != "INPUT"
-            || (targetType || "radio").toLowerCase() != "radio"
-        ) throw me.renderError(
-            'NOT_A_RADIO_FIELD'
-            , `Radio inputs require an INPUT tag of type "radio".`
-        );
-        if (! targetType) me.targetFieldNode.type = "radio"; // Autofill
+        try {
+            validateInputType(
+                me.targetFieldNode,
+                "radio",
+                'NOT_A_RADIO_FIELD',
+                `Radio inputs require an INPUT tag of type "radio".`
+            );
+        } catch (error) {
+            throw me.renderError(error.code, error.message);
+        }
     };//}}}
     @action
     @export_to_target
