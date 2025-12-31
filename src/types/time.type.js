@@ -2,7 +2,7 @@
 // ===================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
-import {parseTime} from "../lib/helpers.js";
+import {parseTime, validateInputType} from "../lib/helpers.js";
 
 function ISOTime(value) {//{{{
     // Extract time from Date object in HH:mm:ss format
@@ -16,16 +16,16 @@ export class time extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetFieldNode.tagName;
-        const targetType = me.targetFieldNode.getAttribute("type");
-        if (
-            targetTag != "INPUT"
-            || (targetType || "time").toLowerCase() != "time"
-        ) throw me.renderError(
-            'NOT_A_TIME_FIELD'
-            , `Time inputs require an INPUT tag of type "time".`
-        );
-        if (! targetType) me.targetFieldNode.type = "time"; // Autofill
+        try {
+            validateInputType(
+                me.targetFieldNode,
+                "time",
+                'NOT_A_TIME_FIELD',
+                `Time inputs require an INPUT tag of type "time".`
+            );
+        } catch (error) {
+            throw me.renderError(error.code, error.message);
+        }
     };//}}}
     @action
     // (Done in parent class) @export_to_target

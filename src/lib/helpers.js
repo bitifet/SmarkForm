@@ -228,3 +228,21 @@ export function setTabIndex(target, value = "-1") {//{{{
     }
 };//}}}
 
+export function validateInputType(targetFieldNode, expectedType, errorCode, errorMessage) {//{{{
+    // Validate that the target field is an INPUT element with the expected type
+    const targetTag = targetFieldNode.tagName;
+    const targetType = targetFieldNode.getAttribute("type");
+    if (
+        targetTag != "INPUT"
+        || (targetType || expectedType).toLowerCase() != expectedType
+    ) {
+        const error = new Error(errorMessage);
+        error.code = errorCode;
+        throw error;
+    }
+    // Autofill type attribute if not present
+    if (!targetType) {
+        targetFieldNode.type = expectedType;
+    }
+};//}}}
+

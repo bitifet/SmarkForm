@@ -2,7 +2,7 @@
 // ==============================
 import {input} from "./input.type.js";
 import {action} from "./trigger.type.js";
-import {parseDateTime} from "../lib/helpers.js";
+import {parseDateTime, validateInputType} from "../lib/helpers.js";
 
 function ISODateTimeLocal(value) {//{{{
     // Format as YYYY-MM-DDTHH:mm:ss (local time, no timezone)
@@ -19,16 +19,16 @@ export class datetimeLocal extends input {
     async render() {//{{{
         await super.render();
         const me = this;
-        const targetTag = me.targetFieldNode.tagName;
-        const targetType = me.targetFieldNode.getAttribute("type");
-        if (
-            targetTag != "INPUT"
-            || (targetType || "datetime-local").toLowerCase() != "datetime-local"
-        ) throw me.renderError(
-            'NOT_A_DATETIME_LOCAL_FIELD'
-            , `Datetime-local inputs require an INPUT tag of type "datetime-local".`
-        );
-        if (! targetType) me.targetFieldNode.type = "datetime-local"; // Autofill
+        try {
+            validateInputType(
+                me.targetFieldNode,
+                "datetime-local",
+                'NOT_A_DATETIME_LOCAL_FIELD',
+                `Datetime-local inputs require an INPUT tag of type "datetime-local".`
+            );
+        } catch (error) {
+            throw me.renderError(error.code, error.message);
+        }
     };//}}}
     @action
     // (Done in parent class) @export_to_target
