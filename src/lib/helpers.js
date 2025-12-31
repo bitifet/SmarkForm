@@ -221,3 +221,10 @@ export function parseDateTime(str) {//{{{
     return NaN;
 };//}}}
 
+export function setTabIndex(target, value = "-1") {//{{{
+    // Set tabindex attribute only if not explicitly defined
+    if (target.getAttribute("tabindex") === null) {
+        target.setAttribute("tabindex", value);
+    }
+};//}}}
+

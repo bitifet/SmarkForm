@@ -9,19 +9,10 @@ import {sortable} from "./list.decorators/sortable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {mutex} from "../decorators/mutex.deco.js";
-import {makeRoom, getRoots, parseJSON} from "../lib/helpers.js";
+import {makeRoom, getRoots, parseJSON, setTabIndex} from "../lib/helpers.js";
 
 // Private helpers:
 // ----------------
-
-function makeNonNavigable(target) {//{{{
-    if (
-        // Tabindex not explicitly defined:
-        target.getAttribute("tabindex") === null
-    ) {
-        target.setAttribute("tabindex", "-1");
-    };
-};//}}}
 
 function loadTemplates(me) {//{{{
     const templates = {};
@@ -153,7 +144,7 @@ export class list extends SmarkField {
                     && origin.options.hotkey
                 ) {
                     // Skip them in keyboard navigation.
-                    makeNonNavigable(origin.targetNode);
+                    setTabIndex(origin.targetNode);
                 };
                 break;
         };
