@@ -51,7 +51,7 @@ enhanced parsing and formatting capabilities.
 Just add the *data-smark* attribute to the `<input>` element specifying the type:
 
 ```html
-<input data-smark='{"type":"datetimeLocal", "name":"appointmentTime"}'>
+<input data-smark='{"type":"datetime-local", "name":"appointmentTime"}'>
 ```
 
 Alternatively, you can also use the shorthand notation inferring the type from the `<input>` element type:
@@ -103,7 +103,7 @@ throwing an error.
 
 {% raw %} <!-- datetime_local_error {{{ --> {% endraw %}
 {% capture datetime_local_error
-%}<input type="text" name="appointmentTime" data-smark='{"type":"datetimeLocal"}'>{%
+%}<input type="text" name="appointmentTime" data-smark='{"type":"datetime-local"}'>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
