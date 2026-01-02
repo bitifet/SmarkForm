@@ -10,7 +10,7 @@ block mainForm
             label Regular DateTime
             input(
                 data-smark={
-                    type: "datetimeLocal",
+                    type: "datetime-local",
                     name: "regularDateTime"
                 }
                 type="datetime-local"
@@ -18,7 +18,7 @@ block mainForm
         
         // Singleton datetime-local component
         div(data-smark={
-            type: "datetimeLocal",
+            type: "datetime-local",
             name: "singletonDateTime"
         })
             p
@@ -33,7 +33,7 @@ block mainForm
             label Coercion Test
             input(
                 data-smark={
-                    type: "datetimeLocal", 
+                    type: "datetime-local", 
                     name: "coercionTest"
                 }
                 type="datetime-local"
