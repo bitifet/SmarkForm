@@ -797,7 +797,7 @@ additional capabilities of the library:
 %}<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
   <div>
     <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
-    <input data-smark='data-smark' type='tel' placeholder='Telephone'/>
+    <input data-smark type='tel' placeholder='Telephone'/>
     <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
   </div>
 </div>
