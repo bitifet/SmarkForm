@@ -4,7 +4,7 @@ const componentTypes = {};
 
 import {events} from "./events.js";
 import legacy from "./legacy.js";
-import {replaceWrongNode} from "./helpers.js";
+import {parseJSON, replaceWrongNode} from "./helpers.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
@@ -181,20 +181,20 @@ export class SmarkComponent {
         const optionsSrc = (
             node.dataset[me.property_name] || ""
         ).trim() || null;
+        let explicitOptions = parseJSON(optionsSrc);
+        if (! explicitOptions && optionsSrc !== null) {
+            if (re_valid_typename_chars.test(optionsSrc)) {
+                explicitOptions = {type: optionsSrc};
+            } else {
+                throw me.renderError(
+                    "INVALID_OPTIONS_OBJECT"
+                    , `data-${me.property_name}: must be a valid JSON object.`
+                );
+            };
+        };
         const options = {
             ...defaultOptions,
-            ...(()=>{
-                try {
-                    const opt = JSON.parse(optionsSrc);
-                    if (typeof opt != "object") throw new Error("NO_OBJECT");
-                    return opt;
-                } catch (err) {
-                    return (
-                        optionsSrc.match(re_valid_typename_chars) ? {type: optionsSrc}
-                        : {}
-                    );
-                };
-            })(),
+            ...explicitOptions,
         };
         if (! options.action && ! options.type) options.type = inferType(node, me);
         me.setNodeOptions(node, options);
