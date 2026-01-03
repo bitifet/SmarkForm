@@ -132,13 +132,14 @@ button[data-smark] {
 
 /* Print-friendly styles */
 @media print {
-  /* Highlight the whole example block */
+  /* Make tab-container a flex container for ordering */
   .tab-container {
+    display: flex !important;
+    flex-direction: column !important;
     border: 2px solid #333;
     padding: 10px;
     margin: 20px 0;
     page-break-inside: avoid;
-    display: block !important;
   }
   
   /* Hide the link anchor in print */
@@ -165,10 +166,9 @@ button[data-smark] {
     display: block;
     font-size: 1.2em;
     font-weight: bold;
-    padding: 0.5em 0 0.2em 0;
+    padding: 0.8em 0 0.2em 0;
     margin: 1.5em 0 0.5em 0;
     border-top: 1px solid #999;
-    padding-top: 0.8em;
   }
   
   /* First content block shouldn't have top border */
@@ -215,12 +215,6 @@ button[data-smark] {
   /* Active tab always comes first */
   .tab-content.tab-active {
     order: 0 !important;
-  }
-  
-  /* Make tab-container a flex container for ordering */
-  .tab-container {
-    display: flex !important;
-    flex-direction: column !important;
   }
   
   /* Hide interactive buttons in print */
