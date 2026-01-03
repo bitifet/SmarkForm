@@ -205,15 +205,6 @@ button[data-smark] {
     overflow-y: visible !important;
   }
   
-  /* Order: Active tab first, then others in sequence */
-  .tab-content {
-    order: 10;
-  }
-  
-  .tab-content.tab-active {
-    order: 0 !important;
-  }
-  
   /* Ensure proper ordering for standard tabs */
   .tab-content-html { order: 10; }
   .tab-content-css { order: 20; }
