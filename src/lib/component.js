@@ -275,7 +275,7 @@ export class SmarkComponent {
         ;
         // (Recursive) Multi-match search (path with '*' wildcards):
         // (Returns array of components)
-        const firstWildcardPos = parts.findIndex(p=>p.match(re_has_wildcards));
+        const firstWildcardPos = parts.findIndex(p=>re_has_wildcards.test(p));
         if (firstWildcardPos >= 0) {
             const re_pattern = wild2regex(parts[firstWildcardPos]);
             const pivotPath = parts.slice(0, firstWildcardPos).join("/");
@@ -283,7 +283,7 @@ export class SmarkComponent {
             const pivot = base.find(pivotPath);
             const pivotChilds = Object.entries(pivot.children);
             return pivotChilds
-                .filter(([name,child])=>child && name.match(re_pattern))
+                .filter(([name,child])=>child && re_pattern.test(name))
                 .map(([,child])=>child.find(restPath))
                 .flat(Infinity)
             ;

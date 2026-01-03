@@ -44,11 +44,12 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                 for (
                     const [key, value]
                     of Object.entries(optionsSrc)
-                ) if (key.match(re_actionEvHandler)) {
+                ) if (re_actionEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(2), value, "onLocal"])
-                } else if (key.match(re_localEvHandler)) {
+                } else if (re_localEvHandler.test(key)) {
+                } else if (re_localEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(8), value, "onLocal"])
-                } else if (key.match(re_allEvHandler)) {
+                } else if (re_allEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(6), value, "onAll"])
                 } else {
                     // Threat the rest as regular options:

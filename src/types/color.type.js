@@ -81,7 +81,7 @@ export class color extends input {
         const me = this;
         let data = await super.export(...args);
         if (! me.isSingleton) data = (
-            me.isDefined && data.match(re_color) ? data.toLowerCase()
+            me.isDefined && re_color.test(data) ? data.toLowerCase()
             : null
         );
         return data;
@@ -95,7 +95,7 @@ export class color extends input {
         ) {
             if (
                 data === null              // Explicit null value
-                || ! data.match(re_color)  // Invalid color value
+                || ! re_color.test(data)  // Invalid color value
             ) {
                 me.isDefined = false;
                 me.targetFieldNode.setAttribute(
