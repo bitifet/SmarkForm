@@ -218,12 +218,14 @@ button[data-smark] {
     overflow-y: visible !important;
     overflow-x: visible !important;
     white-space: pre-wrap !important;
-    word-wrap: break-word !important;
+    word-wrap: break-word !important; /* Fallback for older browsers */
+    overflow-wrap: break-word !important; /* Modern standard */
   }
   
   .tab-content pre.highlight code {
     white-space: pre-wrap !important;
-    word-wrap: break-word !important;
+    word-wrap: break-word !important; /* Fallback for older browsers */
+    overflow-wrap: break-word !important; /* Modern standard */
   }
   
   /* Ensure proper ordering for standard tabs */
