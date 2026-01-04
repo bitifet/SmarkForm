@@ -167,6 +167,8 @@ button[data-smark] {
   }
   
   /* Hide JSON editor textarea in print */
+  /* Uses attribute selector to match data-smark JSON containing "name":"editor" */
+  /* This matches the textarea element defined in sampletabs_tpl.md line 109 */
   textarea[data-smark*='"name":"editor"'] {
     display: none !important;
   }
@@ -210,6 +212,7 @@ button[data-smark] {
   }
   
   /* Remove height restrictions and fix horizontal overflow on code blocks for print */
+  /* Apply to both pre and code elements to ensure consistent wrapping in all browsers */
   .tab-content pre.highlight {
     max-height: none !important;
     overflow-y: visible !important;
