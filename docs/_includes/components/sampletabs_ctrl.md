@@ -240,9 +240,16 @@ button[data-smark] {
     order: 0 !important;
   }
   
-  /* Hide interactive buttons in print */
-  button[data-smark] {
-    display: none;
+  /* Make buttons visible in preview tab (override browser default print styles) */
+  .tab-content-preview button {
+    display: inline-block !important;
+  }
+  
+  /* Hide only the Import/Export/Clear action buttons */
+  button[data-smark*='"action":"export"'],
+  button[data-smark*='"action":"import"'],
+  button[data-smark*='"action":"clear"'] {
+    display: none !important;
   }
 }
 
