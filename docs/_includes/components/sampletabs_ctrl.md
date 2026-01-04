@@ -132,6 +132,11 @@ button[data-smark] {
 
 /* Print-friendly styles */
 @media print {
+  /* Hide the hint block in print */
+  .hint {
+    display: none !important;
+  }
+  
   /* Make tab-container a flex container for ordering */
   .tab-container {
     display: flex !important;
@@ -157,8 +162,13 @@ button[data-smark] {
     display: block !important;
     border: none !important;
     padding: 0 !important;
-    margin-bottom: 1.5em;
+    margin-bottom: 0.75em;
     page-break-inside: avoid;
+  }
+  
+  /* Hide JSON editor textarea in print */
+  textarea[data-smark*='"name":"editor"'] {
+    display: none !important;
   }
   
   /* Add heading before each tab content using pseudo-elements */
@@ -167,7 +177,7 @@ button[data-smark] {
     font-size: 1.2em;
     font-weight: bold;
     padding: 0.8em 0 0.2em 0;
-    margin: 1.5em 0 0.5em 0;
+    margin: 0.75em 0 0.5em 0;
     border-top: 1px solid #999;
   }
   
@@ -199,10 +209,18 @@ button[data-smark] {
     content: "📝 Notes";
   }
   
-  /* Remove height restrictions on code blocks for print */
+  /* Remove height restrictions and fix horizontal overflow on code blocks for print */
   .tab-content pre.highlight {
     max-height: none !important;
     overflow-y: visible !important;
+    overflow-x: visible !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+  }
+  
+  .tab-content pre.highlight code {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
   }
   
   /* Ensure proper ordering for standard tabs */
