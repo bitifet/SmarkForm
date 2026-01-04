@@ -130,6 +130,130 @@ button[data-smark] {
 }
 
 
+/* Print-friendly styles */
+@media print {
+  /* Hide the hint block in print */
+  .hint {
+    display: none !important;
+  }
+  
+  /* Make tab-container a flex container for ordering */
+  .tab-container {
+    display: flex !important;
+    flex-direction: column !important;
+    border: 2px solid #333;
+    padding: 10px;
+    margin: 20px 0;
+    page-break-inside: avoid;
+  }
+  
+  /* Hide the link anchor in print */
+  .link-anchor {
+    display: none;
+  }
+  
+  /* Hide the tab labels container - we'll use pseudo-elements on content instead */
+  .tab-labels {
+    display: none;
+  }
+  
+  /* Show all tab content */
+  .tab-content {
+    display: block !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 0.75em;
+    page-break-inside: avoid;
+  }
+  
+  /* Hide JSON editor textarea in print */
+  /* Uses attribute selector to match data-smark JSON containing "name":"editor" */
+  /* This matches the textarea element defined in sampletabs_tpl.md line 109 */
+  textarea[data-smark*='"name":"editor"'] {
+    display: none !important;
+  }
+  
+  /* Add heading before each tab content using pseudo-elements */
+  .tab-content::before {
+    display: block;
+    font-size: 1.2em;
+    font-weight: bold;
+    padding: 0.8em 0 0.2em 0;
+    margin: 0.75em 0 0.5em 0;
+    border-top: 1px solid #999;
+  }
+  
+  /* First content block shouldn't have top border */
+  .tab-content:first-of-type::before {
+    border-top: none;
+    margin-top: 0;
+    padding-top: 0;
+  }
+  
+  /* Add specific labels for each tab type */
+  .tab-content-html::before {
+    content: "🗒️ HTML";
+  }
+  
+  .tab-content-css::before {
+    content: "🎨 CSS";
+  }
+  
+  .tab-content-js::before {
+    content: "⚙️ JS";
+  }
+  
+  .tab-content-preview::before {
+    content: "👁️ Preview";
+  }
+  
+  .tab-content-notes::before {
+    content: "📝 Notes";
+  }
+  
+  /* Remove height restrictions and fix horizontal overflow on code blocks for print */
+  /* Apply to both pre and code elements to ensure consistent wrapping in all browsers */
+  .tab-content pre.highlight {
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important; /* Fallback for older browsers */
+    overflow-wrap: break-word !important; /* Modern standard */
+  }
+  
+  .tab-content pre.highlight code {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important; /* Fallback for older browsers */
+    overflow-wrap: break-word !important; /* Modern standard */
+  }
+  
+  /* Ensure proper ordering for standard tabs */
+  .tab-content-html { order: 10; }
+  .tab-content-css { order: 20; }
+  .tab-content-js { order: 30; }
+  .tab-content-preview { order: 40; }
+  .tab-content-notes { order: 50; }
+  
+  /* Active tab always comes first */
+  .tab-content.tab-active {
+    order: 0 !important;
+  }
+  
+  /* Make buttons visible in preview tab (override browser default print styles) */
+  .tab-content-preview button {
+    display: inline-block !important;
+  }
+  
+  /* Hide only the Import/Export/Clear action buttons */
+  button[data-smark*='"action":"export"'],
+  button[data-smark*='"action":"import"'],
+  button[data-smark*='"action":"clear"'] {
+    display: none !important;
+  }
+}
+
+
 </style>
 
 {% endif %}
