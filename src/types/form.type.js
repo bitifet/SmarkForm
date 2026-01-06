@@ -58,7 +58,7 @@ export class form extends SmarkField {
     };//}}}
     @action
     @import_from_target
-    async import(data = {}, {focus = true} = {}) {//{{{
+    async import(data = {}, {focus = false} = {}) {//{{{
         const me = this;
         const dataConstructor = Object(data).constructor;
         if (

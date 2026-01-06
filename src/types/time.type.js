@@ -39,16 +39,16 @@ export class time extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import(data = null, {focus = true} = {}) {//{{{
+    async import(data = null, options = {}) {//{{{
         const me = this;
-        if (me.isSingleton) return await super.import(data, {focus}); // Overload only inner field
+        if (me.isSingleton) return await super.import(data, options); // Overload only inner field
         const value = (
             data instanceof Date ? ISOTime(data) // Accept Date instance
             : typeof data == "number" ? ISOTime(new Date(data)) // Accept epoch
             : ! data || (typeof data != "string") ? null // Reject nullish or non-strings
             : parseTime(data) // Handle strings
         );
-        const retv = await super.import(value, {focus});
+        const retv = await super.import(value, options);
         return retv;
     };//}}}
     async isEmpty() {//{{{

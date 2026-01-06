@@ -454,32 +454,32 @@ This path can be either relative (to the current field) or absolute (to the form
 {% raw %} <!-- capture traversing_form_example {{{ --> {% endraw %}
 {% capture traversing_form_example
 %}<p>
-    <label for='id'>Id:</label>
+    <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
 </p>
 <fieldset data-smark='{"type":"form","name":"personalData"}'>
 <legend>Personal Data:</legend>
     <p>
-        <label for='name'>Name:</label>
+        <label data-smark>Name:</label>
         <input data-smark type='text' name='name' placheolder='Family name'/>
     </p>
     <p>
-        <label for='surname'>Surname:</label>
+        <label data-smark>Surname:</label>
         <input data-smark type='text' name='surname' />
     </p>
     <p>
-        <label for='address'>Address:</label>
+        <label data-smark>Address:</label>
         <input data-smark type='text' name='address' />
     </p>
 </fieldset>
 <fieldset data-smark='{"type":"form","name":"businessData"}'>
 <legend>Business Data:</legend>
     <p>
-        <label for='name'>Company Name:</label>
+        <label data-smark>Company Name:</label>
         <input data-smark type='text' name='name' placheolder='Company Name'/>
     </p>
     <p>
-        <label for='address'>Address:</label>
+        <label data-smark>Address:</label>
         <input data-smark type='text' name='address' />
     </p>
 </fieldset>{%

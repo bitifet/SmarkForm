@@ -45,9 +45,9 @@ export class datetimeLocal extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import(data = null, {focus = true} = {}) {//{{{
+    async import(data = null, options = {}) {//{{{
         const me = this;
-        if (me.isSingleton) return await super.import(data, {focus}); // Overload only inner field
+        if (me.isSingleton) return await super.import(data, options); // Overload only inner field
         const value = (
             data instanceof Date ? data // Accept Date instance
             : typeof data == "number" ? new Date(data) // Accept epoch
@@ -57,7 +57,7 @@ export class datetimeLocal extends input {
         const retv = await super.import((
             isNaN(value) ? null
             : ISODateTimeLocal(value)
-        ), {focus});
+        ), options);
         return retv;
     };//}}}
     async isEmpty() {//{{{

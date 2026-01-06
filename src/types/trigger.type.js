@@ -14,6 +14,10 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
             // data property set to data argument.
             // If a BeforeAction_<name> event handler calls event.preventDefault(),
             // the action is cancelled.
+            // Some actions may accept a "focus" option to focus the target component
+            // after the action is performed. When tey are executed via trigger components,
+            // the default value of that option is true.
+            if (! Object.hasOwnProperty(options, "focus")) options.focus = true;
             let defaultPrevented = false;
             options.data = data;
             if (! options.silent) {
