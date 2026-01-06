@@ -110,9 +110,9 @@ specified the *data-smark* attribute or not).
 {% capture simple_list_example
 %}<section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
     <fieldset style="text-align:right"><!-- ☛ 2, 3, 6 -->
-        <p><label>User name:</label><input name='name' type='text' data-smark/></p>
-        <p><label>Phone number:</label><input name='phone' type='tel' data-smark/></p>
-        <p><label>Email:</label><input name='email' type='text' data-smark/></p>
+        <p><label data-smark>User name:</label><input name='name' type='text' data-smark/></p>
+        <p><label data-smark>Phone number:</label><input name='phone' type='tel' data-smark/></p>
+        <p><label data-smark>Email:</label><input name='email' type='text' data-smark/></p>
         <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
     </fieldset>
 </section>
