@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getServerPort } from '../src/lib/test/helpers.js';
 import { minimatch } from 'minimatch';
+import * as smoke_tests from './co_located_tests_smoke.include.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -151,10 +152,14 @@ for (const example of examples) {
     // Give the example a moment to render
     await page.waitForTimeout(500);
     
-    // Check that the form container exists
-    const formContainer = await page.locator(`#myForm-${example.formId}`);
-    await expect(formContainer).toBeVisible();
-    
+    // Execute commonplace tests
+    await smoke_tests.default({
+      page,
+      expect,
+      id: example.formId,
+      ...helpers(example.formId, page),
+    });
+
     // Verify console errors match expectations
     const expectedConsoleErrors = example.expectedConsoleErrors || 0;
     if (consoleErrors.length > 0) {
