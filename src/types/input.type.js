@@ -92,7 +92,7 @@ export class input extends form {
     async import(data = "", options = {}) {//{{{
         const me = this;
         if (me.isSingleton) return await me.children[""].import(data, options);
-        let {focus = true} = options;
+        let {focus = false} = options;
         const nodeFld = me.targetFieldNode;
         if (
             typeof data === "object"
