@@ -141,6 +141,32 @@ layout: default
     margin-right: 1em;
   }
 
+  @media print {
+    .main-content .chaptertoc {
+        box-shadow: none;
+        max-height: none;
+        overflow: visible;
+        padding-left: 0px;
+    }
+    .main-content .chaptertoc > ul {
+        border-left: 3rem solid #eee;
+        margin-left: 1rem;
+        padding-left: 2rem;
+    }
+    .go-to-top {
+        display: none;
+    }
+    .main-content details.chaptertoc {
+        box-shadow: none;
+    }
+    .main-content details.chaptertoc summary {
+        font-size: 1.5em;
+        font-weight: bold;
+    }
+    .main-content details.chaptertoc summary::marker {
+        color: rgba(0,0,0,0);
+    }
+  }
 
 
 
@@ -334,10 +360,20 @@ ul li[data-bullet]::before {
     const smartToc = document.querySelector("details.chaptertoc");
     if (!!smartToc) {
         const tocLinks = document.querySelectorAll(".chaptertoc a");
+        const closeToc = (event) => {
+            smartToc.open = false;
+        };
+        let wasOpen = smartToc.open;
+        const openToc = (event) => {
+            wasOpen = smartToc.open;
+            smartToc.open = true;
+        };
+        const restoreToc = (event) => {
+            smartToc.open = wasOpen;
+        };
+
         tocLinks.forEach((link) => {
-            link.addEventListener('click', (event) => {
-                smartToc.open = false;
-            });
+            link.addEventListener('click', closeToc);
         });
 
         /* Create the "Go to top" anchor */
@@ -347,6 +383,10 @@ ul li[data-bullet]::before {
         goToTopLink.href = "#"; /* Navigates to top */
         goToTopLink.className = "go-to-top"; /* For styling */
         smartToc.querySelector("summary").appendChild(goToTopLink);
+
+        window.addEventListener('beforeprint', openToc);
+        window.addEventListener('afterprint', restoreToc);
+
     };
 </script>
 
