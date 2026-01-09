@@ -190,11 +190,13 @@ npm run dev
 **Key steps**:
 1. Checkout code
 2. Setup Ruby and install Jekyll dependencies
-3. Install npm dependencies
-4. Build package with `npm run build`
-5. Copy built files to docs structure
+3. Install npm dependencies (from docs directory with working-directory: docs)
+4. Build package with `npm run build` (executed from docs directory)
+5. Copy built files from parent directory to docs structure
 6. Build Jekyll site
 7. Upload and deploy to GitHub Pages
+
+Note: The workflow sets `working-directory: docs` as the default, so npm commands execute from the docs directory.
 
 **Troubleshooting**:
 - Check Actions tab in GitHub for workflow run details
