@@ -11,7 +11,7 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 - **Build & bundle agents**: rollup-based bundling and scripts to produce dist/.
 - **Documentation build and deploy**: Jekyll site, built locally or via GitHub Pages workflow.
 - **Local live-serve helpers**: scripts to run dev servers and watchers.
-- **GitHub Pages workflow**: deploy docs site from main branch.
+- **GitHub Pages workflow**: deploy docs site from stable branch.
 - **Dependabot**: monitors npm (devDependencies) and GitHub Actions to propose updates.
 
 ## Quick checklist (update AGENTS.md when these change)
@@ -183,7 +183,7 @@ npm run dev
 **Configuration**: `.github/workflows/pages.yml`
 
 **Trigger conditions**:
-- Push to `stable` branch
+- Push to `stable` branch (not main)
 - Changes to `docs/**` paths
 - Manual workflow dispatch
 
