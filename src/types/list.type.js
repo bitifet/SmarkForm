@@ -1,7 +1,7 @@
 // types/list.type.js
 // ==================
 
-import {SmarkField} from "../lib/component.js";
+import {SmarkField} from "../lib/field.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
 import {action} from "./trigger.type.js";
 import {foldable} from "../decorators/foldable.deco.js";

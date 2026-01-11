@@ -1,7 +1,7 @@
 // types/form.type.js
 // ==================
 
-import {SmarkField} from "../lib/component.js";
+import {SmarkField} from "../lib/field.js";
 import {action} from "./trigger.type.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
