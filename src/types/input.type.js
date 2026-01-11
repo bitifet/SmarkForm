@@ -139,11 +139,4 @@ export class input extends form {
         return ! value.trim().length;
             // Native input's value type is always a string.
     };//}}}
-    @action
-    async clear(_data, options = {}) {//{{{
-        const me = this;
-        let newValue = me.defaultValue;
-        if (me.options.encoding === "json") newValue = JSON.stringify(newValue);
-        await me.import(newValue, {silent: true, ...options});
-    };//}}}
 };

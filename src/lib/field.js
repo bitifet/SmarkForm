@@ -2,6 +2,7 @@
 // ============
 
 import {SmarkComponent} from "./component.js";
+import {action} from "../types/trigger.type.js";
 
 export class SmarkField extends SmarkComponent {
     constructor(...args){
@@ -34,5 +35,10 @@ export class SmarkField extends SmarkComponent {
             };
         };
     };
+    @action
+    async clear(_data, options = {}) {//{{{
+        const me = this;
+        await me.import(undefined, {silent: true, ...options});
+    };//}}}
 };
 

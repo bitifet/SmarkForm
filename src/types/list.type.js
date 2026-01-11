@@ -419,11 +419,6 @@ export class list extends SmarkField {
         return true;
     };//}}}
     @action
-    async clear(_data, options = {}) {//{{{
-        const me = this;
-        await me.import(undefined, {silent: true, ...options});
-    };//}}}
-    @action
     count(_data, {delta = 0} = {}) {//{{{
         // Return number of children.
         // But also it's sole existence allow reinjecting contents to it.

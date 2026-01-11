@@ -100,9 +100,4 @@ export class form extends SmarkField {
         ) return false;
         return true;
     };//}}}
-    @action
-    async clear(_data, options = {}) {//{{{
-        const me = this;
-        await me.import(undefined, {silent: true, ...options});
-    };//}}}
 };
