@@ -9,6 +9,7 @@ export class input extends form {
     constructor(...args) {//{{{
         super(...args);
         const me = this;
+        me.defaultValue = "";
         me.eventHooks.keydown.push(
             function keydown_hook(ev) {
                 if (ev.defaultPrevented) return;
@@ -89,9 +90,11 @@ export class input extends form {
     };//}}}
     @action
     @import_from_target
-    async import(data = "", options = {}) {//{{{
+    async import(data, options = {}) {//{{{
         const me = this;
         if (me.isSingleton) return await me.children[""].import(data, options);
+        // Undefined clears to default:
+        if (data === undefined) data = me.defaultValue;
         let {focus = false} = options;
         const nodeFld = me.targetFieldNode;
         if (
@@ -139,9 +142,8 @@ export class input extends form {
     @action
     async clear(_data, options = {}) {//{{{
         const me = this;
-        await me.import(
-            me.options.encoding === "json" ? null : ""
-            , options
-        );
+        let newValue = me.defaultValue;
+        if (me.options.encoding === "json") newValue = JSON.stringify(newValue);
+        await me.import(newValue, {silent: true, ...options});
     };//}}}
 };

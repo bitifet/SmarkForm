@@ -13,6 +13,7 @@ export class form extends SmarkField {
     constructor(...args) {
         super(...args);
         const me = this;
+        me.defaultValue = {};
         // Focus forms on click (likewise to field types):
         this.eventHooks.click.push ( ev => {
             if (
@@ -58,8 +59,10 @@ export class form extends SmarkField {
     };//}}}
     @action
     @import_from_target
-    async import(data = {}, {focus = false} = {}) {//{{{
+    async import(data, {focus = false} = {}) {//{{{
         const me = this;
+        // Undefined clears to default:
+        if (data === undefined) data = me.defaultValue;
         const dataConstructor = Object(data).constructor;
         if (
             dataConstructor !== {}.constructor // Not a plain object
@@ -100,6 +103,6 @@ export class form extends SmarkField {
     @action
     async clear(_data, options = {}) {//{{{
         const me = this;
-        return await me.import({}, {silent: true, ...options});
+        await me.import(undefined, {silent: true, ...options});
     };//}}}
 };

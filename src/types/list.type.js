@@ -65,6 +65,11 @@ function loadTemplates(me) {//{{{
 @sortable
 @smartdisabling
 export class list extends SmarkField {
+    constructor(...args) {
+        super(...args);
+        const me = this;
+        me.defaultValue = [];
+    };
     async #appendChild(child) {//{{{
         const me = this;
         if (me.templates.header) {
@@ -171,8 +176,10 @@ export class list extends SmarkField {
     };//}}}
     @action
     @import_from_target
-    async import(data = [], {focus} = {}) {//{{{
+    async import(data, {focus} = {}) {//{{{
         const me = this;
+        // Undefined clears to default:
+        if (data === undefined) data = me.defaultValue;
         // Auto-update in case of scalar to array template upgrade:
         if (! (data instanceof Array)) data = [data];
         // Load data:
@@ -414,7 +421,7 @@ export class list extends SmarkField {
     @action
     async clear(_data, options = {}) {//{{{
         const me = this;
-        return await me.import([], {silent: true, ...options});
+        await me.import(undefined, {silent: true, ...options});
     };//}}}
     @action
     count(_data, {delta = 0} = {}) {//{{{
