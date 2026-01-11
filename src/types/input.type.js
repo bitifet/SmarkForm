@@ -137,11 +137,11 @@ export class input extends form {
             // Native input's value type is always a string.
     };//}}}
     @action
-    async clear(_data, {focus} = {}) {//{{{
+    async clear(_data, options = {}) {//{{{
         const me = this;
         await me.import(
             me.options.encoding === "json" ? null : ""
-            , {focus}
+            , options
         );
     };//}}}
 };
