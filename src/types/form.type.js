@@ -61,8 +61,12 @@ export class form extends SmarkField {
     @import_from_target
     async import(data, {focus = false} = {}) {//{{{
         const me = this;
-        // Undefined clears to default:
-        if (data === undefined) data = me.defaultValue;
+        if (data === undefined) {
+            data = me.defaultValue; // Undefined clears to default:
+        } else if (data === "") {
+            data = {};
+        }
+        // Ensure data is a plain object (or valid JSON string):
         const dataConstructor = Object(data).constructor;
         if (
             dataConstructor !== {}.constructor // Not a plain object
