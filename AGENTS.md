@@ -14,6 +14,18 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 - **GitHub Pages workflow**: deploy docs site from stable branch.
 - **Dependabot**: monitors npm (devDependencies) and GitHub Actions to propose updates.
 
+### Reference to Future Work
+
+To ensure coding agents (and contributors alike) make the best decisions while solving current tasks, we maintain a detailed **PROMPTS.md** file. This file serves as:
+
+  1. A detailed **TODO list** for future work and improvements.
+  2. A **brainstorming space** where ideas can be drafted, refined, and polished into implementable tasks.
+  3. A **prompt storage** space for developing AI-assisted tasks and identifying interdependencies between them before starting code implementation.
+
+Contributors and agents are encouraged to review the PROMPTS.md file when tackling significant changes or planning enhancements. This ensures all work aligns with upcoming goals and avoids duplication or divergent strategies.
+
+Find the file at: PROMPTS.md
+
 ## Quick checklist (update AGENTS.md when these change)
 
 When you change or add any of the following, please update this file to reflect the change:
