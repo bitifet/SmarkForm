@@ -196,6 +196,29 @@ export class SmarkComponent {
             ...defaultOptions,
             ...explicitOptions,
         };
+        const isSingletonTarget = (
+            me.isSingleton // New component's parent is a singleton
+            && options.type !== "label"           // And not a trigger
+            && ! options.hasOwnProperty("action") // Neither a label
+        );
+        if (isSingletonTarget) {
+            // Merge singleton options into child component options:
+            for (const key of Object.keys(me.options)) {
+                if ( // Skip if...
+                    key === "name"
+                    || key === "type" && options[key] === "label"
+                ) continue;
+                if (options.hasOwnProperty(key)) {
+                    throw me.renderError(
+                        'SINGLETON_OPTION_CONFLICT',
+                        `Singleton field option defined both in parent and schild for key: ${key}.`
+                    );
+                };
+                if (key !== "type") {
+                    options[key] = me.options[key];
+                };
+            };
+        };
         if (! options.action && ! options.type) options.type = inferType(node, me);
         me.setNodeOptions(node, options);
         return options;
