@@ -91,11 +91,22 @@ Imports a value into the input field.
 
 #### (Async) clear (Action)
 
-Clears the value of the input field.
+Clears the value of the input field to an empty string, removing any user-provided value and ignoring any configured default value.
 
 ##### Options (clear)
 
   * **action:** (= "clear")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+
+
+#### (Async) reset (Action)
+
+Reverts the input field to its configured default value. If the field was initialized with a `value` option, `reset` will restore that value. If no default was configured, the field reverts to an empty string (same as `clear`).
+
+##### Options (reset)
+
+  * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
 
