@@ -389,11 +389,26 @@ The `list` component type supports the following actions:
 
 #### (Async) clear (Action)
 
-(Shorhand for `import([])`)
+Clears the list to an empty array, removing all items regardless of any configured default values. Unlike `reset`, this action ignores any prepopulated default items that may have been set via the `value` option.
+
+**Example use case:** A "Clear All" button that removes all items from the list.
 
 ##### Options (clear)
 
   * **action:** (= "clear")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+
+
+#### (Async) reset (Action)
+
+Reverts the list to its configured default structure. If the list was initialized with prepopulated items via the `value` option, `reset` will restore those items. If no default items were configured, the list reverts to an empty array (same as `clear`).
+
+**Example use case:** A "Reset to defaults" button that restores the list to its initial state.
+
+##### Options (reset)
+
+  * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
 
