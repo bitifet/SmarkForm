@@ -14,6 +14,7 @@ export class form extends SmarkField {
         super(...args);
         const me = this;
         me.defaultValue = {};
+        me.emptyValue = {}; // Type-level empty state for clear action
         // Focus forms on click (likewise to field types):
         this.eventHooks.click.push ( ev => {
             if (

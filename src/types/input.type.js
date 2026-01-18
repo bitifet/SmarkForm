@@ -10,6 +10,7 @@ export class input extends form {
         super(...args);
         const me = this;
         me.defaultValue = "";
+        me.emptyValue = ""; // Type-level empty state for clear action
         me.eventHooks.keydown.push(
             function keydown_hook(ev) {
                 if (ev.defaultPrevented) return;
