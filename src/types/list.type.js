@@ -69,6 +69,7 @@ export class list extends SmarkField {
         super(...args);
         const me = this;
         me.defaultValue = [];
+        me.emptyValue = []; // Type-level empty state for clear action
     };
     async #appendChild(child) {//{{{
         const me = this;
