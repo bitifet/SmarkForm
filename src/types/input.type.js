@@ -33,6 +33,11 @@ export class input extends form {
             },
         );
     }; // }}}
+    _setTargetFieldValue(value) {//{{{
+        const me = this;
+        if (me.isSingleton) return; // (Only for real field)
+        me.targetFieldNode.value = value;
+    };//}}}
     async render() {//{{{
         const me = this;
         me.isSingleton = ! (
@@ -115,7 +120,7 @@ export class input extends form {
             me.options.encoding === "json"
             && nodeFld.tagName.toUpperCase() === "SELECT"
         ) {
-            me.targetNode.value = (data || "null"); // Faster, but won't work if value attribute is not set.
+            me._setTargetFieldValue(data || "null"); // Faster, but won't work if value attribute is not set.
             if (nodeFld.selectedIndex === -1) {
                 // Fallback when value attribute is not set.
                 const parsed = parseJSON(data) || "";
@@ -125,7 +130,7 @@ export class input extends form {
                 if (idx !== -1) nodeFld.selectedIndex = idx;
             };
         } else {
-            me.targetNode.value = data;
+            me._setTargetFieldValue(data);
         };
         if (focus) me.focus();
         return me.targetNode.value;

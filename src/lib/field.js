@@ -17,28 +17,26 @@ export class SmarkField extends SmarkComponent {
         };
         if (this.options.hasOwnProperty("value")) {
             if (this.targetNode.getAttribute("value") !== null) { // Conflict
-                throw me.renderError(
+                throw this.renderError(
                     'VALUE_CONFLICT'
                     , `Initial value specied both as "value" option and HTML "value" attribute.`
                 );
             };
-            if (! this.targetFieldNode) {
-                this.onRendered(()=>{
-                    // This situation won't occur until after rendering, allowing
-                    // for modifications to defaultValue in constructors of
-                    // derived classes.
-                    this.defaultValue = this.options.value;
-                    this.clear();
-                });
-            } else {
+            this.onRendered(()=>{
+                // This situation won't occur until after rendering, allowing
+                // for modifications to defaultValue in constructors of
+                // derived classes.
+                this.defaultValue = this.options.value;
+                this.clear();
+            });
+            if ( this.targetFieldNode) {
                 this.targetNode.setAttribute("value", this.defaultValue);
             };
         };
     };
     @action
     async clear(_data, options = {}) {//{{{
-        const me = this;
-        await me.import(undefined, {silent: true, ...options});
+        await this.import(undefined, {silent: true, ...options});
     };//}}}
 };
 

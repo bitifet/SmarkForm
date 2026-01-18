@@ -19,6 +19,8 @@ const disabled_style = `
 export class color extends input {
     constructor(...args) {
         super(...args);
+        const me = this;
+        me.defaultValue = null; // Default value is null (undefined color)
         // Add keydown hook to handle "Delete" key:
         this.eventHooks.keydown.push ( ev => {
             if (ev.defaultPrevented) return;
@@ -27,12 +29,21 @@ export class color extends input {
             };
         });
     };
+    _setTargetFieldValue(value) {//{{{
+        const me = this;
+        if (me.isSingleton) return; // (Only for real field)
+        let isValidNativeValue = re_color.test(value)
+        if (value?.length == 4) value = `#${value[1]}${value[1]}${value[2]}${value[2]}${value[3]}${value[3]}`;
+        me.targetFieldNode.value = (
+            isValidNativeValue ? value.toLowerCase()
+            : "#000000"
+        );
+    };//}}}
     async render() {//{{{
         await super.render();
         const me = this;
-
         if (me.isSingleton) return; // (Only for real field)
-
+        me._setTargetFieldValue(me.targetFieldNode.getAttribute("value"));
         // Check targetField's type attribute:
         try {
             validateInputType(
@@ -88,26 +99,25 @@ export class color extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import(data = null, options = {}) {//{{{
+    async import(data, options = {}) {//{{{
         const me = this;
+        if (me.isSingleton) return await me.children[""].import(data, options);
+        // Undefined clears to default:
+        if (data === undefined) data = me.defaultValue;
         if (
-            ! me.isSingleton // Only for real field
+            data === null              // Explicit null value
+            || ! re_color.test(data)  // Invalid color value
         ) {
-            if (
-                data === null              // Explicit null value
-                || ! re_color.test(data)  // Invalid color value
-            ) {
-                me.isDefined = false;
-                me.targetFieldNode.setAttribute(
-                    "style"
-                    , me.defaultStyleAttr + disabled_style
-                );
-            } else {
-                me.isDefined = true;
-                me.targetFieldNode.setAttribute("style", me.defaultStyleAttr);
-            };
+            me.isDefined = false;
+            me.targetFieldNode.setAttribute(
+                "style"
+                , me.defaultStyleAttr + disabled_style
+            );
+        } else {
+            me.isDefined = true;
+            if (data?.length == 4) data = `#${data[1]}${data[1]}${data[2]}${data[2]}${data[3]}${data[3]}`;
+            me.targetFieldNode.setAttribute("style", me.defaultStyleAttr);
         };
-        if (data?.length == 4) data = `#${data[1]}${data[1]}${data[2]}${data[2]}${data[3]}${data[3]}`;
         const value = await super.import(data, options);
         return (
             me.isDefined ? value
