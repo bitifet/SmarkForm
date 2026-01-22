@@ -55,7 +55,7 @@
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-copy": "^3.5.0",
     "rollup-plugin-del": "^1.0.1",
-    "sass": "^1.97.2"
+    "sass": "^1.97.3"
   },
   "browserslist": "> 0.25%, not dead",
   "files": [
