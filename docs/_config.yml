@@ -3,8 +3,9 @@ description: Powerful while effortless Markup-driven and Extendable forms.
 theme: just-the-docs
 
 host: 0.0.0.0
-logo: "/assets/SmarkForm_logo.png"
-favicon_ico: "/assets/SmarkForm_favicon.png"
+logo: "/assets/logo/smarkform.svg"
+#logo_dark: "/assets/logo/smarkform_dark.svg"
+favicon_ico: "/assets/logo/smarkform_compact.svg"
 
 collections:
   about:

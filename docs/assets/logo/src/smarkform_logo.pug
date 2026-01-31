@@ -1,0 +1,214 @@
+mixin smarkformLogo(options = {})
+  -
+    const {
+      mode = 'light',        // 'light' | 'dark'
+      compact = false,       // true | false
+      monochrome = false,    // true | false
+      size = 100,            // height in px
+      colors = {
+        light: {
+          primary: '#24c6d3',
+          secondary: '#444444',
+          accent:    '#3392e6',
+          monoPrimary: '#888888',
+          monoSecondary: '#000000'
+        },
+        dark: {
+          primary: '#24c6d3',
+          secondary: '#cccccc',
+          accent: '#2497f3',
+          monoPrimary: '#bbbbbb',
+          monoSecondary: '#ffffff'
+        },
+      },
+    } = options;
+
+    //- WorkSans-Regular.ttf      ← 400 // {{{
+    //- base64 < WorkSans-SmarkForm-Regular.woff2 
+    const WorkSans_regular_b64 = (
+        `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`
+    ).replace(/\s+/g, ''); // }}}
+
+    //- WorkSans-SemiBold.ttf    ← 600 // {{{
+    //- base64 < WorkSans-SmarkForm-SemiBold.woff2
+    const WorkSans_SemiBold_b64 = (
+        `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
+        1FqWuM5mAszrMg75f2rEJQAAAA==`
+    ).replace(/\s+/g, ''); // }}}
+
+    // Font
+    const fontFamily = 'Work Sans';
+
+    // Colors
+    const palette = colors[mode];
+    const primaryColor   = monochrome ? palette.monoPrimary   : palette.primary;
+    const secondaryColor = monochrome ? palette.monoSecondary : palette.secondary;
+    const accentColor    = monochrome ? palette.monoSecondary : palette.accent;
+
+    // Dimensions
+    const height = size;
+    const width  = compact
+      ? Math.round(height * 1.105)
+      : Math.round(height * 4.1)
+    ;
+    const fontWeight = 600;
+    const lightWeight = 400;
+    const lmargin = height * 0.05;
+    const lmarginc = height * 0.21;
+
+  svg(
+    xmlns="http://www.w3.org/2000/svg"
+    width=width
+    height=height
+    viewBox=`0 0 ${width} ${height}`
+    role="img"
+    aria-label="SmarkForm logo"
+  )
+    defs
+      style.
+
+        @font-face {
+          font-family: 'WS-Regular';
+          src: url('data:font/woff2;base64,#{WorkSans_regular_b64}') format('woff2');
+        }
+
+        @font-face {
+          font-family: 'WS-SemiBold';
+          src: url('data:font/woff2;base64,#{WorkSans_SemiBold_b64}') format('woff2');
+        }
+
+        text.leftSign {
+          font-family: 'WS-SemiBold';
+          dominant-baseline: middle;
+        }
+
+        text.semibold {
+          font-family: 'WS-SemiBold';
+          dominant-baseline: middle;
+        }
+
+        text.regular {
+          font-family: 'WS-Regular';
+          dominant-baseline: middle;
+        }
+
+    title SmarkForm
+    if compact
+      //- <S}
+      text.leftSign(
+        x=lmarginc+height * 0.1
+        y=height / 1.92
+        font-size=height * 0.6
+        fill=primaryColor
+        style=`transform: scaleX(0.5) scaleY(1.8); transform-origin: left center; font-weight: ${lightWeight}`
+      )="<"
+
+      text.semibold(
+        x=lmarginc+height * 0.12
+        y=height / 1.85
+        font-size=height * 0.7
+        fill=secondaryColor
+        style="transform: rotate(-6deg); transform-origin: center;"
+      ) S
+
+      text.semibold(
+        x=lmarginc+height * 1.1
+        y=height / 2
+        font-size=height * 0.7
+        fill=accentColor
+        style=`transform: scaleX(0.6) scaleY(0.9); transform-origin: left center`
+      ) }
+
+    else
+      //- <SmarkForm}
+      text.regular(
+        x=lmargin+0
+        y=height / 2
+        font-size=height * 0.6
+        fill=primaryColor
+      )="<"
+
+      text.semibold(
+        x=lmargin+height * 0.35
+        y=height / 2
+        font-size=height * 0.6
+        fill=secondaryColor
+      ) Smark
+
+      text.semibold(
+        x=lmargin+height * 2.26
+        y=height / 2
+        font-size=height * 0.6
+        fill=primaryColor
+      ) Form
+
+      text.semibold(
+        x=lmargin+height * 3.78
+        y=height / 2
+        font-size=height * 0.5
+        fill=accentColor
+      ) }
+doctype svg
+
++smarkformLogo({
+  mode: mode,
+  compact: compact,
+  monochrome: monochrome,
+  size: size,
+})
