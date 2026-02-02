@@ -16,6 +16,7 @@ Custom CSS that uses `@media (prefers-color-scheme: dark)` and `@media (prefers-
 - Dark mode color variables matching JustTheDocs dark theme
 - Proper contrast ratios for accessibility
 - Styles for all common elements (code blocks, tables, links, buttons, etc.)
+- Tab components (code examples) adapt to color scheme
 
 ### `/assets/js/auto-logo-switcher.js`
 JavaScript that dynamically switches the site logo between light and dark versions based on the user's color scheme preference.
@@ -53,6 +54,8 @@ Uses JustTheDocs default light theme colors.
 | Links | `#7253ed` | Link color |
 | Borders | `#44434d` | Border and separator color |
 | Code Blocks | `#2e2e2e` | Code background color |
+| Tab Labels | `#2e2e2e` | Tab button background |
+| Tab Content | `#202020` | Tab content background |
 
 ## Testing
 
