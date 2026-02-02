@@ -51,14 +51,22 @@ Uses JustTheDocs default light theme colors.
 | Background | `#202020` | Main background color |
 | Sidebar | `#0d0d0d` | Sidebar background |
 | Text | `#e9e9e9` | Body text and headings color |
-| Links | `#7253ed` | Link color |
+| Links | `#8c7aff` | Link color (brightened for visibility) |
+| Links (visited) | `#a896ff` | Visited link color |
+| Nav Links | `#b8b8b8` | Sidebar navigation links |
+| Nav Links (child) | `#a8a8a8` | Child navigation links |
 | Borders | `#44434d` | Border and separator color |
 | Code Blocks | `#2e2e2e` | Code background color |
 | Code Containers | `#2e2e2e` | Highlight/figure containers |
+| Inline Code | `#2a2a2a` | Inline code background (less bright) |
 | Tab Labels | `#2e2e2e` | Tab button background |
 | Tab Content | `#202020` | Tab content background |
 | Form Inputs | `#3a3a3a` | Input/textarea background (middle gray) |
 | Placeholder | `#999` | Input placeholder text color |
+| Buttons | `#2a2a2a` | Regular button background (less bright) |
+| Tables (header) | `#2e2e2e` | Table header background |
+| Tables (striped) | `#252525` | Alternating table row background |
+| Aux Nav Links | `#2a2a2a` | Auxiliary navigation button background |
 
 ## Testing
 
