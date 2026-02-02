@@ -163,6 +163,47 @@ scripts/liveserve_all.sh
 - Check Jekyll version compatibility
 - Review `docs/Gemfile` for dependencies
 
+### Auto Color Scheme Implementation
+
+**What it does**: Provides automatic color scheme switching for the documentation site based on user's system preferences.
+
+**Configuration**: 
+- CSS: `docs/assets/css/auto-color-scheme.css`
+- JavaScript: `docs/assets/js/auto-logo-switcher.js`
+- Include: `docs/_includes/head_custom.html`
+- Documentation: `docs/CUSTOMIZATION.md`
+
+**How it works**:
+- CSS media queries detect `prefers-color-scheme` and apply appropriate styles
+- JavaScript dynamically switches between light (`smarkform.svg`) and dark (`smarkform_dark.svg`) logos
+- Automatically updates when user changes system color scheme preference
+- No user configuration needed - works automatically
+
+**Key details**:
+- Implemented because JustTheDocs 0.10.1 doesn't support `color_scheme: auto`
+- Dark mode colors match JustTheDocs dark theme for consistency
+- Supports modern browsers (Chrome 76+, Firefox 67+, Safari 12.1+)
+- Falls back to light mode in older browsers
+- Includes styles for all common elements (code blocks, tables, links, buttons, etc.)
+
+**Customization files**:
+- `docs/assets/css/auto-color-scheme.css` - Color scheme styles
+- `docs/assets/js/auto-logo-switcher.js` - Logo switching logic
+- `docs/_includes/head_custom.html` - Loads custom CSS and JS
+- `docs/CUSTOMIZATION.md` - Full documentation
+
+**Testing**:
+1. Build and serve the Jekyll site: `npm run servedoc`
+2. Open site in browser
+3. Change system color scheme preference
+4. Site should automatically update to match
+
+**Troubleshooting**:
+- If colors don't change, check browser console for JavaScript errors
+- Verify CSS and JS files are loading in browser DevTools Network tab
+- Ensure `head_custom.html` is being included by Jekyll
+- Check browser supports `prefers-color-scheme` media queries
+
 ### Local Live-Serve Helpers
 
 **What they do**: Run development servers with live reload for rapid iteration.
@@ -255,6 +296,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Dependabot | `.github/dependabot.yml` |
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` |
+| Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
 
 ## Common Commands Reference
 
