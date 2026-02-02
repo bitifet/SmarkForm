@@ -5,6 +5,7 @@ theme: just-the-docs
 host: 0.0.0.0
 logo: "/assets/logo/smarkform.svg"
 #logo_dark: "/assets/logo/smarkform_dark.svg"
+#color_scheme: auto
 favicon_ico: "/assets/logo/smarkform_compact.svg"
 
 collections:
