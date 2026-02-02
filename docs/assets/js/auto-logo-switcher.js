@@ -29,9 +29,6 @@
     // Set the appropriate logo
     const logoUrl = prefersDark ? LOGO_DARK : LOGO_LIGHT;
     logoElement.style.backgroundImage = `url('${logoUrl}')`;
-    
-    // Log for debugging (can be removed in production)
-    console.log(`Logo switched to ${prefersDark ? 'dark' : 'light'} mode: ${logoUrl}`);
   }
   
   // Initialize logo on page load
@@ -44,13 +41,13 @@
     
     // Modern browsers support addEventListener
     if (mediaQuery.addEventListener) {
-      mediaQuery.addEventListener('change', function(e) {
+      mediaQuery.addEventListener('change', function() {
         updateLogo();
       });
     } 
     // Fallback for older browsers
     else if (mediaQuery.addListener) {
-      mediaQuery.addListener(function(e) {
+      mediaQuery.addListener(function() {
         updateLogo();
       });
     }
