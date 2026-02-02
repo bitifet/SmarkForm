@@ -4,8 +4,16 @@ theme: just-the-docs
 
 host: 0.0.0.0
 logo: "/assets/logo/smarkform.svg"
-#logo_dark: "/assets/logo/smarkform_dark.svg"
-#color_scheme: auto
+
+# Auto color scheme implementation:
+# - CSS media queries in assets/css/auto-color-scheme.css automatically apply
+#   light or dark theme based on user's system preference (prefers-color-scheme)
+# - JavaScript in assets/js/auto-logo-switcher.js dynamically switches between
+#   light logo (smarkform.svg) and dark logo (smarkform_dark.svg)
+# - Both files are loaded via _includes/head_custom.html
+# Note: JustTheDocs native color_scheme option is not used as it doesn't support
+# "auto" mode in version 0.10.1. Our implementation provides automatic switching.
+
 favicon_ico: "/assets/logo/smarkform_compact.svg"
 
 collections:

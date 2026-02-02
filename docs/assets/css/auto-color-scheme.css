@@ -1,0 +1,148 @@
+/**
+ * Auto Color Scheme for JustTheDocs Theme
+ * 
+ * This file implements automatic color scheme switching based on user's
+ * system preferences using CSS media queries.
+ * 
+ * The implementation uses prefers-color-scheme to apply conditional styles
+ * for both light and dark modes.
+ */
+
+/* Light mode styles - default behavior */
+@media (prefers-color-scheme: light) {
+  :root {
+    /* Keep the default light theme variables */
+    /* No overrides needed as light is the default */
+  }
+  
+  /* Ensure logo uses light version in light mode */
+  .site-logo {
+    background-image: url('/assets/logo/smarkform.svg') !important;
+  }
+}
+
+/* Dark mode styles - applied when system prefers dark */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Override with dark theme colors */
+    /* These variables match JustTheDocs dark theme */
+    --body-background-color: #202020;
+    --sidebar-color: #0d0d0d;
+    --border-color: #44434d;
+    --body-text-color: #e9e9e9;
+    --body-heading-color: #e9e9e9;
+    --nav-child-link-color: #e9e9e9;
+    --search-result-preview-color: #ddd;
+    --link-color: #7253ed;
+    --btn-primary-color: #5f48d0;
+    --base-button-color: #f7f7f7;
+  }
+  
+  /* Apply dark background and text colors */
+  body {
+    background-color: #202020;
+    color: #e9e9e9;
+  }
+  
+  /* Sidebar dark background */
+  .side-bar {
+    background-color: #0d0d0d;
+    border-right-color: #44434d;
+  }
+  
+  /* Main content area */
+  .main-content {
+    color: #e9e9e9;
+  }
+  
+  /* Links in dark mode */
+  a {
+    color: #7253ed;
+  }
+  
+  a:visited {
+    color: #9379f0;
+  }
+  
+  /* Code blocks */
+  code {
+    background-color: #2e2e2e;
+    border-color: #44434d;
+  }
+  
+  pre {
+    background-color: #2e2e2e;
+    border-color: #44434d;
+  }
+  
+  /* Tables */
+  table {
+    border-color: #44434d;
+  }
+  
+  th, td {
+    border-color: #44434d;
+  }
+  
+  thead {
+    background-color: #2e2e2e;
+  }
+  
+  /* Search */
+  .search-input {
+    background-color: #2e2e2e;
+    color: #e9e9e9;
+    border-color: #44434d;
+  }
+  
+  /* Navigation */
+  .nav-list-link {
+    color: #e9e9e9;
+  }
+  
+  .nav-list-link:hover,
+  .nav-list-link.active {
+    background-color: #2e2e2e;
+  }
+  
+  /* Footer */
+  .site-footer {
+    border-top-color: #44434d;
+    background-color: #0d0d0d;
+  }
+  
+  /* Ensure logo uses dark version in dark mode */
+  .site-logo {
+    background-image: url('/assets/logo/smarkform_dark.svg') !important;
+  }
+  
+  /* Buttons */
+  .btn,
+  .btn-outline {
+    background-color: #2e2e2e;
+    color: #e9e9e9;
+    border-color: #44434d;
+  }
+  
+  .btn:hover,
+  .btn-outline:hover {
+    background-color: #3e3e3e;
+  }
+  
+  /* Callouts */
+  .callout {
+    background-color: #2e2e2e;
+    border-color: #44434d;
+  }
+  
+  /* Horizontal rules */
+  hr {
+    border-color: #44434d;
+  }
+  
+  /* Blockquotes */
+  blockquote {
+    border-left-color: #44434d;
+    color: #ddd;
+  }
+}
