@@ -385,7 +385,7 @@ usability_notes:
 {% assign counter = counter | plus: 2000 %}
     <div id="SmarkForm" data-x="{{ counter }}" class="step">
         <p class="center">
-        <img src="{{ "../assets/SmarkForm_logo_big.png" | relative_url }}" alt="SmarkForm" />
+        <img style="width:90vw" src="{{ "../assets/logo/smarkform.svg" | relative_url }}" alt="SmarkForm" />
         </p>
         <p class="center">
             <img src="https://img.shields.io/npm/v/smarkform.svg" alt="" />

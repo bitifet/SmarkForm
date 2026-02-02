@@ -777,7 +777,7 @@ blockquote {
 .site-logo {
   width: 100%;
   height: 100%;
-  background-image: url("/assets/SmarkForm_logo.png");
+  background-image: url("/assets/logo/smarkform.svg");
   background-repeat: no-repeat;
   background-position: left center;
   background-size: contain;

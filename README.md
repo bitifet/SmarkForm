@@ -1,4 +1,4 @@
-[![SmarkForm Logo](docs/assets/SmarkForm_logo.png)](https://smarkform.bitifet.net)
+[![SmarkForm Logo](docs/assets/logo/smarkform.svg)](https://smarkform.bitifet.net)
 
 🚀 **Powerful while effortless Markup-driven and Extendable form controller.**
 
