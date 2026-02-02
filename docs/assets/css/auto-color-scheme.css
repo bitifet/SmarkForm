@@ -145,4 +145,25 @@
     border-left-color: #44434d;
     color: #ddd;
   }
+  
+  /* Tab components (code examples) */
+  .tab-label {
+    background-color: #2e2e2e !important;
+    border-color: #44434d !important;
+    color: #e9e9e9 !important;
+  }
+  
+  .tab-label:hover {
+    background-color: #3e3e3e !important;
+  }
+  
+  .tab-label-active {
+    background-color: #3e3e3e !important;
+  }
+  
+  .tab-content {
+    background-color: #202020 !important;
+    border-color: #44434d !important;
+    color: #e9e9e9 !important;
+  }
 }
