@@ -50,12 +50,15 @@ Uses JustTheDocs default light theme colors.
 |----------|-------|-------|
 | Background | `#202020` | Main background color |
 | Sidebar | `#0d0d0d` | Sidebar background |
-| Text | `#e9e9e9` | Body text color |
+| Text | `#e9e9e9` | Body text and headings color |
 | Links | `#7253ed` | Link color |
 | Borders | `#44434d` | Border and separator color |
 | Code Blocks | `#2e2e2e` | Code background color |
+| Code Containers | `#2e2e2e` | Highlight/figure containers |
 | Tab Labels | `#2e2e2e` | Tab button background |
 | Tab Content | `#202020` | Tab content background |
+| Form Inputs | `#3a3a3a` | Input/textarea background (middle gray) |
+| Placeholder | `#999` | Input placeholder text color |
 
 ## Testing
 
