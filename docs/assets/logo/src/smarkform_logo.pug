@@ -5,23 +5,34 @@ mixin smarkformLogo(options = {})
       compact = false,       // true | false
       monochrome = false,    // true | false
       size = 100,            // height in px
-      colors = {
-        light: {
-          primary: '#24c6d3',
-          secondary: '#444444',
-          accent:    '#3392e6',
-          monoPrimary: '#888888',
-          monoSecondary: '#000000'
-        },
-        dark: {
-          primary: '#24c6d3',
-          secondary: '#cccccc',
-          accent: '#2497f3',
-          monoPrimary: '#bbbbbb',
-          monoSecondary: '#ffffff'
-        },
-      },
     } = options;
+    const colors = {
+      light: {
+        primary: '#24c6d3',
+        secondary: '#444444',
+        accent:    '#3392e6',
+        monoPrimary: '#888888',
+        monoSecondary: '#000000'
+      },
+      dark: {
+        primary: '#24c6d3',
+        secondary: '#cccccc',
+        accent: '#2497f3',
+        monoPrimary: '#bbbbbb',
+        monoSecondary: '#ffffff'
+      },
+    };
+
+    const metadata = {
+      generator: 'SmarkForm Logo Generator',
+      generatedAt: new Date().toISOString(),
+      options: {
+        mode,
+        compact,
+        monochrome,
+        size,
+      },
+    };
 
     //- WorkSans-Regular.ttf      ← 400 // {{{
     //- base64 < WorkSans-SmarkForm-Regular.woff2 
@@ -120,6 +131,7 @@ mixin smarkformLogo(options = {})
     role="img"
     aria-label="SmarkForm logo"
   )
+    metadata!= JSON.stringify(metadata, null, 2)
     defs
       style.
 
