@@ -2,7 +2,7 @@
 title: Download
 layout: chapter
 permalink: /resources/download
-nav_order: 1
+nav_order: 2
 
 ---
 

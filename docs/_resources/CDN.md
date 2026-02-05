@@ -2,7 +2,7 @@
 title: CDN
 layout: chapter
 permalink: /resources/CDN
-nav_order: 2
+nav_order: 3
 
 ---
 
