@@ -60,7 +60,7 @@ By linking to the SmarkForm [User Guide]({{ "/resources/user_guide" | relative_u
 - Connects users to a broader ecosystem of high-quality forms
 
 {: .hint}
-> 💡 **Quick win:** Adding a simple badge with a link takes just a few minutes but can significantly improve your users' experience!
+> **Quick win:** Adding a simple badge with a link takes just a few minutes but can significantly improve your users' experience!
 
 ## Logo Assets
 
@@ -83,7 +83,7 @@ SmarkForm provides several logo variations to suit different contexts:
 - `smarkform_mono_dark_compact.svg` — Monochrome compact for dark backgrounds
 
 {: .info}
-> ℹ️ **CDN Access:** All logos are available via jsDelivr CDN at:
+> **CDN Access:** All logos are available via jsDelivr CDN at:
 > `https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/[filename]`
 
 ### When to Use Which Variant
@@ -115,7 +115,7 @@ The compact badge is perfect for form footers and provides a clean, unobtrusive 
 **Result:** A 24px high badge that links to the user guide.
 
 {: .hint}
-> 💡 **Styling tip:** Adjust the `height` attribute (e.g., `height="20"` or `height="32"`) to match your design needs.
+> **Styling tip:** Adjust the `height` attribute (e.g., `height="20"` or `height="32"`) to match your design needs.
 
 ### Full Logo (For Documentation/About Pages)
 
@@ -338,14 +338,14 @@ Learn more about [using SmarkForm-powered forms](https://smarkform.bitifet.net/r
 ```
 
 {: .hint}
-> 💡 **Not required but appreciated:** While attribution isn't legally required by the license, it helps users discover SmarkForm's features and supports the project's growth!
+> **Not required but appreciated:** While attribution isn't legally required by the license, it helps users discover SmarkForm's features and supports the project's growth!
 
 ## Logo Philosophy
 
 The SmarkForm logo is designed to be clean, modern, and memorable. It uses a parametric design approach that allows for consistent variations across different contexts.
 
 {: .info}
-> ℹ️ **Interested in the design process?** Read about the logo's creation and philosophy in the article: [Generating a Parametric SVG Logo with Pug](https://dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0)
+> **Interested in the design process?** Read about the logo's creation and philosophy in the article: [Generating a Parametric SVG Logo with Pug](https://dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0)
 
 The parametric design ensures:
 - **Consistency** across all variations (full, compact, mono)
