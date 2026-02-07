@@ -134,7 +134,7 @@ While the actual hotkeys available depend on how each form is configured, here a
 - **Delete** — Clear or delete a value
 - **D** — Duplicate an item (when available)
 
-Remember: **hold Ctrl to discover what's available** in any specific form. The hints will show you exactly which shortcuts you can use.
+Remember: **hold Ctrl to discover what's available** in any specific form. The hints will show you exactly which shortcuts you can use. Also, holding Ctrl+Alt may reveal additional shortcuts for the same keys from the outer context.
 
 ## Working with Lists
 
@@ -162,16 +162,16 @@ Some forms allow you to reorder list items by dragging and dropping:
 3. Release to drop it in place
 
 {: .info}
-> **Note:** Not all lists support reordering. This feature is enabled based on the specific use case and requirements of each form.
+> **Note:** Not all lists allow for reordering. This feature is enabled based on the specific use case and requirements of each form.
 
 ### Understanding List Limits
 
 Some lists have minimum or maximum limits for a reason:
 
-- **Minimum limit:** At least this many items are required. You won't be able to remove items below this minimum.
+- **Minimum limit:** At least this many items are required. You won't be able to remove items below this minimum. The default is 1, but it can be 0. You'll notice that the "Remove" button becomes disabled when you reach the minimum limit.
 - **Maximum limit:** No more items are allowed beyond this number. The "Add" button becomes disabled when the limit is reached.
 
-These limits are intentional constraints based on the form's requirements. When a button is disabled, it means you've reached a limit — you can still modify existing items, but cannot add more or remove required ones.
+These limits are intentional constraints based on the form's requirements. When a button is disabled, it means you've reached a limit — you can still modify existing items, but cannot add more or remove required ones. You can be presented with an empty item to fill in because it is expected to usually be at least 1 item, but you can remove it if the minimum is 0. If you just leave the fields blank, validation could fail. If you remove the item, it is more intentional -you are explicitly saynng "There is no such item". This way the validation can be more accurate and helpful.
 
 ## Working with Nested Sections
 
@@ -192,7 +192,8 @@ SmarkForm is designed with accessibility in mind, though we're continuously work
 - **Full keyboard support:** Everything can be done without a mouse
 - **Clear focus indicators:** You can always see where you are in the form
 - **Smart tab order:** Disabled elements are automatically excluded from navigation
-- **Semantic HTML:** Forms are built with semantic HTML to work with screen readers
+- **Enter key navigation:** Pressing Enter / Shift + Enter moves between fields. If there are buttons in between (to add/remove items in a list for instance), they are skipped in the navigation.
+- **Semantic HTML:** SmarkForm is markup agnostic, but it encourages developers to use semantic HTML elements. It also mocks functionalities like labels for complex field types (like lists) that are not native HTML form elements, so that assistive technologies can still understand the structure and purpose of the form.
 - **Visual feedback:** Clear indication when buttons are disabled or actions are unavailable
 
 {: .info}
@@ -210,7 +211,7 @@ Here are some tips to make form filling even faster:
 
 4. **Try second-level hotkeys** — Hold **Ctrl+Alt** to access outer context actions when working with nested structures
 
-5. **Watch for smart features** — Notice how buttons disable themselves when limits are reached, or how new list items appear automatically
+5. **Watch for smart features** — Notice how buttons disable themselves when limits are reached, or how new list items appear automatically. Lists of complex forms may provide a button to duplicate an item (huge time saver sometimes), etc...
 
 6. **Use the keyboard for everything** — Once you're comfortable with navigation and hotkeys, you can often complete entire forms without touching your mouse
 
