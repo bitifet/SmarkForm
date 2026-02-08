@@ -1,0 +1,125 @@
+/* User Guide Image Styles */
+
+/* Container for user guide images with optional captions */
+.user-guide-image {
+  margin: 2rem auto;
+  text-align: center;
+  max-width: 100%;
+}
+
+/* The actual image element */
+.user-guide-image img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: block;
+  margin: 0 auto;
+}
+
+/* Dark mode adjustments */
+@media (prefers-color-scheme: dark) {
+  .user-guide-image img {
+    border-color: #30363d;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Optional caption styling */
+.user-guide-image figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #6a737d;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .user-guide-image figcaption {
+    color: #8b949e;
+  }
+}
+
+/* Small screens (mobile) - full width with padding */
+@media (max-width: 768px) {
+  .user-guide-image {
+    margin: 1.5rem 0;
+  }
+  
+  .user-guide-image img {
+    max-width: 100%;
+    border-radius: 4px;
+  }
+  
+  .user-guide-image figcaption {
+    font-size: 0.8125rem;
+    padding: 0 0.5rem;
+  }
+}
+
+/* Medium screens (tablets) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .user-guide-image {
+    max-width: 90%;
+  }
+  
+  .user-guide-image img {
+    max-width: 100%;
+  }
+}
+
+/* Large screens (desktop) - limit maximum size */
+@media (min-width: 1025px) {
+  .user-guide-image {
+    max-width: 800px;
+  }
+  
+  .user-guide-image img {
+    max-width: 100%;
+  }
+}
+
+/* Inline images (smaller, for inline demonstrations) */
+.user-guide-image.inline {
+  display: inline-block;
+  margin: 0.5rem 1rem;
+  max-width: 400px;
+}
+
+.user-guide-image.inline img {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .user-guide-image.inline {
+    display: block;
+    margin: 1rem auto;
+    max-width: 100%;
+  }
+}
+
+/* Small demonstration images (for showing keyboard keys, icons, etc.) */
+.user-guide-image.small {
+  max-width: 300px;
+  margin: 1rem auto;
+}
+
+.user-guide-image.small img {
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .user-guide-image.small {
+    max-width: 200px;
+  }
+}
+
+/* Wide images (for showing full form layouts) */
+.user-guide-image.wide {
+  max-width: 100%;
+}
+
+.user-guide-image.wide img {
+  max-width: 100%;
+}
