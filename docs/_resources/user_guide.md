@@ -63,7 +63,7 @@ Use **Enter** and **Shift+Enter** to jump directly between form fields:
 This navigation is smart: it skips over buttons and other non-field elements, taking you straight to where you need to enter information.
 
 <figure class="user-guide-image">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/01-navigation-enter-key.png' | relative_url }}"
        alt="Demonstration of Enter key navigation jumping between form fields, skipping buttons">
   <figcaption>Using Enter to navigate between fields (skips buttons and other non-field elements)</figcaption>
 </figure>
@@ -101,7 +101,7 @@ To see which keyboard shortcuts are available at any moment:
 While holding Ctrl, you'll see visual hints appear next to buttons showing their keyboard shortcuts. Release Ctrl to hide the hints.
 
 <figure class="user-guide-image">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/02-hotkeys-discovery.png' | relative_url }}"
        alt="Screenshot showing hotkey hints appearing on buttons when Ctrl key is pressed">
   <figcaption>Holding Ctrl reveals hotkey hints next to action buttons</figcaption>
 </figure>
@@ -120,7 +120,7 @@ SmarkForm uses an intelligent, context-aware hotkey system that makes forms intu
 This context-aware behavior means you can learn just a few simple hotkeys (like **+**, **−**, and **Delete**) and use them throughout the entire form in a natural, intuitive way.
 
 <figure class="user-guide-image">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/03-hotkeys-context-aware.png' | relative_url }}"
        alt="Example form showing a contact list where each contact has a phone number list, demonstrating context-aware hotkey behavior">
   <figcaption>Example: Same + hotkey works in different contexts (adding contacts vs adding phone numbers)</figcaption>
 </figure>
@@ -141,7 +141,7 @@ This reveals hotkeys from the next level up in the form hierarchy. In our contac
 This two-level system keeps the interface clean while giving you keyboard access to everything.
 
 <figure class="user-guide-image">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/04-hotkeys-second-level.png' | relative_url }}"
        alt="Side-by-side comparison showing Ctrl revealing first-level hotkeys (phone numbers) and Ctrl+Alt revealing second-level hotkeys (contacts)">
   <figcaption>First level (Ctrl): hotkeys for current context; Second level (Ctrl+Alt): hotkeys for outer context</figcaption>
 </figure>
@@ -172,9 +172,9 @@ Look for buttons with **plus** (+) or **minus** (−) icons, or use hotkeys if c
 - **Click the − button** or use its hotkey (often **Ctrl+Minus**) — Remove the current item
 
 <figure class="user-guide-image">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/05-lists-add-remove.png' | relative_url }}"
        alt="Dynamic list showing add and remove buttons with their associated hotkey hints">
-  <figcaption>Adding and removing items from a list using buttons or hotkeys</figcaption>
+  <figcaption>Adding and removing items from a list using buttons (or their hotkeys)</figcaption>
 </figure>
 
 {: .hint}
@@ -192,7 +192,7 @@ Some forms allow you to reorder list items by dragging and dropping:
 3. Release to drop it in place
 
 <figure class="user-guide-image">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/06-lists-reorder.png' | relative_url }}"
        alt="List items being reordered through drag-and-drop interaction">
   <figcaption>Drag and drop to reorder list items</figcaption>
 </figure>
@@ -210,7 +210,7 @@ Some lists have minimum or maximum limits for a reason:
 These limits are intentional constraints based on the form's requirements. When a button is disabled, it means you've reached a limit — you can still modify existing items, but cannot add more or remove required ones. You can be presented with an empty item to fill in because it is expected to usually be at least 1 item, but you can remove it if the minimum is 0. If you just leave the fields blank, validation could fail. If you remove the item, it is more intentional -you are explicitly saynng "There is no such item". This way the validation can be more accurate and helpful.
 
 <figure class="user-guide-image small">
-  <img src="{{ '/assets/logo/smarkform.svg' | relative_url }}" 
+  <img src="{{ '/assets/images/user-guide/07-lists-disabled-button.png' | relative_url }}"
        alt="Add button shown as disabled when maximum list limit is reached">
   <figcaption>Button becomes disabled when list limit is reached</figcaption>
 </figure>
