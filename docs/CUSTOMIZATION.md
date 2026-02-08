@@ -1,6 +1,10 @@
-# Auto Color Scheme Implementation
+# Documentation Customizations
 
-This directory contains custom CSS and JavaScript to implement automatic color scheme switching for the SmarkForm documentation site.
+This document describes custom CSS and JavaScript implementations for the SmarkForm documentation site, including the auto color scheme and the user guide image system.
+
+## Auto Color Scheme Implementation
+
+This section contains custom CSS and JavaScript to implement automatic color scheme switching for the SmarkForm documentation site.
 
 ## Overview
 
@@ -113,3 +117,124 @@ When updating the JustTheDocs theme:
 ## Related Configuration
 
 See `_config.yml` for documentation about why we use this custom implementation instead of the native `color_scheme` option.
+
+---
+
+## User Guide Image System
+
+The documentation includes a responsive image system specifically designed for user guide illustrations.
+
+### Overview
+
+This system provides consistent styling for screenshots and illustrations in documentation pages, with responsive behavior across different screen sizes and automatic dark mode support.
+
+### Files
+
+#### `/assets/css/user-guide-images.css`
+Custom CSS that provides responsive styling for documentation images with various size options.
+
+**Features:**
+- Responsive design for mobile, tablet, and desktop
+- Dark mode support with adjusted borders and shadows
+- Multiple size variants (default, small, inline, wide)
+- Figure and figcaption styling
+- Proper spacing and visual polish
+
+#### `/_includes/head_custom.html`
+The CSS is loaded via this Jekyll include file, making it available on all documentation pages.
+
+### How to Add Images to Documentation
+
+#### 1. Basic Image with Caption
+
+```html
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/my-image.png' | relative_url }}" 
+       alt="Descriptive alt text explaining what the image shows">
+  <figcaption>Optional caption providing context</figcaption>
+</figure>
+```
+
+#### 2. Size Variants
+
+**Small images** (max 300px on desktop):
+```html
+<figure class="user-guide-image small">
+  <img src="{{ '/assets/images/user-guide/icon.png' | relative_url }}" 
+       alt="Small UI element or icon">
+  <figcaption>Small demonstration</figcaption>
+</figure>
+```
+
+**Wide images** (full width):
+```html
+<figure class="user-guide-image wide">
+  <img src="{{ '/assets/images/user-guide/full-layout.png' | relative_url }}" 
+       alt="Complete form layout">
+  <figcaption>Full-width layout example</figcaption>
+</figure>
+```
+
+**Inline images** (max 400px, can flow with text):
+```html
+<figure class="user-guide-image inline">
+  <img src="{{ '/assets/images/user-guide/button.png' | relative_url }}" 
+       alt="Button example">
+</figure>
+```
+
+#### 3. Image Guidelines
+
+**Directory Structure:**
+- Place images in `/assets/images/[section-name]/`
+- Use descriptive filenames: `01-descriptive-name.png`
+- Keep images organized by documentation section
+
+**Image Format:**
+- Use PNG for screenshots with text and UI elements
+- Optimize images before committing (compress without losing clarity)
+- Consider 2x resolution for retina displays but keep file size reasonable
+
+**Alt Text Best Practices:**
+- Describe what the image shows, not how it looks
+- Be specific and descriptive
+- Include context relevant to the surrounding text
+- Example: "Screenshot showing hotkey hints appearing on buttons when Ctrl key is pressed"
+
+**Visual Guidelines:**
+- Capture images in light mode (dark mode styling handled by CSS)
+- Ensure high contrast and readability
+- Use consistent styling across screenshots
+- Keep file sizes under 100KB when possible
+
+### CSS Classes Reference
+
+| Class | Max Width (Desktop) | Use Case |
+|-------|---------------------|----------|
+| `.user-guide-image` | 800px | Default for most screenshots |
+| `.user-guide-image.small` | 300px | Icons, small UI elements |
+| `.user-guide-image.inline` | 400px | Inline demonstrations |
+| `.user-guide-image.wide` | 100% | Full-width layouts |
+
+### Responsive Behavior
+
+- **Mobile (≤768px)**: Images scale to full width with adjusted padding and smaller captions
+- **Tablet (769-1024px)**: Images scale to 90% of container width
+- **Desktop (≥1025px)**: Images respect maximum width constraints for optimal readability
+
+### Dark Mode Support
+
+Images automatically adjust for dark mode:
+- Border color changes to darker shade
+- Box shadow adjusts for better contrast
+- Caption text color adapts to theme
+
+### Example: User Guide Images
+
+See `docs/_resources/user_guide.md` for real-world examples of this system in use, including:
+- Navigation demonstrations
+- Hotkey discovery screenshots
+- Context-aware behavior illustrations
+- List operation examples
+
+The user guide demonstrates all size variants and proper usage of alt text and captions.
