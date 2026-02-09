@@ -16,6 +16,30 @@
     }
 }
 
+// SmarkForm Badge Footer
+// ======================
+.smarkform-badge-footer {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(128, 128, 128, 0.2);
+
+    a {
+        display: inline-block;
+        text-decoration: none;
+        transition: opacity 0.2s;
+
+        &:hover {
+            opacity: 0.8;
+        }
+
+        img {
+            display: block;
+            margin: 0 auto;
+        }
+    }
+}
+
 
 .smarkForm {
     flex: 1;
