@@ -45,7 +45,7 @@
     "@babel/core": "^7.29.0",
     "@babel/plugin-proposal-decorators": "^7.29.0",
     "@babel/preset-env": "^7.29.0",
-    "@playwright/test": "^1.58.1",
+    "@playwright/test": "^1.58.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-terser": "^0.4.4",
     "concurrently": "^9.2.0",
