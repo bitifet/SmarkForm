@@ -209,7 +209,7 @@ Some lists have minimum or maximum limits for a reason:
 
 These limits are intentional constraints based on the form's requirements. When a button is disabled, it means you've reached a limit — you can still modify existing items, but cannot add more or remove required ones. You can be presented with an empty item to fill in because it is expected to usually be at least 1 item, but you can remove it if the minimum is 0. If you just leave the fields blank, validation could fail. If you remove the item, it is more intentional -you are explicitly saying "There is no such item". This way the validation can be more accurate and helpful.
 
-<figure class="user-guide-image small">
+<figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/07-lists-disabled-button.png' | relative_url }}"
        alt="Add button shown as disabled when maximum list limit is reached">
   <figcaption>Button becomes disabled when list limit is reached</figcaption>
