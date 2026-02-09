@@ -84,7 +84,7 @@ SmarkForm provides several logo variations to suit different contexts:
 
 {: .info}
 > **CDN Access:** All logos are available via jsDelivr CDN at:
-> `https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/[filename]`
+> `https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/[filename]`
 
 ### When to Use Which Variant
 
@@ -106,7 +106,7 @@ The compact badge is perfect for form footers and provides a clean, unobtrusive 
    title="Learn about SmarkForm-powered forms"
    target="_blank"
    rel="noopener noreferrer">
-  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform_compact.svg" 
+  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg" 
        alt="Powered by SmarkForm" 
        height="24">
 </a>
@@ -126,7 +126,7 @@ For documentation pages or "About" sections where you have more space:
    title="Visit SmarkForm Documentation"
    target="_blank"
    rel="noopener noreferrer">
-  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform.svg" 
+  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform.svg" 
        alt="SmarkForm - Powerful while effortless forms" 
        height="48">
 </a>
@@ -162,7 +162,7 @@ For a badge that scales appropriately on different screen sizes:
    title="Learn about SmarkForm-powered forms"
    target="_blank"
    rel="noopener noreferrer">
-  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform_compact.svg" 
+  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg" 
        alt="Powered by SmarkForm">
 </a>
 ```
@@ -194,11 +194,11 @@ For sites with dark mode support, use CSS to switch between light and dark logos
    title="Learn about SmarkForm-powered forms"
    target="_blank"
    rel="noopener noreferrer">
-  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform_compact.svg" 
+  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg" 
        alt="Powered by SmarkForm" 
        class="smarkform-badge-light"
        height="24">
-  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform_dark_compact.svg" 
+  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_dark_compact.svg" 
        alt="Powered by SmarkForm" 
        class="smarkform-badge-dark"
        height="24">
@@ -217,7 +217,7 @@ For sites with dark mode support, use CSS to switch between light and dark logos
      <p>
        This form is powered by 
        <a href="https://smarkform.bitifet.net/resources/user_guide">
-         <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform_compact.svg" 
+         <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg" 
               alt="SmarkForm" 
               height="16" 
               style="vertical-align: middle;">
@@ -246,7 +246,7 @@ When implementing badges, ensure they're accessible:
    target="_blank"
    rel="noopener noreferrer"
    aria-label="Learn about SmarkForm-powered forms (opens in new window)">
-  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@latest/docs/assets/logo/smarkform_compact.svg" 
+  <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg" 
        alt="Powered by SmarkForm">
 </a>
 ```
