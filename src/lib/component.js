@@ -178,9 +178,15 @@ export class SmarkComponent {
     };//}}}
     getNodeOptions(node, defaultOptions) {//{{{
         const me = this;
-        const optionsSrc = (
+        let optionsSrc = (
             node.dataset[me.property_name] || ""
         ).trim() || null;
+        if (optionsSrc === "data-"+me.property_name) {
+            // Accept <input data-smark="data-smark"> as special case since
+            // <input data-smark> is not automatically converted to
+            // data-smark="true" by the browser like other tags.
+            optionsSrc = null;
+        };
         let explicitOptions = parseJSON(optionsSrc);
         if (! explicitOptions && optionsSrc !== null) {
             if (re_valid_typename_chars.test(optionsSrc)) {
