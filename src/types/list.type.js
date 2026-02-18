@@ -177,7 +177,7 @@ export class list extends SmarkField {
     };//}}}
     @action
     @import_from_target
-    async import(data, {focus} = {}) {//{{{
+    async import(data, {focus = false, silent = false} = {}) {//{{{
         const me = this;
         // Undefined clears to default:
         if (data === undefined) data = me.defaultValue;
@@ -191,7 +191,7 @@ export class list extends SmarkField {
             i++
         ) {
             if (me.children.length <= i) await me.addItem({silent: true}); // Make room on demand
-            await me.children[i].import(data[i], {focus, silent: true});
+            await me.children[i].import(data[i], {focus: focus && !silent, silent});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -214,7 +214,7 @@ export class list extends SmarkField {
             i < me.children.length; // (Due to min_items)
             i++
         ) me.children[i].reset({silent: true});
-        if (focus) me.focus();
+        if (focus && !silent) me.focus();
         return; // await me.export(null, {silent: true});
     };//}}}
     @action
@@ -231,6 +231,7 @@ export class list extends SmarkField {
         options.position ||= "after";
         options.autoscroll ||= null;   // "elegant" / "self" / "parent" / (falsy)
         options.failback ||= "throw";  // "none" / "throw" (default)
+        options.silent ||= false;       // When true, don't focus the new item
         if (options.position != "after" && options.position != "before") throw me.renderError(
             'LIST_WRONG_ADDITEM_POSITION'
             , `Invalid value for addItem() position property: ${options.position}`
@@ -310,7 +311,7 @@ export class list extends SmarkField {
             if (moveTarget) moveTarget.moveTo();
         };
         //}}}
-        if (me.renderedSync) newItem.focus();
+        if (me.renderedSync && !options.silent) newItem.focus();
         return newItem;
     };//}}}
     @action

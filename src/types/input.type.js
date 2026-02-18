@@ -101,7 +101,7 @@ export class input extends form {
         if (me.isSingleton) return await me.children[""].import(data, options);
         // Undefined clears to default:
         if (data === undefined) data = me.defaultValue;
-        let {focus = false} = options;
+        let {focus = false, silent = false} = options;
         const nodeFld = me.targetFieldNode;
         if (
             typeof data === "object"
@@ -133,7 +133,7 @@ export class input extends form {
         } else {
             me._setTargetFieldValue(data);
         };
-        if (focus) me.focus();
+        if (focus && !silent) me.focus();
         return me.targetNode.value;
     };//}}}
     async isEmpty() {//{{{
