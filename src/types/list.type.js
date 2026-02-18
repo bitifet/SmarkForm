@@ -184,9 +184,10 @@ export class list extends SmarkField {
         // Auto-update in case of scalar to array template upgrade:
         if (! (data instanceof Array)) data = [data];
         // Load data:
+        const top = Math.min(data.length, me.max_items);
         for (
             let i = 0;
-            i < Math.min(data.length, me.max_items); // Limit to allowed items
+            i < top; // Limit to allowed items
             i++
         ) {
             if (me.children.length <= i) await me.addItem({silent: true}); // Make room on demand
@@ -207,12 +208,12 @@ export class list extends SmarkField {
                 options: me.options,
             });
         };
-        // Clear items over imported data if min_items is greater:
+        // Reset items over imported data if min_items is greater:
         for (
             let i = data.length;
             i < me.children.length; // (Due to min_items)
             i++
-        ) me.children[i].clear({silent: true});
+        ) me.children[i].reset({silent: true});
         if (focus) me.focus();
         return; // await me.export(null, {silent: true});
     };//}}}

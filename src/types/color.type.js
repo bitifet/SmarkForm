@@ -65,7 +65,9 @@ export class color extends input {
         );
 
         // Remember original "style" attribute and update if appropriate:
-        me.defaultStyleAttr = me.targetFieldNode.getAttribute("style") + ";";
+        me.defaultStyleAttr = me.targetFieldNode.getAttribute("style") || "";
+        if (!! me.defaultStyleAttr) me.defaultStyleAttr += "; ";
+
         if (! me.isDefined) me.targetFieldNode.setAttribute(
             "style"
             , me.defaultStyleAttr + disabled_style
