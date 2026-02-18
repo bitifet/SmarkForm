@@ -60,7 +60,7 @@ export class form extends SmarkField {
     };//}}}
     @action
     @import_from_target
-    async import(data, {focus = false} = {}) {//{{{
+    async import(data, {focus = false, silent = false} = {}) {//{{{
         const me = this;
         if (data === undefined) {
             data = me.defaultValue; // Undefined clears to default:
@@ -87,13 +87,13 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import(data[key], {focus, silent: true});
+                        const value = await target.import(data[key], {focus: focus && !silent, silent});
                         return [key, value];
                     }
                 )
             )
         );
-        if (focus) me.focus();
+        if (focus && !silent) me.focus();
         return retv;
     };//}}}
     async isEmpty() {//{{{
