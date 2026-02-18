@@ -51,6 +51,7 @@ export class radio extends input {
     @action
     @import_from_target
     async import(data = null, {focus = false} = {}) {//{{{
+        if (! this.radioButtons) return; // Prevent initialization import from non master radios.
         const selected = this.radioButtons.find(r=>r.value === data);
         if (selected) {
             selected.checked = true;

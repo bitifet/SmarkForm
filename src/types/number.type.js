@@ -31,16 +31,17 @@ export class number extends input {
     };//}}}
     @action
     // (Done in parent class) @import_from_target
-    async import(data = null, options = {}) {//{{{
+    async import(data, options = {}) {//{{{
         const me = this;
-        const typename = typeof data;
         if (me.isSingleton) return await super.import(data, options); // Overload only inner field
-        const retv =  await super.import((
+        // Undefined clears to default:
+        if (data === undefined) data = me.defaultValue;
+        const typename = typeof data;
+        return await super.import((
             typename == "number" ? data
             : typename == "string" && data.length && ! isNaN(data) ? Number(data)
             : null
         ), options);
-        return retv;
     };//}}}
     async isEmpty() {//{{{
         const me = this;

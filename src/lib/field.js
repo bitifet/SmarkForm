@@ -16,36 +16,39 @@ export class SmarkField extends SmarkComponent {
                 , this.targetNode.getAttribute("name")
             );
         };
-        if (this.options.hasOwnProperty("value")) {
-            if (this.targetNode.getAttribute("value") !== null) { // Conflict
-                throw this.renderError(
-                    'VALUE_CONFLICT'
-                    , `Initial value specied both as "value" option and HTML "value" attribute.`
-                );
-            };
-            this.onRendered(()=>{
-                // This situation won't occur until after rendering, allowing
-                // for modifications to defaultValue in constructors of
-                // derived classes.
-                this.defaultValue = this.options.value;
-                this.reset();
-            });
+        const hasValueAttr = this.targetNode.getAttribute("value") !== null;
+        const hasValueOption = this.options.hasOwnProperty("value");
+        if (hasValueAttr && hasValueOption) { // Conflict
+            throw this.renderError(
+                'VALUE_CONFLICT'
+                , `Initial value specied both as "value" option and HTML "value" attribute.`
+            );
+        };
+        this.onRendered(()=>{
+            // This situation won't occur until after rendering, allowing
+            // for modifications to defaultValue in constructors of
+            // derived classes.
+            this.defaultValue = (
+                hasValueOption ? this.options.value
+                : hasValueAttr ? this.targetNode.getAttribute("value")
+                : this.emptyValue
+            );
             if ( this.targetFieldNode) {
                 this.targetNode.setAttribute("value", this.defaultValue);
             };
-        };
+            this.reset();
+        });
     };
     @action
     async clear(_data, options = {}) {//{{{
         // Clear removes all user-provided values, resetting to type-level empty state
         // (ignoring any configured defaults)
-        const clearValue = this.emptyValue !== undefined ? this.emptyValue : undefined;
-        await this.import(clearValue, {silent: true, ...options});
+        await this.import(this.emptyValue, {silent: true, ...options});
     };//}}}
     @action
     async reset(_data, options = {}) {//{{{
         // Reset reverts to the configured default values (including any prepopulated defaults)
-        await this.import(this.defaultValue, {silent: true, ...options});
+        await this.import(undefined, {silent: true, ...options});
     };//}}}
     // Note: Future 'null' action would explicitly set the entire form/field to null.
     // For nested forms, this would set the form value to null rather than clearing fields.

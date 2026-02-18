@@ -1088,6 +1088,14 @@ usability by default:
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
+<button
+    data-smark='{"action":"reset","context":"periods","hotkey":"r"}'
+    style="float: right; margin-top: 1em"
+>♻️ Reset Periods</button>
+<button
+    data-smark='{"action":"clear","context":"periods","hotkey":"x"}'
+    style="float: right; margin-top: 1em"
+>❌ Clear Periods</button>
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
