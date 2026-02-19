@@ -177,6 +177,7 @@ export class list extends SmarkField {
     };//}}}
     @action
     @import_from_target
+    @mutex("list_import")
     async import(data, {focus = false, silent = false} = {}) {//{{{
         const me = this;
         // Undefined clears to default:
