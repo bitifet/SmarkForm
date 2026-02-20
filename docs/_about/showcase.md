@@ -1059,7 +1059,7 @@ usability by default:
 {% raw %} <!-- nested_schedule_table_duplicable {{{ --> {% endraw %}
 {% capture nested_schedule_table_duplicable
 %}<h2>🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0}'>
     <fieldset data-smark='{"role": "empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
     <fieldset style='margin-top: 1em'>
         <legend>Period
@@ -1088,14 +1088,6 @@ usability by default:
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
-<button
-    data-smark='{"action":"reset","context":"periods","hotkey":"r"}'
-    style="float: right; margin-top: 1em"
->♻️ Reset Periods</button>
-<button
-    data-smark='{"action":"clear","context":"periods","hotkey":"x"}'
-    style="float: right; margin-top: 1em"
->❌ Clear Periods</button>
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1254,9 +1246,87 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- demoValue {{{ --> {% endraw %}
+{% capture demoValue %}{
+    "periods": [
+        {
+            "start_date": "2025-01-01",
+            "end_date": "2025-05-31",
+            "schedules": {
+                "rcpt_schedule": [
+                    {
+                        "start": "00:00:00",
+                        "end": "23:59:59"
+                    }
+                ],
+                "bar_schedule": [
+                    {
+                        "start": "10:00:00",
+                        "end": "23:30:00"
+                    }
+                ],
+                "restaurant_schedule": [
+                    {
+                        "start": "07:30:00",
+                        "end": "10:30:00"
+                    },
+                    {
+                        "start": "13:00:00",
+                        "end": "15:30:00"
+                    },
+                    {
+                        "start": "19:00:00",
+                        "end": "22:00:00"
+                    }
+                ],
+                "pool_schedule": []
+            }
+        },
+        {
+            "start_date": "2025-06-01",
+            "end_date": "2025-09-30",
+            "schedules": {
+                "rcpt_schedule": [
+                    {
+                        "start": "00:00:00",
+                        "end": "23:59:59"
+                    }
+                ],
+                "bar_schedule": [
+                    {
+                        "start": "10:00:00",
+                        "end": "23:30:00"
+                    }
+                ],
+                "restaurant_schedule": [
+                    {
+                        "start": "07:30:00",
+                        "end": "10:30:00"
+                    },
+                    {
+                        "start": "13:00:00",
+                        "end": "15:30:00"
+                    },
+                    {
+                        "start": "19:00:00",
+                        "end": "22:00:00"
+                    }
+                ],
+                "pool_schedule": [
+                    {
+                        "start": "09:30:00",
+                        "end": "19:30:00"
+                    }
+                ]
+            }
+        }
+    ]
+}{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table_duplicable"
     htmlSource=nested_schedule_table_duplicable
+    demoValue=demoValue
     notes=notes
     cssSource=schedule_table_css
     selected="preview"
