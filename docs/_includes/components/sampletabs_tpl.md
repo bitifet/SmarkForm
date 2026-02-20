@@ -49,6 +49,13 @@ For further details, please refer to the following documentation files:
     value: {
         demo: {{ include.demoValue }}
     }
+});
+myForm.on("BeforeAction_reset", async function(ev) {
+    ev.preventDefault();
+    const editorField = myForm.find("editor");
+    const editorValue = editorField ? await editorField.actions.export(null, {silent: true}) : undefined;
+    const data = editorValue !== undefined ? {...myForm.defaultValue, editor: editorValue} : myForm.defaultValue;
+    await myForm.actions.import(data, {silent: true});
 });{% endcapture %}
   {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
     value: {{ include.demoValue }}
