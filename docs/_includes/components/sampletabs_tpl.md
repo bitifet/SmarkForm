@@ -110,7 +110,7 @@ For further details, please refer to the following documentation files:
 █    title="Import 'editor' textarea contents to 'demo' subform"
 █    >⬆️ Import</button></span>
 █<span><button
-█    data-smark='{"action":"reset","context":"demo"}'
+█    data-smark='{"action":"reset","context":"/"}'
 █    title="Reset the demo form to its default values"
 █    >♻️ Reset</button></span>
 █<span><button
