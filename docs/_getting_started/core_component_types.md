@@ -123,9 +123,12 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "name": "Jane", "surname": "Smith", "user_name": "jsmith", "phone": "+1 555 234 5678", "address": "123 Main St, Springfield", "email": "jane.smith@example.com" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="input_example"
     htmlSource=input_example
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -196,9 +199,12 @@ would be cleared.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "color": "#3a7bd5" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="no_singleton_example"
     htmlSource=no_singleton_example
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -222,9 +228,12 @@ but, also, **it could avoid future issues** in case of field name being changed
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "bgcolor": "#e74c3c" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="singleton_example"
     htmlSource=singleton_color_example
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -265,9 +274,12 @@ component type providding extra sanitation (when importing) and formatting
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "price": 49.99, "date": "2025-06-15" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="number_and_date_example"
     htmlSource=number_and_date_example
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -318,9 +330,12 @@ selected pure black (#000000) or simply overlooked the field altogether.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "bgcolor": "#27ae60" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="color_example"
     htmlSource=color_example
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -356,9 +371,12 @@ endcapture %}
 </p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "color": "#9b59b6", "number": 42, "date": "2025-03-20" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="clear_others_example"
     htmlSource=clear_others_example
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}

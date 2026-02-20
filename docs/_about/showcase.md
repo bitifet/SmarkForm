@@ -740,10 +740,13 @@ examples simple and focused on the subject they are intended to illustrate.
 source code:
 
 
+{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms_full"
     htmlSource=nested_forms
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     showEditorSource=true
     selected="html"
@@ -824,11 +827,14 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "schedule": [{"start": "09:00:00", "end": "13:00:00"}, {"start": "14:00:00", "end": "18:00:00"}] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
     htmlSource=schedule_list
     notes=include.notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -930,12 +936,15 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00:00", "end": "23:59:59"}], "bar_schedule": [{"start": "11:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:30:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}] } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
     htmlSource=schedule_table
     cssSource=schedule_table_css
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -985,12 +994,15 @@ every list item and so forth to any depth.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00:00", "end": "23:00:00"}], "bar_schedule": [{"start": "10:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:00:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}]}} ] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
     htmlSource=nested_schedule_table
     cssSource=schedule_table_css
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -1343,10 +1355,13 @@ Let's recall the example showing the full HTML source in the [Deeply nested
 forms](#deeply-nested-forms) section:
 
 
+{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms_bis"
     htmlSource=nested_forms
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     showEditorSource=true
     tests=false
@@ -1445,12 +1460,15 @@ prefills the prompt dialog with the JSON export of the whole form.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
+{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms_with_load_save"
     htmlSource=nested_forms_with_load_save
     jsSource=form_export_example_import_export_js
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     addLoadSaveButtons=true
     showEditorSource=true
@@ -1649,11 +1667,14 @@ endcapture %}
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_autodisable"
     htmlSource=simple_list_autodisable
     cssSource=simple_list_autodisable_css
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -1730,11 +1751,14 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys"
     htmlSource=simple_list_hotkeys
     cssSource=simple_list_hotkeys_css
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -1803,11 +1827,14 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
+{% capture demoValue %}{ "name": "John", "surname": "Doe", "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context
     cssSource=simple_list_hotkeys_css
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
