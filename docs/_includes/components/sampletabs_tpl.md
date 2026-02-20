@@ -45,11 +45,7 @@ For further details, please refer to the following documentation files:
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
 {% if include.demoValue and include.demoValue != '-' %}
-  {% capture default_jsHead %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {
-        demo: {{ include.demoValue }}
-    }
-});{% endcapture %}
+  {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
     value: {{ include.demoValue }}
 });{% endcapture %}
@@ -88,6 +84,12 @@ For further details, please refer to the following documentation files:
     {% assign formOptions_inner = s | slice: 1, inner_len | prepend: ', ' %}
 {% endif %}
 
+{% if demoValue != '-' %}
+{% assign demoValue_inner = ',"value":' | append: demoValue %}
+{% else %}
+{% assign demoValue_inner = '' %}
+{% endif %}
+
 
 {% assign current_tab = include.selected | default: "html" %}
 {% assign showEditor = include.showEditor | default: false %}
@@ -110,7 +112,7 @@ For further details, please refer to the following documentation files:
 █    title="Import 'editor' textarea contents to 'demo' subform"
 █    >⬆️ Import</button></span>
 █<span><button
-█    data-smark='{"action":"reset","context":"/"}'
+█    data-smark='{"action":"reset","context":"demo"}'
 █    title="Reset the demo form to its default values"
 █    >♻️ Reset</button></span>
 █<span><button
@@ -152,7 +154,7 @@ endcapture %}
 {% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
+        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}{{ demoValue_inner | raw }}}' style="flex-grow: 1">{{
 htmlSource | replace: "█", "            "
 }}        </div>
         <div style="display: flex; justify-content: space-evenly">
