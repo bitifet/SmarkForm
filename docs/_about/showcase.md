@@ -1071,7 +1071,7 @@ usability by default:
 {% raw %} <!-- nested_schedule_table_duplicable {{{ --> {% endraw %}
 {% capture nested_schedule_table_duplicable
 %}<h2>🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0}'>
+<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
     <fieldset data-smark='{"role": "empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
     <fieldset style='margin-top: 1em'>
         <legend>Period
@@ -1128,26 +1128,18 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
 
     const removePeriodBtn = await page.getByRole('button', { name: '➖' }).nth(0);
     const duplicatePeriodBtn = await page.getByRole('button', { name: '✨' }).nth(0);
-    const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
+    ///const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
     const schtbl = await page.getByRole('table').nth(0);
     const addIntervalBtns = await schtbl.getByRole('button', { name: '➕' });
     const removeIntervalBtns = await schtbl.getByRole('button', { name: '➖' });
 
     expect(
         await countPeriods()
-        , "Empty list with min_items=0 renders with no items"
-    ).toStrictEqual(0);
-
-    // Add one period to start testing:
-    await addPeriodBtn.click();
-
-    expect(
-        await countPeriods()
-        , "Adding a period works"
+        , "List with an item in its value render with that value no matter smaller min_items value"
     ).toStrictEqual(1);
 
     expect(await removePeriodBtn
-        , "Remove item button is enabled (min_items=0 allows removal)"
+        , "Remove item button is not yet disabled"
     ).toBeEnabled();
 
     await addIntervalBtns.nth(0).click(); // Add an interval to the reception schedule
