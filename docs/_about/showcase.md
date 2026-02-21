@@ -1166,6 +1166,10 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
         , "Remove period button is enabled (min_items=0 allows removal)"
     ).toBeEnabled();
 
+    // Fill in dates so we can verify duplication (not just reset) later:
+    await writeField('/periods/0/start_date', '2025-04-01');
+    await writeField('/periods/0/end_date', '2025-09-30');
+
     // Each schedule already has 1 interval from "value":[{}].
     // Add one more interval to reception (1→2):
     await addIntervalBtns.nth(0).click();
@@ -1195,12 +1199,52 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
     ).toBeEnabled();
 
 
+    expect(
+        await readField('/periods')
+        , "Laying the first period out works as expected. "
+        + "Note: exportEmpties:false on schedule lists strips null intervals to [],\n"
+        + "so the interval count is tracked by DOM state rather than exported data."
+    ).toEqual([
+        {
+            start_date: "2025-04-01",
+            end_date: "2025-09-30",
+            schedules: {
+                rcpt_schedule: [],
+                bar_schedule: [],
+                restaurant_schedule: [],
+                pool_schedule: []
+            }
+        }
+    ]);
+
+
     await duplicatePeriodBtn.click();
 
     expect(
-        await countPeriods()
-        , "Duplication creates a second period"
-    ).toStrictEqual(2);
+        await readField('/periods')
+        , "Duplicating the period copies its data (dates are preserved, not reset)"
+    ).toEqual([
+        {
+            start_date: "2025-04-01",
+            end_date: "2025-09-30",
+            schedules: {
+                rcpt_schedule: [],
+                bar_schedule: [],
+                restaurant_schedule: [],
+                pool_schedule: []
+            }
+        },
+        {
+            start_date: "2025-04-01",
+            end_date: "2025-09-30",
+            schedules: {
+                rcpt_schedule: [],
+                bar_schedule: [],
+                restaurant_schedule: [],
+                pool_schedule: []
+            }
+        }
+    ]);
 
 
     // Remove all periods:
