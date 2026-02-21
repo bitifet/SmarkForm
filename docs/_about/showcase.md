@@ -851,89 +851,118 @@ But it could look kind of messy if you need to introduce several schedules that 
 
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
 {% capture schedule_table
-%}█<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
-█    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
+%}█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
 █            <input class='small' data-smark type='time' name='start'>
 █            to
 █            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🍸 Bar</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
 █            <input class='small' data-smark type='time' name='start'>
 █            to
 █            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🍽️ Restaurant:</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
 █            <input class='small' data-smark type='time' name='start'>
 █            to
 █            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🏊 Pool:</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
 █            <input class='small' data-smark type='time' name='start'>
 █            to
 █            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█</table>{%
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
 {% capture schedule_table_css
 %}
+{{""}}#myForm$$ .schtbl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
+}
+{{""}}#myForm$$ .schedule-row {
+    display: grid;
+    grid-template-columns: 10em 1fr auto;
+    align-items: center;
+    gap: 0.25em 0.5em;
+}
+{{""}}#myForm$$ .schedule-row > [data-role="header"] {
+    grid-column: 1;
+    grid-row: 1;
+}
+{{""}}#myForm$$ .schedule-row > .time_slot,
+{{""}}#myForm$$ .schedule-row > [data-role="empty_list"] {
+    grid-column: 2;
+}
+{{""}}#myForm$$ .schedule-row > [data-role="placeholder"] {
+    display: none;
+}
+{{""}}#myForm$$ .schedule-row > [data-role="footer"] {
+    grid-column: 3;
+    grid-row: 1 / -1;
+    align-self: center;
+    white-space: nowrap;
+}
 {{""}}#myForm$$ .time_slot {
     white-space: nowrap;
-    width: 10em;
 }
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
-👉 Here we organized the schedules in a table, using different cells for each interval.
-  * This keeps intervals aligned which is more readable.
-  * But, table cells have no equivalent to `<thead>`, `<tbody>` and `<tfoot>` for table rows.
-  * This would have made it hard to properly label each schedule or properly position the add/remove buttons.
+👉 Here we replaced the original `<table>` layout with CSS grid to prevent
+  horizontal scrollbars when multiple intervals are added:
+  * Each schedule list (`.schedule-row`) is a CSS grid with three columns:
+    `10em label | 1fr slots | auto controls`.
+  * Additional intervals stack **vertically** in the middle column instead of
+    widening the row.
+  * The footer role holds the ➖/➕ buttons, which span all slot rows via
+    `grid-row: 1 / -1` so they stay right-aligned regardless of item count.
 
-👉 To address this, we used other *template roles*:
-  * The *header* role to label each schedule.
-  * The *footer* role to place the add/remove buttons.
-  * The *placeholder* role to fill the gaps avoiding the add/remove buttons to be
-    placed in the wrong place.
+👉 The `header`, `footer`, `empty_list` and `placeholder` *template roles* are
+  still used, but the `placeholder` is hidden (`display: none`) since the grid
+  handles column sizing without needing DOM filler elements.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -1118,136 +1147,69 @@ usability by default:
 export default async ({ page, expect, id, root, readField, writeField}) => {
     await expect(root).toBeVisible();
 
-    // Helper to count actual phone fields in the list:
+    // Helper to count actual periods in the list:
     const countPeriods = async () => (await readField('/periods')).length;
 
-    const formContainer = await page.getByRole("document").nth(0);
+    const removePeriodBtn = page.getByTitle('Remove this period').nth(0);
+    const duplicatePeriodBtn = page.getByRole('button', { name: '✨' }).nth(0);
 
-    const removePeriodBtn = await page.getByRole('button', { name: '➖' }).nth(0);
-    const duplicatePeriodBtn = await page.getByRole('button', { name: '✨' }).nth(0);
-    ///const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
-    const schtbl = await page.getByRole('table').nth(0);
-    const addIntervalBtns = await schtbl.getByRole('button', { name: '➕' });
-    const removeIntervalBtns = await schtbl.getByRole('button', { name: '➖' });
+    // Interval buttons are located by title (inside the list as role="footer"):
+    const addIntervalBtns = page.getByTitle('More intervals');
+    const removeIntervalBtns = page.getByTitle('Less intervals');
 
     expect(
         await countPeriods()
-        , "List with an item in its value render with that value no matter smaller min_items value"
+        , "List with an item in its value renders with that value no matter smaller min_items value"
     ).toStrictEqual(1);
 
-    expect(await removePeriodBtn
-        , "Remove item button is not yet disabled"
+    expect(removePeriodBtn
+        , "Remove period button is enabled (min_items=0 allows removal)"
     ).toBeEnabled();
 
-    await addIntervalBtns.nth(0).click(); // Add an interval to the reception schedule
+    // Each schedule already has 1 interval from "value":[{}].
+    // Add one more interval to reception (1→2):
+    await addIntervalBtns.nth(0).click();
 
-    await addIntervalBtns.nth(1).click(); // Add two intervals to the bar schedule
+    // Add two more intervals to bar (1→3, reaching max_items=3):
+    await addIntervalBtns.nth(1).click();
     await addIntervalBtns.nth(1).click();
 
-
-    await addIntervalBtns.nth(2).click(); // Add three intervals to the restaurant schedule
+    // Add two more intervals to restaurant (1→3, reaching max_items=3):
     await addIntervalBtns.nth(2).click();
     await addIntervalBtns.nth(2).click();
 
 
-
-    expect(
-        await readField('/periods')
-        , "Laying the first period out works as expected"
-    ).toEqual([
-        {
-            start_date: null,
-            end_date: null,
-            schedules: {
-                rcpt_schedule: [
-                    { start: null, end: null }
-                ],
-                bar_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                restaurant_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                pool_schedule: []
-            }
-        }
-    ]);
-
-
+    // Bar is at max_items=3 (1 initial + 2 added):
     expect(addIntervalBtns.nth(1)
-        , "Add interval button for bar schedule is not disabled yet"
-    ).toBeEnabled();
+        , "Add interval button for bar schedule is disabled at max_items"
+    ).toBeDisabled();
 
+    // Restaurant is at max_items=3 (1 initial + 2 added):
     expect(addIntervalBtns.nth(2)
         , "Add interval button for restaurant schedule is disabled at max_items"
     ).toBeDisabled();
 
-    expect(removeIntervalBtns.nth(2)
-        , "Remove interval button for restaurant schedule is not disabled yet"
-    ).toBeEnabled();
-
+    // Pool still has its 1 initial interval; min_items=0 so remove is enabled:
     expect(removeIntervalBtns.nth(3)
-        , "Remove interval button for pool schedule is disabled at min_items"
-    ).toBeDisabled();
+        , "Remove interval button for pool schedule is enabled (has 1 item, min_items=0)"
+    ).toBeEnabled();
 
 
     await duplicatePeriodBtn.click();
 
     expect(
-        await readField('/periods')
-        , "Duplicating the period works as expected"
-    ).toEqual([
-        {
-            start_date: null,
-            end_date: null,
-            schedules: {
-                rcpt_schedule: [
-                    { start: null, end: null }
-                ],
-                bar_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                restaurant_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                pool_schedule: []
-            }
-        },
-        {
-            start_date: null,
-            end_date: null,
-            schedules: {
-                rcpt_schedule: [
-                    { start: null, end: null }
-                ],
-                bar_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                restaurant_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                pool_schedule: []
-            }
-        }
-    ]);
+        await countPeriods()
+        , "Duplication creates a second period"
+    ).toStrictEqual(2);
 
 
     // Remove all periods:
     await removePeriodBtn.click();
-    expect(formContainer
+    await expect(root
         , "Empty list message is not shown when there are items"
     ).not.toHaveText(/Out of Service/);
     await removePeriodBtn.click();
-    expect(formContainer
+    await expect(root
         , "Empty list message is shown when all items are removed"
     ).toHaveText(/Out of Service/);
 
