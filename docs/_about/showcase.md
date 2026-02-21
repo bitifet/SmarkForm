@@ -45,6 +45,7 @@ featured ones.
     * [More on lists](#more-on-lists)
     * [Nested lists and forms](#nested-lists-and-forms)
     * [Item duplication and closure state](#item-duplication-and-closure-state)
+    * [A note on empty values](#a-note-on-empty-values)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
@@ -851,7 +852,7 @@ But it could look kind of messy if you need to introduce several schedules that 
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
 {% capture schedule_table
 %}█<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
-█    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+█    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
 █        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
 █        <td class='time_slot'>
@@ -865,7 +866,7 @@ But it could look kind of messy if you need to introduce several schedules that 
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
 █        </td>
 █    </tr>
-█    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+█    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
 █        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
 █        <td class='time_slot'>
@@ -879,7 +880,7 @@ But it could look kind of messy if you need to introduce several schedules that 
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
 █        </td>
 █    </tr>
-█    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+█    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
 █        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
 █        <td class='time_slot'>
@@ -893,7 +894,7 @@ But it could look kind of messy if you need to introduce several schedules that 
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
 █        </td>
 █    </tr>
-█    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+█    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
 █        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
 █        <td class='time_slot'>
@@ -1044,9 +1045,9 @@ poor usability.
 
 To address these issues we can do the following:
 
-  * **To ease adding new items:** Add a custom *addItem* trigger with the
-    *source* property so that users can duplicate an entry and just edit what’s
-    different. To do so:
+  * **To ease adding new items:** Add a custom *addItem* trigger using the
+    *source* property to duplicate an entry and just edit what’s different. To do
+    so:
     - Use the *source* property in that *addItem* trigger so that the
       *import* action will be automatically called with its value passed as its
       *target* after the new item being rendered.
@@ -1057,11 +1058,7 @@ To address these issues we can do the following:
     - Allow the list to be empty by setting its *min_items* to 0.
     - Set the lists's *value* property to an array with one empty item (we can
       use an empty object to allow item defaults).
-    - Optionally, we can also set *exportEmpties* to true to avoid the list
-      being exported (and possibly imported in the future) empty if the initial
-      item does not get filled.
     - I.e. `data-smark='{"min_items":0,"value": [{}]}'`.
-
 
 Below is the same example as before, but with an additional `✨` button to
 *duplicate* the data from the previous one and the before mentioned tweaks to
@@ -1345,6 +1342,30 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
     showEditor=true
     tests=nested_schedule_table_duplicable_tests
 %}
+
+
+### A note on empty values
+
+Take a look to the HTML source of the previous example and pay attention to
+where and how the *exportEntries* property is used in the lists:
+
+  * **For the *periods* list** we set *exportEmpties* to true, overidding its
+    default value (false).
+    - This way, if a period is added (intentional), it gets exported even if
+      not filled.
+    - This is because the user may be saving his work to continue later or just
+      mean there is a period but we don't know its data yet.
+
+  * **For the schedules lists** we set *exportEmpties* to false (necessary to
+    prevent inheriting the true value we just set). This way:
+    - When a period is added, all schedules are layed out with their default
+      value (one empty time interval ready to be filled).
+    - If the user leaves any unfilled (because of being inappropriate) and
+      neglects removing it, it will be just swallowed when exporting the form
+      data.
+    - This way, when importing the exported data (or if item is duplicated with
+      the `✨` button), the unfilled intervals are correctly shown as
+      "(Closed)".
 
 
 ## Import and Export Data
