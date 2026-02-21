@@ -100,10 +100,13 @@ JSON data and see what happen.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "name": "Maria", "surname": "García" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_form"
     htmlSource=simple_form_example
     notes=simple_form_example_notes
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -263,11 +266,14 @@ and/or emails).
 {% raw %} <!-- }}} --> {% endraw %}
 
 
+{% capture demoValue %}{ "userId": "0042", "personal_data": { "name": "John", "surname": "Doe", "contact": { "phone": "+1 555 867 5309", "email": "john.doe@example.com" } } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms"
     htmlSource=nested_forms_example
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -329,10 +335,13 @@ phones: not an array of objects with a phone...
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 234 5678", "+1 555 876 4321", "+1 555 100 2000"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="fixed_list"
     htmlSource=fixed_list_example
     notes=fixed_list_example_notes
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -393,11 +402,14 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} ]() --> {% endraw %}
 
+{% capture demoValue %}{ "pets": [ {"species": "cat", "name": "Whiskers"}, {"species": "dog", "name": "Rex"} ] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="pets_list"
     htmlSource=pets_list_example
     cssSource=pets_list_example_css
     notes=pets_list_example_notes
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}

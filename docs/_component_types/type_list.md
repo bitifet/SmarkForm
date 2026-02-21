@@ -130,11 +130,14 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "users": [ {"name": "Alice Johnson", "phone": "+1 555 234 5678", "email": "alice.j@example.com"}, {"name": "Bob Smith", "phone": "+1 555 876 4321", "email": "bob.smith@example.com"} ] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list"
     htmlSource=simple_list_example
     cssSource=generic_sample_css
     notes=simple_list_example_notes
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -168,10 +171,13 @@ like in the following example.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 100 2000", "+1 555 200 3000"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="scalar_list"
     htmlSource=scalar_list_example
     cssSource=generic_sample_css
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -212,10 +218,13 @@ inside.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 100 2000", "+1 555 200 3000"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="singleton_list"
     htmlSource=singleton_list_example
     cssSource=generic_sample_css
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -270,10 +279,13 @@ say, up to three phone numbers and up to three emails.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "users": [ {"name": "Alice Johnson", "phones": ["+1 555 234 5678", "+1 555 876 4321"]} ] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nesting_list"
     htmlSource=nesting_list_example
     cssSource=generic_sample_css
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}

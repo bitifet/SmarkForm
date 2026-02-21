@@ -320,9 +320,27 @@ npm run dev                # Watch library + serve docs
 node scripts/collect-docs-examples.js  # Collect docs examples
 ```
 
-## Getting Help
+## Agent Knowledge Directory (`AGENTS/`)
 
-- **Issue tracker**: [GitHub Issues](https://github.com/bitifet/SmarkForm/issues)
+The `AGENTS/` directory at the repository root contains specialised knowledge files for coding agents. These files capture patterns, gotchas, and implementation details that are not obvious from reading the source code.
+
+| File | Contents |
+|------|----------|
+| `AGENTS/SmarkForm-Usage.md` | How to write SmarkForm HTML/CSS/JS — component types, list template roles, button context patterns, CSS grid layout, `exportEmpties` behaviour |
+| `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
+
+**Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
+
+### Keeping `AGENTS/` Up to Date
+
+When you discover a new pattern, fix a bug caused by an undocumented constraint, or find that an existing entry in `AGENTS/` is incorrect or incomplete:
+
+1. **Update or create the relevant file** in `AGENTS/` as part of the same commit.
+2. **Add new entries** for anything you had to learn the hard way — gotchas, non-obvious constraints, error messages and their root causes.
+3. **Correct inaccurate entries** whenever you verify that something documented is wrong.
+4. You do not need a special PR description sentence to update `AGENTS/` files — just do it as part of your normal work.
+
+
 - **Contributing**: See `CONTRIBUTING.md`
 - **Documentation**: [https://smarkform.bitifet.net](https://smarkform.bitifet.net)
 

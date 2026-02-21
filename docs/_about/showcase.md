@@ -45,6 +45,7 @@ featured ones.
     * [More on lists](#more-on-lists)
     * [Nested lists and forms](#nested-lists-and-forms)
     * [Item duplication and closure state](#item-duplication-and-closure-state)
+    * [A note on empty values](#a-note-on-empty-values)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
@@ -740,10 +741,13 @@ examples simple and focused on the subject they are intended to illustrate.
 source code:
 
 
+{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms_full"
     htmlSource=nested_forms
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     showEditorSource=true
     selected="html"
@@ -824,11 +828,14 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "schedule": [{"start": "09:00:00", "end": "13:00:00"}, {"start": "14:00:00", "end": "18:00:00"}] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
     htmlSource=schedule_list
     notes=include.notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -844,91 +851,163 @@ But it could look kind of messy if you need to introduce several schedules that 
 
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
 {% capture schedule_table
-%}█<table data-smark='{"type":"form","name":"schedules"}' style="width: 30em">
-█    <tr data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🛎️ Reception:</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+%}█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█    <tr data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍸 Bar</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🍸 Bar</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█    <tr data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🍽️ Restaurant:</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🍽️ Restaurant:</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█    <tr data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
-█        <th data-smark='{"role":"header"}' style="width: 10em; text-align:left">🏊 Pool:</th>
-█        <td data-smark='{"role":"empty_list"}' class='time_slot'>(Closed)</td>
-█        <td class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
-█        </td>
-█        <td data-smark='{"role":"placeholder"}' class='time_slot'></td>
-█        <td data-smark='{"role":"footer"}' style='text-align: right'>
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█    <div class="schedule-row" data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+█        <strong data-smark='{"role":"header"}'>🏊 Pool:</strong>
+█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+█        </span>
+█        <span data-smark='{"role":"placeholder"}'></span>
+█        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intrevals'>➕</button>
-█        </td>
-█    </tr>
-█</table>{%
+█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+█        </span>
+█    </div>
+█</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
 {% capture schedule_table_css
 %}
-{{""}}#myForm$$ .time_slot {
-    white-space: nowrap;
-    width: 10em;
+{{""}}#myForm$$ .schtbl {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1em;
 }
+{{""}}#myForm$$ .schedule-row {
+    display: grid;
+    grid-template-columns: 10em 1fr auto;
+    align-items: start;
+    gap: 0.25em 0.5em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.3em;
+}
+{{""}}#myForm$$ .schedule-row:nth-child(even) {
+    background-color: rgba(128, 128, 128, 0.08);
+}
+{{""}}#myForm$$ .schedule-row > [data-role="header"] {
+    grid-column: 1;
+    grid-row: 1;
+    padding-top: 0.3em;
+}
+{{""}}#myForm$$ .schedule-row > .time_slot,
+{{""}}#myForm$$ .schedule-row > [data-role="empty_list"] {
+    grid-column: 2;
+}
+{{""}}#myForm$$ .schedule-row > [data-role="placeholder"] {
+    display: none;
+}
+{{""}}#myForm$$ .schedule-row > [data-role="footer"] {
+    grid-column: 3;
+    grid-row: 1 / -1;
+    align-self: center;
+    white-space: nowrap;
+}
+{{""}}#myForm$$ .time_slot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.4em;
+    align-items: center;
+}
+{{""}}#myForm$$ .time_from,
+{{""}}#myForm$$ .time_to {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+    white-space: nowrap;
+}
+{{""}}#myForm$$ .period-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25em 1.5em;
+    align-items: baseline;
+    margin: 0.3em 0;
+}
+{{""}}#myForm$$ .period-date {
+    white-space: nowrap;
+}
+{{""}}@media (max-width: 30em) {
+{{""}}  #myForm$$ .schedule-row {
+{{""}}      grid-template-columns: 1fr auto;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > [data-role="header"] {
+{{""}}      grid-column: 1;
+{{""}}      grid-row: 1;
+{{""}}      padding-top: 0;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > .time_slot,
+{{""}}  #myForm$$ .schedule-row > [data-role="empty_list"] {
+{{""}}      grid-column: 1;
+{{""}}      padding-left: 0.5em;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > [data-role="footer"] {
+{{""}}      grid-column: 2;
+{{""}}      grid-row: 2 / -1;
+{{""}}  }
+{{""}}}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes %}
-👉 Here we organized the schedules in a table, using different cells for each interval.
-  * This keeps intervals aligned which is more readable.
-  * But, table cells have no equivalent to `<thead>`, `<tbody>` and `<tfoot>` for table rows.
-  * This would have made it hard to properly label each schedule or properly position the add/remove buttons.
+👉 Here we replaced the original `<table>` layout with CSS grid to prevent
+  horizontal scrollbars when multiple intervals are added:
+  * Each schedule list (`.schedule-row`) is a CSS grid with three columns:
+    `10em label | 1fr slots | auto controls`.
+  * Additional intervals stack **vertically** in the middle column instead of
+    widening the row.
+  * The footer role holds the ➖/➕ buttons, which span all slot rows via
+    `grid-row: 1 / -1` so they stay right-aligned regardless of item count.
 
-👉 To address this, we used other *template roles*:
-  * The *header* role to label each schedule.
-  * The *footer* role to place the add/remove buttons.
-  * The *placeholder* role to fill the gaps avoiding the add/remove buttons to be
-    placed in the wrong place.
+👉 The `header`, `footer`, `empty_list` and `placeholder` *template roles* are
+  still used, but the `placeholder` is hidden (`display: none`) since the grid
+  handles column sizing without needing DOM filler elements.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00:00", "end": "23:59:59"}], "bar_schedule": [{"start": "11:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:30:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}] } }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
@@ -936,6 +1015,7 @@ endcapture %}
     cssSource=schedule_table_css
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -971,9 +1051,9 @@ every list item and so forth to any depth.
             title='Remove this period'
             style="float: right"
         >➖</button>
-        <p>
-          <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
-          <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+        <p class='period-dates'>
+          <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
+          <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
         </p>
 {{ schedule_table | replace: "█", "                    " }}
     </fieldset>
@@ -985,12 +1065,15 @@ every list item and so forth to any depth.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00:00", "end": "23:00:00"}], "bar_schedule": [{"start": "10:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:00:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}]}} ] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
     htmlSource=nested_schedule_table
     cssSource=schedule_table_css
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -1032,9 +1115,9 @@ poor usability.
 
 To address these issues we can do the following:
 
-  * **To ease adding new items:** Add a custom *addItem* trigger with the
-    *source* property so that users can duplicate an entry and just edit what’s
-    different. To do so:
+  * **To ease adding new items:** Add a custom *addItem* trigger using the
+    *source* property to duplicate an entry and just edit what’s different. To do
+    so:
     - Use the *source* property in that *addItem* trigger so that the
       *import* action will be automatically called with its value passed as its
       *target* after the new item being rendered.
@@ -1045,11 +1128,7 @@ To address these issues we can do the following:
     - Allow the list to be empty by setting its *min_items* to 0.
     - Set the lists's *value* property to an array with one empty item (we can
       use an empty object to allow item defaults).
-    - Optionally, we can also set *exportEmpties* to true to avoid the list
-      being exported (and possibly imported in the future) empty if the initial
-      item does not get filled.
     - I.e. `data-smark='{"min_items":0,"value": [{}]}'`.
-
 
 Below is the same example as before, but with an additional `✨` button to
 *duplicate* the data from the previous one and the before mentioned tweaks to
@@ -1077,9 +1156,9 @@ usability by default:
             title='Duplicate this period'
             style="float: right"
         >✨</button>
-        <p>
-          <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
-          <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+        <p class='period-dates'>
+          <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
+          <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
         </p>
 {{ schedule_table | replace: "█", "                    " }}
     </fieldset>
@@ -1088,14 +1167,6 @@ usability by default:
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
-<button
-    data-smark='{"action":"reset","context":"periods","hotkey":"r"}'
-    style="float: right; margin-top: 1em"
->♻️ Reset Periods</button>
-<button
-    data-smark='{"action":"clear","context":"periods","hotkey":"x"}'
-    style="float: right; margin-top: 1em"
->❌ Clear Periods</button>
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1117,123 +1188,100 @@ usability by default:
 export default async ({ page, expect, id, root, readField, writeField}) => {
     await expect(root).toBeVisible();
 
-    // Helper to count actual phone fields in the list:
+    // Helper to count actual periods in the list:
     const countPeriods = async () => (await readField('/periods')).length;
 
-    const formContainer = await page.getByRole("document").nth(0);
+    const removePeriodBtn = page.getByTitle('Remove this period').nth(0);
+    const duplicatePeriodBtn = page.getByRole('button', { name: '✨' }).nth(0);
 
-    const removePeriodBtn = await page.getByRole('button', { name: '➖' }).nth(0);
-    const duplicatePeriodBtn = await page.getByRole('button', { name: '✨' }).nth(0);
-    ///const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
-    const schtbl = await page.getByRole('table').nth(0);
-    const addIntervalBtns = await schtbl.getByRole('button', { name: '➕' });
-    const removeIntervalBtns = await schtbl.getByRole('button', { name: '➖' });
+    // Interval buttons are located by title (inside the list as role="footer"):
+    const addIntervalBtns = page.getByTitle('More intervals');
+    const removeIntervalBtns = page.getByTitle('Less intervals');
 
     expect(
         await countPeriods()
-        , "List with an item in its value render with that value no matter smaller min_items value"
+        , "List with an item in its value renders with that value no matter smaller min_items value"
     ).toStrictEqual(1);
 
-    expect(await removePeriodBtn
-        , "Remove item button is not yet disabled"
+    expect(removePeriodBtn
+        , "Remove period button is enabled (min_items=0 allows removal)"
     ).toBeEnabled();
 
-    await addIntervalBtns.nth(0).click(); // Add an interval to the reception schedule
+    // Fill in dates so we can verify duplication (not just reset) later:
+    await writeField('/periods/0/start_date', '2025-04-01');
+    await writeField('/periods/0/end_date', '2025-09-30');
 
-    await addIntervalBtns.nth(1).click(); // Add two intervals to the bar schedule
+    // Each schedule already has 1 interval from "value":[{}].
+    // Add one more interval to reception (1→2):
+    await addIntervalBtns.nth(0).click();
+
+    // Add two more intervals to bar (1→3, reaching max_items=3):
+    await addIntervalBtns.nth(1).click();
     await addIntervalBtns.nth(1).click();
 
-
-    await addIntervalBtns.nth(2).click(); // Add three intervals to the restaurant schedule
+    // Add two more intervals to restaurant (1→3, reaching max_items=3):
     await addIntervalBtns.nth(2).click();
     await addIntervalBtns.nth(2).click();
 
+
+    // Bar is at max_items=3 (1 initial + 2 added):
+    expect(addIntervalBtns.nth(1)
+        , "Add interval button for bar schedule is disabled at max_items"
+    ).toBeDisabled();
+
+    // Restaurant is at max_items=3 (1 initial + 2 added):
+    expect(addIntervalBtns.nth(2)
+        , "Add interval button for restaurant schedule is disabled at max_items"
+    ).toBeDisabled();
+
+    // Pool still has its 1 initial interval; min_items=0 so remove is enabled:
+    expect(removeIntervalBtns.nth(3)
+        , "Remove interval button for pool schedule is enabled (has 1 item, min_items=0)"
+    ).toBeEnabled();
 
 
     expect(
         await readField('/periods')
-        , "Laying the first period out works as expected"
+        , "Laying the first period out works as expected. "
+        + "Note: exportEmpties:false on schedule lists strips null intervals to [],\n"
+        + "so the interval count is tracked by DOM state rather than exported data."
     ).toEqual([
         {
-            start_date: null,
-            end_date: null,
+            start_date: "2025-04-01",
+            end_date: "2025-09-30",
             schedules: {
-                rcpt_schedule: [
-                    { start: null, end: null }
-                ],
-                bar_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                restaurant_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
+                rcpt_schedule: [],
+                bar_schedule: [],
+                restaurant_schedule: [],
                 pool_schedule: []
             }
         }
     ]);
 
 
-    expect(addIntervalBtns.nth(1)
-        , "Add interval button for bar schedule is not disabled yet"
-    ).toBeEnabled();
-
-    expect(addIntervalBtns.nth(2)
-        , "Add interval button for restaurant schedule is disabled at max_items"
-    ).toBeDisabled();
-
-    expect(removeIntervalBtns.nth(2)
-        , "Remove interval button for restaurant schedule is not disabled yet"
-    ).toBeEnabled();
-
-    expect(removeIntervalBtns.nth(3)
-        , "Remove interval button for pool schedule is disabled at min_items"
-    ).toBeDisabled();
-
-
     await duplicatePeriodBtn.click();
 
     expect(
         await readField('/periods')
-        , "Duplicating the period works as expected"
+        , "Duplicating the period copies its data (dates are preserved, not reset)"
     ).toEqual([
         {
-            start_date: null,
-            end_date: null,
+            start_date: "2025-04-01",
+            end_date: "2025-09-30",
             schedules: {
-                rcpt_schedule: [
-                    { start: null, end: null }
-                ],
-                bar_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                restaurant_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
+                rcpt_schedule: [],
+                bar_schedule: [],
+                restaurant_schedule: [],
                 pool_schedule: []
             }
         },
         {
-            start_date: null,
-            end_date: null,
+            start_date: "2025-04-01",
+            end_date: "2025-09-30",
             schedules: {
-                rcpt_schedule: [
-                    { start: null, end: null }
-                ],
-                bar_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
-                restaurant_schedule: [
-                    { start: null, end: null },
-                    { start: null, end: null },
-                    { start: null, end: null }
-                ],
+                rcpt_schedule: [],
+                bar_schedule: [],
+                restaurant_schedule: [],
                 pool_schedule: []
             }
         }
@@ -1242,11 +1290,11 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
 
     // Remove all periods:
     await removePeriodBtn.click();
-    expect(formContainer
+    await expect(root
         , "Empty list message is not shown when there are items"
     ).not.toHaveText(/Out of Service/);
     await removePeriodBtn.click();
-    expect(formContainer
+    await expect(root
         , "Empty list message is shown when all items are removed"
     ).toHaveText(/Out of Service/);
 
@@ -1254,15 +1302,117 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- demoValue {{{ --> {% endraw %}
+{% capture demoValue %}{
+    "periods": [
+        {
+            "start_date": "2025-01-01",
+            "end_date": "2025-05-31",
+            "schedules": {
+                "rcpt_schedule": [
+                    {
+                        "start": "00:00:00",
+                        "end": "23:59:59"
+                    }
+                ],
+                "bar_schedule": [
+                    {
+                        "start": "10:00:00",
+                        "end": "23:30:00"
+                    }
+                ],
+                "restaurant_schedule": [
+                    {
+                        "start": "07:30:00",
+                        "end": "10:30:00"
+                    },
+                    {
+                        "start": "13:00:00",
+                        "end": "15:30:00"
+                    },
+                    {
+                        "start": "19:00:00",
+                        "end": "22:00:00"
+                    }
+                ],
+                "pool_schedule": []
+            }
+        },
+        {
+            "start_date": "2025-06-01",
+            "end_date": "2025-09-30",
+            "schedules": {
+                "rcpt_schedule": [
+                    {
+                        "start": "00:00:00",
+                        "end": "23:59:59"
+                    }
+                ],
+                "bar_schedule": [
+                    {
+                        "start": "10:00:00",
+                        "end": "23:30:00"
+                    }
+                ],
+                "restaurant_schedule": [
+                    {
+                        "start": "07:30:00",
+                        "end": "10:30:00"
+                    },
+                    {
+                        "start": "13:00:00",
+                        "end": "15:30:00"
+                    },
+                    {
+                        "start": "19:00:00",
+                        "end": "22:00:00"
+                    }
+                ],
+                "pool_schedule": [
+                    {
+                        "start": "09:30:00",
+                        "end": "19:30:00"
+                    }
+                ]
+            }
+        }
+    ]
+}{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table_duplicable"
     htmlSource=nested_schedule_table_duplicable
+    demoValue=demoValue
     notes=notes
     cssSource=schedule_table_css
     selected="preview"
     showEditor=true
     tests=nested_schedule_table_duplicable_tests
 %}
+
+
+### A note on empty values
+
+Take a look to the HTML source of the previous example and pay attention to
+where and how the *exportEntries* property is used in the lists:
+
+  * **For the *periods* list** we set *exportEmpties* to true, overidding its
+    default value (false).
+    - This way, if a period is added (intentional), it gets exported even if
+      not filled.
+    - This is because the user may be saving his work to continue later or just
+      mean there is a period but we don't know its data yet.
+
+  * **For the schedules lists** we set *exportEmpties* to false (necessary to
+    prevent inheriting the true value we just set). This way:
+    - When a period is added, all schedules are layed out with their default
+      value (one empty time interval ready to be filled).
+    - If the user leaves any unfilled (because of being inappropriate) and
+      neglects removing it, it will be just swallowed when exporting the form
+      data.
+    - This way, when importing the exported data (or if item is duplicated with
+      the `✨` button), the unfilled intervals are correctly shown as
+      "(Closed)".
 
 
 ## Import and Export Data
@@ -1273,10 +1423,13 @@ Let's recall the example showing the full HTML source in the [Deeply nested
 forms](#deeply-nested-forms) section:
 
 
+{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms_bis"
     htmlSource=nested_forms
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     showEditorSource=true
     tests=false
@@ -1375,12 +1528,15 @@ prefills the prompt dialog with the JSON export of the whole form.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
+{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_forms_with_load_save"
     htmlSource=nested_forms_with_load_save
     jsSource=form_export_example_import_export_js
     notes=notes
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     addLoadSaveButtons=true
     showEditorSource=true
@@ -1579,11 +1735,14 @@ endcapture %}
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_autodisable"
     htmlSource=simple_list_autodisable
     cssSource=simple_list_autodisable_css
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -1660,11 +1819,14 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys"
     htmlSource=simple_list_hotkeys
     cssSource=simple_list_hotkeys_css
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
@@ -1733,11 +1895,14 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
+{% capture demoValue %}{ "name": "John", "surname": "Doe", "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context
     cssSource=simple_list_hotkeys_css
     selected="preview"
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}

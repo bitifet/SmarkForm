@@ -16,6 +16,7 @@
 > ✨ Additionally, in the **Preview** tab, yow will find handy buttons:
 >   * `⬇️ Export` to export the form data to the *JSON data viewer/editor*.
 >   * `⬆️ Import` to import data into the form from the *JSON data viewer/editor*.
+>   * `♻️ Reset` to reset the form to its default values.
 >   * `❌ Clear` to reset the form to its initial state.
 
 {% endif %}
@@ -248,6 +249,7 @@ button[data-smark] {
   /* Hide only the Import/Export/Clear action buttons */
   button[data-smark*='"action":"export"'],
   button[data-smark*='"action":"import"'],
+  button[data-smark*='"action":"reset"'],
   button[data-smark*='"action":"clear"'] {
     display: none !important;
   }

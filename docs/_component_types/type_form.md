@@ -107,10 +107,13 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "id": "EMP-001", "personalData": { "name": "Emily", "surname": "Watson", "address": "456 Oak Avenue, Portland" }, "businessData": { "name": "Acme Corp", "address": "789 Business Park, Portland" } }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
    formId="simple_form"
    htmlSource=simple_form_example
    notes=simple_form_example_notes
+   demoValue=demoValue
    showEditor=true
     tests=false
 %}

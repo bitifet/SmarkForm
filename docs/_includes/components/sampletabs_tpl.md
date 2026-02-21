@@ -44,11 +44,20 @@ For further details, please refer to the following documentation files:
 
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
-{% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+{% if include.demoValue and include.demoValue != '-' %}
+  {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+  {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    value: {{ include.demoValue }}
+});{% endcapture %}
+{% else %}
+  {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+  {% assign default_jsHead_display = default_jsHead %}
+{% endif %}
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
 {% assign default_notes = '-' %}
 {% assign default_formOptions = '-' %}
+{% assign default_demoValue = '-' %}
 
 
 {% assign formId = include.formId | default: "FIXME" %}
@@ -58,10 +67,12 @@ For further details, please refer to the following documentation files:
 {% assign htmlSource = include.htmlSource | default: default_htmlSource %}
 {% assign cssSource = include.cssSource | default: default_cssSource %}
 {% assign jsHead = include.jsHead | default: default_jsHead %}
+{% assign jsHead_display = include.jsHead | default: default_jsHead_display %}
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
 {% assign formOptions = include.formOptions | default: default_formOptions %}
+{% assign demoValue = include.demoValue | default: default_demoValue %}
 
 {% if formOptions == '-' %}
 {% assign formOptions_source = "" %}
@@ -71,6 +82,12 @@ For further details, please refer to the following documentation files:
     {% assign s = formOptions %}
     {% assign inner_len = s | size | minus: 2 %}
     {% assign formOptions_inner = s | slice: 1, inner_len | prepend: ', ' %}
+{% endif %}
+
+{% if demoValue != '-' %}
+{% assign demoValue_inner = ',"value":' | append: demoValue %}
+{% else %}
+{% assign demoValue_inner = '' %}
 {% endif %}
 
 
@@ -94,6 +111,10 @@ For further details, please refer to the following documentation files:
 █    data-smark='{"action":"import","context":"demo","target":"../editor"}'
 █    title="Import 'editor' textarea contents to 'demo' subform"
 █    >⬆️ Import</button></span>
+█<span><button
+█    data-smark='{"action":"reset","context":"demo"}'
+█    title="Reset the demo form to its default values"
+█    >♻️ Reset</button></span>
 █<span><button
 █    data-smark='{"action":"clear", "context":"demo"}'
 █    title="Clear the whole form"
@@ -133,7 +154,7 @@ endcapture %}
 {% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
+        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}{{ demoValue_inner | raw }}}' style="flex-grow: 1">{{
 htmlSource | replace: "█", "            "
 }}        </div>
         <div style="display: flex; justify-content: space-evenly">
@@ -220,8 +241,8 @@ endif
 {% if jsHead != '-' or jsSource != '-' %}
 {% capture rendered_jsSource %}
 ```javascript
-{% if jsHead != '-'
-%}{{ jsHead }}{%
+{% if jsHead_display != '-'
+%}{{ jsHead_display }}{%
 endif %}{% if jsHidden != '-'
 %}
 /* ... (Code already discussed) ... */

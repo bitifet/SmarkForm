@@ -635,9 +635,12 @@ example:
 █</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "name": "Alice Johnson", "email": "alice.johnson@example.com" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simplified"
     htmlSource=html_source_simplified
+    demoValue=demoValue
     showEditor=true
     showEditorSource=true
     tests=false

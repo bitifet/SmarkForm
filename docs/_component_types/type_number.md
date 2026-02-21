@@ -57,9 +57,12 @@ set to `number` automatically.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "amount": 42 }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_number"
     htmlSource=simple_number
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}

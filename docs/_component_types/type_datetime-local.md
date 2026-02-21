@@ -69,9 +69,12 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue %}{ "appointmentTime": "2025-06-15T09:30:00" }{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_datetime_local"
     htmlSource=simple_datetime_local
+    demoValue=demoValue
     showEditor=true
     tests=false
 %}
