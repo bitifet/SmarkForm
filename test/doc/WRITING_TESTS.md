@@ -124,6 +124,12 @@ Every example must specify tests=… or tests=false.
 The collector records additional flags for completeness (not used by the runner today but maintained for future use):
 - showEditor, showEditorSource, addLoadSaveButtons
 
+### Docs-only parameters (filtered out by the collector)
+
+Some include parameters exist solely to configure the Jekyll documentation rendering and are explicitly excluded from the test manifest:
+
+- `demoValue`: Seeds the `demo` subform's `defaultValue` in the Jekyll site (embedded into the `demo` div's `data-smark` attribute as `"value": ...`). The test form starts **empty** regardless of `demoValue` — the collector strips it before building the manifest. Write your co-located tests accordingly: don't assume any pre-populated values when `demoValue` is set.
+
 ### Examples
 
 See docs/_test_examples.md for live samples:

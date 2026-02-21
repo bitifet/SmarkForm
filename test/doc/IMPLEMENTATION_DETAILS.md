@@ -50,6 +50,8 @@ Key steps:
   - `formId` used verbatim (not resolved from captures)
   - `tests=false` respected as a literal string
   - Other parameters may reference captures
+- **Docs-only parameters** (filtered out, not passed to tests):
+  - `demoValue`: seeds the `demo` subform's default value in Jekyll via `data-smark` injection. Irrelevant to the test form, which always starts empty. The collector explicitly skips it via the `DOCS_ONLY_PARAMS` set in `collect-docs-examples.js`.
 - Transformations:
   - `█` → spaces
   - `$$` → `-${formId}` (done consistently across HTML/CSS/JS and tests)

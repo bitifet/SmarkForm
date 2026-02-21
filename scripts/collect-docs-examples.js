@@ -198,10 +198,17 @@ function extractExamples(filePath) {
     
     // Resolve parameter values from captures or use directly
     // Note: formId should NOT be resolved from captures - it's used as-is
+    // Note: demoValue is a docs-only parameter (seeds the demo subform's defaultValue in
+    //       Jekyll via data-smark injection). It does NOT affect the test form, which always
+    //       starts empty. The collector explicitly filters it out here.
+    const DOCS_ONLY_PARAMS = new Set(['demoValue']);
     const resolvedParams = {};
     for (const [key, value] of Object.entries(params)) {
       const cleanValue = value;
       
+      // Skip docs-only parameters that are not relevant to test execution
+      if (DOCS_ONLY_PARAMS.has(key)) continue;
+
       // formId is always used directly, not resolved from captures
       if (key === 'formId') {
         resolvedParams[key] = cleanValue;

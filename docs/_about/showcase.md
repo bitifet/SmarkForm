@@ -1128,18 +1128,26 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
 
     const removePeriodBtn = await page.getByRole('button', { name: '➖' }).nth(0);
     const duplicatePeriodBtn = await page.getByRole('button', { name: '✨' }).nth(0);
-    ///const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
+    const addPeriodBtn = await page.getByRole('button', { name: '➕ Add Period' }).nth(0);
     const schtbl = await page.getByRole('table').nth(0);
     const addIntervalBtns = await schtbl.getByRole('button', { name: '➕' });
     const removeIntervalBtns = await schtbl.getByRole('button', { name: '➖' });
 
     expect(
         await countPeriods()
-        , "List with an item in its value render with that value no matter smaller min_items value"
+        , "Empty list with min_items=0 renders with no items"
+    ).toStrictEqual(0);
+
+    // Add one period to start testing:
+    await addPeriodBtn.click();
+
+    expect(
+        await countPeriods()
+        , "Adding a period works"
     ).toStrictEqual(1);
 
     expect(await removePeriodBtn
-        , "Remove item button is not yet disabled"
+        , "Remove item button is enabled (min_items=0 allows removal)"
     ).toBeEnabled();
 
     await addIntervalBtns.nth(0).click(); // Add an interval to the reception schedule
