@@ -856,9 +856,8 @@ But it could look kind of messy if you need to introduce several schedules that 
 █        <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
 █        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
 █        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
@@ -870,9 +869,8 @@ But it could look kind of messy if you need to introduce several schedules that 
 █        <strong data-smark='{"role":"header"}'>🍸 Bar</strong>
 █        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
 █        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
@@ -884,9 +882,8 @@ But it could look kind of messy if you need to introduce several schedules that 
 █        <strong data-smark='{"role":"header"}'>🍽️ Restaurant:</strong>
 █        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
 █        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
@@ -898,9 +895,8 @@ But it could look kind of messy if you need to introduce several schedules that 
 █        <strong data-smark='{"role":"header"}'>🏊 Pool:</strong>
 █        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
-█            <input class='small' data-smark type='time' name='start'>
-█            to
-█            <input class='small' data-smark type='time' name='end'>
+█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
 █        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
@@ -923,7 +919,7 @@ endcapture %}
 {{""}}#myForm$$ .schedule-row {
     display: grid;
     grid-template-columns: 10em 1fr auto;
-    align-items: center;
+    align-items: start;
     gap: 0.25em 0.5em;
     padding: 0.2em 0.4em;
     border-radius: 0.3em;
@@ -934,6 +930,7 @@ endcapture %}
 {{""}}#myForm$$ .schedule-row > [data-role="header"] {
     grid-column: 1;
     grid-row: 1;
+    padding-top: 0.3em;
 }
 {{""}}#myForm$$ .schedule-row > .time_slot,
 {{""}}#myForm$$ .schedule-row > [data-role="empty_list"] {
@@ -949,8 +946,47 @@ endcapture %}
     white-space: nowrap;
 }
 {{""}}#myForm$$ .time_slot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.4em;
+    align-items: center;
+}
+{{""}}#myForm$$ .time_from,
+{{""}}#myForm$$ .time_to {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
     white-space: nowrap;
 }
+{{""}}#myForm$$ .period-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25em 1.5em;
+    align-items: baseline;
+    margin: 0.3em 0;
+}
+{{""}}#myForm$$ .period-date {
+    white-space: nowrap;
+}
+{{""}}@media (max-width: 30em) {
+{{""}}  #myForm$$ .schedule-row {
+{{""}}      grid-template-columns: 1fr auto;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > [data-role="header"] {
+{{""}}      grid-column: 1;
+{{""}}      grid-row: 1;
+{{""}}      padding-top: 0;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > .time_slot,
+{{""}}  #myForm$$ .schedule-row > [data-role="empty_list"] {
+{{""}}      grid-column: 1;
+{{""}}      padding-left: 0.5em;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > [data-role="footer"] {
+{{""}}      grid-column: 2;
+{{""}}      grid-row: 2 / -1;
+{{""}}  }
+{{""}}}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1015,9 +1051,9 @@ every list item and so forth to any depth.
             title='Remove this period'
             style="float: right"
         >➖</button>
-        <p>
-          <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
-          <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+        <p class='period-dates'>
+          <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
+          <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
         </p>
 {{ schedule_table | replace: "█", "                    " }}
     </fieldset>
@@ -1120,9 +1156,9 @@ usability by default:
             title='Duplicate this period'
             style="float: right"
         >✨</button>
-        <p>
-          <label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'>
-          <label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'>
+        <p class='period-dates'>
+          <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
+          <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
         </p>
 {{ schedule_table | replace: "█", "                    " }}
     </fieldset>
