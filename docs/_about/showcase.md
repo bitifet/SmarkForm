@@ -925,6 +925,11 @@ endcapture %}
     grid-template-columns: 10em 1fr auto;
     align-items: center;
     gap: 0.25em 0.5em;
+    padding: 0.2em 0.4em;
+    border-radius: 0.3em;
+}
+{{""}}#myForm$$ .schedule-row:nth-child(even) {
+    background-color: rgba(128, 128, 128, 0.08);
 }
 {{""}}#myForm$$ .schedule-row > [data-role="header"] {
     grid-column: 1;

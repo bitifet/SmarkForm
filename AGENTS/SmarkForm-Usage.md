@@ -10,9 +10,11 @@ SmarkForm reads `data-smark` attributes on DOM nodes to build a reactive form tr
 const myForm = new SmarkForm(document.getElementById("myForm"));
 ```
 
-Every element that participates in the form must either:
-- Have a `data-smark` attribute (possibly empty: `data-smark`), OR
-- Be a plain HTML element inside a SmarkForm-managed component
+Only elements with a `data-smark` attribute are captured and enhanced by SmarkForm. SmarkForm is markup-agnostic — plain HTML elements inside a managed component are ignored unless they also have `data-smark`.
+
+Exceptions:
+- The **root element** passed directly to the `SmarkForm` constructor does not need `data-smark`
+- A **list's item template** implicitly becomes a `form` type; its type can also be overridden via the `of` property in the list's options
 
 ## Component Types
 
@@ -20,11 +22,17 @@ Every element that participates in the form must either:
 |------|------|-------|
 | `form` | Container for named fields | Default type for root and nested containers |
 | `list` | Ordered collection of items | Items are cloned from a template |
-| `input` | Scalar value input (`<input>`, `<textarea>`) | Auto-detected by `<input>` tag |
+| `input` | Scalar value input (`<input>`, `<textarea>`) | Auto-detected by element tag |
+| `color` | Color picker | Wrapper around `<input type="color">` with null support |
+| `date` | Date field | Wrapper with null support |
+| `time` | Time field | Wrapper with null support |
+| `datetime-local` | Date+time field | Wrapper with null support |
+| `number` | Numeric field | Wrapper with null support |
+| `radio` | Radio-button group | Group of `<input type="radio">` elements |
 | `trigger` | Action button | Required `action` property |
 | `label` | Read-only display | Uses `data-smark` on element with inner content |
 
-Type is auto-inferred in many cases. The `type` key in `data-smark` can override.
+Type is often auto-inferred from the element tag or presence of the `action` property. The `type` key in `data-smark` can override.
 
 ## List Component — Critical Rules
 
@@ -44,22 +52,22 @@ Set via `data-smark='{"role":"<role>"}'`:
 | `separator` | Between items |
 | `last_separator` | Between second-to-last and last items |
 
-### Critical: Buttons inside vs. outside a list
+### Buttons inside vs. outside a list
 
-**Buttons controlling a list (addItem, removeItem) MUST be placed inside the list container** (as template children, typically inside `role="item"` or `role="footer"`). 
+Buttons (triggers) can be placed **outside** their target component using the `context` property with a path. The playground's Export/Import/Reset/Clear buttons are a canonical example — they live in the root form but target the `demo` subform via `context:"demo"`.
 
-❌ **Do NOT place control buttons outside the list** (e.g., as siblings in a CSS grid parent):
 ```html
-<!-- WRONG: button outside list, referenced via context= -->
-<div class="row">
-  <div data-smark='{"type":"list","name":"myList"}'>...</div>
-  <button data-smark='{"action":"addItem","context":"myList"}'>➕</button>
-</div>
+<!-- Buttons OUTSIDE the list with explicit context path -->
+<div data-smark='{"type":"list","name":"myList"}'>...</div>
+<button data-smark='{"action":"addItem","context":"myList"}'>➕</button>
 ```
-This causes a **"Receiver must be an instance of class"** JavaScript error when the list is initialized with `value:[{}]` or when items are added dynamically, because SmarkForm tries to call internal private class methods (`#appendChild`, etc.) on an object that doesn't have the right class instance.
 
-✅ **CORRECT: buttons inside the list via `role="footer"`**:
+Context paths are resolved lazily at action-trigger time via `find()`. Relative paths are resolved from the trigger's parent component.
+
+**⚠️ Exception — buttons inside cloned item templates**: When a list's item template itself contains a sub-list (e.g., a periods list whose items contain schedule lists), and buttons targeting the sub-list are placed **outside** that sub-list but **inside** the item template (so they get cloned), context resolution may fail for the cloned instances. In this case, place the buttons **inside** the sub-list using `role="footer"`:
+
 ```html
+<!-- SAFE: buttons inside the sub-list via role="footer" -->
 <div data-smark='{"type":"list","name":"myList","min_items":0,"max_items":3}'>
   <!-- item template (default role) -->
   <span class="slot">
@@ -88,6 +96,8 @@ If `options.value` is set on a list, it becomes the list's `defaultValue`. On in
 
 ### `exportEmpties` Behavior
 
+The `exportEmpties` option is **inherited** — a child component inherits the value from its nearest ancestor that sets it. This means you may need to explicitly set `exportEmpties:false` on a nested list even if it matches the default, to override an ancestor's `exportEmpties:true`.
+
 When `exportEmpties: false` (the default):
 - List items are checked via `isEmpty()` before being included in the exported array
 - A form item is empty if ALL its field children are empty (null/undefined)
@@ -104,7 +114,7 @@ When an outer list (`exportEmpties:true`) contains an inner list (`exportEmpties
 
 ## Form Component — `value` and `defaultValue`
 
-The `value` property in `data-smark` options sets the field's `defaultValue`:
+The `value` property in `data-smark` options sets the field's `defaultValue`. For native HTML elements that support the `value` attribute (`<input>`, `<textarea>`, etc.), you can also set the default via the HTML attribute directly — but not both simultaneously (SmarkForm raises a `VALUE_CONFLICT` error if both are set).
 ```html
 <div data-smark='{"name":"demo","value":{"name":"Alice"}}'>
   <input data-smark type="text" name="name">

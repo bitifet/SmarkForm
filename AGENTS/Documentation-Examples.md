@@ -30,7 +30,7 @@ Example usage in a `.md` doc file:
 | Parameter | Default | Description |
 |-----------|---------|-------------|
 | `formId` | (required) | Unique ID suffix for this example. Used to generate `myForm-<formId>` element ID. |
-| `htmlSource` | `'-'` | HTML source string. Use `null` (literal string `'null'`) to hide the HTML tab. |
+| `htmlSource` | `'-'` | HTML source string. Pass an undefined variable to show a "Missing Example" placeholder (used to plan future examples). |
 | `cssSource` | `'-'` | CSS source string |
 | `jsHead` | (generated) | JS initialization code. Defaults to the simple constructor or a `demoValue` constructor. |
 | `notes` | `'-'` | Markdown/HTML notes shown below the example |
@@ -74,13 +74,24 @@ When `demoValue` is provided:
 %}
 ```
 
-### When NOT to Add `demoValue`
+### When to Skip `demoValue`
 
-Do not add `demoValue` to examples that have co-located tests checking initial form state:
-- Tests that assert `countItems() == 0` or `readField('/foo') == null` on page load
-- Error demonstration examples (`expectedPageErrors=1`)
-- Examples where `htmlSource=null` (no HTML tab)
-- Examples that already set initial values via inline HTML `data-smark='{"value":...}'`
+`demoValue` is safe to use alongside co-located tests — the collector filters it out so the test form always starts empty regardless of the parameter. There are only a few situations where `demoValue` should be skipped:
+
+- **Error demonstration examples** (`expectedPageErrors=1`): Adding a `demoValue` is pointless unless the error itself could be triggered by the default value.
+- **Undefined `htmlSource` (placeholder examples)**: When `htmlSource` is an undefined variable, the template renders a "Missing Example" placeholder; there's nothing to pre-populate.
+- **Inline value already set**: Examples that already set initial values via an inline HTML `value` attribute or `data-smark='{"value":...}'` (e.g., `clear_reset_form`). Don't add `demoValue` on top of an existing inline value to avoid confusion.
+
+### Tip: Harvesting Realistic Demo Data
+
+The easiest way to produce a correct `demoValue` JSON for an existing example:
+1. Open the documentation page in a browser (use `npm run servedoc`)
+2. Fill in realistic data directly in the **Preview** tab
+3. Click the **⬇️ Export** button
+4. Copy the JSON from the editor textarea
+5. Paste as the `demoValue` capture in Liquid, tweaking as needed
+
+This ensures the JSON structure exactly matches what the form expects. One common tweak: if a list uses `exportEmpties:false`, the exported JSON will omit empty items — but if you want Reset to restore a list with one empty item, provide `[{}]` in `demoValue` for that list.
 
 ## Playground Buttons
 
