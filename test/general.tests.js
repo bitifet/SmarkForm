@@ -221,6 +221,66 @@ test.describe('General Functionality Tests', () => {
         }
     });
 
+    test('Form with default values does not cause focus on initialization', async ({ page }) => {//{{{
+        // Regression test: ensure that forms/lists with default values do not
+        // steal focus during initialization (async reset must be awaited).
+        let onClosed;
+        const defaultValuePugSrc = (
+`extends layout.pug
+block mainForm
+    .section
+        div(data-smark={
+            type: "form",
+            name: "profileForm",
+            value: {
+                name: "Alice",
+                tags: [
+                    {tag: "admin"},
+                    {tag: "user"}
+                ]
+            }
+        })
+            p
+                label Name
+                input(data-smark name="name" type="text")
+            div(data-smark={
+                type: "list",
+                name: "tags",
+                min_items: 0
+            })
+                div(data-smark)
+                    p
+                        label Tag
+                        input(data-smark name="tag" type="text")
+`);
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: defaultValuePugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+                return {
+                    bodyFocused: document.activeElement === document.body,
+                    profileValue: await form.find("/profileForm").export(),
+                };
+            });
+
+            // No field should be focused after initialization
+            expect(result.bodyFocused).toBe(true);
+            // Default values should be fully imported (render is atomic)
+            expect(result.profileValue).toEqual({
+                name: "Alice",
+                tags: [{tag: "admin"}, {tag: "user"}],
+            });
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
     test('Basic introspection works', async ({ page }) => {
         let onClosed;
         try {
