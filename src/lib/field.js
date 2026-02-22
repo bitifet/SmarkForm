@@ -36,7 +36,7 @@ export class SmarkField extends SmarkComponent {
             if ( this.targetFieldNode) {
                 this.targetNode.setAttribute("value", this.defaultValue);
             };
-            this.reset({silent: true});
+            this.reset(null, {silent: true, focus: false});
         });
     };
     @action
