@@ -24,7 +24,7 @@ export class SmarkField extends SmarkComponent {
                 , `Initial value specied both as "value" option and HTML "value" attribute.`
             );
         };
-        this.onRendered(()=>{
+        this.onRendered(async ()=>{
             // This situation won't occur until after rendering, allowing
             // for modifications to defaultValue in constructors of
             // derived classes.
@@ -36,7 +36,7 @@ export class SmarkField extends SmarkComponent {
             if ( this.targetFieldNode) {
                 this.targetNode.setAttribute("value", this.defaultValue);
             };
-            this.reset(null, {silent: true, focus: false});
+            await this.reset(null, {silent: true, focus: false});
         });
     };
     @action

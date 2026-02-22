@@ -14,6 +14,10 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 - **GitHub Pages workflow**: deploy docs site from stable branch.
 - **Dependabot**: monitors npm (devDependencies) and GitHub Actions to propose updates.
 
+### Agent Behavior Preferences
+
+- **Default to opening a PR** for all changes unless the user explicitly says otherwise. Always use `report_progress` to commit and push changes to a PR branch.
+
 ### Reference to Future Work
 
 To ensure coding agents (and contributors alike) make the best decisions while solving current tasks, we maintain a detailed **PROMPTS.md** file. This file serves as:
