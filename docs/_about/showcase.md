@@ -918,7 +918,7 @@ endcapture %}
 }
 {{""}}#myForm$$ .schedule-row {
     display: grid;
-    grid-template-columns: 10em 1fr;
+    grid-template-columns: 10em 1fr auto;
     align-items: start;
     gap: 0.25em 0.5em;
     padding: 0.2em 0.4em;
@@ -940,11 +940,13 @@ endcapture %}
     display: none;
 }
 {{""}}#myForm$$ .schedule-row > [data-role="footer"] {
-    grid-column: 1 / -1;
+    grid-column: 3;
+    grid-row: 1 / -1;
     display: flex;
-    justify-content: flex-end;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
     gap: 0.25em;
-    padding-top: 0.1em;
 }
 {{""}}#myForm$$ .time_slot {
     display: flex;
@@ -974,6 +976,16 @@ endcapture %}
 {{""}}#myForm$$ .period-date {
     white-space: nowrap;
 }
+{{""}}@media (max-width: 44em) {
+{{""}}  #myForm$$ .schedule-row {
+{{""}}      grid-template-columns: 10em 1fr;
+{{""}}  }
+{{""}}  #myForm$$ .schedule-row > [data-role="footer"] {
+{{""}}      grid-column: 1 / -1;
+{{""}}      grid-row: auto;
+{{""}}      justify-content: flex-end;
+{{""}}  }
+{{""}}}
 {{""}}@media (max-width: 30em) {
 {{""}}  #myForm$$ .schedule-row {
 {{""}}      grid-template-columns: 1fr;
@@ -992,10 +1004,15 @@ endcapture %}
   horizontal scrollbars when multiple intervals are added:
   * Each schedule list (`.schedule-row`) is a CSS grid with three columns:
     `10em label | 1fr slots | auto controls`.
-  * Additional intervals stack **vertically** in the middle column instead of
+  * Additional intervals stack **vertically** in the `1fr` column instead of
     widening the row.
-  * The footer role holds the ➖/➕ buttons, which span all slot rows via
-    `grid-row: 1 / -1` so they stay right-aligned regardless of item count.
+  * The footer role holds the ➖/➕ buttons. In the default (wide) layout they
+    sit in the `auto` third column spanning all slot rows (`grid-row: 1 / -1`),
+    centred vertically. On medium viewports (`≤ 44em`) the third column is
+    dropped and the footer spans the full row width below the intervals
+    (`grid-column: 1 / -1`), so the slots column keeps its full `1fr` width
+    and the time inputs stay inline longer. On narrow viewports (`≤ 30em`)
+    everything collapses to a single column.
 
 👉 The `header`, `footer`, `empty_list` and `placeholder` *template roles* are
   still used, but the `placeholder` is hidden (`display: none`) since the grid
