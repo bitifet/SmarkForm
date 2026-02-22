@@ -828,7 +828,7 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "schedule": [{"start": "09:00:00", "end": "13:00:00"}, {"start": "14:00:00", "end": "18:00:00"}] }{% endcapture %}
+{% capture demoValue %}{ "schedule": [{"start": "09:00", "end": "13:00"}, {"start": "14:00", "end": "18:00"}] }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
@@ -950,6 +950,10 @@ endcapture %}
     flex-wrap: wrap;
     gap: 0.15em 0.4em;
     align-items: center;
+    justify-content: flex-end;
+}
+{{""}}#myForm$$ .time_slot input.small{
+    max-width: 5.5em;
 }
 {{""}}#myForm$$ .time_from,
 {{""}}#myForm$$ .time_to {
@@ -964,6 +968,7 @@ endcapture %}
     gap: 0.25em 1.5em;
     align-items: baseline;
     margin: 0.3em 0;
+    justify-content: flex-end;
 }
 {{""}}#myForm$$ .period-date {
     white-space: nowrap;
@@ -1007,7 +1012,7 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00:00", "end": "23:59:59"}], "bar_schedule": [{"start": "11:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:30:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}] } }{% endcapture %}
+{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00", "end": "23:59"}], "bar_schedule": [{"start": "11:00", "end": "23:00"}], "restaurant_schedule": [{"start": "07:30", "end": "10:30"}, {"start": "13:00", "end": "15:30"}, {"start": "19:00", "end": "22:00"}], "pool_schedule": [{"start": "09:00", "end": "20:00"}] } }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
@@ -1065,7 +1070,7 @@ every list item and so forth to any depth.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00:00", "end": "23:00:00"}], "bar_schedule": [{"start": "10:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:00:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}]}} ] }{% endcapture %}
+{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00", "end": "23:00"}], "bar_schedule": [{"start": "10:00", "end": "23:00"}], "restaurant_schedule": [{"start": "07:00", "end": "10:30"}, {"start": "13:00", "end": "15:30"}, {"start": "19:00", "end": "22:00"}], "pool_schedule": [{"start": "09:00", "end": "20:00"}]}} ] }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
@@ -1147,15 +1152,15 @@ usability by default:
             <span data-smark='{"action":"count"}'>M</span>
         </legend>
         <button
-            data-smark='{"action":"removeItem","hotkey":"-"}'
-            title='Remove this period'
-            style="float: right"
-        >➖</button>
-        <button
             data-smark='{"action":"addItem","source":".-1","hotkey":"d"}'
             title='Duplicate this period'
             style="float: right"
         >✨</button>
+        <button
+            data-smark='{"action":"removeItem","hotkey":"-"}'
+            title='Remove this period'
+            style="float: right"
+        >➖</button>
         <p class='period-dates'>
           <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
           <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
@@ -1311,28 +1316,28 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             "schedules": {
                 "rcpt_schedule": [
                     {
-                        "start": "00:00:00",
-                        "end": "23:59:59"
+                        "start": "00:00",
+                        "end": "23:59"
                     }
                 ],
                 "bar_schedule": [
                     {
-                        "start": "10:00:00",
-                        "end": "23:30:00"
+                        "start": "10:00",
+                        "end": "23:30"
                     }
                 ],
                 "restaurant_schedule": [
                     {
-                        "start": "07:30:00",
-                        "end": "10:30:00"
+                        "start": "07:30",
+                        "end": "10:30"
                     },
                     {
-                        "start": "13:00:00",
-                        "end": "15:30:00"
+                        "start": "13:00",
+                        "end": "15:30"
                     },
                     {
-                        "start": "19:00:00",
-                        "end": "22:00:00"
+                        "start": "19:00",
+                        "end": "22:00"
                     }
                 ],
                 "pool_schedule": []
@@ -1344,34 +1349,34 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             "schedules": {
                 "rcpt_schedule": [
                     {
-                        "start": "00:00:00",
-                        "end": "23:59:59"
+                        "start": "00:00",
+                        "end": "23:59"
                     }
                 ],
                 "bar_schedule": [
                     {
-                        "start": "10:00:00",
-                        "end": "23:30:00"
+                        "start": "10:00",
+                        "end": "23:30"
                     }
                 ],
                 "restaurant_schedule": [
                     {
-                        "start": "07:30:00",
-                        "end": "10:30:00"
+                        "start": "07:30",
+                        "end": "10:30"
                     },
                     {
-                        "start": "13:00:00",
-                        "end": "15:30:00"
+                        "start": "13:00",
+                        "end": "15:30"
                     },
                     {
-                        "start": "19:00:00",
-                        "end": "22:00:00"
+                        "start": "19:00",
+                        "end": "22:00"
                     }
                 ],
                 "pool_schedule": [
                     {
-                        "start": "09:30:00",
-                        "end": "19:30:00"
+                        "start": "09:30",
+                        "end": "19:30"
                     }
                 ]
             }
