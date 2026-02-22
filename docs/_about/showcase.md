@@ -918,7 +918,7 @@ endcapture %}
 }
 {{""}}#myForm$$ .schedule-row {
     display: grid;
-    grid-template-columns: 10em 1fr auto;
+    grid-template-columns: 10em 1fr;
     align-items: start;
     gap: 0.25em 0.5em;
     padding: 0.2em 0.4em;
@@ -940,10 +940,11 @@ endcapture %}
     display: none;
 }
 {{""}}#myForm$$ .schedule-row > [data-role="footer"] {
-    grid-column: 3;
-    grid-row: 1 / -1;
-    align-self: center;
-    white-space: nowrap;
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25em;
+    padding-top: 0.1em;
 }
 {{""}}#myForm$$ .time_slot {
     display: flex;
@@ -975,21 +976,11 @@ endcapture %}
 }
 {{""}}@media (max-width: 30em) {
 {{""}}  #myForm$$ .schedule-row {
-{{""}}      grid-template-columns: 1fr auto;
-{{""}}  }
-{{""}}  #myForm$$ .schedule-row > [data-role="header"] {
-{{""}}      grid-column: 1;
-{{""}}      grid-row: 1;
-{{""}}      padding-top: 0;
+{{""}}      grid-template-columns: 1fr;
 {{""}}  }
 {{""}}  #myForm$$ .schedule-row > .time_slot,
 {{""}}  #myForm$$ .schedule-row > [data-role="empty_list"] {
-{{""}}      grid-column: 1;
 {{""}}      padding-left: 0.5em;
-{{""}}  }
-{{""}}  #myForm$$ .schedule-row > [data-role="footer"] {
-{{""}}      grid-column: 2;
-{{""}}      grid-row: 2 / -1;
 {{""}}  }
 {{""}}}
 {% endcapture %}
