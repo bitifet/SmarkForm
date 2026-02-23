@@ -189,6 +189,94 @@ Context paths:
 - `".-1"` — previous sibling (used for `source` in duplicate)
 - `"..fieldname"` — named field in grandparent scope
 
+### `@action` Decorator — Calling Convention and Nuances
+
+⚠️ **This is a common source of bugs.** Read carefully before writing internal or programmatic action calls.
+
+#### Signature convention
+
+Every method decorated with `@action` follows the signature:
+
+```javascript
+async actionName(data, options = {})
+```
+
+`data` is the **first** positional argument. `options` is the **second**. This mirrors how trigger components call actions (see below). Even when `data` is not used by the method itself (named `_data`), you **must** pass `null` (or a value) as the first argument when calling it in code if you want to pass options:
+
+```javascript
+// ✅ CORRECT — data is null, options is the second arg
+await me.addItem(null, { silent: true });
+await me.removeItem(null, { silent: true });
+
+// ❌ WRONG — options object is silently received as `data` (_data), options defaults to {}
+await me.addItem({ silent: true });
+await me.removeItem({ silent: true });
+```
+
+This was the root cause of the initialization focus race in `list.type.js` (where `addItem`/`removeItem` were called with the options object as the first argument).
+
+#### How triggers call actions
+
+When a trigger button is clicked, `onTriggerClick` calls the action like this:
+
+```javascript
+const options = triggerComponent.getTriggerArgs();
+// options = { action, origin, context, target, ...other data-smark properties }
+const { context, action, data } = options;
+await context.actions[action](data, options);
+```
+
+- `data` comes from a `"data"` property on the trigger's `data-smark` attribute — usually `undefined`
+- `options` is the full trigger-args object (includes `action`, `origin`, `context`, `target`, any other properties)
+
+Triggers have **no separate "data" channel** — they can only pass a single value via `data-smark='{"action":"...", "data": <value>}'`. This is why the method signature places `data` first (for programmatic use) while triggers supply it via `options.data`.
+
+#### The `@action` wrapper — what it does
+
+The decorator registers a wrapper in `this.actions[name]` that runs around the raw method:
+
+1. **Sets `options.focus = true` by default** — unless `focus` is already an own property of `options`. This means trigger-initiated calls always focus by default. Internal/silent calls must explicitly pass `{ focus: false }` or use `{ silent: true }`.
+
+2. **Sets `options.data = data`** — so `BeforeAction` event handlers can read or modify the incoming data.
+
+3. **Emits `BeforeAction_<name>`** — unless `options.silent`. Handlers can call `event.preventDefault()` to cancel the action.
+
+4. **Re-reads `data` from `options.data`** after `BeforeAction` — allowing event handlers to substitute the data.
+
+5. **Calls the raw method**: `targetMtd.call(me, data, options)`
+
+6. **Updates `options.data`** with the return value.
+
+7. **Emits `AfterAction_<name>`** — unless `options.silent`.
+
+```javascript
+// Example: adding an item silently (no focus, no events)
+await me.addItem(null, { silent: true });
+
+// Example: from a beforeAction handler modifying data
+component.onLocal("BeforeAction_import", (ev) => {
+    ev.data = transformData(ev.data);  // swap in new data
+});
+```
+
+#### Programmatic calls — prototype vs. `actions[name]`
+
+There are two ways to invoke an action in JavaScript:
+
+- **`component.actions.reset(data, options)`** — goes through the `@action` wrapper: fires events, defaults `focus`, etc.
+- **`component.reset(data, options)`** — calls the **prototype method directly**, bypassing the `@action` wrapper entirely (no events, no automatic `focus` defaulting, no `BeforeAction` cancellation).
+
+Most internal calls (e.g., from `import()`, `removeItem()`) use the prototype method directly to avoid overhead and event noise. However, this also means `options.silent` and `options.focus` must be set explicitly for every such call.
+
+#### `export_to_target` and `import_from_target` — data pipeline decorators
+
+These decorators are often stacked with `@action`:
+
+- **`@export_to_target`**: After the method returns a value, tries to call `options.target.import(value)`. Transparent if `target` is absent.
+- **`@import_from_target`**: Before calling the method, tries to call `options.target.export()` to replace `data`. Transparent if `target` is absent.
+
+They modify the data pipeline at the prototype level (not inside the `@action` wrapper). The `target` option is consumed by these decorators and stripped from `options` before the raw method is called.
+
 ## Writing Co-located Tests
 
 See `test/doc/WRITING_TESTS.md` for the full guide. Key points:
