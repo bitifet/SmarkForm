@@ -130,7 +130,9 @@ export class list extends SmarkField {
 
         // onRendered tweaks:
         me.root.onRendered(async ()=>{
-            for(let i=0; i<me.min_items; i++) await me.addItem({silent: true});
+            // Only add items up to min_items, skipping any already added
+            // by a parent default-value import that ran before this task.
+            for(let i=me.children.length; i<me.min_items; i++) await me.addItem(null, {silent: true});
 
             // Initialize "count" actions and reinject empty_list template:
             if (me.min_items == 0) await me.renum();
@@ -191,14 +193,14 @@ export class list extends SmarkField {
             i < top; // Limit to allowed items
             i++
         ) {
-            if (me.children.length <= i) await me.addItem({silent: true}); // Make room on demand
+            if (me.children.length <= i) await me.addItem(null, {silent: true}); // Make room on demand
             await me.children[i].import(data[i], {focus: focus && !silent, silent});
         };
         // Remove extra items if possible (over min_items):
         for (
             let i = Math.max(data.length, me.min_items);
             i < me.children.length;
-        ) await me.removeItem({silent: true});
+        ) await me.removeItem(null, {silent: true});
         // Report if data doesn't fit:
         if (data.length > me.max_items) {
             me.emit("error", {
@@ -407,7 +409,7 @@ export class list extends SmarkField {
                 target: oldItem,
                 targetNode: oldItem.targetNode,
             }, false);
-            if (newFocusPosition !== null) {
+            if (newFocusPosition !== null && !options.silent) {
                 me.children[newFocusPosition].focus();
             };
             // }}}
