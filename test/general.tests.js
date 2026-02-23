@@ -223,7 +223,17 @@ test.describe('General Functionality Tests', () => {
 
     test('Form with default values does not cause focus on initialization', async ({ page }) => {//{{{
         // Regression test: ensure that forms/lists with default values do not
-        // steal focus during initialization (async reset must be awaited).
+        // steal focus during initialization. This covers two race conditions:
+        //  1. field.js onRendered must await reset() (async atomicity)
+        //  2. list minItemsTask must not add extra items already added by a
+        //     parent default-value import (causing removeItem → focus race)
+        //  3. addItem/removeItem internal calls must use correct argument positions
+        //     so options.silent is respected (not silently discarded as data)
+        //  4. removeItem must not call focus() when options.silent is true
+        //
+        // The list intentionally uses the default min_items (1) to exercise
+        // the race path where minItemsTask and parent default-value import
+        // interact. Using min_items: 0 would skip this race entirely.
         let onClosed;
         const defaultValuePugSrc = (
 `extends layout.pug
@@ -245,8 +255,7 @@ block mainForm
                 input(data-smark name="name" type="text")
             div(data-smark={
                 type: "list",
-                name: "tags",
-                min_items: 0
+                name: "tags"
             })
                 div(data-smark)
                     p
@@ -259,19 +268,34 @@ block mainForm
                 src: defaultValuePugSrc,
             });
             onClosed = rendered.onClosed;
+
+            // Spy on focus() BEFORE page load to catch any focus during init.
+            await page.addInitScript(() => {
+                window._focusLog = [];
+                const orig = HTMLElement.prototype.focus;
+                HTMLElement.prototype.focus = function(...args) {
+                    window._focusLog.push(this.tagName + (this.id ? '#'+this.id : ''));
+                    return orig.apply(this, args);
+                };
+            });
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                // Wait for both root and the nested form with default values to
+                // be fully rendered (including async default-value imports).
+                // This is more reliable than a fixed timeout.
                 await form.rendered;
+                await form.find("/profileForm").rendered;
                 return {
-                    bodyFocused: document.activeElement === document.body,
+                    focusLog: window._focusLog,
                     profileValue: await form.find("/profileForm").export(),
                 };
             });
 
-            // No field should be focused after initialization
-            expect(result.bodyFocused).toBe(true);
-            // Default values should be fully imported (render is atomic)
+            // No field should be focused during initialization
+            expect(result.focusLog).toEqual([]);
+            // Default values should be fully imported and list must not have
+            // extra items (regression for the minItemsTask race).
             expect(result.profileValue).toEqual({
                 name: "Alice",
                 tags: [{tag: "admin"}, {tag: "user"}],
