@@ -27,6 +27,8 @@ nav_order: 5
             * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
             * [Options (clear)](#options-clear)
+        * [(Async) reset (Action)](#async-reset-action)
+            * [Options (reset)](#options-reset)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -182,12 +184,12 @@ endcapture %}
 
 {{ site.data.definitions.actions.intro }}
 
-The `number` component type supports the following actions:
+The `color` component type supports the following actions:
 
 
 #### (Async) export (Action)
 
-Exports the value of the number input field. If the value is not a valid number, it returns null.
+Exports the selected color as a `#RRGGBB` hex string, or `null` if no color has been selected.
 
 ##### Options (export)
 
@@ -199,7 +201,7 @@ Exports the value of the number input field. If the value is not a valid number,
 
 #### (Async) import (Action)
 
-Imports a value into the number input field. If the value is not a valid number or string that can be converted to a number, it sets the field to null.
+Imports a color value into the field. Accepts a `#RRGGBB` or `#RGB` hex string, or `null` to clear the selection.
 
 ##### Options (import)
 
@@ -212,7 +214,7 @@ Imports a value into the number input field. If the value is not a valid number 
 
 #### (Async) clear (Action)
 
-Clears the value of the number input field (sets it to null).
+Clears the color selection (sets the value to `null`).
 
 ##### Options (clear)
 
@@ -221,5 +223,13 @@ Clears the value of the number input field (sets it to null).
   * {{ site.data.definitions.actions.options.context }}
 
 
+#### (Async) reset (Action)
 
+Reverts the color field to its configured default value. If no default was configured, the field reverts to `null` (same as `clear`).
+
+##### Options (reset)
+
+  * **action:** (= "reset")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
 

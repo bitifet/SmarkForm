@@ -29,6 +29,8 @@ nav_order: 9
             * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
             * [Options (clear)](#options-clear)
+        * [(Async) reset (Action)](#async-reset-action)
+            * [Options (reset)](#options-reset)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -131,3 +133,15 @@ Clears the selection from all radio buttons in the group.
   * **action:** (= "clear")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
+
+
+#### (Async) reset (Action)
+
+Reverts the radio group to its configured default selection. If no default was configured, all radio buttons are deselected (same as `clear`).
+
+##### Options (reset)
+
+  * **action:** (= "reset")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+
