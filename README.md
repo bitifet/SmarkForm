@@ -25,6 +25,56 @@ and versatile tool for building HTML form applications.
 \[[More...](https://smarkform.bitifet.net/about/introduction)\]
 
 
+## 30-second Example
+
+A contact form with a dynamic phone-number list — no manual wiring, just markup:
+
+```html
+<!-- HTML -->
+<div id="myForm">
+  <p><input name="name" data-smark placeholder="Name"></p>
+  <ul data-smark='{"name":"phones","of":"input"}'>
+    <li><input type="tel" data-smark placeholder="Phone"></li>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"phones"}'>➕ Add phone</button>
+  <button data-smark='{"action":"removeItem","context":"phones"}'>➖ Remove</button>
+  <button data-smark='{"action":"export"}'>💾 Export JSON</button>
+</div>
+```
+
+```javascript
+// JS — one line to initialize
+const myForm = new SmarkForm(document.getElementById("myForm"));
+
+// Listen for the exported data
+myForm.on("AfterAction_export", ({ data }) => console.log(data));
+// → { name: "Alice", phones: ["555-1234", "555-5678"] }
+```
+
+That's it. No schema, no bindings, no callbacks per field.
+
+
+## What SmarkForm Is (and Isn't Yet)
+
+**SmarkForm is:**
+- A **markup-driven** form controller: configuration lives in `data-smark`
+  attributes, not JavaScript objects.
+- **Markup-agnostic**: it imposes no HTML structure or CSS — you keep full
+  design freedom.
+- A tool for **JSON-based import/export** of complex, nested form data.
+- Ready for **subforms**, **variable-length lists**, **context-driven hotkeys**,
+  and smooth keyboard navigation.
+- Stable and in active use, but still pre-1.0 (API may evolve).
+
+**Not yet implemented (planned for a future release):**
+- ❌ Built-in validation (field-level error messages).
+- ❌ Native `<form>` tag POST submission — use `AfterAction_export` + `fetch` instead.
+- ❌ The "API interface" for dynamic dropdown/select options from a server.
+
+> ⚠️ SmarkForm is currently at **version 0.x**. The public API is stable for
+> the implemented features, but breaking changes may still occur before 1.0.
+
+
 ## Main Features
 
   * `<>` [Markup agnostic](https://smarkform.bitifet.net/about/features#markup-agnostic):

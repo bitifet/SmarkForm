@@ -75,6 +75,28 @@ and versatile tool for building HTML form applications.
 </a>
 </div>
 
+## What SmarkForm Is (and Isn't Yet)
+
+**SmarkForm is:**
+- A **markup-driven** form controller: configuration lives in `data-smark`
+  attributes, keeping HTML and JavaScript cleanly separated.
+- **Markup-agnostic**: it imposes no HTML structure or CSS on your design.
+- A tool for **JSON-based import/export** of complex, nested form data including
+  subforms and variable-length lists.
+- Ready for **context-driven hotkeys** and smooth keyboard navigation.
+- Stable and in active use, but still pre-1.0 (API may evolve).
+
+**Not yet implemented (planned for a future release):**
+- ❌ Built-in validation (field-level error messages).
+- ❌ Native `<form>` tag POST submission — use `AfterAction_export` + `fetch` for now.
+- ❌ The "API interface" for dynamic dropdown/select options from a server.
+
+{: .info :}
+> ⚠️ SmarkForm is currently at **version 0.x**. The implemented features are
+> stable, but breaking changes may still occur before 1.0.
+> See the [Roadmap]({{ "about/roadmap" | relative_url }}) for what's coming next.
+
+
 ## Main Features
 
   * `<>` [Markup agnostic]({{ "/about/features" | relative_url }}#markup-agnostic):

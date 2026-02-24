@@ -231,12 +231,14 @@ Some forms have sections nested within other sections (like contact details with
 
 SmarkForm is designed with accessibility in mind, though we're continuously working to improve:
 
-- **Full keyboard support:** Everything can be done without a mouse
-- **Clear focus indicators:** You can always see where you are in the form
-- **Smart tab order:** Disabled elements are automatically excluded from navigation
-- **Enter key navigation:** Pressing Enter / Shift + Enter moves between fields. If there are buttons in between (to add/remove items in a list for instance), they are skipped in the navigation.
-- **Semantic HTML:** SmarkForm is markup agnostic, but it encourages developers to use semantic HTML elements. It also mocks functionalities like labels for complex field types (like lists) that are not native HTML form elements, so that assistive technologies can still understand the structure and purpose of the form.
-- **Visual feedback:** Clear indication when buttons are disabled or actions are unavailable
+- **Mouse and touch support:** All essential actions have visible buttons that are reachable by mouse or touch. You never need a keyboard shortcut to perform a required task.
+- **Full keyboard support:** Everything can also be done without a mouse — keyboard navigation and Tab ordering work throughout.
+- **Power-user hotkeys:** Some non-essential, "power-user" actions may be available only as hotkeys (using [hidden trigger buttons](#common-hotkey-patterns)). These are still fully discoverable via the **Ctrl reveal** mechanism: hold Ctrl to see the available hotkeys at any time, even if no visible button is present.
+- **Clear focus indicators:** You can always see where you are in the form.
+- **Smart tab order:** Disabled elements are automatically excluded from navigation.
+- **Enter key navigation:** Pressing Enter / Shift + Enter moves between fields, skipping buttons and other non-field elements.
+- **Semantic HTML:** SmarkForm is markup-agnostic but encourages developers to use semantic HTML elements. It also provides ARIA labels for complex field types (like lists) so that assistive technologies can understand the structure and purpose of the form.
+- **Visual feedback:** Clear indication when buttons are disabled or actions are unavailable.
 
 {: .info}
 > **Using assistive technologies?** We're committed to making SmarkForm accessible to everyone. If you encounter any accessibility issues, please [report them]({{ "/community/support" | relative_url }}) so we can continue improving!

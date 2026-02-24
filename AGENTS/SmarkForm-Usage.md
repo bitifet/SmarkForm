@@ -2,6 +2,104 @@
 
 This document captures key knowledge about how SmarkForm works from a **usage** perspective (writing HTML/CSS/JS that uses the library). It is intended to help coding agents avoid common mistakes.
 
+## Repository Structure
+
+```
+SmarkForm/
+├── src/                     # Library source code
+│   ├── main.js              # Entry point — exports the SmarkForm class
+│   ├── types/               # Component type implementations
+│   │   ├── form.type.js     # form component (also used as root)
+│   │   ├── list.type.js     # list component
+│   │   ├── input.type.js    # input/textarea
+│   │   ├── trigger.type.js  # trigger (button/action)
+│   │   ├── label.type.js    # label display
+│   │   ├── color.type.js    # color picker (with null support)
+│   │   ├── date.type.js     # date field (with null)
+│   │   ├── time.type.js     # time field (with null)
+│   │   ├── datetime-local.type.js
+│   │   ├── number.type.js   # numeric field (with null)
+│   │   ├── radio.type.js    # radio button group
+│   │   └── list.decorators/ # list-specific decorators
+│   ├── lib/                 # Shared utilities
+│   │   ├── events.js        # Event system (@events decorator, emit, on, onLocal, onAll)
+│   │   ├── field.js         # Base field class (@action decorator lives here)
+│   │   ├── component.js     # Base component class
+│   │   ├── hotkeys.js       # Hotkey handler
+│   │   ├── helpers.js       # Utility functions
+│   │   ├── legacy.js        # Backwards-compat shims
+│   │   └── test/            # Internal test helpers
+│   └── decorators/          # Cross-cutting decorators
+│       ├── export_to_target.deco.js
+│       ├── import_from_target.deco.js
+│       ├── foldable.deco.js
+│       └── mutex.deco.js
+├── dist/                    # Built output (ESM + UMD, committed)
+│   ├── SmarkForm.esm.js
+│   └── SmarkForm.umd.js
+├── docs/                    # Documentation site (Jekyll)
+│   ├── index.md             # Home page
+│   ├── _about/              # About, FAQ, Showcase, Roadmap, Features
+│   ├── _getting_started/    # Quick start, core concepts, getting SmarkForm
+│   ├── _component_types/    # Per-type API docs
+│   ├── _advanced_concepts/  # Events, data import/export, traversal, API interface
+│   ├── _resources/          # User guide, examples list, CDN, download
+│   ├── _community/          # Contributing, branding, support, license, contact
+│   ├── assets/              # CSS, JS, images
+│   ├── _includes/           # Jekyll includes (sampletabs, links, head_custom)
+│   ├── _layouts/            # Jekyll layouts
+│   ├── _data/               # Jekyll data files (computed bundle size, etc.)
+│   └── _config.yml          # Jekyll configuration
+├── test/                    # Playwright tests
+│   ├── *.tests.js           # Test files (matched by playwright.config.js)
+│   └── doc/                 # Test helpers and writing guide
+├── scripts/                 # Build and dev scripts
+│   ├── collect-docs-examples.js  # Extracts doc examples into test manifest
+│   ├── build_production_smarkform.sh
+│   ├── build_all.sh
+│   └── liveserve_all.sh
+├── AGENTS/                  # Agent knowledge files (this directory)
+├── AGENTS.md                # Automation overview for agents and contributors
+└── PROMPTS.md               # Future work brainstorm / task prompts
+```
+
+## Docs Build Pipeline
+
+- **Jekyll site** lives in `docs/` and is built with `npm run doc` (or
+  `scripts/build_documentation_site.sh`).
+- **GitHub Pages** deploys **only from the `stable` branch** via
+  `.github/workflows/pages.yml`. Pushes to `main` do **not** deploy the site.
+- To preview locally: `npm run servedoc` (Jekyll with live reload) or `npm run dev`
+  (library watcher + Jekyll server together).
+- The `docs/_data/` directory holds auto-generated files (`computed.json`) that
+  Jekyll uses for bundle size and last-updated date. These are written by the
+  build script before Jekyll runs.
+- **Co-located example tests** are collected by `scripts/collect-docs-examples.js`
+  (run automatically as `npm run pretest`) into `test/.cache/docs_examples.json`.
+  The Playwright test suite then replays each example.
+
+## Updating Component Type API Docs
+
+Each component type has a matching doc page under `docs/_component_types/`:
+
+| Type | Doc file |
+|------|----------|
+| `form` | `docs/_component_types/type_form.md` |
+| `list` | `docs/_component_types/type_list.md` |
+| `input` | `docs/_component_types/type_input.md` |
+| `trigger` | `docs/_component_types/type_trigger.md` |
+| `color` | `docs/_component_types/type_color.md` |
+| `date` | `docs/_component_types/type_date.md` |
+| `time` | `docs/_component_types/type_time.md` |
+| `datetime-local` | `docs/_component_types/type_datetime-local.md` |
+| `number` | `docs/_component_types/type_number.md` |
+| `radio` | `docs/_component_types/type_radio.md` |
+| `label` | `docs/_component_types/type_label.md` |
+
+When adding a new option or action to a component type in `src/types/`, also
+update the corresponding doc page under `docs/_component_types/`. Use the same
+front-matter structure and table conventions already in those files.
+
 ## How SmarkForm Enhances HTML
 
 SmarkForm reads `data-smark` attributes on DOM nodes to build a reactive form tree. The root element is passed to the `SmarkForm` constructor:
