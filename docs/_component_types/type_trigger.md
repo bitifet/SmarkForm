@@ -16,12 +16,15 @@ nav_order: 10000
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Actions](#actions)
-    * [Interactions](#interactions)
-        * [Hot Keys](#hot-keys)
-    * [Origin](#origin)
-    * [Context](#context)
-    * [Target](#target)
+* [Introduction](#introduction)
+* [Options](#options)
+    * [action](#action)
+    * [context](#context)
+    * [target](#target)
+    * [hotkey](#hotkey)
+* [Interactions](#interactions)
+    * [Hot Keys](#hot-keys)
+* [Origin](#origin)
 * [Trigger Components](#trigger-components)
 
 <!-- vim-markdown-toc -->
@@ -29,116 +32,90 @@ nav_order: 10000
 
 </details>
 
-🚧 Section still pending of review and completion...
+## Introduction
 
-Actions
--------
+A *trigger* is any SmarkForm component whose `data-smark` object includes an
+`action` property.  When the user interacts with a trigger (by clicking it),
+SmarkForm resolves the trigger's *context* and *target*, then calls the
+corresponding action on the context component.
 
-Every component type may have its own special methods called *actions* to
-interact with it.
+Actions can also be called programmatically without any trigger, in which case
+*origin* is `null`.
 
-For example, *list* components are provided with *addItem* and *removeItem*
-actions to add or remove items from the list.
+---
 
-Actions can be triggered both programatically or when user interacts with a
-*trigger component* of the given action whose [*context*](#context) is a
-component of given type.
+## Options
 
+The following properties are read from the `data-smark` object of a trigger
+component.  Any additional properties are forwarded as-is to the action handler
+as part of the `options` argument.
 
-### Interactions
+### action
 
-Nowadays the only possible interaction for trigger components is the 'click'
-event. But in the future actions are expected to listen to several events (i.e.
-right/middle/left click or even keyboard events...) which would be mapped to
-specific behaviour variations.
+The name of the action to invoke (e.g. `"export"`, `"addItem"`, `"clear"`).
 
-When the user interacts with an *action* component, its [context](#context) is
-resolved and the propper action method is called in it.
+  * **Type:** string
+  * **Required:** yes
 
-#### Hot Keys
+### context
 
-Even though, if the *hotkey* option is defined for a given trigger, they can
-also be triggered by pressing `Ctrl` key + its configured *hotkeys*.
+Specifies which component receives the action call.
 
-Hot keys work when the focus is in their *context* so that hot keys can be
-reused in different contexts (or context levels).
+  * **Type:** string (path★)
+  * **Default:** the second nearest ancestor of the trigger that implements the action
 
-If the `Ctrl` key is pressed and hold, active hot keys will be revealed by
-setting *data-hotkey* attribute of their trigger buttons. SmakForm's sample CSS
-use that to reveal a small pop-up hint but you can use the way you prefer in
-your own CSS. 
+Accepts an absolute or relative path.  Relative paths are resolved starting
+from the trigger's *natural context* (the default ancestor that would have
+been picked automatically).
 
+### target
 
-### Origin
+Specifies the component that is the *subject* of the action (e.g., the list
+item to be removed).
 
-The origin of an action is the actual *trigger* component from which the action
-was originated. For programatically triggered actions its value is *Null*.
+  * **Type:** string (path★)
+  * **Default:** the nearest ancestor of the trigger within its context
 
-This allow action implementations to interact with its originating trigger
-component.
+### hotkey
 
-### Context
+A single key character that activates this trigger when the user holds `Ctrl`
+and the keyboard focus is inside the trigger's context.
 
-The context of an action is the component willing to receive the action every
-time it is triggered.
+  * **Type:** string (`KeyboardEvent.key` value)
+  * **Default:** none (hotkey disabled)
 
-That is, by default, the **second** nearest ancestor (because nearest ancestor
-is the default [target](#target)) of the trigger component whose type implements
-an action of that name.
+See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full
+details on how hotkeys work, how they are revealed, and how to avoid conflicts.
 
-In trigger components the context can be altered by using the *context* property,
-consisting a relative (starting from default context) or absolute path to the
-desired context.
+---
 
-This is what allows, for example, to place the *addItem* trigger components of a
-list outside of the actual list.
+## Interactions
 
-**Example:**
-```html
-<button data-smark='{"action":"addItem","context":"myList","hotkey":"+"}'></button>
-<ul data-smark="{}">
-  <li>...</li>
-</ul>
-```
+The only direct interaction for trigger components is a **click** event.
+When clicked, the trigger resolves its context and target and calls the action.
 
-For convenience context is passed to the action handler by a property of that
-name even it is always the class of its component type.
+### Hot Keys
 
-For programatically triggered actions, context is (as expected) always the
-component from wihch we call the action.
+If a `hotkey` option is defined, the trigger can also be activated by pressing
+`Ctrl` + the configured key while keyboard focus is inside the trigger's
+context.
 
-**Example:**
-```javascript
-myForm.find("/myList").removeItem();
-```
+Holding `Ctrl` reveals all active hotkeys by setting the `data-hotkey`
+attribute on eligible trigger buttons.  Your CSS can use this attribute to
+display a visual hint.
 
-### Target
+---
 
-The target of an action is the component to which the action is to be peformed.
+## Origin
 
-By default it is the nearest ancestor of the trigger component but, as with
-*context*, it can be explicitly specified in the *target* property by a
-relative or absolute path.
+The *origin* of an action is the trigger component from which the action was
+invoked.  For programmatic calls (`myForm.find("x").export()`) origin is
+`null`.
 
-For example, in the *removeItem* action of *list* components, the *target* is
-the item of the list that is going to be removed.
+Action handlers and event hooks can inspect `options.origin` to distinguish
+user-initiated actions from programmatic ones.
 
-**Example:**
+---
 
-```html
-<button data-smark='{"action":"addItem","context":"myList","hotkey":"+"}'></button>
-<ul data-smark="{}">
-  <li>
-    ...
-    <button data-smark='{"action":"removeItem","hotkey":"-"}'>
-  </li>
-</ul>
-```
-
-
-
-Trigger Components
-------------------
-
-
+## Trigger Components
 

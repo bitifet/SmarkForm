@@ -26,6 +26,8 @@ nav_order: 3
             * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
             * [Options (clear)](#options-clear)
+        * [(Async) reset (Action)](#async-reset-action)
+            * [Options (reset)](#options-reset)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}

@@ -28,6 +28,8 @@ nav_order: 7
             * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
             * [Options (clear)](#options-clear)
+        * [(Async) reset (Action)](#async-reset-action)
+            * [Options (reset)](#options-reset)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -166,10 +168,22 @@ Imports a value into the time input field. Accepts various time formats and conv
 
 #### (Async) clear (Action)
 
-Clears the value of the time input field (sets it to null).
+Clears the value of the time input field (sets it to `null`).
 
 ##### Options (clear)
 
   * **action:** (= "clear")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
+
+
+#### (Async) reset (Action)
+
+Reverts the time field to its configured default value. If no default was configured, the field reverts to `null` (same as `clear`).
+
+##### Options (reset)
+
+  * **action:** (= "reset")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+
