@@ -47,18 +47,6 @@ nav_order: 3
 
 </details>
 
-
-{: .warning }
-> The code examples in this section have been designed to provide a clearer
-> understanding of the concepts they illustrate.
-> 
-> In most real-world scenarios, these examples may not be the best choices.
-> 
-> For instance, the use of ``onRendered`` callbacks to output introspection
-> data to the console which we will seldom need in real world applications
-> since all form interactions will be handled through *trigger* components.
-
-
 ## Forms, Lists and (other) Fields
 
 When we initialize a *SmarkForm* instance over some DOM element, it is enhanced

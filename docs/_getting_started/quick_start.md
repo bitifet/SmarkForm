@@ -486,8 +486,8 @@ This path can be either relative (to the current field) or absolute (to the form
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
-{% capture traversing_form_example_js
+{% raw %} <!-- traversing_form_example_callback_js {{{ --> {% endraw %}
+{% capture traversing_form_example_callback_js
 %}/* Set business name */
 myForm.onRendered(async ()=>{
     myForm.find("/businessData").import({name: "Bitifet"});
@@ -496,14 +496,45 @@ myForm.onRendered(async ()=>{
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- traversing_form_example_async_js {{{ --> {% endraw %}
+{% capture traversing_form_example_async_js
+%}/* Set business name */
+(async ()=>{
+    await myForm.rendered;
+    myForm.find("/businessData").import({name: "Bitifet"});
+    /* 👉 Since we don't provide the address field, it will be cleared */
+})();{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
-    formId="traversing_example"
+    formId="traversing_example_callback"
     htmlSource=traversing_form_example
-    jsSource=traversing_form_example_js
+    jsSource=traversing_form_example_callback_js
     selected="js"
     tests=false
 %}
 
+
+{: .warning :}
+> Before using the `.find()` method, we need to make sure the form is already
+> rendered, otherwise we could end up finding a componend field that doesn't
+> (yet) exist.
+> 
+> To do so, we can either pass a callback to the `onRendered()` method or,
+> within an async function, await for the `rendered` promise to resolve before
+> calling the `.find()` method.
+
+The following demonstrates the same example but awaiting to the `rendered`
+promise in an async function:
+
+{% include components/sampletabs_tpl.md
+    formId="traversing_example_async"
+    htmlSource=traversing_form_example
+    jsSource=traversing_form_example_async_js
+    selected="js"
+    tests=false
+%}
 
 
 ### Context and Target

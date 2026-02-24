@@ -26,8 +26,6 @@ around edge cases or features that might catch you off guard at first.
 * [Why can't I remove items from my list sometimes?](#why-cant-i-remove-items-from-my-list-sometimes)
 * [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
 * [My exported JSON is missing some fields—what's up?](#my-exported-json-is-missing-some-fieldswhats-up)
-* [Why does my form focus the first field automatically?](#why-does-my-form-focus-the-first-field-automatically)
-* [Can I configure SmarkForm without JavaScript?](#can-i-configure-smarkform-without-javascript)
 * [Why are my nested form fields named weirdly in the JSON?](#why-are-my-nested-form-fields-named-weirdly-in-the-json)
 * [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
 * [My list won't let me add items until I fill the current ones—is that intended?](#my-list-wont-let-me-add-items-until-i-fill-the-current-onesis-that-intended)
@@ -54,8 +52,9 @@ SmarkForm enforces a `min_items` limit (default is 1) on variable-length lists
 to keep them functional. When you hit this minimum, the "remove" button
 (`data-smark='{"action":"removeItem"}'`) is automatically disabled. Once you
 add more items, it re-enables.
-
-Check your list container — if it's at `min_items`, that's why.
+ 
+Check your list container — if it's at `min_items`, that's why. If you rather
+want to allow empty lists, set `{"min_items": 0}`.
 
 {: .hint :}
 > Add a disabled CSS rule (e.g. `button:disabled { opacity: 0.5; }`) to make
@@ -81,31 +80,6 @@ to JSON. If you want those empty items included (e.g. `""` or `null`), set
 
 See the [Showcase]({{ "/about/showcase" | relative_url }}#a-note-on-empty-values)
 for a worked example.
-
-
-## Why does my form focus the first field automatically?
-
-SmarkForm's `autoFocus` option (default: `true`) sets focus on the first
-editable field when the form loads. If that is not desired, disable it:
-
-```javascript
-const myForm = new SmarkForm(el, { autoFocus: false });
-```
-
-Note: this only happens on page load, not after actions like adding items.
-
-
-## Can I configure SmarkForm without JavaScript?
-
-Yes — you can use `data-smark-options` on your root element to provide options
-as JSON in the HTML:
-
-```html
-<form data-smark-options='{"min_items": 2}'>
-```
-
-JavaScript config passed to the constructor takes precedence when both are
-present.
 
 
 ## Why are my nested form fields named weirdly in the JSON?
@@ -189,23 +163,39 @@ Yes, with a few guidelines:
 
 - **Do not nest one SmarkForm root inside another.** SmarkForm forms should be
   independent siblings in the DOM.
+  ```html
+  <!-- Two independent root forms on the same page -->
+  <div id="formA">…</div>
+  <div id="formB">…</div>
+
+  <script>
+  const formA = new SmarkForm(document.getElementById("formA"));
+  const formB = new SmarkForm(document.getElementById("formB"));
+  </script>
+  ```
 - **One root with named subforms** is often a better pattern than multiple
   roots — use `data-smark='{"type":"form","name":"billing"}'` to create logically
   separate sections within a single root.
-- When a trigger needs to reference data from another form (e.g. to pre-populate
-  fields), use the `source` property on the trigger to point to the other
-  component by path.
+  ```html
+  <!-- One root form with named subforms -->
+  <div id="outerForm">
+    <div data-smark='{"name":"formA"}'>…</div>
+    <div data-smark='{"name":"formB"}'>…</div>
+  </div>
 
-```html
-<!-- Two independent root forms on the same page -->
-<div id="formA">…</div>
-<div id="formB">…</div>
+  <script>
+  (async ()=>{
+    const outerForm = new SmarkForm(document.getElementById("outerForm"));
+    await myForm.rendered;
+    const formA = outerForm.find("/formA");
+    const formB = outerForm.find("/formB");
+  })();
+  </script>
+  ```
+- With the second pattern, absolute paths start from the real root. But this is
+more an advantage than a limitation since both forms can access the data of
+each other (if needed).
 
-<script>
-const formA = new SmarkForm(document.getElementById("formA"));
-const formB = new SmarkForm(document.getElementById("formB"));
-</script>
-```
 
 
 ## How do I add custom actions?
@@ -214,12 +204,13 @@ Pass a `customActions` object to the `SmarkForm` constructor. Each key becomes
 an action name that can be referenced in `data-smark` trigger buttons:
 
 ```javascript
-const myForm = new SmarkForm(document.getElementById("myForm"), {
-    customActions: {
-        async myAction(data, options) {
-            console.log("Custom action triggered with data:", data);
-        },
+const customActions = {
+    async myAction(data, options) {
+        console.log("Custom action triggered with data:", data);
     },
+};
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+    customActions
 });
 ```
 
@@ -290,15 +281,13 @@ is intentional and distinct from an empty string `""`.
   returns `null` when cleared.
 - Date, time, number, and similar fields also return `null` when empty rather
   than `""` or `0`, to avoid ambiguity in the exported JSON.
-- Radio buttons return `null` when no option is selected.
+- Radio buttons return `null` when no option is selected. They also can be
+  de-selected (by clicking the selected option again or by pressing `Delete`
+  key).
 
 **Mapping `null` to HTML fields on import:** when a `null` value is imported
 into a field, SmarkForm clears the field to its native empty state. The
 `clear` action does the same thing programmatically.
-
-{: .hint :}
-> If your backend cannot handle `null`, filter it out or replace it with `""`
-> in an `AfterAction_export` handler before sending the data.
 
 
 ## What's this "API interface" I keep hearing about?
