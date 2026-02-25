@@ -792,6 +792,35 @@ repeating data structure.
 To begin with, another interesting use case for lists is to create a schedule
 list like the following example:
 
+{% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
+{% capture hotkeys_reveal_css
+%}/* Materialize hotkey hints from data-hotkey attribute */
+{{""}}#myForm$$ [data-hotkey] {
+  position: relative;
+  overflow-x: visible;
+}
+{{""}}#myForm$$ [data-hotkey]::before {
+  content: attr(data-hotkey);
+  display: inline-block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  z-index: 10;
+  pointer-events: none;
+  background-color: #ffd;
+  color: #44f;
+  outline: 1px solid lightyellow;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-family: sans-serif;
+  font-size: 0.8em;
+  white-space: nowrap;
+  transform: scale(1.8) translate(0.1em, 0.1em);
+}
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% raw %} <!-- schedule_list {{{ --> {% endraw %}
 {% capture schedule_list
 %}<p>
@@ -830,9 +859,12 @@ endcapture %}
 
 {% capture demoValue %}{ "schedule": [{"start": "09:00", "end": "13:00"}, {"start": "14:00", "end": "18:00"}] }{% endcapture %}
 
+{% capture schedule_list_css %}{{ hotkeys_reveal_css }}{% endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
     htmlSource=schedule_list
+    cssSource=schedule_list_css
     notes=include.notes
     selected="preview"
     demoValue=demoValue
@@ -992,6 +1024,7 @@ endcapture %}
 {{""}}      grid-row: 2 / -1;
 {{""}}  }
 {{""}}}
+{{ hotkeys_reveal_css }}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1786,35 +1819,6 @@ to add or remove phone numbers from the list, respectively.
 █    </li>
 █</ul>{%
 endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
-{% capture hotkeys_reveal_css
-%}/* Materialize hotkey hints from data-hotkey attribute */
-{{""}}#myForm$$ [data-hotkey] {
-  position: relative;
-  overflow-x: visible;
-}
-{{""}}#myForm$$ [data-hotkey]::before {
-  content: attr(data-hotkey);
-  display: inline-block;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  z-index: 10;
-  pointer-events: none;
-  background-color: #ffd;
-  color: #44f;
-  outline: 1px solid lightyellow;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-family: sans-serif;
-  font-size: 0.8em;
-  white-space: nowrap;
-  transform: scale(1.8) translate(0.1em, 0.1em);
-}
-{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
