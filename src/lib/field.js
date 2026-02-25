@@ -43,7 +43,7 @@ export class SmarkField extends SmarkComponent {
     async clear(_data, options = {}) {//{{{
         // Clear removes all user-provided values, resetting to type-level empty state
         // (ignoring any configured defaults)
-        await this.import(this.emptyValue, {silent: true, ...options});
+        await this.import(this.emptyValue, {silent: true, setDefault: false, ...options});
     };//}}}
     @action
     async reset(_data, options = {}) {//{{{

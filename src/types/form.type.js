@@ -50,19 +50,20 @@ export class form extends SmarkField {
     };//}}}
     @action
     @export_to_target
-    async export() {//{{{
+    async export(_data, {exportEmpties} = {}) {//{{{
         const me = this;
         return Object.fromEntries(
             await Promise.all(Object.entries(me.children).map(
-                async ([key, child])=>[key, await child.export(null, {silent: true})]
+                async ([key, child])=>[key, await child.export(null, {silent: true, exportEmpties})]
             ))
         );
     };//}}}
     @action
     @import_from_target
-    async import(data, {focus = false, silent = false} = {}) {//{{{
+    async import(data, {focus = false, silent = false, setDefault = true} = {}) {//{{{
         const me = this;
-        if (data === undefined) {
+        const isReset = data === undefined;
+        if (isReset) {
             data = me.defaultValue; // Undefined clears to default:
         } else if (data === "") {
             data = {};
@@ -76,6 +77,7 @@ export class form extends SmarkField {
             'FORM_NOT_PLAIN_OBJECT'
             , `Expected plain object or vailid JSON for form import, ${dataConstructor.name} given.`
         );
+        const childSetDefault = !isReset && setDefault;
         const retv = Object.fromEntries(
             await Promise.all(
                 Object.entries(me.children).map(
@@ -87,12 +89,15 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import(data[key], {focus: focus && !silent, silent});
+                        const value = await target.import(data[key], {focus: focus && !silent, silent, setDefault: childSetDefault});
                         return [key, value];
                     }
                 )
             )
         );
+        if (childSetDefault) {
+            me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
+        };
         if (focus && !silent) me.focus();
         return retv;
     };//}}}

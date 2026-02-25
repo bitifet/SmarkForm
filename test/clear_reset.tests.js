@@ -158,16 +158,16 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const field = form.find("/inputNoDefault");
                 
-                // Set a value
-                await field.import("UserValue");
+                // Set a value (setDefault:false to preserve initialization default)
+                await field.import("UserValue", {setDefault: false});
                 const afterImport = await field.export();
                 
                 // Clear should remove the value (empty string for input)
                 await field.clear();
                 const afterClear = await field.export();
                 
-                // Import again
-                await field.import("AnotherValue");
+                // Import again (setDefault:false to preserve initialization default)
+                await field.import("AnotherValue", {setDefault: false});
                 const afterSecondImport = await field.export();
                 
                 // Reset should also clear (no default defined)
@@ -207,16 +207,16 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initially should have default
                 const initial = await field.export();
                 
-                // Set a different value
-                await field.import("UserValue");
+                // Set a different value (setDefault:false to preserve initialization default)
+                await field.import("UserValue", {setDefault: false});
                 const afterImport = await field.export();
                 
                 // Clear should remove ALL values (ignoring default)
                 await field.clear();
                 const afterClear = await field.export();
                 
-                // Import another value
-                await field.import("AnotherValue");
+                // Import another value (setDefault:false to preserve initialization default)
+                await field.import("AnotherValue", {setDefault: false});
                 const afterSecondImport = await field.export();
                 
                 // Reset should restore default value
@@ -257,13 +257,13 @@ test.describe('Clear vs Reset Action Tests', () => {
                 
                 const initial = await field.export();
                 
-                await field.import(100);
+                await field.import(100, {setDefault: false});
                 const afterImport = await field.export();
                 
                 await field.clear();
                 const afterClear = await field.export();
                 
-                await field.import(200);
+                await field.import(200, {setDefault: false});
                 const afterSecondImport = await field.export();
                 
                 await field.reset();
@@ -301,16 +301,16 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const form_field = form.find("/nestedForm");
                 
-                // Set values
-                await form_field.import({field1: "Value1", field2: "Value2"});
+                // Set values (setDefault:false to preserve initialization default)
+                await form_field.import({field1: "Value1", field2: "Value2"}, {setDefault: false});
                 const afterImport = await form_field.export();
                 
                 // Clear should empty all fields
                 await form_field.clear();
                 const afterClear = await form_field.export();
                 
-                // Set again
-                await form_field.import({field1: "NewValue1", field2: "NewValue2"});
+                // Set again (setDefault:false to preserve initialization default)
+                await form_field.import({field1: "NewValue1", field2: "NewValue2"}, {setDefault: false});
                 const afterSecondImport = await form_field.export();
                 
                 // Reset should also empty (no defaults)
@@ -350,16 +350,16 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initially should have defaults
                 const initial = await form_field.export();
                 
-                // Change values
-                await form_field.import({name: "Jane Doe", age: "25"});
+                // Change values (setDefault:false to preserve initialization default)
+                await form_field.import({name: "Jane Doe", age: "25"}, {setDefault: false});
                 const afterImport = await form_field.export();
                 
                 // Clear should empty all fields (ignore defaults)
                 await form_field.clear();
                 const afterClear = await form_field.export();
                 
-                // Set different values
-                await form_field.import({name: "Alice", age: "35"});
+                // Set different values (setDefault:false to preserve initialization default)
+                await form_field.import({name: "Alice", age: "35"}, {setDefault: false});
                 const afterSecondImport = await form_field.export();
                 
                 // Reset should restore defaults
@@ -398,8 +398,8 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const list = form.find("/listNoDefault");
                 
-                // Add items
-                await list.import([{item: "Item1"}, {item: "Item2"}]);
+                // Add items (setDefault:false to preserve initialization default)
+                await list.import([{item: "Item1"}, {item: "Item2"}], {setDefault: false});
                 const afterImport = await list.export();
                 
                 // Clear should empty the list
@@ -407,8 +407,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterClear = await list.export();
                 const childCountAfterClear = list.children.length;
                 
-                // Add items again
-                await list.import([{item: "Item3"}]);
+                // Add items again (setDefault:false to preserve initialization default)
+                await list.import([{item: "Item3"}], {setDefault: false});
                 const afterSecondImport = await list.export();
                 
                 // Reset should also empty (default is empty array)
@@ -454,8 +454,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const initial = await list.export();
                 const initialChildCount = list.children.length;
                 
-                // Change items
-                await list.import([{item: "UserItem1"}, {item: "UserItem2"}, {item: "UserItem3"}]);
+                // Change items (setDefault:false to preserve initialization default)
+                await list.import([{item: "UserItem1"}, {item: "UserItem2"}, {item: "UserItem3"}], {setDefault: false});
                 const afterImport = await list.export();
                 const afterImportChildCount = list.children.length;
                 
@@ -464,8 +464,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterClear = await list.export();
                 const afterClearChildCount = list.children.length;
                 
-                // Add items again
-                await list.import([{item: "NewItem"}]);
+                // Add items again (setDefault:false to preserve initialization default)
+                await list.import([{item: "NewItem"}], {setDefault: false});
                 const afterSecondImport = await list.export();
                 
                 // Reset should restore default items
@@ -516,24 +516,24 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initially should have default structure
                 const initial = await deepForm.export();
                 
-                // Modify the nested structure
+                // Modify the nested structure (setDefault:false to preserve initialization default)
                 await deepForm.import({
                     users: [
                         {name: "Charlie", age: "40"},
                         {name: "Diana", age: "35"},
                         {name: "Eve", age: "28"}
                     ]
-                });
+                }, {setDefault: false});
                 const afterImport = await deepForm.export();
                 
                 // Clear should empty everything
                 await deepForm.clear();
                 const afterClear = await deepForm.export();
                 
-                // Set different data
+                // Set different data (setDefault:false to preserve initialization default)
                 await deepForm.import({
                     users: [{name: "Frank", age: "50"}]
-                });
+                }, {setDefault: false});
                 const afterSecondImport = await deepForm.export();
                 
                 // Reset should restore the default nested structure
@@ -593,8 +593,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Start with default
                 const initial = await field.export();
                 
-                // User enters value
-                await field.import("UserValue");
+                // User enters value (setDefault:false to preserve initialization default)
+                await field.import("UserValue", {setDefault: false});
                 const afterUser = await field.export();
                 
                 // Clear removes everything
@@ -617,6 +617,249 @@ test.describe('Clear vs Reset Action Tests', () => {
             expect(results.afterUser).toBe("UserValue");
             expect(results.afterClear).toBe("");
             expect(results.afterReset).toBe("DefaultValue");
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('setDefault:true (default) - import updates what reset restores (input)', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const field = form.find("/inputWithDefault");
+
+                // Initial default
+                const initial = await field.export();
+
+                // Import with default setDefault:true → updates default
+                await field.import("NewDefault");
+                const afterImport = await field.export();
+
+                // Modify value without changing default
+                await field.import("TempValue", {setDefault: false});
+                const afterTempImport = await field.export();
+
+                // Reset should restore "NewDefault" (the last setDefault:true import)
+                await field.reset();
+                const afterReset = await field.export();
+
+                return { initial, afterImport, afterTempImport, afterReset };
+            });
+
+            expect(results.initial).toBe("DefaultValue");
+            expect(results.afterImport).toBe("NewDefault");
+            expect(results.afterTempImport).toBe("TempValue");
+            expect(results.afterReset).toBe("NewDefault"); // reset restores what import set
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('setDefault:true (default) - import with undefined does NOT update default', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const field = form.find("/inputWithDefault");
+
+                // Set new default via import
+                await field.import("NewDefault");
+                const afterSetDefault = await field.export();
+
+                // Import undefined (reset to current default) — must NOT change default
+                await field.import(undefined);
+                const afterUndefinedImport = await field.export();
+
+                // Modify without changing default
+                await field.import("TempValue", {setDefault: false});
+                const afterTempImport = await field.export();
+
+                // Reset should still give "NewDefault"
+                await field.reset();
+                const afterReset = await field.export();
+
+                return { afterSetDefault, afterUndefinedImport, afterTempImport, afterReset };
+            });
+
+            expect(results.afterSetDefault).toBe("NewDefault");
+            expect(results.afterUndefinedImport).toBe("NewDefault"); // undefined → restores current default
+            expect(results.afterTempImport).toBe("TempValue");
+            expect(results.afterReset).toBe("NewDefault"); // default unchanged by undefined import
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('setDefault:true - form import updates what reset restores', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const form_field = form.find("/nestedForm");
+
+                // Import sets new default
+                await form_field.import({field1: "Alice", field2: "Bob"});
+                const afterImport = await form_field.export();
+
+                // Modify without changing default
+                await form_field.import({field1: "X", field2: "Y"}, {setDefault: false});
+                const afterTempImport = await form_field.export();
+
+                // Reset restores what import set
+                await form_field.reset();
+                const afterReset = await form_field.export();
+
+                return { afterImport, afterTempImport, afterReset };
+            });
+
+            expect(results.afterImport).toEqual({field1: "Alice", field2: "Bob"});
+            expect(results.afterTempImport).toEqual({field1: "X", field2: "Y"});
+            expect(results.afterReset).toEqual({field1: "Alice", field2: "Bob"});
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('setDefault:true - list import updates what reset restores', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const list = form.find("/listNoDefault");
+
+                // Import sets new default (includes empty items due to exportEmpties:true)
+                await list.import([{item: "A"}, {item: "B"}]);
+                const afterImport = await list.export();
+                const afterImportChildCount = list.children.length;
+
+                // Modify without changing default
+                await list.import([{item: "X"}], {setDefault: false});
+                const afterTempImport = await list.export();
+
+                // Reset restores what import set
+                await list.reset();
+                const afterReset = await list.export();
+                const afterResetChildCount = list.children.length;
+
+                return { afterImport, afterImportChildCount, afterTempImport, afterReset, afterResetChildCount };
+            });
+
+            expect(results.afterImport).toEqual([{item: "A"}, {item: "B"}]);
+            expect(results.afterImportChildCount).toBe(2);
+            expect(results.afterTempImport).toEqual([{item: "X"}]);
+            expect(results.afterReset).toEqual([{item: "A"}, {item: "B"}]);
+            expect(results.afterResetChildCount).toBe(2);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('setDefault:true - nested form+list: import updates what reset restores', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const deepForm = form.find("/deeplyNested");
+
+                // Import sets new default
+                await deepForm.import({
+                    users: [{name: "Charlie", age: "40"}, {name: "Diana", age: "35"}]
+                });
+                const afterImport = await deepForm.export();
+
+                // Temporarily modify without changing default
+                await deepForm.import({users: [{name: "Temp", age: "0"}]}, {setDefault: false});
+                const afterTempImport = await deepForm.export();
+
+                // Reset restores what import set
+                await deepForm.reset();
+                const afterReset = await deepForm.export();
+
+                return { afterImport, afterTempImport, afterReset };
+            });
+
+            expect(results.afterImport).toEqual({
+                users: [{name: "Charlie", age: "40"}, {name: "Diana", age: "35"}]
+            });
+            expect(results.afterTempImport).toEqual({users: [{name: "Temp", age: "0"}]});
+            expect(results.afterReset).toEqual({
+                users: [{name: "Charlie", age: "40"}, {name: "Diana", age: "35"}]
+            });
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('setDefault:true - exportEmpties:true effect observable in computed default', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const list = form.find("/listNoDefault");
+
+                // Import list with empty items — exportEmpties:true should include them in default
+                await list.import([{item: ""}, {item: "Filled"}]);
+                // Regular export (exportEmpties:false) strips the empty item
+                const afterImport = await list.export();
+
+                // Verify empty item is included in default (reset should restore it)
+                await list.import([{item: "X"}], {setDefault: false});
+                await list.reset();
+                // Regular export still strips empty items per list config
+                const afterReset = await list.export();
+                // But the empty item IS there — check child count
+                const childCountAfterReset = list.children.length;
+                // And verify with exportEmpties:true
+                const afterResetWithEmpties = await list.export(null, {exportEmpties: true});
+
+                return { afterImport, afterReset, childCountAfterReset, afterResetWithEmpties };
+            });
+
+            // After import, exportEmpties:false strips the empty item from export
+            expect(results.afterImport).toEqual([{item: "Filled"}]);
+            // Regular export still strips empties
+            expect(results.afterReset).toEqual([{item: "Filled"}]);
+            // But the empty item IS there (2 children total)
+            expect(results.childCountAfterReset).toBe(2);
+            // Confirmed with exportEmpties:true
+            expect(results.afterResetWithEmpties).toEqual([{item: ""}, {item: "Filled"}]);
         } finally {
             if (onClosed) await onClosed();
         }
