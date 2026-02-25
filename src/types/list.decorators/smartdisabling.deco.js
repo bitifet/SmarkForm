@@ -2,7 +2,6 @@
 // ============================================
 
 async function updateTriggers(context) {
-    await context.rendered;
     for (const tg of context.getTriggers(["removeItem", "addItem"])) {
         tg.targetNode.disabled = (
             tg.options.action == "removeItem" ? (
@@ -19,19 +18,14 @@ export const smartdisabling = function list_smartdisabling_decorator(target, {ki
         return class smartdisablingClass extends target {
             async render(...args) {//{{{
                 const retv = await super.render(...args);
-                const me = this;
-                setTimeout(()=>updateTriggers(me), 1);
-                    // FIXME (Why do we need to delay it?)
-                    // Even more: Why it is even needed with min_items >= 1??
-
+                await updateTriggers(this);
                 return retv;
             };//}}}
         };
     } else if (kind == "method") {
         return async function smartdisablingMethod(...args) {
-            const me = this;
-            const retv = await target.call(me, ...args);
-            updateTriggers(me);
+            const retv = await target.call(this, ...args);
+            updateTriggers(this);
             return retv;
         };
     };
