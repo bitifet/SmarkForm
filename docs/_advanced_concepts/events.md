@@ -35,6 +35,9 @@ nav_order: 2
     * [Intercepting an import to fetch data asynchronously](#intercepting-an-import-to-fetch-data-asynchronously)
     * [Modifying exported data before it leaves](#modifying-exported-data-before-it-leaves)
 * [Implementation Details](#implementation-details)
+    * [The `@action` decorator](#the-action-decorator)
+    * [Calling actions programmatically](#calling-actions-programmatically)
+    * [Event bubbling: local vs. all](#event-bubbling-local-vs-all)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
