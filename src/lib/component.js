@@ -364,7 +364,7 @@ export class SmarkComponent {
             // Like 'document.location.hash = ""' but without leaving leading
             // hash character.
     };//}}}
-    getTriggers(actionNames = "") {//{{{
+    getTriggers(actionNames = "", limit = Infinity) {//{{{
         const me = this;
         const myCurrentActions = [];
         const actionKeys = new Set([actionNames]
@@ -389,6 +389,7 @@ export class SmarkComponent {
                 returnAll
                 || actionKeys.has(options.action)
             ) myCurrentActions.push(tgg);
+            if (myCurrentActions.length >= limit) break;
         };
         return myCurrentActions;
     };//}}}
@@ -408,7 +409,8 @@ export class SmarkComponent {
     focus() {//{{{
         const me = this;
         for (const fname in me.children) {
-            return me.children[fname].focus();
+            // Pick first with minimal function calls.
+            return void me.children[fname].focus();
         };
         if (me.targetFieldNode) {
             // Prefer fields over triggers, forms, etc...

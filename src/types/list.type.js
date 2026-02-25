@@ -3,6 +3,7 @@
 
 import {SmarkField} from "../lib/field.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
+import {focusretention} from "./list.decorators/focusretention.deco.js";
 import {action} from "./trigger.type.js";
 import {foldable} from "../decorators/foldable.deco.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
@@ -327,6 +328,7 @@ export class list extends SmarkField {
     @action
     @mutex("list_mutating")
     @smartdisabling
+    @focusretention
     async removeItem(_data, options = {}) {//{{{
         const me = this;
         options.action = "removeItem";

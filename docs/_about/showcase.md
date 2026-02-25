@@ -793,10 +793,10 @@ To begin with, another interesting use case for lists is to create a schedule
 list like the following example:
 
 {: .hint :}
-> 💡 The `➖` and `➕` buttons in the examples below use *hotkeys*. Check the
-> *CSS* tab to see the reveal setup, or jump to
-> [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts-hot-keys)
-> to learn more.
+> The `➖` and `➕` buttons in the examples below use *hotkeys*. Press and hold
+> the `Ctrl` key to see which ones are available. Check the *CSS* tab to see
+> the reveal setup, or jump to [Context-Driven Keyboard
+> Shortcuts](#context-driven-keyboard-shortcuts-hot-keys) to learn more.
 
 {% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
 {% capture hotkeys_reveal_css
@@ -892,12 +892,11 @@ But it could look kind of messy if you need to introduce several schedules that 
 %}█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
 █    <div class="schedule-row" data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
-█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
 █            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
 █            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
-█        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
@@ -905,12 +904,11 @@ But it could look kind of messy if you need to introduce several schedules that 
 █    </div>
 █    <div class="schedule-row" data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <strong data-smark='{"role":"header"}'>🍸 Bar</strong>
-█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
 █            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
 █            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
-█        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
@@ -918,12 +916,11 @@ But it could look kind of messy if you need to introduce several schedules that 
 █    </div>
 █    <div class="schedule-row" data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <strong data-smark='{"role":"header"}'>🍽️ Restaurant:</strong>
-█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
 █            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
 █            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
-█        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
@@ -931,12 +928,11 @@ But it could look kind of messy if you need to introduce several schedules that 
 █    </div>
 █    <div class="schedule-row" data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <strong data-smark='{"role":"header"}'>🏊 Pool:</strong>
-█        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
 █        <span class='time_slot'>
 █            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
 █            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
 █        </span>
-█        <span data-smark='{"role":"placeholder"}'></span>
 █        <span data-smark='{"role":"footer"}'>
 █            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
@@ -970,12 +966,11 @@ endcapture %}
     grid-row: 1;
     padding-top: 0.3em;
 }
-{{""}}#myForm$$ .schedule-row > .time_slot,
-{{""}}#myForm$$ .schedule-row > [data-role="empty_list"] {
+{{""}}#myForm$$ .schedule-row > .time_slot {
     grid-column: 2;
 }
-{{""}}#myForm$$ .schedule-row > [data-role="placeholder"] {
-    display: none;
+{{""}}#myForm$$ .schedule-row > [data-role="empty_list"] {
+    padding-right: 5em;
 }
 {{""}}#myForm$$ .schedule-row > [data-role="footer"] {
     grid-column: 3;
@@ -1024,6 +1019,7 @@ endcapture %}
 {{""}}  #myForm$$ .schedule-row > [data-role="empty_list"] {
 {{""}}      grid-column: 1;
 {{""}}      padding-left: 0.5em;
+{{""}}      text-align: right;
 {{""}}  }
 {{""}}  #myForm$$ .schedule-row > [data-role="footer"] {
 {{""}}      grid-column: 2;
@@ -1045,9 +1041,9 @@ endcapture %}
   * The footer role holds the ➖/➕ buttons, which span all slot rows via
     `grid-row: 1 / -1` so they stay right-aligned regardless of item count.
 
-👉 The `header`, `footer`, `empty_list` and `placeholder` *template roles* are
-  still used, but the `placeholder` is hidden (`display: none`) since the grid
-  handles column sizing without needing DOM filler elements.
+👉 The `header`, `footer` and `empty_list` *template roles* are still used, but
+the `placeholder` had been removed since the grid handles column sizing without
+needing DOM filler elements.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 

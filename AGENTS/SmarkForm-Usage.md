@@ -172,7 +172,7 @@ Context paths are resolved lazily at action-trigger time via `find()`. Relative 
     <input data-smark type="time" name="start"> to <input data-smark type="time" name="end">
   </span>
   <!-- placeholder fills gap when list has fewer items than max -->
-  <span data-smark='{"role":"placeholder"}'></span>
+  <span data-smark='{"role":"placeholder"}'>❌</span>
   <!-- footer holds controls, always visible, not cloned -->
   <span data-smark='{"role":"footer"}'>
     <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖</button>
@@ -180,6 +180,9 @@ Context paths are resolved lazily at action-trigger time via `find()`. Relative 
   </span>
 </div>
 ```
+
+**NOTE:** Only the *item* template is required. The rest are optional. They can be used or not depending on the desired UI/UX and layout. For example, the *placeholder* template in the former example is completely optional. On the other hand, if we had used a `<table>` for layout, we may have needed it to fill empty cells to maintain its structure.
+
 
 ### List Initialization with `value` Property
 
