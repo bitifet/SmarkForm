@@ -76,10 +76,12 @@ list. This template is mandatory.
 
 👉 Other available roles are:
 
-  * `empty_list`: Displayed when the list is empty.
-  * `separator`: To visually separate items.
-  * `last_separator`: That, if provided, replaces *separator* for last item.
-  * More coming soon like `header`, `padding` or `footer`.
+  * `empty_list`: Displayed when the list is empty (removed when items are added).
+  * `header`: Persistent header element prepended once to the list. Can contain triggers but **not** SmarkForm fields.
+  * `footer`: Persistent footer element appended once to the list. Can contain triggers but **not** SmarkForm fields.
+  * `separator`: Template cloned between each pair of adjacent items (removed when only one item remains).
+  * `last_separator`: Like `separator` but used only before the last item. Falls back to `separator` if not provided.
+  * `placeholder`: Visual placeholder slot used only when `max_items` is set. One placeholder is shown for each slot not yet occupied by a real item.
 
 👉 Likewise [forms]({{ "component_types/type_form" | relative_url }}), *list*
 inputs can be created over any HTML tag <a aria-hidden="true" href="#example-simple_list" style="cursor:pointer" title="Search for «☛ 1» in the code comments">(☛ 1)</a>  **except for actual HTML form
@@ -393,6 +395,7 @@ The `list` component type supports the following actions:
   * {{ site.data.definitions.actions.options.target_import }}
   * **data:** (array / any¹)
   * **focus:** (boolean, default true)
+  * **setDefault:** (boolean, default `true`) — When `true` (the default), the imported data becomes the new default restored by `reset()`. Pass `false` to import data without changing the reset target.
 
 
 {: .hint}
@@ -414,9 +417,9 @@ Clears the list to an empty array, removing all items regardless of any configur
 
 #### (Async) reset (Action)
 
-Reverts the list to its configured default structure. If the list was initialized with prepopulated items via the `value` option, `reset` will restore those items. If no default items were configured, the list reverts to an empty array (same as `clear`).
+Reverts the list to its default structure. The default is initially set by the `value` option, and is updated every time `import()` is called with `setDefault: true` (the default). If no default has ever been set, the list reverts to an empty array (same as `clear`).
 
-**Example use case:** A "Reset to defaults" button that restores the list to its initial state.
+**Example use case:** A "Reset" button that restores the list to its last loaded state.
 
 ##### Options (reset)
 

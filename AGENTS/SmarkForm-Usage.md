@@ -407,3 +407,105 @@ await writeField('/periods/0/end_date', '2025-09-30');
 await duplicateBtn.click();
 // Now both periods have the same dates → proves duplication, not reset
 ```
+
+## `import()` and `setDefault` — Default Value Semantics
+
+Since v0.13.0, calling `component.import(data)` **updates the component's `defaultValue`** by default (i.e., `setDefault` defaults to `true`). This means `reset()` after an `import()` restores the imported data, not the HTML initialization default.
+
+### Behavior Summary
+
+| Call | Updates default? | What `reset()` restores |
+|------|-----------------|------------------------|
+| `import(data)` | ✅ Yes | `data` (normalized via `exportEmpties:true`) |
+| `import(data, {setDefault:false})` | ❌ No | Previous default |
+| `import(undefined)` | ❌ No (always skipped) | Current default unchanged |
+| `clear()` | ❌ No | Default unchanged |
+| `reset()` | ❌ No | Current default |
+
+### How the New Default is Computed
+
+After a successful `import(data)` with `setDefault:true`, the new `defaultValue` is set by:
+
+```javascript
+me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
+```
+
+Using `exportEmpties: true` ensures empty list items are included in the stored default so `reset()` restores the exact same structure (including empty slots).
+
+### Propagation Through Nested Components
+
+`setDefault` is propagated consistently:
+- When a **form** imports data, it passes `setDefault` to all child imports.
+- When a **list** imports data, it passes `setDefault` to all item imports.
+- If the top-level `import()` was a reset (data was `undefined`), children always receive `setDefault: false`.
+
+### Breaking Change From Earlier Versions
+
+Code that calls `import(data)` and expects `reset()` to restore the original HTML-defined default must now use:
+
+```javascript
+await component.import(data, {setDefault: false});
+```
+
+### HTML Trigger Example
+
+```html
+<!-- Import without updating defaults (preview mode) -->
+<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+<!-- Import with default update (load/apply mode, the new default) -->
+<button data-smark='{"action":"import"}'>Load Data</button>
+```
+
+## `find()` Timing — Must Await `rendered`
+
+The `find()` method looks up components in an internal map that is built **asynchronously during `render()`**. Before rendering is complete, **all `find()` calls return `null`** (or `undefined`).
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+
+// ❌ WRONG — render is not done yet, find returns null
+const field = myForm.find("/name"); // null!
+
+// ✅ CORRECT — wait for render to complete
+await myForm.rendered;
+const field = myForm.find("/name"); // returns the component
+```
+
+**Inside event handlers** (`AfterAction_*`, `afterRender`, etc.) this is not an issue because those events only fire after rendering has finished.
+
+**Inside `onRendered` callbacks** registered in a component's constructor: they also run after render, so `find()` is safe there too.
+
+### Common Mistake Pattern
+
+```javascript
+// Creating form and immediately calling find (often in script at page bottom):
+const myForm = new SmarkForm(document.getElementById("myForm"));
+myForm.on("AfterAction_export", (ev) => {
+    // Safe: event only fires after render
+    const field = myForm.find("/name");
+});
+
+// But this is unsafe:
+const field = myForm.find("/name"); // Called synchronously after constructor
+```
+
+## List Template Roles — Complete Reference
+
+| Role | Behavior |
+|------|----------|
+| `item` (default) | Repeating item template. **Required.** Cloned for each list item. |
+| `empty_list` | Shown in the list container when there are 0 items. Removed when the first item is added. |
+| `header` | Prepended once to the list container. **Not cloned.** Cannot contain SmarkForm fields; can contain triggers. |
+| `footer` | Appended once to the list container. **Not cloned.** Cannot contain SmarkForm fields; can contain triggers. |
+| `separator` | Cloned between each pair of adjacent items. Removed when only one item remains. |
+| `last_separator` | Like `separator` but used only between the second-to-last and last item. Falls back to `separator` if not defined. |
+| `placeholder` | Visual filler shown for each empty slot when `max_items` is set. One placeholder per unfilled slot. |
+
+### Rules for non-`item` roles
+
+- `header`, `footer`: Rendered once per list, not duplicated. Can contain action triggers (`addItem`, etc.) but **not** SmarkForm data fields.
+- `separator`, `last_separator`: Cloned dynamically by `renum()` as items are added/removed. Not enhanced by SmarkForm.
+- `placeholder`: Only rendered when `max_items` is finite. Count = `max_items - children.length` (minus 1 if `empty_list` is also shown and the list is empty).
+- `empty_list`: Managed by `renum()`. Added when `children.length === 0`, removed otherwise.
+
+Set the role via `data-smark='{"role":"<role>"}'`. The `item` role is the default and does not need to be specified explicitly.

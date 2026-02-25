@@ -217,13 +217,14 @@ The `form` component type supports the following actions:
   * {{ site.data.definitions.actions.options.target_import }}
   * **data:** (JSON)
   * **focus:** (boolean, default true)
+  * **setDefault:** (boolean, default `true`) — When `true` (the default), the imported data becomes the new default restored by `reset()`. Pass `false` to import data without changing the reset target.
 
 
 #### (Async) clear (Action)
 
 Clears all fields to their type-level empty state, removing all user-provided values **and ignoring any configured default values**. This action is useful when you want to completely empty a form, regardless of any defaults that were set.
 
-For forms, this means setting all fields to empty values (empty strings for text fields, empty arrays for lists, empty objects for nested forms). Unlike `reset`, `clear` does not restore default values.
+For forms, this means setting all fields to empty values (empty strings for text fields, empty arrays for lists, empty objects for nested forms). Unlike `reset`, `clear` does not restore default values, nor does it update the stored default.
 
 **Example use case:** A "New" button that clears everything to start fresh, even if the form had default values.
 
@@ -237,11 +238,11 @@ For forms, this means setting all fields to empty values (empty strings for text
 
 #### (Async) reset (Action)
 
-Reverts all fields to their configured default values. If a field was initialized with a `value` option or default value, `reset` will restore that value. If no defaults were configured, fields revert to their type-level empty state.
+Reverts all fields to their configured default values. The default is initially set by the `value` option and is updated every time `import()` is called with `setDefault: true` (the default). If no default has ever been set, fields revert to their type-level empty state.
 
-This action is recursive, applying to all nested forms and lists. For lists, if a default structure was provided (e.g., prepopulated items), `reset` will restore that structure.
+This action is recursive, applying to all nested forms and lists.
 
-**Example use case:** A "Reset to defaults" button that restores the form to its initial state as it was when first rendered.
+**Example use case:** A "Reset" button that restores the form to its last loaded state.
 
 ##### Options (reset)
 

@@ -75,6 +75,12 @@ nav_order: 1
 
 Form traversing in SmarkForm provides a powerful and intuitive way to navigate through the component hierarchy and interact with specific parts of your forms. The `.find()` method serves as the primary mechanism for locating components within the form structure, supporting both simple navigation and complex path-based queries.
 
+{: .warning :}
+> **Call `find()` only after `await myForm.rendered`.**
+> SmarkForm builds its internal map of field components asynchronously. Calling
+> `find()` before rendering is complete will return `null` for every path.
+> Inside event handlers this is not necessary since they only fire after render.
+
 Building upon the foundational concepts introduced in the [Quick Start Guide]({{ "getting_started/quick_start#form-traversing" | relative_url }}), this comprehensive guide explores the full capabilities of SmarkForm's traversing system, including the newly implemented list item sibling navigation feature.
 
 Every SmarkForm component provides a `.find()` method that accepts a path-like route to locate target components. This path-based approach enables precise navigation through nested form structures, making it easy to access, manipulate, and coordinate between different parts of your form.

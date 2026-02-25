@@ -35,6 +35,7 @@ around edge cases or features that might catch you off guard at first.
 * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
 * [How do I add custom actions?](#how-do-i-add-custom-actions)
 * [How do default values and reset work?](#how-do-default-values-and-reset-work)
+* [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
 * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
 * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
 * [What's this "API interface" I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
@@ -243,15 +244,71 @@ For a form or list, you can set the default on the container:
 </div>
 ```
 
-**Current behavior:** when a form is first loaded (or `reset()` is called), it
-imports the `defaultValue`. If no `defaultValue` is set, `reset()` clears the
-form to its empty state.
+**`import()` updates the default by default.** When you call `import(data)`,
+the imported data becomes the new default for subsequent `reset()` calls. This
+means "Load" and "Reset" naturally work together: after loading new data,
+Reset brings you back to that loaded data.
+
+```javascript
+// After this import, reset() will restore {name: "Bob"}
+await myForm.import({name: "Bob"});
+
+// Temporarily change value
+await myForm.import({name: "Temp"}, {setDefault: false}); // won't update default
+
+// Reset restores {name: "Bob"}, not the original initialization default
+await myForm.reset();
+```
+
+To **prevent** an import from changing the default, pass `setDefault: false`:
+
+```javascript
+await myForm.import(someData, {setDefault: false});
+// reset() will still restore the previous default
+```
+
+The same option works from HTML triggers:
+
+```html
+<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+```
+
+**Importing `undefined`** (which is what `reset()` does internally) never
+updates the default — it simply restores the current default value.
 
 {: .info :}
-> 🔭 **Future idea (not yet implemented):** It has been discussed that `import`
-> could optionally set the imported data as the new default (unless
-> `setDefault: false` is passed). This would allow "Load" to also update what
-> "Reset" restores to. This behavior is **not** currently implemented.
+> **How the new default is computed:** When `setDefault: true` and data is not
+> `undefined`, SmarkForm performs a silent `export` with `exportEmpties: true`
+> and stores the result as the new `defaultValue`. This guarantees that the
+> stored default is a normalized, consistent representation of the imported
+> state — including empty list items that would otherwise be stripped.
+
+
+## `myForm.find('/foo/bar')` returns `null` but the field exists
+
+This almost always means `find()` was called **before the form finished
+rendering**.
+
+SmarkForm builds its internal map of field components asynchronously during
+`render()`. Before rendering is complete, `find()` will return `null` (or
+`undefined`) for every path — even valid ones.
+
+**Solution:** await the `rendered` promise before calling `find()`:
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+await myForm.rendered; // wait for full render
+
+const field = myForm.find("/foo/bar"); // now safe
+```
+
+Inside **event handlers** (e.g. `AfterAction_*`) this is not necessary because
+those events are only emitted after rendering is complete.
+
+{: .warning :}
+> Never call `find()` in the same synchronous tick as the `SmarkForm`
+> constructor — even for the root form's own fields. Always `await myForm.rendered`
+> first.
 
 
 ## Which browsers does SmarkForm support?
