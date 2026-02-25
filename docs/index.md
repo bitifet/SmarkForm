@@ -45,20 +45,13 @@ permalink: /
 [![License][license-image]][license-url]
 
 
-*SmarkForm* is a lightweight library designed for front-end developers and
-designers to enhance HTML forms with powerful features like **subforms** and
-dynamic, variable-length **lists**, context driven **hotkeys** and more...
+*SmarkForm* is a lightweight, markup-driven form controller for front-end
+developers: add `data-smark` attributes to your HTML, initialize with one line
+of JavaScript, and get powerful **subforms**, variable-length **lists**,
+context-driven **hotkeys**, and JSON import/export — all without touching your
+layout.
 
-🔧 It seamlessly integrates with the DOM to provide a markup-agnostic solution,
-freeing your form layout from rigid structure and styling constraints while
-enabling **JSON form data import and export** and ensuring compatibility with
-modern workflows.
-
-♿ With a focus on accessibility (a11y), SmarkForm offers configurable hotkeys,
-**smooth navigation**, and a **low-code experience**, making it an extendable
-and versatile tool for building HTML form applications.
-
-\[[More...]({{ "about/introduction" | relative_url }})\]
+👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
 
 
 <div class="SmarkForm-Hero">
@@ -74,27 +67,6 @@ and versatile tool for building HTML form applications.
 🔗 Live Examples
 </a>
 </div>
-
-## What SmarkForm Is (and Isn't Yet)
-
-**SmarkForm is:**
-- A **markup-driven** form controller: configuration lives in `data-smark`
-  attributes, keeping HTML and JavaScript cleanly separated.
-- **Markup-agnostic**: it imposes no HTML structure or CSS on your design.
-- A tool for **JSON-based import/export** of complex, nested form data including
-  subforms and variable-length lists.
-- Ready for **context-driven hotkeys** and smooth keyboard navigation.
-- Stable and in active use, but still pre-1.0 (API may evolve).
-
-**Not yet implemented (planned for a future release):**
-- ❌ Built-in validation (field-level error messages).
-- ❌ Native `<form>` tag POST submission — use `AfterAction_export` + `fetch` for now.
-- ❌ The "API interface" for dynamic dropdown/select options from a server.
-
-{: .info :}
-> ⚠️ SmarkForm is currently at **version 0.x**. The implemented features are
-> stable, but breaking changes may still occur before 1.0.
-> See the [Roadmap]({{ "about/roadmap" | relative_url }}) for what's coming next.
 
 
 ## Main Features

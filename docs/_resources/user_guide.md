@@ -234,11 +234,11 @@ SmarkForm is designed with accessibility in mind, though we're continuously work
 - **Mouse and touch support:** All essential actions have visible buttons that are reachable by mouse or touch. You never need a keyboard shortcut to perform a required task.
 - **Full keyboard support:** Everything can also be done without a mouse — keyboard navigation and Tab ordering work throughout.
 - **Power-user hotkeys:** Some non-essential, "power-user" actions may be available only as hotkeys (using [hidden trigger buttons](#common-hotkey-patterns)). These are still fully discoverable via the **Ctrl reveal** mechanism: hold Ctrl to see the available hotkeys at any time, even if no visible button is present.
-- **Clear focus indicators:** You can always see where you are in the form.
-- **Smart tab order:** Disabled elements are automatically excluded from navigation.
+- **Smart tab order:** Disabled elements are automatically excluded from navigation, so Tab always moves you to an element you can actually interact with.
+- **Context-aware focus tracking:** When you add a new list item, SmarkForm automatically focuses the first field of the new item and (if `autoscroll` is enabled) scrolls it into view, so you never lose your place.
 - **Enter key navigation:** Pressing Enter / Shift + Enter moves between fields, skipping buttons and other non-field elements.
 - **Semantic HTML:** SmarkForm is markup-agnostic but encourages developers to use semantic HTML elements. It also provides ARIA labels for complex field types (like lists) so that assistive technologies can understand the structure and purpose of the form.
-- **Visual feedback:** Clear indication when buttons are disabled or actions are unavailable.
+- **Smart button states:** SmarkForm automatically sets the `disabled` property on trigger buttons when their action is not available (e.g., when a list has reached its minimum or maximum items). The visual styling of disabled buttons is the developer's responsibility via CSS.
 
 {: .info}
 > **Using assistive technologies?** We're committed to making SmarkForm accessible to everyone. If you encounter any accessibility issues, please [report them]({{ "/community/support" | relative_url }}) so we can continue improving!

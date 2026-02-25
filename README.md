@@ -53,18 +53,20 @@ myForm.on("AfterAction_export", ({ data }) => console.log(data));
 
 That's it. No schema, no bindings, no callbacks per field.
 
+👉 See the [Showcase](https://smarkform.bitifet.net/about/showcase) for extensive interactive examples.
+
 
 ## What SmarkForm Is (and Isn't Yet)
 
 **SmarkForm is:**
-- A **markup-driven** form controller: configuration lives in `data-smark`
+- ✅ A **markup-driven** form controller: configuration lives in `data-smark`
   attributes, not JavaScript objects.
-- **Markup-agnostic**: it imposes no HTML structure or CSS — you keep full
+- ✅ **Markup-agnostic**: it imposes no HTML structure or CSS — you keep full
   design freedom.
-- A tool for **JSON-based import/export** of complex, nested form data.
-- Ready for **subforms**, **variable-length lists**, **context-driven hotkeys**,
+- ✅ A tool for **JSON-based import/export** of complex, nested form data.
+- ✅ Ready for **subforms**, **variable-length lists**, **context-driven hotkeys**,
   and smooth keyboard navigation.
-- Stable and in active use, but still pre-1.0 (API may evolve).
+- ✅ Stable and in active use, but still pre-1.0 (API may evolve).
 
 **Not yet implemented (planned for a future release):**
 - ❌ Built-in validation (field-level error messages).
