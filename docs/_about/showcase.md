@@ -792,6 +792,12 @@ repeating data structure.
 To begin with, another interesting use case for lists is to create a schedule
 list like the following example:
 
+{: .hint :}
+> 💡 The `➖` and `➕` buttons in the examples below use *hotkeys*. Check the
+> *CSS* tab to see the reveal setup, or jump to
+> [Context-Driven Keyboard Shortcuts](#context-driven-keyboard-shortcuts-hot-keys)
+> to learn more.
+
 {% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
 {% capture hotkeys_reveal_css
 %}/* Materialize hotkey hints from data-hotkey attribute */
