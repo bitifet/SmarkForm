@@ -15,7 +15,6 @@ nav_order: 6
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Overview](#overview)
 * [Agent Knowledge Files](#agent-knowledge-files)
 * [How to Use These Files When Prompting an AI](#how-to-use-these-files-when-prompting-an-ai)
     * [Quick Reference Prompts](#quick-reference-prompts)
@@ -29,33 +28,15 @@ nav_order: 6
 
 </details>
 
-## Overview
-
-The `AGENTS/` directory at the root of the [SmarkForm
-repository](https://github.com/bitifet/SmarkForm) contains specialised
-knowledge files designed for AI coding agents (and human developers who want
-concise, actionable guidance). These files capture patterns, gotchas, and
-implementation details that are not obvious from reading the source code.
-
-{: .hint}
-> If you are prompting an AI assistant to implement or modify a SmarkForm
-> form, paste the relevant `AGENTS/` file(s) into your prompt context (or
-> point the AI to this page). This dramatically improves result quality.
-
----
-
 ## Agent Knowledge Files
 
 | File | Best for |
 |------|----------|
 | [SmarkForm Forms]({{ "/resources/AGENTS/SmarkForm-Forms" | relative_url }}) | **Implementing forms** — CDN/npm/downloaded-copy snippets, common component patterns, lists, actions, hotkeys, prompt templates, agent checklist |
 | [SmarkForm Usage]({{ "/resources/AGENTS/SmarkForm-Usage" | relative_url }}) | **Deep internals** — component types, list template roles, `exportEmpties`, `@action` decorator, `find()` timing, CSS grid layout |
-| [`AGENTS/Documentation-Examples.md`](https://github.com/bitifet/SmarkForm/blob/main/AGENTS/Documentation-Examples.md) | **Docs examples** — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, playground template structure |
-| [`AGENTS/Documentation-Guidelines.md`](https://github.com/bitifet/SmarkForm/blob/main/AGENTS/Documentation-Guidelines.md) | **Docs style** — callout types, emoji rules, Just-the-docs conventions |
 
-The first two files are versioned alongside the library and always reflect the
-deployed release. The last two are contributor-facing (for working on the docs
-themselves) and live only in the repository.
+Both files are versioned alongside the library and always reflect the deployed
+release.
 
 ---
 
