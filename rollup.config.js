@@ -28,6 +28,14 @@ const copyTargets = [
 
 
 
+const watch_package_json = ()=>({
+    name: 'watch_package_json',
+    buildStart() {
+        this.addWatchFile('./package.json');
+    },
+});
+
+
 const computed_plugin = ()=>({
     name: 'computed_plugin',
     async writeBundle() {
@@ -74,6 +82,7 @@ export default [
             },
         ],
         plugins: [
+            watch_package_json(),
             del({
                 targets: delTargets,
                 runSync: true,
