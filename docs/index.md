@@ -10,6 +10,143 @@ permalink: /
    noShowHint=true
 %}
 
+{% raw %} <!-- event_planner_html {{{ --> {% endraw %}
+{% capture event_planner_html
+%}█<div class="ep">
+█    <p>
+█        <label data-smark>📋 Event:</label>
+█        <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
+█    </p>
+█    <p>
+█        <label data-smark>📅 Date:</label>
+█        <input data-smark name="date" type="date">
+█    </p>
+█    <p>
+█        <label data-smark>⏰ Time:</label>
+█        <input data-smark name="time" type="time">
+█    </p>
+█    <fieldset data-smark='{"type":"form","name":"organizer"}'>
+█        <legend data-smark='label'>👤 Organizer</legend>
+█        <p>
+█            <label data-smark>Name:</label>
+█            <input data-smark name="name" type="text">
+█        </p>
+█        <p>
+█            <label data-smark>Email:</label>
+█            <input data-smark name="email" type="email">
+█        </p>
+█    </fieldset>
+█    <div class="ep-list">
+█        <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
+█        <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
+█        <strong data-smark='label'>👥 Attendees:</strong>
+█        <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
+█            <li>
+█                <span data-smark='{"action":"position"}'>N</span>.
+█                <input data-smark type="text" placeholder="Name">
+█                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
+█                <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+█            </li>
+█        </ul>
+█    </div>
+█    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
+█</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- event_planner_css {{{ --> {% endraw %}
+{% capture event_planner_css
+%}{{""}}#myForm$$ .ep {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    max-width: 460px;
+    font-size: 0.95em;
+}
+{{""}}#myForm$$ .ep p {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+}
+{{""}}#myForm$$ .ep label {
+    min-width: 4.5em;
+    font-weight: 500;
+    white-space: nowrap;
+}
+{{""}}#myForm$$ .ep input {
+    padding: 0.3em 0.5em;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+}
+{{""}}#myForm$$ .ep input[type="text"],
+{{""}}#myForm$$ .ep input[type="email"] {
+    flex: 1;
+}
+{{""}}#myForm$$ .ep fieldset {
+    border: 1px solid #ddd !important;
+    border-radius: 6px;
+    padding: 0.4em 0.8em 0.6em;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+{{""}}#myForm$$ .ep fieldset legend {
+    font-weight: bold;
+    padding: 0 0.3em;
+}
+{{""}}#myForm$$ .ep-list ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0.2em 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+{{""}}#myForm$$ .ep-list ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+{{""}}#myForm$$ .ep-hint {
+    font-size: 0.82em;
+    color: #888;
+    margin: 0.15em 0 0;
+}
+{{""}}#myForm$$ .ep-hint kbd {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 1px 4px;
+}
+/* Hotkey hints revealed on Ctrl press */
+{{""}}#myForm$$ [data-hotkey] {
+    position: relative;
+    overflow-x: visible;
+}
+{{""}}#myForm$$ [data-hotkey]::before {
+    content: attr(data-hotkey);
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 10;
+    pointer-events: none;
+    background-color: #ffd;
+    color: #44f;
+    outline: 1px solid lightyellow;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 0.8em;
+    white-space: nowrap;
+    transform: scale(1.8) translate(0.1em, 0.1em);
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 <style>
 .SmarkForm-Hero {
     float:right;
@@ -69,6 +206,27 @@ layout.
 </div>
 
 
+## Interactive Demo
+
+A nested subform, a sortable list, context-driven hotkeys, and date/time
+coercion — all driven by `data-smark` attributes with zero extra JavaScript.
+
+{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="event_planner"
+    htmlSource=event_planner_html
+    cssSource=event_planner_css
+    selected="preview"
+    demoValue=demoValue
+    showEditor=false
+    tests=false
+%}
+
+👉 Want to explore the same demo with the JSON editor enabled?
+Open it in the [🔗 Showcase Playground]({{ "about/showcase#team-event-planner" | relative_url }}).
+
+
 ## Main Features
 
   * `<>` [Markup agnostic]({{ "/about/features" | relative_url }}#markup-agnostic):
@@ -92,294 +250,6 @@ layout.
   * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):
     No external dependencies required.
   * `💪` Flexible, extendable and [more...]({{ "about/features" | relative_url }})
-
-
-## Sample Code
-
-The following code snippet shows *SmarkForm* simplicity.
-
-✅ Click everywhere in the form to focus it.
-
-✅ Hit the `Ctrl` key to see the available hotkeys revealed. Notice they may change depending on the focused context.
-
-✅ Check the `JS` tab to see that **there is no JS code** other than the library instantiation.
-
-✅ Check the `HTML` tab to see that how **straightforward and simple** it is.
-
-{% capture notes %}
-👉 This is a simple form to show the power of *SmarkForm*.
-
-  * Tinker with it in the **Preview** tab, modifying data, etc...
-    - Add or remove items from the *Phones* list.
-    - Sort the list by dragging them with the mouse.
-    - Use the `⬇️` to export the data as JSON.
-    - Use the `❌` to clear the form.
-    - Use the `⬆️` to import the JSON back to the form. **You can modify the
-      JSON before importing it back**.
-
-  * Notice you can navigate forward and backward using the keyboard:
-    - Using the `Enter` and `Shift`+`Enter` from field to field **bypassing
-      control buttons**.
-    - Using the `Tab` and `Shift`+`Tab` as usual, to reach **both fields and
-      control buttons**.
-    - Don't miss the hotkeys! Move the focus to a telephone field and hit the
-      `Ctrl` key to see the avaliable ones (depending on focused context)
-      revealed.
-
-👉 Its behavior is driven by the *data-smark* attributes, which are declarative
-and intuitive with straightforward defaults to match most common use cases.
-
-  * ...for instance, *min_items* is set to 1 by default, so you cannot
-     remove the last item from the *Phones* list. But you can change it by
-     setting *min_items* to 0, allowing an empty list.
-
-  * Another interesting case is the *exportEmpties* property, which is set to
-     `false` by default, so empty items are not usually exported. In this
-     example, it is set to `true` since, for a first contact, it might seem
-     counterintuitive.
-
-👉 Check the *JS* tab to see the little JS just to initialize it as a
-*SmarkForm* and show you the data when exported.
-
-👉 In the *CSS* tab you will find some non-essential CSS primarily to
-materialize hotkeys' revealing feature when pressing the `Ctrl` key.
-{%  endcapture %}
-
-
-{% raw %} <!-- simple_list_hotkeys {{{ --> {% endraw %}
-{% capture simple_list_hotkeys
-%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
-█<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
-█<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
-█<strong data-smark='label'>Phones:</strong>
-█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5, "exportEmpties": true}'>
-█    <li class="row">
-█        <label data-smark>📞 Telephone
-█        <span data-smark='{"action":"position"}'>N</span>
-█        </label>
-█        <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
-█        <input type="tel" data-smark>
-█        <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
-█    </li>
-█</ul>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_with_context
-%}█<p>
-█    <label data-smark='{"type": "label"}'>Name:</label>
-█    <input name='name' data-smark='{"type": "input"}' />
-█</p>
-█<p>
-█    <label data-smark='{"type": "label"}'>Surname:</label>
-█    <input name='surname' data-smark='{"type": "input"}' />
-█</p>
-{{ simple_list_hotkeys }}{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- simple_list_autodisable_css {{{ --> {% endraw %}
-{% capture simple_list_autodisable_css
-%}/* Hide list bullets */
-{{""}}#myForm$$ ul li {
-    list-style-type: none !important;
-}
-/* Make disabled buttons more evident: */
-{{""}}#myForm$$ :disabled {
-    opacity: 0.4;
-}{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_css
-%}/* *******************************************************************
-✔ The only `CSS` code is almost just to materialize the hotkeys hints
-when pressing the `Ctrl` key (Remember SmarkForm is HTML agnostic).
-******************************************************************* */
-
-/* Materialize hotkey hints from data-hotkey attribute */
-{{""}}#myForm$$ [data-hotkey] {
-  position: relative;
-  overflow-x: display;
-}
-{{""}}#myForm$$ [data-hotkey]::before {
-  content: attr(data-hotkey);
-  display: inline-block;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  z-index: 10;
-  pointer-events: none;
-  background-color: #ffd;
-  outline: 1px solid lightyellow;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-family: sans-serif;
-  font-size: 0.8em;
-  white-space: nowrap;
-  transform: scale(1.8) translate(0.1em, 0.1em);
-}
-{{ simple_list_autodisable_css }}
-{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- simple_list_hotkeys_with_context_tests {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_with_context_tests %}
-export default async ({ page, expect, id, root }) => {
-    await expect(root).toBeVisible();
-    
-    // Check that both inputs exist
-    const nameFld = page.locator('input[name="name"]');
-    const surnameFld = page.locator('input[name="surname"]');
-    const addPhoneBtn = page.locator('button[title="Add phone number"]');
-    // const phoneFields = page.locator('input[type="tel"]');
-    const editorFld = page.locator('textarea[data-smark]');
-    
-    await expect(nameFld).toBeVisible();
-    
-    // Fill name and surname fields:
-    await nameFld.fill('John');
-    await surnameFld.fill('Doe');
-
-    // Add a phone field to the list (it will get ghe focus)
-    await addPhoneBtn.click();
-
-    // Fill in
-    await page.keyboard.type('1234567890');
-
-    // Use Shift+Enter to navigate back to the first phone filed
-    await page.keyboard.down('Shift'); 
-    await page.keyboard.press('Enter');
-    await page.keyboard.up('Shift'); 
-
-    // Fill in the first phone field
-    await page.keyboard.type('0987654321');
-
-    // Reveal available hotkeys by pressing and holding Control
-    await page.keyboard.down('Control');
-
-    // // 👀 Uncomment to see the hotkey hint revealed in --heded mode
-    // //    - Hit Ctrl key to release it and check the test to fail.
-    await page.pause();
-   
-
-
-    // Function to read the hotkey hint content (if displayed)
-    async function readHotkeyHint(locator) {
-        const box = await locator.boundingBox();
-        const x = box.x + box.width / 2;
-        const y = box.y + box.height / 2;
-        return await page.evaluate(({x, y}) => {
-            const element = document.elementFromPoint(x, y);
-            const beforeStyle = window.getComputedStyle(element, '::before');
-            if (beforeStyle.display === 'none' || beforeStyle.content === '') return null;
-            return element.getAttribute('data-hotkey') || null;
-        }, {x, y}); 
-    }
-
-
-
-
-    // Check the hotkey hint is visible for the "Add phone number" button
-
-    const removeEmptyBtn = page.getByRole('button', { name: '🧹' }).nth(0);
-    const removeLastBtn = page.getByRole('button', { name: '➖' }).nth(0);
-    const appendItemBtn = page.getByRole('button', { name: '➕' }).nth(0);
-
-    const removeItemBtn1 = page.getByRole('button', { name: '➖' }).nth(1);
-    const addItemBtn1 = page.getByRole('button', { name: '➕' }).nth(1);
-    const removeItemBtn2 = page.getByRole('button', { name: '➖' }).nth(2);
-    const addItemBtn2 = page.getByRole('button', { name: '➕' }).nth(2);
-
-
-    expect(await readHotkeyHint(removeEmptyBtn)).toBe('Delete');
-    expect(await readHotkeyHint(removeLastBtn)).toBe(null);
-    expect(await readHotkeyHint(appendItemBtn)).toBe(null);
-
-
-    expect(await readHotkeyHint(addItemBtn1)).toBe('+');
-    expect(await readHotkeyHint(addItemBtn2)).toBe(null);
-    expect(await readHotkeyHint(removeItemBtn1)).toBe('-');
-    expect(await readHotkeyHint(removeItemBtn2)).toBe(null);
-
-
-    // 2nd level hotkeys
-    await page.keyboard.down('Shift');
-     // TODO: Check...
-
-    await page.pause();
-
-    await page.keyboard.up('Shift');
-
-
-
-   
-    // Use 'Control' + '+' to add another phone field in between
-    await page.keyboard.press('+');
-    await page.keyboard.up('Control');
-    await page.keyboard.type('1122334455');
-   
-    // Add another phone field to the end of the list (it will get ghe focus)
-    await addPhoneBtn.click();
-
-    // Fil in
-    await page.keyboard.type('6677889900');
-   
-    // Export the data
-    const data = await page.evaluate(async() => {
-        return await myForm.export();
-    });
-
-    // Verify the exported data
-    const expectedData = {
-        name: 'John',
-        surname: 'Doe',
-        phones: [
-            '0987654321',
-            '1122334455',
-            '1234567890',
-            '6677889900'
-        ]
-    };
-    expect(data).toEqual(expectedData);
-
-
-    await page.evaluate(() => {
-        myForm.import("");
-    });
-    await expect(nameFld
-        , "Importing invalid data should not trigger a render error."
-    ).toBeVisible();
-
-};
-{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% include components/sampletabs_tpl.md
-    formId="simple_list_hotkeys_with_context"
-    htmlSource=simple_list_hotkeys_with_context
-    cssSource=simple_list_hotkeys_css
-    notes=notes
-    selected="preview"
-    showEditor=true
-    tests=simple_list_hotkeys_with_context_tests
-%}
-
-👉 You will find similar examples working preview along this documentation.
-**Don't miss the `📝 Notes` tab** to be aware of the nitty-gritty details.
-
-
-
-{: .hint :}
-> To minimize clutter, the `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons
-> implementation have been omitted from the source code, as they are common to
-> all examples and will be explained in detail in a
-> [🔗 later section]({{"about/showcase#deeply-nested-forms" | relative_url }}).
-
 
 
 ## Current Status

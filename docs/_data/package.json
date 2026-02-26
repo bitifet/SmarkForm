@@ -36,6 +36,9 @@
     "a11y"
   ],
   "author": "Joan Miquel Torres <joanmi@bitifet.net>",
+  "contributors": [
+    "Joan Miquel Torres <joanmi@bitifet.net> (https://github.com/bitifet)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bitifet/SmarkForm/issues"
@@ -49,7 +52,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-terser": "^0.4.4",
     "concurrently": "^9.2.0",
-    "minimatch": "^10.2.3",
+    "minimatch": "^10.2.4",
     "pug": "^3.0.3",
     "rollup": "^4.59.0",
     "rollup-plugin-cleanup": "^3.2.1",

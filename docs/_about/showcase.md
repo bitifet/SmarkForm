@@ -64,6 +64,7 @@ featured ones.
 * [Random Examples](#random-examples)
     * [Simple Calculator](#simple-calculator)
     * [Calculator (UX improved)](#calculator-ux-improved)
+    * [Team Event Planner](#team-event-planner)
 * [Conclusion](#conclusion)
 
 <!-- vim-markdown-toc -->
@@ -2849,6 +2850,189 @@ The *keydown* event handler does call the `updateDisplay()` function but:
 
 We also added a little CSS rule to hide the caret in the input field since the
 display will no longer be directly editable.
+
+
+### Team Event Planner
+
+This is the same demo shown on the [🔗 landing page]({{ "/" | relative_url }}) — a
+compact form that showcases several SmarkForm features at once: a nested
+subform, a sortable variable-length list, context-driven hotkeys, and date/time
+coercion.
+
+Use the JSON editor below to inspect the exported data as you interact with the
+form, or import your own JSON to pre-populate it.
+
+{% raw %} <!-- event_planner_html {{{ --> {% endraw %}
+{% capture event_planner_html
+%}█<div class="ep">
+█    <p>
+█        <label data-smark>📋 Event:</label>
+█        <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
+█    </p>
+█    <p>
+█        <label data-smark>📅 Date:</label>
+█        <input data-smark name="date" type="date">
+█    </p>
+█    <p>
+█        <label data-smark>⏰ Time:</label>
+█        <input data-smark name="time" type="time">
+█    </p>
+█    <fieldset data-smark='{"type":"form","name":"organizer"}'>
+█        <legend data-smark='label'>👤 Organizer</legend>
+█        <p>
+█            <label data-smark>Name:</label>
+█            <input data-smark name="name" type="text">
+█        </p>
+█        <p>
+█            <label data-smark>Email:</label>
+█            <input data-smark name="email" type="email">
+█        </p>
+█    </fieldset>
+█    <div class="ep-list">
+█        <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
+█        <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
+█        <strong data-smark='label'>👥 Attendees:</strong>
+█        <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
+█            <li>
+█                <span data-smark='{"action":"position"}'>N</span>.
+█                <input data-smark type="text" placeholder="Name">
+█                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
+█                <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+█            </li>
+█        </ul>
+█    </div>
+█    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
+█</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- event_planner_css {{{ --> {% endraw %}
+{% capture event_planner_css
+%}{{""}}#myForm$$ .ep {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    max-width: 460px;
+    font-size: 0.95em;
+}
+{{""}}#myForm$$ .ep p {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    margin: 0;
+}
+{{""}}#myForm$$ .ep label {
+    min-width: 4.5em;
+    font-weight: 500;
+    white-space: nowrap;
+}
+{{""}}#myForm$$ .ep input {
+    padding: 0.3em 0.5em;
+    border: 1px solid #ccc !important;
+    border-radius: 4px;
+}
+{{""}}#myForm$$ .ep input[type="text"],
+{{""}}#myForm$$ .ep input[type="email"] {
+    flex: 1;
+}
+{{""}}#myForm$$ .ep fieldset {
+    border: 1px solid #ddd !important;
+    border-radius: 6px;
+    padding: 0.4em 0.8em 0.6em;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+{{""}}#myForm$$ .ep fieldset legend {
+    font-weight: bold;
+    padding: 0 0.3em;
+}
+{{""}}#myForm$$ .ep-list ul {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0.2em 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+}
+{{""}}#myForm$$ .ep-list ul li {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+}
+{{""}}#myForm$$ .ep-hint {
+    font-size: 0.82em;
+    color: #888;
+    margin: 0.15em 0 0;
+}
+{{""}}#myForm$$ .ep-hint kbd {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 1px 4px;
+}
+/* Hotkey hints revealed on Ctrl press */
+{{""}}#myForm$$ [data-hotkey] {
+    position: relative;
+    overflow-x: visible;
+}
+{{""}}#myForm$$ [data-hotkey]::before {
+    content: attr(data-hotkey);
+    display: inline-block;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 10;
+    pointer-events: none;
+    background-color: #ffd;
+    color: #44f;
+    outline: 1px solid lightyellow;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 0.8em;
+    white-space: nowrap;
+    transform: scale(1.8) translate(0.1em, 0.1em);
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- Notes {{{ --> {% endraw %}
+{% capture notes %}
+👉 This demo highlights several SmarkForm features at once:
+
+  * **Nested subform**: The `organizer` fieldset is a subform — its fields are
+    grouped and exported as a nested object.
+  * **Sortable list**: Attendees can be dragged to reorder them. The list uses
+    `exportEmpties:false` so empty slots are not exported.
+  * **Context-driven hotkeys**: The `➕`/`➖` buttons inside each list item
+    carry `-`/`+` hotkeys, active only when focus is within that item. The `🧹`
+    button uses `Delete` as a context-wide hotkey.
+  * **Date & time coercion**: The `date` and `time` inputs use SmarkForm's
+    built-in type coercion — values are normalised to ISO date/time format on
+    import/export.
+  * **Label components**: `data-smark='label'` on non-`<label>` elements and
+    bare `data-smark` on `<label>` elements wire labels to their fields
+    automatically.
+  * **In-form hint**: The `💡 Hold Ctrl to reveal shortcuts` text lives inside
+    the form itself rather than as external documentation.
+
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="event_planner_showcase"
+    htmlSource=event_planner_html
+    cssSource=event_planner_css
+    notes=notes
+    selected="preview"
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
 
 
 ## Conclusion
