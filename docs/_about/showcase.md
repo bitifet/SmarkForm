@@ -3006,7 +3006,7 @@ endcapture %}
   * **Nested subform**: The `organizer` fieldset is a subform — its fields are
     grouped and exported as a nested object.
   * **Sortable list**: Attendees can be dragged to reorder them. The list uses
-    `exportEmpties:false` so empty slots are not exported.
+    `exportEmpties: false` so empty slots are not exported.
   * **Context-driven hotkeys**: The `➕`/`➖` buttons inside each list item
     carry `-`/`+` hotkeys, active only when focus is within that item. The `🧹`
     button uses `Delete` as a context-wide hotkey.
