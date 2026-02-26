@@ -48,13 +48,14 @@ implementation details that are not obvious from reading the source code.
 
 | File | Best for |
 |------|----------|
-| [`AGENTS/SmarkForm-Forms.md`](https://github.com/bitifet/SmarkForm/blob/main/AGENTS/SmarkForm-Forms.md) | **Implementing forms** — CDN/npm/downloaded-copy snippets, common component patterns, lists, actions, hotkeys, prompt templates, agent checklist |
-| [`AGENTS/SmarkForm-Usage.md`](https://github.com/bitifet/SmarkForm/blob/main/AGENTS/SmarkForm-Usage.md) | **Deep internals** — component types, list template roles, `exportEmpties`, `@action` decorator, `find()` timing, CSS grid layout |
+| [SmarkForm Forms]({{ "/resources/AGENTS/SmarkForm-Forms" | relative_url }}) | **Implementing forms** — CDN/npm/downloaded-copy snippets, common component patterns, lists, actions, hotkeys, prompt templates, agent checklist |
+| [SmarkForm Usage]({{ "/resources/AGENTS/SmarkForm-Usage" | relative_url }}) | **Deep internals** — component types, list template roles, `exportEmpties`, `@action` decorator, `find()` timing, CSS grid layout |
 | [`AGENTS/Documentation-Examples.md`](https://github.com/bitifet/SmarkForm/blob/main/AGENTS/Documentation-Examples.md) | **Docs examples** — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, playground template structure |
 | [`AGENTS/Documentation-Guidelines.md`](https://github.com/bitifet/SmarkForm/blob/main/AGENTS/Documentation-Guidelines.md) | **Docs style** — callout types, emoji rules, Just-the-docs conventions |
 
-All files are plain Markdown — you can copy them directly into an AI chat or
-reference them by URL.
+The first two files are versioned alongside the library and always reflect the
+deployed release. The last two are contributor-facing (for working on the docs
+themselves) and live only in the repository.
 
 ---
 
@@ -62,7 +63,7 @@ reference them by URL.
 
 1. **Decide which task you need help with** (implement a form, update docs,
    write tests, etc.).
-2. **Copy the relevant `AGENTS/` file** from GitHub (raw view is easiest).
+2. **Open the relevant page** from the table above and copy its content.
 3. **Paste it at the top of your prompt** (or attach it as context), then
    describe your specific request.
 4. **Include your desired schema** — field names, types, list structure —
@@ -70,10 +71,10 @@ reference them by URL.
 
 ### Quick Reference Prompts
 
-You can also link the agent directly to the file:
+You can also link the agent directly to the versioned page:
 
 ```
-Read https://raw.githubusercontent.com/bitifet/SmarkForm/main/AGENTS/SmarkForm-Forms.md
+Read https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms
 then implement a contact form with fields: name, email, message.
 Load SmarkForm from CDN (pin to the latest stable version).
 ```
@@ -82,8 +83,9 @@ Load SmarkForm from CDN (pin to the latest stable version).
 
 ## Prompt Templates
 
-The following ready-to-use prompts are reproduced from
-`AGENTS/SmarkForm-Forms.md`. Copy, adapt, and paste into your AI assistant.
+The following ready-to-use prompts are reproduced from the
+[SmarkForm Forms]({{ "/resources/AGENTS/SmarkForm-Forms" | relative_url }}) reference page.
+Copy, adapt, and paste into your AI assistant.
 
 ### Simple form
 
@@ -91,13 +93,14 @@ The following ready-to-use prompts are reproduced from
 Using SmarkForm (CDN ESM: https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js),
 create a contact form with fields: name (text), email (email), phone (text, optional),
 message (textarea). Include Export and Reset buttons. Log exported data to the console.
-Follow patterns from AGENTS/SmarkForm-Forms.md.
+Follow patterns from https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms.
 ```
 
 ### Form with a repeating list
 
 ```
-Using SmarkForm loaded via CDN (UMD), create an invoice form with:
+Using SmarkForm loaded via CDN (UMD: https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js),
+create an invoice form with:
 - Header fields: client name (text), date (date)
 - A line-items list (name it "items") where each item has: description (text),
   quantity (number, SmarkForm null-aware), unit_price (number, null-aware).
@@ -105,7 +108,7 @@ Using SmarkForm loaded via CDN (UMD), create an invoice form with:
 - Add/Remove hotkeys + and -.
 - Export and Reset buttons outside the list.
 Output exported JSON to a <pre> element on the page.
-Refer to AGENTS/SmarkForm-Forms.md for patterns.
+Refer to https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms for patterns.
 ```
 
 ### Adding SmarkForm to an existing page
@@ -116,5 +119,5 @@ I have an existing HTML page. Add a SmarkForm registration form to the
 plain input — not a SmarkForm type), role (radio: admin / editor / viewer).
 Load SmarkForm from npm (already installed as "smarkform"). Use ESM import.
 Set defaultValue for role to "editor". After export, POST the data to /api/register.
-See AGENTS/SmarkForm-Forms.md for patterns.
+See https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms for patterns.
 ```
