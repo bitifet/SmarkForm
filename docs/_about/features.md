@@ -28,6 +28,7 @@ nav_order: 3
 * [Flexible and extendable](#flexible-and-extendable)
 * [Directory-like addressability](#directory-like-addressability)
 * [Reliability-oriented](#reliability-oriented)
+* [AI-agent ready](#ai-agent-ready)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -253,4 +254,26 @@ section for more details.
 
 
 👉 [Try it yourself...]({{ "/about/showcase" | relative_url }}#basics)
+
+
+## AI-agent ready
+
+SmarkForm's clean, declarative API makes it a natural fit for AI-assisted
+development:
+
+  * **Describe a form in plain language — get working code immediately.**
+    The `data-smark` attribute and JSON options are self-descriptive, so any
+    capable AI assistant can generate correct, complete forms from a short
+    description.
+
+  * **No bespoke tooling required.** SmarkForm loads from a single CDN
+    `<script>` or `import`, and the output is a standalone HTML page with no
+    build step needed.
+
+  * **Versioned agent knowledge files** are published alongside the library so
+    AI agents always get accurate, up-to-date patterns — not stale
+    `raw.githubusercontent.com` snapshots.
+
+👉 Visit [AI & Agent Resources]({{ "/resources/ai-agents" | relative_url }}) for
+prompt templates and agent-ready knowledge files.
 
