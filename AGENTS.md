@@ -330,8 +330,8 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 
 | File | Contents |
 |------|----------|
-| `AGENTS/SmarkForm-Usage.md` | How to write SmarkForm HTML/CSS/JS — component types, list template roles, button context patterns, CSS grid layout, `exportEmpties` behaviour |
-| `AGENTS/SmarkForm-Forms.md` | Practical form implementation guide — common patterns, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
+| `AGENTS/SmarkForm-Usage.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Usage.md` — component types, list template roles, button context patterns, CSS grid layout, `exportEmpties` behaviour. Full content kept here for agents that need it without following a link. |
+| `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
 | `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
 
 **Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
