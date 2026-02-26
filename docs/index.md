@@ -249,6 +249,8 @@ Open it in the [🔗 Showcase Playground]({{ "about/showcase#team-event-planner"
     Focus on UX and accessibility (a11y).
   * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):
     No external dependencies required.
+  * `🤖` [AI-agent ready]({{ "/about/features" | relative_url }}#ai-agent-ready):
+    Generate complete, working forms by describing them to any AI assistant.
   * `💪` Flexible, extendable and [more...]({{ "about/features" | relative_url }})
 
 
