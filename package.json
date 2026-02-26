@@ -36,6 +36,9 @@
     "a11y"
   ],
   "author": "Joan Miquel Torres <joanmi@bitifet.net>",
+  "contributors": [
+    "Joan Miquel Torres <joanmi@bitifet.net> (https://github.com/bitifet)"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/bitifet/SmarkForm/issues"
