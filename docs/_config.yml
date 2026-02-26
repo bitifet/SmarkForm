@@ -126,6 +126,9 @@ nav_external_links:
   - title: 🤔 FAQ
     url: /about/faq
     hide_icon: true
+  - title: "📢 Announcements"
+    url: https://t.me/s/smarkform
+    hide_icon: true
 
 heading_anchors: true
 
