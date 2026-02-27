@@ -95,7 +95,7 @@ SmarkForm 0.13.0 brings many small improvements that, together, make it a much m
 
 From a deep revision of the documentation (now printer and dark mode friendly) that includes new FAQs and a simple but complete illustrated guide for end-users, to multiple improvements and bug fixes, passing through a new brand image with its new SVG logo; this new version represents an important step forward in the evolution of the library.
 
-Carefully attending to every detail, from the workflows in the development process but especially putting emphasis on a user experience that is more intuitive and accessible than ever, SmarkForm 0.13.0 is a release that we are very proud of and that we hope will be very useful for all of you.
+Carefully attending to every detail, from the workflows in the development process but especially putting emphasis on a user experience that is more intuitive and accessible than ever, SmarkForm 0.13.0 is a release that I'm very proud of and that I hope will be very useful for all of you.
 
 ---
 
@@ -116,8 +116,8 @@ This release chases perfection in the day-to-day experience of using SmarkForm-p
 - **Better focus management**: Lists now retain keyboard focus when they become empty, automatically moving it to the "Add item" button so users never lose their place.
 - **Default values**: Any field, form, or list can declare a default value directly in its `data-smark` options — a clean, declarative way to set the starting state.
 - **New `reset` action**: A dedicated `reset` trigger restores the form to its configured defaults. This is intentionally distinct from `clear`, which wipes to the empty state — because "restore defaults" and "wipe everything" are different user intents.
-- **`import()` updates the default**: After loading data, `reset` brings you back to *that* loaded state, not the HTML initialization state. "Load and Reset" patterns just work.
-- **Flexible list minimums**: `min_items: 0` (fully emptiable lists) and pre-populated defaults can now coexist without conflict.
+- **`import()` updates the default**: After loading data, `reset` brings you back to *that* loaded state, not only the HTML initialization state. "Load and Reset" patterns just work.
+- **Flexible list minimums**: `min_items: 0` (fully emptiable lists) and pre-populated defaults makes flexibility (allowing for 0 items) and usability (starting with 1, probably with handy defaults) to converge without friction.
 - And a number of smaller behavioral tweaks and bug fixes throughout, always chasing that last bit of consistency.
 
 ---
@@ -139,7 +139,7 @@ SmarkForm now has a proper brand identity: 8 SVG logo variants covering light/da
 The approach is documented in an article on dev.to if you're curious about the technique:
 📝 https://dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0
 
-All variants are available on jsDelivr CDN. The new **Branding section** in the docs has copy-paste badge snippets, placement guidelines, and a link pattern for SmarkForm-powered applications.
+All variants are available on jsDelivr CDN. The new **Branding section** in the docs has copy-paste badge snippets, placement guidelines, and a link pattern for SmarkForm-powered applications to include it if they like as a quality seal and feature hint for their users..
 
 ---
 
