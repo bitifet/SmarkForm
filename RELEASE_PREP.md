@@ -182,40 +182,35 @@ For questions, ideas, and suggestions, join the conversation in the **Telegram c
 #### Public (general audience)
 
 ```
-🚀 SmarkForm 0.13.0 released — one of the biggest updates yet!
+🚀 SmarkForm 0.13.0 — one of the biggest updates yet!
 
-✨ New time & datetime-local component types
-🔄 New reset action + default values
-⌨️  Lists keep focus when emptied
-🎨 Parametric SVG logo (8 variants)
-🤖 AI-agent ready — generate forms by describing them
-📖 End-User Guide, Branding section, auto dark mode docs
+✨ time & datetime-local types
+🔄 reset action + default values
+⌨️ Focus stays in lists
+🤖 AI-agent ready
+📖 End-User Guide + auto dark mode
 
-Zero runtime deps. Pure HTML. Powerful.
+Pure HTML. Zero deps.
 
-#OpenSource #JavaScript #WebDev #Forms
-
+#OpenSource #JavaScript #WebDev
 🔗 https://smarkform.bitifet.net
-📦 https://www.npmjs.com/package/smarkform
 ```
 
 #### Frontend Developers
 
 ```
-🚀 SmarkForm 0.13.0 is a big one for frontend devs!
+🚀 SmarkForm 0.13.0 — big frontend update!
 
-New time/datetime-local field types with full null awareness.
-A new reset action distinct from clear — because "restore defaults" ≠ "wipe everything."
-Lists keep keyboard focus when you remove the last item.
-Auto dark mode for the docs.
+time/datetime-local types, null-aware.
+reset ≠ clear: restore defaults, not wipe.
+Focus stays when last item removed.
+Auto dark mode docs.
 
-If you build complex HTML forms without a framework, this is your library.
+Pure HTML.
 
-#FrontEnd #JavaScript #CSS #Forms #HTML
-
+#FrontEnd #JavaScript #Forms
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
-🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### HTML-driven devs
@@ -224,16 +219,13 @@ If you build complex HTML forms without a framework, this is your library.
 🚀 SmarkForm 0.13.0 is out!
 
 Pure HTML form power, now with:
-- time & datetime-local types (null-aware, smart input handling)
-- reset action via data-smark (restore defaults, not just clear)
-- default values directly in HTML attributes
-- Focus stays in lists when you empty them
+- time & datetime-local types
+- reset via data-smark (restore defaults)
+- Focus stays when list empties
 
-No framework. No JS templates. No runtime deps.
-Just smart HTML + one tiny library.
+No framework. Zero deps.
 
-#HTML #VanillaJS #WebDev #Forms
-
+#HTML #VanillaJS #WebDev
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
 ```
@@ -243,14 +235,13 @@ Just smart HTML + one tiny library.
 ```
 🚀 SmarkForm 0.13.0 shipped!
 
-Big cycle: new component types, reset action, focus retention,
-SVG logo, End-User Guide, Code of Conduct, auto dark mode...
+New types, reset action, focus retention,
+SVG logo, End-User Guide, Code of Conduct...
 
-The project is more documented and contributor-friendly than ever.
+More documented & contributor-friendly than ever.
 Contributions welcome!
 
-#OpenSource #JavaScript #HacktoberFest
-
+#OpenSource #JavaScript
 📦 npm i smarkform@0.13.0
 🐙 https://github.com/bitifet/SmarkForm
 ```
@@ -258,61 +249,46 @@ Contributions welcome!
 #### Software Engineering
 
 ```
-🚀 SmarkForm 0.13.0: meaningful complexity, clean API.
+🚀 SmarkForm 0.13.0 — clean API, zero deps.
 
-• 2 new types (time, datetime-local) — null-aware, accept Date/epoch/ISO
-• reset() vs clear() — restore defaults vs wipe to empty
-• import() updates defaultValue — "Load then Reset" just works
-• Focus retention on empty lists — keyboard-first UX
-• Visual render errors — no more silent misconfiguration
-• Singleton options merging — clear conflict detection
+• time + datetime-local (null-aware)
+• reset vs clear — defaults vs empty
+• import() updates default
+• Focus retention on lists
+• Visual render errors, conflict detection
 
-Zero deps. Works with any stack.
-
-#SoftwareEngineering #JavaScript #WebDev
-
-📦 npm i smarkform@0.13.0
+#SoftwareEngineering #JavaScript
 🔗 https://smarkform.bitifet.net
 ```
 
 #### Build in Public
 
 ```
-🚀 Shipped SmarkForm 0.13.0 — one of my biggest releases!
+🚀 Shipped SmarkForm 0.13.0!
 
-What went in:
 ✅ time + datetime-local types
-✅ reset action + default values
-✅ import() updates the default
+✅ reset + default values
 ✅ Focus retention on empty lists
-✅ Parametric SVG logo (wrote about it!)
-✅ End-User Guide for form users
-✅ Code of Conduct
-✅ AI-agent ready (landing page example: 100% AI-generated!)
-✅ Auto dark/light docs
-✅ Visual render errors for devs
-✅ 118 tests passing
+✅ AI-agent ready (landing page: 100% AI!)
+✅ Auto dark/light docs + 118 tests ✅
 
-#BuildInPublic #OpenSource #IndieHacker
-
+#BuildInPublic #OpenSource
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
-🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### I can code
 
 ```
-🚀 SmarkForm 0.13.0 — packed release!
+🚀 SmarkForm 0.13.0 — packed!
 
-I added time & datetime-local field types (null-aware, just like date).
-A reset action to restore form defaults (not just clear).
-Lists now keep focus when you empty them — keyboard UX win!
-The landing page example is 100% AI-generated (no tweaks) 🤖
-And I wrote about the new parametric SVG logo 🎨
+time & datetime-local (null-aware).
+reset restores defaults, not just clear.
+Focus stays in lists — keyboard UX win!
+Landing page: 100% AI-generated 🤖
+New SVG logo 🎨
 
-#ICanCode #JavaScript #WebDev
-
+#ICanCode #JavaScript
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
 ```
@@ -320,22 +296,15 @@ And I wrote about the new parametric SVG logo 🎨
 #### Tech Founders
 
 ```
-🚀 SmarkForm 0.13.0 — production-ready form infra upgrade.
+🚀 SmarkForm 0.13.0 — form infra upgrade.
 
-If you're building web products with forms, this release adds:
-• time + datetime-local field types with smart null handling
-• Reset to defaults (distinct from clear) — users can undo their edits
-• import() updates the default — Load + Reset patterns just work
-• AI-agent ready: generate complete forms from a description
-• End-User Guide your users can actually read
+• time + datetime-local types (null-aware)
+• Reset to defaults (distinct from clear)
+• import() updates default — Load+Reset works
+• AI-agent ready: generate forms by description
 
-Zero runtime deps. Works with any framework or none.
-
-#TechFounders #ProductDev #JavaScript
-
-📦 npm i smarkform@0.13.0
+#TechFounders #JavaScript
 🔗 https://smarkform.bitifet.net
-🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 #### Web Developers
@@ -343,19 +312,15 @@ Zero runtime deps. Works with any framework or none.
 ```
 🚀 SmarkForm 0.13.0 is live!
 
-⏱️  time + datetime-local component types
-🔄 reset action (restores defaults, not just clears)
-⌨️  Focus stays in lists when last item is removed
-🤖 AI-agent ready (landing page example: 100% AI-generated)
-🎨 8-variant parametric SVG logo
-📖 End-User Guide + Branding section
-🌗 Auto dark/light docs theme
-🛠️  Visual render errors during development
+⏱️ time + datetime-local types
+🔄 reset action (restores defaults)
+⌨️ Focus stays in lists
+🤖 AI-agent ready (landing page: 100% AI!)
+🌗 Auto dark/light docs
 
+#WebDev #JavaScript #Forms
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
-
-#WebDev #JavaScript #Forms #OpenSource
 ```
 
 #### Tech Twitter
@@ -363,87 +328,59 @@ Zero runtime deps. Works with any framework or none.
 ```
 🚀 SmarkForm 0.13.0 dropped.
 
-The new time + datetime-local types complete the date/time set.
-Also: new reset action, focus retention on empty lists, auto dark/light docs,
-an End-User Guide, AI-agent ready docs, and a SVG logo generated from Pug.
+time + datetime-local types complete the date/time set.
+Also: reset action, focus retention, AI-agent ready docs,
+SVG logo from Pug, End-User Guide, auto dark/light.
 
-#TechTwitter #JavaScript #WebDev
-
+#TechTwitter #JavaScript
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
-🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 #### Javascript
 
 ```
-🚀 SmarkForm 0.13.0 — packed vanilla-JS form library update.
+🚀 SmarkForm 0.13.0 — vanilla-JS update.
 
 ✨ time + datetime-local types (null-aware)
 🔄 reset vs clear — restore defaults or wipe
-📥 import() now updates defaultValue
-⌨️  Focus retention on empty lists
-🤖 AI-agent ready — clean declarative API, no tooling needed
-🎨 SVG logo generated with Pug (article on dev.to)
-📖 End-User Guide + Branding + Code of Conduct
-🌗 Auto color scheme docs
-🛠️  Visual render errors
+⌨️ Focus retention on empty lists
+🤖 AI-agent ready — declarative API
 
-Zero runtime dependencies.
-
-#JavaScript #VanillaJS #OpenSource
-
+#JavaScript #VanillaJS
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
-🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### Actually Build in Public
 
 ```
-📦 SmarkForm 0.13.0 is live.
+📦 SmarkForm 0.13.0 shipped.
 
-What shipped (the honest list):
-- time + datetime-local types (null-aware, accept Date/epoch/ISO)
-- reset action + defaultValue on all fields, forms, and lists
-- import() updates defaultValue — Load+Reset just works
-- Focus retention when lists become empty
-- min_items:0 + default items now work together
-- Parametric SVG logo in 8 variants (Pug template + dev.to article)
-- AI-agent ready — landing page example 100% AI-generated, no tweaks
-- End-User Guide (for form fillers, not devs)
-- Code of Conduct, Branding section
-- Auto light/dark color scheme (CSS prefers-color-scheme)
-- Visual render error nodes (no more silent failures)
-- Singleton options merging with conflict detection
-- Expanded FAQ, pre-filled demo data, printer-friendly pages
-- 118 passing tests ✅
+- time + datetime-local (null-aware)
+- reset action + defaultValue
+- Focus retention on empty lists
+- AI-agent ready — landing page: 100% AI!
+
+118 tests ✅
 
 #ActuallyBuildInPublic #OpenSource
-
 🔗 https://smarkform.bitifet.net
 🐙 https://github.com/bitifet/SmarkForm
-📦 https://www.npmjs.com/package/smarkform
-🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 #### Front End Fraternity
 
 ```
-🚀 SmarkForm 0.13.0 — for the HTML/CSS/JS purists.
+🚀 SmarkForm 0.13.0 — for HTML/CSS/JS purists.
 
-This one's big:
-→ time + datetime-local types (null-aware, same as date/number)
-→ reset action in any data-smark trigger (restore defaults, not just clear)
-→ Auto light/dark theme via CSS prefers-color-scheme
-→ SVG logo from a parametric Pug generator
-→ AI-agent ready — describe a form, get working code immediately
+→ time + datetime-local (null-aware)
+→ reset in data-smark (restores defaults)
+→ Auto light/dark via CSS prefers-color-scheme
+→ AI-agent ready: describe a form, get code
 
-#FrontEndFraternity #CSS #JavaScript #HTML #VanillaJS
-
-📦 npm i smarkform@0.13.0
+#FrontEndFraternity #VanillaJS
 🔗 https://smarkform.bitifet.net
-🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 ---
