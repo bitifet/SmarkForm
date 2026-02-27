@@ -17,6 +17,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.13.0] — 2026-02-27
+
+✨ AI-ready docs, auto color scheme, and documentation improvements.
+
+Adds an automatic light/dark color-scheme to the documentation site, updates the landing page and features section to highlight SmarkForm's AI-agent-friendly design, and polishes several documentation examples (including the schedule/nested-table showcase). Minor bug fixes and dependency updates are also included.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.13.0)
+
+---
+
 ## [0.12.9] — 2025-12-18
 
 👌 Smarter labels (implicit association, legends...)
@@ -267,7 +277,8 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.12.9...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
 [0.12.9]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.9
 [0.12.8]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.8
 [0.12.7]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.7
