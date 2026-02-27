@@ -83,96 +83,93 @@ and the project's landing page highlights SmarkForm's AI-agent-friendly design.
 
 ## Telegram Announcement
 
-<Channel: https://t.me/s/smarkform>
+<Channel: https://t.me/smarkform>
 
 ---
 
-🚀 **SmarkForm 0.13.0 is out — and it's a big one!**
+🚀 **SmarkForm 0.13.0 is out!**
 
-This has been one of the most active development cycles since the 0.11/0.12 series, and the result is a release that moves the needle on multiple fronts at once: new component types, new actions, important UX improvements, a complete documentation overhaul, and a proper branding identity. Let me walk you through it.
+A lot of time has passed since the last SmarkForm release, but it has not been in vain.
 
----
+SmarkForm 0.13.0 brings many small improvements that, together, make it a much more complete and mature solution.
 
-🕐 **New component types: `time` and `datetime-local`**
+From a deep revision of the documentation (now printer and dark mode friendly) that includes new FAQs and a simple but complete illustrated guide for end-users, to multiple improvements and bug fixes, passing through a new brand image with its new SVG logo; this new version represents an important step forward in the evolution of the library.
 
-The family of native date/time pickers is now complete. The new `time` and `datetime-local` component types work exactly like `date` and `number` — null-aware, smart about what they accept (Date objects, epoch timestamps, ISO strings), and consistent in what they export. No more hacking an `<input type="time">` inside a generic input wrapper — SmarkForm just handles it.
-
----
-
-🔄 **Default values + the new `reset` action**
-
-This is the one that unlocks real-world form patterns. You can now declare a default value for any component directly in its `data-smark` options:
-
-```html
-<input data-smark='{"name":"status","value":"draft"}' type="text">
-```
-
-And there is a new `reset` trigger action that restores the form to that state:
-
-```html
-<button data-smark='{"action":"reset"}'>Reset to defaults</button>
-```
-
-`reset` is now distinct from `clear`: `clear` wipes everything to the empty/null state, while `reset` brings you back to the configured defaults. Both are available on all field types, forms, and lists.
-
-There's also a subtlety worth knowing: `import()` now updates the component's default by default (`setDefault: true`). This means "Load data then Reset" just works — after loading a record, hitting Reset brings you back to *that* loaded record, not the HTML initialization state. Use `setDefault: false` for preview-without-committing patterns.
+Carefully attending to every detail, from the workflows in the development process but especially putting emphasis on a user experience that is more intuitive and accessible than ever, SmarkForm 0.13.0 is a release that we are very proud of and that we hope will be very useful for all of you.
 
 ---
 
-⌨️ **UX: focus retention and flexible list minimums**
+🤖 **AI-agent ready**
 
-Two small changes that make a real difference when navigating forms with the keyboard:
+SmarkForm's clean, declarative API makes it a natural fit for AI-assisted development. Describe a form in plain language to any capable AI assistant and get complete, working code immediately — no bespoke tooling, no framework setup.
 
-1. **Focus retention on empty lists**: When you remove the last item from a list, focus automatically moves to the "Add item" button. No more losing track of where you are and having to mouse back in.
+To put this to the test, the new example on the documentation's landing page was generated 100% by an AI assistant, with no further tweaks. It works perfectly out of the box, which speaks for itself.
 
-2. **`min_items: 0` + default items**: You can now set `min_items: 0` (so the list can be fully emptied by the user) while still having it start with one or more items by default via the `value` option. Previously these two features conflicted.
+Check the dedicated **AI and Agents resources** section for prompts, patterns, and guidance on getting the best results: https://smarkform.bitifet.net/about/ai
 
 ---
 
-🎨 **A proper logo — generated with Pug!**
+⌨️ **UX improvements**
 
-SmarkForm now has a full set of SVG logo assets: 8 variants covering light/dark backgrounds, compact/full sizes, and monochrome versions — all generated from a single parametric Pug template.
+This release chases perfection in the day-to-day experience of using SmarkForm-powered forms:
 
-The Pug-as-SVG-generator approach turned out to be elegant enough that I wrote about it:
+- **Better focus management**: Lists now retain keyboard focus when they become empty, automatically moving it to the "Add item" button so users never lose their place.
+- **Default values**: Any field, form, or list can declare a default value directly in its `data-smark` options — a clean, declarative way to set the starting state.
+- **New `reset` action**: A dedicated `reset` trigger restores the form to its configured defaults. This is intentionally distinct from `clear`, which wipes to the empty state — because "restore defaults" and "wipe everything" are different user intents.
+- **`import()` updates the default**: After loading data, `reset` brings you back to *that* loaded state, not the HTML initialization state. "Load and Reset" patterns just work.
+- **Flexible list minimums**: `min_items: 0` (fully emptiable lists) and pre-populated defaults can now coexist without conflict.
+- And a number of smaller behavioral tweaks and bug fixes throughout, always chasing that last bit of consistency.
+
+---
+
+🛠️ **DX improvements**
+
+The development experience has also seen significant improvements:
+
+- **Fixed workflow issues**: The test-pick script gains "repeat last" and "test with all" options; the schedule example migrates to CSS grid to fix layout issues in narrow viewports.
+- **Visual DOM error nodes**: Misconfigured components are now replaced in the DOM by a visible error badge with a short error code — clickable to re-log the full error to the console. No more silent failures that are hard to track down.
+- **Singleton option conflict detection**: When a wrapper component and its inner field both declare options for the same key, a clear render error is raised immediately instead of silently ignoring one of them.
+
+---
+
+🎨 **New SVG logo — generated with Pug!**
+
+SmarkForm now has a proper brand identity: 8 SVG logo variants covering light/dark backgrounds, compact/full sizes, and monochrome versions — all generated from a single parametric Pug template.
+
+The approach is documented in an article on dev.to if you're curious about the technique:
 📝 https://dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0
 
-All variants are available on jsDelivr CDN and documented in the new Branding section.
+All variants are available on jsDelivr CDN. The new **Branding section** in the docs has copy-paste badge snippets, placement guidelines, and a link pattern for SmarkForm-powered applications.
 
 ---
 
-📖 **Documentation: a complete overhaul**
+📖 **Documentation overhaul**
 
-The 0.13.0 documentation cycle has been the most thorough one yet:
+The 0.13.0 documentation is the most complete yet:
 
-- **End-User Guide** (`/resources/user_guide`): A guide written *for the people filling in your forms*, not just for developers. Covers keyboard navigation, hotkey discovery, list management, and accessibility tips. Link to it from your app — users will thank you.
-- **Branding section**: Copy-paste logo badges, CDN links, placement guidelines, and a design rationale.
-- **Code of Conduct** in the repository.
-- **Expanded FAQ**: New entries on default values, reset, null exports, singletons, and the upcoming API interface.
-- **Pre-filled demo data** throughout the documentation examples — forms now show realistic data instead of empty placeholders, making it much easier to understand what they do at a glance.
-- **Printer-friendly pages**: The chapter layout now includes a print stylesheet.
-- **Automatic light/dark theme**: The docs site detects your OS color-scheme preference and switches automatically — no config, no button.
-- **AI-agent-ready landing page**: Explicit mention of SmarkForm's suitability for AI-assisted development, with concrete examples.
+- A new **End-User Guide** written for people filling in SmarkForm-powered forms (not just developers), covering keyboard navigation, hotkey discovery, and list management.
+- Expanded **FAQ** with new entries for default values, reset, null exports, singletons, and the upcoming API interface.
+- Examples throughout the docs now have **pre-filled demo data** so you can see what each form does at a glance.
+- **Printer-friendly** page layouts — the print stylesheet is now built into the chapter template.
+- **Automatic light/dark theme** — the docs site detects your OS color-scheme preference and switches automatically, no config needed.
+- A **Code of Conduct** is now part of the project.
 
 ---
 
-🛠️ **Developer experience**
+🔗 **Documentation:** https://smarkform.bitifet.net
 
-- **Visual render errors**: If you misconfigure a component, it is now replaced in the DOM by a red error badge with a short error code. Click it to re-log the full error to the console. No more silent failures during development.
-- **Singleton options sync**: Wrapper components and their inner fields now properly merge options, with a clear conflict error if the same key is declared in both.
+Stay up to date by following the official **Telegram channel**: https://t.me/smarkform
 
----
-
-🪲 **Bug fixes**
-
-- Hotkey reveal regression: releasing Alt while holding Ctrl now correctly returns to the first reveal level.
-- `VALUE_CONFLICT` detection: setting both an HTML `value` attribute and a `"value"` in `data-smark` now raises a visible error instead of silently ignoring one.
+For questions, ideas, and suggestions, join the conversation in the **Telegram community chat** or open a discussion in the **GitHub brainstorm**:
+🐙 https://github.com/bitifet/SmarkForm
 
 ---
 
-📦 npm: `npm install smarkform@0.13.0`
-🔗 Docs: https://smarkform.bitifet.net
-📝 Changelog: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
-🔧 GitHub: https://github.com/bitifet/SmarkForm
+📦 **Additional resources**
+
+- NPM: https://www.npmjs.com/package/smarkform
+- GitHub: https://github.com/bitifet/SmarkForm
+- AI & Agents resources: https://smarkform.bitifet.net/about/ai
 
 ---
 
@@ -191,14 +188,15 @@ The 0.13.0 documentation cycle has been the most thorough one yet:
 🔄 New reset action + default values
 ⌨️  Lists keep focus when emptied
 🎨 Parametric SVG logo (8 variants)
+🤖 AI-agent ready — generate forms by describing them
 📖 End-User Guide, Branding section, auto dark mode docs
 
-Zero runtime dependencies. Pure HTML forms. Powerful.
+Zero runtime deps. Pure HTML. Powerful.
 
 #OpenSource #JavaScript #WebDev #Forms
 
-📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+📦 https://www.npmjs.com/package/smarkform
 ```
 
 #### Frontend Developers
@@ -217,6 +215,7 @@ If you build complex HTML forms without a framework, this is your library.
 
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### HTML-driven devs
@@ -230,7 +229,7 @@ Pure HTML form power, now with:
 - default values directly in HTML attributes
 - Focus stays in lists when you empty them
 
-No framework. No JS templates. No runtime dependencies.
+No framework. No JS templates. No runtime deps.
 Just smart HTML + one tiny library.
 
 #HTML #VanillaJS #WebDev #Forms
@@ -244,15 +243,16 @@ Just smart HTML + one tiny library.
 ```
 🚀 SmarkForm 0.13.0 shipped!
 
-Big cycle: new component types, reset action, focus retention, parametric SVG logo, 
-End-User Guide, Branding section, Code of Conduct, auto dark mode...
+Big cycle: new component types, reset action, focus retention,
+SVG logo, End-User Guide, Code of Conduct, auto dark mode...
 
-Contributions welcome! The project is more documented and contributor-friendly than ever.
-→ https://github.com/bitifet/SmarkForm
+The project is more documented and contributor-friendly than ever.
+Contributions welcome!
 
 #OpenSource #JavaScript #HacktoberFest
 
 📦 npm i smarkform@0.13.0
+🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### Software Engineering
@@ -260,7 +260,7 @@ Contributions welcome! The project is more documented and contributor-friendly t
 ```
 🚀 SmarkForm 0.13.0: meaningful complexity, clean API.
 
-• 2 new component types (time, datetime-local) — null-aware, accept Date/epoch/ISO
+• 2 new types (time, datetime-local) — null-aware, accept Date/epoch/ISO
 • reset() vs clear() — restore defaults vs wipe to empty
 • import() updates defaultValue — "Load then Reset" just works
 • Focus retention on empty lists — keyboard-first UX
@@ -285,19 +285,19 @@ What went in:
 ✅ reset action + default values
 ✅ import() updates the default
 ✅ Focus retention on empty lists
-✅ Parametric SVG logo (wrote about it too!)
+✅ Parametric SVG logo (wrote about it!)
 ✅ End-User Guide for form users
 ✅ Code of Conduct
+✅ AI-agent ready (landing page example: 100% AI-generated!)
 ✅ Auto dark/light docs
 ✅ Visual render errors for devs
 ✅ 118 tests passing
-
-Building in public, learning in public 🙌
 
 #BuildInPublic #OpenSource #IndieHacker
 
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### I can code
@@ -308,8 +308,8 @@ Building in public, learning in public 🙌
 I added time & datetime-local field types (null-aware, just like date).
 A reset action to restore form defaults (not just clear).
 Lists now keep focus when you empty them — keyboard UX win!
-Auto dark/light mode for the docs.
-And I published an article about the new parametric SVG logo 🎨
+The landing page example is 100% AI-generated (no tweaks) 🤖
+And I wrote about the new parametric SVG logo 🎨
 
 #ICanCode #JavaScript #WebDev
 
@@ -323,11 +323,11 @@ And I published an article about the new parametric SVG logo 🎨
 🚀 SmarkForm 0.13.0 — production-ready form infra upgrade.
 
 If you're building web products with forms, this release adds:
-• Time and datetime-local field types with smart null handling
+• time + datetime-local field types with smart null handling
 • Reset to defaults (distinct from clear) — users can undo their edits
 • import() updates the default — Load + Reset patterns just work
+• AI-agent ready: generate complete forms from a description
 • End-User Guide your users can actually read
-• Branding + logo assets if you want to attribute SmarkForm
 
 Zero runtime deps. Works with any framework or none.
 
@@ -335,6 +335,7 @@ Zero runtime deps. Works with any framework or none.
 
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 #### Web Developers
@@ -342,10 +343,10 @@ Zero runtime deps. Works with any framework or none.
 ```
 🚀 SmarkForm 0.13.0 is live!
 
-Highlights:
 ⏱️  time + datetime-local component types
 🔄 reset action (restores defaults, not just clears)
 ⌨️  Focus stays in lists when last item is removed
+🤖 AI-agent ready (landing page example: 100% AI-generated)
 🎨 8-variant parametric SVG logo
 📖 End-User Guide + Branding section
 🌗 Auto dark/light docs theme
@@ -362,14 +363,15 @@ Highlights:
 ```
 🚀 SmarkForm 0.13.0 dropped.
 
-The new time + datetime-local component types finally complete the date/time set.
-Also: a brand new reset action, focus retention on empty lists, auto dark/light docs,
-an End-User Guide, and a parametric SVG logo generated from Pug (yes, really — wrote about it).
+The new time + datetime-local types complete the date/time set.
+Also: new reset action, focus retention on empty lists, auto dark/light docs,
+an End-User Guide, AI-agent ready docs, and a SVG logo generated from Pug.
 
 #TechTwitter #JavaScript #WebDev
 
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 #### Javascript
@@ -381,17 +383,19 @@ an End-User Guide, and a parametric SVG logo generated from Pug (yes, really —
 🔄 reset vs clear — restore defaults or wipe
 📥 import() now updates defaultValue
 ⌨️  Focus retention on empty lists
-🎨 SVG logo generated with Pug — article: dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0
+🤖 AI-agent ready — clean declarative API, no tooling needed
+🎨 SVG logo generated with Pug (article on dev.to)
 📖 End-User Guide + Branding + Code of Conduct
 🌗 Auto color scheme docs
 🛠️  Visual render errors
 
-📦 Zero runtime dependencies.
+Zero runtime dependencies.
 
 #JavaScript #VanillaJS #OpenSource
 
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+🐙 https://github.com/bitifet/SmarkForm
 ```
 
 #### Actually Build in Public
@@ -400,26 +404,27 @@ an End-User Guide, and a parametric SVG logo generated from Pug (yes, really —
 📦 SmarkForm 0.13.0 is live.
 
 What shipped (the honest list):
-- time + datetime-local component types (null-aware, accept Date/epoch/ISO)
-- reset action + defaultValue support on all fields, forms, and lists
-- import() updates defaultValue (setDefault:true) — Load+Reset just works
+- time + datetime-local types (null-aware, accept Date/epoch/ISO)
+- reset action + defaultValue on all fields, forms, and lists
+- import() updates defaultValue — Load+Reset just works
 - Focus retention when lists become empty
 - min_items:0 + default items now work together
-- Parametric SVG logo in 8 variants (Pug template — dev.to article too)
-- Branding docs + logo CDN links
+- Parametric SVG logo in 8 variants (Pug template + dev.to article)
+- AI-agent ready — landing page example 100% AI-generated, no tweaks
 - End-User Guide (for form fillers, not devs)
-- Code of Conduct
-- Auto light/dark color scheme in docs (CSS prefers-color-scheme)
-- AI-agent-ready landing page
+- Code of Conduct, Branding section
+- Auto light/dark color scheme (CSS prefers-color-scheme)
 - Visual render error nodes (no more silent failures)
 - Singleton options merging with conflict detection
 - Expanded FAQ, pre-filled demo data, printer-friendly pages
-- Dev deps bumped (rollup, playwright, babel)
 - 118 passing tests ✅
 
 #ActuallyBuildInPublic #OpenSource
 
-🔗 https://github.com/bitifet/SmarkForm
+🔗 https://smarkform.bitifet.net
+🐙 https://github.com/bitifet/SmarkForm
+📦 https://www.npmjs.com/package/smarkform
+🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 #### Front End Fraternity
@@ -428,18 +433,17 @@ What shipped (the honest list):
 🚀 SmarkForm 0.13.0 — for the HTML/CSS/JS purists.
 
 This one's big:
-→ time + datetime-local types (same null-aware interface as date/number)
+→ time + datetime-local types (null-aware, same as date/number)
 → reset action in any data-smark trigger (restore defaults, not just clear)
-→ Auto light/dark theme via CSS prefers-color-scheme (no JS framework, no config)
-→ SVG logo from a Pug generator — clean parametric approach
-→ End-User Guide for keyboard-first navigation in SmarkForm-powered forms
-
-Check it out:
+→ Auto light/dark theme via CSS prefers-color-scheme
+→ SVG logo from a parametric Pug generator
+→ AI-agent ready — describe a form, get working code immediately
 
 #FrontEndFraternity #CSS #JavaScript #HTML #VanillaJS
 
 📦 npm i smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+🤖 https://smarkform.bitifet.net/about/ai
 ```
 
 ---
@@ -471,25 +475,31 @@ the type-level empty state. After `import()`, reset restores the imported data �
 When the last list item is removed, focus moves to the "Add item" button automatically.
 And `min_items: 0` now coexists with pre-populated defaults.
 
+🤖 AI-agent ready
+SmarkForm's clean, declarative API makes it a natural fit for AI-assisted development.
+The new documentation landing page example was generated 100% by an AI assistant, with no
+further tweaks. Dedicated AI & Agents resources: https://smarkform.bitifet.net/about/ai
+
 🎨 Parametric SVG logo (8 variants)
-Full, compact, monochrome, and dark/light versions — all generated from one Pug template.
-Available on jsDelivr CDN, documented in a new Branding section of the docs.
+All generated from one Pug template. Available on jsDelivr CDN, documented in a new Branding
+section of the docs.
 
 📖 Full documentation overhaul
 • End-User Guide for people filling in SmarkForm-powered forms
 • Branding section with copy-paste badge snippets
 • Code of Conduct
-• Expanded FAQ with reset/default, null export, singleton, and API interface entries
-• Pre-filled demo data throughout examples
-• Printer-friendly page layouts
+• Expanded FAQ, pre-filled demo data, printer-friendly layouts
 • Automatic light/dark color scheme for the docs site
 
 🛠️ Developer experience
-Visual render errors replace misconfigured components in the DOM, making mistakes visible
-immediately. Singleton option merging now raises clear conflict errors.
+Visual render errors replace misconfigured components in the DOM. Singleton option merging
+now raises clear conflict errors.
 
-If you build web applications and haven't tried SmarkForm yet, 0.13.0 is a great starting point:
-🔗 https://smarkform.bitifet.net
+🔗 Docs: https://smarkform.bitifet.net
+📦 NPM: https://www.npmjs.com/package/smarkform
+🐙 GitHub: https://github.com/bitifet/SmarkForm
+🤖 AI resources: https://smarkform.bitifet.net/about/ai
+💬 Community: https://t.me/smarkform
 
 #OpenSource #JavaScript #WebDev #Forms #FrontEnd #HTML #UX
 ```
@@ -518,17 +528,19 @@ UX improvements:
 • Focus retention when emptying a list — no keyboard flow break
 • `min_items: 0` + pre-populated defaults now work together correctly
 
-Documentation:
+AI-agent ready:
+• Declarative API + zero tooling = natural fit for AI-generated forms
+• Resources: https://smarkform.bitifet.net/about/ai
+
+Documentation & DX:
 • End-User Guide, Branding section, Code of Conduct
 • Expanded FAQ, pre-filled examples, printer-friendly layouts
 • Auto dark/light color scheme
+• Visual render errors in the DOM, singleton option conflict detection
 
-DX:
-• Visual render errors in the DOM — no more silent misconfiguration
-• Singleton option conflict detection
-
-📦 npm install smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+📦 https://www.npmjs.com/package/smarkform
+🐙 https://github.com/bitifet/SmarkForm
 
 #FullStack #JavaScript #OpenSource #WebDevelopment #HTML
 ```
@@ -554,10 +566,16 @@ the user. This fix keeps the keyboard-first flow intact.
 The time and datetime-local types also matter: before this, you had to wrap them in a generic
 input and handle null/Date/ISO conversion yourself. Now SmarkForm does it.
 
+And the AI-agent readiness is worth calling out: the docs landing page now has an example that
+was generated 100% by AI, with no further tweaks. The declarative approach makes it uniquely
+suited to AI-assisted development.
+
 Zero runtime dependencies. Works with or without a framework.
 
-📦 npm i smarkform@0.13.0
-🔗 https://github.com/bitifet/SmarkForm
+🔗 https://smarkform.bitifet.net
+📦 https://www.npmjs.com/package/smarkform
+🐙 https://github.com/bitifet/SmarkForm
+🤖 https://smarkform.bitifet.net/about/ai
 
 #SoftwareDevelopment #JavaScript #OpenSource #WebDev #UX
 ```
@@ -579,19 +597,21 @@ awareness (which the browser gives you for free as "" but which JSON needs as nu
 CSS prefers-color-scheme media queries — no JavaScript involved in the decision, just a
 logo switcher on top. Exactly how it should be done.
 
-🎨 Parametric SVG logo: 8 variants generated from a single Pug template. The parameters
-control colors, size, compact/full layout. Read about the approach:
-→ dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0
+🎨 Parametric SVG logo: 8 variants generated from a single Pug template. Read about the
+approach: https://dev.to/bitifet/generating-a-parametric-svg-logo-with-pug-8m0
 
-🔄 reset vs clear in HTML: now you can add a reset button to any form with just:
+🔄 reset vs clear in HTML: add a reset button to any form with just:
 <button data-smark='{"action":"reset"}'>Restore defaults</button>
+Defaults are set right in the HTML via the value option in data-smark.
 
-And "defaults" can be set right in the HTML via the value option in data-smark.
+🤖 AI-agent ready: describe a form, get working code. The declarative approach means any
+capable AI assistant can generate correct SmarkForm markup from a plain-language description.
+
+🔗 https://smarkform.bitifet.net
+📦 https://www.npmjs.com/package/smarkform
+🤖 https://smarkform.bitifet.net/about/ai
 
 #CSS3 #HTML5 #FrontEnd #JavaScript #OpenSource #SVG
-
-📦 npm i smarkform@0.13.0
-🔗 https://smarkform.bitifet.net
 ```
 
 #### Software Development
@@ -618,17 +638,18 @@ UX improvements:
 • Focus retention when lists become empty (keyboard flow preserved)
 • min_items:0 + value-populated defaults now work together
 
-Documentation:
-• End-User Guide (for form fillers), Branding section, Code of Conduct
-• Expanded FAQ, printer-friendly layouts, pre-filled demo data
-• Auto light/dark color scheme
+AI-agent ready:
+• Declarative API is a natural fit for AI code generation
+• Landing page example generated 100% by AI, no tweaks
+• Resources: https://smarkform.bitifet.net/about/ai
 
 DX:
 • Visual DOM error nodes for render errors (no silent failures)
 • Singleton option conflict detection
 
-📦 npm install smarkform@0.13.0
 🔗 https://smarkform.bitifet.net
+📦 https://www.npmjs.com/package/smarkform
+🐙 https://github.com/bitifet/SmarkForm
 
 #SoftwareDevelopment #JavaScript #OpenSource #WebDev #DX
 ```
@@ -657,13 +678,18 @@ available `addItem` trigger when the list hits zero items. Small decorator, real
 
 Error detection:
 `renderError()` on every component replaces the target DOM node with a styled error node on
-misconfiguration. This turns silent, hard-to-debug failures into immediately visible problems.
+misconfiguration. Fail-fast during development, not silently at runtime.
+
+AI-agent readiness:
+The declarative, self-describing data-smark API makes SmarkForm uniquely suited to AI code
+generation. Resources: https://smarkform.bitifet.net/about/ai
 
 Test suite: 118 Playwright tests across Chromium, Firefox, and WebKit.
 Zero runtime dependencies.
 
-📦 npm install smarkform@0.13.0
-🔗 https://github.com/bitifet/SmarkForm
+🔗 https://smarkform.bitifet.net
+📦 https://www.npmjs.com/package/smarkform
+🐙 https://github.com/bitifet/SmarkForm
 
 #SoftwareEngineering #JavaScript #OpenSource #WebDevelopment
 ```
