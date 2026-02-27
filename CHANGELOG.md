@@ -19,9 +19,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.13.0] — 2026-02-27
 
-✨ AI-ready docs, auto color scheme, and documentation improvements.
+✨ New `time` and `datetime-local` component types · 🔄 `reset` action + default values · ⌨️ Focus retention on empty lists · 🎨 Parametric SVG logo · 📖 End-User Guide, Branding section, Code of Conduct · 🌗 Auto dark/light docs theme · 🛠️ Visual render errors.
 
-Adds an automatic light/dark color-scheme to the documentation site, updates the landing page and features section to highlight SmarkForm's AI-agent-friendly design, and polishes several documentation examples (including the schedule/nested-table showcase). Minor bug fixes and dependency updates are also included.
+SmarkForm 0.13.0 delivers new date/time field types, a brand-new `reset` action with configurable default values (with `import()` updating the default so "Load then Reset" just works), UX improvements for keyboard users, a comprehensive documentation overhaul, and a parametric SVG logo in eight variants.
 
 [GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.13.0)
 
