@@ -8,9 +8,6 @@ wtree
 dist/examples/*.html
 docs/_data/computed.json
 
-# Release prep working document (not to be committed)
-RELEASE_PREP.md
-
 # Jekyll
 docs/_site
 # NO (to trigger GitHub action every new version): docs/_data/package.json

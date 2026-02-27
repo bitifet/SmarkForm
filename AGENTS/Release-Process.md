@@ -2,15 +2,15 @@
 
 This document is a reusable step-by-step guide for preparing a SmarkForm release. In a future chat, point the assistant here and it will follow these steps with minimal extra instructions needed.
 
+All the work whould be done in a new branch (i.e. asking the user for a PR so that the agent can freely work on it).
+
 ---
 
 ## 0. Gather Release Information
 
-Before starting, confirm the following. Ask the user if anything is missing:
+Before starting, confirm the following. Ask the user if anything they didn't already provided in the prompt:
 
 - **Target version** (required — e.g. `0.13.0`). Format: `x.y.z`, no leading `v`, no `-rc` suffix.
-- **Communities** to include in announcement variants (e.g. "JavaScript developers", "Web developers", "Open-source contributors"). Ask if not provided — they affect the social-media text variants.
-- Any specific highlights the user wants to emphasise in the release notes.
 
 ---
 
@@ -42,9 +42,9 @@ Produce a **user-facing summary** grouped as:
 
 **Brevity rules:**
 - Minor or trivial fixes may be grouped into a single line, e.g. *"Minor bug fixes and internal improvements."*
-- Dependency-only bumps can be grouped as *"Dependency updates."*
+- Dependency-only bumps can be grouped as *"Dev-dependency updates."*
 - Omit internal-only commits (refactors, CI tweaks) unless they have user-visible impact.
-- Keep each bullet to one line.
+- Keep each bullet to one line (preferrably).
 
 ---
 
@@ -54,11 +54,12 @@ Run `npm audit`. If vulnerabilities are found:
 
 1. Run `npm audit fix` (policy A — apply automatically).
 2. Run `npm test` to ensure tests still pass.
-3. If tests fail after `npm audit fix`:
+3. If `npm audit fix --force` would be needed, do it automatically. Just report it to the user.
+4. If tests fail after `npm audit fix` or `npm audit fix --force`:
    - Analyse the failure to determine whether the dependency change caused it.
-   - Revert only the dependency changes that caused test failures (`npm install <pkg>@<previous-version>`).
+   - If so, check if our code can be adjusted to work with the new dependency version without breaking tests. If yes, fix the code and proceed.
+   - Otherwise revert only the dependency changes that caused test failures (`npm install <pkg>@<previous-version>`).
    - If the vulnerability cannot be fixed without breaking tests, note it in the Security section of the working document (see §7) and leave it for the user to decide.
-4. If `npm audit fix --force` would be needed (breaking changes), **do not run it automatically** — report to the user and ask for guidance.
 
 ---
 
@@ -127,9 +128,9 @@ Brief one-line description of the release theme.
 
 ## 8. Create the Working Document
 
-Create (or overwrite) `RELEASE_PREP.md` **at the repository root**. This file is git-ignored by convention — do not commit it. Its purpose is to store all release-related texts in one place for the user to review and copy from.
+Create (or overwrite) `RELEASE_PREP.md` **at the repository root**. Its purpose is to store all release-related texts in one place for the user to review and copy from.
 
-> **Note:** Do not commit `RELEASE_PREP.md`. Add it to `.gitignore` if it isn't already there.
+After gathering the information, the user will remove it and squash all commits into main updating the commit message to "Version <target-version>". Leave exact instructions to the user for the manual steps (squash, tag, GitHub Release, npm publish, stable rebase) at the end of the document.
 
 ### Contents of `RELEASE_PREP.md`
 
@@ -193,17 +194,7 @@ Key highlights:
 🔗 https://smarkform.bitifet.net
 ```
 
-#### For <Community 1>
-
-```
-<Tailored tweet for this community — same info, different framing.>
-```
-
-#### For <Community 2>
-
-```
-<Tailored tweet for this community.>
-```
+<Tailored tweets for each community — same info, different framing.>
 
 ---
 
@@ -227,16 +218,8 @@ If you build web forms and haven't tried SmarkForm yet, now is a great time to e
 #OpenSource #JavaScript #WebDev #Forms #FrontEnd
 ```
 
-#### For <Community 1>
-
 ```
-<Tailored LinkedIn post for this community — same structure, angle adapted.>
-```
-
-#### For <Community 2>
-
-```
-<Tailored LinkedIn post for this community.>
+<Tailored LinkedIn posts for each community — same structure, angle adapted.>
 ```
 
 ---
@@ -248,12 +231,43 @@ If you build web forms and haven't tried SmarkForm yet, now is a great time to e
 <If all vulnerabilities were resolved, write: "No open vulnerabilities after `npm audit fix`." >
 ````
 
+Tailored tweets for each community should mimic the "Public (general audience)" version but with a different angle or emphasis, including a heading with the name of the targetted community.
+
+There should be one for each of the following communities:
+
+  - Frontend Developers.
+  - HTML driven devs.
+  - Open Source Contributors.
+  - Software Engineering.
+  - Build in Public.
+  - I can code.
+  - Tech Founders.
+  - Web Developers.
+  - Tech Twitter.
+  - Javascript.
+  - Actually Build in Public.
+  - Front End Fraternity.
+  - Accessibility (only when the new version includes accessibility improvements).
+
+
+Same goes for LinkedIn posts, but with a more professional tone and slightly longer format. Each should have a heading with the name of the targetted community.
+
+The linkedIn communities are the following:
+
+  - Full Stack Titans.
+  - Software Developer.
+  - CSS3/HTML5 The future of front end.
+  - Software Development.
+  - Software Engeeniering.
+
+
 ---
 
 ## 9. Manual Steps (do NOT automate without explicit user request)
 
 The following steps are intentionally left to the user. **Do not perform them automatically** unless the user explicitly asks:
 
+- **Git squash and commit**: `git merge --squash <branch> && git commit`
 - **Git tag**: `git tag <target-version> && git push origin <target-version>`
 - **GitHub Release**: Create via the GitHub web UI using the release notes from §8.
 - **npm publish**: `npm publish`
