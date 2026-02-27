@@ -17,6 +17,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.13.0] — 2026-02-27
+
+✨ New `time` and `datetime-local` component types · 🔄 `reset` action + default values · ⌨️ Focus retention on empty lists · 🎨 Parametric SVG logo · 📖 End-User Guide, Branding section, Code of Conduct · 🌗 Auto dark/light docs theme · 🛠️ Visual render errors.
+
+SmarkForm 0.13.0 delivers new date/time field types, a brand-new `reset` action with configurable default values (with `import()` updating the default so "Load then Reset" just works), UX improvements for keyboard users, a comprehensive documentation overhaul, and a parametric SVG logo in eight variants.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.13.0)
+
+---
+
 ## [0.12.9] — 2025-12-18
 
 👌 Smarter labels (implicit association, legends...)
@@ -267,7 +277,8 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.12.9...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
 [0.12.9]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.9
 [0.12.8]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.8
 [0.12.7]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.7
