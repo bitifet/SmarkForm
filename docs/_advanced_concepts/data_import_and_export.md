@@ -421,8 +421,8 @@ previous sibling and import it into the current item.
 ### Chaining export and import
 
 The following example shows a practical copy-between-sections workflow. The
-"Copy to shipping" button exports the billing address and writes it directly
-into the shipping address section:
+"Copy to shipping" button exports its context (the billing address) subform
+directly into its target (the shipping address) subform:
 
 {% raw %} <!-- capture pipe_example_html {{{ --> {% endraw %}
 {% capture pipe_example_html
@@ -445,7 +445,7 @@ into the shipping address section:
     <button data-smark='{
         "action":"export",
         "context":"billing",
-        "target":"shipping"
+        "target":"../shipping"
     }'>📋 Copy to shipping</button>
 </p>
 <fieldset data-smark='{"type":"form","name":"shipping"}'>
@@ -482,12 +482,29 @@ data to the shipping address with no JavaScript required.
     tests=false
 %}
 
+{: .info }
+> Context path is resolved relative to the actual location of the trigger
+> button (its "natural context"), while target paths are resolved relative to
+> the final context  of the component.
+>
+> 👉 More info at [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }}) chapter.
+
+
 {: .hint }
-> Target paths are resolved relative to the **context component's parent**,
-> using the same path syntax described in the
-> [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
-> chapter. Use an absolute path (starting with `/`) to reference components
-> from anywhere in the tree.
+> Notice that the same effect could have been seamlessly achieved with an
+> `import` action in the reverse direction.
+>
+> ```html
+> <button data-smark='{
+>     "action":"import",
+>     "context":"shipping",
+>     "target":"../billing"
+> }'>📋 Copy to shipping</button>
+> ```
+> 
+> ...or, in both cases, we could just reverse only the action (or only the
+> direction) to achieve Copy from shipping to billing instead of the other way
+> around.
 
 
 ## Programmatic API
