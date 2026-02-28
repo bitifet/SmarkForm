@@ -445,7 +445,7 @@ into the shipping address section:
     <button data-smark='{
         "action":"export",
         "context":"billing",
-        "target":"../shipping"
+        "target":"shipping"
     }'>📋 Copy to shipping</button>
 </p>
 <fieldset data-smark='{"type":"form","name":"shipping"}'>
@@ -483,24 +483,11 @@ data to the shipping address with no JavaScript required.
 %}
 
 {: .hint }
-> Target paths are resolved relative to the **context component** itself — SmarkForm calls
-> `context.find(targetPath)` internally. So `../shipping` from a `billing` context navigates
-> up to `billing`'s parent, then finds the `shipping` sibling. Use an absolute path (starting
-> with `/`) to reach a component from the form root regardless of where the trigger is.
-
-{: .hint }
-> The same copy can be expressed as an `import` action by swapping context and target:
-> ```html
-> <button data-smark='{
->     "action":"import",
->     "context":"shipping",
->     "target":"../billing"
-> }'>📋 Copy to shipping</button>
-> ```
-> This imports *into* `shipping` the data *from* `billing` — identical result,
-> opposite direction of data flow. Pick whichever makes the intent clearer.
-> You could also add a reverse "Copy to billing" button by keeping the same
-> `action:"export"` / `context` / `target` but swapping `billing` and `shipping`.
+> Target paths are resolved relative to the **context component's parent**,
+> using the same path syntax described in the
+> [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
+> chapter. Use an absolute path (starting with `/`) to reference components
+> from anywhere in the tree.
 
 
 ## Programmatic API
@@ -612,64 +599,28 @@ const myForm = new SmarkForm(document.getElementById("myForm"), {
 
 ### Save and restore draft data
 
-You can persist draft data across page reloads using `localStorage`. The
-pattern hooks into `AfterAction_export` to save whenever the user exports,
-and restores the draft automatically the next time the page loads:
+You can persist draft data in `localStorage` and restore it the next time the
+user opens the page:
 
-{% raw %} <!-- capture draft_example_html {{{ --> {% endraw %}
-{% capture draft_example_html
-%}<p>
-    <label data-smark>Name:</label>
-    <input data-smark type="text" name="name">
-</p>
-<p>
-    <label data-smark>Email:</label>
-    <input data-smark type="email" name="email">
-</p>
-<p>
-    <label data-smark>Notes:</label>
-    <textarea data-smark name="notes" rows="3"></textarea>
-</p>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
 
-{% capture draft_jsHead %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-(async () => {
-    await myForm.rendered;
-    // ⚠️ Playground adapter — not needed in a real app:
-    // The docs playground wraps each example inside a "demo" subform.
-    // Real-app code: use `myForm` directly (no find() needed).
-    const demo = myForm.find("/demo") || myForm;
-    // Auto-restore draft on page load
-    const saved = localStorage.getItem("sf_draft$$");
-    if (saved) await demo.actions.import(JSON.parse(saved), { setDefault: false });
-    // Auto-save on every export
-    demo.on("AfterAction_export", ev => {
-        localStorage.setItem("sf_draft$$", JSON.stringify(ev.data));
-    });
-})();{% endcapture %}
+await myForm.rendered;
 
-{% capture draft_example_notes %}
-Fill in some data and click **⬇️ Export** — the form state is saved to
-`localStorage`. Click **❌ Clear** to blank the fields, then reload the page
-to see the draft restored automatically.
+// Restore draft (without making it the reset default)
+const draft = localStorage.getItem("myForm.draft");
+if (draft) {
+    await myForm.actions.import(JSON.parse(draft), { setDefault: false });
+}
 
-Click **♻️ Reset** at any time to go back to the default empty state (the
-draft in `localStorage` is unaffected until the next Export).
-{% endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="draft_example"
-    htmlSource=draft_example_html
-    jsHead=draft_jsHead
-    notes=draft_example_notes
-    showEditor=true
-    tests=false
-%}
+// Auto-save on every export
+myForm.on("AfterAction_export", (ev) => {
+    localStorage.setItem("myForm.draft", JSON.stringify(ev.data));
+});
+```
 
 {: .info }
 > Using `setDefault: false` when restoring a draft ensures that **♻️ Reset**
 > still returns to the form's HTML-defined defaults, not the draft. This lets
 > the user discard a draft by pressing Reset.
-
 
