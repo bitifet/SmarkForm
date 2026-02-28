@@ -84,7 +84,7 @@ block mainForm
                 };
             });
 
-            // "true" string is parsed as JSON boolean true
+            // String value "true" from HTML attribute is parsed as JSON boolean true
             expect(result.exportEmpties).toBe(true);
         } finally {
             if (onClosed) await onClosed();
