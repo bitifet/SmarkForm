@@ -96,7 +96,7 @@ export class SmarkComponent {
 
         me.actions = {};
         me.property_name = property_name;
-        me.selector = `[data-${me.property_name}]`;
+        me.selector = `[data-${me.property_name}],[data-${me.property_name}-type],[data-${me.property_name}-action]`;
         me.types = componentTypes;
         me.targetNode = targetNode;
         me.options = options;
@@ -198,9 +198,38 @@ export class SmarkComponent {
                 );
             };
         };
+        // Read individual data-smark-<option_name> attributes:
+        const attrOptions = {};
+        const attrPrefix = me.property_name;
+        for (const [dataKey, dataValue] of Object.entries(node.dataset)) {
+            if (
+                ! dataKey.startsWith(attrPrefix)
+                || dataKey.length <= attrPrefix.length
+                || dataKey[attrPrefix.length] < 'A'
+                || dataKey[attrPrefix.length] > 'Z'
+            ) continue;
+            // Convert dataset key to option name (strip prefix, lowercase first letter):
+            const suffix = dataKey.slice(attrPrefix.length);
+            const optName = suffix[0].toLowerCase() + suffix.slice(1);
+            // Parse value as JSON or fall back to raw string:
+            const parsed = parseJSON(dataValue);
+            const optValue = parsed !== undefined ? parsed : dataValue;
+            // Check for conflict with explicit JSON options:
+            if (explicitOptions?.hasOwnProperty(optName)) {
+                if (JSON.stringify(explicitOptions[optName]) !== JSON.stringify(optValue)) {
+                    throw me.renderError(
+                        'DUPLICATE_OPTION'
+                        , `Option "${optName}" is specified both in data-${me.property_name} and as a data-${me.property_name}-* attribute with conflicting values.`
+                    );
+                };
+                continue; // Same value: already present, skip.
+            };
+            attrOptions[optName] = optValue;
+        };
         const options = {
             ...defaultOptions,
             ...explicitOptions,
+            ...attrOptions,
         };
         const isSingletonTarget = (
             me.isSingleton // New component's parent is a singleton
