@@ -295,6 +295,8 @@ endif %}{% if jsHidden != '-'
         {% if current_tab == "notes" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
         <div class="tab-label tab-label-right {{active_class}}" title="Notes">📝 Notes</div>
     {% endif %}
+    {% if current_tab == "hint" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+    <div class="tab-label tab-label-right {{active_class}}" title="Help">❓</div>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-html {{active_class}}">
@@ -324,6 +326,24 @@ endif %}{% if jsHidden != '-'
         {{ notes | markdownify }}
     </div>
   {% endif %}
+  {% if current_tab == "hint" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+  <div class="tab-content tab-content-hint {{active_class}}">
+    <p>Every example in this section comes with many of the following tabs:</p>
+    <ul>
+      <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
+      <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
+      <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
+      <li data-bullet="👁️"><b>Preview:</b> This is where you can see the code in action.</li>
+      <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
+    </ul>
+    <p>✨ Additionally, in the <strong>Preview</strong> tab, you will find handy buttons:</p>
+    <ul>
+      <li><code>⬇️ Export</code> to export the form data to the <em>JSON data viewer/editor</em>.</li>
+      <li><code>⬆️ Import</code> to import data into the form from the <em>JSON data viewer/editor</em>.</li>
+      <li><code>♻️ Reset</code> to reset the form to its default values.</li>
+      <li><code>❌ Clear</code> to reset the form to its initial state.</li>
+    </ul>
+  </div>
 </div>
 <div>
 {% if jsHead != '-' or jsHidden != '-' or jsSource != '-' %}

@@ -6,7 +6,7 @@ nav_order: 10001
 
 ---
 
-{% include components/sampletabs_ctrl.md noShowHint=true %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
