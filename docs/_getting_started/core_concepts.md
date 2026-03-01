@@ -430,13 +430,15 @@ triggered.
 action — as follows:
 
 - **Natural context** (when no `context` option is set): The first ancestor field component
-  that implements the requested action. There is no need for hard-wiring — the action takes
-  place in the correct component thanks to the trigger's position in the DOM.
+  that implements the requested action. SmarkForm walks up the ancestor chain automatically —
+  there is no need for hard-wiring.
 
 - **Explicit context** (when the `context` option is set): The component found by following
   the given path starting from **where the trigger is placed**. Because triggers are not
   field components themselves (see below), the path is always resolved from the trigger's
-  enclosing field component.
+  enclosing field component. The resolved component **must implement the requested action** —
+  SmarkForm does not walk further up the ancestor chain for explicit contexts. If the resolved
+  component does not implement the action, an error is reported.
 
 {: .hint :}
 > Triggers (and labels) are SmarkForm components but **not field components** — they cannot

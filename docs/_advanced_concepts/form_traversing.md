@@ -163,8 +163,8 @@ Understanding the concepts of *context* and *target* is crucial for effective ac
 
 Before diving into path rules, it helps to have three terms clearly defined:
 
-- **Natural context** — the context a trigger *would* use if no `context` option is specified: the nearest ancestor field component that implements the requested action.
-- **Explicit context** — the context produced when the `context` option *is* set. Its path is resolved starting from **where the trigger is placed** in the component hierarchy (see below).
+- **Natural context** — the context a trigger *would* use if no `context` option is specified: the nearest ancestor field component that implements the requested action (SmarkForm walks up the ancestor chain automatically until it finds one).
+- **Explicit context** — the context produced when the `context` option *is* set. Its path is resolved starting from **where the trigger is placed** in the component hierarchy (see below). The resolved component **must implement the requested action** — SmarkForm does not walk further up the chain; if the resolved component does not implement the action it is reported as an error.
 - **Effective context** — the context that actually handles the action: the explicit context if one is given, otherwise the natural context.
 
 ### Triggers and Labels Are Not Field Components
@@ -181,8 +181,8 @@ The **context** is the field component that *owns* the action being triggered.
 
 **How context is resolved:**
 
-1. **Explicit context** — when the `context` property is set, the path is resolved starting from **where the trigger is placed** (the enclosing field component). Because triggers are not addressable by path, a path like `"personalData"` navigates as if it were called from the trigger's parent field, not from the trigger itself.
-2. **Natural context** — when no `context` is specified, SmarkForm walks up the ancestor chain and picks the first ancestor that implements the requested action.
+1. **Explicit context** — when the `context` property is set, the path is resolved starting from **where the trigger is placed** (the enclosing field component). Because triggers are not addressable by path, a path like `"personalData"` navigates as if it were called from the trigger's parent field, not from the trigger itself. The resolved component **must implement the requested action**; SmarkForm does not automatically walk further up the ancestor chain. If the component does not implement the action, an error is reported.
+2. **Natural context** — when no `context` is specified, SmarkForm walks up the ancestor chain and picks the **first ancestor that implements the requested action** automatically.
 
 ```html
 <!-- Explicit context: "personalData" is a child of the enclosing field where this trigger lives -->

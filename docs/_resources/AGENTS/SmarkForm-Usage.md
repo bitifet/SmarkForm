@@ -202,8 +202,8 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 
 When a trigger button is clicked, SmarkForm resolves its **effective context** (the component that owns the action):
 
-- **If `context` is specified** (explicit context): The path is resolved starting from **where the trigger is placed**. Because triggers are not field components (they can't be addressed by path), the path navigates from the trigger's enclosing field component — as if the trigger itself were not a node in the path.
-- **If `context` is NOT specified** (natural context): SmarkForm walks up the ancestor chain to find the first component that implements the action.
+- **If `context` is specified** (explicit context): The path is resolved starting from **where the trigger is placed**. Because triggers are not field components (they can't be addressed by path), the path navigates from the trigger's enclosing field component — as if the trigger itself were not a node in the path. The resolved component **must implement the action** — SmarkForm does not walk further up the chain; if it doesn't implement the action an error is reported.
+- **If `context` is NOT specified** (natural context): SmarkForm walks up the ancestor chain automatically to find the first component that implements the action.
 
 Context path examples (resolved relative to the trigger's enclosing field component):
 - `"demo"` — sibling named "demo" in the same parent field
