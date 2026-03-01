@@ -291,7 +291,7 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 ### Action Context Resolution
 
 When a trigger button is clicked, SmarkForm resolves its `context` (the component that owns the action):
-- If `context` is specified: `me.parent.find(contextPath)` — looks for the named component
+- If `context` is specified: `me.parent.find(contextPath)` — looks for the named component **relative to the trigger's parent**
 - If not specified: walks up parent chain to find the first component with the action
 
 Context paths:
@@ -299,6 +299,51 @@ Context paths:
 - `"/"` — root form
 - `".-1"` — previous sibling (used for `source` in duplicate)
 - `"..fieldname"` — named field in grandparent scope
+
+### Action Target Resolution
+
+⚠️ **This is a common source of bugs.** Target paths are **not** relative to the trigger's position — they are resolved from the **resolved context**.
+
+When `target` is specified, SmarkForm calls `context.find(targetPath)`. Because the base of `find()` is the context object, relative paths are evaluated starting from the context component.
+
+**Consequence:** If you set an explicit `context` and want to target a *sibling* of that context, you must navigate up with `..` before going to the sibling:
+
+```html
+<!-- Export billing address, import into shipping address (both siblings of the root) -->
+<button data-smark='{
+    "action": "export",
+    "context": "billing",
+    "target": "../shipping"
+}'>📋 Copy to shipping</button>
+```
+
+- `context:"billing"` → `triggerParent.find("billing")` → the billing subform
+- `target:"../shipping"` → `billing.find("../shipping")` → up to billing's parent, then "shipping"
+- Using `"target":"shipping"` alone would call `billing.find("shipping")` which looks for a **child of billing** named "shipping" — which doesn't exist → silent failure
+
+Absolute target paths (starting with `/`) always resolve from the root and avoid this ambiguity:
+
+```html
+<button data-smark='{"action":"export","context":"billing","target":"/shipping"}'>
+    📋 Copy to shipping
+</button>
+```
+
+**Target semantics by action:**
+- `export` with target → exports the context, then imports the result into the target (copy context → target)
+- `import` with target → exports from the target, then imports the result into the context (copy target → context)
+
+```html
+<!-- Copy FROM previous sibling INTO current item -->
+<button data-smark='{"action":"import","context":".","target":".-1"}'>
+    ← Copy from Previous
+</button>
+
+<!-- Copy current item INTO next sibling -->
+<button data-smark='{"action":"export","context":".","target":".+1"}'>
+    Copy to Next →
+</button>
+```
 
 ### `@action` Decorator — Calling Convention and Nuances
 
