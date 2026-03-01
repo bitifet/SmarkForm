@@ -28,6 +28,8 @@ nav_order: 1
     * [Parent Navigation](#parent-navigation)
     * [Root Access](#root-access)
 * [Context and Target in Actions](#context-and-target-in-actions)
+    * [Context Terminology](#context-terminology)
+    * [Triggers and Labels Are Not Field Components](#triggers-and-labels-are-not-field-components)
     * [Understanding Context](#understanding-context)
     * [Understanding Target](#understanding-target)
     * [Natural Context Resolution](#natural-context-resolution)
@@ -75,7 +77,7 @@ Form traversing in SmarkForm provides a powerful and intuitive way to navigate t
 > `find()` before rendering is complete will return `null` for every path.
 > Inside event handlers this is not necessary since they only fire after render.
 
-Building upon the foundational concepts introduced in the [Quick Start Guide]({{ "getting_started/quick_start#form-traversing" | relative_url }}), this comprehensive guide explores the full capabilities of SmarkForm's traversing system, including the newly implemented list item sibling navigation feature.
+Building upon the foundational concepts introduced in the [Quick Start Guide]({{ "getting_started/quick_start#form-traversing" | relative_url }}), this comprehensive guide explores the full capabilities of SmarkForm's traversing system.
 
 Every SmarkForm component provides a `.find()` method that accepts a path-like route to locate target components. This path-based approach enables precise navigation through nested form structures, making it easy to access, manipulate, and coordinate between different parts of your form.
 
@@ -157,17 +159,33 @@ const formRoot = anyComponent.find("/");
 
 Understanding the concepts of *context* and *target* is crucial for effective action implementation and form interaction patterns.
 
+### Context Terminology
+
+Before diving into path rules, it helps to have three terms clearly defined:
+
+- **Natural context** — the context a trigger *would* use if no `context` option is specified: the nearest ancestor field component that implements the requested action.
+- **Explicit context** — the context produced when the `context` option *is* set. Its path is resolved starting from **where the trigger is placed** in the component hierarchy (see below).
+- **Effective context** — the context that actually handles the action: the explicit context if one is given, otherwise the natural context.
+
+### Triggers and Labels Are Not Field Components
+
+Triggers (and labels) are SmarkForm components, but they are **not field components** — they cannot be addressed by a path, and they do not count as steps in path navigation.
+
+As a consequence, calling `find()` on a trigger or label behaves exactly as if it were called on the trigger's enclosing field component (its nearest field ancestor). This matters for context path resolution:
+
+> When SmarkForm resolves a relative `context` path, it starts navigation from the **trigger's enclosing field component** — not from the trigger node itself. In practical terms, this means paths are resolved relative to the component *containing* the trigger.
+
 ### Understanding Context
 
-The **context** is the component that *owns* the action being triggered. It determines which part of the form is acted upon.
+The **context** is the field component that *owns* the action being triggered.
 
 **How context is resolved:**
 
-1. **Explicit context** — when the `context` property is set in the trigger's `data-smark`, it is resolved by calling `triggerParent.find(contextPath)`. That is, the path is evaluated starting from the **trigger's own parent component**, not from the trigger itself.
-2. **Natural context** — when no `context` is specified, SmarkForm walks up the ancestor chain of the trigger and picks the first ancestor that implements the requested action.
+1. **Explicit context** — when the `context` property is set, the path is resolved starting from **where the trigger is placed** (the enclosing field component). Because triggers are not addressable by path, a path like `"personalData"` navigates as if it were called from the trigger's parent field, not from the trigger itself.
+2. **Natural context** — when no `context` is specified, SmarkForm walks up the ancestor chain and picks the first ancestor that implements the requested action.
 
 ```html
-<!-- Explicit context: "personalData" is resolved relative to the trigger's parent -->
+<!-- Explicit context: "personalData" is a child of the enclosing field where this trigger lives -->
 <button data-smark='{"action":"clear", "context":"personalData"}'>
     Clear Personal Data
 </button>
@@ -175,7 +193,7 @@ The **context** is the component that *owns* the action being triggered. It dete
 <!-- Natural context: the nearest ancestor implementing "clear" -->
 <div data-smark='{"name":"personalData", "type":"form"}'>
     <button data-smark='{"action":"clear"}'>Clear</button>
-    <!-- Context resolves automatically to personalData -->
+    <!-- Effective context resolves automatically to personalData -->
 </div>
 ```
 
@@ -187,11 +205,11 @@ The **target** is an optional second component involved in the action. Its role 
 - For **`import`** with a target — SmarkForm exports from the target first and uses the result as the data to import into the context.
 
 {: .important }
-> **Target paths are resolved from the *resolved context*, not from the trigger's position.**
+> **Target paths are resolved from the *effective context*, not from the trigger's position.**
 >
-> When `target` is specified, SmarkForm calls `context.find(targetPath)` to locate the target
-> component. Because `find()` is called on the *context* object, relative paths are evaluated
-> starting from the context — not from the trigger's DOM position.
+> When `target` is specified, SmarkForm calls `context.find(targetPath)` on the effective
+> context object. Because `find()` starts from the context, relative target paths are evaluated
+> relative to the context — not relative to where the trigger is placed in the DOM.
 >
 > As a consequence, if you set an explicit `context` that is *different* from where the trigger
 > is placed, you must write the `target` path relative to that context.
@@ -229,19 +247,19 @@ The **target** is an optional second component involved in the action. Its role 
 
 ### Natural Context Resolution
 
-When no `context` is specified, SmarkForm walks up the ancestor chain to find the most appropriate context:
+When no `context` is specified, SmarkForm walks up the ancestor chain to find the most appropriate context (the natural context):
 
 ```
 // Example hierarchy:
 // Form Root
 //   ├── personalData (form)
 //   │   ├── name (input)
-//   │   └── clearButton (trigger)
+//   │   └── clearButton (trigger)  ← trigger is placed here
 //   └── businessData (form)
 
-// When clearButton is clicked:
-// 1. Check personalData — implements 'clear' ✓
-// Result: personalData becomes the context
+// When clearButton is clicked (no "context" option set):
+// 1. personalData — implements 'clear' ✓
+// Effective context = naturalContext = personalData
 ```
 
 This automatic resolution eliminates the need for explicit wiring in most common scenarios.
@@ -249,12 +267,12 @@ This automatic resolution eliminates the need for explicit wiring in most common
 ### Explicit Context and Target Specification
 
 When specifying both `context` and `target`, remember that:
-- The `context` path is resolved from the **trigger's parent**.
-- The `target` path is resolved from the **resolved context**.
+- The `context` path is resolved from **where the trigger is placed** (its enclosing field component).
+- The `target` path is resolved from the **effective context**.
 
 ```html
 <!-- Copy personalData into businessData.
-     personalData is a sibling of businessData at the root level.
+     The trigger lives inside the root form, so "personalData" is a direct child of root.
      Using an absolute target path avoids any ambiguity. -->
 <button data-smark='{
     "action": "export",
@@ -262,7 +280,7 @@ When specifying both `context` and `target`, remember that:
     "target": "/businessData"
 }'>Copy Personal to Business</button>
 
-<!-- Alternatively, a relative path works if you account for context:
+<!-- Alternatively, a relative target works if you account for where context is:
      Starting from personalData, go up one level then into businessData -->
 <button data-smark='{
     "action": "export",

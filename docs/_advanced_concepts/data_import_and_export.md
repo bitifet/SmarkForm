@@ -483,9 +483,9 @@ data to the shipping address with no JavaScript required.
 %}
 
 {: .info }
-> Context path is resolved relative to the actual location of the trigger
-> button (its "natural context"), while target paths are resolved relative to
-> the final context  of the component.
+> The `context` path is resolved relative to **where the trigger is placed** in the form
+> hierarchy, while `target` paths are resolved relative to the **effective context** of the
+> action.
 >
 > 👉 More info at [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }}) chapter.
 

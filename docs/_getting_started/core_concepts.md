@@ -426,22 +426,27 @@ through given so-called "actions".
 👉 They have a (mandatory) *action* attribute which specifies the action to be
 triggered.
 
-👉 *Trigger* components also have a "natural context" which is the closest
-*SmarkForm* component conaining it (That is: *personal_data* subform in
-previous example) but its actual *context* is the closest component
-**implementing that action** unless overridden by the *context* property.
+👉 *Trigger* components resolve their **effective context** — the component that will handle the
+action — as follows:
+
+- **Natural context** (when no `context` option is set): The first ancestor field component
+  that implements the requested action. There is no need for hard-wiring — the action takes
+  place in the correct component thanks to the trigger's position in the DOM.
+
+- **Explicit context** (when the `context` option is set): The component found by following
+  the given path starting from **where the trigger is placed**. Because triggers are not
+  field components themselves (see below), the path is always resolved from the trigger's
+  enclosing field component.
 
 {: .hint :}
-> The *natural context* of a trigger is the component that implements that
-> action and contains the trigger (outside of any other inner component of the
-> same type or implementing the same action).
-> 
-> There is no need of any *hard wiring code* to connect triggers to their
-> targettend component. **The actions take place in the correct component
-> thanks to the position in the DOM where the trigger is placed.**
+> Triggers (and labels) are SmarkForm components but **not field components** — they cannot
+> be addressed by a path, and they do not count as steps in path navigation.
+>
+> This means: when you write `"context":"personalData"`, that path is navigated starting from
+> the field that contains the trigger — exactly as if the trigger were not there.
 
-👉 The *context* property specifies the *relative path*, from its *natural
-context* to the actual context of the trigger.
+👉 The *context* property specifies the path, **from the component where the trigger is
+placed**, to the desired effective context.
 
 
 {: .info :}

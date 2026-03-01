@@ -73,7 +73,7 @@ Buttons (triggers) can be placed **outside** their target component using the `c
 <button data-smark='{"action":"addItem","context":"myList"}'>➕</button>
 ```
 
-Context paths are resolved lazily at action-trigger time via `find()`. Relative paths are resolved from the trigger's parent component.
+Context paths are resolved lazily at action-trigger time via `find()`. Relative paths are resolved from the trigger's **enclosing field component** (triggers are not field components themselves, so they don't count as path nodes).
 
 {: .warning}
 > **Exception — buttons inside cloned item templates**: When a list's item template itself contains a sub-list, and buttons targeting the sub-list are placed **outside** that sub-list but **inside** the item template (so they get cloned), context resolution may fail for the cloned instances. In this case, place the buttons **inside** the sub-list using `role="footer"`:
@@ -200,12 +200,13 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 
 ### Action Context Resolution
 
-When a trigger button is clicked, SmarkForm resolves its `context` (the component that owns the action):
-- If `context` is specified: `me.parent.find(contextPath)` — looks for the named component **relative to the trigger's parent**
-- If not specified: walks up parent chain to find the first component with the action
+When a trigger button is clicked, SmarkForm resolves its **effective context** (the component that owns the action):
 
-Context paths:
-- `"demo"` — sibling named "demo" relative to the trigger's parent
+- **If `context` is specified** (explicit context): The path is resolved starting from **where the trigger is placed**. Because triggers are not field components (they can't be addressed by path), the path navigates from the trigger's enclosing field component — as if the trigger itself were not a node in the path.
+- **If `context` is NOT specified** (natural context): SmarkForm walks up the ancestor chain to find the first component that implements the action.
+
+Context path examples (resolved relative to the trigger's enclosing field component):
+- `"demo"` — sibling named "demo" in the same parent field
 - `"/"` — root form
 - `".-1"` — previous sibling (used for `source` in duplicate)
 - `"..fieldname"` — named field in grandparent scope
@@ -214,9 +215,9 @@ Context paths:
 
 {: .warning}
 > Target paths are **not** relative to the trigger's position — they are resolved from the
-> **resolved context** via `context.find(targetPath)`.
+> **effective context**.
 
-When `target` is specified, the path is evaluated starting from the context component. If you want to target a *sibling* of the context, you must navigate up with `..` first:
+When `target` is specified, the path is evaluated starting from the effective context component. If you want to target a *sibling* of the context, you must navigate up with `..` first:
 
 ```html
 <!-- Export billing, import into shipping (siblings of the root) -->
@@ -227,9 +228,9 @@ When `target` is specified, the path is evaluated starting from the context comp
 }'>📋 Copy to shipping</button>
 ```
 
-- `context:"billing"` → `triggerParent.find("billing")` → the billing subform
-- `target:"../shipping"` → `billing.find("../shipping")` → up to billing's parent, then "shipping"
-- `"target":"shipping"` alone → `billing.find("shipping")` → looks for a **child of billing** named "shipping" — silent failure
+- `context:"billing"` — resolved from the trigger's enclosing field (root form) → the billing subform
+- `target:"../shipping"` — resolved from the effective context (billing) → up to billing's parent, then "shipping"
+- `"target":"shipping"` alone → looks for a **child of billing** named "shipping" — silent failure
 
 Absolute target paths (starting with `/`) resolve from the root and avoid this ambiguity:
 
