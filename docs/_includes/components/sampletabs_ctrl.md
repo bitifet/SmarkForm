@@ -186,10 +186,6 @@ button[data-smark] {
     content: "📝 Notes";
   }
   
-  .tab-content-hint::before {
-    content: "❓ Help";
-  }
-  
   /* Remove height restrictions and fix horizontal overflow on code blocks for print */
   /* Apply to both pre and code elements to ensure consistent wrapping in all browsers */
   .tab-content pre.highlight {
@@ -213,7 +209,7 @@ button[data-smark] {
   .tab-content-js { order: 30; }
   .tab-content-preview { order: 40; }
   .tab-content-notes { order: 50; }
-  .tab-content-hint { order: 60; }
+  .tab-content-hint { display: none !important; }
   
   /* Active tab always comes first */
   .tab-content.tab-active {
