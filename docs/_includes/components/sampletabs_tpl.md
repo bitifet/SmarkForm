@@ -296,7 +296,8 @@ endif %}{% if jsHidden != '-'
         <div class="tab-label tab-label-right {{active_class}}" title="Notes">📝 Notes</div>
     {% endif %}
     {% if current_tab == "hint" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-    <div class="tab-label tab-label-right {{active_class}}" title="Help">❓</div>
+    {% if notes == '-' %}{% assign hint_right_class = "tab-label-right" %}{% else %}{% assign hint_right_class = "" %}{% endif %}
+    <div class="tab-label {{hint_right_class}} {{active_class}}" title="Help">❓</div>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-html {{active_class}}">
