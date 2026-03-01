@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: smarkform
 ---
 
 <!-- Style tweaks -->
@@ -319,20 +319,12 @@ layout: default
     justify-content: flex-end;
 }
 
-ul li[data-bullet]::before {
-    content: attr(data-bullet);
-}
-
-
-
 @media print {
     .bottom-bar {
         display: none;
     }
 }
 </style>
-
-
 
 <div class="bottom-bar">
     <div class="nav-link">
@@ -354,7 +346,6 @@ ul li[data-bullet]::before {
         </a>
     </div>
 </div>
-
 
 <script>
     const smartToc = document.querySelector("details.chaptertoc");

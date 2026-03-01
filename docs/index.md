@@ -1,6 +1,6 @@
 ---
 title: Home
-layout: home
+layout: smarkform
 nav_order: 0
 permalink: /
 
@@ -166,10 +166,12 @@ endcapture %}
 }
 </style>
 
-
-# SmarkForm
-
-
+<h1>
+  <picture>
+    <source srcset="/assets/logo/smarkform_dark.svg" media="(prefers-color-scheme: dark)">
+    <img src="/assets/logo/smarkform.svg" alt="SmarkForm" width="240" height="60">
+  </picture>
+</h1>
 
 🚀 **Powerful while effortless Markup-driven and Extendable form controller.**
 
@@ -187,21 +189,6 @@ context-driven **hotkeys**, and JSON import/export — all without touching your
 layout.
 
 👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
-
-
-<div class="SmarkForm-Hero">
-<a
-    href='{{ "resources/examples" | relative_url }}'
-    title="Click to see Live Examples..."
->
-<picture>
-    <source srcset="assets/SmarkForm_hero.webp" type="image/webp">
-    <img src="assets/SmarkForm_hero.png" alt="">
-</picture>
-<br />
-🔗 Live Examples
-</a>
-</div>
 
 
 ## Interactive Demo
@@ -223,6 +210,21 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
 
 👉 Want to explore the same demo with the JSON editor enabled?
 Open it in the [🔗 Showcase Playground]({{ "about/showcase#team-event-planner" | relative_url }}).
+
+<div class="SmarkForm-Hero">
+<a
+    href='{{ "resources/examples" | relative_url }}'
+    title="Click to see Live Examples..."
+>
+<picture>
+    <source srcset="assets/SmarkForm_hero.webp" type="image/webp">
+    <img src="assets/SmarkForm_hero.png" alt="">
+</picture>
+<br />
+🔗 Live Examples
+</a>
+</div>
+
 
 
 ## Main Features

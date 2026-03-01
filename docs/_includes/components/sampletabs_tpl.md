@@ -337,6 +337,7 @@ endif %}{% if jsHidden != '-'
       <li data-bullet="👁️"><b>Preview:</b> This is where you can see the code in action.</li>
       <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
     </ul>
+    {% if showEditor == true %}
     <p>✨ Additionally, in the <strong>Preview</strong> tab, you will find handy buttons:</p>
     <ul>
       <li><code>⬇️ Export</code> to export the form data to the <em>JSON data viewer/editor</em>.</li>
@@ -344,6 +345,7 @@ endif %}{% if jsHidden != '-'
       <li><code>♻️ Reset</code> to reset the form to its default values.</li>
       <li><code>❌ Clear</code> to reset the form to its initial state.</li>
     </ul>
+    {% endif %}
   </div>
 </div>
 <div>
