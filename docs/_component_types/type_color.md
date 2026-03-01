@@ -35,7 +35,7 @@ nav_order: 5
 
 </details>
 
-{% include components/sampletabs_ctrl.md noShowHint=true %}
+{% include components/sampletabs_ctrl.md %}
 
 ## Introduction
 

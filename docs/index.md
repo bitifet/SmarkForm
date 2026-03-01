@@ -6,9 +6,7 @@ permalink: /
 
 ---
 
-{% include components/sampletabs_ctrl.md
-   noShowHint=true
-%}
+{% include components/sampletabs_ctrl.md %}
 
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
 {% capture event_planner_html

@@ -1,26 +1,5 @@
 {% include links.md %}
 
-{% assign noShowHint = include.noShowHint | default: false %}
-
-{% if noShowHint == false %}
-
-{: .hint :}
-> Every example in this section comes with many of the following tabs:
-> 
->   * <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
->   * <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
->   * <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
->   * <li data-bullet="👁️"><b>Preview:</b> This is where you can see the code in action.</li>
->   * <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
-> 
-> ✨ Additionally, in the **Preview** tab, yow will find handy buttons:
->   * `⬇️ Export` to export the form data to the *JSON data viewer/editor*.
->   * `⬆️ Import` to import data into the form from the *JSON data viewer/editor*.
->   * `♻️ Reset` to reset the form to its default values.
->   * `❌ Clear` to reset the form to its initial state.
-
-{% endif %}
-
 
 {% if sampletabs_ctrl_already_loaded != true %}
 {% assign sampletabs_ctrl_already_loaded = true %}
@@ -133,11 +112,6 @@ button[data-smark] {
 
 /* Print-friendly styles */
 @media print {
-  /* Hide the hint block in print */
-  .hint {
-    display: none !important;
-  }
-  
   /* Make tab-container a flex container for ordering */
   .tab-container {
     display: flex !important;
@@ -212,6 +186,10 @@ button[data-smark] {
     content: "📝 Notes";
   }
   
+  .tab-content-hint::before {
+    content: "❓ Help";
+  }
+  
   /* Remove height restrictions and fix horizontal overflow on code blocks for print */
   /* Apply to both pre and code elements to ensure consistent wrapping in all browsers */
   .tab-content pre.highlight {
@@ -235,6 +213,7 @@ button[data-smark] {
   .tab-content-js { order: 30; }
   .tab-content-preview { order: 40; }
   .tab-content-notes { order: 50; }
+  .tab-content-hint { order: 60; }
   
   /* Active tab always comes first */
   .tab-content.tab-active {
