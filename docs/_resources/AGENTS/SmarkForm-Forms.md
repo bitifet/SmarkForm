@@ -3,6 +3,7 @@ title: "SmarkForm Forms — Agent Knowledge"
 layout: default
 permalink: /resources/AGENTS/SmarkForm-Forms
 nav_exclude: true
+nav_order: 1
 ---
 
 {% include links.md %}

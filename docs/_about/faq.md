@@ -38,7 +38,7 @@ around edge cases or features that might catch you off guard at first.
 * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
 * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
 * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
-* [What's this "API interface" I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
+* [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -347,7 +347,7 @@ into a field, SmarkForm clears the field to its native empty state. The
 `clear` action does the same thing programmatically.
 
 
-## What's this "API interface" I keep hearing about?
+## What's this «API interface» I keep hearing about?
 
 The API interface is a **planned future feature** for dynamic data — think
 fetching options for a `<select>` component from a server, or loading list
