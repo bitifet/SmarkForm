@@ -1,0 +1,237 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Expense Report / Reimbursement";
+        var description = `
+            This example demonstrates an employee expense report and reimbursement
+            request form. Employees can log individual expense line items across
+            multiple categories, attach notes, and submit for approval.
+        `;
+block mainForm
+    section
+        .form-group.h1 Report Information
+        .form-group
+            .input-group
+                label(data-smark) Employee Name
+                input(
+                    data-smark
+                    name="employee_name"
+                    type="text"
+                    placeholder="Full name"
+                )
+            .input-group
+                label(data-smark) Department
+                input(
+                    data-smark
+                    name="department"
+                    type="text"
+                    placeholder="Department or team"
+                )
+        .form-group
+            .input-group
+                label(data-smark) Report Period — Start
+                input(
+                    data-smark
+                    name="period_start"
+                    type="date"
+                )
+            .input-group
+                label(data-smark) Report Period — End
+                input(
+                    data-smark
+                    name="period_end"
+                    type="date"
+                )
+        .input-group
+            label(data-smark) Purpose / Project
+            input(
+                data-smark
+                name="purpose"
+                type="text"
+                placeholder="Business purpose or project name"
+            )
+
+    section
+        .form-group.h2
+            button.foldButton(
+                data-smark={
+                    action: "fold",
+                    hotkey: "f",
+                    context: "expenses",
+                    foldedClass: "folded",
+                }
+            ) ⬇
+            span
+                span Expense Items (
+                span(data-smark={
+                    action: "count",
+                    context: "expenses",
+                })
+                span )
+            .form-group
+                .spacer
+                button(data-smark={
+                    action: "addItem",
+                    hotkey: "+",
+                    context: "expenses",
+                    autoscroll: "self",
+                }, title="Add expense")
+                    span(role='img', aria-label='Add expense') ➕
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                    context: "expenses",
+                    preserve_non_empty: true,
+                }, title="Remove expense")
+                    span(role='img', aria-label='Remove expense') ➖
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "*",
+                    context: "expenses",
+                    target: "*",
+                    preserve_non_empty: true,
+                }, title="Clear empty expenses")
+                    span(role='img', aria-label='Remove empty expenses') 🧹
+        .form-group
+            .form-group(data-smark={
+                name: "expenses",
+                type: "list",
+                exportEmpties: true,
+                sortable: true,
+                min_items: 1,
+            })
+                fieldset.full-width.form-group.aside.reverse(data-smark={
+                    exportEmpties: false
+                })
+                    button.inline(data-smark={
+                        action: "removeItem",
+                        hotkey: "Delete",
+                        failback: "clear",
+                    }, title="Remove this expense")
+                        span(role='img', aria-label='Remove this expense') ❌
+                    .form-group.spacer
+                        .form-group
+                            .input-group
+                                label(data-smark) Date
+                                input(
+                                    data-smark
+                                    name="date"
+                                    type="date"
+                                )
+                            .input-group
+                                label(data-smark) Category
+                                select(data-smark, name="category")
+                                    option(value="travel") Travel
+                                    option(value="meals") Meals & Entertainment
+                                    option(value="accommodation") Accommodation
+                                    option(value="office") Office Supplies
+                                    option(value="software") Software / Subscriptions
+                                    option(value="other") Other
+                        .form-group
+                            .input-group
+                                label(data-smark) Description
+                                input(
+                                    data-smark
+                                    name="description"
+                                    placeholder="Brief description of the expense"
+                                )
+                            .input-group
+                                label(data-smark) Amount
+                                input(
+                                    data-smark
+                                    name="amount"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    placeholder="0.00"
+                                )
+                        .form-group
+                            .input-group
+                                label(data-smark) Currency
+                                select(data-smark, name="currency")
+                                    option(value="USD") USD — US Dollar
+                                    option(value="EUR") EUR — Euro
+                                    option(value="GBP") GBP — British Pound
+                                    option(value="CAD") CAD — Canadian Dollar
+                                    option(value="AUD") AUD — Australian Dollar
+                                    option(value="other") Other
+                            .input-group
+                                label(data-smark) Receipt Ref.
+                                input(
+                                    data-smark
+                                    name="receipt_ref"
+                                    placeholder="Receipt number or filename"
+                                )
+                        .input-group
+                            label(data-smark) Notes
+                            textarea(
+                                data-smark
+                                name="notes"
+                                placeholder="Additional details..."
+                                rows="2"
+                            )
+        .form-group.f2
+            .spacer
+            button(data-smark={
+                action: "addItem",
+                hotkey: "+",
+                context: "expenses",
+                autoscroll: "elegant",
+            }, title="Add expense") ➕
+            button(data-smark={
+                action: "removeItem",
+                hotkey: "-",
+                context: "expenses",
+                preserve_non_empty: true,
+                autoscroll: "elegant",
+            }, title="Remove expense")
+                span(role='img', aria-label='Shrink expense list') ➖
+
+    section
+        .form-group.h2 Approval
+        .form-group
+            .input-group
+                label(data-smark) Manager / Approver
+                input(
+                    data-smark
+                    name="approver"
+                    type="text"
+                    placeholder="Approver name"
+                )
+            .input-group
+                label(data-smark) Submission Date
+                input(
+                    data-smark
+                    name="submission_date"
+                    type="date"
+                )
+        .input-group
+            label(data-smark) Additional Comments
+            textarea(
+                data-smark
+                name="comments"
+                placeholder="Any additional information for the approver..."
+                rows="3"
+            )
+
+    section
+        .form-group
+            .spacer
+            button(data-smark={
+                action: "import",
+                hotkey: "i",
+            }, title="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
+            button(data-smark={
+                action: "clear",
+                hotkey: "x",
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
+            button(data-smark={
+                action: "export",
+                hotkey: "s",
+            }, title="Submit expense report").
+                #[span(role='img', aria-label='') 💾] Submit Report

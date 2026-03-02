@@ -1,0 +1,253 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Restaurant Reservation + Preorder";
+        var description = `
+            This example models a restaurant table reservation form with an
+            optional preorder section. Guests can specify party size, dietary
+            preferences, and pre-select courses for each diner to help the
+            kitchen prepare in advance.
+        `;
+block mainForm
+    section
+        .form-group.h1 Reservation Details
+        .form-group
+            .input-group
+                label(data-smark) Guest Name
+                input(
+                    data-smark
+                    name="guest_name"
+                    type="text"
+                    placeholder="Full name"
+                )
+            .input-group
+                label(data-smark) Phone
+                input(
+                    data-smark
+                    name="phone"
+                    type="tel"
+                    placeholder="+1 234 567 8900"
+                )
+        .form-group
+            .input-group
+                label(data-smark) Email
+                input(
+                    data-smark
+                    name="email"
+                    type="email"
+                    placeholder="email@example.com"
+                )
+        .form-group
+            .input-group
+                label(data-smark) Date
+                input(
+                    data-smark
+                    name="reservation_date"
+                    type="date"
+                )
+            .input-group
+                label(data-smark) Time
+                select(data-smark, name="reservation_time")
+                    option(value="") — Select time —
+                    option(value="12:00") 12:00 — Lunch
+                    option(value="13:00") 13:00
+                    option(value="14:00") 14:00
+                    option(value="19:00") 19:00 — Dinner
+                    option(value="20:00") 20:00
+                    option(value="21:00") 21:00
+        .form-group
+            .input-group
+                label(data-smark) Party Size
+                input(
+                    data-smark
+                    name="party_size"
+                    type="number"
+                    min="1"
+                    max="20"
+                    placeholder="Number of guests"
+                )
+            .input-group
+                label(data-smark) Seating Preference
+                select(data-smark, name="seating")
+                    option(value="") — No preference —
+                    option(value="indoor") Indoor
+                    option(value="outdoor") Outdoor / Terrace
+                    option(value="private") Private Room
+                    option(value="bar") Bar Area
+        +inputlist("Dietary Requirements")(
+            name="dietary_requirements"
+            type="text",
+            min_items=0,
+            max_items=10,
+            placeholder="e.g. Vegetarian, Gluten-free, Halal",
+            removeFailback="clear",
+        )
+        .input-group
+            label(data-smark) Special Requests
+            textarea(
+                data-smark
+                name="special_requests"
+                placeholder="Occasion, accessibility needs, high chairs, etc."
+                rows="2"
+            )
+
+    section
+        .form-group.h2
+            button.foldButton(
+                data-smark={
+                    action: "fold",
+                    hotkey: "f",
+                    context: "preorders",
+                    foldedClass: "folded",
+                }
+            ) ⬇
+            span
+                span Preorder (
+                span(data-smark={
+                    action: "count",
+                    context: "preorders",
+                })
+                span guests)
+            .form-group
+                .spacer
+                button(data-smark={
+                    action: "addItem",
+                    hotkey: "+",
+                    context: "preorders",
+                    autoscroll: "self",
+                }, title="Add guest preorder")
+                    span(role='img', aria-label='Add guest preorder') ➕
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                    context: "preorders",
+                    preserve_non_empty: true,
+                }, title="Remove guest preorder")
+                    span(role='img', aria-label='Remove guest preorder') ➖
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "*",
+                    context: "preorders",
+                    target: "*",
+                    preserve_non_empty: true,
+                }, title="Clear empty preorders")
+                    span(role='img', aria-label='Remove empty preorders') 🧹
+        .form-group
+            .form-group(data-smark={
+                name: "preorders",
+                type: "list",
+                min_items: 0,
+                exportEmpties: false,
+                sortable: true,
+            })
+                fieldset.full-width.form-group.aside.reverse(data-smark={
+                    exportEmpties: false
+                })
+                    button.inline(data-smark={
+                        action: "removeItem",
+                        hotkey: "Delete",
+                        failback: "clear",
+                    }, title="Remove this guest preorder")
+                        span(role='img', aria-label='Remove this guest preorder') ❌
+                    .form-group.spacer
+                        .form-group.h3
+                            span Guest #[span(data-smark={action: "position"})]
+                        .form-group
+                            .input-group
+                                label(data-smark) Guest Name / Label
+                                input(
+                                    data-smark
+                                    name="guest_label"
+                                    placeholder="e.g. Guest 1 or Alice"
+                                )
+                            .input-group
+                                label(data-smark) Dietary Notes
+                                input(
+                                    data-smark
+                                    name="dietary_notes"
+                                    placeholder="e.g. Vegan, Nut allergy"
+                                )
+                        .form-group.h3 Courses
+                        .form-group(data-smark={
+                            type: "form",
+                            name: "courses",
+                        })
+                            .form-group
+                                .input-group
+                                    label(data-smark) Starter
+                                    select(data-smark, name="starter")
+                                        option(value="") — None —
+                                        option(value="soup") Soup of the Day
+                                        option(value="salad") Garden Salad
+                                        option(value="bruschetta") Bruschetta
+                                        option(value="shrimp_cocktail") Shrimp Cocktail
+                                        option(value="charcuterie") Charcuterie Board
+                                .input-group
+                                    label(data-smark) Main Course
+                                    select(data-smark, name="main")
+                                        option(value="") — None —
+                                        option(value="steak") Grilled Steak
+                                        option(value="salmon") Pan-Seared Salmon
+                                        option(value="pasta") Pasta Primavera
+                                        option(value="risotto") Mushroom Risotto
+                                        option(value="chicken") Roasted Chicken
+                                        option(value="veggie_burger") Veggie Burger
+                            .form-group
+                                .input-group
+                                    label(data-smark) Dessert
+                                    select(data-smark, name="dessert")
+                                        option(value="") — None —
+                                        option(value="tiramisu") Tiramisu
+                                        option(value="cheesecake") Cheesecake
+                                        option(value="sorbet") Lemon Sorbet
+                                        option(value="brownie") Chocolate Brownie
+                                        option(value="fruit") Seasonal Fruit
+                                .input-group
+                                    label(data-smark) Drink
+                                    select(data-smark, name="drink")
+                                        option(value="") — None —
+                                        option(value="water") Still Water
+                                        option(value="sparkling") Sparkling Water
+                                        option(value="juice") Juice
+                                        option(value="wine_red") Red Wine
+                                        option(value="wine_white") White Wine
+                                        option(value="beer") Beer
+                                        option(value="soft") Soft Drink
+                        .input-group
+                            label(data-smark) Additional Course Notes
+                            textarea(
+                                data-smark
+                                name="course_notes"
+                                placeholder="e.g. Steak medium-rare, sauce on the side..."
+                                rows="2"
+                            )
+        .form-group.f2
+            .spacer
+            button(data-smark={
+                action: "addItem",
+                hotkey: "+",
+                context: "preorders",
+                autoscroll: "elegant",
+            }, title="Add guest preorder") ➕
+
+    section
+        .form-group
+            .spacer
+            button(data-smark={
+                action: "import",
+                hotkey: "i",
+            }, title="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
+            button(data-smark={
+                action: "clear",
+                hotkey: "x",
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
+            button(data-smark={
+                action: "export",
+                hotkey: "s",
+            }, title="Confirm reservation and preorder").
+                #[span(role='img', aria-label='') 💾] Confirm Reservation
