@@ -291,7 +291,7 @@ or join the community chat, you can follow us on Telegram:
 
   .qr--image-box {
     flex: 1;
-    max-width: 40%;
+    max-width: 20vw; /* Limits the maximum width to 20% of the viewport */
     min-width: 250px; /* Ensures a minimum width for readability */
     text-align: center;
   }

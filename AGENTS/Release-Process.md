@@ -2,7 +2,7 @@
 
 This document is a reusable step-by-step guide for preparing a SmarkForm release. In a future chat, point the assistant here and it will follow these steps with minimal extra instructions needed.
 
-All the work whould be done in a new branch (i.e. asking the user for a PR so that the agent can freely work on it).
+All the work whould be done in a new PR branch on top of `main`. The final release commit will be a single squashed commit with the message "Version <target-version>". The PR should not be merged until the user has reviewed all the release notes and is ready to proceed.
 
 ---
 
@@ -150,6 +150,9 @@ After gathering the information, the user will remove it and squash all commits 
 ### Other
 - ...
 
+### Propposed Commit message (for the final squashed commit)
+- ...
+
 ---
 
 ## Telegram Announcement
@@ -260,6 +263,8 @@ The linkedIn communities are the following:
   - Software Development.
   - Software Engeeniering.
 
+
+In the case of twitter: All tweets should fit in the current 280-character limit, including the emojis and hashtags. Use abbreviations and concise language as needed to fit the format while keeping it engaging.
 
 ---
 
