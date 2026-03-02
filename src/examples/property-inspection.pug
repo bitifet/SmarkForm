@@ -213,7 +213,7 @@ block mainForm
             type: "form",
             name: "utilities",
         })
-            .form-group
+            fieldset.form-group
                 label(data-smark) Electricity
                 label
                     input(data-smark, type="radio", name="electricity", value="ok")
@@ -224,7 +224,7 @@ block mainForm
                 label
                     input(data-smark, type="radio", name="electricity", value="na")
                     |  N/A
-            .form-group
+            fieldset.form-group
                 label(data-smark) Water / Plumbing
                 label
                     input(data-smark, type="radio", name="plumbing", value="ok")
@@ -235,7 +235,7 @@ block mainForm
                 label
                     input(data-smark, type="radio", name="plumbing", value="na")
                     |  N/A
-            .form-group
+            fieldset.form-group
                 label(data-smark) Heating / Cooling
                 label
                     input(data-smark, type="radio", name="hvac", value="ok")
