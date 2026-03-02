@@ -1,0 +1,12 @@
+current directory: /home/runner/work/SmarkForm/SmarkForm/docs/vendor/bundle/ruby/3.2.0/gems/sass-embedded-1.54.6/ext/sass
+/usr/bin/ruby3.2 -I/usr/lib/ruby/vendor_ruby -rrubygems /home/runner/work/SmarkForm/SmarkForm/docs/vendor/bundle/ruby/3.2.0/gems/rake-13.3.0/exe/rake RUBYARCHDIR\=/home/runner/work/SmarkForm/SmarkForm/docs/vendor/bundle/ruby/3.2.0/extensions/x86_64-linux-gnu/3.2.0/sass-embedded-1.54.6 RUBYLIBDIR\=/home/runner/work/SmarkForm/SmarkForm/docs/vendor/bundle/ruby/3.2.0/extensions/x86_64-linux-gnu/3.2.0/sass-embedded-1.54.6
+fetch https://github.com/sass/dart-sass-embedded/releases/download/1.54.6/sass_embedded-1.54.6-linux-x64.tar.gz
+tar -vxC . -f sass_embedded-1.54.6-linux-x64.tar.gz
+mkdir -p .
+sass_embedded/src/LICENSE
+sass_embedded/dart-sass-embedded
+rm sass_embedded-1.54.6-linux-x64.tar.gz
+fetch https://github.com/sass/embedded-protocol/raw/1.1.0/embedded_sass.proto
+fetch https://repo.maven.apache.org/maven2/com/google/protobuf/protoc/3.25.8/protoc-3.25.8-linux-x86_64.exe
+./protoc.exe --proto_path=. --ruby_out=. embedded_sass.proto
+chmod a+x protoc.exe

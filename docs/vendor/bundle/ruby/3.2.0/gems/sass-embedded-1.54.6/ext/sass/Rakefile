@@ -1,0 +1,247 @@
+# frozen_string_literal: true
+
+require 'rake/clean'
+
+task default: %i[install clean]
+
+task install: %w[sass_embedded embedded.rb embedded_sass_pb.rb]
+
+CLEAN.include %w[protoc.exe *.proto *.tar.gz *.zip]
+
+CLOBBER.include %w[sass_embedded embedded.rb embedded_sass_pb.rb]
+
+file 'protoc.exe' do |t|
+  fetch(ENV.fetch('PROTOC_BIN') { Configuration.default_protoc }, t.name)
+  chmod 'a+x', t.name
+end
+
+file 'sass_embedded' do |t|
+  archive = fetch(ENV.fetch(t.name.upcase) { Configuration.default_sass_embedded })
+  unarchive archive
+  rm archive
+end
+
+file 'embedded.rb' => %w[sass_embedded] do |t|
+  path = 'sass_embedded/dart-sass-embedded'
+  path = "#{path}#{['.exe', '.bat'].find { |ext| File.exist? "#{path}#{ext}" }}" unless File.exist? path
+
+  raise "#{path} not found" unless File.exist? path
+
+  File.write(t.name, <<~EMBEDDED_RB)
+    # frozen_string_literal: true
+
+    module Sass
+      class Embedded
+        class Compiler
+          PATH = File.absolute_path('#{path}', __dir__)
+        end
+      end
+    end
+  EMBEDDED_RB
+end
+
+file 'embedded_sass.proto' => %w[embedded.rb] do |t|
+  fetch(ENV.fetch('SASS_EMBEDDED_PROTOCOL') { Configuration.default_sass_embedded_protocol }, t.name)
+end
+
+rule '_pb.rb' => %w[.proto protoc.exe] do |t|
+  sh './protoc.exe', '--proto_path=.', '--ruby_out=.', t.source
+end
+
+# This is a FileUtils extension that defines several additional commands to be
+# added to the FileUtils utility functions.
+module FileUtils
+  def unarchive(archive, dest = '.')
+    case archive.downcase
+    when ->(name) { name.include?('.tar.') || name.end_with?('.tar') }
+      mkdir_p dest
+      sh 'tar', '-vxC', dest, '-f', archive
+    when ->(name) { name.end_with?('.zip') }
+      if Gem.win_platform?
+        sh 'cscript', 'unzip.vbs', '//B', '//Nologo', archive, dest
+      else
+        sh 'unzip', '-od', dest, archive
+      end
+    else
+      raise ArgumentError, "Unknown archive format #{archive}"
+    end
+  end
+
+  def fetch(source_uri, dest_path = nil)
+    require 'rubygems/remote_fetcher'
+
+    unless source_uri.is_a?(URI::Generic)
+      begin
+        source_uri = URI.parse(source_uri)
+      rescue StandardError
+        source_uri = URI.parse(URI::DEFAULT_PARSER.escape(source_uri.to_s))
+      end
+    end
+
+    scheme = source_uri.scheme
+    source_path = URI::DEFAULT_PARSER.unescape(source_uri.path || source_uri.opaque)
+
+    if Gem.win_platform? && scheme =~ /^[a-z]$/i && !source_path.include?(':')
+      source_path = "#{scheme}:#{source_path}"
+      scheme = nil
+    end
+
+    dest_path = File.basename(source_path) if dest_path.nil?
+
+    case scheme
+    when nil, 'file'
+      if Gem.win_platform? && source_path[0].chr == '/' && source_path[1].chr =~ /[a-z]/i && source_path[2].chr == ':'
+        source_path = source_path[1..]
+      end
+      cp source_path, dest_path
+    else
+      fetcher = Gem::RemoteFetcher.fetcher
+      symbol = "fetch_#{scheme}".to_sym
+      raise ArgumentError, "Unsupported URI scheme #{scheme}" unless fetcher.respond_to?(symbol)
+
+      if Rake::FileUtilsExt.verbose_flag
+        redacted_uri = Gem::RemoteFetcher::FetchError.new('', source_uri).uri
+        Rake.rake_output_message "fetch #{redacted_uri}"
+      end
+
+      unless Rake::FileUtilsExt.nowrite_flag
+        data = fetcher.public_send(symbol, source_uri)
+        Gem.write_binary(dest_path, data)
+      end
+    end
+
+    dest_path
+  end
+end
+
+# The {Configuration} module.
+module Configuration
+  module Platform
+    OS = case RbConfig::CONFIG['host_os'].downcase
+         when /darwin/
+           'darwin'
+         when /linux-musl/
+           'linux-musl'
+         when /linux-uclibc/
+           'linux-uclibc'
+         when /linux/
+           'linux'
+         when *Gem::WIN_PATTERNS
+           'windows'
+         else
+           RbConfig::CONFIG['host_os'].downcase
+         end
+
+    CPU = case RbConfig::CONFIG['host_cpu'].downcase
+          when /amd64|x86_64|x64/
+            'x86_64'
+          when /i\d86|x86|i86pc/
+            'i386'
+          when /arm64|aarch64/
+            'aarch64'
+          when /arm/
+            # Ruby before 3.0 reports "arm" instead of "arm64" as host_cpu on darwin
+            OS == 'darwin' ? 'aarch64' : 'arm'
+          when /ppc64le|powerpc64le/
+            'powerpc64le'
+          when /s390x/
+            's390x'
+          else
+            RbConfig::CONFIG['host_cpu']
+          end
+
+    ARCH = "#{CPU}-#{OS}"
+  end
+
+  private_constant :Platform
+
+  module_function
+
+  def default_sass_embedded
+    require 'json'
+
+    repo = 'https://github.com/sass/dart-sass-embedded'
+
+    spec = JSON.parse(File.read(File.absolute_path('package.json', __dir__)))
+
+    tag_name = spec['dependencies']['sass-embedded']
+
+    message = "sass_embedded for #{Platform::ARCH} not available at #{repo}/releases/tag/#{tag_name}"
+
+    os = case Platform::OS
+         when 'darwin'
+           'macos'
+         when 'linux'
+           'linux'
+         when 'windows'
+           'windows'
+         else
+           raise NotImplementedError, message
+         end
+
+    cpu = case Platform::CPU
+          when 'i386'
+            'ia32'
+          when 'x86_64'
+            'x64'
+          when 'aarch64'
+            'arm64'
+          else
+            raise NotImplementedError, message
+          end
+
+    ext = Platform::OS == 'windows' ? 'zip' : 'tar.gz'
+
+    "#{repo}/releases/download/#{tag_name}/sass_embedded-#{tag_name}-#{os}-#{cpu}.#{ext}"
+  end
+
+  def default_protoc
+    repo = 'https://repo.maven.apache.org/maven2/com/google/protobuf/protoc'
+
+    version = Gem::Dependency.new('google-protobuf').to_spec.version
+
+    message = "protoc for #{Platform::ARCH} not available at #{repo}/#{version}"
+
+    os = case Platform::OS
+         when 'darwin'
+           'osx'
+         when 'linux'
+           'linux'
+         when 'windows'
+           'windows'
+         else
+           raise NotImplementedError, message
+         end
+
+    cpu = case Platform::CPU
+          when 'i386'
+            'x86_32'
+          when 'x86_64'
+            'x86_64'
+          when 'aarch64'
+            'aarch_64'
+          when 'powerpc64le'
+            'ppcle_64'
+          when 's390x'
+            's390_64'
+          else
+            raise NotImplementedError, message
+          end
+
+    "#{repo}/#{version}/protoc-#{version}-#{os}-#{cpu}.exe"
+  end
+
+  def default_sass_embedded_protocol
+    require 'json'
+    require 'open3'
+    require_relative 'embedded'
+
+    stdout, stderr, status = Open3.capture3(Sass::Embedded::Compiler::PATH, '--version')
+
+    raise stderr unless status.success?
+
+    tag_name = JSON.parse(stdout)['protocolVersion']
+
+    "https://github.com/sass/embedded-protocol/raw/#{tag_name}/embedded_sass.proto"
+  end
+end
