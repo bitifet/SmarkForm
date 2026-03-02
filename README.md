@@ -53,8 +53,6 @@ myForm.on("AfterAction_export", ({ data }) => console.log(data));
 
 That's it. No schema, no bindings, no callbacks per field.
 
-👉 See the [Showcase](https://smarkform.bitifet.net/about/showcase) for extensive interactive examples.
-
 
 ## What SmarkForm Is (and Isn't Yet)
 
@@ -75,6 +73,19 @@ That's it. No schema, no bindings, no callbacks per field.
 
 > ⚠️ SmarkForm is currently at **version 0.x**. The public API is stable for
 > the implemented features, but breaking changes may still occur before 1.0.
+
+
+## TL;DR
+
+<img align="right" width="30%" src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@stable/docs/assets/SmarkForm_hero.webp" alt="" />
+
+Want to dig deeper right away? Head to the [🔗 Showcase](https://smarkform.bitifet.net/about/showcase)
+to explore interactive, editable demos — including the example above — that
+show SmarkForm's full potential at a glance.
+
+Prefer to jump straight into code? Browse [🔗 Live Examples](https://smarkform.bitifet.net/resources/examples)
+for a collection of ready-to-use, downloadable forms you can run locally and
+start tinkering with immediately.
 
 
 ## Main Features

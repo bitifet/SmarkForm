@@ -147,22 +147,19 @@ endcapture %}
 
 <style>
 .SmarkForm-Hero {
-    float:right;
+    float: right;
+    display: block;
     max-width: 30%;
     margin: 1rem;
-    background: gainsboro;
-    padding: .5rem;
-    border-radius: 1rem;
 }
 .SmarkForm-Hero img {
     border-radius: .5rem;
+    width: 100%;
 }
-.SmarkForm-Hero a, a:hover, a:visited, a:active {
-    text-decoration: none;
-    color: darkblue;
-}
-.SmarkForm-Hero:hover {
-    transform: scale(1.1,1.1) translate(-2.5%, 2.5%);
+@media (max-width: 600px) {
+    .SmarkForm-Hero {
+        display: none;
+    }
 }
 </style>
 
@@ -208,23 +205,20 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
     tests=false
 %}
 
-👉 Want to explore the same demo with the JSON editor enabled?
-Open it in the [🔗 Showcase Playground]({{ "about/showcase#team-event-planner" | relative_url }}).
+## TL;DR
 
-<div class="SmarkForm-Hero">
-<a
-    href='{{ "resources/examples" | relative_url }}'
-    title="Click to see Live Examples..."
->
-<picture>
+<picture class="SmarkForm-Hero">
     <source srcset="assets/SmarkForm_hero.webp" type="image/webp">
     <img src="assets/SmarkForm_hero.png" alt="">
 </picture>
-<br />
-🔗 Live Examples
-</a>
-</div>
 
+Want to dig deeper right away? Head to the [🔗 Showcase]({{ "about/showcase" | relative_url }})
+to explore interactive, editable demos — including the example above — that
+show SmarkForm's full potential at a glance.
+
+Prefer to jump straight into code? Browse [🔗 Live Examples]({{ "resources/examples" | relative_url }})
+for a collection of ready-to-use, downloadable forms you can run locally and
+start tinkering with immediately.
 
 
 ## Main Features
