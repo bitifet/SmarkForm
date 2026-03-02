@@ -1,0 +1,226 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Event Registration / Ticketing";
+        var description = `
+            This example demonstrates an event registration and ticketing form
+            where attendees can register themselves and additional guests,
+            select ticket types, and specify dietary or accessibility needs.
+        `;
+block mainForm
+    section
+        .form-group.h1 Event Details
+        .input-group
+            label(data-smark) Event Name
+            input(
+                data-smark
+                name="event_name"
+                type="text"
+                placeholder="Name of the event"
+            )
+        .form-group
+            .input-group
+                label(data-smark) Date
+                input(
+                    data-smark
+                    name="event_date"
+                    type="date"
+                )
+            .input-group
+                label(data-smark) Time
+                input(
+                    data-smark
+                    name="event_time"
+                    type="time"
+                )
+        .input-group
+            label(data-smark) Venue
+            input(
+                data-smark
+                name="venue"
+                type="text"
+                placeholder="Venue name and address"
+            )
+
+    section
+        .form-group.h2
+            button.foldButton(
+                data-smark={
+                    action: "fold",
+                    hotkey: "f",
+                    context: "attendees",
+                    foldedClass: "folded",
+                }
+            ) ⬇
+            span
+                span Attendees (
+                span(data-smark={
+                    action: "count",
+                    context: "attendees",
+                })
+                span )
+            .form-group
+                .spacer
+                button(data-smark={
+                    action: "addItem",
+                    hotkey: "+",
+                    context: "attendees",
+                    autoscroll: "self",
+                }, title="Add attendee")
+                    span(role='img', aria-label='Add attendee') ➕
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                    context: "attendees",
+                    preserve_non_empty: true,
+                }, title="Remove attendees from bottom prioritizing empties")
+                    span(role='img', aria-label='Shrink attendee list') ➖
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "*",
+                    context: "attendees",
+                    target: "*",
+                    preserve_non_empty: true,
+                }, title="Clear all empty attendees")
+                    span(role='img', aria-label='Remove all empty attendees') 🧹
+        .form-group
+            .form-group(data-smark={
+                name: "attendees",
+                type: "list",
+                exportEmpties: true,
+                sortable: true,
+                min_items: 1,
+            })
+                fieldset.full-width.form-group.aside.reverse(data-smark={
+                    exportEmpties: false
+                })
+                    button.inline(data-smark={
+                        action: "removeItem",
+                        hotkey: "Delete",
+                        failback: "clear",
+                    }, title="Remove this attendee")
+                        span(role='img', aria-label='Remove this attendee') ❌
+                    .form-group.spacer
+                        .form-group
+                            .input-group
+                                label(data-smark) First Name
+                                input(
+                                    data-smark
+                                    name="first_name"
+                                    placeholder="First name"
+                                )
+                            .input-group
+                                label(data-smark) Last Name
+                                input(
+                                    data-smark
+                                    name="last_name"
+                                    placeholder="Last name"
+                                )
+                        .form-group
+                            .input-group
+                                label(data-smark) Email
+                                input(
+                                    data-smark
+                                    name="email"
+                                    type="email"
+                                    placeholder="email@example.com"
+                                )
+                            .input-group
+                                label(data-smark) Phone
+                                input(
+                                    data-smark
+                                    name="phone"
+                                    type="tel"
+                                    placeholder="+1 234 567 8900"
+                                )
+                        .form-group
+                            .input-group
+                                label(data-smark) Ticket Type
+                                select(data-smark, name="ticket_type")
+                                    option(value="general") General Admission
+                                    option(value="vip") VIP
+                                    option(value="student") Student
+                                    option(value="speaker") Speaker / Presenter
+                            .input-group
+                                label(data-smark) Quantity
+                                input(
+                                    data-smark
+                                    name="quantity"
+                                    type="number"
+                                    min="1"
+                                    max="10"
+                                    placeholder="1"
+                                )
+                        .form-group
+                            +inputlist("Dietary Requirements")(
+                                name="dietary"
+                                type="text",
+                                max_items=5,
+                                placeholder="e.g. Vegetarian, Gluten-free",
+                                removeFailback="clear",
+                            )
+                            +inputlist("Accessibility Needs")(
+                                name="accessibility"
+                                type="text",
+                                max_items=5,
+                                placeholder="e.g. Wheelchair access",
+                                removeFailback="clear",
+                            )
+        .form-group.f2
+            .spacer
+            button(data-smark={
+                action: "addItem",
+                hotkey: "+",
+                context: "attendees",
+                autoscroll: "elegant",
+            }, title="Add attendee") ➕
+            button(data-smark={
+                action: "removeItem",
+                hotkey: "-",
+                context: "attendees",
+                preserve_non_empty: true,
+                autoscroll: "elegant",
+            }, title="Remove attendee")
+                span(role='img', aria-label='Shrink attendee list') ➖
+
+    section
+        .form-group.h2 Additional Information
+        .input-group
+            label(data-smark) How did you hear about this event?
+            select(data-smark, name="referral_source")
+                option(value="") — Select —
+                option(value="social_media") Social Media
+                option(value="email") Email Newsletter
+                option(value="friend") Friend or Colleague
+                option(value="website") Website
+                option(value="other") Other
+        .input-group
+            label(data-smark) Special Requests
+            textarea(
+                data-smark
+                name="special_requests"
+                placeholder="Any other requests or comments..."
+                rows="3"
+            )
+
+    section
+        .form-group
+            .spacer
+            button(data-smark={
+                action: "import",
+                hotkey: "i",
+            }, title="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
+            button(data-smark={
+                action: "clear",
+                hotkey: "x",
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
+            button(data-smark={
+                action: "export",
+                hotkey: "s",
+            }, title="Submit registration").
+                #[span(role='img', aria-label='') 💾] Register

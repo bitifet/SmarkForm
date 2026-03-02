@@ -1,0 +1,275 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Rental Property Inspection Report";
+        var description = `
+            This example models a rental property inspection report where an
+            inspector can document the condition of each room, record issues
+            found, and capture overall property details for landlord and
+            tenant sign-off.
+        `;
+block mainForm
+    section
+        .form-group.h1 Property Details
+        .form-group
+            .input-group
+                label(data-smark) Property Address
+                input(
+                    data-smark
+                    name="address"
+                    type="text"
+                    placeholder="Street address, city, state, ZIP"
+                )
+        .form-group
+            .input-group
+                label(data-smark) Inspection Date
+                input(
+                    data-smark
+                    name="inspection_date"
+                    type="date"
+                )
+            .input-group
+                label(data-smark) Inspector Name
+                input(
+                    data-smark
+                    name="inspector_name"
+                    type="text"
+                    placeholder="Full name"
+                )
+        .form-group
+            .input-group
+                label(data-smark) Landlord / Owner
+                input(
+                    data-smark
+                    name="landlord"
+                    type="text"
+                    placeholder="Name"
+                )
+            .input-group
+                label(data-smark) Tenant
+                input(
+                    data-smark
+                    name="tenant"
+                    type="text"
+                    placeholder="Name"
+                )
+        .form-group
+            label(data-smark) Inspection Type
+            label
+                input(data-smark, type="radio", name="inspection_type", value="move_in")
+                |  Move-In
+            label
+                input(data-smark, type="radio", name="inspection_type", value="routine")
+                |  Routine
+            label
+                input(data-smark, type="radio", name="inspection_type", value="move_out")
+                |  Move-Out
+
+    section
+        .form-group.h2
+            button.foldButton(
+                data-smark={
+                    action: "fold",
+                    hotkey: "f",
+                    context: "rooms",
+                    foldedClass: "folded",
+                }
+            ) ⬇
+            span
+                span Rooms (
+                span(data-smark={
+                    action: "count",
+                    context: "rooms",
+                })
+                span )
+            .form-group
+                .spacer
+                button(data-smark={
+                    action: "addItem",
+                    hotkey: "+",
+                    context: "rooms",
+                    autoscroll: "self",
+                }, title="Add room")
+                    span(role='img', aria-label='Add room') ➕
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                    context: "rooms",
+                    preserve_non_empty: true,
+                }, title="Remove room")
+                    span(role='img', aria-label='Remove room') ➖
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "*",
+                    context: "rooms",
+                    target: "*",
+                    preserve_non_empty: true,
+                }, title="Clear empty rooms")
+                    span(role='img', aria-label='Remove empty rooms') 🧹
+        .form-group
+            .form-group(data-smark={
+                name: "rooms",
+                type: "list",
+                exportEmpties: true,
+                sortable: true,
+                min_items: 1,
+            })
+                fieldset.full-width.form-group.aside.reverse(data-smark={
+                    exportEmpties: false
+                })
+                    button.inline(data-smark={
+                        action: "removeItem",
+                        hotkey: "Delete",
+                        failback: "clear",
+                    }, title="Remove this room")
+                        span(role='img', aria-label='Remove this room') ❌
+                    .form-group.spacer
+                        .form-group
+                            .input-group
+                                label(data-smark) Room Name
+                                input(
+                                    data-smark
+                                    name="room_name"
+                                    placeholder="e.g. Living Room, Bedroom 1"
+                                )
+                            .input-group
+                                label(data-smark) Overall Condition
+                                select(data-smark, name="condition")
+                                    option(value="excellent") Excellent
+                                    option(value="good") Good
+                                    option(value="fair") Fair
+                                    option(value="poor") Poor
+                        .form-group.h3
+                            span Issues Found
+                            .form-group
+                                .spacer
+                                button(data-smark={
+                                    action: "addItem",
+                                    hotkey: "+",
+                                    context: "issues",
+                                    autoscroll: "self",
+                                }, title="Add issue")
+                                    span(role='img', aria-label='Add issue') ➕
+                                button(data-smark={
+                                    action: "removeItem",
+                                    hotkey: "-",
+                                    context: "issues",
+                                    preserve_non_empty: true,
+                                }, title="Remove issue")
+                                    span(role='img', aria-label='Remove issue') ➖
+                        .form-group(data-smark={
+                            name: "issues",
+                            type: "list",
+                            min_items: 0,
+                            exportEmpties: false,
+                        })
+                            .full-width.form-group.aside
+                                label.inline
+                                    span(data-smark={action: "position"})
+                                    span &nbsp;🔍
+                                .form-group.spacer
+                                    .form-group
+                                        input(
+                                            style='flex:4',
+                                            data-smark
+                                            name="description"
+                                            placeholder="Issue description"
+                                        )
+                                        select(
+                                            style='flex:2',
+                                            data-smark
+                                            name="severity"
+                                        )
+                                            option(value="minor") Minor
+                                            option(value="moderate") Moderate
+                                            option(value="major") Major
+                                button.inline(data-smark={
+                                    action: "removeItem",
+                                }, title="Remove this issue", style="margin-left:auto")
+                                    span(role='img', aria-label='Remove this issue') ➖
+                        .input-group
+                            label(data-smark) Notes
+                            textarea(
+                                data-smark
+                                name="notes"
+                                placeholder="Additional notes for this room..."
+                                rows="2"
+                            )
+        .form-group.f2
+            .spacer
+            button(data-smark={
+                action: "addItem",
+                hotkey: "+",
+                context: "rooms",
+                autoscroll: "elegant",
+            }, title="Add room") ➕
+
+    section
+        .form-group.h2 Utilities Check
+        .form-group(data-smark={
+            type: "form",
+            name: "utilities",
+        })
+            .form-group
+                label(data-smark) Electricity
+                label
+                    input(data-smark, type="radio", name="electricity", value="ok")
+                    |  OK
+                label
+                    input(data-smark, type="radio", name="electricity", value="issue")
+                    |  Issue
+                label
+                    input(data-smark, type="radio", name="electricity", value="na")
+                    |  N/A
+            .form-group
+                label(data-smark) Water / Plumbing
+                label
+                    input(data-smark, type="radio", name="plumbing", value="ok")
+                    |  OK
+                label
+                    input(data-smark, type="radio", name="plumbing", value="issue")
+                    |  Issue
+                label
+                    input(data-smark, type="radio", name="plumbing", value="na")
+                    |  N/A
+            .form-group
+                label(data-smark) Heating / Cooling
+                label
+                    input(data-smark, type="radio", name="hvac", value="ok")
+                    |  OK
+                label
+                    input(data-smark, type="radio", name="hvac", value="issue")
+                    |  Issue
+                label
+                    input(data-smark, type="radio", name="hvac", value="na")
+                    |  N/A
+        .input-group
+            label(data-smark) General Observations
+            textarea(
+                data-smark
+                name="general_observations"
+                placeholder="Overall property condition and additional remarks..."
+                rows="3"
+            )
+
+    section
+        .form-group
+            .spacer
+            button(data-smark={
+                action: "import",
+                hotkey: "i",
+            }, title="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
+            button(data-smark={
+                action: "clear",
+                hotkey: "x",
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
+            button(data-smark={
+                action: "export",
+                hotkey: "s",
+            }, title="Submit inspection report").
+                #[span(role='img', aria-label='') 💾] Submit Report

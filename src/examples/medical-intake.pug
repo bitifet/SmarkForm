@@ -1,0 +1,310 @@
+extends include/layout.pug
+include include/mixins.pug
+include include/credits.pug
+include include/autobackground.pug
+block append properties
+    -
+        var title = "Medical Appointment Intake";
+        var description = `
+            This example models a patient intake form for a medical appointment,
+            capturing personal details, medical history, current medications,
+            allergies, and the reason for the visit.
+        `;
+block mainForm
+    section
+        .form-group.h1 Patient Information
+        .form-group
+            .input-group
+                label(data-smark) First Name
+                input(
+                    data-smark
+                    name="first_name"
+                    type="text"
+                    placeholder="First name"
+                )
+            .input-group
+                label(data-smark) Last Name
+                input(
+                    data-smark
+                    name="last_name"
+                    type="text"
+                    placeholder="Last name"
+                )
+        .form-group
+            .input-group
+                label(data-smark) Date of Birth
+                input(
+                    data-smark
+                    name="dob"
+                    type="date"
+                )
+            .input-group
+                label(data-smark) Sex
+                select(data-smark, name="sex")
+                    option(value="") — Select —
+                    option(value="male") Male
+                    option(value="female") Female
+                    option(value="other") Other / Prefer not to say
+        .form-group
+            .input-group
+                label(data-smark) Phone
+                input(
+                    data-smark
+                    name="phone"
+                    type="tel"
+                    placeholder="+1 234 567 8900"
+                )
+            .input-group
+                label(data-smark) Email
+                input(
+                    data-smark
+                    name="email"
+                    type="email"
+                    placeholder="email@example.com"
+                )
+        .input-group
+            label(data-smark) Address
+            textarea(
+                data-smark
+                name="address"
+                placeholder="Street address, city, state, ZIP"
+                rows="2"
+            )
+
+    section
+        .form-group.h2 Emergency Contact
+        .form-group(data-smark={
+            type: "form",
+            name: "emergency_contact",
+        })
+            .form-group
+                .input-group
+                    label(data-smark) Name
+                    input(
+                        data-smark
+                        name="name"
+                        type="text"
+                        placeholder="Full name"
+                    )
+                .input-group
+                    label(data-smark) Relationship
+                    input(
+                        data-smark
+                        name="relationship"
+                        type="text"
+                        placeholder="e.g. Spouse, Parent"
+                    )
+            .input-group
+                label(data-smark) Phone
+                input(
+                    data-smark
+                    name="phone"
+                    type="tel"
+                    placeholder="+1 234 567 8900"
+                )
+
+    section
+        .form-group.h2
+            span Current Medications
+            .form-group
+                .spacer
+                button(data-smark={
+                    action: "addItem",
+                    hotkey: "+",
+                    context: "medications",
+                    autoscroll: "self",
+                }, title="Add medication")
+                    span(role='img', aria-label='Add medication') ➕
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                    context: "medications",
+                    preserve_non_empty: true,
+                }, title="Remove medication")
+                    span(role='img', aria-label='Remove medication') ➖
+        .form-group(data-smark={
+            name: "medications",
+            type: "list",
+            min_items: 0,
+            exportEmpties: false,
+        })
+            .full-width.form-group.aside
+                label.inline
+                    span(data-smark={action: "position"})
+                    span &nbsp;💊
+                .form-group.spacer
+                    .form-group
+                        input(
+                            style='flex:4',
+                            data-smark
+                            name="name"
+                            placeholder="Medication name"
+                        )
+                        input(
+                            style='flex:2',
+                            data-smark
+                            name="dose"
+                            placeholder="Dose (e.g. 10mg)"
+                        )
+                        input(
+                            style='flex:3',
+                            data-smark
+                            name="frequency"
+                            placeholder="Frequency (e.g. twice daily)"
+                        )
+                button.inline(data-smark={
+                    action: "removeItem",
+                }, title="Remove this medication", style="margin-left:auto")
+                    span(role='img', aria-label='Remove this medication') ➖
+        .form-group
+            .spacer
+            button.inline(data-smark={
+                action: "addItem",
+                hotkey: "+",
+                context: "medications",
+                autoscroll: "elegant",
+            }) #[span(role='img', aria-label='') ➕] Add Medication
+
+    section
+        .form-group.h2
+            span Allergies
+            .form-group
+                .spacer
+                button(data-smark={
+                    action: "addItem",
+                    hotkey: "+",
+                    context: "allergies",
+                    autoscroll: "self",
+                }, title="Add allergy")
+                    span(role='img', aria-label='Add allergy') ➕
+                button(data-smark={
+                    action: "removeItem",
+                    hotkey: "-",
+                    context: "allergies",
+                    preserve_non_empty: true,
+                }, title="Remove allergy")
+                    span(role='img', aria-label='Remove allergy') ➖
+        .form-group(data-smark={
+            name: "allergies",
+            type: "list",
+            min_items: 0,
+            exportEmpties: false,
+        })
+            .full-width.form-group.aside
+                label.inline
+                    span(data-smark={action: "position"})
+                    span &nbsp;⚠️
+                .form-group.spacer
+                    .form-group
+                        input(
+                            style='flex:4',
+                            data-smark
+                            name="allergen"
+                            placeholder="Allergen (e.g. Penicillin, Peanuts)"
+                        )
+                        select(
+                            style='flex:3',
+                            data-smark
+                            name="reaction"
+                        )
+                            option(value="") — Reaction type —
+                            option(value="rash") Rash / Hives
+                            option(value="anaphylaxis") Anaphylaxis
+                            option(value="nausea") Nausea / Vomiting
+                            option(value="respiratory") Respiratory issues
+                            option(value="other") Other
+                button.inline(data-smark={
+                    action: "removeItem",
+                }, title="Remove this allergy", style="margin-left:auto")
+                    span(role='img', aria-label='Remove this allergy') ➖
+        .form-group
+            .spacer
+            button.inline(data-smark={
+                action: "addItem",
+                hotkey: "+",
+                context: "allergies",
+                autoscroll: "elegant",
+            }) #[span(role='img', aria-label='') ➕] Add Allergy
+
+    section
+        .form-group.h2 Medical History
+        .form-group
+            label(data-smark) Do you have any chronic conditions?
+            label
+                input(data-smark, type="radio", name="chronic_conditions", value="yes")
+                |  Yes
+            label
+                input(data-smark, type="radio", name="chronic_conditions", value="no")
+                |  No
+        +inputlist("Known Conditions")(
+            name="conditions"
+            type="text",
+            min_items=0,
+            max_items=20,
+            placeholder="e.g. Diabetes, Hypertension",
+            removeFailback="clear",
+        )
+        .input-group
+            label(data-smark) Previous Surgeries or Hospitalizations
+            textarea(
+                data-smark
+                name="surgery_history"
+                placeholder="Briefly describe any past surgeries or hospital stays..."
+                rows="3"
+            )
+
+    section
+        .form-group.h2 Reason for Visit
+        .input-group
+            label(data-smark) Chief Complaint
+            textarea(
+                data-smark
+                name="chief_complaint"
+                placeholder="Please describe your main concern or reason for today's appointment..."
+                rows="3"
+            )
+        .form-group
+            .input-group
+                label(data-smark) Symptoms Since
+                input(
+                    data-smark
+                    name="symptoms_since"
+                    type="date"
+                )
+            .input-group
+                label(data-smark) Pain Level (0–10)
+                input(
+                    data-smark
+                    name="pain_level"
+                    type="number"
+                    min="0"
+                    max="10"
+                    placeholder="0"
+                )
+        .input-group
+            label(data-smark) Additional Notes
+            textarea(
+                data-smark
+                name="notes"
+                placeholder="Anything else you'd like the doctor to know..."
+                rows="3"
+            )
+
+    section
+        .form-group
+            .spacer
+            button(data-smark={
+                action: "import",
+                hotkey: "i",
+            }, title="Import (JSON) data").
+                #[span(role='img', aria-label='') 📂] Import
+            button(data-smark={
+                action: "clear",
+                hotkey: "x",
+            }, title="Clear form data").
+                #[span(role='img', aria-label='') ❌] Cancel
+            button(data-smark={
+                action: "export",
+                hotkey: "s",
+            }, title="Submit intake form").
+                #[span(role='img', aria-label='') 💾] Submit
