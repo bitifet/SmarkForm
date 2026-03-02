@@ -2,7 +2,39 @@
 
 This document describes how the Jekyll documentation example playground works and how to add/update examples. It is intended to help coding agents make correct changes to documentation.
 
-## Architecture Overview
+## Two Kinds of Examples
+
+There are **two distinct kinds** of examples in this project. They serve different purposes and use different mechanisms.
+
+### 1. Standalone Complete Examples (`src/examples/*.pug`)
+
+These are full-page forms built as Pug templates and compiled by Rollup to `dist/examples/*.html`. They are displayed in the **`/resources/examples`** page via an `<iframe>` switcher.
+
+**How to add a new standalone example:**
+
+1. Create `src/examples/<name>.pug` extending `include/layout.pug` and setting `title`/`description` in `block append properties`, then provide form markup in `block mainForm`. Follow the conventions of `company.pug`, `beach.pug`, etc.
+
+2. Import the new file in `src/examples/index.js` so Rollup compiles it:
+   ```js
+   import "./my-new-example.pug";
+   ```
+
+3. **⚠️ IMPORTANT — Register in `docs/_data/examples.csv`:**  
+   Add a row to `docs/_data/examples.csv` so the example appears in the dropdown on the `/resources/examples` page. Without this step the HTML file is built but never shown in the documentation.
+   ```csv
+   "/dist/examples/my-new-example.html","My Example Title","A short description"
+   ```
+   The CSV columns are `url`, `title`, `details` (first row in the file is the header).
+
+**File: `docs/_data/examples.csv`** is consumed by Jekyll in `docs/_resources/examples.md` via `{% for item in site.data.examples %}`. Every row becomes an `<option>` in the example selector dropdown.
+
+### 2. Inline Jekyll Playground Examples (co-located in `.md` docs)
+
+These are embedded directly inside Markdown documentation pages using the `sampletabs_tpl.md` Liquid include. They render a tabbed preview+editor widget right inside the doc page.
+
+---
+
+## Architecture Overview (Inline Playground)
 
 Documentation examples are rendered by two Liquid template files in `docs/_includes/components/`:
 
