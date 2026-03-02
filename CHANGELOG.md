@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [0.13.0] — 2026-02-27
+## [0.13.0] — 2026-03-03
 
 ✨ New `time` and `datetime-local` component types · 🔄 `reset` action + default values · ⌨️ Focus retention on empty lists · 🎨 Parametric SVG logo · 📖 End-User Guide, Branding section, Code of Conduct · 🌗 Auto dark/light docs theme · 🛠️ Visual render errors.
 
