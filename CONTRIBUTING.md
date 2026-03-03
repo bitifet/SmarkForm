@@ -193,11 +193,16 @@ ignores them):
 With `foldmethod=marker` active (vim/neovim), each block collapses to a single
 labelled line, making large documentation files easy to navigate.
 
-**Enabling fold markers in your editor:**
-- **Vim/Neovim** (native): `set foldmethod=marker` — add
-  `autocmd FileType markdown setlocal foldmethod=marker` to your vimrc.
-- **VS Code**: Install the [Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding) extension.
-- **Emacs**: configure `origami-mode` with custom `{{{`/`}}}` markers.
+**Editor setup — automatic via project config files:**
+- **Vim/Neovim**: the project `.vimrc` sets `foldmethod=marker` automatically.
+  Add `set exrc` to your `~/.vimrc` (or `~/.config/nvim/init.vim`) once to
+  allow project-level vimrc files.
+- **VS Code**: open the project and accept the prompt to install the recommended
+  [Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding)
+  extension (listed in `.vscode/extensions.json`). Settings are pre-configured
+  in `.vscode/settings.json`.
+- **Emacs**: install the `folding` package (`M-x package-install RET folding RET`).
+  The project `.dir-locals.el` will enable `folding-mode` automatically.
 
 **Please preserve these markers** when editing existing files and add them when
 creating new capture blocks. See [AGENTS/Documentation-Guidelines.md](AGENTS/Documentation-Guidelines.md) for the full convention.

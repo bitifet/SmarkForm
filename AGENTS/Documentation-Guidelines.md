@@ -32,10 +32,10 @@ of lines.
 - For captures that end without an `{% endcapture %}` (e.g., due to a `%}`
   placement on the next line), put the closing marker on the line after.
 
-**Editor support:**
-- **Vim/Neovim**: `set foldmethod=marker` (native, no plugins).
-- **VS Code**: [Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding) extension.
-- **Emacs**: `origami-mode` with custom markers.
+**Editor support (automatic via project config files):**
+- **Vim/Neovim**: add `set exrc` to `~/.vimrc` once; the project `.vimrc` sets `foldmethod=marker` automatically.
+- **VS Code**: install the [Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding) extension (recommended in `.vscode/extensions.json`); settings pre-configured in `.vscode/settings.json`.
+- **Emacs**: install the `folding` package; `.dir-locals.el` enables `folding-mode` automatically.
 
 ---
 
