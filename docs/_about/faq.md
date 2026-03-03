@@ -40,6 +40,7 @@ around edge cases or features that might catch you off guard at first.
 * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
 * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
 * [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
+* [Where does SmarkForm really shine?](#where-does-smarkform-really-shine)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -432,6 +433,91 @@ they do not complement each other naturally.
 > Formik, VeeValidate, Angular Reactive Forms…) will integrate more naturally.
 > SmarkForm is a compelling alternative when you are *not* already committed to
 > one of those frameworks.
+
+
+## Where does SmarkForm really shine?
+
+SmarkForm is a DOM-first, markup-driven library — and that is a feature, not a
+limitation. It is an ideal fit anywhere you own the HTML and want powerful form
+behaviour without pulling in a heavyweight framework.
+
+### Server-rendered HTML stacks
+
+If your backend renders HTML (Ruby on Rails, Django, Laravel, Symfony, plain
+PHP, ASP.NET Razor, Go templates…), you already own every DOM node before the
+page loads. SmarkForm slots in with a single `<script>` import and a
+`new SmarkForm(el)` call — no build pipeline required.
+
+```html
+<!-- Drop this at the bottom of your server-rendered page -->
+<script type="module">
+  import SmarkForm from "https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js";
+  const myForm = new SmarkForm(document.getElementById("myForm"));
+  myForm.on("AfterAction_export", ({ data }) => {
+    fetch("/submit", { method: "POST", body: JSON.stringify(data) });
+  });
+</script>
+```
+
+Your backend devs keep writing plain HTML templates; SmarkForm upgrades them
+silently.
+
+### Static-site generators and JAMstack
+
+Hugo, Jekyll, Eleventy, Astro (static output), Zola… — all generate HTML at
+build time. SmarkForm enhances those static pages with dynamic form behaviour
+without changing the rendering pipeline. The docs site you're reading right now
+is a Jekyll site that uses exactly this pattern.
+
+### Progressive enhancement of existing pages
+
+Got a legacy app or a CMS (WordPress, Drupal, TYPO3, Joomla) where you can
+add `data-smark` attributes but can't change the server stack? Add a small
+`<script type="module">` block or enqueue the UMD bundle, point it at an
+existing `<form>` or `<div>`, and the page instantly gains subforms,
+variable-length lists, and JSON export — all without touching server code.
+
+### Alpine.js and "HTML-over-the-wire" stacks
+
+[Alpine.js](https://alpinejs.dev/), [HTMX](https://htmx.org/),
+[Hotwire/Turbo](https://hotwired.dev/), and similar tools share SmarkForm's
+philosophy of keeping behaviour close to the markup. They pair naturally:
+
+- **HTMX / Turbo** replace page fragments with server-rendered HTML; SmarkForm
+  re-initialises on the new fragment via the `DOMContentLoaded` equivalent or a
+  simple mutation observer.
+- **Alpine.js** can call `myForm.export()` / `myForm.import()` from its event
+  handlers, letting Alpine manage UI state while SmarkForm owns form data.
+
+### Vanilla JavaScript projects and micro-frontends
+
+When you don't want any framework at all — a standalone widget, an embeddable
+form component, a micro-frontend — SmarkForm gives you complex form logic
+(nested subforms, dynamic lists, hotkeys) in a single ~38 KB bundle with
+zero runtime dependencies.
+
+### Back-office tools and internal dashboards
+
+Internal tooling rarely needs a polished React stack. A lightweight HTML page
+plus SmarkForm can handle configuration editors, data-entry screens, and admin
+panels with far less boilerplate than a full SPA framework, and with no Node.js
+build step if you use the CDN.
+
+### In short
+
+| Environment | Why SmarkForm fits well |
+|-------------|------------------------|
+| Rails / Django / Laravel / PHP | You own the HTML; one `<script>` tag is all you need |
+| Jekyll / Hugo / Eleventy | Static HTML at build time + dynamic forms at runtime |
+| WordPress / Drupal / CMS | Add `data-smark` attributes; no server changes required |
+| HTMX / Turbo / Alpine.js | Shared "HTML is the source of truth" philosophy |
+| Vanilla JS widgets | Zero deps, tiny bundle, pure DOM API |
+| Internal dashboards | No build pipeline needed; rapid iteration |
+
+{: .hint :}
+> Not sure whether SmarkForm is the right fit for your project? Open a
+> [discussion](https://github.com/bitifet/SmarkForm/discussions) — we're happy
+> to help you evaluate!
 
 
 {: .hint :}
