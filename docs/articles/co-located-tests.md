@@ -170,39 +170,30 @@ surrounding structure.
 
 ### Enabling It
 
-The project ships configuration files for the three most common editors, so
-this works automatically once a one-time prerequisite is met.
-
-**Vim / Neovim** — native support, no plugins required.
-
-Add `set exrc` to your `~/.vimrc` or `~/.config/nvim/init.vim` once:
+**Vim / Neovim** — native support, no plugins required:
 
 ```vim
-set exrc   " allow project-level .vimrc files
-set secure " optional: sandbox project vimrc (recommended)
+:set foldmethod=marker
 ```
 
-After that, the project's `.vimrc` takes over and sets `foldmethod=marker`
-whenever you open a file in the project directory.
+To make it permanent for Markdown files, add this to your `~/.vimrc` or
+`~/.config/nvim/init.vim`:
 
-**VS Code** — install the recommended extension.
+```vim
+autocmd FileType markdown setlocal foldmethod=marker
+```
 
-When you open the project in VS Code, you'll see a prompt to install
-recommended extensions. Accept it to install
+Or use a per-project `.vimrc` / `.exrc` file (requires `set exrc` in your
+main vimrc).
+
+**VS Code** — install the
 [Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding)
-(listed in `.vscode/extensions.json`). The `.vscode/settings.json` file
-already configures `{{{`/`}}}` as the fold markers, so no further setup is
-needed. Once installed, `Fold All` (`Ctrl+K, Ctrl+0`) collapses all marked
-blocks.
+extension (or similar), which adds support for `{{{`/`}}}` markers and lets you
+configure any custom fold start/end pattern. Once installed, the standard `Fold
+All` (`Ctrl+K, Ctrl+0`) collapses all marked blocks.
 
-**Emacs** — install the `folding` package once:
-
-```
-M-x package-install RET folding RET
-```
-
-After that, the project's `.dir-locals.el` enables `folding-mode`
-automatically whenever Emacs opens a file in the project directory.
+**Emacs** — `origami-mode` supports custom fold patterns and can be configured
+to use `{{{`/`}}}` markers consistent with the vim convention.
 
 Even if your editor doesn't support fold markers natively, the pattern is still
 useful: the `{{{` / `}}}` strings are greppable labels. A quick `grep '{{{' showcase.md`

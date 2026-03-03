@@ -1,7 +1,0 @@
-{
-  // This project uses {{{ / }}} fold markers in source and documentation.
-  // Install the recommended 'Custom Folding' extension (jmfirth.vscode-custom-folding)
-  // to get fold support for these markers.
-  "customFolding.foldStart": "{{{",
-  "customFolding.foldEnd": "}}}"
-}
