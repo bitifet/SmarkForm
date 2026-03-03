@@ -39,6 +39,7 @@ around edge cases or features that might catch you off guard at first.
 * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
 * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
 * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
+* [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -356,6 +357,81 @@ items on demand. It is **not yet implemented**.
 Stay tuned — details will land in the docs when it's ready. See the
 [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for more
 context.
+
+
+## Can I use SmarkForm in React (or Vue, Angular, etc.) projects?
+
+**Honest answer: it works, but SmarkForm is not designed for virtual-DOM
+frameworks and the fit is awkward.**
+
+SmarkForm is a **DOM-first** library. It reads `data-smark` attributes from
+real DOM nodes at initialisation time and keeps its own internal component
+tree in sync with those nodes. That model sits at odds with how React, Vue,
+and Angular work:
+
+| Concern | Plain HTML / SSR | React / Vue / Angular |
+|---------|------------------|-----------------------|
+| DOM ownership | You own the DOM | The framework owns the DOM |
+| Initialisation | Run `new SmarkForm(el)` any time after the node exists | Must wait for mount, wrap in `useEffect` / `onMounted` / `ngAfterViewInit` |
+| DOM mutations | SmarkForm reads the DOM directly | The framework re-renders and may recreate nodes, breaking SmarkForm's references |
+| Data flow | SmarkForm owns form state; export via events | The framework expects to own state via its own reactive system |
+
+**Can it be done?** Yes — mount the component once (e.g. inside a React
+`useEffect` with an empty dependency array), never let the framework re-render
+the subtree SmarkForm controls, and export/import data imperatively through
+the SmarkForm API. Here is the minimal React pattern:
+
+```jsx
+import { useEffect, useRef } from "react";
+import SmarkForm from "smarkform";
+
+export default function MyForm({ onSave }) {
+    const rootRef = useRef(null);
+    const sfRef   = useRef(null);
+
+    useEffect(() => {
+        // Initialise once after mount — keep the subtree stable
+        sfRef.current = new SmarkForm(rootRef.current);
+        sfRef.current.on("AfterAction_export", ({ data }) => onSave(data));
+        return () => {
+            // No built-in destroy yet; just drop the reference
+            sfRef.current = null;
+        };
+    }, []); // empty deps → runs once
+
+    // ⚠ Do NOT put any dynamic React state inside this subtree —
+    // React re-renders will fight with SmarkForm's DOM references.
+    return (
+        <div ref={rootRef}>
+            <input data-smark type="text" name="name" />
+            <button data-smark='{"action":"export"}'>Save</button>
+        </div>
+    );
+}
+```
+
+**Would React developers enjoy it?** Probably not as their day-to-day tool.
+React devs are used to state living in JavaScript (hooks, stores) and the view
+being a pure function of that state. SmarkForm inverts that: state lives in the
+DOM and is read out on demand. The two philosophies can coexist in one page, but
+they do not complement each other naturally.
+
+**Where SmarkForm shines instead:**
+
+- **Server-rendered HTML** (Rails, Django, Laravel, Jekyll, plain PHP…) — drop
+  in a `<script>` tag or ES-module import and you're done.
+- **Progressive enhancement** of existing HTML pages.
+- **Lightweight SPAs** without a heavy framework — Vanilla JS, Alpine.js, or
+  any setup where you control the DOM directly.
+- **Back-office tools and internal dashboards** where shipping speed matters
+  more than framework orthodoxy.
+
+{: .info :}
+> If you are building a React/Vue/Angular app and need complex nested forms
+> with JSON import/export, the framework's own form ecosystem (React Hook Form,
+> Formik, VeeValidate, Angular Reactive Forms…) will integrate more naturally.
+> SmarkForm is a compelling alternative when you are *not* already committed to
+> one of those frameworks.
 
 
 {: .hint :}
