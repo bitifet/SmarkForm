@@ -16,7 +16,6 @@
 
 
 
-
 ### Disabled action
 
 > Status: Draft
@@ -31,11 +30,11 @@ You also have to implement an internal "disabled" state for every component type
 
 > Status: Draft
 
+FIXME: Review this and contrast with the "dependent disabilitation" and  "multiforms" features. They may need to be merged or redefined in a more general way...
+
 I want you to implement a new action called "null" for the form component type.
 
 Unlike most actions that usually enhance buttons, the "null" action will enhance a checkbox and will work the following way:
 
 If the checkbox is checked (default), every field in the form gets disabled.
-
-
 
