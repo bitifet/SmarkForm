@@ -122,6 +122,85 @@ extracted, executed, and reported as a test result — for every browser.
 
 ---
 
+## Keeping It Navigable: Vim Fold Markers
+
+There's a side effect of co-location that isn't immediately obvious: the
+documentation files get *long*. Very long. A single showcase page might contain
+a dozen `{% capture %}` blocks — HTML source, CSS source, JavaScript, notes,
+and now tests — each running tens or hundreds of lines.
+
+The file is perfectly machine-readable. For a human editor reviewing or
+updating a specific example, it can become a wall of text.
+
+The SmarkForm project's solution to this is **vim fold markers** — a
+convention borrowed directly from how `src/` files are written — applied to
+the Markdown documentation files as well.
+
+In the library source code, functions are bracketed like this:
+
+```javascript
+export function parseTime(str) {//{{{
+    // ... implementation
+};//}}}
+```
+
+In documentation Markdown files, capture blocks are bracketed with HTML
+comments wrapped in `{% raw %}` to prevent Jekyll from consuming them:
+
+```markdown
+{% raw %} <!-- basic_form_html {{{ --> {% endraw %}
+{% capture basic_form_html %}
+<p>
+    <label data-smark>Name:</label>
+    <input type="text" name="name" data-smark />
+</p>
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+```
+
+The closing marker sits on the **same line** as `{% endcapture %}` — one
+less line to scroll past. When a capture's closing `%}` falls on its own
+line (a formatting choice sometimes made for long captures), the closing
+marker follows on the next line instead.
+
+With vim's `foldmethod=marker` active, every capture block collapses to a
+single line — just the fold label. A documentation file with twelve captures
+becomes twelve navigable lines. You can jump directly to the example you want,
+expand it, edit it, and collapse it again — without losing your place in the
+surrounding structure.
+
+### Enabling It
+
+**Vim / Neovim** — native support, no plugins required:
+
+```vim
+:set foldmethod=marker
+```
+
+To make it permanent for Markdown files, add this to your `~/.vimrc` or
+`~/.config/nvim/init.vim`:
+
+```vim
+autocmd FileType markdown setlocal foldmethod=marker
+```
+
+Or use a per-project `.vimrc` / `.exrc` file (requires `set exrc` in your
+main vimrc).
+
+**VS Code** — install the
+[Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding)
+extension (or similar), which adds support for `{{{`/`}}}` markers and lets you
+configure any custom fold start/end pattern. Once installed, the standard `Fold
+All` (`Ctrl+K, Ctrl+0`) collapses all marked blocks.
+
+**Emacs** — `origami-mode` supports custom fold patterns and can be configured
+to use `{{{`/`}}}` markers consistent with the vim convention.
+
+Even if your editor doesn't support fold markers natively, the pattern is still
+useful: the `{{{` / `}}}` strings are greppable labels. A quick `grep '{{{' showcase.md`
+gives you an instant index of all captures in a file.
+
+---
+
 ## The Architecture: Collector + Runner
 
 Under the hood, this works through a two-phase pipeline.

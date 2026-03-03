@@ -163,6 +163,46 @@ More details are in [docs/README.md](docs/README.md).
 - scripts/       Build, docs, and test orchestration scripts
 
 
+## Coding Style
+
+### Vim Fold Markers
+
+The project uses vim-style fold markers (`{{{` / `}}}`) throughout source code
+and documentation to keep large files navigable.
+
+**In JavaScript source files** (`src/`), functions and logical blocks are
+folded inline:
+
+```javascript
+export function myHelper(arg) {//{{{
+    // implementation
+};//}}}
+```
+
+**In documentation Markdown files** (`docs/`), each `{% capture %}` block is
+wrapped in markers embedded in HTML comments inside `{% raw %}` tags (so Jekyll
+ignores them):
+
+```markdown
+{% raw %} <!-- capture_name {{{ --> {% endraw %}
+{% capture capture_name %}
+...content...
+{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+```
+
+With `foldmethod=marker` active (vim/neovim), each block collapses to a single
+labelled line, making large documentation files easy to navigate.
+
+**Enabling fold markers in your editor:**
+- **Vim/Neovim** (native): `set foldmethod=marker` — add
+  `autocmd FileType markdown setlocal foldmethod=marker` to your vimrc.
+- **VS Code**: Install the [Custom Folding](https://marketplace.visualstudio.com/items?itemName=jmfirth.vscode-custom-folding) extension.
+- **Emacs**: configure `origami-mode` with custom `{{{`/`}}}` markers.
+
+**Please preserve these markers** when editing existing files and add them when
+creating new capture blocks. See [AGENTS/Documentation-Guidelines.md](AGENTS/Documentation-Guidelines.md) for the full convention.
+
+
 ## Pull Requests
 
 - For non-trivial changes, consider opening an issue/discussion first to align on the approach.
