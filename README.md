@@ -80,8 +80,8 @@ That's it. No schema, no bindings, no callbacks per field.
 <img align="right" width="30%" src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@stable/docs/assets/SmarkForm_hero.webp" alt="" />
 
 Want to dig deeper right away? Head to the [🔗 Showcase](https://smarkform.bitifet.net/about/showcase)
-to explore interactive, editable demos — including the example above — that
-show SmarkForm's full potential at a glance.
+to explore interactive demos — including the example above — that show
+SmarkForm's full potential at a glance.
 
 Prefer to jump straight into code? Browse [🔗 Live Examples](https://smarkform.bitifet.net/resources/examples)
 for a collection of ready-to-use, downloadable forms you can run locally and
