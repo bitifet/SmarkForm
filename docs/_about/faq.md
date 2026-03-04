@@ -170,17 +170,36 @@ for the full syntax reference.
 Every element with a `data-smark` attribute becomes a **component** of a
 specific type. The main types are:
 
+**Structural types** (hold collections of fields):
+
 | Type | Role | Exports |
 |------|------|---------|
 | `form` | Groups fields into a named subform | JSON object |
 | `list` | Variable-length list of repeated items | JSON array |
-| `input` | Single text / number / date / color / … field | Scalar value |
-| `trigger` | Button that invokes an action (no field value) | — |
-| `label` | Smart label that auto-connects to its sibling field | — |
+
+**Scalar field types** (hold a single value):
+
+| Type | Role | Exports |
+|------|------|---------|
+| `input` | Default for any `<input>`, `<textarea>`, or `<select>` not otherwise matched | String |
+| `number` | Numeric field — imports/exports a JavaScript number, not a string | Number or null |
+| `color` | Color picker — allows `null` (unlike native `<input type="color">` which always has a value) | `#rrggbb` string or null |
+| `radio` | Group of radio buttons sharing the same `name` treated as one field; nullable | String or null |
+| `date` | Date field with input sanitisation and standardised output format | ISO date string or null |
+| `time` | Time field with input sanitisation and standardised output format | ISO time string or null |
+| `datetime-local` | Date-and-time field with the same sanitisation/format guarantees | ISO datetime string or null |
+
+**Non-field component types**:
+
+| Type | Role |
+|------|------|
+| `trigger` | Button that invokes an action (no field value) |
+| `label` | Smart label that auto-connects to its sibling field |
 
 SmarkForm infers the type from context in most cases:
 
-- `<input>`, `<textarea>`, `<select>` → `input`
+- `<input>`, `<textarea>`, `<select>` → `input` (unless a more specific type is
+  inferred from the element's `type` attribute, e.g. `type="color"` → `color`)
 - `<label>` → `label`
 - A `data-smark` with an `"action"` key → `trigger`
 - Explicit `"type":"form"` or `"type":"list"` for container elements
@@ -197,15 +216,17 @@ the named **action** on the appropriate component.
 
 ```html
 <button data-smark='{"action":"export"}'>Save</button>
-<button data-smark='{"action":"addItem"}'>Add row</button>
-<button data-smark='{"action":"removeItem"}'>Remove row</button>
 <button data-smark='{"action":"clear"}'>Clear</button>
 <button data-smark='{"action":"reset"}'>Reset</button>
+<!-- List-only actions: -->
+<button data-smark='{"action":"addItem"}'>Add row</button>
+<button data-smark='{"action":"removeItem"}'>Remove row</button>
 ```
 
-Built-in actions include `export`, `import`, `clear`, `reset`, `addItem`,
-`removeItem`, and more. You can also define
-[custom actions](#how-do-i-add-custom-actions).
+Not all actions are available on all component types — for example, `addItem`
+and `removeItem` are exclusive to `list` components. The common actions
+(`export`, `import`, `clear`, `reset`) are available on all field components.
+You can also define [custom actions](#how-do-i-add-custom-actions).
 
 See [Quick Start — Actions and Triggers](
 {{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
@@ -218,8 +239,10 @@ The **context** of a trigger is the component that receives the action. By
 default, SmarkForm resolves it automatically — the trigger's "natural context"
 is its **closest ancestor component that implements the action**.
 
-So a `clear` button inside a list item clears that list item; the same button
-outside the list clears the whole form. No explicit wiring required.
+This means a `clear` button placed directly inside a list item's template
+clears that list item; if it is inside a nested subform, it clears that
+subform; and if it is outside the list entirely, it clears the enclosing
+form or list where it lives. No explicit wiring is ever required.
 
 You can override the context with the `"context"` property using a relative
 path:
@@ -471,8 +494,33 @@ most portable). Hotkeys are activated with `Ctrl` + the key:
 <button data-smark='{"action":"export","hotkey":"s"}'>Save</button>
 ```
 
-**Hotkey reveal:** pressing and holding `Ctrl` shows visual badges on all
-currently active hotkey triggers — great for discoverability.
+**Hotkey reveal:** when the user presses and holds `Ctrl`, SmarkForm sets a
+`data-hotkey` attribute on each currently active trigger button. You add CSS
+to turn that attribute into a visible badge — SmarkForm intentionally leaves
+the visual style entirely up to you:
+
+```css
+/* Show a small "Ctrl+X" badge above each active hotkey trigger */
+[data-hotkey] {
+    position: relative;
+}
+[data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute;
+    top: -1.4em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7em;
+    background: #333;
+    color: #fff;
+    padding: 1px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+```
+
+When `Ctrl` is released the `data-hotkey` attributes are removed and the hints
+disappear automatically.
 
 **Context sensitivity:** hotkeys only fire when keyboard focus is inside the
 component that is the trigger's context. The same key can mean different things
