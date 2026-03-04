@@ -265,6 +265,7 @@ To get started with SmarkForm you can:
 | 👉 Take a look to our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
 | 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
 | 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
+| 👉 Examine our [🔗 FAQ]({{ "about/faq" | relative_url }}) to find answers to common questions. |
 
 
 ## Community and Support

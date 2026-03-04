@@ -11,7 +11,7 @@ nav_order: 3
 
 <br />
 <div class="chaptertoc toplevel">
-<p>A web form must be:</p>
+<p>The following are the most remarkable features of <strong>SmarkForm</strong>:</p>
 
   {{ "
 <!-- vim-markdown-toc GitLab -->
