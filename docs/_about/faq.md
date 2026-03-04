@@ -11,7 +11,7 @@ permalink: /about/faq
 # SmarkForm {{ page.title }}
 
 
-Below are answers to common questions about SmarkForm's behavior, especially
+Below are answers to common questions about SmarkForm's behaviour, especially
 around edge cases or features that might catch you off guard at first.
 
 <div class="chaptertoc toplevel">
@@ -19,32 +19,42 @@ around edge cases or features that might catch you off guard at first.
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-* [Why can't I remove items from my list sometimes?](#why-cant-i-remove-items-from-my-list-sometimes)
-* [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
-* [My exported JSON is missing some fields—what's up?](#my-exported-json-is-missing-some-fieldswhats-up)
-* [Why are my nested form fields named weirdly in the JSON?](#why-are-my-nested-form-fields-named-weirdly-in-the-json)
-* [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
-* [My list won't let me add items until I fill the current ones—is that intended?](#my-list-wont-let-me-add-items-until-i-fill-the-current-onesis-that-intended)
-* [Where's the error message when something goes wrong?](#wheres-the-error-message-when-something-goes-wrong)
-* [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend)
-* [Can I use a classic HTML form submission instead of JSON export?](#can-i-use-a-classic-html-form-submission-instead-of-json-export)
-* [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
-* [How do I add custom actions?](#how-do-i-add-custom-actions)
-* [How do default values and reset work?](#how-do-default-values-and-reset-work)
-* [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
-* [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
-* [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
-* [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
-* [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
-* [Where does SmarkForm really shine?](#where-does-smarkform-really-shine)
-    * [Server-rendered HTML stacks](#server-rendered-html-stacks)
-    * [Static-site generators and JAMstack](#static-site-generators-and-jamstack)
-    * [Progressive enhancement of existing pages](#progressive-enhancement-of-existing-pages)
-    * [Alpine.js and 'HTML-over-the-wire' stacks](#alpinejs-and-html-over-the-wire-stacks)
-    * [Vanilla JavaScript projects and micro-frontends](#vanilla-javascript-projects-and-micro-frontends)
-    * [Back-office tools and internal dashboards](#back-office-tools-and-internal-dashboards)
-    * [In short](#in-short)
-* [What about if I have a question that's not covered here?](#what-about-if-i-have-a-question-thats-not-covered-here)
+* [SmarkForm Essentials](#smarkform-essentials)
+    * [What is SmarkForm?](#what-is-smarkform)
+    * [Do I need a `<form>` tag?](#do-i-need-a-form-tag)
+    * [How do I get and include SmarkForm?](#how-do-i-get-and-include-smarkform)
+    * [What is the `data-smark` attribute?](#what-is-the-data-smark-attribute)
+    * [What are the different SmarkForm component types?](#what-are-the-different-smarkform-component-types)
+    * [What are triggers and actions?](#what-are-triggers-and-actions)
+    * [What is «context» in SmarkForm?](#what-is-context-in-smarkform)
+* [Lists](#lists)
+    * [Why can't I remove items from my list sometimes?](#why-cant-i-remove-items-from-my-list-sometimes)
+    * [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
+    * [My list won't let me add items until I fill the current ones—is that intended?](#my-list-wont-let-me-add-items-until-i-fill-the-current-onesis-that-intended)
+    * [How do I add animations to list items?](#how-do-i-add-animations-to-list-items)
+* [Data: Import, Export & Reset](#data-import-export-reset)
+    * [My exported JSON is missing some fields—what's up?](#my-exported-json-is-missing-some-fieldswhats-up)
+    * [Why are my nested form fields named weirdly in the JSON?](#why-are-my-nested-form-fields-named-weirdly-in-the-json)
+    * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
+    * [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend)
+    * [Can I use a classic HTML form submission instead of JSON export?](#can-i-use-a-classic-html-form-submission-instead-of-json-export)
+    * [How do default values and reset work?](#how-do-default-values-and-reset-work)
+* [Events & Actions](#events-actions)
+    * [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
+    * [How do I add custom actions?](#how-do-i-add-custom-actions)
+    * [How do I add keyboard shortcuts (hotkeys)?](#how-do-i-add-keyboard-shortcuts-hotkeys)
+* [Behaviour & Troubleshooting](#behaviour-troubleshooting)
+    * [Where's the error message when something goes wrong?](#wheres-the-error-message-when-something-goes-wrong)
+    * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
+    * [What does `await myForm.rendered` do?](#what-does-await-myformrendered-do)
+* [API & JavaScript](#api-javascript)
+    * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
+    * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
+* [Integration & Deployment](#integration-deployment)
+    * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
+    * [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
+    * [Where does SmarkForm really shine?](#where-does-smarkform-really-shine)
+* [Have a question not covered here?](#have-a-question-not-covered-here)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -52,7 +62,182 @@ around edge cases or features that might catch you off guard at first.
 </div>
 
 
-## Why can't I remove items from my list sometimes?
+## SmarkForm Essentials
+
+### What is SmarkForm?
+
+SmarkForm is a lightweight, markup-driven form controller for the web. You
+annotate your HTML with `data-smark` attributes and call
+`new SmarkForm(element)` — SmarkForm then enhances the subtree to support:
+
+- **Nested subforms** that export plain JSON objects.
+- **Variable-length lists** that export JSON arrays and can grow/shrink at
+  runtime.
+- **Smart import/export** of any JSON structure, no matter how deeply nested.
+- **Context-driven hotkeys** for keyboard-driven interaction.
+- **Actions & events** for custom behaviour without writing DOM manipulation
+  code.
+
+It has no runtime dependencies and ships as a single ~38 KB bundle (ESM or
+UMD). It is **not** a React/Vue/Angular component library — it is a DOM-first
+library that works best with server-rendered or static HTML.
+
+See the [Introduction]({{ "/about/introduction" | relative_url }}) and
+[Showcase]({{ "/about/showcase" | relative_url }}) for a fuller picture.
+
+
+### Do I need a `<form>` tag?
+
+**No.** SmarkForm works with any block-level element — `<div>`, `<section>`,
+`<fieldset>`, a plain `<form>`, etc. The root element is just the DOM node you
+pass to `new SmarkForm(element)`.
+
+```html
+<!-- All of these are valid SmarkForm roots -->
+<div id="myForm">…</div>
+<section id="myForm">…</section>
+<form id="myForm">…</form>
+```
+
+If you do use a `<form>` tag, SmarkForm does **not** intercept the browser's
+native submit event — use an `export` trigger and `AfterAction_export` instead.
+
+See [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend).
+
+
+### How do I get and include SmarkForm?
+
+The quickest way is a CDN import — no build step needed:
+
+```html
+<!-- UMD: adds SmarkForm as a global variable -->
+<script src="https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js"></script>
+
+<!-- or as an ES module -->
+<script type="module">
+  import SmarkForm from "https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js";
+</script>
+```
+
+{: .warning :}
+> For production, pin to a specific version (e.g.
+> `.../smarkform@0.5.0/dist/SmarkForm.esm.js`) so your app isn't affected by
+> future changes.
+
+You can also **install from npm** and use with any bundler:
+
+```sh
+npm install smarkform
+```
+
+```javascript
+import SmarkForm from "smarkform";
+```
+
+See [Getting SmarkForm]({{ "/getting_started/getting_smarkform" | relative_url }})
+for all distribution formats (ESM, UMD, CDN, npm, GitHub clone) and more details.
+
+
+### What is the `data-smark` attribute?
+
+`data-smark` is how you tell SmarkForm which HTML elements to manage. Any
+element **inside your root node** without this attribute is simply ignored by
+SmarkForm.
+
+The value can be **empty** (SmarkForm infers everything from context) or a
+**JSON object** with configuration options:
+
+```html
+<!-- Empty: type inferred from the <input> tag -->
+<input type="text" name="city" data-smark>
+
+<!-- JSON options: explicit type, name, and a default value -->
+<div data-smark='{"type":"form","name":"address","value":{"city":"Barcelona"}}'>
+  …
+</div>
+
+<!-- Trigger: the "action" key marks this as a trigger button -->
+<button data-smark='{"action":"export"}'>Save</button>
+```
+
+See [Core Concepts — The `data-smark` attribute](
+{{ "/getting_started/core_concepts" | relative_url }}#the-data-smark-attribute)
+for the full syntax reference.
+
+
+### What are the different SmarkForm component types?
+
+Every element with a `data-smark` attribute becomes a **component** of a
+specific type. The main types are:
+
+| Type | Role | Exports |
+|------|------|---------|
+| `form` | Groups fields into a named subform | JSON object |
+| `list` | Variable-length list of repeated items | JSON array |
+| `input` | Single text / number / date / color / … field | Scalar value |
+| `trigger` | Button that invokes an action (no field value) | — |
+| `label` | Smart label that auto-connects to its sibling field | — |
+
+SmarkForm infers the type from context in most cases:
+
+- `<input>`, `<textarea>`, `<select>` → `input`
+- `<label>` → `label`
+- A `data-smark` with an `"action"` key → `trigger`
+- Explicit `"type":"form"` or `"type":"list"` for container elements
+
+See [Core Component Types]({{ "/getting_started/core_component_types" | relative_url }})
+for the full reference.
+
+
+### What are triggers and actions?
+
+A **trigger** is a button (or any focusable element) with an `"action"` key in
+its `data-smark` options. When clicked (or its hotkey is pressed), it invokes
+the named **action** on the appropriate component.
+
+```html
+<button data-smark='{"action":"export"}'>Save</button>
+<button data-smark='{"action":"addItem"}'>Add row</button>
+<button data-smark='{"action":"removeItem"}'>Remove row</button>
+<button data-smark='{"action":"clear"}'>Clear</button>
+<button data-smark='{"action":"reset"}'>Reset</button>
+```
+
+Built-in actions include `export`, `import`, `clear`, `reset`, `addItem`,
+`removeItem`, and more. You can also define
+[custom actions](#how-do-i-add-custom-actions).
+
+See [Quick Start — Actions and Triggers](
+{{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
+for a hands-on introduction.
+
+
+### What is «context» in SmarkForm?
+
+The **context** of a trigger is the component that receives the action. By
+default, SmarkForm resolves it automatically — the trigger's "natural context"
+is its **closest ancestor component that implements the action**.
+
+So a `clear` button inside a list item clears that list item; the same button
+outside the list clears the whole form. No explicit wiring required.
+
+You can override the context with the `"context"` property using a relative
+path:
+
+```html
+<!-- Clears only the "email" field, no matter where the button is placed -->
+<button data-smark='{"action":"clear","context":"email"}'>Clear email</button>
+```
+
+See [Quick Start — Actions and Triggers](
+{{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
+and [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
+for full details.
+
+
+## Lists
+
+### Why can't I remove items from my list sometimes?
 
 SmarkForm enforces a `min_items` limit (default is 1) on variable-length lists
 to keep them functional. When you hit this minimum, the "remove" button
@@ -66,8 +251,7 @@ want to allow empty lists, set `{"min_items": 0}`.
 > Add a disabled CSS rule (e.g. `button:disabled { opacity: 0.5; }`) to make
 > this state more obvious to users.
 
-
-## Why does my «add» button stop working?
+### Why does my «add» button stop working?
 
 Similar to removal, SmarkForm respects a `max_items` limit if you set one (e.g.
 `{"max_items": 5}`). When the list hits this cap, the "add" button
@@ -77,8 +261,33 @@ Similar to removal, SmarkForm respects a `max_items` limit if you set one (e.g.
 > Style the disabled state with CSS or raise `max_items` in your config if you
 > need more slots.
 
+### My list won't let me add items until I fill the current ones—is that intended?
 
-## My exported JSON is missing some fields—what's up?
+SmarkForm does not block adding new items based on whether existing ones are
+filled. If your "add" button is disabled, check whether you've hit `max_items`
+or whether a custom event handler is interfering.
+
+
+### How do I add animations to list items?
+
+SmarkForm applies CSS classes during add/remove transitions, giving you a hook
+for animations:
+
+- When a new item is added, SmarkForm briefly adds a configurable class (e.g.
+  `new_item`) to the new element — attach a CSS animation to "slide it in".
+- When an item is removed, SmarkForm adds another configurable class (e.g.
+  `removing_item`) and waits for any running CSS transition to finish before
+  removing the DOM node — attach your "slide out" animation to that class.
+
+The exact class names can be configured in the list's `data-smark` options.
+
+See [Showcase — Animations]({{ "/about/showcase" | relative_url }}#animations)
+for a working, copy-pasteable example.
+
+
+## Data: Import, Export & Reset
+
+### My exported JSON is missing some fields—what's up?
 
 By default, SmarkForm skips empty items in variable-length lists when exporting
 to JSON. If you want those empty items included (e.g. `""` or `null`), set
@@ -87,8 +296,7 @@ to JSON. If you want those empty items included (e.g. `""` or `null`), set
 See the [Showcase]({{ "/about/showcase" | relative_url }}#a-note-on-empty-values)
 for a worked example.
 
-
-## Why are my nested form fields named weirdly in the JSON?
+### Why are my nested form fields named weirdly in the JSON?
 
 SmarkForm reflects the nesting structure in the exported JSON. A subform named
 `"address"` containing a field `"city"` will export as
@@ -97,34 +305,26 @@ SmarkForm reflects the nesting structure in the exported JSON. A subform named
 If you see unexpected nesting, double-check the `name` values in your
 `data-smark` attributes.
 
+### Why does my form export null values? How do I map them to HTML fields?
 
-## I added an event listener, but it's not firing—why?
+SmarkForm uses `null` to represent "the user has not provided a value" — this
+is intentional and distinct from an empty string `""`.
 
-SmarkForm supports events like `AfterAction_export`, `AfterAction_addItem`,
-`AfterAction_removeItem`, and more. Check:
+**Why `null` exists:**
 
-1. **The event name** — it must match the action exactly, e.g. `"AfterAction_addItem"` (not `"AfterAction_add"`).
-2. **Scoping** — `myForm.on(…)` listens to all descendants; `myForm.onLocal(…)` listens only on that specific component.
-3. **Timing** — handlers registered after the action fires are too late; register them during initialization.
+- Native `<input type="color">` can't be empty; SmarkForm's `color` type
+  returns `null` when cleared.
+- Date, time, number, and similar fields also return `null` when empty rather
+  than `""` or `0`, to avoid ambiguity in the exported JSON.
+- Radio buttons return `null` when no option is selected. They also can be
+  de-selected (by clicking the selected option again or by pressing `Delete`
+  key).
 
-See the [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) page for the full reference.
+**Mapping `null` to HTML fields on import:** when a `null` value is imported
+into a field, SmarkForm clears the field to its native empty state. The
+`clear` action does the same thing programmatically.
 
-
-## My list won't let me add items until I fill the current ones—is that intended?
-
-SmarkForm does not block adding new items based on whether existing ones are
-filled. If your "add" button is disabled, check whether you've hit `max_items`
-or whether a custom event handler is interfering.
-
-
-## Where's the error message when something goes wrong?
-
-SmarkForm favors silent prevention over loud errors. For example, hitting
-`min_items` disables "remove" instead of throwing an error. You can hook into
-events (e.g. `AfterAction_removeItem`) to add custom feedback.
-
-
-## How do I submit form data to a backend?
+### How do I submit form data to a backend?
 
 The recommended pattern is:
 
@@ -147,8 +347,7 @@ myForm.on("AfterAction_export", async ({ data }) => {
 
 See [Event Handling — Common Patterns]({{ "/advanced_concepts/events" | relative_url }}#submitting-form-data-to-a-backend) for more detail.
 
-
-## Can I use a classic HTML form submission instead of JSON export?
+### Can I use a classic HTML form submission instead of JSON export?
 
 SmarkForm currently works with **JSON-based import/export** rather than native
 `<form>` POST submission. The `<form>` tag itself is not enhanced to submit via
@@ -162,75 +361,7 @@ your backend via `fetch` (see above).
 > submission or a transparent bridge to the Fetch API — is on the
 > [roadmap]({{ "/about/roadmap" | relative_url }}). This is **not** yet implemented.
 
-
-## Can I have multiple independent SmarkForm forms on a page?
-
-Yes, with a few guidelines:
-
-- **Do not nest one SmarkForm root inside another.** SmarkForm forms should be
-  independent siblings in the DOM.
-  ```html
-  <!-- Two independent root forms on the same page -->
-  <div id="formA">…</div>
-  <div id="formB">…</div>
-
-  <script>
-  const formA = new SmarkForm(document.getElementById("formA"));
-  const formB = new SmarkForm(document.getElementById("formB"));
-  </script>
-  ```
-- **One root with named subforms** is often a better pattern than multiple
-  roots — use `data-smark='{"type":"form","name":"billing"}'` to create logically
-  separate sections within a single root.
-  ```html
-  <!-- One root form with named subforms -->
-  <div id="outerForm">
-    <div data-smark='{"name":"formA"}'>…</div>
-    <div data-smark='{"name":"formB"}'>…</div>
-  </div>
-
-  <script>
-  (async ()=>{
-    const outerForm = new SmarkForm(document.getElementById("outerForm"));
-    await myForm.rendered;
-    const formA = outerForm.find("/formA");
-    const formB = outerForm.find("/formB");
-  })();
-  </script>
-  ```
-- With the second pattern, absolute paths start from the real root. But this is
-more an advantage than a limitation since both forms can access the data of
-each other (if needed).
-
-
-
-## How do I add custom actions?
-
-Pass a `customActions` object to the `SmarkForm` constructor. Each key becomes
-an action name that can be referenced in `data-smark` trigger buttons:
-
-```javascript
-const customActions = {
-    async myAction(data, options) {
-        console.log("Custom action triggered with data:", data);
-    },
-};
-const myForm = new SmarkForm(document.getElementById("myForm"), {
-    customActions
-});
-```
-
-```html
-<button data-smark='{"action":"myAction"}'>Run Custom Action</button>
-```
-
-Custom actions are bound to the root form instance (`this` inside the function
-refers to the root `SmarkForm`). They do **not** automatically participate in
-the `BeforeAction`/`AfterAction` event cycle unless you emit those events
-yourself.
-
-
-## How do default values and reset work?
+### How do default values and reset work?
 
 The `value` property in a component's `data-smark` options sets its
 `defaultValue`. Calling `reset()` (or clicking a Reset trigger) restores the
@@ -289,7 +420,76 @@ updates the default — it simply restores the current default value.
 > state — including empty list items that would otherwise be stripped.
 
 
-## `myForm.find('/foo/bar')` returns `null` but the field exists
+## Events & Actions
+
+### I added an event listener, but it's not firing—why?
+
+SmarkForm supports events like `AfterAction_export`, `AfterAction_addItem`,
+`AfterAction_removeItem`, and more. Check:
+
+1. **The event name** — it must match the action exactly, e.g. `"AfterAction_addItem"` (not `"AfterAction_add"`).
+2. **Scoping** — `myForm.on(…)` listens to all descendants; `myForm.onLocal(…)` listens only on that specific component.
+3. **Timing** — handlers registered after the action fires are too late; register them during initialization.
+
+See the [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) page for the full reference.
+
+### How do I add custom actions?
+
+Pass a `customActions` object to the `SmarkForm` constructor. Each key becomes
+an action name that can be referenced in `data-smark` trigger buttons:
+
+```javascript
+const customActions = {
+    async myAction(data, options) {
+        console.log("Custom action triggered with data:", data);
+    },
+};
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+    customActions
+});
+```
+
+```html
+<button data-smark='{"action":"myAction"}'>Run Custom Action</button>
+```
+
+Custom actions are bound to the root form instance (`this` inside the function
+refers to the root `SmarkForm`). They do **not** automatically participate in
+the `BeforeAction`/`AfterAction` event cycle unless you emit those events
+yourself.
+
+
+### How do I add keyboard shortcuts (hotkeys)?
+
+Add a `hotkey` property to any trigger's `data-smark` object. The value is the
+`KeyboardEvent.key` string for the desired key (single printable characters are
+most portable). Hotkeys are activated with `Ctrl` + the key:
+
+```html
+<button data-smark='{"action":"addItem","hotkey":"+"}'>Add</button>
+<button data-smark='{"action":"removeItem","hotkey":"-"}'>Remove</button>
+<button data-smark='{"action":"export","hotkey":"s"}'>Save</button>
+```
+
+**Hotkey reveal:** pressing and holding `Ctrl` shows visual badges on all
+currently active hotkey triggers — great for discoverability.
+
+**Context sensitivity:** hotkeys only fire when keyboard focus is inside the
+component that is the trigger's context. The same key can mean different things
+in different parts of a complex form.
+
+See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full details and examples.
+
+
+## Behaviour & Troubleshooting
+
+### Where's the error message when something goes wrong?
+
+SmarkForm favors silent prevention over loud errors. For example, hitting
+`min_items` disables "remove" instead of throwing an error. You can hook into
+events (e.g. `AfterAction_removeItem`) to add custom feedback.
+
+### `myForm.find('/foo/bar')` returns `null` but the field exists
 
 This almost always means `find()` was called **before the form finished
 rendering**.
@@ -316,7 +516,87 @@ those events are only emitted after rendering is complete.
 > first.
 
 
-## Which browsers does SmarkForm support?
+### What does `await myForm.rendered` do?
+
+The `rendered` property is a **Promise** that resolves once SmarkForm has
+finished building its internal component tree from the DOM. Rendering is
+asynchronous because SmarkForm processes `data-smark` attributes
+asynchronously to keep the browser responsive for large forms.
+
+Any code that needs to access components via `find()`, or that needs to
+programmatically `import()` initial data, must wait for this promise:
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+
+// Wait before touching the component tree
+await myForm.rendered;
+
+// Now safe to use
+const field = myForm.find("/address/city");
+await myForm.import({ address: { city: "Paris" } });
+```
+
+Event handlers registered via `myForm.on(…)` are always called after rendering
+is complete, so you do not need to `await myForm.rendered` inside them.
+
+
+## API & JavaScript
+
+### Can I have multiple independent SmarkForm forms on a page?
+
+Yes, with a few guidelines:
+
+- **Do not nest one SmarkForm root inside another.** SmarkForm forms should be
+  independent siblings in the DOM.
+  ```html
+  <!-- Two independent root forms on the same page -->
+  <div id="formA">…</div>
+  <div id="formB">…</div>
+
+  <script>
+  const formA = new SmarkForm(document.getElementById("formA"));
+  const formB = new SmarkForm(document.getElementById("formB"));
+  </script>
+  ```
+- **One root with named subforms** is often a better pattern than multiple
+  roots — use `data-smark='{"type":"form","name":"billing"}'` to create logically
+  separate sections within a single root.
+  ```html
+  <!-- One root form with named subforms -->
+  <div id="outerForm">
+    <div data-smark='{"name":"formA"}'>…</div>
+    <div data-smark='{"name":"formB"}'>…</div>
+  </div>
+
+  <script>
+  (async ()=>{
+    const outerForm = new SmarkForm(document.getElementById("outerForm"));
+    await myForm.rendered;
+    const formA = outerForm.find("/formA");
+    const formB = outerForm.find("/formB");
+  })();
+  </script>
+  ```
+- With the second pattern, absolute paths start from the real root. But this is
+more an advantage than a limitation since both forms can access the data of
+each other (if needed).
+
+
+### What's this «API interface» I keep hearing about?
+
+The API interface is a **planned future feature** for dynamic data — think
+fetching options for a `<select>` component from a server, or loading list
+items on demand. It is **not yet implemented**.
+
+Stay tuned — details will land in the docs when it's ready. See the
+[Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for more
+context.
+
+
+## Integration & Deployment
+
+### Which browsers does SmarkForm support?
 
 SmarkForm targets the browsers covered by its Babel configuration and is tested
 with Playwright across **Chromium**, **Firefox**, and **WebKit** (Safari engine).
@@ -331,39 +611,7 @@ In practice this means modern versions of:
 
 Older browsers (IE 11, legacy Edge) are not supported.
 
-
-## Why does my form export null values? How do I map them to HTML fields?
-
-SmarkForm uses `null` to represent "the user has not provided a value" — this
-is intentional and distinct from an empty string `""`.
-
-**Why `null` exists:**
-
-- Native `<input type="color">` can't be empty; SmarkForm's `color` type
-  returns `null` when cleared.
-- Date, time, number, and similar fields also return `null` when empty rather
-  than `""` or `0`, to avoid ambiguity in the exported JSON.
-- Radio buttons return `null` when no option is selected. They also can be
-  de-selected (by clicking the selected option again or by pressing `Delete`
-  key).
-
-**Mapping `null` to HTML fields on import:** when a `null` value is imported
-into a field, SmarkForm clears the field to its native empty state. The
-`clear` action does the same thing programmatically.
-
-
-## What's this «API interface» I keep hearing about?
-
-The API interface is a **planned future feature** for dynamic data — think
-fetching options for a `<select>` component from a server, or loading list
-items on demand. It is **not yet implemented**.
-
-Stay tuned — details will land in the docs when it's ready. See the
-[Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for more
-context.
-
-
-## Can I use SmarkForm in React (or Vue, Angular, etc.) projects?
+### Can I use SmarkForm in React (or Vue, Angular, etc.) projects?
 
 SmarkForm is not designed for virtual-DOM frameworks and the
 fit is awkward.
@@ -376,14 +624,13 @@ and Angular work.
 Anyway, if you want to try it, please [give us feedback](https://github.com/bitifet/SmarkForm/discussions)
 on your experience.
 
-
-## Where does SmarkForm really shine?
+### Where does SmarkForm really shine?
 
 SmarkForm is a DOM-first, markup-driven library — and that is a feature, not a
 limitation. It is an ideal fit anywhere you own the HTML and want powerful form
 behaviour without pulling in a heavyweight framework.
 
-### Server-rendered HTML stacks
+#### Server-rendered HTML stacks
 
 If your backend renders HTML (Ruby on Rails, Django, Laravel, Symfony, plain
 PHP, ASP.NET Razor, Go templates…), you already own every DOM node before the
@@ -404,14 +651,14 @@ page loads. SmarkForm slots in with a single `<script>` import and a
 Your backend devs keep writing plain HTML templates; SmarkForm upgrades them
 silently.
 
-### Static-site generators and JAMstack
+#### Static-site generators and JAMstack
 
 Hugo, Jekyll, Eleventy, Astro (static output), Zola… — all generate HTML at
 build time. SmarkForm enhances those static pages with dynamic form behaviour
 without changing the rendering pipeline. The docs site you're reading right now
 is a Jekyll site that uses exactly this pattern.
 
-### Progressive enhancement of existing pages
+#### Progressive enhancement of existing pages
 
 Got a legacy app or a CMS (WordPress, Drupal, TYPO3, Joomla) where you can
 add `data-smark` attributes but can't change the server stack? Add a small
@@ -419,7 +666,7 @@ add `data-smark` attributes but can't change the server stack? Add a small
 existing `<form>` or `<div>`, and the page instantly gains subforms,
 variable-length lists, and JSON export — all without touching server code.
 
-### Alpine.js and 'HTML-over-the-wire' stacks
+#### Alpine.js and 'HTML-over-the-wire' stacks
 
 [Alpine.js](https://alpinejs.dev/), [HTMX](https://htmx.org/),
 [Hotwire/Turbo](https://hotwired.dev/), and similar tools share SmarkForm's
@@ -431,21 +678,21 @@ philosophy of keeping behaviour close to the markup. They pair naturally:
 - **Alpine.js** can call `myForm.export()` / `myForm.import()` from its event
   handlers, letting Alpine manage UI state while SmarkForm owns form data.
 
-### Vanilla JavaScript projects and micro-frontends
+#### Vanilla JavaScript projects and micro-frontends
 
 When you don't want any framework at all — a standalone widget, an embeddable
 form component, a micro-frontend — SmarkForm gives you complex form logic
 (nested subforms, dynamic lists, hotkeys) in a single ~38 KB bundle with
 zero runtime dependencies.
 
-### Back-office tools and internal dashboards
+#### Back-office tools and internal dashboards
 
 Internal tooling rarely needs a polished React stack. A lightweight HTML page
 plus SmarkForm can handle configuration editors, data-entry screens, and admin
 panels with far less boilerplate than a full SPA framework, and with no Node.js
 build step if you use the CDN.
 
-### In short
+#### In short
 
 | Environment | Why SmarkForm fits well |
 |-------------|------------------------|
@@ -461,9 +708,11 @@ build step if you use the CDN.
 > [discussion](https://github.com/bitifet/SmarkForm/discussions) — we're happy
 > to help you evaluate!
 
-## What about if I have a question that's not covered here?
 
-You have a question that isn't answered here? You found a confusing edge case? You want to know if SmarkForm is a good fit for your project?
+## Have a question not covered here?
+
+You have a question that isn't answered here? You found a confusing edge case?
+You want to know if SmarkForm is a good fit for your project?
 
 Open a [discussion](https://github.com/bitifet/SmarkForm/discussions) on GitHub
 or reach out at the [Telegram community
