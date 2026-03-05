@@ -17,6 +17,7 @@ around edge cases or features that might catch you off guard at first.
 <div class="chaptertoc toplevel">
 
   {{ "
+<!-- NOTE: Use `:let g:vmt_max_level = 3` with vim's markdown-toc for this file -->
 <!-- vim-markdown-toc GitLab -->
 
 * [SmarkForm Essentials](#smarkform-essentials)
@@ -78,7 +79,8 @@ annotate your HTML with `data-smark` attributes and call
 - **Actions & events** for custom behaviour without writing DOM manipulation
   code.
 
-It has no runtime dependencies and ships as a single ~38 KB bundle (ESM or
+It has no runtime dependencies and ships as a single
+{{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB bundle (ESM or
 UMD). It is **not** a React/Vue/Angular component library — it is a DOM-first
 library that works best with server-rendered or static HTML.
 
