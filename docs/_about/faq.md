@@ -29,7 +29,7 @@ around edge cases or features that might catch you off guard at first.
     * [What are triggers and actions?](#what-are-triggers-and-actions)
     * [What is «context» in SmarkForm?](#what-is-context-in-smarkform)
     * [What is the Singleton Pattern?](#what-is-the-singleton-pattern)
-    * [How do I add a "clear" button to a `color` or `number` field?](#how-do-i-add-a-clear-button-to-a-color-or-number-field)
+    * [How do I add a 'clear' button to a `color` or `number` field?](#how-do-i-add-a-clear-button-to-a-color-or-number-field)
 * [Lists](#lists)
     * [Why can't I remove items from my list sometimes?](#why-cant-i-remove-items-from-my-list-sometimes)
     * [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
@@ -47,6 +47,7 @@ around edge cases or features that might catch you off guard at first.
     * [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
     * [How do I add custom actions?](#how-do-i-add-custom-actions)
     * [How do I add keyboard shortcuts (hotkeys)?](#how-do-i-add-keyboard-shortcuts-hotkeys)
+    * [What if I want to reach an outer action with the same hotkey?](#what-if-i-want-to-reach-an-outer-action-with-the-same-hotkey)
 * [Behaviour & Troubleshooting](#behaviour-troubleshooting)
     * [Where's the error message when something goes wrong?](#wheres-the-error-message-when-something-goes-wrong)
     * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
@@ -302,11 +303,11 @@ See [Core Component Types — The Singleton Pattern](
 for a full walkthrough.
 
 
-### How do I add a "clear" button to a `color` or `number` field?
+### How do I add a 'clear' button to a `color` or `number` field?
 
 Native `<input type="color">` always has a value — it cannot be empty — so
 SmarkForm provides its own `color` type that can export `null`. But how do
-you clear it?
+you clear it without the keyboard?
 
 **Option A — Singleton Pattern (recommended):** wrap the `<input>` in a
 container declared as the SmarkForm component, then place the `clear` trigger
@@ -452,7 +453,7 @@ HTML5's own `required` attribute can also help for plain text inputs — those
 participate in the browser's built-in constraint validation, which SmarkForm
 does not interfere with.
 
-
+### How do I submit form data to a backend?
 
 The recommended pattern is:
 
@@ -627,8 +628,7 @@ the visual style entirely up to you:
 When `Ctrl` is released the `data-hotkey` attributes are removed and the hints
 disappear automatically.
 
-**Context sensitivity:** SmarkForm is smarter than a simple "fire only when
-focus is inside this component" rule. When a hotkey combination is pressed, it
+**Context sensitivity:** When a hotkey combination is pressed, SmarkForm
 searches for matching triggers across the **focused component, all its
 ancestors, and the siblings of those ancestors** — ordered by proximity to the
 focused element. The nearest match wins.
@@ -640,6 +640,19 @@ automatically based on where the keyboard focus is.
 
 See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full details and examples.
 
+### What if I want to reach an outer action with the same hotkey?
+
+Use `Alt+Ctrl` instead of `Ctrl` to reach the next matching trigger up the
+hierarchy.
+
+Following the previous example, if you have `Ctrl+-` to remove a phone and you
+want to remove the whole user instead, press `Alt+Ctrl+-` to skip the first
+match and trigger the next one.
+
+This is [well explained]({{ "/resources/user_guide" | relative_url
+}}#second-level-hotkeys-reaching-outer-contexts) of the end-user guide — 🚀
+feel free to link it in your UI or documentation to [help your users discover this
+kind of features]({{ "/community/branding" | relative_url }}).
 
 ## Behaviour & Troubleshooting
 
