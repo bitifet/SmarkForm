@@ -28,6 +28,8 @@ around edge cases or features that might catch you off guard at first.
     * [What are the different SmarkForm component types?](#what-are-the-different-smarkform-component-types)
     * [What are triggers and actions?](#what-are-triggers-and-actions)
     * [What is «context» in SmarkForm?](#what-is-context-in-smarkform)
+    * [What is the Singleton Pattern?](#what-is-the-singleton-pattern)
+    * [How do I add a "clear" button to a `color` or `number` field?](#how-do-i-add-a-clear-button-to-a-color-or-number-field)
 * [Lists](#lists)
     * [Why can't I remove items from my list sometimes?](#why-cant-i-remove-items-from-my-list-sometimes)
     * [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
@@ -37,6 +39,7 @@ around edge cases or features that might catch you off guard at first.
     * [My exported JSON is missing some fields—what's up?](#my-exported-json-is-missing-some-fieldswhats-up)
     * [Why are my nested form fields named weirdly in the JSON?](#why-are-my-nested-form-fields-named-weirdly-in-the-json)
     * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
+    * [Is there a `notNull` attribute (or `required` option)?](#is-there-a-notnull-attribute-or-required-option)
     * [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend)
     * [Can I use a classic HTML form submission instead of JSON export?](#can-i-use-a-classic-html-form-submission-instead-of-json-export)
     * [How do default values and reset work?](#how-do-default-values-and-reset-work)
@@ -241,13 +244,18 @@ The **context** of a trigger is the component that receives the action. By
 default, SmarkForm resolves it automatically — the trigger's "natural context"
 is its **closest ancestor component that implements the action**.
 
-This means a `clear` button placed directly inside a list item's template
-clears that list item; if it is inside a nested subform, it clears that
-subform; and if it is outside the list entirely, it clears the enclosing
-form or list where it lives. No explicit wiring is ever required.
+This means:
 
-You can override the context with the `"context"` property using a relative
-path:
+- A `clear` button placed **directly inside** a list item's template clears
+  that list item.
+- If the button is inside a **nested subform**, it clears the subform.
+- If it is outside all lists and subforms, it clears the enclosing component —
+  which might be a `form`, a `list`, or even a scalar field like `color` or
+  `number` if the button is embedded inside one using the **singleton pattern**
+  (see [What is the Singleton Pattern?](#what-is-the-singleton-pattern)).
+
+For the case where no convenient ancestor exists, you can always target any
+component explicitly with the `"context"` property and a relative path:
 
 ```html
 <!-- Clears only the "email" field, no matter where the button is placed -->
@@ -258,6 +266,74 @@ See [Quick Start — Actions and Triggers](
 {{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
 and [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
 for full details.
+
+
+### What is the Singleton Pattern?
+
+The **Singleton Pattern** is a technique where you wrap a single HTML form
+field inside a non-field container tag and declare **that container** as the
+SmarkForm component. The container becomes the component; the inner `<input>`
+(or `<textarea>` or `<select>`) is just the rendering surface.
+
+```html
+<!-- Without Singleton Pattern — bare input, no room for sibling triggers -->
+<input type="color" name="bgcolor" data-smark>
+
+<!-- With Singleton Pattern — container IS the component; has room for extras -->
+<span data-smark='{"type":"color","name":"bgcolor"}'>
+    <input data-smark>
+    <button data-smark='{"action":"clear"}'>❌ Reset</button>
+</span>
+```
+
+Because the trigger (`clear`) is now **inside** the component, its natural
+context is the `color` component itself — no explicit `context` path needed.
+
+The Singleton Pattern is available for all scalar field types (`input`,
+`number`, `color`, `radio`, `date`, `time`, `datetime-local`).  It is
+especially useful for:
+
+- Embedding a `clear` button directly inside a `color` or `number` field.
+- Adding per-item `removeItem` buttons inside lists of scalars.
+- Grouping a label and its field as a single named component.
+
+See [Core Component Types — The Singleton Pattern](
+{{ "/getting_started/core_component_types" | relative_url }}#the-singleton-pattern)
+for a full walkthrough.
+
+
+### How do I add a "clear" button to a `color` or `number` field?
+
+Native `<input type="color">` always has a value — it cannot be empty — so
+SmarkForm provides its own `color` type that can export `null`. But how do
+you clear it?
+
+**Option A — Singleton Pattern (recommended):** wrap the `<input>` in a
+container declared as the SmarkForm component, then place the `clear` trigger
+inside that container. The trigger's natural context becomes the `color`
+component:
+
+```html
+<span data-smark='{"type":"color","name":"bgcolor"}'>
+    <input data-smark>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+</span>
+```
+
+**Option B — Explicit context:** keep the bare `<input>` and place the button
+anywhere else, but specify the target field by name:
+
+```html
+<input type="color" name="bgcolor" data-smark>
+<button data-smark='{"action":"clear","context":"bgcolor"}'>❌ Clear</button>
+```
+
+Option A is preferred because it is resilient to future renames — you only
+need to change the `name` in one place (the container) rather than in both the
+`<input>` and the button's `context` path.
+
+The same technique applies to `number`, `date`, `time`, and any other scalar
+type that you want to associate with extra UI controls.
 
 
 ## Lists
@@ -349,7 +425,34 @@ is intentional and distinct from an empty string `""`.
 into a field, SmarkForm clears the field to its native empty state. The
 `clear` action does the same thing programmatically.
 
-### How do I submit form data to a backend?
+
+### Is there a `notNull` attribute (or `required` option)?
+
+No — and there intentionally never will be one at the SmarkForm level.
+
+Here is why: SmarkForm cannot tell whether a field is `null` because the user
+**deliberately left it empty** or because it was **never touched**. Enforcing
+non-null at export time would therefore silently coerce data that might be
+legitimately absent.
+
+The correct approach is **validation before submission**: if a field must not
+be empty, prevent the user from triggering the `export` action until they have
+filled it in.  You can do this with a `BeforeAction_export` event handler:
+
+```javascript
+myForm.on("BeforeAction_export", ({ data, preventDefault }) => {
+    if (data.color === null) {
+        alert("Please pick a color before saving.");
+        preventDefault(); // cancel the export
+    }
+});
+```
+
+HTML5's own `required` attribute can also help for plain text inputs — those
+participate in the browser's built-in constraint validation, which SmarkForm
+does not interfere with.
+
+
 
 The recommended pattern is:
 
@@ -524,9 +627,16 @@ the visual style entirely up to you:
 When `Ctrl` is released the `data-hotkey` attributes are removed and the hints
 disappear automatically.
 
-**Context sensitivity:** hotkeys only fire when keyboard focus is inside the
-component that is the trigger's context. The same key can mean different things
-in different parts of a complex form.
+**Context sensitivity:** SmarkForm is smarter than a simple "fire only when
+focus is inside this component" rule. When a hotkey combination is pressed, it
+searches for matching triggers across the **focused component, all its
+ancestors, and the siblings of those ancestors** — ordered by proximity to the
+focused element. The nearest match wins.
+
+This means you can re-use the same key at different nesting levels: `Ctrl+-`
+can remove a phone when focus is inside the phones list, and remove a whole
+user when focus is at the user level. SmarkForm picks the right trigger
+automatically based on where the keyboard focus is.
 
 See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full details and examples.
 
