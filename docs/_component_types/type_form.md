@@ -19,6 +19,7 @@ nav_order: 1
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
+    * [Clear vs Reset Actions Example](#clear-vs-reset-actions-example)
 * [API Reference](#api-reference)
     * [Options](#options)
         * [focus_on_click](#focus_on_click)
@@ -268,7 +269,8 @@ clicking any native `<input type="submit">` / `<button type="submit">` will also
 action automatically, with the native `event.submitter` passed through so that HTML5 per-button
 overrides (e.g. `formaction`, `formmethod`) are honoured.
 
-> ⚠️ **Enter key from non-submit fields does not submit.** In SmarkForm, <kbd>Enter</kbd>
+{: .warning :}
+> **Enter key from non-submit fields does not submit.** In SmarkForm, <kbd>Enter</kbd>
 > navigates between fields (like <kbd>Tab</kbd>). This applies to non-button fields — including
 > non-enhanced elements such as a `<select>` placed inside the native `<form>` container for UI
 > purposes. Pressing <kbd>Enter</kbd> while a **submit button** (native or SmarkForm trigger) is
@@ -281,7 +283,8 @@ of the `@action` decorator — no additional event wiring is required.
 has a `name` attribute its name/value pair is appended to the flattened entries — matching native
 browser behaviour. This does **not** apply to JSON encoding (see below).
 
-> ℹ️ The submitter element is always available as `options.submitter` inside `BeforeAction_submit`
+{: .info :}
+> The submitter element is always available as `options.submitter` inside `BeforeAction_submit`
 > and `AfterAction_submit` handler callbacks for any custom handling.
 
 ##### Options (submit)
@@ -313,15 +316,18 @@ Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is sup
 - If the response body is `text/html`, the current document is replaced with it.
 - Otherwise, nothing happens by default.
 
-> ℹ️ The submitter name/value is **not** automatically added to the JSON body. For JSON
+{: .info :}
+> The submitter name/value is **not** automatically added to the JSON body. For JSON
 > submissions the developer has full control over the payload. Access the submitter element via
 > `options.submitter` inside a `BeforeAction_submit` handler to incorporate it as needed
 > (e.g. as a URL parameter or a dedicated JSON field).
 
-> ⚠️ JSON submission to a `target` other than `_self` is not supported; the target is coerced
+{: .warning :}
+> JSON submission to a `target` other than `_self` is not supported; the target is coerced
 > to `_self` and a warning is printed to the console.
 
-> ⚠️ Non-HTTP action URLs (e.g. `mailto:`, `data:`) are **not** supported with JSON encoding and
+{: .warning :}
+> Non-HTTP action URLs (e.g. `mailto:`, `data:`) are **not** supported with JSON encoding and
 > will throw an error. Use the default form-encoded enctype for non-HTTP action URLs.
 
 **Non-JSON encoding (URL-encoded / multipart / plain-text):**
@@ -332,7 +338,8 @@ with a non-JSON enctype throws an error. The temporary form is removed after sub
 Non-HTTP action URLs such as `mailto:someone@example.com` are fully supported through this path
 — the browser handles them natively (e.g. opening the email client for `mailto:` with GET).
 
-> ⚠️ When the submitting element has a `name` attribute its name/value pair is appended to the
+{: .warning :}
+> When the submitting element has a `name` attribute its name/value pair is appended to the
 > submitted entries — matching native browser behaviour. Be aware that this adds an entry not
 > present in the SmarkForm export data.
 
