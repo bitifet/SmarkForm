@@ -371,3 +371,195 @@ test.describe(test_title, () => {
     });//}}}
 
 });
+
+// Pug: self-contained page with native <form> as SmarkForm root.//{{{
+// (Does not extend layout.pug because layout hardcodes SmarkForm on <body>.)
+const pugSrcNativeRoot = (
+`doctype html
+html
+    head
+        title= self.title
+    body
+        form#sfroot(method="post", action="/submit-target")
+            p
+                label Name
+                input(data-smark name="name" type="text")
+            p
+                button(type="submit" data-smark={action:"submit"}) Trigger Submit
+            p
+                button(type="submit" id="plain-btn") Plain Submit
+        script(src="../../dist/SmarkForm.umd.js")
+        script.
+            window.form = new SmarkForm(document.querySelector("form#sfroot"));
+`);
+//}}}
+
+test.describe('Submit — native <form> root', () => {
+
+    test('Enter key (no prior button click) does NOT trigger submit action', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcNativeRoot,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const submitCalled = await page.evaluate(async () => {
+                await form.rendered;
+
+                let called = false;
+                const orig = form.actions.submit;
+                form.actions.submit = async () => { called = true; return {}; };
+
+                // Dispatch a submit event without any preceding button click.
+                // This simulates Enter key pressed in a text input.
+                form.targetNode.dispatchEvent(
+                    new Event('submit', {bubbles: false, cancelable: true})
+                );
+
+                // Wait a tick for any async handler
+                await new Promise(r => setTimeout(r, 50));
+
+                form.actions.submit = orig;
+                return called;
+            });
+
+            expect(submitCalled).toBe(false);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('clicking a plain (non-SmarkForm) submit button DOES trigger submit action', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcNativeRoot,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const submitCalled = await page.evaluate(async () => {
+                await form.rendered;
+
+                let called = false;
+                const orig = form.actions.submit;
+                form.actions.submit = async () => { called = true; return {}; };
+
+                // Click the plain submit button (no data-smark).
+                document.querySelector('#plain-btn').click();
+
+                await new Promise(r => setTimeout(r, 50));
+
+                form.actions.submit = orig;
+                return called;
+            });
+
+            expect(submitCalled).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('clicking a SmarkForm trigger submit button does NOT double-invoke submit action', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcNativeRoot,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const callCount = await page.evaluate(async () => {
+                await form.rendered;
+
+                let count = 0;
+                const orig = form.actions.submit;
+                form.actions.submit = async () => { count++; return {}; };
+
+                // Click the SmarkForm trigger button.
+                // onTriggerClick handles it; the native submit listener must skip it.
+                const triggerBtn = document.querySelector(
+                    'button[data-smark]'
+                );
+                triggerBtn.click();
+
+                await new Promise(r => setTimeout(r, 100));
+
+                form.actions.submit = orig;
+                return count;
+            });
+
+            // Should be called exactly once (by onTriggerClick), not twice
+            expect(callCount).toBe(1);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});
+
+test.describe('Submit — JSON encoding', () => {
+
+    test('JSON encoding does NOT include submitter name/value in request body', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+
+                let capturedBody = null;
+                const origFetch = window.fetch;
+                window.fetch = async function(_url, init) {
+                    capturedBody = init.body;
+                    return {
+                        redirected: false,
+                        url: _url,
+                        headers: {get: () => 'text/plain'},
+                    };
+                };
+
+                await form.import({name: 'Alice', age: '25'}, {silent: true, setDefault: false});
+
+                // Temporarily set JSON enctype on targetNode
+                form.targetNode.setAttribute('enctype', 'application/json');
+                form.targetNode.setAttribute('method', 'post');
+
+                const fakeSubmitter = document.createElement('button');
+                fakeSubmitter.name = 'intent';
+                fakeSubmitter.value = 'save';
+
+                await form.actions.submit(null, {silent: true, submitter: fakeSubmitter});
+
+                window.fetch = origFetch;
+                form.targetNode.removeAttribute('enctype');
+                form.targetNode.removeAttribute('method');
+
+                return JSON.parse(capturedBody);
+            });
+
+            // SmarkForm data should be present
+            expect(result.name).toBe('Alice');
+            expect(result.age).toBeDefined();
+            // Submitter name/value must NOT be in the JSON body
+            expect(result).not.toHaveProperty('intent');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});

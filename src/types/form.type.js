@@ -11,6 +11,13 @@ import {getRoots, parseJSON} from "../lib/helpers.js";
 // Symbol used to guard against double-binding of the native submit handler.
 const sym_submit_bound = Symbol('smarkform_submit_bound');
 
+// Symbol used to record the last explicitly-clicked submit-type button.
+// Set by the click listener; cleared by the submit listener.
+// A null value means the submission was NOT triggered by a button click
+// (e.g. Enter key in a text field or programmatic form.submit()) and
+// must be blocked, since SmarkForm uses Enter for field navigation.
+const sym_submit_click = Symbol('smarkform_submit_click');
+
 // Flatten a nested export object into a list of {name, value} pairs.//{{{
 // keyStyle:   'bracket' (default) → parent[child]  |  'dot' → parent.child
 // arrayStyle: 'repeat'  (default) → same name       |  'index' → name[i] / name.i
@@ -57,22 +64,17 @@ function flattenData(data, {keyStyle = 'bracket', arrayStyle = 'repeat'} = {}) {
 }//}}}
 
 // Submit form data as JSON via fetch().//{{{
-async function _submitJSON(data, {action, method, target, extraEntries}) {
+async function _submitJSON(data, {action, method, target}) {
     if (target !== '_self') {
         console.warn(
             `SmarkForm: JSON submission to target "${target}" is not supported;`
             + ` coercing to "_self".`
         );
     }
-    const body = Object.assign({}, data);
-    // Best-effort: add submitter name/value
-    for (const {name, value} of extraEntries) {
-        body[name] = value;
-    }
     const response = await fetch(action, {
         method: method.toUpperCase(),
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(body),
+        body: JSON.stringify(data),
     });
     if (response.redirected) {
         window.location.assign(response.url);
@@ -139,10 +141,35 @@ export class form extends SmarkField {
             && ! me.targetNode[sym_submit_bound]
         ) {
             me.targetNode[sym_submit_bound] = true;
+            // Track explicit clicks on submit-type buttons.  This lets the
+            // submit listener distinguish "user clicked a submit button" from
+            // "browser fired submit because Enter was pressed in a text field".
+            // In SmarkForm, Enter navigates between fields and must NOT submit.
+            me.targetNode.addEventListener('click', (ev) => {
+                const target = ev.target;
+                if (! target) return;
+                const tag = target.tagName.toLowerCase();
+                const type = (target.getAttribute('type') || '').toLowerCase();
+                if (
+                    (tag === 'button' && type !== 'reset' && type !== 'button')
+                    || (tag === 'input' && (type === 'submit' || type === 'image'))
+                ) {
+                    me.targetNode[sym_submit_click] = target;
+                }
+            }, true);
             me.targetNode.addEventListener('submit', async (event) => {
                 event.preventDefault();
+                const clickedBtn = me.targetNode[sym_submit_click];
+                me.targetNode[sym_submit_click] = null;
+                // Block submissions not initiated by a submit button click
+                // (Enter key in any field, programmatic form.submit(), etc.)
+                if (! clickedBtn) return;
+                // If the clicked button is a SmarkForm trigger it was already
+                // handled by onTriggerClick — don't invoke the action twice.
+                const clickedComponent = me.getComponent(clickedBtn);
+                if (clickedComponent?.getTriggerArgs?.()) return;
                 await me.actions.submit(null, {
-                    submitter: event.submitter || null,
+                    submitter: event.submitter || clickedBtn,
                 });
             });
         }
@@ -286,7 +313,11 @@ export class form extends SmarkField {
                 action: effectiveAction,
                 method: effectiveMethod,
                 target: effectiveTarget,
-                extraEntries,
+                // Submitter name/value is intentionally NOT merged into the
+                // JSON body.  For JSON submissions the developer has full
+                // control over the payload.  The submitter element (if any)
+                // is available on options.submitter inside BeforeAction_submit
+                // / AfterAction_submit handlers for custom handling.
             });
         } else {
             const keyStyle = me.inheritedOption('keyStyle', 'bracket');

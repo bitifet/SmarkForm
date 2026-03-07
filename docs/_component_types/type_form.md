@@ -264,16 +264,24 @@ When called on a nested sub-form, `submit` **always delegates to the root form**
 entire root form is submitted, not just the sub-form's data.
 
 **Native submit interception:** When the root SmarkForm wraps an actual `<form>` HTML element,
-pressing <kbd>Enter</kbd> or clicking any native `<input type="submit">` / `<button
-type="submit">` will also trigger this action automatically, with the native `event.submitter`
-passed through so that HTML5 per-button overrides (e.g. `formaction`, `formmethod`) are honoured.
+clicking any native `<input type="submit">` / `<button type="submit">` will also trigger this
+action automatically, with the native `event.submitter` passed through so that HTML5 per-button
+overrides (e.g. `formaction`, `formmethod`) are honoured.
+
+> ⚠️ **Enter key does not submit.** In SmarkForm, <kbd>Enter</kbd> navigates between fields (like
+> <kbd>Tab</kbd>). This applies to all fields — including non-enhanced elements such as a `<select>`
+> placed inside the native `<form>` container for UI purposes. Only an explicit submit button click
+> triggers submission.
 
 **Events:** `BeforeAction_submit` and `AfterAction_submit` are emitted on the root form by virtue
 of the `@action` decorator — no additional event wiring is required.
 
-**Submitter name/value:** When the submitting element (trigger button or native `submitter`) has a
-`name` attribute, its name/value pair is appended to the submitted data as an extra entry, matching
-native browser behaviour.
+**Submitter name/value (form-encoded only):** For non-JSON encodings, when the submitting element
+has a `name` attribute its name/value pair is appended to the flattened entries — matching native
+browser behaviour. This does **not** apply to JSON encoding (see below).
+
+> ℹ️ The submitter element is always available as `options.submitter` inside `BeforeAction_submit`
+> and `AfterAction_submit` handler callbacks for any custom handling.
 
 ##### Options (submit)
 
@@ -304,6 +312,11 @@ Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is sup
 - If the response body is `text/html`, the current document is replaced with it.
 - Otherwise, nothing happens by default.
 
+> ℹ️ The submitter name/value is **not** automatically added to the JSON body. For JSON
+> submissions the developer has full control over the payload. Access the submitter element via
+> `options.submitter` inside a `BeforeAction_submit` handler to incorporate it as needed
+> (e.g. as a URL parameter or a dedicated JSON field).
+
 > ⚠️ JSON submission to a `target` other than `_self` is not supported; the target is coerced
 > to `_self` and a warning is printed to the console.
 
@@ -311,6 +324,10 @@ Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is sup
 Form data is flattened into name/value pairs and submitted via a temporary hidden `<form>` element
 appended to `document.body`. Only `GET` and `POST` methods are supported; using any other method
 with a non-JSON enctype throws an error. The temporary form is removed after submission.
+
+> ⚠️ When the submitting element has a `name` attribute its name/value pair is appended to the
+> submitted entries — matching native browser behaviour. Be aware that this adds an entry not
+> present in the SmarkForm export data.
 
 ##### Data flattening options
 
