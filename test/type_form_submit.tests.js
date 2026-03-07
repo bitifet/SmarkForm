@@ -1,0 +1,373 @@
+import { test, expect } from '@playwright/test';
+import {renderPug} from '../src/lib/test/helpers.js';
+
+// Pug: flat fields directly on the body root (simplest case).//{{{
+const pugSrcFlat = (
+`extends layout.pug
+block mainForm
+    p
+        label Name
+        input(
+            data-smark
+            name="name"
+            type="text"
+        )
+    p
+        label Age
+        input(
+            data-smark
+            name="age"
+            type="number"
+        )
+    p
+        button(
+            data-smark={action:"submit"}
+        ) Submit
+`);
+//}}}
+
+// Pug: nested subform to verify delegation.//{{{
+const pugSrcNested = (
+`extends layout.pug
+block mainForm
+    div(
+        data-smark={type:"form",name:"personal"}
+    )
+        p
+            label Name
+            input(
+                data-smark
+                name="name"
+                type="text"
+            )
+    div(
+        data-smark={type:"form",name:"work"}
+    )
+        p
+            label Company
+            input(
+                data-smark
+                name="company"
+                type="text"
+            )
+    p
+        button(
+            data-smark={action:"submit",context:"personal"}
+        ) Submit from subform
+`);
+//}}}
+
+const test_title = 'Submit Action Tests';
+
+test.describe(test_title, () => {
+
+    test('submit action is registered on form component', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const hasSubmitAction = await page.evaluate(async () => {
+                await form.rendered;
+                return typeof form.actions.submit === 'function';
+            });
+            expect(hasSubmitAction).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('submit action delegates to root from nested subform', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcNested,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+                let rootSubmitCalled = false;
+                const originalRootSubmit = form.actions.submit;
+
+                // Replace root submit with a spy that does not actually submit
+                form.actions.submit = async function() {
+                    rootSubmitCalled = true;
+                    return {stubbed: true};
+                };
+
+                // Call submit on a nested subform - must delegate to root
+                const subform = form.find('/personal');
+                await subform.actions.submit(null, {silent: true});
+
+                form.actions.submit = originalRootSubmit;
+                return rootSubmitCalled;
+            });
+            expect(result).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('BeforeAction_submit event fires when submit is called', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+
+                let beforeFired = false;
+                let afterFired = false;
+
+                form.on('BeforeAction_submit', () => { beforeFired = true; });
+                form.on('AfterAction_submit', () => { afterFired = true; });
+
+                // Stub out the actual submission transport to avoid navigation
+                const origCreate = document.createElement.bind(document);
+                document.createElement = function(tag) {
+                    const el = origCreate(tag);
+                    if (tag === 'form') el.submit = () => {};
+                    return el;
+                };
+
+                await form.actions.submit(null, {silent: false});
+                document.createElement = origCreate;
+
+                return {beforeFired, afterFired};
+            });
+
+            expect(result.beforeFired).toBe(true);
+            expect(result.afterFired).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('submit exports form data and sends flat entries (bracket+repeat defaults)', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const intercepted = await page.evaluate(async () => {
+                await form.rendered;
+
+                // Import test data
+                await form.import({name: 'Alice', age: '30'}, {silent: true, setDefault: false});
+
+                // Intercept the hidden form fields
+                const entries = [];
+                const origCreate = document.createElement.bind(document);
+                document.createElement = function(tag) {
+                    const el = origCreate(tag);
+                    if (tag === 'form') {
+                        const origAppendChild = el.appendChild.bind(el);
+                        el.appendChild = function(child) {
+                            if (child.type === 'hidden') {
+                                entries.push({name: child.name, value: child.value});
+                            }
+                            return origAppendChild(child);
+                        };
+                        el.submit = () => {}; // prevent actual navigation
+                    }
+                    return el;
+                };
+
+                await form.actions.submit(null, {silent: true});
+                document.createElement = origCreate;
+                return entries;
+            });
+
+            // Flat root-level keys (bracket+repeat defaults)
+            expect(intercepted).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({name: 'name', value: 'Alice'}),
+                    expect.objectContaining({name: 'age', value: '30'}),
+                ])
+            );
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('submit reads method and action from targetNode attributes', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+
+                // Temporarily inject method/action on the root's targetNode (body)
+                form.targetNode.setAttribute('method', 'post');
+                form.targetNode.setAttribute('action', '/test-endpoint');
+
+                const observed = {};
+                const origCreate = document.createElement.bind(document);
+                document.createElement = function(tag) {
+                    const el = origCreate(tag);
+                    if (tag === 'form') {
+                        el.submit = function() {
+                            observed.method = el.method;
+                            observed.action = el.action;
+                        };
+                    }
+                    return el;
+                };
+
+                await form.actions.submit(null, {silent: true});
+                document.createElement = origCreate;
+
+                // Cleanup
+                form.targetNode.removeAttribute('method');
+                form.targetNode.removeAttribute('action');
+
+                return observed;
+            });
+
+            expect(result.method).toBe('post');
+            expect(result.action).toContain('/test-endpoint');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('submit resolves submitter formaction/formmethod overrides', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+
+                const observed = {};
+                const origCreate = document.createElement.bind(document);
+                document.createElement = function(tag) {
+                    const el = origCreate(tag);
+                    if (tag === 'form') {
+                        el.submit = function() {
+                            observed.method = el.method;
+                            observed.action = el.action;
+                            observed.names = Array.from(
+                                el.querySelectorAll('input[type=hidden]')
+                            ).map(i => i.name);
+                        };
+                    }
+                    return el;
+                };
+
+                // Fake submitter with formaction/formmethod overrides and a name
+                const fakeBtn = document.createElement('button');
+                fakeBtn.setAttribute('formaction', '/alt-endpoint');
+                fakeBtn.setAttribute('formmethod', 'get');
+                fakeBtn.name = 'submitterBtn';
+                fakeBtn.value = 'clicked';
+
+                await form.actions.submit(null, {silent: true, submitter: fakeBtn});
+                document.createElement = origCreate;
+                return observed;
+            });
+
+            expect(result.method).toBe('get');
+            expect(result.action).toContain('/alt-endpoint');
+            expect(result.names).toContain('submitterBtn');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('submit with keyStyle:dot and arrayStyle:index produces dotted names', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcNested,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const intercepted = await page.evaluate(async () => {
+                await form.rendered;
+
+                // Set keyStyle/arrayStyle options on root form
+                form.options.keyStyle = 'dot';
+                form.options.arrayStyle = 'index';
+
+                await form.import(
+                    {personal: {name: 'Bob'}, work: {company: 'Acme'}},
+                    {silent: true, setDefault: false}
+                );
+
+                const entries = [];
+                const origCreate = document.createElement.bind(document);
+                document.createElement = function(tag) {
+                    const el = origCreate(tag);
+                    if (tag === 'form') {
+                        const origAppend = el.appendChild.bind(el);
+                        el.appendChild = function(child) {
+                            if (child.type === 'hidden') {
+                                entries.push({name: child.name, value: child.value});
+                            }
+                            return origAppend(child);
+                        };
+                        el.submit = () => {};
+                    }
+                    return el;
+                };
+
+                await form.actions.submit(null, {silent: true});
+                document.createElement = origCreate;
+
+                // Cleanup
+                delete form.options.keyStyle;
+                delete form.options.arrayStyle;
+
+                return entries;
+            });
+
+            // Dot-style keys: personal.name, work.company
+            expect(intercepted).toEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({name: 'personal.name', value: 'Bob'}),
+                    expect.objectContaining({name: 'work.company', value: 'Acme'}),
+                ])
+            );
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});

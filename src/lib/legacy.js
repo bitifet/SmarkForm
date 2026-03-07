@@ -1,19 +1,20 @@
 // src/lib/legacy.js
 // =================
 
+const sym_legacy_prevent = Symbol('smarkform_legacy_prevent');
+
 export default {
     disEnhance(me) {
 
-        // Prevent <form>'s default behaviour:
-        if (me.targetNode.tagName.toLowerCase()) {
+        // Prevent <form>'s default submission behaviour (fallback stub).
+        // The form component type attaches a smarter handler on top of this.
+        if (
+            me.targetNode.tagName.toLowerCase() === 'form'
+            && ! me.targetNode[sym_legacy_prevent]
+        ) {
+            me.targetNode[sym_legacy_prevent] = true;
             me.targetNode.addEventListener('submit', function(event) {
-
-                // Avoid form's regular submission:
                 event.preventDefault();
-
-                // More work may be needed to be done here (let's give it some
-                // more thought...)
-
             });
         };
 
