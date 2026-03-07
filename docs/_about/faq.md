@@ -42,6 +42,10 @@ around edge cases or features that might catch you off guard at first.
     * [Is there a `notNull` attribute (or `required` option)?](#is-there-a-notnull-attribute-or-required-option)
     * [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend)
     * [Can I use a classic HTML form submission instead of JSON export?](#can-i-use-a-classic-html-form-submission-instead-of-json-export)
+    * [Does pressing Enter in a text field submit the form?](#does-pressing-enter-in-a-text-field-submit-the-form)
+    * [Do I need to enhance submit buttons as SmarkForm triggers?](#do-i-need-to-enhance-submit-buttons-as-smarkform-triggers)
+    * [What happens to the submit button's `name` and `value` when the form submits?](#what-happens-to-the-submit-buttons-name-and-value-when-the-form-submits)
+    * [Can I use `action="mailto:…"` to send form data by email?](#can-i-use-actionmailto-to-send-form-data-by-email)
     * [How do default values and reset work?](#how-do-default-values-and-reset-work)
 * [Events & Actions](#events-actions)
     * [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
@@ -94,9 +98,9 @@ See the [Introduction]({{ "/about/introduction" | relative_url }}) and
 
 ### Do I need a `<form>` tag?
 
-**No.** SmarkForm works with any block-level element — `<div>`, `<section>`,
-`<fieldset>`, a plain `<form>`, etc. The root element is just the DOM node you
-pass to `new SmarkForm(element)`.
+**No — but you can.** SmarkForm works with any block-level element — `<div>`,
+`<section>`, `<fieldset>`, a plain `<form>`, etc. The root element is just the
+DOM node you pass to `new SmarkForm(element)`.
 
 ```html
 <!-- All of these are valid SmarkForm roots -->
@@ -105,10 +109,14 @@ pass to `new SmarkForm(element)`.
 <form id="myForm">…</form>
 ```
 
-If you do use a `<form>` tag, SmarkForm does **not** intercept the browser's
-native submit event — use an `export` trigger and `AfterAction_export` instead.
+Using a `<form>` tag is entirely optional. When you do, SmarkForm automatically
+intercepts the native submit event and routes it through the `submit` action —
+so native `<button type="submit">` and `<input type="submit">` elements work
+exactly as expected, and all the HTML5 per-button overrides (`formaction`,
+`formmethod`, etc.) are honoured.
 
-See [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend).
+See [Can I use a classic HTML form submission?](#can-i-use-a-classic-html-form-submission-instead-of-json-export)
+and [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend).
 
 
 ### How do I get and include SmarkForm?
@@ -455,7 +463,34 @@ does not interfere with.
 
 ### How do I submit form data to a backend?
 
-The recommended pattern is:
+**Option A — Native form submission (recommended when using a `<form>` tag):**
+
+Wrap your SmarkForm in a `<form>` element and add a `submit` trigger or a
+plain `<button type="submit">`. SmarkForm intercepts the browser's submit event
+and routes it through the `submit` action, which flattens the SmarkForm JSON
+into URL-encoded pairs and submits them natively:
+
+```html
+<form id="myForm" method="post" action="/api/submit">
+  …
+  <button type="submit">💾 Save</button>
+</form>
+```
+
+For JSON payloads, set `enctype="application/json"`:
+
+```html
+<form id="myForm" method="post" action="/api/submit"
+      enctype="application/json">
+  …
+  <button type="submit">💾 Save</button>
+</form>
+```
+
+See [submit action]({{ "/component_types/type_form" | relative_url }}#async-submit-action)
+for encoding options, attribute resolution, and event hooks.
+
+**Option B — Manual `fetch` (works with any root element):**
 
 1. Add an `export` trigger button to your form.
 2. Listen to `AfterAction_export` to receive the data and send it to your server.
@@ -478,17 +513,130 @@ See [Event Handling — Common Patterns]({{ "/advanced_concepts/events" | relati
 
 ### Can I use a classic HTML form submission instead of JSON export?
 
-SmarkForm currently works with **JSON-based import/export** rather than native
-`<form>` POST submission. The `<form>` tag itself is not enhanced to submit via
-the browser's built-in mechanism.
+Yes. Wrap your SmarkForm in a real `<form>` element and SmarkForm will intercept
+the native submit event automatically — there's nothing extra to wire up.
 
-**Current workaround:** use `AfterAction_export` to send the JSON payload to
-your backend via `fetch` (see above).
+```html
+<form id="myForm" method="post" action="/submit">
+  <input data-smark type="text" name="name">
+  <input data-smark type="email" name="email">
+  <button type="submit">Submit</button>
+</form>
 
-{: .info :}
-> 🔭 **Planned feature:** `<form>` tag enhancement — allowing native form
-> submission or a transparent bridge to the Fetch API — is on the
-> [roadmap]({{ "/about/roadmap" | relative_url }}). This is **not** yet implemented.
+<script>
+  new SmarkForm(document.getElementById("myForm"));
+</script>
+```
+
+Any `<button type="submit">` or `<input type="submit">` inside the form works
+as expected: clicking it (or pressing <kbd>Enter</kbd> while it is focused via
+<kbd>Tab</kbd>) submits the SmarkForm data using the form's `method`, `action`,
+and `enctype` — just as native HTML would, but populated with SmarkForm's
+exported values.
+
+For a JSON API, set `enctype="application/json"` and SmarkForm sends the data
+as a JSON object via `fetch()` instead of URL-encoding it.
+
+See [submit action]({{ "/component_types/type_form" | relative_url }}#async-submit-action)
+for the full reference, including encoding options and event hooks.
+
+### Does pressing Enter in a text field submit the form?
+
+**No.** In SmarkForm, <kbd>Enter</kbd> moves focus to the next field — like
+<kbd>Tab</kbd> but more natural to type. This applies everywhere inside the
+form container, including non-enhanced elements such as a `<select>` used for
+UI purposes (e.g. a theme switcher) that happens to be inside the `<form>` tag.
+
+The rule is straightforward:
+
+| Scenario | Result |
+|---|---|
+| <kbd>Enter</kbd> in a text / textarea / select / radio / checkbox | Navigates to next field — **does not submit** |
+| Mouse click on a submit button (or any child element inside it) | Submits |
+| <kbd>Tab</kbd> to a submit button then <kbd>Enter</kbd> | Submits (browser fires a click on the focused button first) |
+| Focused SmarkForm trigger + <kbd>Enter</kbd> | Fires the trigger's action — **does not double-submit** |
+
+This design is intentional: keyboard users navigate forms freely with
+<kbd>Enter</kbd> and only submit when they explicitly activate a submit button.
+
+### Do I need to enhance submit buttons as SmarkForm triggers?
+
+**No.** Plain `<button type="submit">` and `<input type="submit">` elements
+work without any `data-smark` enhancement. SmarkForm intercepts clicks on them
+automatically and invokes the `submit` action with the button as the
+`submitter`.
+
+If you want a submit button to also participate in the SmarkForm trigger
+system (for example, to use `BeforeAction_submit` / `AfterAction_submit` events
+or to set a different `context`), you can optionally add
+`data-smark='{"action":"submit"}'` — but this is never required.
+
+```html
+<!-- Plain submit button — works automatically -->
+<button type="submit">Send</button>
+
+<!-- SmarkForm trigger submit — identical behaviour, just more explicit -->
+<button type="submit" data-smark='{"action":"submit"}'>Send</button>
+```
+
+### What happens to the submit button's `name` and `value` when the form submits?
+
+This depends on the encoding:
+
+**Form-encoded (URL-encoded, multipart, plain-text):**
+If the submit button has a `name` attribute, its `name`/`value` pair is
+appended to the submitted payload — exactly matching native browser behaviour
+for multi-action forms:
+
+```html
+<button type="submit" name="intent" value="save">Save</button>
+<button type="submit" name="intent" value="draft">Save as Draft</button>
+```
+
+The server receives `intent=save` (or `intent=draft`) alongside the form
+fields. This lets you tell which button triggered the submission.
+
+{: .warning :}
+> This extra entry is **not** part of the SmarkForm export data. It is only
+> added to the form-encoded payload, not to the JSON object returned by
+> `export()`.
+
+**JSON encoding (`enctype="application/json"`):**
+The submitter name/value is **not** automatically added to the JSON body.
+You have full control over the payload; access the submitter element via
+`options.submitter` inside a `BeforeAction_submit` handler and add it however
+you like:
+
+```javascript
+myForm.on("BeforeAction_submit", ({ submitter, data }) => {
+    if (submitter?.name) {
+        data[submitter.name] = submitter.value; // add to JSON body
+        // or append to the URL: new URL(action).searchParams.set(...)
+    }
+});
+```
+
+### Can I use `action="mailto:…"` to send form data by email?
+
+Yes — with the default (form-encoded) encoding. When SmarkForm submits via a
+temporary `<form>` element and the action is a `mailto:` URL, the browser
+handles it natively: it opens the user's email client with the form data
+pre-filled in the message body (subject, body, etc. depend on the browser and
+the URL format).
+
+```html
+<form id="myForm" action="mailto:contact@example.com" method="get">
+  <input data-smark type="text" name="subject">
+  <textarea data-smark name="body"></textarea>
+  <button type="submit">Send Email</button>
+</form>
+```
+
+{: .warning :}
+> `mailto:` is **not** supported with `enctype="application/json"`. JSON
+> submission uses `fetch()`, which cannot handle non-HTTP URLs. SmarkForm
+> will throw a clear error if you combine the two. Use the default enctype
+> for `mailto:` actions.
 
 ### How do default values and reset work?
 
