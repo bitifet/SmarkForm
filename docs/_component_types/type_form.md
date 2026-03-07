@@ -268,10 +268,11 @@ clicking any native `<input type="submit">` / `<button type="submit">` will also
 action automatically, with the native `event.submitter` passed through so that HTML5 per-button
 overrides (e.g. `formaction`, `formmethod`) are honoured.
 
-> ⚠️ **Enter key does not submit.** In SmarkForm, <kbd>Enter</kbd> navigates between fields (like
-> <kbd>Tab</kbd>). This applies to all fields — including non-enhanced elements such as a `<select>`
-> placed inside the native `<form>` container for UI purposes. Only an explicit submit button click
-> triggers submission.
+> ⚠️ **Enter key from non-submit fields does not submit.** In SmarkForm, <kbd>Enter</kbd>
+> navigates between fields (like <kbd>Tab</kbd>). This applies to non-button fields — including
+> non-enhanced elements such as a `<select>` placed inside the native `<form>` container for UI
+> purposes. Pressing <kbd>Enter</kbd> while a **submit button** (native or SmarkForm trigger) is
+> focused still submits normally, because the browser fires a `click` event on the button first.
 
 **Events:** `BeforeAction_submit` and `AfterAction_submit` are emitted on the root form by virtue
 of the `@action` decorator — no additional event wiring is required.
@@ -320,10 +321,16 @@ Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is sup
 > ⚠️ JSON submission to a `target` other than `_self` is not supported; the target is coerced
 > to `_self` and a warning is printed to the console.
 
+> ⚠️ Non-HTTP action URLs (e.g. `mailto:`, `data:`) are **not** supported with JSON encoding and
+> will throw an error. Use the default form-encoded enctype for non-HTTP action URLs.
+
 **Non-JSON encoding (URL-encoded / multipart / plain-text):**
 Form data is flattened into name/value pairs and submitted via a temporary hidden `<form>` element
 appended to `document.body`. Only `GET` and `POST` methods are supported; using any other method
 with a non-JSON enctype throws an error. The temporary form is removed after submission.
+
+Non-HTTP action URLs such as `mailto:someone@example.com` are fully supported through this path
+— the browser handles them natively (e.g. opening the email client for `mailto:` with GET).
 
 > ⚠️ When the submitting element has a `name` attribute its name/value pair is appended to the
 > submitted entries — matching native browser behaviour. Be aware that this adds an entry not

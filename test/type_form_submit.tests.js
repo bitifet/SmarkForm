@@ -563,3 +563,170 @@ test.describe('Submit — JSON encoding', () => {
     });//}}}
 
 });
+
+// Pug: native <form> root with an inner-span button and a plain text input.//{{{
+const pugSrcInnerSpan = (
+`doctype html
+html
+    head
+        title= self.title
+    body
+        form#sfroot2(method="post", action="/submit-target")
+            p
+                input#txt(type="text" name="x")
+            p
+                button(type="submit" id="icon-btn")
+                    span.icon ✓
+                    |  Submit
+        script(src="../../dist/SmarkForm.umd.js")
+        script.
+            window.form2 = new SmarkForm(document.querySelector("form#sfroot2"));
+`);
+//}}}
+
+test.describe('Submit — keyboard and inner-element edge cases', () => {
+
+    test('Tab → Enter on a focused submit button DOES trigger submit action', async ({ page }) => {//{{{
+        // When the browser activates a focused button via the Enter key it fires
+        // a 'click' event before 'submit'.  Our click-tracking must pick it up.
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcNativeRoot,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            await page.evaluate(async () => {
+                await form.rendered;
+                window._submitCount = 0;
+                const orig = form.actions.submit;
+                form.actions.submit = async (...a) => { window._submitCount++; return {}; };
+                window._origSubmit = orig;
+            });
+
+            // Focus the plain submit button and press Enter.
+            await page.focus('#plain-btn');
+            await page.keyboard.press('Enter');
+
+            const count = await page.evaluate(async () => {
+                await new Promise(r => setTimeout(r, 100));
+                form.actions.submit = window._origSubmit;
+                return window._submitCount;
+            });
+
+            expect(count).toBe(1);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('clicking on inner element of submit button DOES trigger submit action', async ({ page }) => {//{{{
+        // Clicking an icon or span inside a <button type="submit"> should still
+        // be recorded as a submit-button click (ev.target would be the span without
+        // the closest() fix).
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcInnerSpan,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form2 !== 'undefined');
+
+            const submitCalled = await page.evaluate(async () => {
+                await form2.rendered;
+                let called = false;
+                const orig = form2.actions.submit;
+                form2.actions.submit = async () => { called = true; return {}; };
+
+                // Click on the <span class="icon"> inside the submit button.
+                document.querySelector('#icon-btn .icon').click();
+                await new Promise(r => setTimeout(r, 100));
+
+                form2.actions.submit = orig;
+                return called;
+            });
+
+            expect(submitCalled).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('Enter in a plain (non-SmarkForm) text input does NOT trigger submit action', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcInnerSpan,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form2 !== 'undefined');
+
+            const submitCalled = await page.evaluate(async () => {
+                await form2.rendered;
+                let called = false;
+                const orig = form2.actions.submit;
+                form2.actions.submit = async () => { called = true; return {}; };
+
+                // Dispatch submit directly (simulates Enter from text input —
+                // no click event precedes it).
+                form2.targetNode.dispatchEvent(
+                    new Event('submit', {bubbles: false, cancelable: true})
+                );
+                await new Promise(r => setTimeout(r, 50));
+
+                form2.actions.submit = orig;
+                return called;
+            });
+
+            expect(submitCalled).toBe(false);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});
+
+test.describe('Submit — JSON encoding with non-HTTP action', () => {
+
+    test('JSON encoding with mailto: action throws a clear error', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const errorMessage = await page.evaluate(async () => {
+                await form.rendered;
+                form.targetNode.setAttribute('enctype', 'application/json');
+                form.targetNode.setAttribute('action', 'mailto:test@example.com');
+                form.targetNode.setAttribute('method', 'post');
+                try {
+                    await form.actions.submit(null, {silent: true});
+                    return null;
+                } catch (err) {
+                    return err.message;
+                } finally {
+                    form.targetNode.removeAttribute('enctype');
+                    form.targetNode.removeAttribute('method');
+                    form.targetNode.removeAttribute('action');
+                }
+            });
+
+            expect(errorMessage).toMatch(/JSON encoding is not supported for non-HTTP/);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});

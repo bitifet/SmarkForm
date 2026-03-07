@@ -65,6 +65,17 @@ function flattenData(data, {keyStyle = 'bracket', arrayStyle = 'repeat'} = {}) {
 
 // Submit form data as JSON via fetch().//{{{
 async function _submitJSON(data, {action, method, target}) {
+    // fetch() only supports http: and https: — reject non-HTTP protocols
+    // (e.g. mailto:, data:) with a clear error rather than a cryptic
+    // network failure.
+    let actionUrl;
+    try { actionUrl = new URL(action); } catch (_e) { /* relative URL — always OK with fetch */ }
+    if (actionUrl && actionUrl.protocol !== 'http:' && actionUrl.protocol !== 'https:') {
+        throw new Error(
+            `SmarkForm: JSON encoding is not supported for non-HTTP URLs`
+            + ` ("${actionUrl.protocol}…"). Use a standard enctype for this action URL.`
+        );
+    }
     if (target !== '_self') {
         console.warn(
             `SmarkForm: JSON submission to target "${target}" is not supported;`
@@ -145,16 +156,22 @@ export class form extends SmarkField {
             // submit listener distinguish "user clicked a submit button" from
             // "browser fired submit because Enter was pressed in a text field".
             // In SmarkForm, Enter navigates between fields and must NOT submit.
+            //
+            // Important: browsers fire a synthetic 'click' event when Enter is
+            // pressed on a focused button — so Tab → Enter on a submit button
+            // IS tracked correctly here and DOES proceed to submit.  Only
+            // submissions triggered from non-button fields (text, select,
+            // checkbox, radio, …) lack a preceding click and are blocked.
+            //
+            // Use closest() so clicks on child elements (e.g. an icon or span
+            // inside the button label) are still attributed to the button.
             me.targetNode.addEventListener('click', (ev) => {
-                const target = ev.target;
-                if (! target) return;
-                const tag = target.tagName.toLowerCase();
-                const type = (target.getAttribute('type') || '').toLowerCase();
-                if (
-                    (tag === 'button' && type !== 'reset' && type !== 'button')
-                    || (tag === 'input' && (type === 'submit' || type === 'image'))
-                ) {
-                    me.targetNode[sym_submit_click] = target;
+                const btn = ev.target?.closest?.(
+                    `button:not([type="reset"]):not([type="button"]),`
+                    + `input[type="submit"],input[type="image"]`
+                );
+                if (btn && me.targetNode.contains(btn)) {
+                    me.targetNode[sym_submit_click] = btn;
                 }
             }, true);
             me.targetNode.addEventListener('submit', async (event) => {
