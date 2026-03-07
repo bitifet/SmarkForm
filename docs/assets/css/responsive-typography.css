@@ -1,0 +1,58 @@
+/**
+ * Responsive Typography and Navigation Improvements
+ *
+ * Adjusts font sizes using clamp() for proper scaling across device sizes.
+ * Improves navigation tap targets on mobile devices.
+ *
+ * Note: `!important` is required throughout this file because the upstream
+ * just-the-docs theme declares all font-size rules with `!important`.
+ * Overriding them without matching `!important` would have no effect.
+ */
+
+/* ============================================================
+   Site header — slightly taller & larger title on mobile
+   ============================================================ */
+
+.site-header {
+  min-height: clamp(3.75rem, 9vw, 4.5rem);
+}
+
+.site-title {
+  font-size: clamp(1.125rem, 4.5vw, 1.5rem) !important;
+}
+
+/* ============================================================
+   Navigation section headers (category labels)
+   ============================================================ */
+
+.nav-category {
+  font-size: clamp(0.75rem, 2.5vw, 0.875rem) !important;
+}
+
+/* ============================================================
+   Navigation list items — fluid from mobile to desktop
+   ============================================================ */
+
+.nav-list .nav-list-item {
+  font-size: clamp(0.9rem, 3vw, 1rem) !important;
+}
+
+@media (min-width: 50rem) {
+  .nav-list .nav-list-item {
+    font-size: clamp(0.8rem, 1.3vw, 0.95rem) !important;
+  }
+}
+
+/* ============================================================
+   Aux nav links (top-right: GitHub, NPM, CDN)
+   ============================================================ */
+
+.aux-nav {
+  font-size: clamp(0.6875rem, 2vw, 0.8rem) !important;
+}
+
+@media (min-width: 31.25rem) {
+  .aux-nav {
+    font-size: clamp(0.75rem, 2vw, 0.875rem) !important;
+  }
+}

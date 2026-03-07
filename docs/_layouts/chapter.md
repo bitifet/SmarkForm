@@ -75,7 +75,7 @@ layout: smarkform
     padding: .2em 1em;
   }
   .main-content details.chaptertoc {
-    /* Stickty TOC when foldable */
+    /* Sticky TOC when foldable */
     position: sticky;
     top: 0;
     z-index: 100;
@@ -83,8 +83,25 @@ layout: smarkform
     overflow-y: auto;
     box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.1);
   }
-  .body {
-    scroll-padding-top: 200px;
+
+  /* Summary caption — fluid font size, clearly tappable */
+  .main-content details.chaptertoc > summary {
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    font-weight: 600;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    cursor: pointer;
+  }
+
+  /*
+   * Scroll padding on the page's scroll container.
+   * Compensates for the sticky TOC height so that hash-linked
+   * headings are not hidden behind the collapsed TOC bar.
+   * The value approximates the collapsed chaptertoc height
+   * (summary font × line-height + summary padding + outer padding).
+   */
+  html, body {
+    scroll-padding-top: 3.5rem;
   }
   .main-content .chaptertoc>ul {
     margin-left: 1em;
