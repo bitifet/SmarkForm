@@ -19,6 +19,7 @@ nav_order: 1
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
+    * [Clear vs Reset Actions Example](#clear-vs-reset-actions-example)
 * [API Reference](#api-reference)
     * [Options](#options)
         * [focus_on_click](#focus_on_click)
@@ -31,6 +32,10 @@ nav_order: 1
             * [Options (clear)](#options-clear)
         * [(Async) reset (Action)](#async-reset-action)
             * [Options (reset)](#options-reset)
+        * [(Async) submit (Action)](#async-submit-action)
+            * [Options (submit)](#options-submit)
+            * [Encoding and transport](#encoding-and-transport)
+            * [Data flattening options](#data-flattening-options)
         * [Future: null (Action)](#future-null-action)
 
 <!-- vim-markdown-toc -->
@@ -251,6 +256,113 @@ This action is recursive, applying to all nested forms and lists.
   * {{ site.data.definitions.actions.options.context }}
   * **target:**
 
+
+#### (Async) submit (Action)
+
+Submits the *root* form using native browser submission semantics enhanced with SmarkForm data.
+
+When called on a nested sub-form, `submit` **always delegates to the root form** so that the
+entire root form is submitted, not just the sub-form's data.
+
+**Native submit interception:** When the root SmarkForm wraps an actual `<form>` HTML element,
+clicking any native `<input type="submit">` / `<button type="submit">` will also trigger this
+action automatically, with the native `event.submitter` passed through so that HTML5 per-button
+overrides (e.g. `formaction`, `formmethod`) are honoured.
+
+{: .warning :}
+> **Enter key from non-submit fields does not submit.** In SmarkForm, <kbd>Enter</kbd>
+> navigates between fields (like <kbd>Tab</kbd>). This applies to non-button fields — including
+> non-enhanced elements such as a `<select>` placed inside the native `<form>` container for UI
+> purposes. Pressing <kbd>Enter</kbd> while a **submit button** (native or SmarkForm trigger) is
+> focused still submits normally, because the browser fires a `click` event on the button first.
+
+**Events:** `BeforeAction_submit` and `AfterAction_submit` are emitted on the root form by virtue
+of the `@action` decorator — no additional event wiring is required.
+
+**Submitter name/value (form-encoded only):** For non-JSON encodings, when the submitting element
+has a `name` attribute its name/value pair is appended to the flattened entries — matching native
+browser behaviour. This does **not** apply to JSON encoding (see below).
+
+{: .info :}
+> The submitter element is always available as `options.submitter` inside `BeforeAction_submit`
+> and `AfterAction_submit` handler callbacks for any custom handling.
+
+##### Options (submit)
+
+  * **action:** (= "submit")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * **submitter** *(Element, optional)* — DOM element that initiated the submission. When coming
+    from a native `submit` DOM event this is set automatically. When using a trigger button the
+    trigger's target node is used. Override explicitly to supply a custom submitter.
+
+##### Encoding and transport
+
+The effective submission attributes are resolved in priority order (submitter attribute → form
+attribute → default), matching native HTML5 behaviour:
+
+| Attribute | Submitter override | Form attribute | Default |
+|-----------|-------------------|----------------|---------|
+| `action`  | `formaction`       | `action`        | `location.href` |
+| `method`  | `formmethod`       | `method`        | `get` |
+| `enctype` | `formenctype`      | `enctype`       | `application/x-www-form-urlencoded` |
+| `target`  | `formtarget`       | `target`        | `_self` |
+| `novalidate` | `formnovalidate` | `novalidate`   | false |
+
+**JSON encoding (`enctype="application/json"`):**
+Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is supported
+(`GET`, `POST`, `PUT`, `DELETE`, `PATCH`, …). After a successful response:
+- If the response was redirected, the browser navigates to the redirect destination.
+- If the response body is `text/html`, the current document is replaced with it.
+- Otherwise, nothing happens by default.
+
+{: .info :}
+> The submitter name/value is **not** automatically added to the JSON body. For JSON
+> submissions the developer has full control over the payload. Access the submitter element via
+> `options.submitter` inside a `BeforeAction_submit` handler to incorporate it as needed
+> (e.g. as a URL parameter or a dedicated JSON field).
+
+{: .warning :}
+> JSON submission to a `target` other than `_self` is not supported; the target is coerced
+> to `_self` and a warning is printed to the console.
+
+{: .warning :}
+> Non-HTTP action URLs (e.g. `mailto:`, `data:`) are **not** supported with JSON encoding and
+> will throw an error. Use the default form-encoded enctype for non-HTTP action URLs.
+
+**Non-JSON encoding (URL-encoded / multipart / plain-text):**
+Form data is flattened into name/value pairs and submitted via a temporary hidden `<form>` element
+appended to `document.body`. Only `GET` and `POST` methods are supported; using any other method
+with a non-JSON enctype throws an error. The temporary form is removed after submission.
+
+Non-HTTP action URLs such as `mailto:someone@example.com` are fully supported through this path
+— the browser handles them natively (e.g. opening the email client for `mailto:` with GET).
+
+{: .warning :}
+> When the submitting element has a `name` attribute its name/value pair is appended to the
+> submitted entries — matching native browser behaviour. Be aware that this adds an entry not
+> present in the SmarkForm export data.
+
+##### Data flattening options
+
+When using non-JSON encoding, the exported SmarkForm JSON is flattened into string key/value
+pairs. The following options on the root form control the flattening style:
+
+  * **`keyStyle`** *(string, default `"bracket"`)* — How nested keys are represented:
+    * `"bracket"` — `person[address][city]`
+    * `"dot"` — `person.address.city`
+
+  * **`arrayStyle`** *(string, default `"repeat"`)* — How array items are represented:
+    * `"repeat"` — Same name repeated: `tags`, `tags`, `tags` (native PHP / Rails style)
+    * `"index"` — Indexed: `tags[0]`, `tags[1]` (or `tags.0`, `tags.1` with `keyStyle:"dot"`)
+
+These options can be set via `data-smark` on the root form element:
+
+```html
+<form data-smark='{"keyStyle":"dot","arrayStyle":"index"}' method="post" action="/submit">
+  …
+</form>
+```
 
 #### Future: null (Action)
 
