@@ -23,10 +23,10 @@ export class color extends input {
         me.defaultValue = null; // Default value is null (undefined color)
         me.emptyValue = null;   // Type-level empty state for clear action
         // Add keydown hook to handle "Delete" key:
-        this.eventHooks.keydown.push ( ev => {
+        this.eventHooks.keydown.push(async ev => {
             if (ev.defaultPrevented) return;
             if (ev.originalEvent.key === "Delete") {
-                ev.context.clear();
+                await ev.context.clear();
             };
         });
     };
