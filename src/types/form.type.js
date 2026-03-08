@@ -47,6 +47,12 @@ export class form extends SmarkField {
             const newItem = await me.enhance(node);
             me.mountField(newItem);
         };
+        // Wait for all mounted child fields to complete their own renders
+        // before returning.  This ensures that when this form's `rendered`
+        // promise resolves (and onRendered tasks such as importing a `value`
+        // constructor option run), every nested sub-form is fully ready to
+        // receive data.  Mirrors the same pattern used in list.addItem().
+        await Promise.all(Object.values(me.children).map(child => child.rendered));
     };//}}}
     @action
     @export_to_target
