@@ -883,9 +883,6 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const deepForm = form.find("/deeplyNested");
                 const usersList = deepForm.children.users;
 
-                // Original defaults: Alice(25) and Bob(30) – established via
-                // the `value` constructor option in the pug fixture.
-
                 // Import into the parent form with setDefault:true (the default).
                 // The parent form should update its own defaultValue.
                 // The child `users` list should NOT update its defaultValue.
@@ -902,9 +899,9 @@ test.describe('Clear vs Reset Action Tests', () => {
                 await deepForm.import({users: [{name: "Temp", age: "0"}]}, {setDefault: false});
 
                 // Resetting the nested list directly must restore its OWN
-                // default (Alice+Bob), not the imported value (Charlie+Diana),
-                // because the list's defaultValue should never have been
-                // updated by the parent-level import.
+                // default.  The users list has no explicit `value` option, so
+                // its own defaultValue is the empty array – it should never
+                // have been overwritten by the parent-level import.
                 await usersList.reset();
                 const afterChildReset = await usersList.export();
 
@@ -917,12 +914,11 @@ test.describe('Clear vs Reset Action Tests', () => {
                 users: [{name: "Charlie", age: "40"}, {name: "Diana", age: "35"}]
             });
 
-            // Child list reset restores the child's OWN original defaults
-            // (Alice+Bob), NOT the value propagated from the parent import.
-            expect(results.afterChildReset).toEqual([
-                {name: "Alice", age: "25"},
-                {name: "Bob", age: "30"}
-            ]);
+            // Child list reset restores the child's OWN default (empty array,
+            // since the users list has no `value` option and its defaultValue
+            // was never directly set).  It must NOT be the value propagated
+            // from the parent import ([Charlie, Diana]).
+            expect(results.afterChildReset).toEqual([]);
         } finally {
             if (onClosed) await onClosed();
         }
