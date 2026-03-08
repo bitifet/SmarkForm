@@ -122,8 +122,10 @@ function generateTestHTML(example) {
 function generateDemoValueTestHTML(example) {
   const { formId, htmlSource, cssSource, jsHidden, jsSource, demoValue } = example;
 
-  // Use a simple constructor that passes demoValue as the value option
-  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${demoValue} });`;
+  // Use a simple constructor that passes demoValue as the value option.
+  // Use JSON.stringify(JSON.parse(...)) to ensure the value is correctly
+  // re-serialised and cannot contain unintended code fragments.
+  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${JSON.stringify(JSON.parse(demoValue))} });`;
 
   const combinedJS = [demoJsHead, jsHidden, jsSource]
     .filter(js => js && js.trim() !== '')
