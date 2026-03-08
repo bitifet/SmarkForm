@@ -256,8 +256,8 @@ function extractExamples(filePath) {
     if (params.demoValue) {
       const rawValue = params.demoValue;
       let resolvedDemoValue = captures[rawValue] !== undefined
-        ? captures[rawValue].trim()
-        : rawValue.trim();
+        ? (captures[rawValue] ?? '').trim()
+        : (rawValue ?? '').trim();
       // Apply variable interpolation (handles nested captures, etc.)
       resolvedDemoValue = interpolateVariables(resolvedDemoValue, captures);
       // Strip any remaining unresolved Jekyll template variables

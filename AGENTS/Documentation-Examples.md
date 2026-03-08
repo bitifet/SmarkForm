@@ -182,9 +182,11 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 | `page.getByRole('button', { name: '...' })` | Locate button by text |
 | `root` | Playwright locator for the form's root element |
 
-### Important: Tests See Empty Forms
+### Important: Tests See Empty Forms (co-located tests)
 
-The `demoValue` parameter is filtered by the collector, so co-located tests always render the form with no pre-populated data. Tests should NOT assume data is pre-loaded.
+The regular co-located test still starts with an **empty form**, regardless of `demoValue`. Tests should NOT assume data is pre-loaded.
+
+A separate **demoValue round-trip** test (auto-generated) initialises the form with the demoValue and verifies the export matches. This is a different test with a different purpose.
 
 If a test needs non-null values, use `writeField` to set them explicitly:
 ```javascript
@@ -212,12 +214,27 @@ The collector scans all `.md` files in `docs/` looking for `include components/s
 
 ### `DOCS_ONLY_PARAMS`
 
-Parameters listed in `DOCS_ONLY_PARAMS` are filtered out and never reach the manifest:
-```javascript
-const DOCS_ONLY_PARAMS = new Set(["demoValue"]);
-```
+Previously, the `demoValue` parameter was listed in `DOCS_ONLY_PARAMS` and filtered out before building the manifest. **This has changed**: `demoValue` is now collected and stored in the manifest, and a dedicated demoValue round-trip smoke test is generated for every example that declares one.
 
-To add new docs-only parameters (ones that only affect Jekyll rendering, not tests), add them to this set in `scripts/collect-docs-examples.js`.
+There are currently no parameters in `DOCS_ONLY_PARAMS`.
+
+### demoValue in the manifest
+
+The manifest now includes a `demoValue` field (string, or `null`) for each example. The collector processes captures and includes in **document order**, so each include sees only the captures defined before it in the file. This correctly handles files like `showcase.md` where the capture variable is redefined multiple times.
+
+When writing a `demoValue`, use canonical data formats:
+- **Time fields**: `"HH:MM:SS"` (e.g. `"14:30:00"`) — SmarkForm normalises shorter strings to include seconds on export.
+- **Number fields**: plain numbers (e.g. `3`, not `"3"`) — `type="number"` inputs export numbers, not strings.
+
+### demoValue round-trip smoke test
+
+For every example with a `demoValue`, the test runner automatically generates a `(demoValue round-trip)` test that:
+
+1. Creates a test page initialising the form with `{ value: <demoValue> }` as the SmarkForm constructor option.
+2. Waits for `myForm.rendered` then re-imports demoValue to ensure nested sub-forms receive the value.
+3. Exports and compares using `deepFilterFalsy()` which filters falsy items out of arrays (to handle `exportEmpties:false`).
+
+Existing co-located tests are unaffected — they still start with an empty form.
 
 ## Adding Realistic Demo Data
 
