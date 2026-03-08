@@ -83,7 +83,6 @@ export class form extends SmarkField {
             'FORM_NOT_PLAIN_OBJECT'
             , `Expected plain object or vailid JSON for form import, ${dataConstructor.name} given.`
         );
-        const childSetDefault = !isReset && setDefault;
         const retv = Object.fromEntries(
             await Promise.all(
                 Object.entries(me.children).map(
@@ -95,13 +94,15 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import(data[key], {focus: focus && !silent, silent, setDefault: childSetDefault});
+                        // setDefault is intentionally NOT propagated to children:
+                        // only the field where import originates updates its own default.
+                        const value = await target.import(data[key], {focus: focus && !silent, silent, setDefault: false});
                         return [key, value];
                     }
                 )
             )
         );
-        if (childSetDefault) {
+        if (!isReset && setDefault) {
             me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
         };
         if (focus && !silent) me.focus();

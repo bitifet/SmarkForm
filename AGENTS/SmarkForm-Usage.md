@@ -491,10 +491,12 @@ Using `exportEmpties: true` ensures empty list items are included in the stored 
 
 ### Propagation Through Nested Components
 
-`setDefault` is propagated consistently:
-- When a **form** imports data, it passes `setDefault` to all child imports.
-- When a **list** imports data, it passes `setDefault` to all item imports.
-- If the top-level `import()` was a reset (data was `undefined`), children always receive `setDefault: false`.
+`setDefault` applies **only to the originating field**:
+- When a **form** imports data, it updates its own `defaultValue` but passes `setDefault: false` to all child imports.
+- When a **list** imports data, it updates its own `defaultValue` but passes `setDefault: false` to all item imports.
+- The top-level field is always the only one whose default is updated by a given `import()` call.
+
+This means that `clear()` after a parent-level import correctly empties the fields (restoring each child's own pre-import default), while `reset()` on the parent still restores the imported data via the parent's saved `defaultValue`.
 
 ### Breaking Change From Earlier Versions
 

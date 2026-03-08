@@ -268,9 +268,10 @@ Summary of `setDefault` behaviour:
 | `reset()` | No | The current default |
 
 {: .hint }
-> `setDefault` propagates to all nested components: when a form imports data
-> with `setDefault: true`, every child (including nested forms and lists) also
-> updates its own default.
+> `setDefault` applies only to the **originating** field: when a form imports
+> data with `setDefault: true`, only that form updates its own default. Child
+> components (nested forms, lists, and leaf fields) always receive
+> `setDefault: false` so that their own defaults are not affected.
 
 ### The `focus` option
 

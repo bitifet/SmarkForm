@@ -190,7 +190,6 @@ export class list extends SmarkField {
         if (isReset) data = me.defaultValue;
         // Auto-update in case of scalar to array template upgrade:
         if (! (data instanceof Array)) data = [data];
-        const childSetDefault = !isReset && setDefault;
         // Load data:
         const top = Math.min(data.length, me.max_items);
         for (
@@ -199,7 +198,9 @@ export class list extends SmarkField {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(null, {silent: true}); // Make room on demand
-            await me.children[i].import(data[i], {focus: focus && !silent, silent, setDefault: childSetDefault});
+            // setDefault is intentionally NOT propagated to children:
+            // only the field where import originates updates its own default.
+            await me.children[i].import(data[i], {focus: focus && !silent, silent, setDefault: false});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -222,7 +223,7 @@ export class list extends SmarkField {
             i < me.children.length; // (Due to min_items)
             i++
         ) me.children[i].reset({silent: true});
-        if (childSetDefault) {
+        if (!isReset && setDefault) {
             me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
         };
         if (focus && !silent) me.focus();
