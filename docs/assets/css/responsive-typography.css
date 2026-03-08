@@ -26,7 +26,7 @@
    ============================================================ */
 
 .nav-category {
-  font-size: clamp(0.75rem, 2.8vw, 0.875rem) !important;
+  font-size: clamp(0.8rem, 2.8vw, 0.875rem) !important;
 }
 
 /* ============================================================
@@ -35,13 +35,29 @@
 
 /* Mobile / hamburger menu: ensure links are easy to read and tap */
 .nav-list .nav-list-item {
-  font-size: clamp(1rem, 3.2vw, 1.1rem) !important;
+  font-size: clamp(1.1rem, 3.5vw, 1.2rem) !important;
+}
+
+/* Mobile: extra vertical padding for comfortable finger-tap targets */
+.nav-list .nav-list-item .nav-list-link {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  min-height: 3.5rem;
+  line-height: 2.5rem;
 }
 
 /* Desktop sidebar: keep compact, max same as original theme (0.875rem) */
 @media (min-width: 50rem) {
   .nav-list .nav-list-item {
     font-size: clamp(0.75rem, 1.1vw, 0.875rem) !important;
+  }
+
+  /* Restore desktop link dimensions to original theme values */
+  .nav-list .nav-list-item .nav-list-link {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    min-height: 2rem;
+    line-height: 1.5rem;
   }
 }
 
