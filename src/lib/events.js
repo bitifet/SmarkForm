@@ -91,7 +91,7 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             // Intentional fire-and-forget: DOM event listeners
                             // must return synchronously; the async emit is
                             // dispatched and its promise is intentionally not awaited here.
-                            targetComponent.emit(evType, evData);
+                            void targetComponent.emit(evType, evData);
                         }, true); // Use capture phase
                     };
                 };
