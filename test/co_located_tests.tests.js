@@ -352,24 +352,22 @@ for (const example of examples) {
       return typeof window.SmarkForm !== 'undefined';
     }, { timeout: 5000 });
 
-    // Wait for the root form to finish its own rendering and initial import.
-    // SmarkForm rendering is async: the root form's `rendered` promise resolves
-    // after the root's onRendered tasks run (which includes an initial import of
-    // the `value` constructor option), but nested sub-form children may not be
-    // fully rendered at that point.  After `myForm.rendered` we explicitly
-    // re-import the demoValue to ensure all nested fields are correctly
-    // populated regardless of sub-form rendering order.
-    const parsedDemoValue = JSON.parse(example.demoValue);
-    await page.evaluate(async (value) => {
+    // Wait for the root form (and the entire component tree) to finish
+    // rendering, including all nested sub-forms.  The `rendered` promise
+    // resolves after the form's `render()` completes AND its onRendered
+    // tasks run (which include importing the `value` constructor option).
+    // After this point the form should already contain the demoValue data
+    // — no explicit re-import should be needed.
+    await page.evaluate(async () => {
       await myForm.rendered;
-      await myForm.import(value);
-    }, parsedDemoValue);
+    });
 
     // Export the form and compare against demoValue
     const exported = await page.evaluate(async () => {
       return await myForm.export();
     });
 
+    const parsedDemoValue = JSON.parse(example.demoValue);
     expect(
       deepFilterFalsy(exported),
       `demoValue round-trip failed for ${example.id}`
