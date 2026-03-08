@@ -81,10 +81,17 @@ layout: smarkform
     top: 0;
     z-index: 100;
     /*
-     * No overflow-y/max-height here: having both position:sticky and
-     * overflow-y:auto on the same element breaks sticky in some mobile
-     * browsers (iOS Safari). Overflow is handled by the inner <ul> instead.
+     * Cap the sticky element at viewport height. Without this, when the TOC is
+     * expanded to a list longer than the screen, the sticky element's own height
+     * exceeds the viewport and it starts scrolling partially off the top.
+     * overflow:hidden clips the container; the inner <ul> still has its own
+     * overflow-y:auto so the list itself remains scrollable.
+     * (overflow:hidden on the sticky element itself does NOT break sticky —
+     *  it is only overflow on an ANCESTOR that breaks it.)
      */
+    max-height: 100vh;           /* fallback */
+    max-height: 100dvh;          /* adapts to mobile browser chrome */
+    overflow: hidden;
     box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.1);
   }
 
@@ -193,6 +200,8 @@ layout: smarkform
     }
     .main-content details.chaptertoc {
         box-shadow: none;
+        max-height: none;
+        overflow: visible;
     }
     .main-content details.chaptertoc summary {
         font-size: 1.5em;
