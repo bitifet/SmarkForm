@@ -40,6 +40,32 @@ try {
 
 
 /**
+ * Recursively filter falsy values out of arrays (and recurse into objects).
+ *
+ * This normalises an exported form value for comparison against a demoValue
+ * that may contain null placeholders for empty list slots:
+ *   deepFilterFalsy({foo: [null, 23, null]}) → {foo: [23]}
+ *
+ * Only array items are filtered; object values and primitives are kept as-is
+ * so that intentional zeros, empty strings, and booleans inside objects are
+ * preserved.
+ */
+function deepFilterFalsy(value) {
+  if (Array.isArray(value)) {
+    return value.filter(Boolean).map(deepFilterFalsy);
+  }
+  if (value !== null && typeof value === 'object') {
+    const result = {};
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = deepFilterFalsy(v);
+    }
+    return result;
+  }
+  return value;
+}
+
+
+/**
  * Generate a minimal HTML page for testing an example
  */
 function generateTestHTML(example) {
@@ -71,6 +97,59 @@ function generateTestHTML(example) {
     ${htmlSource}
   </div>
   
+  <script src="/dist/SmarkForm.umd.js"></script>
+  <script>
+    window.myForm = (function() {
+      ${combinedJS}
+       return myForm;
+    })();
+  </script>
+</body>
+</html>`;
+}
+
+/**
+ * Generate a minimal HTML page for testing demoValue round-trip.
+ *
+ * The form is initialised with `{ value: <demoValue> }` as the constructor
+ * option so the smoke test can verify that importing and then re-exporting
+ * the demoValue produces equivalent data.
+ *
+ * Note: jsHead is intentionally replaced with a simple constructor call that
+ * passes the value option.  jsHidden and jsSource are kept so that any event
+ * listeners or extra setup defined by the example are still active.
+ */
+function generateDemoValueTestHTML(example) {
+  const { formId, htmlSource, cssSource, jsHidden, jsSource, demoValue } = example;
+
+  // Use a simple constructor that passes demoValue as the value option
+  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${demoValue} });`;
+
+  const combinedJS = [demoJsHead, jsHidden, jsSource]
+    .filter(js => js && js.trim() !== '')
+    .join('\n\n');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test demoValue: ${formId}</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    ${cssSource}
+  </style>
+</head>
+<body>
+  <div id="myForm-${formId}">
+    ${htmlSource}
+  </div>
+
   <script src="/dist/SmarkForm.umd.js"></script>
   <script>
     window.myForm = (function() {
@@ -227,6 +306,82 @@ for (const example of examples) {
       }
     }
     
+    // Clean up
+    try {
+      fs.unlinkSync(tmpFilePath);
+    } catch (e) {
+      // Ignore cleanup errors
+    }
+  });
+}
+
+// Generate demoValue round-trip smoke tests for examples that have demoValue set.
+//
+// Each test initialises the form with demoValue passed as the SmarkForm
+// constructor's `value` option, then exports the form and asserts that the
+// exported data matches demoValue after filtering falsy values from arrays
+// (to account for exportEmpties:false stripping empty list slots).
+for (const example of examples) {
+  if (skipFile(example.file)) continue;
+  if (!example.demoValue) continue;
+
+  test(`[${example.file}] ${example.formId} (demoValue round-trip)`, async ({ page }) => {
+    const testHTML = generateDemoValueTestHTML(example);
+
+    const tmpDir = path.join(__dirname, 'tmp');
+    if (!fs.existsSync(tmpDir)) {
+      fs.mkdirSync(tmpDir, { recursive: true });
+    }
+
+    const tmpFileName = `docs_example_demovalue_${example.id}.html`;
+    const tmpFilePath = path.join(tmpDir, tmpFileName);
+    fs.writeFileSync(tmpFilePath, testHTML);
+
+    // Track page errors — none are expected for demoValue tests
+    const pageErrors = [];
+    page.on('pageerror', error => pageErrors.push(error.message));
+
+    const port = await getServerPort();
+    const url = `http://127.0.0.1:${port}/test/tmp/${tmpFileName}`;
+
+    await page.goto(url);
+
+    await page.waitForFunction(() => {
+      return typeof window.SmarkForm !== 'undefined';
+    }, { timeout: 5000 });
+
+    // Wait for the root form to finish its own rendering and initial import.
+    // SmarkForm rendering is async: the root form's `rendered` promise resolves
+    // after the root's onRendered tasks run (which includes an initial import of
+    // the `value` constructor option), but nested sub-form children may not be
+    // fully rendered at that point.  After `myForm.rendered` we explicitly
+    // re-import the demoValue to ensure all nested fields are correctly
+    // populated regardless of sub-form rendering order.
+    const parsedDemoValue = JSON.parse(example.demoValue);
+    await page.evaluate(async (value) => {
+      await myForm.rendered;
+      await myForm.import(value);
+    }, parsedDemoValue);
+
+    // Export the form and compare against demoValue
+    const exported = await page.evaluate(async () => {
+      return await myForm.export();
+    });
+
+    expect(
+      deepFilterFalsy(exported),
+      `demoValue round-trip failed for ${example.id}`
+    ).toEqual(deepFilterFalsy(parsedDemoValue));
+
+    // No page errors expected
+    if (pageErrors.length > 0) {
+      console.log('Page errors:', pageErrors);
+    }
+    expect(
+      pageErrors,
+      `Unexpected page error(s) in demoValue test for ${example.id}`
+    ).toHaveLength(0);
+
     // Clean up
     try {
       fs.unlinkSync(tmpFilePath);
