@@ -32,7 +32,7 @@ export const action = function action_decorator(targetMtd, {kind, name, addIniti
             data = await targetMtd.call(me, data, options);
             options.data = data;
             if (! options.silent) {
-                me.emit(`AfterAction_${name}`, options);
+                await me.emit(`AfterAction_${name}`, options);
             };
             // The resulting action method returns the data returned by the
             // original method.
@@ -121,5 +121,4 @@ export async function onTriggerClick(ev) {
     );
     return await mtd(data, options);
 };
-
 
