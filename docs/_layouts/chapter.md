@@ -76,11 +76,15 @@ layout: smarkform
   }
   .main-content details.chaptertoc {
     /* Sticky TOC when foldable */
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 100;
-    max-height: 100vh;
-    overflow-y: auto;
+    /*
+     * No overflow-y/max-height here: having both position:sticky and
+     * overflow-y:auto on the same element breaks sticky in some mobile
+     * browsers (iOS Safari). Overflow is handled by the inner <ul> instead.
+     */
     box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.1);
   }
 
@@ -91,6 +95,18 @@ layout: smarkform
     padding-top: 0.4em;
     padding-bottom: 0.4em;
     cursor: pointer;
+  }
+
+  /*
+   * The TOC list (inner content) handles its own scrolling.
+   * Keeping overflow away from the sticky element itself ensures
+   * position:sticky works reliably on mobile browsers.
+   * Subtract approx. summary bar height (~3.5rem) from the max-height.
+   */
+  .main-content details.chaptertoc > ul {
+    max-height: calc(100vh - 3.5rem);   /* fallback for browsers without dvh */
+    max-height: calc(100dvh - 3.5rem); /* preferred: adapts to mobile browser chrome */
+    overflow-y: auto;
   }
 
   /*
@@ -166,6 +182,8 @@ layout: smarkform
         padding-left: 0px;
     }
     .main-content .chaptertoc > ul {
+        max-height: none;
+        overflow: visible;
         border-left: 3rem solid #eee;
         margin-left: 1rem;
         padding-left: 2rem;
