@@ -201,7 +201,17 @@ Key highlights:
 
 ---
 
-### LinkedIn
+### LinkedIn Article
+
+#### Content
+
+...
+
+#### Hero Image propmt
+
+...
+
+### LinkedIn Posts
 
 #### Public (general audience)
 
@@ -236,6 +246,14 @@ If you build web forms and haven't tried SmarkForm yet, now is a great time to e
 
 Tailored tweets for each community should mimic the "Public (general audience)" version but with a different angle or emphasis, including a heading with the name of the targetted community.
 
+> **IMPORTANT:** Double-check that all tweets fit within the 280-character
+> limit, including emojis and hashtags. Use abbreviations and concise language
+> as needed to fit the format while keeping it engaging.
+
+Also, all tweets should should include the tag "#SmarkForm", preferrably in the first line, to increase visibility and create a consistent hashtag for the project.
+
+Other hashtags can be used to target specific subjects like #JavaScript, #WebDev, #Forms, #OpenSource, etc. and also more specific, like #a11y if the release includes accessibility improvements, #validation if it includes validation features, etc. The choice of hashtags should be adapted to the content of the release and the targetted community.
+
 There should be one for each of the following communities:
 
   - Frontend Developers.
@@ -253,7 +271,9 @@ There should be one for each of the following communities:
   - Accessibility (only when the new version includes accessibility improvements).
 
 
-Same goes for LinkedIn posts, but with a more professional tone and slightly longer format. Each should have a heading with the name of the targetted community.
+Same goes for LinkedIn posts, but with a more professional tone. Each should have a heading with the name of the targetted community.
+
+They are intended to be posted linking the article so the whould highlight the most relevant aspects of it for each community. For example, the post for "Frontend Developers" should focus on the new features and improvements that are most relevant to frontend devs, while the one for "Open Source Contributors" could highlight the open source aspect of the project and encourage contributions.
 
 The linkedIn communities are the following:
 
@@ -263,8 +283,6 @@ The linkedIn communities are the following:
   - Software Development.
   - Software Engeeniering.
 
-
-In the case of twitter: All tweets should fit in the current 280-character limit, including the emojis and hashtags. Use abbreviations and concise language as needed to fit the format while keeping it engaging.
 
 ---
 

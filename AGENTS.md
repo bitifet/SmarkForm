@@ -18,6 +18,8 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 
 - **Default to opening a PR** for all changes unless the user explicitly says otherwise. Always use `report_progress` to commit and push changes to a PR branch.
 
+- **Make step commits**: When several steps are specified in the task, make at least one commit per each step. In case of bug fixes, a commit with failing tests should come first, then a commit with the fix, and finally a commit with documentation updates, etc... if needed. These are minimums: There can be more intermediate commits if it makes sense to break down the work into smaller steps or there is something that needs to be fix in an already committed change, but there should not be fewer than one commit per step.
+
 ### Reference to Future Work
 
 To ensure coding agents (and contributors alike) make the best decisions while solving current tasks, we maintain a detailed **PROMPTS.md** file. This file serves as:
