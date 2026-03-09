@@ -202,7 +202,7 @@ export default async ({ page, expect, id, root }) => {
    tests=clear_reset_example_tests
 %}
 
-/*
+{% comment %}
 We disable the editor for this example because the "Export" button would
 trigger the event handler in the example which would feel uggly and the editor
 is not needed anyway for the purpose of this example.
@@ -210,7 +210,7 @@ is not needed anyway for the purpose of this example.
 We could prevent it from the event handler by checking the event context but
 it would add unnecessary complexity for no apparent reason (since the editor's
 export button is outside of the shown code) to the example.
-*/
+{% endcomment %}
 
 
 API Reference
