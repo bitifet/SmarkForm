@@ -25,8 +25,20 @@
    Navigation section headers (category labels)
    ============================================================ */
 
+/* Mobile: much more readable size; padding keeps the tap target finger-friendly */
 .nav-category {
-  font-size: clamp(0.8rem, 2.8vw, 0.875rem) !important;
+  font-size: 1rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+@media (min-width: 50rem) {
+  /* Desktop: restore original theme value */
+  .nav-category {
+    font-size: 0.875rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
 }
 
 /* ============================================================
