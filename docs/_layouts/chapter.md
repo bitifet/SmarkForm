@@ -105,39 +105,17 @@ layout: smarkform
   }
 
   /*
-   * The TOC list (inner content) handles its own scrolling via a wrapper <div>
-   * created by the script below. We do NOT set overflow-y:auto here because the
-   * CSS spec coerces overflow-x from 'visible' to 'auto' whenever overflow-y is
-   * non-visible. The <ul> has ::before counter numbers with negative margin-left
-   * values that intentionally hang outside the <ul>'s content box (hanging
-   * indent). With overflow-x:auto on the <ul> itself, those overflowing ::before
-   * elements fall outside the scroll container and stay fixed while the list
-   * scrolls — they appear misaligned. Moving overflow to a wrapper <div> (with
-   * a slight padding-left to ensure the ::before overhang stays within the div's
-   * border box) fixes this without changing the visual layout.
-   */
-  .main-content details.chaptertoc > ul {
-    /* overflow and max-height are on .chaptertoc-scroll-div, added by JS */
-  }
-
-  /*
    * Scroll wrapper for the TOC list — created by the JS below.
-   * padding-left: 0.4em ensures that the ::before elements with margin-left
-   * of up to -1.3em (for top-level items) land at least 0.1em inside the
-   * div's border box, so they ARE part of the scrollable area and scroll with
-   * the list. margin-left: -0.4em compensates so the visual position of the
-   * numbers and text is identical to before.
-   * (calc: details padding-left 1em + div margin-left -0.4em + div padding-left
-   *  0.4em + ul margin-left 1em - ::before margin-left 1.3em = 0.7em — exactly
-   *  matching the original position.)
+   * overflow-y: auto enables scrolling. We use display:flex on li items (below)
+   * so that ::before counter numbers are proper flex items — no negative
+   * margin-left needed. This avoids the CSS-spec coercion of overflow-x to
+   * 'auto' trapping ::before elements in the scroll container's padding area
+   * (which is anchored and does not scroll with the content).
    */
   .chaptertoc-scroll-div {
     max-height: calc(100vh - 3.5rem);   /* fallback for browsers without dvh */
     max-height: calc(100dvh - 3.5rem); /* preferred: adapts to mobile browser chrome */
     overflow-y: auto;
-    /* Contain the negative-margin ::before counters within the scroll container */
-    padding-left: 0.4em;
-    margin-left: -0.4em;
   }
 
   /*
@@ -161,12 +139,15 @@ layout: smarkform
     counter-reset: subitem-counter;
     counter-increment: item-counter;
     list-style: none !important;
+    display: flex;
+    align-items: flex-start;
   }
   .main-content .chaptertoc>.chaptertoc-scroll-div>ul > li::before {
     content: counter(item-counter) ". ";
     font-weight: bold;
-    margin-right: 0.5em;
-    margin-left: -1.3em !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-right: 0.3em;
   }
 
   /* Style and increment second-level list items */
@@ -178,12 +159,15 @@ layout: smarkform
   .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li {
     counter-reset: subsubitem-counter;
     counter-increment: subitem-counter;
+    display: flex;
+    align-items: flex-start;
   }
   .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li::before {
     content: counter(item-counter) "." counter(subitem-counter) ". ";
     font-weight: normal;
-    margin-right: 0.5em;
-    margin-left: -2em !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-right: 0.3em;
   }
 
   /* Style and increment third-level list items */
@@ -193,11 +177,14 @@ layout: smarkform
   }
   .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li > ul > li {
     counter-increment: subsubitem-counter;
+    display: flex;
+    align-items: flex-start;
   }
   .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li > ul > li::before {
     content: counter(item-counter) "." counter(subitem-counter) "." counter(subsubitem-counter) ". ";
-    margin-right: 0.5em;
-    margin-left: -2.8em !important;
+    flex-shrink: 0;
+    white-space: nowrap;
+    margin-right: 0.3em;
   }
 
   .go-to-top {
@@ -215,8 +202,6 @@ layout: smarkform
     .chaptertoc-scroll-div {
         max-height: none;
         overflow-y: visible;
-        padding-left: 0;
-        margin-left: 0;
     }
     .main-content .chaptertoc>.chaptertoc-scroll-div>ul {
         max-height: none;
