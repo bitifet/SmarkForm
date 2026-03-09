@@ -119,7 +119,7 @@ endcapture %}
 %}
 
 
-### Clear vs Reset Actions Example
+**Clear vs Reset Actions Example:**
 
 The following example demonstrates the distinction between `clear` and `reset` actions:
 
@@ -198,10 +198,19 @@ export default async ({ page, expect, id, root }) => {
    htmlSource=clear_reset_example
    jsSource=clear_reset_example_js
    notes=clear_reset_example_notes
-   showEditor=true
+   showEditor=false
    tests=clear_reset_example_tests
 %}
 
+/*
+We disable the editor for this example because the "Export" button would
+trigger the event handler in the example which would feel uggly and the editor
+is not needed anyway for the purpose of this example.
+
+We could prevent it from the event handler by checking the event context but
+it would add unnecessary complexity for no apparent reason (since the editor's
+export button is outside of the shown code) to the example.
+*/
 
 
 API Reference
