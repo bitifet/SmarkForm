@@ -864,4 +864,63 @@ test.describe('Clear vs Reset Action Tests', () => {
             if (onClosed) await onClosed();
         }
     });//}}}
+
+    test('setDefault propagation: parent import does NOT update descendant defaults', async ({ page }) => {//{{{
+        // Regression test: when a parent form is imported with setDefault:true,
+        // only the parent's own default should be updated.  Descendant fields
+        // must NOT update their defaults (they should always receive
+        // setDefault:false during a propagated import).
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const results = await page.evaluate(async () => {
+                const deepForm = form.find("/deeplyNested");
+                const usersList = deepForm.children.users;
+
+                // Import into the parent form with setDefault:true (the default).
+                // The parent form should update its own defaultValue.
+                // The child `users` list should NOT update its defaultValue.
+                await deepForm.import({
+                    users: [{name: "Charlie", age: "40"}, {name: "Diana", age: "35"}]
+                });
+
+                // Parent form reset should restore Charlie+Diana (its own
+                // default was updated by the import above).
+                await deepForm.reset();
+                const afterParentReset = await deepForm.export();
+
+                // Now temporarily modify the display without touching defaults.
+                await deepForm.import({users: [{name: "Temp", age: "0"}]}, {setDefault: false});
+
+                // Resetting the nested list directly must restore its OWN
+                // default.  The users list has no explicit `value` option, so
+                // its own defaultValue is the empty array – it should never
+                // have been overwritten by the parent-level import.
+                await usersList.reset();
+                const afterChildReset = await usersList.export();
+
+                return { afterParentReset, afterChildReset };
+            });
+
+            // Parent form reset correctly restores the imported data (parent
+            // default WAS updated).
+            expect(results.afterParentReset).toEqual({
+                users: [{name: "Charlie", age: "40"}, {name: "Diana", age: "35"}]
+            });
+
+            // Child list reset restores the child's OWN default (empty array,
+            // since the users list has no `value` option and its defaultValue
+            // was never directly set).  It must NOT be the value propagated
+            // from the parent import ([Charlie, Diana]).
+            expect(results.afterChildReset).toEqual([]);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
 });

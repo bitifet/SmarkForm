@@ -190,7 +190,6 @@ export class list extends SmarkField {
         if (isReset) data = me.defaultValue;
         // Auto-update in case of scalar to array template upgrade:
         if (! (data instanceof Array)) data = [data];
-        const childSetDefault = !isReset && setDefault;
         // Load data:
         const top = Math.min(data.length, me.max_items);
         for (
@@ -199,7 +198,9 @@ export class list extends SmarkField {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(null, {silent: true}); // Make room on demand
-            await me.children[i].import(data[i], {focus: focus && !silent, silent, setDefault: childSetDefault});
+            // setDefault is intentionally NOT propagated to children:
+            // only the field where import originates updates its own default.
+            await me.children[i].import(data[i], {focus: focus && !silent, silent, setDefault: false});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -208,7 +209,7 @@ export class list extends SmarkField {
         ) await me.removeItem(null, {silent: true});
         // Report if data doesn't fit:
         if (data.length > me.max_items) {
-            me.emit("error", {
+            await me.emit("error", {
                 code: 'LIST_IMPORT_OVERFLOW',
                 message: `Trying to import array greater than list's max_items. Data beyond max_items ignored.`,
                 context: me,
@@ -221,8 +222,8 @@ export class list extends SmarkField {
             let i = data.length;
             i < me.children.length; // (Due to min_items)
             i++
-        ) me.children[i].reset({silent: true});
-        if (childSetDefault) {
+        ) await me.children[i].reset(null, {silent: true});
+        if (!isReset && setDefault) {
             me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
         };
         if (focus && !silent) me.focus();
@@ -253,7 +254,7 @@ export class list extends SmarkField {
                     break;
                 case "throw":
                 default:
-                    me.emit("error", {
+                    await me.emit("error", {
                         code: 'LIST_MAX_ITEMS_REACHED',
                         message: `Cannot add items over max_items boundary`,
                         options,
@@ -367,7 +368,7 @@ export class list extends SmarkField {
                         return;
                     case "throw":
                     default:
-                        me.emit("error", {
+                        await me.emit("error", {
                             code: 'LIST_MIN_ITEMS_REACHED',
                             message: `Cannot remove items under min_items boundary`,
                             options,

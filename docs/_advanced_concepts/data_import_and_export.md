@@ -114,7 +114,7 @@ The structure of the exported value mirrors the nesting of the form:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{"order":{"customer":"Jane Smith","notes":"Please wrap as a gift","items":[{"product":"Widget A","qty":"3"},{"product":"Widget B","qty":"1"}]}}{% endcapture %}
+{% capture demoValue %}{"order":{"customer":"Jane Smith","notes":"Please wrap as a gift","items":[{"product":"Widget A","qty":3},{"product":"Widget B","qty":1}]}}{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="export_structure"
@@ -133,8 +133,8 @@ object matches the form structure exactly:
     "customer": "Jane Smith",
     "notes": "Please wrap as a gift",
     "items": [
-      { "product": "Widget A", "qty": "3" },
-      { "product": "Widget B", "qty": "1" }
+      { "product": "Widget A", "qty": 3 },
+      { "product": "Widget B", "qty": 1 }
     ]
   }
 }
@@ -268,9 +268,10 @@ Summary of `setDefault` behaviour:
 | `reset()` | No | The current default |
 
 {: .hint }
-> `setDefault` propagates to all nested components: when a form imports data
-> with `setDefault: true`, every child (including nested forms and lists) also
-> updates its own default.
+> `setDefault` applies only to the **originating** field: when a form imports
+> data with `setDefault: true`, only that form updates its own default. Child
+> components (nested forms, lists, and leaf fields) always receive
+> `setDefault: false` so that their own defaults are not affected.
 
 ### The `focus` option
 

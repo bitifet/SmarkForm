@@ -193,7 +193,7 @@ layout.
 A nested subform, a sortable list, context-driven hotkeys, and date/time
 coercion — all driven by `data-smark` attributes with zero extra JavaScript.
 
-{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
+{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="event_planner"

@@ -124,7 +124,7 @@ endcapture %}
 %}
 
 
-### Clear vs Reset Actions Example
+**Clear vs Reset Actions Example:**
 
 The following example demonstrates the distinction between `clear` and `reset` actions:
 
@@ -145,12 +145,40 @@ The following example demonstrates the distinction between `clear` and `reset` a
         <input data-smark type='number' name='age' />
     </p>
     <p>
-        <button data-smark='{"action":"clear","context":"userProfile"}'>Clear All</button>
-        <button data-smark='{"action":"reset","context":"userProfile"}'>Reset to Defaults</button>
-        <button data-smark='{"action":"export"}' onclick='alert(JSON.stringify(data, null, 2))'>Show Data</button>
+        <button data-smark='{"action":"clear"}'>Clear All</button>
+        <button data-smark='{"action":"reset"}'>Reset to Defaults</button>
+        <button data-smark='{"action":"export"}'>Show Data</button>
     </p>
 </fieldset>{%
 endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture clear_reset_example_js {{{ --> {% endraw %}
+{% capture clear_reset_example_js
+%}
+/* Show exported data in an alert() window */
+myForm.on("AfterAction_export", (ev) => {
+    alert(JSON.stringify(ev.data, null, 2));
+});{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture clear_reset_example_tests {{{ --> {% endraw %}
+{% capture clear_reset_example_tests %}
+export default async ({ page, expect, id, root }) => {
+    await expect(root).toBeVisible();
+
+    // Dismiss any alert dialogs triggered by the "Show Data" button
+    page.on('dialog', async (dialog) => { await dialog.dismiss(); });
+
+    // Click each button and assert no errors are thrown
+    const buttons = root.locator('button');
+    const count = await buttons.count();
+    for (let i = 0; i < count; i++) {
+        await buttons.nth(i).click();
+    }
+};
+{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture clear_reset_example_notes {{{ --> {% endraw %}
@@ -173,11 +201,21 @@ endcapture %}
 {% include components/sampletabs_tpl.md
    formId="clear_reset_form"
    htmlSource=clear_reset_example
+   jsSource=clear_reset_example_js
    notes=clear_reset_example_notes
-   showEditor=true
-    tests=false
+   showEditor=false
+   tests=clear_reset_example_tests
 %}
 
+{% comment %}
+We disable the editor for this example because the "Export" button would
+trigger the event handler in the example which would feel uggly and the editor
+is not needed anyway for the purpose of this example.
+
+We could prevent it from the event handler by checking the event context but
+it would add unnecessary complexity for no apparent reason (since the editor's
+export button is outside of the shown code) to the example.
+{% endcomment %}
 
 
 API Reference

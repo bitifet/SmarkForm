@@ -108,7 +108,7 @@ For further details, please refer to the following documentation files:
 █    title="Export 'demo' subform to 'editor' textarea"
 █    >⬇️ Export</button></span>
 █<span><button
-█    data-smark='{"action":"import","context":"demo","target":"../editor"}'
+█    data-smark='{"action":"import","context":"demo","target":"../editor","setDefault":false}'
 █    title="Import 'editor' textarea contents to 'demo' subform"
 █    >⬆️ Import</button></span>
 █<span><button

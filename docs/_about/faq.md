@@ -45,7 +45,7 @@ around edge cases or features that might catch you off guard at first.
     * [Does pressing Enter in a text field submit the form?](#does-pressing-enter-in-a-text-field-submit-the-form)
     * [Do I need to enhance submit buttons as SmarkForm triggers?](#do-i-need-to-enhance-submit-buttons-as-smarkform-triggers)
     * [What happens to the submit button's `name` and `value` when the form submits?](#what-happens-to-the-submit-buttons-name-and-value-when-the-form-submits)
-    * [Can I use `action="mailto:…"` to send form data by email?](#can-i-use-actionmailto-to-send-form-data-by-email)
+    * [Can I use `action='mailto:…'` to send form data by email?](#can-i-use-actionmailto-to-send-form-data-by-email)
     * [How do default values and reset work?](#how-do-default-values-and-reset-work)
 * [Events & Actions](#events-actions)
     * [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
@@ -63,6 +63,13 @@ around edge cases or features that might catch you off guard at first.
     * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
     * [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
     * [Where does SmarkForm really shine?](#where-does-smarkform-really-shine)
+        * [Server-rendered HTML stacks](#server-rendered-html-stacks)
+        * [Static-site generators and JAMstack](#static-site-generators-and-jamstack)
+        * [Progressive enhancement of existing pages](#progressive-enhancement-of-existing-pages)
+        * [Alpine.js and 'HTML-over-the-wire' stacks](#alpinejs-and-html-over-the-wire-stacks)
+        * [Vanilla JavaScript projects and micro-frontends](#vanilla-javascript-projects-and-micro-frontends)
+        * [Back-office tools and internal dashboards](#back-office-tools-and-internal-dashboards)
+        * [In short](#in-short)
 * [Have a question not covered here?](#have-a-question-not-covered-here)
 
 <!-- vim-markdown-toc -->
@@ -616,7 +623,7 @@ myForm.on("BeforeAction_submit", ({ submitter, data }) => {
 });
 ```
 
-### Can I use `action="mailto:…"` to send form data by email?
+### Can I use `action='mailto:…'` to send form data by email?
 
 Yes — with the default (form-encoded) encoding. When SmarkForm submits via a
 temporary `<form>` element and the action is a `mailto:` URL, the browser

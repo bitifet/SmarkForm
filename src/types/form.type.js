@@ -213,6 +213,12 @@ export class form extends SmarkField {
             const newItem = await me.enhance(node);
             me.mountField(newItem);
         };
+        // Wait for all mounted child fields to complete their own renders
+        // before returning.  This ensures that when this form's `rendered`
+        // promise resolves (and onRendered tasks such as importing a `value`
+        // constructor option run), every nested sub-form is fully ready to
+        // receive data.  Mirrors the same pattern used in list.addItem().
+        await Promise.all(Object.values(me.children).map(child => child.rendered));
     };//}}}
     @action
     @export_to_target
@@ -243,7 +249,6 @@ export class form extends SmarkField {
             'FORM_NOT_PLAIN_OBJECT'
             , `Expected plain object or vailid JSON for form import, ${dataConstructor.name} given.`
         );
-        const childSetDefault = !isReset && setDefault;
         const retv = Object.fromEntries(
             await Promise.all(
                 Object.entries(me.children).map(
@@ -255,13 +260,15 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        const value = await target.import(data[key], {focus: focus && !silent, silent, setDefault: childSetDefault});
+                        // setDefault is intentionally NOT propagated to children:
+                        // only the field where import originates updates its own default.
+                        const value = await target.import(data[key], {focus: focus && !silent, silent, setDefault: false});
                         return [key, value];
                     }
                 )
             )
         );
-        if (childSetDefault) {
+        if (!isReset && setDefault) {
             me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
         };
         if (focus && !silent) me.focus();

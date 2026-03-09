@@ -126,9 +126,28 @@ The collector records additional flags for completeness (not used by the runner 
 
 ### Docs-only parameters (filtered out by the collector)
 
-Some include parameters exist solely to configure the Jekyll documentation rendering and are explicitly excluded from the test manifest:
+Some include parameters exist solely to configure the Jekyll documentation rendering and are explicitly excluded from the test manifest in previous versions. **As of the current implementation, `demoValue` is now collected and used by the smoke tests** — see the demoValue round-trip section below.
 
-- `demoValue`: Seeds the `demo` subform's `defaultValue` in the Jekyll site (embedded into the `demo` div's `data-smark` attribute as `"value": ...`). The test form starts **empty** regardless of `demoValue` — the collector strips it before building the manifest. Write your co-located tests accordingly: don't assume any pre-populated values when `demoValue` is set.
+No parameters are currently filtered-out entirely. The `demoValue` parameter is collected but handled separately from the main test flow so that existing co-located tests are unaffected (they still start with an empty form).
+
+### demoValue round-trip smoke test
+
+For every example that declares a `demoValue`, the test runner automatically generates an additional **demoValue round-trip** test alongside the regular smoke test. This test:
+
+1. Generates a dedicated HTML page that initialises the form with `{ value: <demoValue> }` as the SmarkForm constructor option.
+2. Waits for `myForm.rendered` to resolve (root-level render complete) and then explicitly calls `myForm.import(demoValue)` to handle the asynchronous rendering of deeply nested sub-forms.
+3. Exports the fully populated form.
+4. Compares the export against the original `demoValue` using `deepFilterFalsy()` — a recursive helper that filters falsy values out of arrays so that `{foo:[null,23,null]}` is treated as equal to `{foo:[23]}`. This accounts for lists that use `exportEmpties:false` stripping empty items.
+
+**Important**: demoValues must use the canonical formats that SmarkForm normalises to on export:
+- **Time fields**: use `"HH:MM:SS"` (e.g. `"10:00:00"`), not `"HH:MM"` (`"10:00"`).
+- **Number fields**: use plain numbers (e.g. `3`), not numeric strings (`"3"`).
+
+If the demoValue uses a non-canonical format, the round-trip test will fail even if the form works correctly in the browser. The collector will surface this as a clear test failure with a diff.
+
+### Existing co-located tests still see empty forms
+
+The regular test (non-round-trip) is unaffected: it still starts with an empty form. The demoValue round-trip runs as a **separate, additional test** so the two concerns are cleanly separated.
 
 ### Examples
 

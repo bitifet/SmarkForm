@@ -181,33 +181,59 @@ function extractExamples(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8');
   const relativePath = path.relative(DOCS_DIR, filePath);
   const examples = [];
-  
-  // Extract all captures first
-  const captures = extractCaptures(content);
-  
-  // Find all {% include components/sampletabs_tpl.md ... %} blocks
-  // This regex handles multi-line includes
+
+  // Build an ordered list of capture and include events in document order.
+  // Processing in order is essential because the same capture variable name
+  // (e.g. "demoValue") may be redefined multiple times in a file.  Each
+  // include must see only the captures that were defined before it.
+  const events = [];
+
+  const captureRegex = /{%\s*capture\s+(\w+)\s*%}([\s\S]*?){%\s*endcapture\s*%}/g;
+  let captureMatch;
+  while ((captureMatch = captureRegex.exec(content)) !== null) {
+    events.push({
+      type: 'capture',
+      pos: captureMatch.index,
+      varName: captureMatch[1],
+      content: captureMatch[2].trim(),
+    });
+  }
+
   const includeRegex = /{%\s*include\s+components\/sampletabs_tpl\.md\s*([\s\S]*?)%}/gm;
-  
-  let match;
+  let includeMatch;
+  while ((includeMatch = includeRegex.exec(content)) !== null) {
+    events.push({
+      type: 'include',
+      pos: includeMatch.index,
+      paramsBlock: includeMatch[1],
+    });
+  }
+
+  events.sort((a, b) => a.pos - b.pos);
+
+  // Process events in document order, maintaining a live captures snapshot.
+  const captures = {};
   let exampleIndex = 0;
-  
-  while ((match = includeRegex.exec(content)) !== null) {
-    const [_fullMatch, paramsBlock] = match;
-    const params = parseIncludeParams(paramsBlock);
+
+  for (const event of events) {
+    if (event.type === 'capture') {
+      captures[event.varName] = event.content;
+      continue;
+    }
+
+    // --- include event ---
+    const params = parseIncludeParams(event.paramsBlock);
     
     // Resolve parameter values from captures or use directly
     // Note: formId should NOT be resolved from captures - it's used as-is
-    // Note: demoValue is a docs-only parameter (seeds the demo subform's defaultValue in
-    //       Jekyll via data-smark injection). It does NOT affect the test form, which always
-    //       starts empty. The collector explicitly filters it out here.
-    const DOCS_ONLY_PARAMS = new Set(['demoValue']);
+    // Note: demoValue is collected separately below and stored in the manifest
+    //       so that smoke tests can use it to verify the form round-trip.
     const resolvedParams = {};
     for (const [key, value] of Object.entries(params)) {
       const cleanValue = value;
-      
-      // Skip docs-only parameters that are not relevant to test execution
-      if (DOCS_ONLY_PARAMS.has(key)) continue;
+
+      // demoValue is handled separately after this loop
+      if (key === 'demoValue') continue;
 
       // formId is always used directly, not resolved from captures
       if (key === 'formId') {
@@ -223,6 +249,20 @@ function extractExamples(filePath) {
       } else {
         resolvedParams[key] = cleanValue;
       }
+    }
+
+    // Collect demoValue separately: resolve from captures if it's a variable reference
+    let demoValue = null;
+    if (params.demoValue) {
+      const rawValue = params.demoValue;
+      let resolvedDemoValue = captures[rawValue] !== undefined
+        ? (captures[rawValue] ?? '').trim()
+        : (rawValue ?? '').trim();
+      // Apply variable interpolation (handles nested captures, etc.)
+      resolvedDemoValue = interpolateVariables(resolvedDemoValue, captures);
+      // Strip any remaining unresolved Jekyll template variables
+      resolvedDemoValue = resolvedDemoValue.replace(/{{\s*[^}]+\s*}}/gs, '').trim();
+      demoValue = resolvedDemoValue || null;
     }
     
     // Interpolate variables in resolved content
@@ -283,6 +323,7 @@ function extractExamples(filePath) {
       jsHidden: jsHidden || '',
       jsSource: jsSource || '',
       tests: tests,
+      demoValue: demoValue,
       expectedConsoleErrors: expectedConsoleErrors,
       expectedPageErrors: expectedPageErrors,
       notes: resolvedParams.notes || '',

@@ -864,7 +864,7 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "schedule": [{"start": "09:00", "end": "13:00"}, {"start": "14:00", "end": "18:00"}] }{% endcapture %}
+{% capture demoValue %}{ "schedule": [{"start": "09:00:00", "end": "13:00:00"}, {"start": "14:00:00", "end": "18:00:00"}] }{% endcapture %}
 
 {% capture schedule_list_css %}{{ hotkeys_reveal_css }}{% endcapture %}
 
@@ -1048,7 +1048,7 @@ needing DOM filler elements.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00", "end": "23:59"}], "bar_schedule": [{"start": "11:00", "end": "23:00"}], "restaurant_schedule": [{"start": "07:30", "end": "10:30"}, {"start": "13:00", "end": "15:30"}, {"start": "19:00", "end": "22:00"}], "pool_schedule": [{"start": "09:00", "end": "20:00"}] } }{% endcapture %}
+{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00:00", "end": "23:59:00"}], "bar_schedule": [{"start": "11:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:30:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}] } }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
@@ -1106,7 +1106,7 @@ every list item and so forth to any depth.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00", "end": "23:00"}], "bar_schedule": [{"start": "10:00", "end": "23:00"}], "restaurant_schedule": [{"start": "07:00", "end": "10:30"}, {"start": "13:00", "end": "15:30"}, {"start": "19:00", "end": "22:00"}], "pool_schedule": [{"start": "09:00", "end": "20:00"}]}} ] }{% endcapture %}
+{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00:00", "end": "23:00:00"}], "bar_schedule": [{"start": "10:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:00:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}]}} ] }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
@@ -1352,28 +1352,28 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             "schedules": {
                 "rcpt_schedule": [
                     {
-                        "start": "00:00",
-                        "end": "23:59"
+                        "start": "00:00:00",
+                        "end": "23:59:00"
                     }
                 ],
                 "bar_schedule": [
                     {
-                        "start": "10:00",
-                        "end": "23:30"
+                        "start": "10:00:00",
+                        "end": "23:30:00"
                     }
                 ],
                 "restaurant_schedule": [
                     {
-                        "start": "07:30",
-                        "end": "10:30"
+                        "start": "07:30:00",
+                        "end": "10:30:00"
                     },
                     {
-                        "start": "13:00",
-                        "end": "15:30"
+                        "start": "13:00:00",
+                        "end": "15:30:00"
                     },
                     {
-                        "start": "19:00",
-                        "end": "22:00"
+                        "start": "19:00:00",
+                        "end": "22:00:00"
                     }
                 ],
                 "pool_schedule": []
@@ -1385,34 +1385,34 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             "schedules": {
                 "rcpt_schedule": [
                     {
-                        "start": "00:00",
-                        "end": "23:59"
+                        "start": "00:00:00",
+                        "end": "23:59:00"
                     }
                 ],
                 "bar_schedule": [
                     {
-                        "start": "10:00",
-                        "end": "23:30"
+                        "start": "10:00:00",
+                        "end": "23:30:00"
                     }
                 ],
                 "restaurant_schedule": [
                     {
-                        "start": "07:30",
-                        "end": "10:30"
+                        "start": "07:30:00",
+                        "end": "10:30:00"
                     },
                     {
-                        "start": "13:00",
-                        "end": "15:30"
+                        "start": "13:00:00",
+                        "end": "15:30:00"
                     },
                     {
-                        "start": "19:00",
-                        "end": "22:00"
+                        "start": "19:00:00",
+                        "end": "22:00:00"
                     }
                 ],
                 "pool_schedule": [
                     {
-                        "start": "09:30",
-                        "end": "19:30"
+                        "start": "09:30:00",
+                        "end": "19:30:00"
                     }
                 ]
             }
@@ -3021,7 +3021,7 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
+{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="event_planner_showcase"

@@ -75,65 +75,90 @@ layout: smarkform
     padding: .2em 1em;
   }
   .main-content details.chaptertoc {
-    /* Stickty TOC when foldable */
+    /* Sticky TOC when foldable */
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 100;
-    max-height: 100vh;
-    overflow-y: auto;
+    /*
+     * Cap the sticky element at viewport height. Without this, when the TOC is
+     * expanded to a list longer than the screen, the sticky element's own height
+     * exceeds the viewport and it starts scrolling partially off the top.
+     * overflow:hidden clips the container; the inner <ul> still has its own
+     * overflow-y:auto so the list itself remains scrollable.
+     * (overflow:hidden on the sticky element itself does NOT break sticky —
+     *  it is only overflow on an ANCESTOR that breaks it.)
+     */
+    max-height: 100vh;           /* fallback */
+    max-height: 100dvh;          /* adapts to mobile browser chrome */
+    overflow: hidden;
     box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.1);
   }
-  .body {
-    scroll-padding-top: 200px;
+
+  /* Summary caption — fluid font size, clearly tappable */
+  .main-content details.chaptertoc > summary {
+    font-size: clamp(1rem, 2.5vw, 1.15rem);
+    font-weight: 600;
+    padding-top: 0.4em;
+    padding-bottom: 0.4em;
+    cursor: pointer;
   }
-  .main-content .chaptertoc>ul {
+
+  /* Scroll wrapper for the TOC list — created by the JS below. */
+  .chaptertoc-scroll-div {
+    max-height: calc(100vh - 3.5rem);   /* fallback for browsers without dvh */
+    max-height: calc(100dvh - 3.5rem); /* preferred: adapts to mobile browser chrome */
+    overflow-y: auto;
+  }
+
+  /*
+   * Scroll padding on the page's scroll container.
+   * Compensates for the sticky TOC height so that hash-linked
+   * headings are not hidden behind the collapsed TOC bar.
+   * The value approximates the collapsed chaptertoc height
+   * (summary font × line-height + summary padding + outer padding).
+   */
+  html, body {
+    scroll-padding-top: 3.5rem;
+  }
+  .main-content .chaptertoc>.chaptertoc-scroll-div>ul {
     margin-left: 1em;
-    counter-reset: item-counter;
     list-style: none;
   }
 
-  /* Style and increment top-level list items */
-  .main-content .chaptertoc>ul > li {
-    counter-reset: subitem-counter;
-    counter-increment: item-counter;
+  .main-content .chaptertoc>.chaptertoc-scroll-div>ul > li {
     list-style: none !important;
   }
-  .main-content .chaptertoc>ul > li::before {
-    content: counter(item-counter) ". ";
+
+  /* Nested sub-lists */
+  .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul {
+    list-style: none;
+    padding-left: 1.5em;
+  }
+  .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li > ul {
+    list-style: none;
+    padding-left: 1.5em;
+  }
+
+  /* Remove Just-The-Docs pseudoclass-based bullets */
+  .main-content .chaptertoc>.chaptertoc-scroll-div>ul li::before {
+      content: "" !important;
+  };
+
+  /*
+   * Counter labels injected by JS as <span class="toc-num"> inside each <li>.
+   * Using real DOM nodes (instead of CSS ::before pseudo-elements) ensures they
+   * scroll with the list: CSS counters placed via negative margin-left land in
+   * the scroll container's padding area, which is anchored by the spec and does
+   * not scroll with content.
+   */
+  .chaptertoc .toc-num {
     font-weight: bold;
-    margin-right: 0.5em;
-    margin-left: -1.3em !important;
+    white-space: nowrap;
+    margin-right: 0.3em;
   }
-
-  /* Style and increment second-level list items */
-  .main-content .chaptertoc:not(.toplevel)>ul > li > ul {
-    counter-reset: subitem-counter;
-    list-style: none;
-    padding-left: 1.5em;
-  }
-  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li {
-    counter-reset: subsubitem-counter;
-    counter-increment: subitem-counter;
-  }
-  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li::before {
-    content: counter(item-counter) "." counter(subitem-counter) ". ";
+  .chaptertoc li li .toc-num {
     font-weight: normal;
-    margin-right: 0.5em;
-    margin-left: -2em !important;
-  }
-
-  /* Style and increment third-level list items */
-  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li > ul {
-    list-style: none;
-    padding-left: 1.5em;
-  }
-  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li > ul > li {
-    counter-increment: subsubitem-counter;
-  }
-  .main-content .chaptertoc:not(.toplevel)>ul > li > ul > li > ul > li::before {
-    content: counter(item-counter) "." counter(subitem-counter) "." counter(subsubitem-counter) ". ";
-    margin-right: 0.5em;
-    margin-left: -2.8em !important;
   }
 
   .go-to-top {
@@ -148,7 +173,13 @@ layout: smarkform
         overflow: visible;
         padding-left: 0px;
     }
-    .main-content .chaptertoc > ul {
+    .chaptertoc-scroll-div {
+        max-height: none;
+        overflow-y: visible;
+    }
+    .main-content .chaptertoc>.chaptertoc-scroll-div>ul {
+        max-height: none;
+        overflow: visible;
         border-left: 3rem solid #eee;
         margin-left: 1rem;
         padding-left: 2rem;
@@ -158,6 +189,8 @@ layout: smarkform
     }
     .main-content details.chaptertoc {
         box-shadow: none;
+        max-height: none;
+        overflow: visible;
     }
     .main-content details.chaptertoc summary {
         font-size: 1.5em;
@@ -350,6 +383,56 @@ layout: smarkform
 <script>
     const smartToc = document.querySelector("details.chaptertoc");
     if (!!smartToc) {
+        /*
+         * Wrap the TOC <ul> in a plain <div class="chaptertoc-scroll-div">.
+         *
+         * The div gets overflow-y:auto so the list scrolls when it is tall.
+         * We wrap in a div (not the <ul> directly) because setting overflow-y
+         * on a <ul> forces overflow-x to 'auto' per the CSS spec, which would
+         * clip the counter spans.
+         */
+        const tocList = smartToc.querySelector(':scope > ul');
+        if (tocList) {
+            const scrollDiv = document.createElement('div');
+            scrollDiv.className = 'chaptertoc-scroll-div';
+            tocList.parentNode.insertBefore(scrollDiv, tocList);
+            scrollDiv.appendChild(tocList);
+
+            /*
+             * Inject <span class="toc-num"> counter labels into every <li>.
+             *
+             * Using real DOM nodes guarantees the labels scroll with the list
+             * content. CSS ::before pseudo-elements with negative margin-left
+             * land in the scroll container's own padding area, which the spec
+             * anchors (it does not scroll) — causing the classic mis-alignment.
+             *
+             * Labels mirror the section-heading counters:
+             *   top-level  →  "1.", "2.", …
+             *   2nd level  →  "1.1.", "1.2.", …
+             *   3rd level  →  "1.1.1.", …
+             * Multi-level labels are suppressed when the chaptertoc element has
+             * the "toplevel" class.
+             */
+            const isTopLevel = smartToc.classList.contains('toplevel');
+            function addTocNumbers(ul, prefix) {
+                let n = 0;
+                for (const li of ul.children) {
+                    if (li.tagName !== 'LI') continue;
+                    n++;
+                    const label = prefix ? prefix + '.' + n : String(n);
+                    const span = document.createElement('span');
+                    span.className = 'toc-num';
+                    span.textContent = label + '. ';
+                    li.insertBefore(span, li.firstChild);
+                    if (!isTopLevel) {
+                        const nested = li.querySelector(':scope > ul');
+                        if (nested) addTocNumbers(nested, label);
+                    }
+                }
+            }
+            addTocNumbers(tocList, '');
+        }
+
         const tocLinks = document.querySelectorAll(".chaptertoc a");
         const closeToc = (event) => {
             smartToc.open = false;

@@ -88,7 +88,10 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                                 stopPropagation: ev.stopPropagation.bind(ev),
                                 stopImmediatePropagation: ev.stopImmediatePropagation.bind(ev),
                             };
-                            targetComponent.emit(evType, evData);
+                            // Intentional fire-and-forget: DOM event listeners
+                            // must return synchronously; the async emit is
+                            // dispatched and its promise is intentionally not awaited here.
+                            void targetComponent.emit(evType, evData);
                         }, true); // Use capture phase
                     };
                 };
