@@ -140,6 +140,11 @@ layout: smarkform
     padding-left: 1.5em;
   }
 
+  /* Remove Just-The-Docs pseudoclass-based bullets */
+  .main-content .chaptertoc>.chaptertoc-scroll-div>ul li::before {
+      content: "" !important;
+  };
+
   /*
    * Counter labels injected by JS as <span class="toc-num"> inside each <li>.
    * Using real DOM nodes (instead of CSS ::before pseudo-elements) ensures they
