@@ -104,14 +104,7 @@ layout: smarkform
     cursor: pointer;
   }
 
-  /*
-   * Scroll wrapper for the TOC list — created by the JS below.
-   * overflow-y: auto enables scrolling. We use display:flex on li items (below)
-   * so that ::before counter numbers are proper flex items — no negative
-   * margin-left needed. This avoids the CSS-spec coercion of overflow-x to
-   * 'auto' trapping ::before elements in the scroll container's padding area
-   * (which is anchored and does not scroll with the content).
-   */
+  /* Scroll wrapper for the TOC list — created by the JS below. */
   .chaptertoc-scroll-div {
     max-height: calc(100vh - 3.5rem);   /* fallback for browsers without dvh */
     max-height: calc(100dvh - 3.5rem); /* preferred: adapts to mobile browser chrome */
@@ -130,61 +123,37 @@ layout: smarkform
   }
   .main-content .chaptertoc>.chaptertoc-scroll-div>ul {
     margin-left: 1em;
-    counter-reset: item-counter;
     list-style: none;
   }
 
-  /* Style and increment top-level list items */
   .main-content .chaptertoc>.chaptertoc-scroll-div>ul > li {
-    counter-reset: subitem-counter;
-    counter-increment: item-counter;
     list-style: none !important;
-    display: flex;
-    align-items: flex-start;
-  }
-  .main-content .chaptertoc>.chaptertoc-scroll-div>ul > li::before {
-    content: counter(item-counter) ". ";
-    font-weight: bold;
-    flex-shrink: 0;
-    white-space: nowrap;
-    margin-right: 0.3em;
   }
 
-  /* Style and increment second-level list items */
+  /* Nested sub-lists */
   .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul {
-    counter-reset: subitem-counter;
     list-style: none;
     padding-left: 1.5em;
   }
-  .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li {
-    counter-reset: subsubitem-counter;
-    counter-increment: subitem-counter;
-    display: flex;
-    align-items: flex-start;
-  }
-  .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li::before {
-    content: counter(item-counter) "." counter(subitem-counter) ". ";
-    font-weight: normal;
-    flex-shrink: 0;
-    white-space: nowrap;
-    margin-right: 0.3em;
-  }
-
-  /* Style and increment third-level list items */
   .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li > ul {
     list-style: none;
     padding-left: 1.5em;
   }
-  .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li > ul > li {
-    counter-increment: subsubitem-counter;
-    display: flex;
-    align-items: flex-start;
-  }
-  .main-content .chaptertoc:not(.toplevel)>.chaptertoc-scroll-div>ul > li > ul > li > ul > li::before {
-    content: counter(item-counter) "." counter(subitem-counter) "." counter(subsubitem-counter) ". ";
-    flex-shrink: 0;
+
+  /*
+   * Counter labels injected by JS as <span class="toc-num"> inside each <li>.
+   * Using real DOM nodes (instead of CSS ::before pseudo-elements) ensures they
+   * scroll with the list: CSS counters placed via negative margin-left land in
+   * the scroll container's padding area, which is anchored by the spec and does
+   * not scroll with content.
+   */
+  .chaptertoc .toc-num {
+    font-weight: bold;
     white-space: nowrap;
     margin-right: 0.3em;
+  }
+  .chaptertoc li li .toc-num {
+    font-weight: normal;
   }
 
   .go-to-top {
@@ -412,18 +381,10 @@ layout: smarkform
         /*
          * Wrap the TOC <ul> in a plain <div class="chaptertoc-scroll-div">.
          *
-         * Why: when overflow-y:auto is set on a <ul>, the CSS spec coerces
-         * overflow-x from 'visible' to 'auto'. The counter numbers are
-         * implemented as ::before pseudo-elements with a negative margin-left
-         * (hanging indent). That negative margin places them in the <ul>'s
-         * margin area — outside the scroll container's clipping boundary.
-         * Result: the text scrolls but the numbers stay fixed, appearing
-         * misaligned.
-         *
-         * Using a <div> wrapper with a small padding-left (0.4em) ensures the
-         * overhanging ::before elements land within the div's border box and
-         * therefore inside the scroll container. The matching margin-left
-         * (-0.4em) preserves the original visual position of numbers and text.
+         * The div gets overflow-y:auto so the list scrolls when it is tall.
+         * We wrap in a div (not the <ul> directly) because setting overflow-y
+         * on a <ul> forces overflow-x to 'auto' per the CSS spec, which would
+         * clip the counter spans.
          */
         const tocList = smartToc.querySelector(':scope > ul');
         if (tocList) {
@@ -431,6 +392,40 @@ layout: smarkform
             scrollDiv.className = 'chaptertoc-scroll-div';
             tocList.parentNode.insertBefore(scrollDiv, tocList);
             scrollDiv.appendChild(tocList);
+
+            /*
+             * Inject <span class="toc-num"> counter labels into every <li>.
+             *
+             * Using real DOM nodes guarantees the labels scroll with the list
+             * content. CSS ::before pseudo-elements with negative margin-left
+             * land in the scroll container's own padding area, which the spec
+             * anchors (it does not scroll) — causing the classic mis-alignment.
+             *
+             * Labels mirror the section-heading counters:
+             *   top-level  →  "1.", "2.", …
+             *   2nd level  →  "1.1.", "1.2.", …
+             *   3rd level  →  "1.1.1.", …
+             * Multi-level labels are suppressed when the chaptertoc element has
+             * the "toplevel" class.
+             */
+            const isTopLevel = smartToc.classList.contains('toplevel');
+            function addTocNumbers(ul, prefix) {
+                let n = 0;
+                for (const li of ul.children) {
+                    if (li.tagName !== 'LI') continue;
+                    n++;
+                    const label = prefix ? prefix + '.' + n : String(n);
+                    const span = document.createElement('span');
+                    span.className = 'toc-num';
+                    span.textContent = label + '. ';
+                    li.insertBefore(span, li.firstChild);
+                    if (!isTopLevel) {
+                        const nested = li.querySelector(':scope > ul');
+                        if (nested) addTocNumbers(nested, label);
+                    }
+                }
+            }
+            addTocNumbers(tocList, '');
         }
 
         const tocLinks = document.querySelectorAll(".chaptertoc a");
