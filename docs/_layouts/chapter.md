@@ -105,15 +105,39 @@ layout: smarkform
   }
 
   /*
-   * The TOC list (inner content) handles its own scrolling.
-   * Keeping overflow away from the sticky element itself ensures
-   * position:sticky works reliably on mobile browsers.
-   * Subtract approx. summary bar height (~3.5rem) from the max-height.
+   * The TOC list (inner content) handles its own scrolling via a wrapper <div>
+   * created by the script below. We do NOT set overflow-y:auto here because the
+   * CSS spec coerces overflow-x from 'visible' to 'auto' whenever overflow-y is
+   * non-visible. The <ul> has ::before counter numbers with negative margin-left
+   * values that intentionally hang outside the <ul>'s content box (hanging
+   * indent). With overflow-x:auto on the <ul> itself, those overflowing ::before
+   * elements fall outside the scroll container and stay fixed while the list
+   * scrolls — they appear misaligned. Moving overflow to a wrapper <div> (with
+   * a slight padding-left to ensure the ::before overhang stays within the div's
+   * border box) fixes this without changing the visual layout.
    */
   .main-content details.chaptertoc > ul {
+    /* overflow and max-height are on .chaptertoc-scroll-div, added by JS */
+  }
+
+  /*
+   * Scroll wrapper for the TOC list — created by the JS below.
+   * padding-left: 0.4em ensures that the ::before elements with margin-left
+   * of up to -1.3em (for top-level items) land at least 0.1em inside the
+   * div's border box, so they ARE part of the scrollable area and scroll with
+   * the list. margin-left: -0.4em compensates so the visual position of the
+   * numbers and text is identical to before.
+   * (calc: details padding-left 1em + div margin-left -0.4em + div padding-left
+   *  0.4em + ul margin-left 1em - ::before margin-left 1.3em = 0.7em — exactly
+   *  matching the original position.)
+   */
+  .chaptertoc-scroll-div {
     max-height: calc(100vh - 3.5rem);   /* fallback for browsers without dvh */
     max-height: calc(100dvh - 3.5rem); /* preferred: adapts to mobile browser chrome */
     overflow-y: auto;
+    /* Contain the negative-margin ::before counters within the scroll container */
+    padding-left: 0.4em;
+    margin-left: -0.4em;
   }
 
   /*
@@ -187,6 +211,12 @@ layout: smarkform
         max-height: none;
         overflow: visible;
         padding-left: 0px;
+    }
+    .chaptertoc-scroll-div {
+        max-height: none;
+        overflow-y: visible;
+        padding-left: 0;
+        margin-left: 0;
     }
     .main-content .chaptertoc > ul {
         max-height: none;
@@ -394,6 +424,30 @@ layout: smarkform
 <script>
     const smartToc = document.querySelector("details.chaptertoc");
     if (!!smartToc) {
+        /*
+         * Wrap the TOC <ul> in a plain <div class="chaptertoc-scroll-div">.
+         *
+         * Why: when overflow-y:auto is set on a <ul>, the CSS spec coerces
+         * overflow-x from 'visible' to 'auto'. The counter numbers are
+         * implemented as ::before pseudo-elements with a negative margin-left
+         * (hanging indent). That negative margin places them in the <ul>'s
+         * margin area — outside the scroll container's clipping boundary.
+         * Result: the text scrolls but the numbers stay fixed, appearing
+         * misaligned.
+         *
+         * Using a <div> wrapper with a small padding-left (0.4em) ensures the
+         * overhanging ::before elements land within the div's border box and
+         * therefore inside the scroll container. The matching margin-left
+         * (-0.4em) preserves the original visual position of numbers and text.
+         */
+        const tocList = smartToc.querySelector(':scope > ul');
+        if (tocList) {
+            const scrollDiv = document.createElement('div');
+            scrollDiv.className = 'chaptertoc-scroll-div';
+            tocList.parentNode.insertBefore(scrollDiv, tocList);
+            scrollDiv.appendChild(tocList);
+        }
+
         const tocLinks = document.querySelectorAll(".chaptertoc a");
         const closeToc = (event) => {
             smartToc.open = false;
