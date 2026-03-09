@@ -74,37 +74,24 @@ layout: smarkform
     background: #f9f9f9;
     padding: .2em 1em;
   }
-
-  /*
-   * The sticky wrapper is a plain <div> added by the script below.
-   * Using a <div> (not <details>) for the sticky container is critical:
-   * some mobile browsers do not honor overflow:hidden on <details> for layout
-   * purposes, so max-height alone cannot constrain the sticky element's height.
-   * A plain <div> with overflow:hidden properly clips both the visual rendering
-   * AND the layout height, preventing the "taller-than-viewport sticky element
-   * scrolling off the top" problem.
-   * Note: overflow:hidden on the STICKY element itself does NOT break sticky —
-   * only overflow on an ANCESTOR of the sticky element breaks it.
-   */
-  .chaptertoc-sticky-wrapper {
-    /* Takes over the margin from details.chaptertoc (which is reset to 0 below) */
-    margin: 1.5em 0;
-    /* Sticky positioning — reliable on a plain div */
+  .main-content details.chaptertoc {
+    /* Sticky TOC when foldable */
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 100;
-    /* Cap height so the sticky element is never taller than the viewport.
-     * This prevents the browser from scrolling the top of the element off-screen
-     * when the expanded TOC list exceeds the viewport height. */
+    /*
+     * Cap the sticky element at viewport height. Without this, when the TOC is
+     * expanded to a list longer than the screen, the sticky element's own height
+     * exceeds the viewport and it starts scrolling partially off the top.
+     * overflow:hidden clips the container; the inner <ul> still has its own
+     * overflow-y:auto so the list itself remains scrollable.
+     * (overflow:hidden on the sticky element itself does NOT break sticky —
+     *  it is only overflow on an ANCESTOR that breaks it.)
+     */
     max-height: 100vh;           /* fallback */
     max-height: 100dvh;          /* adapts to mobile browser chrome */
     overflow: hidden;
-  }
-
-  .main-content details.chaptertoc {
-    /* Sticky and height are now handled by .chaptertoc-sticky-wrapper */
-    margin: 0;   /* wrapper takes over the 1.5em margin */
     box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.1);
   }
 
@@ -195,12 +182,6 @@ layout: smarkform
   }
 
   @media print {
-    .chaptertoc-sticky-wrapper {
-        position: static;
-        max-height: none;
-        overflow: visible;
-        margin: 1.5em 0;
-    }
     .main-content .chaptertoc {
         box-shadow: none;
         max-height: none;
@@ -413,22 +394,6 @@ layout: smarkform
 <script>
     const smartToc = document.querySelector("details.chaptertoc");
     if (!!smartToc) {
-        /*
-         * Wrap the <details> in a plain <div class="chaptertoc-sticky-wrapper">.
-         *
-         * Why: position:sticky + max-height + overflow:hidden on a <details>
-         * element does not reliably constrain layout height in mobile browsers
-         * (they don't honour overflow:hidden on <details> for layout purposes).
-         * A sticky element whose layout height exceeds the viewport will scroll
-         * its top off-screen as you scroll down the page. Using a plain <div>
-         * as the sticky container fixes this because overflow:hidden on a <div>
-         * properly constrains both visual rendering AND layout height.
-         */
-        const stickyWrapper = document.createElement('div');
-        stickyWrapper.className = 'chaptertoc-sticky-wrapper';
-        smartToc.parentNode.insertBefore(stickyWrapper, smartToc);
-        stickyWrapper.appendChild(smartToc);
-
         const tocLinks = document.querySelectorAll(".chaptertoc a");
         const closeToc = (event) => {
             smartToc.open = false;
