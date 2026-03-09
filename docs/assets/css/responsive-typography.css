@@ -1,0 +1,88 @@
+/**
+ * Responsive Typography and Navigation Improvements
+ *
+ * Adjusts font sizes using clamp() for proper scaling across device sizes.
+ * Improves navigation tap targets on mobile devices.
+ *
+ * Note: `!important` is required throughout this file because the upstream
+ * just-the-docs theme declares all font-size rules with `!important`.
+ * Overriding them without matching `!important` would have no effect.
+ */
+
+/* ============================================================
+   Site header — slightly taller & larger title on mobile
+   ============================================================ */
+
+.site-header {
+  min-height: clamp(3.75rem, 9vw, 4.5rem);
+}
+
+.site-title {
+  font-size: clamp(1.125rem, 4.5vw, 1.5rem) !important;
+}
+
+/* ============================================================
+   Navigation section headers (category labels)
+   ============================================================ */
+
+/* Mobile: much more readable size; padding keeps the tap target finger-friendly */
+.nav-category {
+  font-size: 1rem !important;
+  padding-top: 0.75rem !important;
+  padding-bottom: 0.75rem !important;
+}
+
+@media (min-width: 50rem) {
+  /* Desktop: restore original theme value */
+  .nav-category {
+    font-size: 0.875rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+}
+
+/* ============================================================
+   Navigation list items — fluid from mobile to desktop
+   ============================================================ */
+
+/* Mobile / hamburger menu: ensure links are easy to read and tap */
+.nav-list .nav-list-item {
+  font-size: clamp(1.1rem, 3.5vw, 1.2rem) !important;
+}
+
+/* Mobile: extra vertical padding for comfortable finger-tap targets */
+.nav-list .nav-list-item .nav-list-link {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  min-height: 3.5rem;
+  line-height: 2.5rem;
+}
+
+/* Desktop sidebar: keep compact, max same as original theme (0.875rem) */
+@media (min-width: 50rem) {
+  .nav-list .nav-list-item {
+    font-size: clamp(0.75rem, 1.1vw, 0.875rem) !important;
+  }
+
+  /* Restore desktop link dimensions to original theme values */
+  .nav-list .nav-list-item .nav-list-link {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    min-height: 2rem;
+    line-height: 1.5rem;
+  }
+}
+
+/* ============================================================
+   Aux nav links (top-right: GitHub, NPM, CDN)
+   ============================================================ */
+
+.aux-nav {
+  font-size: clamp(0.6875rem, 2vw, 0.8rem) !important;
+}
+
+@media (min-width: 31.25rem) {
+  .aux-nav {
+    font-size: clamp(0.75rem, 2vw, 0.875rem) !important;
+  }
+}

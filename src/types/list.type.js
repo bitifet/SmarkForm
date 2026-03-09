@@ -209,7 +209,7 @@ export class list extends SmarkField {
         ) await me.removeItem(null, {silent: true});
         // Report if data doesn't fit:
         if (data.length > me.max_items) {
-            me.emit("error", {
+            await me.emit("error", {
                 code: 'LIST_IMPORT_OVERFLOW',
                 message: `Trying to import array greater than list's max_items. Data beyond max_items ignored.`,
                 context: me,
@@ -222,7 +222,7 @@ export class list extends SmarkField {
             let i = data.length;
             i < me.children.length; // (Due to min_items)
             i++
-        ) me.children[i].reset({silent: true});
+        ) await me.children[i].reset(null, {silent: true});
         if (!isReset && setDefault) {
             me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
         };
@@ -254,7 +254,7 @@ export class list extends SmarkField {
                     break;
                 case "throw":
                 default:
-                    me.emit("error", {
+                    await me.emit("error", {
                         code: 'LIST_MAX_ITEMS_REACHED',
                         message: `Cannot add items over max_items boundary`,
                         options,
@@ -368,7 +368,7 @@ export class list extends SmarkField {
                         return;
                     case "throw":
                     default:
-                        me.emit("error", {
+                        await me.emit("error", {
                             code: 'LIST_MIN_ITEMS_REACHED',
                             message: `Cannot remove items under min_items boundary`,
                             options,
