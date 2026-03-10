@@ -7,6 +7,7 @@ Accepted arguments:
   * formOptions: JSON object with SmarkForm initialization options (if any);
   * htmlSource (mandatory)
   * cssSource
+  * cssHidden: CSS already discussed (not shown in the "CSS Source" tab).
   * jsHead: JS initialization code.
   * jsHidden: JS source already discussed (not shown in the "JS Source" tab).
   * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
@@ -66,6 +67,7 @@ For further details, please refer to the following documentation files:
 
 {% assign htmlSource = include.htmlSource | default: default_htmlSource %}
 {% assign cssSource = include.cssSource | default: default_cssSource %}
+{% assign cssHidden = include.cssHidden | default: '-' %}
 {% assign jsHead = include.jsHead | default: default_jsHead %}
 {% assign jsHead_display = include.jsHead | default: default_jsHead_display %}
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
@@ -264,10 +266,6 @@ endif %}{% if jsHidden != '-'
 {% comment %} ### Render tabbed layout with examples ### {% endcomment %}
 {% comment %} ### ################################## ### {% endcomment %}
 
-<style>
-{{ cssSource | replace: "$$", formId | raw }}
-</style>
-
 {% if htmlSource == default_htmlSource %}
 <div style="border: solid 3px yellow; padding: 0px 2em 1em 2em; border-radius: 0.5em;">
     <h2>🚧  Missing Example 🚧</h2>
@@ -317,8 +315,12 @@ endif %}{% if jsHidden != '-'
   {% endif %}
   {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-preview {{active_class}}">
+    <div class="smarkform-preview-toolbar">
+      <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
+      <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
+    </div>
     <div class="smarkform_example" style="overflow: auto">
-      {{ preview_source | replace: "$$", formId | raw }}
+      <iframe class="smarkform-preview-frame" style="width:100%;border:none;display:block;"></iframe>
     </div>
   </div>
   {% if notes != '-' %}
@@ -347,23 +349,18 @@ endif %}{% if jsHidden != '-'
     </ul>
     {% endif %}
   </div>
-</div>
-<div>
-{% if jsHead != '-' or jsHidden != '-' or jsSource != '-' %}
-    <script>
-        (function() {
-            {% if jsHead != '-' %}
-{{ jsHead  | replace: "$$", formId }}
-            {% endif %}
-            {% if jsHidden != '-' %}
-{{ jsHidden  | replace: "$$", formId }}
-            {% endif %}
-            {% if jsSource != '-' %}
-{{ jsSource | replace: "$$", formId }}
-            {% endif %}
-        })();
-    </script>
-{% endif %}
+  <script type="application/json" class="smarkform-src-data">
+  {
+    "html": {{ preview_source | jsonify | replace: "<", "\u003c" }},
+    "htmlSource": {{ partial_htmlSource | jsonify | replace: "<", "\u003c" }},
+    "css": {{ cssSource | jsonify | replace: "<", "\u003c" }},
+    "cssHidden": {{ cssHidden | jsonify | replace: "<", "\u003c" }},
+    "jsHead": {{ jsHead | jsonify | replace: "<", "\u003c" }},
+    "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
+    "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
+    "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
+  }
+  </script>
 </div>
 {% endif %}
 

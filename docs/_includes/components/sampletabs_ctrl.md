@@ -6,23 +6,122 @@
 
 <script src="{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"></script>
 <script>
+/* Render a SmarkForm example into an iframe using the given source data.
+   If editedSrcs is provided, its html/css/js values override the stored sources. */
+function smarkformRenderIframe(iframe, data, editedSrcs) {
+    var r = function(s) { return (s && s !== '-') ? s.replace(/\$\$/g, '') : ''; };
+    var htmlSrc, cssSrc, jsSrc;
+    if (editedSrcs) {
+        htmlSrc = editedSrcs.html || '';
+        cssSrc  = editedSrcs.css  || '';
+        jsSrc   = editedSrcs.js   || '';
+    } else {
+        htmlSrc = r(data.html);
+        cssSrc  = [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n');
+        jsSrc   = [r(data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n');
+    }
+    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
+    /* Avoid literal <script> tags in strings to prevent Markdown processing issues: */
+    var S = 'script';
+    var sTag = jsSrc
+        ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e'
+        : '';
+    var content = '<!DOCTYPE html>'
+        + '\u003chtml\u003e\u003chead\u003e'
+        + '\u003cmeta charset="UTF-8"\u003e'
+        + '\u003c' + S + ' src="' + data.smarkformUrl + '"\u003e\u003c/' + S + '\u003e'
+        + '\u003cstyle\u003e' + baseCss + '\n' + cssSrc + '\u003c/style\u003e'
+        + '\u003c/head\u003e\u003cbody\u003e'
+        + htmlSrc
+        + sTag
+        + '\u003c/body\u003e\u003c/html\u003e';
+    iframe.srcdoc = content;
+    iframe.onload = function() {
+        try {
+            var h = Math.max(100, this.contentDocument.documentElement.scrollHeight + 20);
+            this.style.height = h + 'px';
+        } catch(e) {}
+    };
+}
+/* Escape HTML special characters for display in contenteditable elements. */
+function smarkformEscapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 document.addEventListener('DOMContentLoaded', function() {
-  const tabContainers = document.querySelectorAll('.tab-container');
-
-  tabContainers.forEach(container => {
-    const tabs = container.querySelectorAll('.tab-label');
-    const contents = container.querySelectorAll('.tab-content');
-
-    tabs.forEach((tab, index) => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('tab-label-active'));
-        contents.forEach(content => content.classList.remove('tab-active'));
-
-        tab.classList.add('tab-label-active');
-        contents[index].classList.add('tab-active');
-      });
+    var tabContainers = document.querySelectorAll('.tab-container');
+    tabContainers.forEach(function(container) {
+        var tabs = container.querySelectorAll('.tab-label');
+        var contents = container.querySelectorAll('.tab-content');
+        /* --- Tab switching --- */
+        tabs.forEach(function(tab, index) {
+            tab.addEventListener('click', function() {
+                tabs.forEach(function(t) { t.classList.remove('tab-label-active'); });
+                contents.forEach(function(c) { c.classList.remove('tab-active'); });
+                tab.classList.add('tab-label-active');
+                contents[index].classList.add('tab-active');
+            });
+        });
+        /* --- Locate source data and preview iframe --- */
+        var srcEl  = container.querySelector('.smarkform-src-data');
+        var iframe = container.querySelector('.smarkform-preview-frame');
+        if (!srcEl || !iframe) return;
+        var data = JSON.parse(srcEl.textContent);
+        smarkformRenderIframe(iframe, data);
+        /* --- Edit-mode handling --- */
+        var editToggle = container.querySelector('.smarkform-edit-toggle');
+        var runBtn     = container.querySelector('.smarkform-run-btn');
+        if (!editToggle || !runBtn) return;
+        var savedContents = {};
+        editToggle.addEventListener('change', function() {
+            var r = function(s) { return (s && s !== '-') ? s.replace(/\$\$/g, '') : ''; };
+            if (this.checked) {
+                runBtn.style.display = '';
+                var htmlTab = container.querySelector('.tab-content-html');
+                if (htmlTab) {
+                    savedContents.html = htmlTab.innerHTML;
+                    htmlTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="html">'
+                        + smarkformEscapeHtml(r(data.htmlSource))
+                        + '</pre>';
+                }
+                var cssTab = container.querySelector('.tab-content-css');
+                if (cssTab) {
+                    savedContents.css = cssTab.innerHTML;
+                    var cssSrc = [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n');
+                    cssTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="css">'
+                        + smarkformEscapeHtml(cssSrc)
+                        + '</pre>';
+                }
+                var jsTab = container.querySelector('.tab-content-js');
+                if (jsTab) {
+                    savedContents.js = jsTab.innerHTML;
+                    var jsSrc = [r(data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n');
+                    jsTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="js">'
+                        + smarkformEscapeHtml(jsSrc)
+                        + '</pre>';
+                }
+            } else {
+                runBtn.style.display = 'none';
+                ['html', 'css', 'js'].forEach(function(kind) {
+                    if (savedContents[kind]) {
+                        var tab = container.querySelector('.tab-content-' + kind);
+                        if (tab) tab.innerHTML = savedContents[kind];
+                    }
+                });
+                savedContents = {};
+                smarkformRenderIframe(iframe, data);
+            }
+        });
+        runBtn.addEventListener('click', function() {
+            var htmlEl = container.querySelector('[data-kind="html"]');
+            var cssEl  = container.querySelector('[data-kind="css"]');
+            var jsEl   = container.querySelector('[data-kind="js"]');
+            smarkformRenderIframe(iframe, data, {
+                html: htmlEl ? htmlEl.textContent : '',
+                css:  cssEl  ? cssEl.textContent  : '',
+                js:   jsEl   ? jsEl.textContent   : ''
+            });
+        });
     });
-  });
 });
 </script>
 <style>
@@ -97,6 +196,42 @@ button[data-smark] {
     margin: 0px 4px;
 }
 
+.smarkform-preview-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    padding: 4px 8px;
+    background: #f0f0f0;
+    border-bottom: 1px solid #dee2e6;
+    font-size: 0.9em;
+}
+
+.smarkform-edit-label {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    cursor: pointer;
+    user-select: none;
+}
+
+.smarkform-run-btn {
+    padding: 2px 10px;
+    cursor: pointer;
+}
+
+.smarkform-editable {
+    white-space: pre-wrap;
+    word-break: break-all;
+    padding: 1em;
+    background: #f8f9fa;
+    min-height: 4em;
+    outline: 2px solid #adb5bd;
+    border-radius: 2px;
+    font-family: monospace;
+    font-size: 0.9em;
+    margin: 0;
+}
+
  
 /* Reset Jekyll styles for the preview tab */
 #main-content .tab-content.tab-content-preview ul > li::before {
@@ -146,6 +281,17 @@ button[data-smark] {
   /* This matches the textarea element defined in sampletabs_tpl.md line 109 */
   textarea[data-smark*='"name":"editor"'] {
     display: none !important;
+  }
+
+  /* Hide the edit toolbar in print */
+  .smarkform-preview-toolbar {
+    display: none !important;
+  }
+
+  /* Make iframe fill width in print */
+  .smarkform-preview-frame {
+    width: 100% !important;
+    border: 1px solid #ccc !important;
   }
   
   /* Add heading before each tab content using pseudo-elements */
