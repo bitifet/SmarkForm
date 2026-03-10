@@ -297,6 +297,11 @@ endif %}{% if jsHidden != '-'
     {% if notes == '-' %}{% assign hint_right_class = "tab-label-right" %}{% else %}{% assign hint_right_class = "" %}{% endif %}
     <div class="tab-label {{hint_right_class}} {{active_class}}" title="Help">❓</div>
   </div>
+  <div class="smarkform-edit-toolbar">
+    <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
+    {% if showEditor == true %}<label><input type="checkbox" class="smarkform-editor-toggle" checked> 📋 Include editor</label>{% else %}<label><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include editor</label>{% endif %}
+    <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
+  </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-html {{active_class}}">
     {{ rendered_htmlSource | replace: "$$", "" | markdownify }}
@@ -315,10 +320,6 @@ endif %}{% if jsHidden != '-'
   {% endif %}
   {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-preview {{active_class}}">
-    <div class="smarkform-preview-toolbar">
-      <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-      <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
-    </div>
     <div class="smarkform_example" style="overflow: auto">
       <iframe class="smarkform-preview-frame" style="width:100%;border:none;display:block;"></iframe>
     </div>
@@ -358,6 +359,7 @@ endif %}{% if jsHidden != '-'
     "jsHead": {{ jsHead | jsonify | replace: "<", "\u003c" }},
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
+    "showEditor": {{ showEditor | jsonify }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
   }
   </script>

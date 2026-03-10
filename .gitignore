@@ -12,6 +12,8 @@ docs/_data/computed.json
 docs/_site
 # NO (to trigger GitHub action every new version): docs/_data/package.json
 docs/_resources/dist/
+docs/_resources/examples/
+docs/dist/
 docs/vendor/
 docs/.bundle/
 
