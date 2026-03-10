@@ -81,7 +81,11 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "myColor": "#3a7bd5" }{% endcapture %}
+{% capture demoValue -%}
+{
+    "myColor": "#3a7bd5"
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_color"
@@ -129,7 +133,11 @@ would have to specify the context in the button action, like this:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "myColor": "#e74c3c" }{% endcapture %}
+{% capture demoValue -%}
+{
+    "myColor": "#e74c3c"
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="singleton_color"

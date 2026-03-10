@@ -19,7 +19,6 @@ nav_order: 1
 <!-- vim-markdown-toc GitLab -->
 
 * [Introduction](#introduction)
-    * [Clear vs Reset Actions Example](#clear-vs-reset-actions-example)
 * [API Reference](#api-reference)
     * [Options](#options)
         * [focus_on_click](#focus_on_click)
@@ -112,7 +111,20 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "id": "EMP-001", "personalData": { "name": "Emily", "surname": "Watson", "address": "456 Oak Avenue, Portland" }, "businessData": { "name": "Acme Corp", "address": "789 Business Park, Portland" } }{% endcapture %}
+{% capture demoValue -%}
+{
+    "id": "EMP-001",
+    "personalData": {
+        "name": "Emily",
+        "surname": "Watson",
+        "address": "456 Oak Avenue, Portland"
+    },
+    "businessData": {
+        "name": "Acme Corp",
+        "address": "789 Business Park, Portland"
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
    formId="simple_form"
@@ -130,7 +142,7 @@ The following example demonstrates the distinction between `clear` and `reset` a
 
 {% raw %} <!-- capture clear_reset_example {{{ --> {% endraw %}
 {% capture clear_reset_example
-%}<fieldset data-smark='{"type":"form","name":"userProfile","value":{"name":"John Doe","email":"john@example.com","age":"30"}}'>
+%}<fieldset data-smark='{"type":"form","name":"userProfile"}'>
     <legend>User Profile (with defaults)</legend>
     <p>
         <label data-smark>Name:</label>
@@ -198,9 +210,20 @@ export default async ({ page, expect, id, root }) => {
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% capture demoValue -%}
+{
+    "userProfile": {
+        "name": "John Doe",
+        "email": "john@example.com",
+        "age": "30"
+    }
+}
+{%- endcapture %}
+
 {% include components/sampletabs_tpl.md
    formId="clear_reset_form"
    htmlSource=clear_reset_example
+   demoValue=demoValue
    jsSource=clear_reset_example_js
    notes=clear_reset_example_notes
    showEditor=false

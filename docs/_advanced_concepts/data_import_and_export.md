@@ -114,7 +114,24 @@ The structure of the exported value mirrors the nesting of the form:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{"order":{"customer":"Jane Smith","notes":"Please wrap as a gift","items":[{"product":"Widget A","qty":3},{"product":"Widget B","qty":1}]}}{% endcapture %}
+{% capture demoValue -%}
+{
+    "order": {
+        "customer": "Jane Smith",
+        "notes": "Please wrap as a gift",
+        "items": [
+            {
+                "product": "Widget A",
+                "qty": 3
+            },
+            {
+                "product": "Widget B",
+                "qty": 1
+            }
+        ]
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="export_structure"
@@ -224,7 +241,13 @@ The `import` action accepts:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{"name":"Alice Johnson","email":"alice@example.com","role":"Developer"}{% endcapture %}
+{% capture demoValue -%}
+{
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "role": "Developer"
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="import_example"
@@ -472,7 +495,20 @@ Fill in the billing address, then click **📋 Copy to shipping** to copy the
 data to the shipping address with no JavaScript required.
 {% endcapture %}
 
-{% capture demoValue %}{"billing":{"street":"10 Downing Street","city":"London","postcode":"SW1A 2AA"},"shipping":{"street":"","city":"","postcode":""}}{% endcapture %}
+{% capture demoValue -%}
+{
+    "billing": {
+        "street": "10 Downing Street",
+        "city": "London",
+        "postcode": "SW1A 2AA"
+    },
+    "shipping": {
+        "street": "",
+        "city": "",
+        "postcode": ""
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="pipe_example"

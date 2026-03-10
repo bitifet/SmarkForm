@@ -71,7 +71,11 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "birthdate": "1990-07-15" }{% endcapture %}
+{% capture demoValue -%}
+{
+    "birthdate": "1990-07-15"
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_color"

@@ -666,7 +666,12 @@ example:
 █</p>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "name": "Alice Johnson", "email": "alice.johnson@example.com" }{% endcapture %}
+{% capture demoValue -%}
+{
+    "name": "Alice Johnson",
+    "email": "alice.johnson@example.com"
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simplified"

@@ -88,7 +88,12 @@ JSON data and see what happen.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "name": "Maria", "surname": "García" }{% endcapture %}
+{% capture demoValue -%}
+{
+    "name": "Maria",
+    "surname": "Garc\u00eda"
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_form"
@@ -254,7 +259,19 @@ and/or emails).
 {% raw %} <!-- }}} --> {% endraw %}
 
 
-{% capture demoValue %}{ "userId": "0042", "personal_data": { "name": "John", "surname": "Doe", "contact": { "phone": "+1 555 867 5309", "email": "john.doe@example.com" } } }{% endcapture %}
+{% capture demoValue -%}
+{
+    "userId": "0042",
+    "personal_data": {
+        "name": "John",
+        "surname": "Doe",
+        "contact": {
+            "phone": "+1 555 867 5309",
+            "email": "john.doe@example.com"
+        }
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_forms"
@@ -323,7 +340,15 @@ phones: not an array of objects with a phone...
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "phones": ["+1 555 234 5678", "+1 555 876 4321", "+1 555 100 2000"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "phones": [
+        "+1 555 234 5678",
+        "+1 555 876 4321",
+        "+1 555 100 2000"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="fixed_list"
@@ -390,7 +415,20 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} ]() --> {% endraw %}
 
-{% capture demoValue %}{ "pets": [ {"species": "cat", "name": "Whiskers"}, {"species": "dog", "name": "Rex"} ] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "pets": [
+        {
+            "species": "cat",
+            "name": "Whiskers"
+        },
+        {
+            "species": "dog",
+            "name": "Rex"
+        }
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="pets_list"

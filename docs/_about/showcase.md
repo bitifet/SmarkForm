@@ -742,7 +742,22 @@ examples simple and focused on the subject they are intended to illustrate.
 source code:
 
 
-{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+{% capture demoValue -%}
+{
+    "model": "Toyota Yaris",
+    "type": "Car",
+    "longdesc": "A reliable compact car perfect for city driving.",
+    "seats": 5,
+    "side": "left",
+    "color": "#3a7bd5",
+    "safety": {
+        "airbag": true,
+        "abs": true,
+        "esp": false,
+        "tc": false
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_forms_full"
@@ -864,7 +879,20 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "schedule": [{"start": "09:00:00", "end": "13:00:00"}, {"start": "14:00:00", "end": "18:00:00"}] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "schedule": [
+        {
+            "start": "09:00:00",
+            "end": "13:00:00"
+        },
+        {
+            "start": "14:00:00",
+            "end": "18:00:00"
+        }
+    ]
+}
+{%- endcapture %}
 
 {% capture schedule_list_css %}{{ hotkeys_reveal_css }}{% endcapture %}
 
@@ -1048,7 +1076,44 @@ needing DOM filler elements.
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "schedules": { "rcpt_schedule": [{"start": "00:00:00", "end": "23:59:00"}], "bar_schedule": [{"start": "11:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:30:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}] } }{% endcapture %}
+{% capture demoValue -%}
+{
+    "schedules": {
+        "rcpt_schedule": [
+            {
+                "start": "00:00:00",
+                "end": "23:59:00"
+            }
+        ],
+        "bar_schedule": [
+            {
+                "start": "11:00:00",
+                "end": "23:00:00"
+            }
+        ],
+        "restaurant_schedule": [
+            {
+                "start": "07:30:00",
+                "end": "10:30:00"
+            },
+            {
+                "start": "13:00:00",
+                "end": "15:30:00"
+            },
+            {
+                "start": "19:00:00",
+                "end": "22:00:00"
+            }
+        ],
+        "pool_schedule": [
+            {
+                "start": "09:00:00",
+                "end": "20:00:00"
+            }
+        ]
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
@@ -1106,7 +1171,50 @@ every list item and so forth to any depth.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "periods": [ {"start_date": "2025-04-01", "end_date": "2025-09-30", "schedules": {"rcpt_schedule": [{"start": "07:00:00", "end": "23:00:00"}], "bar_schedule": [{"start": "10:00:00", "end": "23:00:00"}], "restaurant_schedule": [{"start": "07:00:00", "end": "10:30:00"}, {"start": "13:00:00", "end": "15:30:00"}, {"start": "19:00:00", "end": "22:00:00"}], "pool_schedule": [{"start": "09:00:00", "end": "20:00:00"}]}} ] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "periods": [
+        {
+            "start_date": "2025-04-01",
+            "end_date": "2025-09-30",
+            "schedules": {
+                "rcpt_schedule": [
+                    {
+                        "start": "07:00:00",
+                        "end": "23:00:00"
+                    }
+                ],
+                "bar_schedule": [
+                    {
+                        "start": "10:00:00",
+                        "end": "23:00:00"
+                    }
+                ],
+                "restaurant_schedule": [
+                    {
+                        "start": "07:00:00",
+                        "end": "10:30:00"
+                    },
+                    {
+                        "start": "13:00:00",
+                        "end": "15:30:00"
+                    },
+                    {
+                        "start": "19:00:00",
+                        "end": "22:00:00"
+                    }
+                ],
+                "pool_schedule": [
+                    {
+                        "start": "09:00:00",
+                        "end": "20:00:00"
+                    }
+                ]
+            }
+        }
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
@@ -1344,7 +1452,8 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- demoValue {{{ --> {% endraw %}
-{% capture demoValue %}{
+{% capture demoValue -%}
+{
     "periods": [
         {
             "start_date": "2025-01-01",
@@ -1418,7 +1527,8 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
             }
         }
     ]
-}{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table_duplicable"
@@ -1464,7 +1574,22 @@ Let's recall the example showing the full HTML source in the [Deeply nested
 forms](#deeply-nested-forms) section:
 
 
-{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+{% capture demoValue -%}
+{
+    "model": "Toyota Yaris",
+    "type": "Car",
+    "longdesc": "A reliable compact car perfect for city driving.",
+    "seats": 5,
+    "side": "left",
+    "color": "#3a7bd5",
+    "safety": {
+        "airbag": true,
+        "abs": true,
+        "esp": false,
+        "tc": false
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_forms_bis"
@@ -1569,7 +1694,22 @@ prefills the prompt dialog with the JSON export of the whole form.
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-{% capture demoValue %}{ "model": "Toyota Yaris", "type": "Car", "longdesc": "A reliable compact car perfect for city driving.", "seats": 5, "side": "left", "color": "#3a7bd5", "safety": { "airbag": true, "abs": true, "esp": false, "tc": false } }{% endcapture %}
+{% capture demoValue -%}
+{
+    "model": "Toyota Yaris",
+    "type": "Car",
+    "longdesc": "A reliable compact car perfect for city driving.",
+    "seats": 5,
+    "side": "left",
+    "color": "#3a7bd5",
+    "safety": {
+        "airbag": true,
+        "abs": true,
+        "esp": false,
+        "tc": false
+    }
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_forms_with_load_save"
@@ -1776,7 +1916,14 @@ endcapture %}
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "phones": [
+        "+1 555 867 5309",
+        "+1 555 234 5678"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_list_autodisable"
@@ -1831,7 +1978,14 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "phones": [
+        "+1 555 867 5309",
+        "+1 555 234 5678"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys"
@@ -1907,7 +2061,16 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
-{% capture demoValue %}{ "name": "John", "surname": "Doe", "phones": ["+1 555 867 5309", "+1 555 234 5678"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "name": "John",
+    "surname": "Doe",
+    "phones": [
+        "+1 555 867 5309",
+        "+1 555 234 5678"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
@@ -3021,7 +3184,22 @@ endcapture %}
 
 {% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "title": "Sprint Review", "date": "2025-03-15", "time": "10:00:00", "organizer": { "name": "Alice Johnson", "email": "alice@example.com" }, "attendees": ["Bob Smith", "Carol White", "Dave Brown"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "title": "Sprint Review",
+    "date": "2025-03-15",
+    "time": "10:00:00",
+    "organizer": {
+        "name": "Alice Johnson",
+        "email": "alice@example.com"
+    },
+    "attendees": [
+        "Bob Smith",
+        "Carol White",
+        "Dave Brown"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="event_planner_showcase"

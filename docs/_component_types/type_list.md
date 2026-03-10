@@ -46,6 +46,8 @@ endcapture %}
             * [Options (import)](#options-import)
         * [(Async) clear (Action)](#async-clear-action)
             * [Options (clear)](#options-clear)
+        * [(Async) reset (Action)](#async-reset-action)
+            * [Options (reset)](#options-reset)
         * [(Async) addItem (Action)](#async-additem-action)
             * [Options (addItem)](#options-additem)
         * [(Async) removeItem (Action)](#async-removeitem-action)
@@ -132,7 +134,22 @@ endcapture %}
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "users": [ {"name": "Alice Johnson", "phone": "+1 555 234 5678", "email": "alice.j@example.com"}, {"name": "Bob Smith", "phone": "+1 555 876 4321", "email": "bob.smith@example.com"} ] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "users": [
+        {
+            "name": "Alice Johnson",
+            "phone": "+1 555 234 5678",
+            "email": "alice.j@example.com"
+        },
+        {
+            "name": "Bob Smith",
+            "phone": "+1 555 876 4321",
+            "email": "bob.smith@example.com"
+        }
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_list"
@@ -173,7 +190,14 @@ like in the following example.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "phones": ["+1 555 100 2000", "+1 555 200 3000"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "phones": [
+        "+1 555 100 2000",
+        "+1 555 200 3000"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="scalar_list"
@@ -220,7 +244,14 @@ inside.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "phones": ["+1 555 100 2000", "+1 555 200 3000"] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "phones": [
+        "+1 555 100 2000",
+        "+1 555 200 3000"
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="singleton_list"
@@ -281,7 +312,19 @@ say, up to three phone numbers and up to three emails.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture demoValue %}{ "users": [ {"name": "Alice Johnson", "phones": ["+1 555 234 5678", "+1 555 876 4321"]} ] }{% endcapture %}
+{% capture demoValue -%}
+{
+    "users": [
+        {
+            "name": "Alice Johnson",
+            "phones": [
+                "+1 555 234 5678",
+                "+1 555 876 4321"
+            ]
+        }
+    ]
+}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="nesting_list"
