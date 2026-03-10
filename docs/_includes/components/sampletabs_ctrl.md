@@ -72,10 +72,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var savedContents = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
+            var jsHeadSrc = editMode ? (data.jsHeadDisplay || data.jsHead) : data.jsHead;
             return {
                 html: useEditor ? r(data.html) : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
-                js:   [r(data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
+                js:   [r(jsHeadSrc), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
                 hasEditor: useEditor
             };
         };
@@ -265,7 +266,14 @@ button[data-smark] {
 }
 
 .smarkform-preview-frame {
-    min-height: 150px;
+    min-height: 75px;
+}
+
+.smarkform-hint-icon {
+    cursor: help;
+    font-size: 0.85em;
+    opacity: 0.7;
+    user-select: none;
 }
 
  

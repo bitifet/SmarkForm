@@ -128,7 +128,7 @@ endcapture %}
 {% capture json_editor
 %}█<textarea
 █    cols="20"
-█    placeholder="JSON data viewer / editor"
+█    placeholder="JSON playground editor"
 █    data-smark='{"name":"editor","type":"input"}'
 █    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"
 █></textarea>{%
@@ -299,7 +299,7 @@ endif %}{% if jsHidden != '-'
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    <label><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include editor</label>
+    <label><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include editor <span class="smarkform-hint-icon" title="The JSON playground editor is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused. In edit mode it is not included in the snippets by default, but you can add it back by checking this box. Note: for some examples the editor is intentionally excluded and this checkbox is disabled.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -357,6 +357,7 @@ endif %}{% if jsHidden != '-'
     "css": {{ cssSource | jsonify | replace: "<", "\u003c" }},
     "cssHidden": {{ cssHidden | jsonify | replace: "<", "\u003c" }},
     "jsHead": {{ jsHead | jsonify | replace: "<", "\u003c" }},
+    "jsHeadDisplay": {{ jsHead_display | jsonify | replace: "<", "\u003c" }},
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
     "showEditor": {{ showEditor | jsonify }},
