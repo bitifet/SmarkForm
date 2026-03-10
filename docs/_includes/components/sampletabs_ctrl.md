@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!srcEl || !iframe) return;
         var data = JSON.parse(srcEl.textContent);
         var r = function(s) { return (s && s !== '-') ? s.replace(/\$\$/g, '') : ''; };
-        var withEditor = !!data.showEditor;
+        var withEditor = false;
         var editMode = false;
         var savedContents = {};
         var previewSrcs = function() {
@@ -100,11 +100,14 @@ document.addEventListener('DOMContentLoaded', function() {
             editMode = this.checked;
             if (editMode) {
                 runBtn.style.display = '';
+                if (editorToggle) editorToggle.disabled = !data.showEditor;
                 savedContents = {};
                 populateEditable();
                 smarkformRenderIframe(iframe, data, previewSrcs());
             } else {
                 runBtn.style.display = 'none';
+                if (editorToggle) { editorToggle.disabled = true; editorToggle.checked = false; }
+                withEditor = false;
                 ['html', 'css', 'js'].forEach(function(kind) {
                     if (savedContents[kind]) {
                         var tab = container.querySelector('.tab-content-' + kind);
@@ -228,6 +231,7 @@ button[data-smark] {
 .smarkform-run-btn {
     padding: 2px 10px;
     cursor: pointer;
+    margin-left: auto;
 }
 
 .smarkform-editable {

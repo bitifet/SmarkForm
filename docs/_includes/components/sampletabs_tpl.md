@@ -299,7 +299,7 @@ endif %}{% if jsHidden != '-'
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    {% if showEditor == true %}<label><input type="checkbox" class="smarkform-editor-toggle" checked> 📋 Include editor</label>{% else %}<label><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include editor</label>{% endif %}
+    <label><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include editor</label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
