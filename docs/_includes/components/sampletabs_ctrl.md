@@ -56,8 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var editMode = false;
         var savedContents = {};
         var previewSrcs = function() {
+            var useEditor = editMode ? withEditor : !!data.showEditor;
             return {
-                html: withEditor ? r(data.html) : r(data.htmlSource),
+                html: useEditor ? r(data.html) : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
                 js:   [r(data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n')
             };
