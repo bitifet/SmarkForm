@@ -8,23 +8,30 @@
 <script>
 /* Render SmarkForm example into an iframe. srcs = {html, css, js} */
 function smarkformRenderIframe(iframe, data, srcs) {
+    var hasEditor = !!srcs.hasEditor;
     var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
+    var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:12em;}' : '';
     var S = 'script';
     var jsSrc = srcs.js || '';
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';
+    iframe.dataset.hasEditor = hasEditor ? '1' : '';
     iframe.srcdoc = '<!DOCTYPE html>'
         + '\u003chtml\u003e\u003chead\u003e'
         + '\u003cmeta charset="UTF-8"\u003e'
         + '\u003c' + S + ' src="' + data.smarkformUrl + '"\u003e\u003c/' + S + '\u003e'
-        + '\u003cstyle\u003e' + baseCss + '\n' + (srcs.css || '') + '\u003c/style\u003e'
+        + '\u003cstyle\u003e' + baseCss + '\n' + editorCss + '\n' + (srcs.css || '') + '\u003c/style\u003e'
         + '\u003c/head\u003e\u003cbody\u003e'
         + (srcs.html || '')
         + sTag
         + '\u003c/body\u003e\u003c/html\u003e';
     iframe.onload = function() {
         try {
-            var h = Math.max(100, this.contentDocument.documentElement.scrollHeight + 20);
-            this.style.height = h + 'px';
+            if (hasEditor) {
+                this.style.height = Math.round(window.innerHeight * 0.7) + 'px';
+            } else {
+                var h = Math.max(100, this.contentDocument.documentElement.scrollHeight + 20);
+                this.style.height = h + 'px';
+            }
         } catch(e) {}
     };
 }
@@ -44,6 +51,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 contents.forEach(function(c) { c.classList.remove('tab-active'); });
                 tab.classList.add('tab-label-active');
                 contents[index].classList.add('tab-active');
+                /* Re-measure iframe height now that it is visible (it may have loaded while hidden) */
+                var frame = contents[index].querySelector('.smarkform-preview-frame');
+                if (frame && !frame.dataset.hasEditor) {
+                    try {
+                        var h = frame.contentDocument.documentElement.scrollHeight;
+                        if (h > 50) frame.style.height = (h + 20) + 'px';
+                    } catch(e) {}
+                }
             });
         });
         /* --- Source data and preview iframe --- */
@@ -60,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
             return {
                 html: useEditor ? r(data.html) : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
-                js:   [r(data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n')
+                js:   [r(data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
+                hasEditor: useEditor
             };
         };
         var activatePreview = function() {
@@ -246,6 +262,10 @@ button[data-smark] {
     font-family: monospace;
     font-size: 0.9em;
     margin: 0;
+}
+
+.smarkform-preview-frame {
+    min-height: 150px;
 }
 
  
