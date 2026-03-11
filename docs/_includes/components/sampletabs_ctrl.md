@@ -5,7 +5,15 @@
 {% assign sampletabs_ctrl_already_loaded = true %}
 
 <script src="{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/ace-builds@1.43.6/src-min-noconflict/ace.js" crossorigin="anonymous"></script>
 <script>
+if (typeof ace !== 'undefined') {
+    ace.config.set('basePath', 'https://cdn.jsdelivr.net/npm/ace-builds@1.43.6/src-min-noconflict/');
+    ace.config.set('useWorker', false);
+}
+var SMARKFORM_EDITOR_KINDS = ['html', 'css', 'js'];
+var SMARKFORM_ACE_MIN_LINES = 5;
+var SMARKFORM_ACE_MAX_LINES = 35;
 /* Render SmarkForm example into an iframe. srcs = {html, css, js} */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
@@ -35,9 +43,37 @@ function smarkformRenderIframe(iframe, data, srcs) {
         } catch(e) {}
     };
 }
-/* Escape HTML special chars for contenteditable display. */
+/* Escape HTML special chars for display in non-edit mode (unchanged source tabs). */
 function smarkformEscapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+/* Create and return an Ace editor instance inside the given tab element.
+   Falls back to a plain contenteditable block if Ace is unavailable. */
+function smarkformMakeAceEditor(tab, mode, content) {
+    tab.innerHTML = '';
+    if (typeof ace !== 'undefined') {
+        var div = document.createElement('div');
+        div.className = 'smarkform-ace-editor';
+        tab.appendChild(div);
+        var ed = ace.edit(div);
+        ed.setTheme('ace/theme/textmate');
+        ed.session.setMode(mode);
+        ed.setValue(content, -1);
+        ed.setOptions({minLines: SMARKFORM_ACE_MIN_LINES, maxLines: SMARKFORM_ACE_MAX_LINES, wrap: false, showPrintMargin: false, tabSize: 2, useSoftTabs: true});
+        return ed;
+    }
+    /* Fallback: plain contenteditable pre (no syntax highlighting) */
+    var pre = document.createElement('pre');
+    pre.className = 'smarkform-ace-editor smarkform-ace-fallback';
+    pre.contentEditable = 'true';
+    pre.textContent = content;
+    tab.appendChild(pre);
+    return {
+        getValue: function() { return pre.textContent; },
+        setValue: function(v) { pre.textContent = v; },
+        destroy: function() {},
+        resize: function() {}
+    };
 }
 document.addEventListener('DOMContentLoaded', function() {
     var tabContainers = document.querySelectorAll('.tab-container');
@@ -59,6 +95,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (h > 50) frame.style.height = (h + 20) + 'px';
                     } catch(e) {}
                 }
+                /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
+                SMARKFORM_EDITOR_KINDS.forEach(function(k) {
+                    if (aceEditors[k] && aceEditors[k].resize) aceEditors[k].resize();
+                });
             });
         });
         /* --- Source data and preview iframe --- */
@@ -70,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var withEditor = false;
         var editMode = false;
         var savedContents = {};
+        var aceEditors = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
             /* When editor is hidden, demoValue is passed directly as value: {...}.
@@ -97,20 +138,23 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         var populateEditable = function() {
             var srcs = previewSrcs();
+            /* Destroy any lingering Ace editors before recreating */
+            Object.keys(aceEditors).forEach(function(k) { aceEditors[k].destroy(); });
+            aceEditors = {};
             var htmlTab = container.querySelector('.tab-content-html');
             if (htmlTab) {
                 savedContents.html = htmlTab.innerHTML;
-                htmlTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="html">' + smarkformEscapeHtml(srcs.html) + '</pre>';
+                aceEditors.html = smarkformMakeAceEditor(htmlTab, 'ace/mode/html', srcs.html);
             }
             var cssTab = container.querySelector('.tab-content-css');
             if (cssTab) {
                 savedContents.css = cssTab.innerHTML;
-                cssTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="css">' + smarkformEscapeHtml(srcs.css) + '</pre>';
+                aceEditors.css = smarkformMakeAceEditor(cssTab, 'ace/mode/css', srcs.css);
             }
             var jsTab = container.querySelector('.tab-content-js');
             if (jsTab) {
                 savedContents.js = jsTab.innerHTML;
-                jsTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="js">' + smarkformEscapeHtml(srcs.js) + '</pre>';
+                aceEditors.js = smarkformMakeAceEditor(jsTab, 'ace/mode/javascript', srcs.js);
             }
         };
         /* --- Initial render --- */
@@ -132,7 +176,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 runBtn.style.display = 'none';
                 if (editorToggle) { editorToggle.disabled = true; editorToggle.checked = false; }
                 withEditor = false;
-                ['html', 'css', 'js'].forEach(function(kind) {
+                /* Destroy Ace editors and restore saved syntax-highlighted content */
+                Object.keys(aceEditors).forEach(function(k) { aceEditors[k].destroy(); });
+                aceEditors = {};
+                SMARKFORM_EDITOR_KINDS.forEach(function(kind) {
                     if (savedContents[kind]) {
                         var tab = container.querySelector('.tab-content-' + kind);
                         if (tab) tab.innerHTML = savedContents[kind];
@@ -147,14 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 withEditor = this.checked;
                 if (editMode) {
                     var srcs = previewSrcs();
-                    var htmlTab = container.querySelector('.tab-content-html');
-                    if (htmlTab) {
-                        htmlTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="html">' + smarkformEscapeHtml(srcs.html) + '</pre>';
-                    }
-                    var jsTab = container.querySelector('.tab-content-js');
-                    if (jsTab) {
-                        jsTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="js">' + smarkformEscapeHtml(srcs.js) + '</pre>';
-                    }
+                    /* Update HTML and JS editors to reflect the changed editor inclusion */
+                    if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
+                    if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
                     smarkformRenderIframe(iframe, data, srcs);
                 } else {
                     smarkformRenderIframe(iframe, data, previewSrcs());
@@ -162,14 +204,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         runBtn.addEventListener('click', function() {
-            var htmlEl = container.querySelector('[data-kind="html"]');
-            var cssEl  = container.querySelector('[data-kind="css"]');
-            var jsEl   = container.querySelector('[data-kind="js"]');
             var srcs = previewSrcs();
             smarkformRenderIframe(iframe, data, {
-                html: htmlEl ? htmlEl.textContent : srcs.html,
-                css:  cssEl  ? cssEl.textContent  : srcs.css,
-                js:   jsEl   ? jsEl.textContent   : srcs.js
+                html: aceEditors.html ? aceEditors.html.getValue() : srcs.html,
+                css:  aceEditors.css  ? aceEditors.css.getValue()  : srcs.css,
+                js:   aceEditors.js   ? aceEditors.js.getValue()   : srcs.js
             });
             activatePreview();
         });
@@ -265,16 +304,20 @@ button[data-smark] {
     margin-left: auto;
 }
 
-.smarkform-editable {
+.smarkform-ace-editor {
+    border: 1px solid #adb5bd;
+    border-radius: 2px;
+    font-size: 0.88em;
+}
+
+.smarkform-ace-fallback {
     white-space: pre-wrap;
     word-break: break-all;
-    padding: 1em;
+    padding: 0.75em;
     background: #f8f9fa;
     min-height: 4em;
-    outline: 2px solid #adb5bd;
-    border-radius: 2px;
     font-family: monospace;
-    font-size: 0.9em;
+    outline: none;
     margin: 0;
 }
 
