@@ -127,8 +127,13 @@ function generateDemoValueTestHTML(example) {
   // re-serialised and cannot contain unintended code fragments.
   const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${JSON.stringify(JSON.parse(demoValue))} });`;
 
+  // Replace alert() and window.alert() with console.log() so that any
+  // dialog-blocking JS in jsSource does not stall Playwright's test runner.
+  const sanitizeJS = (js) => js.replace(/\b(?:window\.)?alert\s*\(/g, 'console.log(');
+
   const combinedJS = [demoJsHead, jsHidden, jsSource]
     .filter(js => js && js.trim() !== '')
+    .map(sanitizeJS)
     .join('\n\n');
 
   return `<!DOCTYPE html>

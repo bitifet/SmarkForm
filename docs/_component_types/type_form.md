@@ -214,7 +214,7 @@ export default async ({ page, expect, id, root }) => {
 {
     "name": "John Doe",
     "email": "john@example.com",
-    "age": "30"
+    "age": 30
 }
 {%- endcapture %}
 
