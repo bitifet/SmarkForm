@@ -142,7 +142,7 @@ The following example demonstrates the distinction between `clear` and `reset` a
 
 {% raw %} <!-- capture clear_reset_example {{{ --> {% endraw %}
 {% capture clear_reset_example
-%}<fieldset data-smark='{"type":"form","name":"userProfile"}'>
+%}<fieldset>
     <legend>User Profile (with defaults)</legend>
     <p>
         <label data-smark>Name:</label>
@@ -212,11 +212,9 @@ export default async ({ page, expect, id, root }) => {
 
 {% capture demoValue -%}
 {
-    "userProfile": {
-        "name": "John Doe",
-        "email": "john@example.com",
-        "age": "30"
-    }
+    "name": "John Doe",
+    "email": "john@example.com",
+    "age": "30"
 }
 {%- endcapture %}
 
