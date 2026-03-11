@@ -72,7 +72,9 @@ document.addEventListener('DOMContentLoaded', function() {
         var savedContents = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
-            var jsHeadSrc = editMode ? (data.jsHeadDisplay || data.jsHead) : data.jsHead;
+            /* When editor is shown, demoValue lives in the demo subform's data-smark (HTML).
+               When editor is hidden, demoValue must come from the JS constructor (jsHeadDisplay). */
+            var jsHeadSrc = useEditor ? data.jsHead : (data.jsHeadDisplay || data.jsHead);
             return {
                 html: useEditor ? r(data.html) : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
@@ -140,12 +142,19 @@ document.addEventListener('DOMContentLoaded', function() {
             editorToggle.addEventListener('change', function() {
                 withEditor = this.checked;
                 if (editMode) {
+                    var srcs = previewSrcs();
                     var htmlTab = container.querySelector('.tab-content-html');
                     if (htmlTab) {
-                        htmlTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="html">' + smarkformEscapeHtml(withEditor ? r(data.html) : r(data.htmlSource)) + '</pre>';
+                        htmlTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="html">' + smarkformEscapeHtml(srcs.html) + '</pre>';
                     }
+                    var jsTab = container.querySelector('.tab-content-js');
+                    if (jsTab) {
+                        jsTab.innerHTML = '<pre contenteditable="true" class="smarkform-editable" data-kind="js">' + smarkformEscapeHtml(srcs.js) + '</pre>';
+                    }
+                    smarkformRenderIframe(iframe, data, srcs);
+                } else {
+                    smarkformRenderIframe(iframe, data, previewSrcs());
                 }
-                smarkformRenderIframe(iframe, data, previewSrcs());
             });
         }
         runBtn.addEventListener('click', function() {
