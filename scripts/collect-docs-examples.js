@@ -261,7 +261,11 @@ function extractExamples(filePath) {
       // Apply variable interpolation (handles nested captures, etc.)
       resolvedDemoValue = interpolateVariables(resolvedDemoValue, captures);
       // Strip any remaining unresolved Jekyll template variables
-      resolvedDemoValue = resolvedDemoValue.replace(/{{\s*[^}]+\s*}}/gs, '').trim();
+      resolvedDemoValue = resolvedDemoValue
+        .replace(/{{\s*[^}]+\s*}}/gs, '')
+        .replace(/\/\/[^\n\r]*/g, "")
+        .trim()
+      ;
       demoValue = resolvedDemoValue || null;
     }
     

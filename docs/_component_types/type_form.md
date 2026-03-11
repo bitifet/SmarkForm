@@ -207,6 +207,10 @@ export default async ({ page, expect, id, root }) => {
 3. Click "Reset to Defaults" - default values are restored
 
 ℹ️  The `value` option on the form sets the default values that `reset` will restore.
+
+🕵️  Notice the value passed as default for the age field (in the `⚙️  JS tab`)
+is a string (for a nuber field) but SmarkForm's number field correctly
+sanitizes it and it is correctly exported as a number afterwards.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -214,7 +218,7 @@ export default async ({ page, expect, id, root }) => {
 {
     "name": "John Doe",
     "email": "john@example.com",
-    "age": "30"
+    "age": "30" // Intentional wrong type (see notes)
 }
 {%- endcapture %}
 {% comment %}

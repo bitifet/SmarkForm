@@ -61,7 +61,7 @@ function deepFilterFalsy(value) {
     }
     return result;
   }
-  return value;
+  return coerceNumericStrings(value);
 }
 
 
