@@ -19,6 +19,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import jsonc from 'jsonc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -261,12 +262,11 @@ function extractExamples(filePath) {
       // Apply variable interpolation (handles nested captures, etc.)
       resolvedDemoValue = interpolateVariables(resolvedDemoValue, captures);
       // Strip any remaining unresolved Jekyll template variables
-      resolvedDemoValue = resolvedDemoValue
-        .replace(/{{\s*[^}]+\s*}}/gs, '')
-        .replace(/\/\/[^\n\r]*/g, "")
-        .trim()
-      ;
-      demoValue = resolvedDemoValue || null;
+      try {
+        demoValue = jsonc.parse(resolvedDemoValue.replace(/{{\s*[^}]+\s*}}/gs, ''));
+      } catch {
+        demoValue = null;
+      }
     }
     
     // Interpolate variables in resolved content

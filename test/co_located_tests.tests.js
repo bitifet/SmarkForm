@@ -153,7 +153,7 @@ function generateDemoValueTestHTML(example) {
   // Use a simple constructor that passes demoValue as the value option.
   // Use JSON.stringify(JSON.parse(...)) to ensure the value is correctly
   // re-serialised and cannot contain unintended code fragments.
-  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${JSON.stringify(JSON.parse(demoValue))} });`;
+  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${JSON.stringify(demoValue)} });`;
 
   // Replace alert() and window.alert() with console.log() so that any
   // dialog-blocking JS in jsSource does not stall Playwright's test runner.
@@ -404,7 +404,7 @@ for (const example of examples) {
       return await myForm.export();
     });
 
-    const parsedDemoValue = coerceNumericStrings(JSON.parse(example.demoValue));
+    const parsedDemoValue = coerceNumericStrings(example.demoValue);
     expect(
       deepFilterFalsy(exported),
       `demoValue round-trip failed for ${example.id}`
