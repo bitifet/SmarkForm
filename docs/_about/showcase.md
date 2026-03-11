@@ -1614,8 +1614,145 @@ prefills the prompt dialog with the JSON export of the whole form.
 
 ### Submitting the form
 
+So far we have seen how to export and import form data using event handlers.
+But often all you really need is to **submit the form** — either to an HTTP
+endpoint or to the user's email client.
+
+*SmarkForm* enhances native browser form submission so that correctly-typed
+values (as collected by its *export* mechanism) are what get sent — not the
+raw strings that native form fields would produce.
+
+All standard HTML5 submission attributes are supported: `action`, `method`,
+`enctype`, `target`, and their per-button overrides (`formaction`, `formmethod`,
+etc.). For non-JSON encodings the data is flattened into name/value pairs and
+submitted via a temporary `<form>` element; for `enctype="application/json"` it
+is sent via `fetch()`.
+
+The example below shows a simple contact form submitted via `mailto:`. When the
+**📧 Send Email** button is clicked, the user's email client opens pre-populated
+with the form data:
+
+{% raw %} <!-- submit_form_example {{{ --> {% endraw %}
+{% capture submit_form_example
+%}█<p>
+█    <label data-smark>Your name:</label>
+█    <input data-smark type="text" name="name" />
+█</p>
+█<p>
+█    <label data-smark>Your e-mail:</label>
+█    <input data-smark type="email" name="from" />
+█</p>
+█<p>
+█    <label data-smark>Subject:</label>
+█    <input data-smark type="text" name="subject" />
+█</p>
+█<p>
+█    <label data-smark>Message:</label>
+█    <textarea data-smark name="body"></textarea>
+█</p>
+█<p>
+█    <button data-smark='{"action":"submit"}'>📧 Send Email</button>
+█</p>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- submit_form_example_js {{{ --> {% endraw %}
+{% capture submit_form_example_js
+%}/* Set the form's action attribute */
+const el = document.getElementById("myForm$$");
+el.setAttribute('action', 'mailto:test@example.com');
+
+/* Initialize SmarkForm */
+const myForm = new SmarkForm(el);{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- submit_form_example_notes {{{ --> {% endraw %}
+{% capture submit_form_example_notes %}
+👉 Clicking **📧 Send Email** opens the user's email client with:
+
+  * **To:** `test@example.com`
+  * **Body:** the URL-encoded form fields.
+
+✏️ **To use a real address**, replace `test@example.com` in the JavaScript with
+your own.
+
+🌐 **To submit to an HTTP endpoint** instead, point `action` at your server URL
+and, optionally, add a `method` attribute. For example:
+
+```javascript
+el.setAttribute('action', 'https://example.com/contact');
+el.setAttribute('method', 'post');
+```
+
+📦 **For JSON APIs**, additionally set `enctype="application/json"` — SmarkForm
+will send the data as a JSON payload via `fetch()`.
+
 {: .warning :}
-> 🚧 Section still under construction...   🚧
+> `enctype="application/json"` is **not** compatible with `mailto:` actions.
+> Use the default (URL-encoded) encoding for `mailto:`.
+
+{: .info :}
+> You can also intercept or extend the submission via *SmarkForm* events:
+> `BeforeAction_submit` (fired before sending — you can `preventDefault()` to
+> cancel) and `AfterAction_submit` (fired after the data has been sent).
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- submit_form_example_tests {{{ --> {% endraw %}
+{% capture submit_form_example_tests %}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    // Fill in the form fields
+    await writeField('/name', 'Alice Johnson');
+    await writeField('/from', 'alice@example.com');
+    await writeField('/subject', 'Hello from SmarkForm');
+    await writeField('/body', 'This is a test message.');
+
+    // Intercept the form submission to capture submitted entries
+    const intercepted = await page.evaluate(async () => {
+        const origCreate = document.createElement.bind(document);
+        const entries = [];
+        document.createElement = function(tag) {
+            const el = origCreate(tag);
+            if (tag.toLowerCase() === 'form') {
+                const origAppend = el.appendChild.bind(el);
+                el.appendChild = function(child) {
+                    if (child.type === 'hidden') {
+                        entries.push({ name: child.name, value: child.value });
+                    }
+                    return origAppend(child);
+                };
+                el.submit = () => {};
+            }
+            return el;
+        };
+        await myForm.actions.submit(null, { silent: true });
+        document.createElement = origCreate;
+        return entries;
+    });
+
+    expect(intercepted).toEqual(
+        expect.arrayContaining([
+            expect.objectContaining({ name: 'name', value: 'Alice Johnson' }),
+            expect.objectContaining({ name: 'from', value: 'alice@example.com' }),
+            expect.objectContaining({ name: 'subject', value: 'Hello from SmarkForm' }),
+            expect.objectContaining({ name: 'body', value: 'This is a test message.' }),
+        ])
+    );
+};
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="submit_form"
+    htmlSource=submit_form_example
+    jsHead=submit_form_example_js
+    notes=submit_form_example_notes
+    selected="preview"
+    tests=submit_form_example_tests
+%}
 
 
 
