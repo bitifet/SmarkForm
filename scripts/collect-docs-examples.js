@@ -72,7 +72,7 @@ function findMarkdownFiles(dir, excludeFolders = []) {
  */
 function extractCaptures(content) {
   const captures = {};
-  const captureRegex = /{%\s*capture\s+(\w+)\s*%}([\s\S]*?){%\s*endcapture\s*%}/g;
+  const captureRegex = /{%-?\s*capture\s+(\w+)\s*-?%}([\s\S]*?){%-?\s*endcapture\s*-?%}/g;
   
   let match;
   while ((match = captureRegex.exec(content)) !== null) {
@@ -188,7 +188,7 @@ function extractExamples(filePath) {
   // include must see only the captures that were defined before it.
   const events = [];
 
-  const captureRegex = /{%\s*capture\s+(\w+)\s*%}([\s\S]*?){%\s*endcapture\s*%}/g;
+  const captureRegex = /{%-?\s*capture\s+(\w+)\s*-?%}([\s\S]*?){%-?\s*endcapture\s*-?%}/g;
   let captureMatch;
   while ((captureMatch = captureRegex.exec(content)) !== null) {
     events.push({
