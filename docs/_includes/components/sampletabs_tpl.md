@@ -340,20 +340,27 @@ endif %}{% if jsHidden != '-'
     <p>Every example in this section comes with many of the following tabs:</p>
     <ul>
       <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
-      <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any)</li>
+      <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any).</li>
       <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
-      <li data-bullet="👁️"><b>Preview:</b> This is where you can see the code in action.</li>
+      <li data-bullet="👁️"><b>Preview:</b> Live, sandboxed rendering of the example — fully isolated from the page styles.</li>
       <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
     </ul>
     {% if showEditor == true %}
-    <p>✨ Additionally, in the <strong>Preview</strong> tab, you will find handy buttons:</p>
+    <p>✨ In the <strong>Preview</strong> tab, a <em>JSON playground editor</em> is available with handy buttons:</p>
     <ul>
-      <li><code>⬇️ Export</code> to export the form data to the <em>JSON data viewer/editor</em>.</li>
-      <li><code>⬆️ Import</code> to import data into the form from the <em>JSON data viewer/editor</em>.</li>
+      <li><code>⬇️ Export</code> to export the form data to the <em>JSON playground editor</em>.</li>
+      <li><code>⬆️ Import</code> to import data from the <em>JSON playground editor</em> into the form.</li>
       <li><code>♻️ Reset</code> to reset the form to its default values.</li>
-      <li><code>❌ Clear</code> to reset the form to its initial state.</li>
+      <li><code>❌ Clear</code> to clear the whole form.</li>
     </ul>
+    <p>💡 The <em>JSON playground editor</em> is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused on what matters.</p>
     {% endif %}
+    <p>🛠️ Between the tab labels and the content there is always an <strong>edit toolbar</strong>:</p>
+    <ul>
+      <li><code>✏️ Edit</code> — activates edit mode: each source tab turns into a syntax-highlighted code editor (powered by <a href="https://ace.c9.io/" target="_blank">Ace</a>) pre-filled with the full, merged source. Changes are sandboxed — the original example is not affected.</li>
+      <li><code>📋 Include editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> is included in the preview. When toggled, the HTML and JS editors update instantly so you can see exactly what code is needed to add or remove it.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
+      <li><code>▶️ Run</code> — (only visible in edit mode) re-renders the Preview from the current editor contents and switches to the Preview tab.</li>
+    </ul>
   </div>
   <script type="application/json" class="smarkform-src-data">
   {
