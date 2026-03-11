@@ -214,9 +214,16 @@ export default async ({ page, expect, id, root }) => {
 {
     "name": "John Doe",
     "email": "john@example.com",
-    "age": 30
+    "age": "30"
 }
 {%- endcapture %}
+{% comment %}
+Note: "age" is intentionally given as a string ("30") even though the field is
+<input type="number">.  SmarkForm silently coerces the incoming string to a
+number on import, so the exported value is the JS number 30.  This illustrates
+the library's built-in input sanitisation.  The demoValue round-trip test
+normalises numeric strings before comparing, so the test still passes.
+{% endcomment %}
 
 {% include components/sampletabs_tpl.md
    formId="clear_reset_form"

@@ -66,6 +66,34 @@ function deepFilterFalsy(value) {
 
 
 /**
+ * Recursively coerce numeric strings to numbers.
+ *
+ * SmarkForm silently converts string values to numbers when importing into
+ * <input type="number"> fields.  A demoValue may intentionally use a string
+ * (e.g. "30") to showcase this sanitisation behaviour.  Applying this
+ * function to the parsedDemoValue before comparison lets the round-trip test
+ * pass even when the demoValue contains numeric strings:
+ *   coerceNumericStrings({age: "30"}) → {age: 30}
+ */
+function coerceNumericStrings(value) {
+  if (Array.isArray(value)) {
+    return value.map(coerceNumericStrings);
+  }
+  if (value !== null && typeof value === 'object') {
+    const result = {};
+    for (const [k, v] of Object.entries(value)) {
+      result[k] = coerceNumericStrings(v);
+    }
+    return result;
+  }
+  if (typeof value === 'string' && value.trim() !== '' && !isNaN(value)) {
+    return Number(value);
+  }
+  return value;
+}
+
+
+/**
  * Generate a minimal HTML page for testing an example
  */
 function generateTestHTML(example) {
@@ -367,12 +395,16 @@ for (const example of examples) {
       await myForm.rendered;
     });
 
-    // Export the form and compare against demoValue
+    // Export the form and compare against demoValue.
+    // coerceNumericStrings normalises any numeric strings in the demoValue
+    // (e.g. "30") to numbers before comparison, mirroring SmarkForm's own
+    // input sanitisation so that demoValues used to illustrate that feature
+    // do not cause false failures.
     const exported = await page.evaluate(async () => {
       return await myForm.export();
     });
 
-    const parsedDemoValue = JSON.parse(example.demoValue);
+    const parsedDemoValue = coerceNumericStrings(JSON.parse(example.demoValue));
     expect(
       deepFilterFalsy(exported),
       `demoValue round-trip failed for ${example.id}`
