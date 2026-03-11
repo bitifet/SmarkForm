@@ -161,6 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
         smarkformRenderIframe(iframe, data, previewSrcs());
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
+        var editorLabel  = container.querySelector('.smarkform-editor-label');
         var editorToggle = container.querySelector('.smarkform-editor-toggle');
         var runBtn       = container.querySelector('.smarkform-run-btn');
         if (!editToggle || !runBtn) return;
@@ -168,12 +169,14 @@ document.addEventListener('DOMContentLoaded', function() {
             editMode = this.checked;
             if (editMode) {
                 runBtn.style.display = '';
+                if (editorLabel) editorLabel.style.display = '';
                 if (editorToggle) editorToggle.disabled = !data.showEditor;
                 savedContents = {};
                 populateEditable();
                 smarkformRenderIframe(iframe, data, previewSrcs());
             } else {
                 runBtn.style.display = 'none';
+                if (editorLabel) editorLabel.style.display = 'none';
                 if (editorToggle) { editorToggle.disabled = true; editorToggle.checked = false; }
                 withEditor = false;
                 /* Destroy Ace editors and restore saved syntax-highlighted content */
@@ -201,6 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     smarkformRenderIframe(iframe, data, previewSrcs());
                 }
+            });
+        }
+        /* Hint icon: show tooltip as alert on tap/click (mobile accessibility) */
+        var hintIcon = container.querySelector('.smarkform-hint-icon');
+        if (hintIcon) {
+            hintIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                window.alert(this.title);
             });
         }
         runBtn.addEventListener('click', function() {
