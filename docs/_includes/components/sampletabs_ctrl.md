@@ -72,9 +72,13 @@ document.addEventListener('DOMContentLoaded', function() {
         var savedContents = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
-            /* When editor is shown, demoValue lives in the demo subform's data-smark (HTML).
-               When editor is hidden, demoValue must come from the JS constructor (jsHeadDisplay). */
-            var jsHeadSrc = useEditor ? data.jsHead : (data.jsHeadDisplay || data.jsHead);
+            /* When editor is hidden, demoValue is passed directly as value: {...}.
+               When editor is shown, demoValue is wrapped as value: {"demo": {...}} because
+               the HTML wraps the form in a "demo" subform. This keeps the JS tab accurate
+               and lets readers see the value morph as they toggle "Include editor". */
+            var jsHeadSrc = useEditor
+                ? (data.jsHeadDisplayWithEditor || data.jsHead)
+                : (data.jsHeadDisplay || data.jsHead);
             return {
                 html: useEditor ? r(data.html) : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),

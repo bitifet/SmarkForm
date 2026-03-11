@@ -50,9 +50,13 @@ For further details, please refer to the following documentation files:
   {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
     value: {{ include.demoValue }}
 });{% endcapture %}
+  {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    value: {"demo": {{ include.demoValue }}}
+});{% endcapture %}
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
+  {% assign default_jsHead_display_with_editor = default_jsHead %}
 {% endif %}
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
@@ -70,6 +74,7 @@ For further details, please refer to the following documentation files:
 {% assign cssHidden = include.cssHidden | default: '-' %}
 {% assign jsHead = include.jsHead | default: default_jsHead %}
 {% assign jsHead_display = include.jsHead | default: default_jsHead_display %}
+{% assign jsHead_display_with_editor = include.jsHead | default: default_jsHead_display_with_editor %}
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
@@ -156,7 +161,7 @@ endcapture %}
 {% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}{{ demoValue_inner | raw }}}' style="flex-grow: 1">{{
+        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
 htmlSource | replace: "█", "            "
 }}        </div>
         <div style="display: flex; justify-content: space-evenly">
@@ -358,6 +363,7 @@ endif %}{% if jsHidden != '-'
     "cssHidden": {{ cssHidden | jsonify | replace: "<", "\u003c" }},
     "jsHead": {{ jsHead | jsonify | replace: "<", "\u003c" }},
     "jsHeadDisplay": {{ jsHead_display | jsonify | replace: "<", "\u003c" }},
+    "jsHeadDisplayWithEditor": {{ jsHead_display_with_editor | jsonify | replace: "<", "\u003c" }},
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
     "showEditor": {{ showEditor | jsonify }},
