@@ -2,11 +2,12 @@
 
 ## Release Notes Summary
 
-SmarkForm 0.13.1 is an improvement and polish release on top of 0.13.0. It includes several bug fixes and mobile accessibility improvements to the documentation. As a bonus, it finally enhances the native `<form>` with configurable graceful degradation for nested data, mimicking commonly used patterns, plus a non-standard `enctype="application/json"`. Standard enctypes perform a real form submit under the hood, providing support for any standard configuration (including `mailto:` URLs), while the new JSON transport option provides real JSON transport and enables all HTTP methods — such as `PUT` and `PATCH` — which are not supported by the standards.
+SmarkForm 0.13.1 is an improvement and polish release on top of 0.13.0. It includes several bug fixes and mobile accessibility improvements to the documentation. As the headline, the documentation examples are now fully editable in the browser — readers can modify the source code of any example, hit **Run**, and see the result immediately, without leaving the page. As a bonus, the native `<form>` element is now fully supported: standard enctypes perform a real form submit under the hood (including `mailto:` URLs), while the non-standard `enctype="application/json"` provides genuine JSON transport and enables all HTTP methods — such as `PUT` and `PATCH` — which are not supported by the HTML standard.
 
 ### Features
 
-- **`submit` action** for the `form` component type: enhances the native `<form>` element with configurable graceful degradation for nested data, mimicking commonly used serialisation patterns. Standard enctypes (`application/x-www-form-urlencoded`, `multipart/form-data`) perform a real browser form submit under the hood — supporting any standard configuration, including `mailto:` URLs. The non-standard `enctype="application/json"` provides genuine JSON transport and unlocks all HTTP methods, including `PUT` and `PATCH`, which the HTML standard does not support. Individual submit buttons can override the action URL and method via `formaction`/`formmethod`, and Enter-key prevention is built in.
+- **Editable live documentation examples**: every example in the documentation can now be edited directly in the browser. Readers can tweak the HTML, CSS, or JavaScript, click **Run**, and see the updated result live — without leaving the page. This dramatically lowers the barrier to experimenting with SmarkForm and understanding how it works.
+- **Native `<form>` support**: SmarkForm now works with the standard `<form>` element out of the box, including configurable graceful degradation for nested data to commonly used serialisation patterns. Standard enctypes (`application/x-www-form-urlencoded`, `multipart/form-data`) perform a real browser form submit under the hood — full `mailto:` support included. The non-standard `enctype="application/json"` provides genuine JSON transport and unlocks HTTP methods like `PUT` and `PATCH` that the HTML standard does not support.
 - **`demoValue` round-trip smoke tests**: co-located documentation examples can now declare a `demoValue` that is automatically imported and re-exported to verify round-trip fidelity, keeping documentation accurate as the library evolves.
 
 ### Bug Fixes
@@ -16,12 +17,12 @@ SmarkForm 0.13.1 is an improvement and polish release on top of 0.13.0. It inclu
 - Fixed missing `await` on async calls across the codebase, resolving potential async timing issues.
 - Fixed `sampletabs` import button to pass `setDefault:false`, so **Clear** correctly restores the original sample data rather than the last-imported value.
 - Fixed submit button inner-element click tracking and `mailto:` JSON encoding edge cases.
-- Fixed Enter-key propagation to prevent accidental `submit` triggers on text inputs.
+- Fixed Enter-key propagation to prevent accidental form submissions on text inputs.
 
 ### Other
 
 - Documentation: responsive sidebar typography, sticky TOC height cap, TOC counters via JS span injection, improved mobile nav font and padding.
-- Documentation: FAQ updated with entries for form tag optionality, the new `submit` action, and Enter-key / buttons / `mailto:` behaviour.
+- Documentation: FAQ updated with entries for form tag optionality and Enter-key / buttons / `mailto:` behaviour.
 - Dev-dependency: `@rollup/plugin-babel` bumped from 6.1.0 to 7.0.0.
 - Agent/CI instruction updates.
 
@@ -41,12 +42,15 @@ Version 0.13.1
 
 🚀 **SmarkForm 0.13.1 is out!**
 
-An improvement and polish release on top of 0.13.0, delivering several bug fixes and mobile accessibility improvements to the documentation site.
+An improvement and polish release on top of 0.13.0, delivering several bug fixes, mobile accessibility improvements, and the biggest documentation upgrade since launch.
 
-The headline addition is a new `submit` action that enhances the native `<form>` element with something it always lacked: configurable graceful degradation for nested data. Standard enctypes (`urlencoded`, `multipart/form-data`) perform a real browser form submit under the hood — full `mailto:` support included. The non-standard `enctype="application/json"` goes further, providing genuine JSON transport and enabling HTTP methods like `PUT` and `PATCH` that the standard does not support.
+The headline: **every documentation example is now editable in the browser**. Edit the HTML, CSS, or JS, hit **Run**, and see the result immediately — without leaving the page. No sandbox to set up, no local install needed. Just open the docs and start playing.
+
+As a bonus, the native `<form>` element is now fully supported: standard enctypes do a real browser form submit under the hood (including `mailto:` URLs), while `enctype="application/json"` provides genuine JSON transport and enables `PUT`, `PATCH`, and other HTTP methods the standard doesn't support.
 
 Highlights:
-- ✨ New `submit` action — real browser submit for standard enctypes (incl. `mailto:`), JSON transport for PUT/PATCH
+- ✏️ **Editable examples** — edit source code in the docs and run it live
+- 🧾 **Native `<form>` support** — real browser submit for standard enctypes, JSON transport for `PUT`/`PATCH`
 - 🐛 `setDefault` propagation fix — only the targeted field updates its default
 - 🐛 Nested sub-form data loss fix
 - 📱 Mobile accessibility improvements and responsive docs sidebar/TOC
@@ -68,7 +72,9 @@ Highlights:
 ```
 #SmarkForm 0.13.1 is out!
 
-Polish release: bug fixes, mobile accessibility doc improvements, and a new `submit` action that enhances native <form> — real browser submit for standard enctypes (mailto: included), JSON transport for PUT/PATCH.
+Every documentation example is now editable in the browser. Tweak the code, hit Run, see the result — live, no setup needed.
+
+Plus bug fixes, mobile accessibility improvements, and native <form> support with real browser submit and JSON transport.
 
 #JavaScript #WebDev #OpenSource #Forms
 
@@ -81,11 +87,9 @@ Polish release: bug fixes, mobile accessibility doc improvements, and a new `sub
 ```
 #SmarkForm 0.13.1 🎉
 
-New `submit` action enhances native <form>:
-• Standard enctypes → real browser submit (mailto: supported)
-• JSON transport → enables PUT, PATCH and other non-standard methods
+The docs now let you edit examples live in the browser. Change the HTML/CSS/JS, hit Run, see the result immediately.
 
-Plus setDefault fix, nested data loss fix, mobile doc improvements.
+Also: native <form> support — real browser submit for standard enctypes (mailto: included), JSON transport for PUT/PATCH.
 
 #FrontEnd #JavaScript #Forms
 
@@ -95,9 +99,11 @@ Plus setDefault fix, nested data loss fix, mobile doc improvements.
 #### HTML-Driven Devs
 
 ```
-#SmarkForm 0.13.1 — native <form> finally gets what it was missing.
+#SmarkForm 0.13.1 — the docs just levelled up.
 
-New `submit` action: graceful degradation for nested data, real browser submit for standard enctypes (incl. mailto:), and JSON transport for PUT/PATCH — all configurable in HTML.
+Every example is now editable in the browser. Edit the HTML, hit Run, and see what happens. No sandbox needed.
+
+Also: native <form> fully supported, including mailto: and JSON transport for PUT/PATCH — all via data-smark attributes.
 
 #HTML #WebComponents #Forms
 
@@ -110,7 +116,7 @@ New `submit` action: graceful degradation for nested data, real browser submit f
 ```
 #SmarkForm 0.13.1 shipped! 🛠️
 
-Polish release: new submit action, setDefault fix, nested data loss fix, and mobile accessibility improvements to the docs.
+Polish release: editable live docs examples, native <form> support, setDefault fix, nested data loss fix, and mobile accessibility improvements.
 
 Contributions welcome! 🙏
 
@@ -125,7 +131,9 @@ Contributions welcome! 🙏
 ```
 #SmarkForm 0.13.1:
 
-New `submit` action delegates to a real browser form submit for standard enctypes — no XHR/fetch shim. Nested data is gracefully degraded to flat key patterns (configurable). JSON transport adds PUT/PATCH support.
+Documentation examples are now editable live in the browser — edit, Run, iterate.
+
+Native <form> support uses real browser submit for standard enctypes (no fetch shim), JSON transport for PUT/PATCH via enctype="application/json". Nested data degrades gracefully to configurable flat-key patterns.
 
 #JavaScript #SoftwareEngineering
 
@@ -137,9 +145,9 @@ New `submit` action delegates to a real browser form submit for standard enctype
 ```
 Just shipped #SmarkForm 0.13.1 🚢
 
-New submit action — real browser form submit under the hood, not a fetch shim. Nested data degrades gracefully to common flat-key patterns. JSON transport unlocks PUT/PATCH.
+Editable live docs examples — you can now edit any example's source code and run it right there in the page.
 
-Also fixed a subtle setDefault propagation bug.
+Also added native <form> support: real browser submit under the hood, JSON transport for PUT/PATCH.
 
 #buildinpublic #indiedev
 ```
@@ -149,9 +157,7 @@ Also fixed a subtle setDefault propagation bug.
 ```
 #SmarkForm 0.13.1 is out!
 
-You can now add a `submit` action to any HTML form — it does a real browser submit, supports mailto: links, and can send JSON for PUT/PATCH requests.
-
-No JS boilerplate needed 🙌
+The documentation now lets you edit and run the examples right in the page. Change the code, hit Run, and watch it work. Best way to learn how it works 🙌
 
 #icancode #learntocode #JavaScript #HTML
 ```
@@ -161,9 +167,11 @@ No JS boilerplate needed 🙌
 ```
 #SmarkForm 0.13.1:
 
-If you build web products with HTML forms — this patch fixes data-loss bugs in nested sub-forms and adds a `submit` action with real browser submit (incl. mailto:) and JSON transport for PUT/PATCH.
+The docs now have editable live examples — your team can experiment in the browser without setting up anything locally.
 
-Less glue code. More shipping. #startup #nocode #Forms
+Also fixes data-loss bugs in nested sub-forms and adds full <form> support with real browser submit and JSON transport for PUT/PATCH.
+
+Less friction. More shipping. #startup #nocode #Forms
 ```
 
 #### Web Developers
@@ -171,10 +179,11 @@ Less glue code. More shipping. #startup #nocode #Forms
 ```
 #SmarkForm 0.13.1 released 🚀
 
-- New `submit` action: real browser submit for standard enctypes (mailto: supported), JSON transport for PUT/PATCH
-- setDefault propagation fix
-- Nested sub-form data-loss fix
-- Mobile accessibility improvements in the docs
+- ✏️ Editable live documentation examples — edit source code and click Run
+- 🧾 Native <form> support: real browser submit (mailto: included), JSON transport for PUT/PATCH
+- 🐛 setDefault propagation fix
+- 🐛 Nested sub-form data-loss fix
+- 📱 Mobile accessibility improvements in the docs
 
 #WebDev #JavaScript #OpenSource
 
@@ -186,8 +195,8 @@ Less glue code. More shipping. #startup #nocode #Forms
 ```
 #SmarkForm 0.13.1 🧵
 
-1/ New `submit` action — standard enctypes do a real browser submit (mailto: included); JSON transport enables PUT, PATCH.
-2/ Nested data gracefully degraded to common flat-key patterns.
+1/ Docs examples are now editable — change the source, hit Run, see the result live.
+2/ Native <form> fully supported: real browser submit for standard enctypes (mailto: too), JSON transport for PUT/PATCH.
 3/ setDefault fix: child fields no longer inherit parent's default update.
 
 #JavaScript #WebDev
@@ -198,7 +207,8 @@ Less glue code. More shipping. #startup #nocode #Forms
 ```
 #SmarkForm 0.13.1 🟨
 
-New: `submit` action — real browser submit for urlencoded/multipart (incl. mailto:), JSON transport for PUT/PATCH
+New: editable live docs examples (edit + Run in the browser)
+New: native <form> support — real browser submit (urlencoded/multipart/mailto:), JSON transport for PUT/PATCH
 Fixed: setDefault propagation, nested sub-form data loss, missing awaits
 Added: demoValue round-trip smoke tests, mobile doc accessibility
 
@@ -212,9 +222,9 @@ Added: demoValue round-trip smoke tests, mobile doc accessibility
 ```
 Shipped #SmarkForm 0.13.1 tonight.
 
-New submit action delegates to a real browser form submit — not a fetch shim — with graceful degradation for nested data. JSON transport adds PUT/PATCH support.
+Made the documentation examples editable — readers can now tweak the source code and run it live in the browser. No sandbox, no setup. Just the docs.
 
-Fixed a setDefault bug that quietly lurked for a few releases.
+Also landed native <form> support with real browser submit and JSON transport for PUT/PATCH.
 
 #actuallybuildingit #buildinpublic
 ```
@@ -224,7 +234,8 @@ Fixed a setDefault bug that quietly lurked for a few releases.
 ```
 #SmarkForm 0.13.1 for #FrontEndFraternity 🤝
 
-✨ `submit` action — real browser submit (incl. mailto:), JSON transport for PUT/PATCH
+✏️ Editable live docs examples — edit source code and Run in the browser
+🧾 Native <form>: real browser submit (incl. mailto:), JSON transport for PUT/PATCH
 🐛 setDefault: only targeted field updates default
 📱 Mobile accessibility improvements in the docs
 
@@ -240,17 +251,23 @@ Fixed a setDefault bug that quietly lurked for a few releases.
 
 #### Content
 
-**Title:** SmarkForm 0.13.1: Native Form Enhancement, Bug Fixes and Mobile-Friendly Docs
+**Title:** SmarkForm 0.13.1: Live Editable Docs, Native Form Support, and Bug Fixes
 
 **Intro paragraph:**
 
-SmarkForm 0.13.1 is now available. This is an improvement and polish release on top of 0.13.0 — several bug fixes, mobile accessibility improvements to the documentation site, and one notable feature addition: a `submit` action that enhances the native `<form>` element with capabilities the HTML standard has always left to third-party libraries.
+SmarkForm 0.13.1 is now available. This is an improvement and polish release on top of 0.13.0 — several bug fixes, mobile accessibility improvements to the documentation site, and a headline addition that changes how developers experience the documentation itself.
 
-**Section: New `submit` action**
+**Section: Live editable documentation examples**
 
-The `submit` action gives SmarkForm forms configurable graceful degradation for nested data, mimicking commonly used serialisation patterns. When you use a standard enctype (`application/x-www-form-urlencoded` or `multipart/form-data`), SmarkForm performs a real browser form submit under the hood — not a fetch/XHR simulation. This means full compatibility with any standard server-side configuration, including `mailto:` URLs for email-based form workflows.
+Every example in the SmarkForm documentation is now editable directly in the browser. Readers can open any page, modify the HTML, CSS, or JavaScript in the example, click **Run**, and see the result immediately — live, in the page, with no setup required.
 
-The non-standard `enctype="application/json"` takes things further: it sends a genuine JSON payload, unlocking HTTP methods that the HTML standard does not support — `PUT`, `PATCH`, and others. Individual submit buttons can override the action URL and method via `formaction`/`formmethod`, and Enter-key prevention is built in. A `BeforeAction_submit` event fires so you can intercept or cancel programmatically when needed.
+This is more than a quality-of-life improvement. It removes the biggest friction point in learning any library: the gap between reading about something and actually trying it. With editable examples, that gap disappears. You read, you experiment, you understand — all without leaving the documentation.
+
+**Section: Native `<form>` support**
+
+SmarkForm now works naturally with the standard `<form>` element, including configurable graceful degradation for nested data to commonly used serialisation patterns. Standard enctypes (`application/x-www-form-urlencoded`, `multipart/form-data`) perform a real browser form submit under the hood — not a fetch/XHR simulation. This means full compatibility with any standard server-side configuration, including `mailto:` URLs for email-based form workflows.
+
+The non-standard `enctype="application/json"` goes further: it sends a genuine JSON payload, unlocking HTTP methods that the HTML standard does not support — `PUT`, `PATCH`, and others — all configurable through `data-smark` attributes.
 
 **Section: Bug fixes**
 
@@ -262,7 +279,7 @@ Missing `await` calls scattered across the codebase are also resolved, closing p
 
 **Section: Mobile accessibility and documentation**
 
-The documentation site received a responsive overhaul focused on mobile accessibility: sticky TOC height is now capped to prevent scroll clipping, TOC counters are rendered via JS span injection for reliability, and mobile nav typography and padding were improved. The FAQ was updated with entries for form tag optionality, the new `submit` action, and Enter-key behaviour.
+The documentation site received a responsive overhaul focused on mobile accessibility: sticky TOC height is now capped to prevent scroll clipping, TOC counters are rendered via JS span injection for reliability, and mobile nav typography and padding were improved.
 
 **Section: demoValue smoke tests**
 
@@ -276,20 +293,22 @@ As always, install via `npm install smarkform@0.13.1`. Full changelog: https://g
 
 #### Hero Image Prompt
 
-A clean flat-design illustration of an HTML form connected to multiple transport channels: a browser form submit arrow, a JSON data stream, and a mailto: envelope. A small nested-data tree is shown flattening into a flat key-value list. The SmarkForm logo appears top-left. Palette: white background, dark-navy text, SmarkForm brand gradient accent (indigo → teal). Style: minimal, technical, professional.
+A clean flat-design illustration of a browser window showing a code editor alongside a live form preview, with an arrow connecting them and a "Run" button in between. The SmarkForm logo appears top-left. Secondary element: a small `<form>` tag connected to transport channels (browser submit, JSON stream, mailto: envelope). Palette: white background, dark-navy text, SmarkForm brand gradient accent (indigo → teal). Style: minimal, technical, engaging.
 
 ### LinkedIn Posts
 
 #### Full Stack Titans
 
 ```
-🚀 SmarkForm 0.13.1 is live — a meaningful patch for full-stack developers.
+🚀 SmarkForm 0.13.1 is live — and the documentation just got a whole lot better.
 
-The headline addition is a new `submit` action that enhances the native `<form>` element. Standard enctypes delegate to a real browser form submit under the hood — not a fetch/XHR shim — giving you full compatibility with server-side form handling and `mailto:` workflows. The non-standard `enctype="application/json"` enables genuine JSON transport and unlocks `PUT`, `PATCH`, and other HTTP methods the standard doesn't support.
+Every example in the docs is now editable in the browser. You can change the source code, hit Run, and see the result immediately. No sandbox, no local setup, no friction — just read, experiment, and understand.
 
-This release also fixes a `setDefault` propagation bug (child fields were incorrectly inheriting the parent's default-update flag) and a silent data-loss issue in nested sub-forms.
+This release also adds full support for the native <form> element: standard enctypes delegate to a real browser form submit under the hood (including mailto: workflows), while enctype="application/json" enables genuine JSON transport and unlocks PUT, PATCH, and other HTTP methods the standard doesn't support.
 
-If you're building full-stack apps that rely on server-side form processing, this one is worth the upgrade.
+Plus: setDefault propagation fix, nested sub-form data-loss fix, and mobile accessibility improvements throughout the docs.
+
+If you haven't tried SmarkForm yet, now is a great time to open the docs and just start playing.
 
 🔗 https://smarkform.bitifet.net
 
@@ -299,9 +318,10 @@ If you're building full-stack apps that rely on server-side form processing, thi
 #### Software Developer
 
 ```
-🛠️ SmarkForm 0.13.1 — patch release notes for developers:
+🛠️ SmarkForm 0.13.1 — release notes for developers:
 
-• New: `submit` action — real browser submit for standard enctypes (incl. mailto:), JSON transport for PUT/PATCH
+• New: live editable documentation examples — edit source code and click Run in the browser
+• New: native <form> support — real browser submit for standard enctypes (incl. mailto:), JSON transport for PUT/PATCH
 • Fixed: setDefault propagation — descendants no longer inherit parent's default-update flag
 • Fixed: nested sub-form data silently discarded with `value` constructor option
 • Fixed: missing `await` on async calls (potential race conditions resolved)
@@ -315,11 +335,13 @@ Full changelog: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 #### CSS3/HTML5 The Future of Front End
 
 ```
-💡 SmarkForm 0.13.1 brings native `<form>` enhancement to HTML.
+💡 SmarkForm 0.13.1: the docs now let you experiment live in the browser.
 
-The new `submit` action gives you configurable graceful degradation for nested form data. Standard enctypes do a real browser form submit — `mailto:` URLs work out of the box. The non-standard JSON transport adds PUT/PATCH for those who need it, all configured through `data-smark` attributes.
+Every example is editable — change the HTML, CSS, or JS, hit Run, and see what happens. Instant feedback, no setup needed. This is how documentation should work.
 
-This fits squarely into the HTML-first, progressive-enhancement philosophy that CSS3/HTML5 front-end development has always championed.
+Also: native <form> is now fully supported. Standard enctypes do a real browser form submit — mailto: URLs work out of the box. The non-standard JSON transport adds PUT/PATCH for those who need it, all via data-smark attributes.
+
+HTML-first, progressive-enhancement, zero JavaScript boilerplate.
 
 npm install smarkform@0.13.1
 🔗 https://smarkform.bitifet.net
@@ -332,9 +354,11 @@ npm install smarkform@0.13.1
 ```
 📦 SmarkForm 0.13.1 released.
 
-The headline feature is a `submit` action that enhances native `<form>` with nested data support: standard enctypes delegate to a real browser submit (including `mailto:` URLs), while `enctype="application/json"` provides genuine JSON transport and enables HTTP methods like `PUT` and `PATCH`.
+The headline feature is live editable documentation examples: every example in the docs can now be modified and run directly in the browser, giving readers an instant feedback loop for experimenting with the library.
 
-This release also fixes a `setDefault` propagation issue that caused child components to incorrectly inherit a parent's default-value update during `import()`, and resolves a silent data-loss bug in nested sub-forms. A new `demoValue` round-trip test infrastructure validates all documentation examples automatically.
+This release also adds native <form> support with nested data handling: standard enctypes delegate to a real browser submit (including mailto: URLs), while enctype="application/json" provides genuine JSON transport and enables HTTP methods like PUT and PATCH.
+
+Also fixed: setDefault propagation bug, nested sub-form data loss, missing awaits. Added demoValue round-trip test infrastructure for documentation accuracy.
 
 #SoftwareDevelopment #JavaScript #OpenSource #Testing
 ```
@@ -342,13 +366,13 @@ This release also fixes a `setDefault` propagation issue that caused child compo
 #### Software Engineering
 
 ```
-🔬 SmarkForm 0.13.1: real browser submit vs. a fetch shim
+🔬 SmarkForm 0.13.1: documentation that you can run
 
-The new `submit` action deliberately delegates to a real browser form submit for standard enctypes — not a fetch/XHR simulation. This preserves full browser-native compatibility (including `mailto:`) while still handling nested data through configurable graceful degradation to commonly used flat-key patterns.
+Editable live examples are a design decision as much as a feature. The best way to understand a library's behaviour is to modify it and observe what changes. Static code snippets require a context switch; editable examples keep you in the flow.
 
-This release also fixes missing `await` calls across the codebase — a good reminder that in JavaScript, a forgotten `await` doesn't throw; it just does the wrong thing quietly.
+Technical highlights: native <form> support uses a real browser form submit for standard enctypes — no fetch shim — with configurable graceful degradation for nested data. enctype="application/json" provides genuine JSON transport and unlocks PUT/PATCH.
 
-Patch also includes a setDefault propagation fix, a nested sub-form data-loss fix, and demoValue round-trip tests.
+Also fixed missing await calls across the codebase — a quiet reminder that in JavaScript, a forgotten await doesn't throw; it just does the wrong thing.
 
 Full notes: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 
