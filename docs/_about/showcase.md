@@ -1774,22 +1774,34 @@ with the form data:
 
 {% raw %} <!-- submit_form_example {{{ --> {% endraw %}
 {% capture submit_form_example
-%}█<form id="myForm$$" action="mailto:you@example.com">
+%}█<form id="myForm$$"
+    action="mailto:you@example.com?subject=Contact%20Form%20Submission"
+    method="post"
+    enctype="text/plain"
+>
 █<p>
-█    <label data-smark>Your name:</label>
-█    <input data-smark type="text" name="name" />
+█    <label data-smark>Abstract</label>
+█    <input data-smark type="text"
+█      name="name"
+█      placeholder="Brief summary or description"
+█    />
 █</p>
 █<p>
-█    <label data-smark>Your e-mail:</label>
-█    <input data-smark type="email" name="from" />
-█</p>
-█<p>
-█    <label data-smark>Subject:</label>
-█    <input data-smark type="text" name="subject" />
+█    <label data-smark>Reason for contacting us:</label>
+█    <select data-smark name="reason" required>
+█      <option value="" disabled selected>— Choose —</option>
+█      <option value="question">Question</option>
+█      <option value="support">Support / Technical help</option>
+█      <option value="feedback">Suggestion or feedback</option>
+█      <option value="complaint">Complaint</option>
+█      <option value="praise">Praise / Thank you</option>
+█      <option value="business">Business / Sales inquiry</option>
+█      <option value="other">Something else</option>
+█    </select>
 █</p>
 █<p>
 █    <label data-smark>Message:</label>
-█    <textarea data-smark name="body"></textarea>
+█    <textarea data-smark name="message"></textarea>
 █</p>
 █<p>
 █    <button data-smark='{"action":"submit"}'>📧 Send Email</button>
@@ -1810,18 +1822,17 @@ endcapture %}
 👉 Clicking **📧 Send Email** opens the user's email client with:
 
   * **To:** `test@example.com`
-  * **Body:** the URL-encoded form fields.
+  * **Subject:** `Contact Form Submission`
+  * **Body:** the Text-encoded form fields.
 
-✏️ **To use a real address**, replace `test@example.com` in the JavaScript with
-your own.
+✏️ **To use a real address:**
+  * Head to the `🗒️ HTML` tab and check the 📝 checkbox.
+  * Edit the email in the `action` attribute of the `<form>` element.
+  * Click the `▶️ Run` button to reload the `👁️ Preview` tab with the updated code.
+  * Fill the form and click the **📧 Send Email** button.
 
 🌐 **To submit to an HTTP endpoint** instead, point `action` at your server URL
-and, optionally, add a `method` attribute. For example:
-
-```javascript
-el.setAttribute('action', 'https://example.com/contact');
-el.setAttribute('method', 'post');
-```
+and propperly adjust the `method` attribute.
 
 📦 **For JSON APIs**, additionally set `enctype="application/json"` — SmarkForm
 will send the data as a JSON payload via `fetch()`.
