@@ -16,6 +16,8 @@ Accepted arguments:
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
+  * height: Optional iframe height factor (0–100). If omitted, a default is computed from the
+            HTML source line count. Larger values allow a taller iframe relative to the viewport.
 
 Additional arguments
 --------------------
@@ -194,6 +196,20 @@ endif
 </div>{% endcapture %}
 {% endif %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+
+{% comment %} ### ######################## ### {% endcomment %}
+{% comment %} ### Compute iframe heightPct ### {% endcomment %}
+{% comment %} ### ######################## ### {% endcomment %}
+
+{% assign heightPct_override = include.height | plus: 0 %}
+{% if heightPct_override > 0 %}
+  {% assign heightPct = heightPct_override %}
+{% else %}
+  {% assign htmlLines = partial_htmlSource | split: "\n" | size %}
+  {% assign heightPct_raw = htmlLines | times: 2 | plus: 10 %}
+  {% if heightPct_raw < 20 %}{% assign heightPct = 20 %}{% elsif heightPct_raw > 85 %}{% assign heightPct = 85 %}{% else %}{% assign heightPct = heightPct_raw %}{% endif %}
+{% endif %}
 
 
 {% comment %}
@@ -380,6 +396,7 @@ endif %}{% if jsHidden != '-'
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
     "showEditor": {{ showEditor | jsonify }},
+    "heightPct": {{ heightPct }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
   }
   </script>

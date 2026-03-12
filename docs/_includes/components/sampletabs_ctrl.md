@@ -17,6 +17,7 @@ var SMARKFORM_ACE_MAX_LINES = 35;
 /* Render SmarkForm example into an iframe. srcs = {html, css, js} */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
+    var heightPct = (typeof data.heightPct === 'number') ? data.heightPct : 50;
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
@@ -42,7 +43,8 @@ function smarkformRenderIframe(iframe, data, srcs) {
             if (hasEditor) {
                 this.style.height = Math.round(window.innerHeight * 0.7) + 'px';
             } else {
-                var h = Math.max(100, this.contentDocument.documentElement.scrollHeight + 20);
+                var maxH = Math.round(window.innerHeight * heightPct / 100);
+                var h = Math.max(100, Math.min(this.contentDocument.documentElement.scrollHeight + 20, maxH));
                 this.style.height = h + 'px';
             }
         } catch(e) {}
@@ -97,7 +99,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (frame && !frame.dataset.hasEditor) {
                     try {
                         var h = frame.contentDocument.documentElement.scrollHeight;
-                        if (h > 50) frame.style.height = (h + 20) + 'px';
+                        if (h > 50) {
+                            var maxH = Math.round(window.innerHeight * (data.heightPct || 50) / 100);
+                            frame.style.height = Math.max(100, Math.min(h + 20, maxH)) + 'px';
+                        }
                     } catch(e) {}
                 }
                 /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
