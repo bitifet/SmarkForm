@@ -1800,11 +1800,7 @@ endcapture %}
 
 {% raw %} <!-- submit_form_example_js {{{ --> {% endraw %}
 {% capture submit_form_example_js
-%}/* Set the form's action attribute */
-const el = document.getElementById("myForm$$");
-el.setAttribute('action', 'mailto:test@example.com');
-
-/* Initialize SmarkForm */
+%}/* Initialize SmarkForm */
 const myForm = new SmarkForm(el);{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
