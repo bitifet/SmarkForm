@@ -276,9 +276,10 @@ for (const example of examples) {
 
     // Verify console errors match expectations
     const expectedConsoleErrors = example.expectedConsoleErrors || 0;
-    if (consoleErrors.length > 0) {
-      console.log('Console errors:', consoleErrors);
-    }
+    // // Debug:
+    // if (consoleErrors.length > 0) {
+    //   console.log('Console errors:', consoleErrors);
+    // }
     expect(
       consoleErrors, 
       `Expected ${expectedConsoleErrors} console error(s) in example ${example.id}, got ${consoleErrors.length}`
@@ -286,9 +287,10 @@ for (const example of examples) {
     
     // Verify page errors match expectations
     const expectedPageErrors = example.expectedPageErrors || 0;
-    if (pageErrors.length > 0) {
-      console.log('Page errors:', pageErrors);
-    }
+    // // Debug:
+    // if (pageErrors.length > 0) {
+    //   console.log('Page errors:', pageErrors);
+    // }
     expect(
       pageErrors, 
       `Expected ${expectedPageErrors} page error(s) in example ${example.id}, got ${pageErrors.length}`
@@ -411,9 +413,10 @@ for (const example of examples) {
     ).toEqual(deepFilterFalsy(parsedDemoValue));
 
     // No page errors expected
-    if (pageErrors.length > 0) {
-      console.log('Page errors:', pageErrors);
-    }
+    // // Debug:
+    // if (pageErrors.length > 0) {
+    //   console.log('Page errors:', pageErrors);
+    // }
     expect(
       pageErrors,
       `Unexpected page error(s) in demoValue test for ${example.id}`
