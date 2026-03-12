@@ -17,6 +17,9 @@ var SMARKFORM_ACE_MAX_LINES = 35;
 /* Render SmarkForm example into an iframe. srcs = {html, css, js} */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
+    var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
+    if (spinner) spinner.style.display = 'flex';
+    iframe.style.display = 'none';
     var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
     var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:12em;}' : '';
     var S = 'script';
@@ -33,6 +36,8 @@ function smarkformRenderIframe(iframe, data, srcs) {
         + sTag
         + '\u003c/body\u003e\u003c/html\u003e';
     iframe.onload = function() {
+        if (spinner) spinner.style.display = 'none';
+        this.style.display = 'block';
         try {
             if (hasEditor) {
                 this.style.height = Math.round(window.innerHeight * 0.7) + 'px';
@@ -336,6 +341,27 @@ button[data-smark] {
     min-height: 75px;
 }
 
+.smarkform-preview-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75px;
+}
+
+.smarkform-preview-spinner::after {
+    content: '';
+    width: 32px;
+    height: 32px;
+    border: 3px solid #dee2e6;
+    border-top-color: #6c757d;
+    border-radius: 50%;
+    animation: smarkform-spin 0.8s linear infinite;
+}
+
+@keyframes smarkform-spin {
+    to { transform: rotate(360deg); }
+}
+
 .smarkform-hint-icon {
     cursor: help;
     font-size: 0.85em;
@@ -403,6 +429,12 @@ button[data-smark] {
   .smarkform-preview-frame {
     width: 100% !important;
     border: 1px solid #ccc !important;
+    display: block !important;
+  }
+
+  /* Hide spinner in print */
+  .smarkform-preview-spinner {
+    display: none !important;
   }
   
   /* Add heading before each tab content using pseudo-elements */

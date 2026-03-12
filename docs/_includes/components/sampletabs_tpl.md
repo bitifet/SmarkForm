@@ -331,7 +331,8 @@ endif %}{% if jsHidden != '-'
   {% if current_tab == "preview" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-content-preview {{active_class}}">
     <div class="smarkform_example" style="overflow: auto">
-      <iframe class="smarkform-preview-frame" style="width:100%;border:none;display:block;"></iframe>
+      <div class="smarkform-preview-spinner"></div>
+      <iframe class="smarkform-preview-frame" style="width:100%;border:none;display:none;"></iframe>
     </div>
   </div>
   {% if notes != '-' %}
