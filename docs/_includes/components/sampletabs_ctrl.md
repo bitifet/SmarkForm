@@ -284,6 +284,13 @@ document.addEventListener('DOMContentLoaded', function() {
   background-color: #fff;
 }
 
+.tab-content.tab-code {
+  padding: 0px;
+}
+.tab-content.tab-code>* {
+  margin-bottom: 0px;
+}
+
 .tab-content pre.highlight {
   max-height: 50vh;
   overflow-y: auto;

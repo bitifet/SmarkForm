@@ -313,18 +313,18 @@ endif %}{% if jsHidden != '-'
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-  <div class="tab-content tab-content-html {{active_class}}">
+  <div class="tab-content tab-code tab-content-html {{active_class}}">
     {{ rendered_htmlSource | replace: "$$", "" | markdownify }}
   </div>
   {% if cssSource != '-' %}
       {% if current_tab == "css" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-      <div class="tab-content tab-content-css {{active_class}}">
+      <div class="tab-content tab-code tab-content-css {{active_class}}">
           {{ rendered_cssSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
   {% if jsHead != '-' or jsSource != '-' %}
       {% if current_tab == "js" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-      <div class="tab-content tab-content-js {{active_class}}">
+      <div class="tab-content tab-code tab-content-js {{active_class}}">
           {{ rendered_jsSource | replace: "$$", "" | markdownify }}
       </div>
   {% endif %}
