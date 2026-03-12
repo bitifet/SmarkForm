@@ -2501,25 +2501,25 @@ end of the list.
 
 ### Animations
 
-Since *SmarkForm is markup agnostic, it does not provide any built-in animation
-feature since it is an entirely design concern.
+*SmarkForm* is markup-agnostic and deliberately provides no built-in animation
+engine — transitions are a design concern that belongs to your CSS.
 
-Nevertheless, you can use event handlers to add or remove CSS classes that can
-be managed through CSS transitions.
+The technique is straightforward: use SmarkForm's lifecycle events to add and
+remove CSS classes on list items, and let CSS `transition` do the rest.
 
-{: .warning :}
-> The following example code is legacy.
-> 
-> It relies on legacy *addItem* and *removeItem* events that will be deprecated
-> in favour of more clear beforeAction_addItem, afterAction_addItem,
-> beforeAction_removeItem and afterAction_removeItem events in the future.
->
-> But it still works and is a good example of how to use CSS transitions with
-> *SmarkForm*.
+* **`afterRender`** fires after a new item's DOM node has been inserted.
+  Add an initial CSS class that hides or offsets the element, then — after a
+  minimal delay to let the browser paint the initial state — add a second class
+  that transitions it to its final visible position.
 
-🚀 Notice that we don't need to implement the animations for each list. In the
-following example there are two nested lists and all item additions and
-removals are animated the same way.
+* **`beforeUnrender`** fires before an item is removed from the DOM.
+  Remove the "visible" class and return a `Promise` that resolves after the
+  transition duration. *SmarkForm* awaits that promise, so the element stays in
+  the document long enough for the exit animation to complete.
+
+🚀 Because both handlers filter by `ev.context.parent?.options.type`, a single
+pair of listeners covers every list in the form — including nested ones — with
+no per-list wiring required.
 
 {% raw %} <!-- capture animations_css {{{ --> {% endraw %}
 {% capture animations_css %}
@@ -2563,6 +2563,47 @@ const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
 });{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- animations_notes {{{ --> {% endraw %}
+{% capture animations_notes %}
+**Why add `animated_item` via JavaScript instead of directly in the HTML?**
+
+If the class were baked into the template, every item would start hidden even
+when JavaScript is unavailable. Adding it through the `afterRender` handler
+ensures the animation only kicks in when JS is active, so the form degrades
+gracefully without it.
+
+---
+
+**Why the 1 ms delay in `afterRender`?**
+
+CSS transitions only fire when a property *changes* after the element is already
+in the document. If both `animated_item` and `ongoing` were added in the same
+task, the browser would never observe the initial hidden state and the transition
+would not play. The `await delay(1)` yields control for one event-loop tick,
+giving the rendering engine a chance to paint the initial state before `ongoing`
+is applied.
+
+---
+
+**Why `await delay(150)` in `beforeUnrender`?**
+
+*SmarkForm* awaits the return value of `beforeUnrender` handlers before
+detaching the element from the DOM. By returning a promise that resolves after
+150 ms (matching the CSS `transition-duration`), we keep the element visible
+just long enough for the exit animation to finish.
+
+---
+
+**Applying this globally vs. per-list**
+
+`myForm.onAll()` listens on *all* components in the form. The guard
+`ev.context.parent?.options.type !== "list"` skips anything that is not a
+direct child of a list — subforms, labels, buttons, etc. The result is that any
+list added anywhere in the form hierarchy is automatically animated without
+further wiring.
+{% endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 
 {% include components/sampletabs_tpl.md
     formId="animations"
@@ -2570,20 +2611,18 @@ const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     cssSource=animations_css
     jsSource=animations_js
     selected="preview"
+    notes=animations_notes
     tests=false
 %}
 
-In this example we listen to the `afterRender` event to add the `animated_item`
-class so that we hde them through CSS.
+The `afterRender` handler adds `animated_item` via JavaScript rather than
+embedding it directly in the HTML template. This ensures the animation class is
+only present when JavaScript is active, so the form degrades gracefully if JS is
+disabled.
 
-{: .info :}
-> Of course we could have added the *animated_item* class directly in the HTML
-> source, but this way we ensure that it is only applied when the form is
-> actually enhanced. Allowing for smooth degradation in case of JS being
-> disabled.
-
-Then we wait for a moment to allow the DOM to update and add the `ongoing`
-class when the item is added and remove it before the item is removed.
+The `beforeUnrender` handler does the reverse: it removes `ongoing` and returns
+a `Promise` delayed by 150 ms — matching the CSS transition duration — so
+*SmarkForm* holds the element in the DOM while the exit animation plays out.
 
 
 ### Smart value coercion
