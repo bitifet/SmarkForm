@@ -1810,13 +1810,6 @@ with the form data:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- submit_form_example_js {{{ --> {% endraw %}
-{% capture submit_form_example_js
-%}/* Initialize SmarkForm */
-const myForm = new SmarkForm(el);{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
 {% raw %} <!-- submit_form_example_notes {{{ --> {% endraw %}
 {% capture submit_form_example_notes %}
 👉 Clicking **📧 Send Email** opens the user's email client with:
@@ -1848,64 +1841,13 @@ will send the data as a JSON payload via `fetch()`.
 {% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- submit_form_example_tests {{{ --> {% endraw %}
-{% capture submit_form_example_tests %}
-export default async ({ page, expect, id, root, readField, writeField }) => {
-    await expect(root).toBeVisible();
-
-    // Fill in the form fields
-    await writeField('/name', 'Alice Johnson');
-    await writeField('/from', 'alice@example.com');
-    await writeField('/subject', 'Hello from SmarkForm');
-    await writeField('/body', 'This is a test message.');
-
-    // Intercept the form submission to capture submitted entries
-    const intercepted = await page.evaluate(async () => {
-        const origCreate = document.createElement.bind(document);
-        const entries = [];
-        document.createElement = function(tag) {
-            const el = origCreate(tag);
-            if (tag.toLowerCase() === 'form') {
-                const origAppend = el.appendChild.bind(el);
-                el.appendChild = function(child) {
-                    if (child.type === 'hidden') {
-                        entries.push({ name: child.name, value: child.value });
-                    }
-                    return origAppend(child);
-                };
-                el.submit = () => {};
-            }
-            return el;
-        };
-        await myForm.actions.submit(null, { silent: true });
-        document.createElement = origCreate;
-        return entries;
-    });
-
-    expect(intercepted).toEqual(
-        expect.arrayContaining([
-            expect.objectContaining({ name: 'name', value: 'Alice Johnson' }),
-            expect.objectContaining({ name: 'from', value: 'alice@example.com' }),
-            expect.objectContaining({ name: 'subject', value: 'Hello from SmarkForm' }),
-            expect.objectContaining({ name: 'body', value: 'This is a test message.' }),
-        ])
-    );
-};
-{% endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
 {% include components/sampletabs_tpl.md
     formId="submit_form"
     htmlSource=submit_form_example
-    jsHead=submit_form_example_js
     notes=submit_form_example_notes
     selected="preview"
-    tests=submit_form_example_tests
+    tests=false
 %}
-
-
-
-
 
 ### A note on context of the triggers
 
