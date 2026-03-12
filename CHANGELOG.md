@@ -11,6 +11,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.13.1] — 2026-03-12
+
+🐛 Bug fixes: `setDefault` propagation, missing `await` in async calls, nested sub-form data loss, `submit` action edge cases · ✨ New `submit` action for form components with full encoding/transport support · 🧪 `demoValue` round-trip smoke tests for co-located docs examples · 📖 Documentation improvements: responsive sidebar/TOC, FAQ updates · 🔧 Dev-dependency updates.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.13.1)
+
+---
+
 ## [0.13.0] — 2026-03-03
 
 ✨ New `time` and `datetime-local` component types · 🔄 `reset` action + default values · ⌨️ Focus retention on empty lists · 🎨 Parametric SVG logo · 📖 End-User Guide, Branding section, Code of Conduct · 🌗 Auto dark/light docs theme · 🛠️ Visual render errors.
@@ -271,7 +279,8 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.13.1...HEAD
+[0.13.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 [0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
 [0.12.9]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.9
 [0.12.8]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.8
