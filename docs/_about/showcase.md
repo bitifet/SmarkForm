@@ -2606,8 +2606,8 @@ continues to work without any transformation step.
 array, *SmarkForm* automatically places it in a single-item list.
 
   * Click **⬇️ Export**, change `["alice@example.com"]` to just
-    `"alice@example.com"` in the editor, and click **⬆️ Import** — the
-    single email is placed in the list automatically.
+    `"alice@example.com"` in the JSON playground editor below, then click
+    **⬆️ Import** — the single email is placed in the list automatically.
   * This mirrors the upgrade from a single-value field (e.g. `"email"`) to a
     list field (e.g. `"emails": [...] `).
 
@@ -2718,16 +2718,18 @@ round-trips: the field stores the value internally as a JSON string but
 
   * *SmarkForm* always exports its value as a JavaScript **number**, not a
     string.
-  * It also accepts string representations on import — try editing the JSON to
-    use `"age": "28"` (quoted) and importing: the exported result will be
-    `"age": 28` (unquoted).
+  * It also accepts string representations on import — try clicking **⬇️
+    Export**, changing `"age": 28` to `"age": "28"` (quoted) in the JSON
+    playground editor, and clicking **⬆️ Import**: the exported result will be
+    `"age": 28` (unquoted) again.
 
 👉 **Date normalization**: The *Date of Birth* field is `<input type="date">`.
 
   * *SmarkForm* always exports an ISO 8601 string (`YYYY-MM-DD`).
   * It accepts compact strings (`YYYYMMDD`) and `Date` objects on import.
-    Try changing `"dob"` to `"19960315"` in the editor and importing — it
-    will be normalised to `"1996-03-15"` on the next export.
+    Try clicking **⬇️ Export**, changing `"dob": "1996-03-15"` to
+    `"dob": "19960315"` in the JSON playground editor, and clicking **⬆️
+    Import** — it will be normalised to `"1996-03-15"` on the next export.
 
 👉 **JSON encoding**: The *Metadata* textarea has `{"encoding":"json"}`.
 
