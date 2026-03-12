@@ -1774,7 +1774,8 @@ with the form data:
 
 {% raw %} <!-- submit_form_example {{{ --> {% endraw %}
 {% capture submit_form_example
-%}█<p>
+%}█<form id="myForm$$" action="mailto:you@example.com">
+█<p>
 █    <label data-smark>Your name:</label>
 █    <input data-smark type="text" name="name" />
 █</p>
@@ -1792,7 +1793,8 @@ with the form data:
 █</p>
 █<p>
 █    <button data-smark='{"action":"submit"}'>📧 Send Email</button>
-█</p>{%
+█</p>
+█</form>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
