@@ -206,9 +206,21 @@ endif
 {% if heightPct_override > 0 %}
   {% assign heightPct = heightPct_override %}
 {% else %}
+  {% comment %}
+    Default heightPct is derived from the number of lines in the non-editor HTML source.
+    Formula: lines*2+10 — gives ~20% for tiny examples (~5 lines) up to ~85% for large
+    ones (~37+ lines). Clamped to [20, 85] so the iframe is never trivially tiny nor
+    larger than 85% of the viewport height.
+  {% endcomment %}
   {% assign htmlLines = partial_htmlSource | split: "\n" | size %}
   {% assign heightPct_raw = htmlLines | times: 2 | plus: 10 %}
-  {% if heightPct_raw < 20 %}{% assign heightPct = 20 %}{% elsif heightPct_raw > 85 %}{% assign heightPct = 85 %}{% else %}{% assign heightPct = heightPct_raw %}{% endif %}
+  {% if heightPct_raw < 20 %}
+    {% assign heightPct = 20 %}
+  {% elsif heightPct_raw > 85 %}
+    {% assign heightPct = 85 %}
+  {% else %}
+    {% assign heightPct = heightPct_raw %}
+  {% endif %}
 {% endif %}
 
 
