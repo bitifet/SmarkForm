@@ -96,6 +96,15 @@ function coerceNumericStrings(value) {
 /**
  * Generate a minimal HTML page for testing an example
  */
+/**
+ * Returns true when the htmlSource's root element is a <form> tag, meaning
+ * it must not be wrapped in an extra container (it already carries
+ * id="myForm-<formId>" itself).
+ */
+function isFormRoot(htmlSource) {
+  return /^\s*<form[\s>]/i.test(htmlSource);
+}
+
 function generateTestHTML(example) {
   const { formId, htmlSource, cssSource, jsHead, jsHidden, jsSource } = example;
   
@@ -103,6 +112,12 @@ function generateTestHTML(example) {
   const combinedJS = [jsHead, jsHidden, jsSource]
     .filter(js => js && js.trim() !== '')
     .join('\n\n');
+
+  // When the root element is already a <form>, do not add an extra wrapper div
+  // to avoid creating a duplicate id (the form itself carries id="myForm-<formId>").
+  const bodyContent = isFormRoot(htmlSource)
+    ? htmlSource
+    : `<div id="myForm-${formId}">\n    ${htmlSource}\n  </div>`;
   
   return `<!DOCTYPE html>
 <html lang="en">
@@ -121,9 +136,7 @@ function generateTestHTML(example) {
   </style>
 </head>
 <body>
-  <div id="myForm-${formId}">
-    ${htmlSource}
-  </div>
+  ${bodyContent}
   
   <script src="/dist/SmarkForm.umd.js"></script>
   <script>
@@ -164,6 +177,11 @@ function generateDemoValueTestHTML(example) {
     .map(sanitizeJS)
     .join('\n\n');
 
+  // When the root element is already a <form>, do not add an extra wrapper div.
+  const bodyContent = isFormRoot(htmlSource)
+    ? htmlSource
+    : `<div id="myForm-${formId}">\n    ${htmlSource}\n  </div>`;
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -181,9 +199,7 @@ function generateDemoValueTestHTML(example) {
   </style>
 </head>
 <body>
-  <div id="myForm-${formId}">
-    ${htmlSource}
-  </div>
+  ${bodyContent}
 
   <script src="/dist/SmarkForm.umd.js"></script>
   <script>

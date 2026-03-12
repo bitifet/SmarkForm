@@ -181,13 +181,18 @@ endif
 </div>{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% assign htmlSource_root_check = htmlSource | replace: "█", "" | lstrip | downcase | slice: 0, 6 %}
 {% raw %} <!-- partial_htmlSource {{{ --> {% endraw %}
+{% if htmlSource_root_check == "<form " or htmlSource_root_check == "<form>" %}
+{% capture partial_htmlSource %}{{ htmlSource | replace: "█", "    " | lstrip }}{% endcapture %}
+{% else %}
 {% capture partial_htmlSource %}<div id="myForm$$"{{ formOptions_source | raw }}>
 {{
     htmlSource
     | replace: "█", "    "
 }}
 </div>{% endcapture %}
+{% endif %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
