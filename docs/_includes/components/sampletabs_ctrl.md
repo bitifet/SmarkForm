@@ -68,13 +68,16 @@ function smarkformRenderIframe(iframe, data, srcs) {
                 if (demoDiv) { demoDiv.style.flexGrow = '0'; demoDiv.style.flexShrink = '0'; demoDiv.style.flexBasis = 'auto'; demoDiv.style.minHeight = ''; }
                 naturalH = html.scrollHeight;
                 saved.forEach(function(s) { s[0].style[s[1]] = s[2]; });
-                /* Use a generous cap for editor mode so the editor is not clipped */
+                /* Use a generous cap for editor mode so the editor is not clipped.
+                   Use heightPct (not a fixed 100px) as the minimum so that complex
+                   forms with async SmarkForm init don't collapse to near-zero height
+                   before their components have finished rendering. */
                 maxH = Math.round(window.innerHeight * 0.85);
             } else {
                 naturalH = doc.documentElement.scrollHeight;
                 maxH = Math.round(window.innerHeight * heightPct / 100);
             }
-            this.style.height = Math.max(100, Math.min(naturalH + 20, maxH)) + 'px';
+            this.style.height = Math.max(hasEditor ? Math.round(window.innerHeight * heightPct / 100) : 100, Math.min(naturalH + 20, maxH)) + 'px';
         } catch(e) {}
     };
 }

@@ -208,16 +208,17 @@ endif
 {% else %}
   {% comment %}
     Default heightPct is derived from the number of lines in the non-editor HTML source.
-    Formula: lines*2+10 — gives ~20% for tiny examples (~5 lines) up to ~85% for large
-    ones (~37+ lines). Clamped to [20, 85] so the iframe is never trivially tiny nor
-    larger than 85% of the viewport height.
+    Formula: lines*3+15 — gives ~25% for tiny examples (~5 lines), ~45% for medium ones
+    (~10 lines), ~75% for larger ones (~20 lines), and hits the cap at ~25 lines.
+    Clamped to [25, 90] so the iframe is never trivially small nor taller than 90% of
+    the viewport height.
   {% endcomment %}
   {% assign htmlLines = partial_htmlSource | split: "\n" | size %}
-  {% assign heightPct_raw = htmlLines | times: 2 | plus: 10 %}
-  {% if heightPct_raw < 20 %}
-    {% assign heightPct = 20 %}
-  {% elsif heightPct_raw > 85 %}
-    {% assign heightPct = 85 %}
+  {% assign heightPct_raw = htmlLines | times: 3 | plus: 15 %}
+  {% if heightPct_raw < 25 %}
+    {% assign heightPct = 25 %}
+  {% elsif heightPct_raw > 90 %}
+    {% assign heightPct = 90 %}
   {% else %}
     {% assign heightPct = heightPct_raw %}
   {% endif %}
