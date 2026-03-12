@@ -40,13 +40,41 @@ function smarkformRenderIframe(iframe, data, srcs) {
         if (spinner) spinner.style.display = 'none';
         this.style.display = 'block';
         try {
+            var doc = this.contentDocument;
+            var naturalH, maxH;
             if (hasEditor) {
-                this.style.height = Math.round(window.innerHeight * 0.7) + 'px';
+                /* editorCss sets height:100%/overflow:hidden on html, body, #myForm and
+                   its flex child, which makes scrollHeight circular (equals the iframe
+                   height rather than the natural content height). To measure the true
+                   content height — so that toggling the editor adjusts the iframe by
+                   exactly the editor element's height — temporarily override those rules
+                   with inline styles (higher specificity), read scrollHeight, then restore
+                   so the flex layout CSS takes effect on the final sized iframe. */
+                var html = doc.documentElement, body = doc.body;
+                var myForm = doc.querySelector('#myForm');
+                var myFormDiv = myForm ? myForm.firstElementChild : null;
+                var demoDiv = myFormDiv ? myFormDiv.firstElementChild : null;
+                var saved = [
+                    [html, 'height', html.style.height], [html, 'overflow', html.style.overflow],
+                    [body, 'height', body.style.height], [body, 'overflow', body.style.overflow]
+                ];
+                if (myForm) saved.push([myForm, 'height', myForm.style.height]);
+                if (myFormDiv) { saved.push([myFormDiv, 'height', myFormDiv.style.height]); saved.push([myFormDiv, 'overflow', myFormDiv.style.overflow]); }
+                if (demoDiv) { saved.push([demoDiv, 'flexGrow', demoDiv.style.flexGrow], [demoDiv, 'flexShrink', demoDiv.style.flexShrink], [demoDiv, 'flexBasis', demoDiv.style.flexBasis], [demoDiv, 'minHeight', demoDiv.style.minHeight]); }
+                html.style.height = 'auto'; html.style.overflow = 'visible';
+                body.style.height = 'auto'; body.style.overflow = 'visible';
+                if (myForm) myForm.style.height = 'auto';
+                if (myFormDiv) { myFormDiv.style.height = 'auto'; myFormDiv.style.overflow = 'visible'; }
+                if (demoDiv) { demoDiv.style.flexGrow = '0'; demoDiv.style.flexShrink = '0'; demoDiv.style.flexBasis = 'auto'; demoDiv.style.minHeight = ''; }
+                naturalH = html.scrollHeight;
+                saved.forEach(function(s) { s[0].style[s[1]] = s[2]; });
+                /* Use a generous cap for editor mode so the editor is not clipped */
+                maxH = Math.round(window.innerHeight * 0.85);
             } else {
-                var maxH = Math.round(window.innerHeight * heightPct / 100);
-                var h = Math.max(100, Math.min(this.contentDocument.documentElement.scrollHeight + 20, maxH));
-                this.style.height = h + 'px';
+                naturalH = doc.documentElement.scrollHeight;
+                maxH = Math.round(window.innerHeight * heightPct / 100);
             }
+            this.style.height = Math.max(100, Math.min(naturalH + 20, maxH)) + 'px';
         } catch(e) {}
     };
 }
