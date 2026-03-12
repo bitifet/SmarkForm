@@ -141,8 +141,40 @@ endcapture %}
     font-size: 0.8em;
     white-space: nowrap;
     transform: scale(1.8) translate(0.1em, 0.1em);
+}
+/* Attendee list item entry/exit animations */
+{{""}}#myForm$$ .ep-list ul li.animated_item {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition:
+        transform 200ms ease-out,
+        opacity 200ms ease-out;
+}
+{{""}}#myForm$$ .ep-list ul li.animated_item.ongoing {
+    transform: translateX(0);
+    opacity: 1;
+    transition:
+        transform 200ms ease-in,
+        opacity 200ms ease-in;
 }{%
 endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- event_planner_js {{{ --> {% endraw %}
+{% capture event_planner_js %}const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+{{""}}myForm.onAll("afterRender", async function(ev) {
+    if (ev.context.parent?.options.type !== "list") return;
+    const item = ev.context.targetNode;
+    item.classList.add("animated_item");
+    await delay(1);
+    item.classList.add("ongoing");
+});
+{{""}}myForm.onAll("beforeUnrender", async function(ev) {
+    if (ev.context.parent?.options.type !== "list") return;
+    const item = ev.context.targetNode;
+    item.classList.remove("ongoing");
+    await delay(150);
+});{% endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 <style>
@@ -214,6 +246,7 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
     formId="event_planner"
     htmlSource=event_planner_html
     cssSource=event_planner_css
+    jsSource=event_planner_js
     selected="preview"
     demoValue=demoValue
     showEditor=false
