@@ -28,7 +28,7 @@ function smarkformComputeHeightPct(data) {
     }
     if (data.htmlSource) {
         var lines = data.htmlSource.split('\n').length;
-        return Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, lines * 3 + 15));
+        return Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, lines * 1 + 15));
     }
     return SMARKFORM_HEIGHT_PCT_DEFAULT;
 }

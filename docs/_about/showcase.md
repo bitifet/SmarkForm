@@ -236,6 +236,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="basic_form"
     htmlSource=basic_form
+    height=60
     notes=notes
     selected="preview"
     showEditor=true
@@ -362,6 +363,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="nested_forms"
     htmlSource=nested_forms
+    height=65
     selected="preview"
     showEditor=true
     tests=nested_forms_tests
@@ -764,6 +766,7 @@ source code:
 {% include components/sampletabs_tpl.md
     formId="nested_forms_full"
     htmlSource=nested_forms
+    height=65
     selected="preview"
     demoValue=demoValue
     showEditor=true
@@ -1120,6 +1123,7 @@ needing DOM filler elements.
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
     htmlSource=schedule_table
+    height=50
     cssSource=schedule_table_css
     notes=notes
     selected="preview"
@@ -1596,6 +1600,7 @@ forms](#deeply-nested-forms) section:
 {% include components/sampletabs_tpl.md
     formId="nested_forms_bis"
     htmlSource=nested_forms
+    height=65
     selected="preview"
     demoValue=demoValue
     showEditor=true
@@ -1716,6 +1721,7 @@ prefills the prompt dialog with the JSON export of the whole form.
 {% include components/sampletabs_tpl.md
     formId="nested_forms_with_load_save"
     htmlSource=nested_forms_with_load_save
+    height=70
     jsSource=form_export_example_import_export_js
     notes=notes
     selected="preview"
@@ -2165,6 +2171,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context
+    height=50
     cssSource=simple_list_hotkeys_css
     selected="preview"
     demoValue=demoValue
