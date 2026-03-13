@@ -5,6 +5,14 @@ import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {parseJSON} from "../lib/helpers.js";
+
+// Symbol used to mark a native keydown event as already handled for Enter
+// navigation.  Guards against the same event object being processed twice
+// (e.g. when a capture listener fires more than once for the same dispatch,
+// or when a mobile browser re-dispatches it to the newly-focused element
+// immediately after a programmatic focus() call).
+const sym_enter_handled = Symbol('smarkform_enter_handled');
+
 export class input extends form {
     constructor(...args) {//{{{
         super(...args);
@@ -15,6 +23,11 @@ export class input extends form {
             function keydown_hook(ev) {
                 if (ev.defaultPrevented) return;
                 if (ev.originalEvent.key === "Enter") {
+                    // Guard: prevent the same native event — or a duplicate
+                    // event fired on the newly-focused element by some mobile
+                    // browsers — from triggering a second navigation step.
+                    if (ev.originalEvent[sym_enter_handled]) return;
+                    ev.originalEvent[sym_enter_handled] = true;
                     const backwards = ev.originalEvent.shiftKey;
                     if (
                         ev.context.targetNode.tagName === "TEXTAREA"
@@ -26,9 +39,9 @@ export class input extends form {
                         : ev.context.find(".-1") || ev.context.find("../.-1")
                     );
                     if (nextField) {
-                        nextField.focus();
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
+                        nextField.focus();
                     };
                 };
             },
