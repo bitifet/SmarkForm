@@ -60,6 +60,8 @@ featured ones.
     * [Hidden actions](#hidden-actions)
     * [Animations](#animations)
     * [Smart value coercion](#smart-value-coercion)
+        * [Scalar-to-array list coercion](#scalar-to-array-list-coercion)
+        * [Type coercion for scalar fields](#type-coercion-for-scalar-fields)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Random Examples](#random-examples)
     * [Simple Calculator](#simple-calculator)
@@ -2623,10 +2625,10 @@ array, *SmarkForm* automatically places it in a single-item list.
 
 {% raw %} <!-- smart_value_coercion {{{ --> {% endraw %}
 {% capture smart_value_coercion
-%}█<button data-smark='{"action":"removeItem","context":"emails","preserve_non_empty":true}' title="Remove email">➖</button>
-█<button data-smark='{"action":"addItem","context":"emails"}' title="Add email">➕</button>
+%}█<button data-smark='{"action":"removeItem","context":"email","preserve_non_empty":true}' title="Remove email">➖</button>
+█<button data-smark='{"action":"addItem","context":"email"}' title="Add email">➕</button>
 █<strong data-smark="label">Emails:</strong>
-█<ul data-smark='{"type":"list","name":"emails","of":"input","min_items":0}'>
+█<ul data-smark='{"type":"list","name":"email","of":"input","min_items":0}'>
 █    <li data-smark='{"role":"empty_list"}'>(No emails on record)</li>
 █    <li><input type="email" data-smark placeholder="name@example.com"></li>
 █</ul>{%
@@ -2648,23 +2650,23 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
     // Scalar-to-array coercion
-    await writeField('emails', 'bob@example.com');
+    await writeField('email', 'bob@example.com');
     expect(
-        await readField('emails'),
+        await readField('email'),
         'Scalar string is coerced to a single-item array'
     ).toEqual(['bob@example.com']);
 
     // Array import works as expected
-    await writeField('emails', ['carol@example.com', 'dave@example.com']);
+    await writeField('email', ['carol@example.com', 'dave@example.com']);
     expect(
-        await readField('emails'),
+        await readField('email'),
         'Array import works normally'
     ).toEqual(['carol@example.com', 'dave@example.com']);
 
     // exportEmpties = false: blank items are not exported
-    await page.evaluate(() => myForm.find('/emails').addItem());
+    await page.evaluate(() => myForm.find('/email').addItem());
     expect(
-        await readField('emails'),
+        await readField('email'),
         'Blank item is not exported (exportEmpties defaults to false)'
     ).toEqual(['carol@example.com', 'dave@example.com']);
 
@@ -2672,7 +2674,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     const inputs = page.locator(`#myForm-${id} input[type=email]`);
     await inputs.last().fill('eve@example.com');
     expect(
-        await readField('emails'),
+        await readField('email'),
         'Filled item IS exported'
     ).toEqual(['carol@example.com', 'dave@example.com', 'eve@example.com']);
 };
@@ -2680,7 +2682,9 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
-{"emails": ["alice@example.com"]}
+{
+    "email": "alice@example.com" // Old data saved before upgrading to an array
+}
 {%- endcapture %}
 
 {% include components/sampletabs_tpl.md
@@ -2816,9 +2820,13 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% capture demoValue -%}
 {
     "name": "Alice",
-    "age": "28",
-    "dob": "1996-03-15",
-    "metadata": {"subscribed": true, "tier": "premium"}
+    "age": "28",  // String instead of number, will be coerced to a number
+    "dob": "19960315", // Correctly parsed as date.
+    "metadata": { // Will be exported/imported as JSON
+                  // If invalid exports null (catch that from validation)
+        "subscribed": true,
+        "tier": "premium"
+    }
 }
 {%- endcapture %}
 
