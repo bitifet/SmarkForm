@@ -14,10 +14,28 @@ if (typeof ace !== 'undefined') {
 var SMARKFORM_EDITOR_KINDS = ['html', 'css', 'js'];
 var SMARKFORM_ACE_MIN_LINES = 5;
 var SMARKFORM_ACE_MAX_LINES = 35;
+var SMARKFORM_HEIGHT_PCT_DEFAULT = 50;
+var SMARKFORM_HEIGHT_PCT_MIN = 25;
+var SMARKFORM_HEIGHT_PCT_MAX = 90;
+/* Compute the heightPct for a given data object.
+   Uses data.height (explicit override from the template) when > 0; otherwise derives
+   from the htmlSource line count using the formula lines*3+15.
+   Result is always clamped to [SMARKFORM_HEIGHT_PCT_MIN, SMARKFORM_HEIGHT_PCT_MAX].
+   Falls back to SMARKFORM_HEIGHT_PCT_DEFAULT when no usable source is available. */
+function smarkformComputeHeightPct(data) {
+    if (typeof data.height === 'number' && data.height > 0) {
+        return Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, data.height));
+    }
+    if (data.htmlSource) {
+        var lines = data.htmlSource.split('\n').length;
+        return Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, lines * 3 + 15));
+    }
+    return SMARKFORM_HEIGHT_PCT_DEFAULT;
+}
 /* Render SmarkForm example into an iframe. srcs = {html, css, js} */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
-    var heightPct = (typeof data.heightPct === 'number') ? data.heightPct : 50;
+    var heightPct = smarkformComputeHeightPct(data);
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
@@ -131,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     try {
                         var h = frame.contentDocument.documentElement.scrollHeight;
                         if (h > 50) {
-                            var maxH = Math.round(window.innerHeight * (data.heightPct || 50) / 100);
+                            var maxH = Math.round(window.innerHeight * smarkformComputeHeightPct(data) / 100);
                             frame.style.height = Math.max(100, Math.min(h + 20, maxH)) + 'px';
                         }
                     } catch(e) {}
