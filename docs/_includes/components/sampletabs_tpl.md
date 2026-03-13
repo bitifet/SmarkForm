@@ -198,31 +198,15 @@ endif
 {% raw %} <!-- }}} --> {% endraw %}
 
 
-{% comment %} ### ######################## ### {% endcomment %}
-{% comment %} ### Compute iframe heightPct ### {% endcomment %}
-{% comment %} ### ######################## ### {% endcomment %}
+{% comment %} ### ############################################## ### {% endcomment %}
+{% comment %} ### Pass optional height override to controller  ### {% endcomment %}
+{% comment %} ### (sanitization and formula live in the JS)    ### {% endcomment %}
+{% comment %} ### ############################################## ### {% endcomment %}
 
-{% assign heightPct_override = include.height | plus: 0 %}
-{% if heightPct_override > 0 %}
-  {% assign heightPct = heightPct_override %}
-{% else %}
-  {% comment %}
-    Default heightPct is derived from the number of lines in the non-editor HTML source.
-    Formula: lines*3+15 — gives ~25% for tiny examples (~5 lines), ~45% for medium ones
-    (~10 lines), ~75% for larger ones (~20 lines), and hits the cap at ~25 lines.
-    Clamped to [25, 90] so the iframe is never trivially small nor taller than 90% of
-    the viewport height.
-  {% endcomment %}
-  {% assign htmlLines = partial_htmlSource | split: "\n" | size %}
-  {% assign heightPct_raw = htmlLines | times: 3 | plus: 15 %}
-  {% if heightPct_raw < 25 %}
-    {% assign heightPct = 25 %}
-  {% elsif heightPct_raw > 90 %}
-    {% assign heightPct = 90 %}
-  {% else %}
-    {% assign heightPct = heightPct_raw %}
-  {% endif %}
-{% endif %}
+{% comment %}
+    Pass the raw include.height value (0 when omitted) to the JSON blob so the
+    JavaScript controller can apply the formula, defaults and clamping there.
+{% endcomment %}
 
 
 {% comment %}
@@ -409,7 +393,7 @@ endif %}{% if jsHidden != '-'
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
     "showEditor": {{ showEditor | jsonify }},
-    "heightPct": {{ heightPct }},
+    "height": {{ include.height | plus: 0 }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
   }
   </script>
