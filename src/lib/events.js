@@ -77,6 +77,36 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     // Do it only once and from root component target:
                     Object.is(me, me.root)
                 ) {
+                    // Synchronously prevent the browser's native Enter-key
+                    // focus-management on mobile devices (e.g. Brave for
+                    // Android). Mobile browsers dispatch "go to next input"
+                    // focus-advance synchronously as the default action of a
+                    // keydown event — before any asynchronous SmarkForm hook
+                    // has a chance to call preventDefault().  We block it
+                    // here (synchronous, capture phase) so our async keydown
+                    // hook remains the sole handler for Enter navigation.
+                    //
+                    // Enter on buttons/submit inputs is intentionally NOT
+                    // suppressed so that Tab → Enter on a submit button still
+                    // fires a click (and therefore the submit action).
+                    me.targetNode.addEventListener('keydown', (ev) => {
+                        if (ev.key !== 'Enter') return;
+                        const tag = (ev.target?.tagName ?? '').toUpperCase();
+                        const type = (ev.target?.type ?? '').toLowerCase();
+                        if (
+                            tag === 'SELECT'
+                            || (
+                                tag === 'INPUT'
+                                && type !== 'submit'
+                                && type !== 'image'
+                                && type !== 'button'
+                                && type !== 'reset'
+                            )
+                            || (tag === 'TEXTAREA' && (ev.ctrlKey || ev.shiftKey))
+                        ) {
+                            ev.preventDefault();
+                        }
+                    }, true); // synchronous, capture phase
                     for (const evType of supportedFieldEventTypes) {
                         me.targetNode.addEventListener(evType, ev=>{
                             const targetComponent = me.getComponent(ev.target);
