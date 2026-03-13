@@ -81,6 +81,41 @@ export class input extends form {
         } else {
             me.targetFieldNode = me.targetNode;
         };
+        // Prevent native IME "Next" focus advance on Chromium-based mobile
+        // browsers (e.g. Brave for Android).
+        //
+        // When an <input> is inside a <form> with more inputs, Chromium
+        // automatically tells the Android IME to use IME_ACTION_NEXT, which
+        // causes the soft-keyboard to show "Next" on the action key.  When
+        // the user presses it the browser calls FocusNextElement() at the
+        // native layer — completely bypassing JavaScript — and focus advances
+        // to the next DOM input before any JS event fires.  SmarkForm's async
+        // keydown hook then fires (triggered by the synthesised KeyEvent the
+        // keyboard also sends) and advances focus a second time, skipping one
+        // item per press.
+        //
+        // Setting enterkeyhint to any value other than "next" makes Chromium
+        // use a different IME action (e.g. IME_ACTION_DONE) that does NOT
+        // advance focus natively, leaving SmarkForm's own Enter-key navigation
+        // as the sole handler.  We only set it when the author has not already
+        // specified an enterkeyhint, so explicit overrides are always respected.
+        {
+            const fld = me.targetFieldNode;
+            const tag = fld.tagName?.toUpperCase();
+            const type = fld.type?.toLowerCase?.() ?? '';
+            if (
+                tag === 'INPUT'
+                && type !== 'submit'
+                && type !== 'button'
+                && type !== 'image'
+                && type !== 'reset'
+                && type !== 'checkbox'
+                && type !== 'radio'
+                && !fld.hasAttribute('enterkeyhint')
+            ) {
+                fld.setAttribute('enterkeyhint', 'done');
+            }
+        }
     };//}}}
     @action
     @export_to_target

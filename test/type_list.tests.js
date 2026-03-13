@@ -472,9 +472,18 @@ test.describe('List Component Type Test', () => {
 
 // ─── Enter-key navigation inside a scalar list ────────────────────────────────
 // Regression for: mobile Brave skips one field per Enter keypress.
-// The fix marks every handled native keydown event with a Symbol so that a
-// duplicate event (fired by some mobile browsers on the newly-focused element)
-// is silently suppressed.
+//
+// Root cause: Chromium communicates IME_ACTION_NEXT to the Android virtual
+// keyboard when inputs are inside a form with more inputs (causing "Next" to
+// appear on the keyboard action key).  When the user presses it, Chromium
+// calls FocusNextElement() at the native layer — completely bypassing
+// JavaScript — and focus advances BEFORE any JS event fires.  The keyboard
+// also sends a synthetic KeyEvent(ENTER); SmarkForm's async keydown hook
+// picks that up and advances focus again → double advance.
+//
+// Fix: set enterkeyhint="done" on SmarkForm-managed text inputs during
+// render() so that Chromium uses IME_ACTION_DONE instead (no native advance).
+// SmarkForm's JS Enter hook then remains the sole navigation handler.
 
 const enterNavPugSrc = (
 `extends layout.pug
@@ -494,6 +503,32 @@ block mainForm
 
 function makeEnterNavTests(suiteName) {
     test.describe(suiteName, () => {
+
+        test('managed text inputs have enterkeyhint="done" set', async ({ page }) => {//{{{
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+                await page.evaluate(() => form.rendered);
+
+                // All plain text inputs managed by SmarkForm should have
+                // enterkeyhint="done" so Chromium does not use IME_ACTION_NEXT.
+                const attrs = await page.evaluate(() =>
+                    Array.from(document.querySelectorAll('input[placeholder="Phone"]'))
+                         .map(el => el.getAttribute('enterkeyhint'))
+                );
+                expect(attrs.length).toBeGreaterThan(0);
+                for (const attr of attrs) {
+                    expect(attr).toBe('done');
+                }
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
 
         test('Enter advances focus by exactly one list item', async ({ page }) => {//{{{
             let onClosed;

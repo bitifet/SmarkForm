@@ -77,14 +77,17 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     // Do it only once and from root component target:
                     Object.is(me, me.root)
                 ) {
-                    // Synchronously prevent the browser's native Enter-key
-                    // focus-management on mobile devices (e.g. Brave for
-                    // Android). Mobile browsers dispatch "go to next input"
-                    // focus-advance synchronously as the default action of a
-                    // keydown event — before any asynchronous SmarkForm hook
-                    // has a chance to call preventDefault().  We block it
-                    // here (synchronous, capture phase) so our async keydown
-                    // hook remains the sole handler for Enter navigation.
+                    // Defense-in-depth: synchronously prevent the browser's
+                    // default Enter-key action on focusable form elements.
+                    //
+                    // On some mobile browsers/keyboards, pressing the IME
+                    // action key sends BOTH a native focus advance (handled
+                    // at the OS/WebView layer, before any JS event fires) AND
+                    // a synthetic KeyEvent(ENTER).  The enterkeyhint attribute
+                    // set during render() eliminates the native-advance path;
+                    // this listener is a second layer that prevents any
+                    // residual default action from the synthesised keydown
+                    // event (e.g. form submission from a text input).
                     //
                     // Enter on buttons/submit inputs is intentionally NOT
                     // suppressed so that Tab → Enter on a submit button still
