@@ -7,10 +7,8 @@ import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {parseJSON} from "../lib/helpers.js";
 
 // Symbol used to mark a native keydown event as already handled for Enter
-// navigation.  Guards against the same event object being processed twice
-// (e.g. when a capture listener fires more than once for the same dispatch,
-// or when a mobile browser re-dispatches it to the newly-focused element
-// immediately after a programmatic focus() call).
+// navigation.  Guards against the same event object being dispatched to our
+// hook more than once.
 const sym_enter_handled = Symbol('smarkform_enter_handled');
 
 export class input extends form {
@@ -23,11 +21,17 @@ export class input extends form {
             function keydown_hook(ev) {
                 if (ev.defaultPrevented) return;
                 if (ev.originalEvent.key === "Enter") {
-                    // Guard: prevent the same native event — or a duplicate
-                    // event fired on the newly-focused element by some mobile
-                    // browsers — from triggering a second navigation step.
+                    // Guard: skip if this event was already handled.
                     if (ev.originalEvent[sym_enter_handled]) return;
                     ev.originalEvent[sym_enter_handled] = true;
+                    // IME-advance guard: Chromium's IME_ACTION_NEXT natively
+                    // moves focus to the next field (firing focus(N)) and then
+                    // dispatches a synthetic keydown(Enter) on that same field
+                    // — all in the same browser task.  events.js detects this
+                    // (focus + keydown in the same task, no microtask gap) and
+                    // stamps _sfImeAdvanced on the native event.  The IME
+                    // already advanced focus; we must not navigate again.
+                    if (ev.originalEvent._sfImeAdvanced) return;
                     const backwards = ev.originalEvent.shiftKey;
                     if (
                         ev.context.targetNode.tagName === "TEXTAREA"

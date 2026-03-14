@@ -530,6 +530,56 @@ function makeEnterNavTests(suiteName) {
             }
         });//}}}
 
+        test('IME-advance simulation: focus+keydown within threshold does not double-navigate', async ({ page }) => {//{{{
+            // Simulates what Chromium does for IME_ACTION_NEXT:
+            //   1. Focus advances to the next field (natively, before any JS event)
+            //   2. A synthetic keydown(Enter) fires on the newly-focused field
+            // Both happen in the same page.evaluate call — so `focus` and
+            // `keydown` are < 1 ms apart, well within IME_FOCUS_AGE_MS (20 ms).
+            // SmarkForm must NOT navigate a second time.
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+                await page.evaluate(() => form.rendered);
+
+                // Start on item 0.
+                await page.evaluate(() => form.find('/phones/0').focus());
+
+                // Simulate the IME advance in a single synchronous call so that
+                // focus and keydown(Enter) are well within IME_FOCUS_AGE_MS (20 ms),
+                // triggering the IME-advance detection in events.js.
+                // Use the raw <input> element — calling focus() on the SmarkForm
+                // component wrapper would delegate through .focus() → children,
+                // and we need to fire the focus event on the exact element that
+                // the keydown will target.
+                await page.evaluate(() => {
+                    const field1 = document.querySelectorAll('input[placeholder="Phone"]')[1];
+                    field1.focus();
+                    field1.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'Enter', bubbles: true, cancelable: true, composed: true,
+                    }));
+                });
+
+                // Field 1 should still be focused — no further advance.
+                const idx = await page.evaluate(() => {
+                    const active = document.activeElement;
+                    if (!active) return -1;
+                    const item = active.closest('li');
+                    if (!item) return -1;
+                    return Array.from(item.parentElement.children).indexOf(item);
+                });
+                expect(idx).toBe(1);
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
+
+
         test('Enter advances focus by exactly one list item', async ({ page }) => {//{{{
             let onClosed;
             try {
@@ -545,15 +595,14 @@ function makeEnterNavTests(suiteName) {
 
                 // Focus the first item's input.
                 await page.evaluate(() => form.find('/phones/0').focus());
+                // Wait long enough to be clear of the IME-advance detection window
+                // (IME_FOCUS_AGE_MS = 20 ms).  This ensures the programmatic focus
+                // above is not misidentified as an IME advance when keyboard.press
+                // fires only one CDP round-trip later.
+                await page.waitForTimeout(30);
 
                 // Press Enter — should move to item 1 (0-indexed).
                 await page.keyboard.press('Enter');
-
-                const focusedPath = await page.evaluate(() => {
-                    const active = document.activeElement;
-                    return active ? active.closest('[data-smark]')
-                        ?.getAttribute('data-smark') : null;
-                });
 
                 // The focused element's data-smark should belong to item 1, not item 2.
                 const focusedIdx = await page.evaluate(() => {
@@ -570,6 +619,7 @@ function makeEnterNavTests(suiteName) {
             }
         });//}}}
 
+
         test('Shift+Enter moves focus backwards by exactly one list item', async ({ page }) => {//{{{
             let onClosed;
             try {
@@ -584,6 +634,8 @@ function makeEnterNavTests(suiteName) {
 
                 // Focus item 1 (middle item).
                 await page.evaluate(() => form.find('/phones/1').focus());
+                // Ensure gap > IME_FOCUS_AGE_MS (20 ms) before keyboard event.
+                await page.waitForTimeout(30);
 
                 // Shift+Enter should go back to item 0.
                 await page.keyboard.press('Shift+Enter');
@@ -616,6 +668,8 @@ function makeEnterNavTests(suiteName) {
 
                 // Focus item 0.
                 await page.evaluate(() => form.find('/phones/0').focus());
+                // Ensure gap > IME_FOCUS_AGE_MS (20 ms) before keyboard event.
+                await page.waitForTimeout(30);
 
                 const getFocusedIdx = () => page.evaluate(() => {
                     const active = document.activeElement;
@@ -628,6 +682,11 @@ function makeEnterNavTests(suiteName) {
                 // First Enter: 0 → 1
                 await page.keyboard.press('Enter');
                 expect(await getFocusedIdx()).toBe(1);
+
+                // Ensure gap > IME_FOCUS_AGE_MS before second Enter.
+                // (SmarkForm's focus(1) fired during the first keyboard.press;
+                //  the getFocusedIdx + waitForTimeout guarantees > 20 ms gap.)
+                await page.waitForTimeout(30);
 
                 // Second Enter: 1 → 2
                 await page.keyboard.press('Enter');

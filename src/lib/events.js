@@ -7,6 +7,16 @@ const re_actionEvHandler = /^on(?:Before|After)Action_/;
 const re_localEvHandler = /^onLocal_/;
 const re_allEvHandler = /^onAll_/;
 
+// How recently a field must have gained focus (in milliseconds) for an
+// Enter keydown on that field to be treated as a Chromium IME_ACTION_NEXT
+// advance rather than a deliberate user keypress.
+//
+// Native IME focus+keydown gap:  < 0.01 ms  (same C++ call stack)
+// Minimum human interaction gap: > 100 ms   (focus, then press Enter)
+//
+// 20 ms sits safely between these two extremes.
+const IME_FOCUS_AGE_MS = 20;
+
 import {createArrayPuller} from "./helpers.js";
 
 const supportedFieldEventTypes = [
@@ -77,21 +87,33 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     // Do it only once and from root component target:
                     Object.is(me, me.root)
                 ) {
-                    // Defense-in-depth: synchronously prevent the browser's
-                    // default Enter-key action on focusable form elements.
+                    // Detect Chromium IME_ACTION_NEXT double-advance.
                     //
-                    // On some mobile browsers/keyboards, pressing the IME
-                    // action key sends BOTH a native focus advance (handled
-                    // at the OS/WebView layer, before any JS event fires) AND
-                    // a synthetic KeyEvent(ENTER).  The enterkeyhint attribute
-                    // set during render() eliminates the native-advance path;
-                    // this listener is a second layer that prevents any
-                    // residual default action from the synthesised keydown
-                    // event (e.g. form submission from a text input).
+                    // On Chromium-based mobile browsers (e.g. Brave/Android),
+                    // pressing the IME "Next" action key causes two things:
+                    //   1. Focus advances natively to the next input field
+                    //      (FocusNextElement — JS has no chance to intercept).
+                    //   2. A synthetic KeyEvent(ENTER) is dispatched on the
+                    //      newly-focused element.
+                    //
+                    // Both happen in the same C++ call stack, so `focus(N)`
+                    // and `keydown(Enter, N)` are < 0.01 ms apart — far
+                    // below IME_FOCUS_AGE_MS (defined at module top, 20 ms).
+                    // Normal user interaction always exceeds 100 ms.
+                    //
+                    // Strategy: stamp each focusable field with
+                    // `_sfLastFocusTime` when it gains focus.  When
+                    // `keydown(Enter)` fires, if the focus age is below
+                    // IME_FOCUS_AGE_MS the IME caused the focus — stamp
+                    // `ev._sfImeAdvanced` so the async keydown hook skips
+                    // its own navigation (the IME already moved focus).
                     //
                     // Enter on buttons/submit inputs is intentionally NOT
                     // suppressed so that Tab → Enter on a submit button still
                     // fires a click (and therefore the submit action).
+                    me.targetNode.addEventListener('focus', (ev) => {
+                        ev.target._sfLastFocusTime = performance.now();
+                    }, true);
                     me.targetNode.addEventListener('keydown', (ev) => {
                         if (ev.key !== 'Enter') return;
                         const tag = (ev.target?.tagName ?? '').toUpperCase();
@@ -108,6 +130,18 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             || (tag === 'TEXTAREA' && (ev.ctrlKey || ev.shiftKey))
                         ) {
                             ev.preventDefault();
+                            // If the field gained focus very recently (within
+                            // IME_FOCUS_AGE_MS), the IME moved focus here
+                            // right before dispatching this synthetic keydown.
+                            // Mark the event so the async hook does not
+                            // navigate a second time.
+                            // An unset _sfLastFocusTime means the field was
+                            // never focused via our listener — treat age as
+                            // Infinity so it is never treated as an IME advance.
+                            const focusAge = ev.target._sfLastFocusTime !== undefined
+                                ? performance.now() - ev.target._sfLastFocusTime
+                                : Infinity;
+                            if (focusAge < IME_FOCUS_AGE_MS) ev._sfImeAdvanced = true;
                         }
                     }, true); // synchronous, capture phase
                     for (const evType of supportedFieldEventTypes) {
