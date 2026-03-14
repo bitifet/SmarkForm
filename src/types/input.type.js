@@ -5,6 +5,12 @@ import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {parseJSON} from "../lib/helpers.js";
+
+// Symbol used to mark a native keydown event as already handled for Enter
+// navigation.  Guards against the same event object being dispatched to our
+// hook more than once.
+const sym_enter_handled = Symbol('smarkform_enter_handled');
+
 export class input extends form {
     constructor(...args) {//{{{
         super(...args);
@@ -15,6 +21,17 @@ export class input extends form {
             function keydown_hook(ev) {
                 if (ev.defaultPrevented) return;
                 if (ev.originalEvent.key === "Enter") {
+                    // Guard: skip if this event was already handled.
+                    if (ev.originalEvent[sym_enter_handled]) return;
+                    ev.originalEvent[sym_enter_handled] = true;
+                    // IME-advance guard: Chromium's IME_ACTION_NEXT natively
+                    // moves focus to the next field (firing focus(N)) and then
+                    // dispatches a synthetic keydown(Enter) on that same field
+                    // — all in the same browser task.  events.js detects this
+                    // (focus + keydown in the same task, no microtask gap) and
+                    // stamps _sfImeAdvanced on the native event.  The IME
+                    // already advanced focus; we must not navigate again.
+                    if (ev.originalEvent._sfImeAdvanced) return;
                     const backwards = ev.originalEvent.shiftKey;
                     if (
                         ev.context.targetNode.tagName === "TEXTAREA"
@@ -26,9 +43,9 @@ export class input extends form {
                         : ev.context.find(".-1") || ev.context.find("../.-1")
                     );
                     if (nextField) {
-                        nextField.focus();
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
+                        nextField.focus();
                     };
                 };
             },
@@ -68,6 +85,41 @@ export class input extends form {
         } else {
             me.targetFieldNode = me.targetNode;
         };
+        // Prevent native IME "Next" focus advance on Chromium-based mobile
+        // browsers (e.g. Brave for Android).
+        //
+        // When an <input> is inside a <form> with more inputs, Chromium
+        // automatically tells the Android IME to use IME_ACTION_NEXT, which
+        // causes the soft-keyboard to show "Next" on the action key.  When
+        // the user presses it the browser calls FocusNextElement() at the
+        // native layer — completely bypassing JavaScript — and focus advances
+        // to the next DOM input before any JS event fires.  SmarkForm's async
+        // keydown hook then fires (triggered by the synthesised KeyEvent the
+        // keyboard also sends) and advances focus a second time, skipping one
+        // item per press.
+        //
+        // Setting enterkeyhint to any value other than "next" makes Chromium
+        // use a different IME action (e.g. IME_ACTION_DONE) that does NOT
+        // advance focus natively, leaving SmarkForm's own Enter-key navigation
+        // as the sole handler.  We only set it when the author has not already
+        // specified an enterkeyhint, so explicit overrides are always respected.
+        {
+            const fld = me.targetFieldNode;
+            const tag = fld.tagName?.toUpperCase();
+            const type = fld.type?.toLowerCase?.() ?? '';
+            if (
+                tag === 'INPUT'
+                && type !== 'submit'
+                && type !== 'button'
+                && type !== 'image'
+                && type !== 'reset'
+                && type !== 'checkbox'
+                && type !== 'radio'
+                && !fld.hasAttribute('enterkeyhint')
+            ) {
+                fld.setAttribute('enterkeyhint', 'done');
+            }
+        }
     };//}}}
     @action
     @export_to_target

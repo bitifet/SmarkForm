@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, devices } from '@playwright/test';
 import {renderPug} from '../src/lib/test/helpers.js';
 
 const pugSrc = (// {{{
@@ -468,4 +468,247 @@ test.describe('List Component Type Test', () => {
     //     });
     // });//}}}
 
+});
+
+// ─── Enter-key navigation inside a scalar list ────────────────────────────────
+// Regression for: mobile Brave skips one field per Enter keypress.
+//
+// Root cause: Chromium communicates IME_ACTION_NEXT to the Android virtual
+// keyboard when inputs are inside a form with more inputs (causing "Next" to
+// appear on the keyboard action key).  When the user presses it, Chromium
+// calls FocusNextElement() at the native layer — completely bypassing
+// JavaScript — and focus advances BEFORE any JS event fires.  The keyboard
+// also sends a synthetic KeyEvent(ENTER); SmarkForm's async keydown hook
+// picks that up and advances focus again → double advance.
+//
+// Fix: set enterkeyhint="done" on SmarkForm-managed text inputs during
+// render() so that Chromium uses IME_ACTION_DONE instead (no native advance).
+// SmarkForm's JS Enter hook then remains the sole navigation handler.
+
+const enterNavPugSrc = (
+`extends layout.pug
+block mainForm
+    .section
+        ul(data-smark = {
+            name: "phones",
+            type: "list",
+            of: "input",
+            min_items: 3,
+        })
+            li
+                button(data-smark = { action: "addItem" }) ➕
+                input(data-smark placeholder="Phone")
+                button(data-smark = { action: "removeItem" }) ➖
+`);
+
+function makeEnterNavTests(suiteName) {
+    test.describe(suiteName, () => {
+
+        test('managed text inputs have enterkeyhint="done" set', async ({ page }) => {//{{{
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+                await page.evaluate(() => form.rendered);
+
+                // All plain text inputs managed by SmarkForm should have
+                // enterkeyhint="done" so Chromium does not use IME_ACTION_NEXT.
+                const attrs = await page.evaluate(() =>
+                    Array.from(document.querySelectorAll('input[placeholder="Phone"]'))
+                         .map(el => el.getAttribute('enterkeyhint'))
+                );
+                expect(attrs.length).toBeGreaterThan(0);
+                for (const attr of attrs) {
+                    expect(attr).toBe('done');
+                }
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
+
+        test('IME-advance simulation: focus+keydown within threshold does not double-navigate', async ({ page }) => {//{{{
+            // Simulates what Chromium does for IME_ACTION_NEXT:
+            //   1. Focus advances to the next field (natively, before any JS event)
+            //   2. A synthetic keydown(Enter) fires on the newly-focused field
+            // Both happen in the same page.evaluate call — so `focus` and
+            // `keydown` are < 1 ms apart, well within IME_FOCUS_AGE_MS (20 ms).
+            // SmarkForm must NOT navigate a second time.
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+                await page.evaluate(() => form.rendered);
+
+                // Start on item 0.
+                await page.evaluate(() => form.find('/phones/0').focus());
+
+                // Simulate the IME advance in a single synchronous call so that
+                // focus and keydown(Enter) are well within IME_FOCUS_AGE_MS (20 ms),
+                // triggering the IME-advance detection in events.js.
+                // Use the raw <input> element — calling focus() on the SmarkForm
+                // component wrapper would delegate through .focus() → children,
+                // and we need to fire the focus event on the exact element that
+                // the keydown will target.
+                await page.evaluate(() => {
+                    const field1 = document.querySelectorAll('input[placeholder="Phone"]')[1];
+                    field1.focus();
+                    field1.dispatchEvent(new KeyboardEvent('keydown', {
+                        key: 'Enter', bubbles: true, cancelable: true, composed: true,
+                    }));
+                });
+
+                // Field 1 should still be focused — no further advance.
+                const idx = await page.evaluate(() => {
+                    const active = document.activeElement;
+                    if (!active) return -1;
+                    const item = active.closest('li');
+                    if (!item) return -1;
+                    return Array.from(item.parentElement.children).indexOf(item);
+                });
+                expect(idx).toBe(1);
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
+
+
+        test('Enter advances focus by exactly one list item', async ({ page }) => {//{{{
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+
+                // Wait for the list to be rendered with its min_items.
+                await page.evaluate(() => form.rendered);
+
+                // Focus the first item's input.
+                await page.evaluate(() => form.find('/phones/0').focus());
+                // Wait long enough to be clear of the IME-advance detection window
+                // (IME_FOCUS_AGE_MS = 20 ms).  This ensures the programmatic focus
+                // above is not misidentified as an IME advance when keyboard.press
+                // fires only one CDP round-trip later.
+                await page.waitForTimeout(30);
+
+                // Press Enter — should move to item 1 (0-indexed).
+                await page.keyboard.press('Enter');
+
+                // The focused element's data-smark should belong to item 1, not item 2.
+                const focusedIdx = await page.evaluate(() => {
+                    const active = document.activeElement;
+                    if (!active) return -1;
+                    const item = active.closest('li');
+                    if (!item) return -1;
+                    return Array.from(item.parentElement.children).indexOf(item);
+                });
+
+                expect(focusedIdx).toBe(1);
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
+
+
+        test('Shift+Enter moves focus backwards by exactly one list item', async ({ page }) => {//{{{
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+
+                await page.evaluate(() => form.rendered);
+
+                // Focus item 1 (middle item).
+                await page.evaluate(() => form.find('/phones/1').focus());
+                // Ensure gap > IME_FOCUS_AGE_MS (20 ms) before keyboard event.
+                await page.waitForTimeout(30);
+
+                // Shift+Enter should go back to item 0.
+                await page.keyboard.press('Shift+Enter');
+
+                const focusedIdx = await page.evaluate(() => {
+                    const active = document.activeElement;
+                    if (!active) return -1;
+                    const item = active.closest('li');
+                    if (!item) return -1;
+                    return Array.from(item.parentElement.children).indexOf(item);
+                });
+
+                expect(focusedIdx).toBe(0);
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
+
+        test('Sequential Enter presses advance focus one item at a time', async ({ page }) => {//{{{
+            let onClosed;
+            try {
+                const rendered = await renderPug({
+                    title: 'Enter nav test',
+                    src: enterNavPugSrc,
+                });
+                onClosed = rendered.onClosed;
+                await page.goto(rendered.url);
+
+                await page.evaluate(() => form.rendered);
+
+                // Focus item 0.
+                await page.evaluate(() => form.find('/phones/0').focus());
+                // Ensure gap > IME_FOCUS_AGE_MS (20 ms) before keyboard event.
+                await page.waitForTimeout(30);
+
+                const getFocusedIdx = () => page.evaluate(() => {
+                    const active = document.activeElement;
+                    if (!active) return -1;
+                    const item = active.closest('li');
+                    if (!item) return -1;
+                    return Array.from(item.parentElement.children).indexOf(item);
+                });
+
+                // First Enter: 0 → 1
+                await page.keyboard.press('Enter');
+                expect(await getFocusedIdx()).toBe(1);
+
+                // Ensure gap > IME_FOCUS_AGE_MS before second Enter.
+                // (SmarkForm's focus(1) fired during the first keyboard.press;
+                //  the getFocusedIdx + waitForTimeout guarantees > 20 ms gap.)
+                await page.waitForTimeout(30);
+
+                // Second Enter: 1 → 2
+                await page.keyboard.press('Enter');
+                expect(await getFocusedIdx()).toBe(2);
+            } finally {
+                if (onClosed) await onClosed();
+            }
+        });//}}}
+
+    });
+}
+
+// Run on all configured browsers / devices.
+makeEnterNavTests('Enter-key navigation in scalar list');
+
+// Run a second time with Chromium mobile emulation to catch issues specific to
+// mobile browsers (the original bug was reproduced on Brave for Android).
+// Note: `defaultBrowserType` is intentionally excluded — it is not allowed
+// inside a describe-level `test.use()` call in Playwright.
+test.describe('Enter-key navigation in scalar list (mobile emulation)', () => {
+    const { defaultBrowserType: _, ...pixel5 } = devices['Pixel 5'];
+    test.use(pixel5);
+    // Re-run the same three tests with a mobile viewport / user-agent.
+    makeEnterNavTests('mobile');
 });
