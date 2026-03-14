@@ -11,6 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## Unreleased
+- Fix: Workaround for Chromium/Brave Android IME "Next" double-advance in list inputs — timestamp-based detection of native IME focus advances and short-circuiting of synthetic keydown events. See PR #112 and commit https://github.com/bitifet/SmarkForm/commit/5c67cc9993e186060c4e9c33244dc613c9b51294. Upstream bug: TODO: https://crbug.com/xxxx
+
+---
+
 ## [0.13.1] — 2026-03-12
 
 🐛 Bug fixes: `setDefault` propagation, missing `await` in async calls, nested sub-form data loss, `submit` action edge cases · ✨ New `submit` action for form components with full encoding/transport support · 🧪 `demoValue` round-trip smoke tests for co-located docs examples · 📖 Documentation improvements: responsive sidebar/TOC, FAQ updates · 🔧 Dev-dependency updates.
