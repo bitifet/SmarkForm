@@ -35,7 +35,7 @@ export class input extends form {
                     // Short-circuit synthetic keydown events produced after native IME focus advances
                     // (Chromium mobile IME_ACTION_NEXT). See PR #112 and commit:
                     // https://github.com/bitifet/SmarkForm/commit/5c67cc9993e186060c4e9c33244dc613c9b51294
-                    // Upstream bug: TODO - paste link here once filed
+                    // Upstream bug: https://issues.chromium.org/issues/492805133
                     // Illustrative canonical form of the check below:
                     // if (ev.originalEvent && ev.originalEvent._sfImeAdvanced) return;
                     if (ev.originalEvent._sfImeAdvanced) return;

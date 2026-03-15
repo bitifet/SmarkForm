@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ---
 
 ## Unreleased
-- Fix: Workaround for Chromium/Brave Android IME "Next" double-advance in list inputs — timestamp-based detection of native IME focus advances and short-circuiting of synthetic keydown events. See PR #112 and commit https://github.com/bitifet/SmarkForm/commit/5c67cc9993e186060c4e9c33244dc613c9b51294. Upstream bug: TODO: https://crbug.com/xxxx
+- Fix: Workaround for Chromium/Brave Android IME "Next" double-advance in list inputs — timestamp-based detection of native IME focus advances and short-circuiting of synthetic keydown events. See PR #112 and commit https://github.com/bitifet/SmarkForm/commit/5c67cc9993e186060c4e9c33244dc613c9b51294. Upstream bug: https://issues.chromium.org/issues/492805133
 
 ---
 
