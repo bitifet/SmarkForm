@@ -1,29 +1,65 @@
-  <title>Chromium IME Next repro</title>
-  <style>input{display:block;margin:12px 0;padding:8px;font-size:16px;width:95%}</style>
-  
-    <h3>Chromium IME Next repro — 3 inputs</h3>
-    <input id="i1" placeholder="input 1">
-    <input id="i2" placeholder="input 2">
-    <input id="i3" placeholder="input 3">
-    <pre id="log" style="height:160px;overflow:auto;background:#f6f8fa;padding:8px;border:1px solid #ddd"></pre>
-    <script>
-      const log = (s)=>{const el=document.getElementById('log'); el.textContent += s + '\n'; el.scrollTop = el.scrollHeight}
-      const inputs = Array.from(document.querySelectorAll('input'))
-      inputs.forEach((inp, idx) => {
-        inp.addEventListener('keydown', (ev) => {
-          log(`[keydown] id=${inp.id} key=${ev.key} time=${Date.now()}`)
-          if (ev.key === 'Enter') {
-            ev.preventDefault()
-            const next = inputs[idx+1]
-            if (next) {
-              next.focus()
-              log(`  -> focused ${next.id}`)
-            } else {
-              log('  -> no-next')
-            }
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chromium IME Next repro</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+          :root {
+            font-size: 10px;
           }
-        })
-      })
-      window.addEventListener('load', ()=>document.getElementById('i1').focus())
-    </script>
-  
+          #log {height:100px;width:95vw;overflow:auto;background:#f6f8fa;padding:8px;border:1px solid #ddd}
+        </style>
+    </head>
+    <body>
+        <h3>Chromium IME Next repro</h3>
+        <h4> — 3 inputs — </h4>
+        <p>
+        <label for="input_1">Input 1:</label>
+        <input id="input_1" placeholder="input 1">
+        </p>
+        <p>
+        <label for="input_2">Input 2:</label>
+        <input id="input_2" placeholder="input 2">
+        </p>
+        <p>
+        <label for="input_3">Input 3:</label>
+        <input id="input_3" placeholder="input 3">
+        </p>
+        <pre id="log"></pre>
+        <script>
+            const logs = [], logTarget = document.getElementById('log');
+            let c = 0;
+            const log = s => logTarget.textContent = (
+                logs.push(++c+': '+s),logs.splice(0, logs.length -5), logs.join('\n')
+            );
+            const inputs = Array.from(document.querySelectorAll('input'));
+            function logKeydown(ev) {
+                log(`[keydown] You pressed ${ev.code || "a"} key in ${ev.target.id}`);
+            };
+            inputs.forEach(inp => inp.addEventListener('keydown', logKeydown))
+            window.addEventListener('load', ()=>inputs[0].focus())
+        </script>
+        <footer>
+            <h4>Instructions:</h4>
+            <ul>
+                <li>Focus the first input.</li>
+                <li>Type any key other than 'Enter'</li>
+                <li>Type the 'Enter' key</li>
+            </ul>
+            <h5>Expected:</h5> 
+            <ul>
+              <li>Both keys reprted to be pressed in input 1.</li>
+            </ul>
+            <h5>Actual:</h5>
+            <ul>
+                <li><b>Desktop browsers and non-Chromium based mobile browsers:</b> Both keys are reported to be pressed in input 1.</li>
+                <li><b>Chromium-based mobile browsers:</b> The first key is reported to be pressed in input 1, but the 'Enter' key is reported to be pressed in input 2.</li>
+            </ul>
+            <h5>Comments:</h5>
+            <ul>
+                <li>Same happen to the input 2.</li>
+                <li>In the case of the last input reports itself but the event fires twice.</li>
+            </ul>
+        </footer>
+    </body>
+</html>
