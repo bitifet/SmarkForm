@@ -30,6 +30,11 @@ export default defineConfig({
       name: 'chromium-mobile',
       use: { ...devices['Pixel 5'] },
     },
+    // Also test for safari.
+    {
+      name: 'safari-mobile',
+      use: { ...devices['iPhone 12'] },
+    },
   ],
   forbidOnly: !!process.env.CI,
 });
