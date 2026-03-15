@@ -58,14 +58,14 @@ For convenience, include this exact sentence in the PR description when you want
 
 **How to run locally**:
 ```bash
-npm test           # chromium desktop only (fast, default)
-npm run test:full  # all browsers + chromium-mobile (full matrix)
+npm test            # all browsers + chromium-mobile (full matrix, default)
+npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 ```
 
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
-- `npm test` runs chromium desktop only (fast iteration)
-- `npm run test:full` runs chromium, firefox, webkit, and chromium-mobile (Pixel 5 emulation)
+- `npm test` runs the full matrix: chromium, firefox, webkit, and chromium-mobile (Pixel 5 emulation)
+- `npm run test:quick` picks one project at random (see `scripts/test_quick.sh`) — useful for a fast sanity check without committing to a specific browser
 - Generates HTML reports
 - Screenshots and traces captured on failure
 - `forbidOnly` enabled in CI to prevent `.only` commits
@@ -311,10 +311,10 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 
 ```bash
 # Testing
-npm test                    # Run Playwright tests – chromium desktop only (fast default)
-npm run test:full           # Run full matrix: chromium + firefox + webkit + chromium-mobile
+npm test                    # Run full matrix: chromium + firefox + webkit + chromium-mobile
+npm run test:quick          # Run on one randomly-chosen browser (fast sanity check)
 npm run test:pick          # Run specific test file(s) interactively
-npm run pretest            # Build and collect examples (runs before test / test:full)
+npm run pretest            # Build and collect examples (runs before test / test:quick)
 
 # Building
 npm run build              # Build production library
