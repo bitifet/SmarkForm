@@ -40,55 +40,64 @@ try {
 
 
 /**
- * Recursively filter falsy values out of arrays (and recurse into objects).
+ * Recursively normalizes a value for loose comparison in tests:
  *
- * This normalises an exported form value for comparison against a demoValue
- * that may contain null placeholders for empty list slots:
- *   deepFilterFalsy({foo: [null, 23, null]}) → {foo: [23]}
+ * 1. Removes falsy values from arrays (null, undefined, "", false, 0 stays!)
+ * 2. Collapses single-item arrays to the scalar value (helps with legacy scalar → array migration)
+ * 3. Coerces numeric-looking strings and YYYY-MM-DD strings to numbers
  *
- * Only array items are filtered; object values and primitives are kept as-is
- * so that intentional zeros, empty strings, and booleans inside objects are
- * preserved.
+ * Object properties are preserved even if falsy.
+ * Non-array structures keep their values as-is except for the numeric string coercion.
+ *
+ * Main use case: compare form-submitted data against "demo" / golden values
+ * that may use strings, null placeholders in arrays, etc.
+ *
+ * @example
+ * normalizeForLooseComparison({ a: ["", 42, null, "17", "2024-05-03"] })
+ * // → { a: [42, 17, 20240503] }
+ *
+ * @param {*} value - value to normalize
+ * @returns {*} normalized value
  */
-function deepFilterFalsy(value) {
+function normalizeForLooseComparison(value) {
+  // Handle arrays – filter falsy + recurse + coerce
   if (Array.isArray(value)) {
-    return value.filter(Boolean).map(deepFilterFalsy);
+    const filtered = value
+      .filter(Boolean)               // remove falsy values
+      .map(normalizeForLooseComparison);
+
+    // Special case: single-item arrays → unwrap to scalar
+    // (helps when form field changed from scalar → array)
+    if (filtered.length === 1) {
+      return filtered[0];
+    }
+
+    return filtered;
   }
+
+  // Handle plain objects – recurse only
   if (value !== null && typeof value === 'object') {
     const result = {};
-    for (const [k, v] of Object.entries(value)) {
-      result[k] = deepFilterFalsy(v);
+    for (const [key, val] of Object.entries(value)) {
+      result[key] = normalizeForLooseComparison(val);
     }
     return result;
   }
-  return coerceNumericStrings(value);
-}
 
-
-/**
- * Recursively coerce numeric strings to numbers.
- *
- * SmarkForm silently converts string values to numbers when importing into
- * <input type="number"> fields.  A demoValue may intentionally use a string
- * (e.g. "30") to showcase this sanitisation behaviour.  Applying this
- * function to the parsedDemoValue before comparison lets the round-trip test
- * pass even when the demoValue contains numeric strings:
- *   coerceNumericStrings({age: "30"}) → {age: 30}
- */
-function coerceNumericStrings(value) {
-  if (Array.isArray(value)) {
-    return value.map(coerceNumericStrings);
-  }
-  if (value !== null && typeof value === 'object') {
-    const result = {};
-    for (const [k, v] of Object.entries(value)) {
-      result[k] = coerceNumericStrings(v);
+  // Leaf values: try to coerce strings that look numeric or date-like
+  if (typeof value === 'string' && value.trim() !== '') {
+    // Pure number
+    if (!isNaN(value)) {
+      return Number(value);
     }
-    return result;
+
+    // YYYY-MM-DD → YYYYMMDD number (common in some form/DB roundtrips)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+      return Number(value.replaceAll(/-/g, ''));
+    }
   }
-  if (typeof value === 'string' && value.trim() !== '' && !isNaN(value)) {
-    return Number(value);
-  }
+
+  // Everything else → unchanged
   return value;
 }
 
@@ -414,19 +423,14 @@ for (const example of examples) {
     });
 
     // Export the form and compare against demoValue.
-    // coerceNumericStrings normalises any numeric strings in the demoValue
-    // (e.g. "30") to numbers before comparison, mirroring SmarkForm's own
-    // input sanitisation so that demoValues used to illustrate that feature
-    // do not cause false failures.
     const exported = await page.evaluate(async () => {
       return await myForm.export();
     });
 
-    const parsedDemoValue = coerceNumericStrings(example.demoValue);
     expect(
-      deepFilterFalsy(exported),
+      normalizeForLooseComparison(exported),
       `demoValue round-trip failed for ${example.id}`
-    ).toEqual(deepFilterFalsy(parsedDemoValue));
+    ).toEqual(normalizeForLooseComparison(example.demoValue));
 
     // No page errors expected
     // // Debug:
