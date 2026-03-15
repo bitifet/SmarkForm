@@ -7,6 +7,10 @@ const re_actionEvHandler = /^on(?:Before|After)Action_/;
 const re_localEvHandler = /^onLocal_/;
 const re_allEvHandler = /^onAll_/;
 
+// WORKAROUND: Detect native IME-driven focus advances (Chromium mobile IME_ACTION_NEXT) and
+// mark synthetic keydown events so page handlers can short-circuit duplicate navigation.
+// See: PR #112 and squashed commit: https://github.com/bitifet/SmarkForm/commit/5c67cc9993e186060c4e9c33244dc613c9b51294
+// Upstream bug: https://issues.chromium.org/issues/492805133
 // How recently a field must have gained focus (in milliseconds) for an
 // Enter keydown on that field to be treated as a Chromium IME_ACTION_NEXT
 // advance rather than a deliberate user keypress.
