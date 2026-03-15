@@ -24,8 +24,8 @@ export default defineConfig({
     },
     // Chromium mobile emulation – catches bugs specific to Android/Brave-style
     // browsers (e.g. the IME_ACTION_NEXT double-advance regression fixed in
-    // PR #112).  Only included in `npm run test:full`; the default `npm test`
-    // runs chromium desktop only for speed.
+    // PR #112).  Included in `npm test` (full matrix) and `npm run test:quick`
+    // (random-browser fast run) alike.
     {
       name: 'chromium-mobile',
       use: { ...devices['Pixel 5'] },

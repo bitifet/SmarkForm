@@ -8,9 +8,9 @@
   "umd": "dist/SmarkForm.umd.js",
   "scripts": {
     "pretest": "npm run build && node scripts/collect-docs-examples.js",
-    "test": "playwright test --project=chromium",
-    "pretest:full": "npm run pretest",
-    "test:full": "playwright test",
+    "test": "playwright test",
+    "pretest:quick": "npm run pretest",
+    "test:quick": "scripts/test_quick.sh",
     "test:pick": "npm run pretest && scripts/test_pick.sh",
     "build": "scripts/build_production_smarkform.sh",
     "doc": "scripts/build_documentation_site.sh",
