@@ -58,19 +58,22 @@ For convenience, include this exact sentence in the PR description when you want
 
 **How to run locally**:
 ```bash
-npm test
+npm test           # chromium desktop only (fast, default)
+npm run test:full  # all browsers + chromium-mobile (full matrix)
 ```
 
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
-- Runs tests in Chromium, Firefox, and WebKit
+- `npm test` runs chromium desktop only (fast iteration)
+- `npm run test:full` runs chromium, firefox, webkit, and chromium-mobile (Pixel 5 emulation)
 - Generates HTML reports
 - Screenshots and traces captured on failure
 - `forbidOnly` enabled in CI to prevent `.only` commits
+- Mobile project (`chromium-mobile`) uses Playwright's Pixel 5 device emulation to catch Android/Brave-specific bugs
 
 **Troubleshooting**:
 - If tests fail, check `playwright-report/index.html` for detailed reports
-- Use `npm run test:pick` to run specific test files
+- Use `npm run test:pick` to run specific test files (auto-discovers all projects including mobile)
 - Ensure `npm run build` completes successfully before testing
 
 ### Collector Script
@@ -308,9 +311,10 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 
 ```bash
 # Testing
-npm test                    # Run all Playwright tests
-npm run test:pick          # Run specific test file(s)
-npm run pretest            # Build and collect examples (runs before test)
+npm test                    # Run Playwright tests – chromium desktop only (fast default)
+npm run test:full           # Run full matrix: chromium + firefox + webkit + chromium-mobile
+npm run test:pick          # Run specific test file(s) interactively
+npm run pretest            # Build and collect examples (runs before test / test:full)
 
 # Building
 npm run build              # Build production library

@@ -1,4 +1,4 @@
-import { test, expect, devices } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import {renderPug} from '../src/lib/test/helpers.js';
 
 const pugSrc = (// {{{
@@ -699,16 +699,6 @@ function makeEnterNavTests(suiteName) {
     });
 }
 
-// Run on all configured browsers / devices.
+// Run on all configured browsers / devices (including the 'chromium-mobile'
+// Playwright project which uses Pixel 5 device emulation — see playwright.config.js).
 makeEnterNavTests('Enter-key navigation in scalar list');
-
-// Run a second time with Chromium mobile emulation to catch issues specific to
-// mobile browsers (the original bug was reproduced on Brave for Android).
-// Note: `defaultBrowserType` is intentionally excluded — it is not allowed
-// inside a describe-level `test.use()` call in Playwright.
-test.describe('Enter-key navigation in scalar list (mobile emulation)', () => {
-    const { defaultBrowserType: _, ...pixel5 } = devices['Pixel 5'];
-    test.use(pixel5);
-    // Re-run the same three tests with a mobile viewport / user-agent.
-    makeEnterNavTests('mobile');
-});
