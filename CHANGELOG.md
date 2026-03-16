@@ -11,8 +11,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## Unreleased
-- Fix: Workaround for Chromium/Brave Android IME "Next" double-advance in list inputs — timestamp-based detection of native IME focus advances and short-circuiting of synthetic keydown events. See PR #112 and commit https://github.com/bitifet/SmarkForm/commit/5c67cc9993e186060c4e9c33244dc613c9b51294. Upstream bug: https://issues.chromium.org/issues/492805133
+## [0.13.2] — 2026-03-16
+
+🐛 Workaround for Chromium/Brave Android IME "Next" double-advance bug in scalar list fields · 🧪 Chromium mobile and Safari mobile added to CI test matrix · ✨ Smart value coercion docs · 📖 Responsive iframe height in sampletabs · 🎞️ List item animations in showcase demo.
+
+A Chromium bug (`IME_ACTION_NEXT`) was causing double-advance when navigating between list inputs on Android/Brave. This release ships a timestamp-based workaround to detect and suppress the spurious synthetic keydown event. A bug report has been filed with the Chromium project. Chromium mobile (Pixel 5 emulation) and Safari mobile are now part of the automated test suite to prevent regressions on mobile platforms.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.13.2)
 
 ---
 
