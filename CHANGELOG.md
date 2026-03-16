@@ -11,13 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
-
-<!-- Add new entries here when preparing the next release. -->
-
----
-
-## [0.13.2] — 2026-03-15
+## [0.13.2] — 2026-03-16
 
 🐛 Workaround for Chromium/Brave Android IME "Next" double-advance bug in scalar list fields · 🧪 Chromium mobile and Safari mobile added to CI test matrix · ✨ Smart value coercion docs · 📖 Responsive iframe height in sampletabs · 🎞️ List item animations in showcase demo.
 
