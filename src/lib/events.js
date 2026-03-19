@@ -61,7 +61,6 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                 ) if (re_actionEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(2), value, "onLocal"])
                 } else if (re_localEvHandler.test(key)) {
-                } else if (re_localEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(8), value, "onLocal"])
                 } else if (re_allEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(6), value, "onAll"])
