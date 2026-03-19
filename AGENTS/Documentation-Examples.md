@@ -76,11 +76,10 @@ Example usage in a `.md` doc file:
 
 When `demoValue` is provided:
 
-1. **Executed JS** (hidden from user): The simple constructor is used — value is embedded directly in the `demo` subform's `data-smark`:
+1. **Executed JS** (hidden from user): The simple constructor is used — value is **not** embedded in HTML:
    ```html
-   <div data-smark='{"name":"demo","value":<demoValue>}'>
+   <div data-smark='{"name":"demo"}'>
    ```
-   This sets `demo.defaultValue = demoValue`, so the Reset button restores it.
 
 2. **Displayed JS** (shown in JS tab): The constructor shows the value for documentation clarity:
    ```javascript
@@ -88,8 +87,14 @@ When `demoValue` is provided:
        value: <demoValue>
    });
    ```
+   When the editor is shown (`showEditor=true`), it is wrapped in the `demo` key:
+   ```javascript
+   const myForm = new SmarkForm(document.getElementById("myForm-example"), {
+       value: {"demo": <demoValue>}
+   });
+   ```
 
-3. **Reset behavior**: The Reset button targets `context:"demo"`, which calls `demo.reset()` → `demo.import(demo.defaultValue)` = the demoValue, without touching the `editor` textarea (which is a sibling, not inside `demo`).
+3. **Reset behavior**: The Reset button has no `context` — it resets the **root** form. The root was initialized with `value: {"demo": demoValue}`, so `root.defaultValue = {"demo": demoValue, "editor": ""}`. Reset restores the demo values and clears the editor textarea. Note: `setDefault` propagation does NOT flow to children, so `demo.defaultValue` itself stays `{}`; only the root knows the correct default.
 
 4. **Test isolation**: The collector (`scripts/collect-docs-examples.js`) explicitly filters out `demoValue` via `DOCS_ONLY_PARAMS`. Tests always see an empty form.
 
@@ -132,7 +137,7 @@ The standard playground buttons (in order) are:
 ⬇️ Export | ⬆️ Import | ♻️ Reset | ❌ Clear
 ```
 
-The Reset button targets `context:"demo"` — it resets the demo subform (not the root form). This means it restores the `demoValue` default (if set) without clearing the editor textarea.
+The Reset button has **no context** — it targets the root form (not just `demo`). This means it restores `demoValue` AND clears the editor textarea (both are children of the root). The root form's `defaultValue` is set via `value: {"demo": demoValue}` in the JS constructor.
 
 Print styles hide all four buttons (`display: none !important`).
 
@@ -143,15 +148,15 @@ The playground renders a root SmarkForm with two children:
 - `editor` — the JSON textarea (shown when `showEditor=true`)
 
 ```html
-<div id="myForm-<formId>">          <!-- root form -->
-  <div data-smark='{"name":"demo","value":<demoValue>}'>
+<div id="myForm-<formId>">          <!-- root form (defaultValue includes demoValue) -->
+  <div data-smark='{"name":"demo"}'>
     <!-- the example's HTML goes here -->
   </div>
   <textarea data-smark='{"name":"editor"}'></textarea>  <!-- if showEditor=true -->
 </div>
 ```
 
-The Export/Import/Reset/Clear buttons all have `context:"demo"` to target the demo subform only.
+The ⬇️ Export and ⬆️ Import buttons target `context:"demo"` to operate on the demo subform only. The ♻️ Reset button has no context and targets the root form. The ❌ Clear button targets `context:"demo"` to clear the demo subform only.
 
 ## Co-located Tests
 

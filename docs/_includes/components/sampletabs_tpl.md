@@ -121,8 +121,8 @@ For further details, please refer to the following documentation files:
 █    title="Import 'editor' textarea contents to 'demo' subform"
 █    >⬆️ Import</button></span>
 █<span><button
-█    data-smark='{"action":"reset","context":"demo"}'
-█    title="Reset the demo form to its default values"
+█    data-smark='{"action":"reset"}'
+█    title="Reset the form to its default values"
 █    >♻️ Reset</button></span>
 █<span><button
 █    data-smark='{"action":"clear", "context":"demo"}'
@@ -163,7 +163,7 @@ endcapture %}
 {% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}{{ demoValue_inner | raw }}}' style="flex-grow: 1">{{
+        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
 htmlSource | replace: "█", "            "
 }}        </div>
         <div style="display: flex; justify-content: space-evenly">
