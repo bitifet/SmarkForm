@@ -92,14 +92,6 @@ function registerEvHandler(evList, evType, evHandler) {
     return me; // Make chainable.
 };
 
-// Return the ancestor path of `component` as an array:
-//   [component, component.parent, ..., root]
-function ancestorPath(component) {
-    const path = [component];
-    for (const p of component.parents) path.push(p);
-    return path;
-};
-
 // Find the lowest common ancestor (LCA) of two ancestor-path arrays.
 // Returns the first element of `pathA` that also appears in `pathB`,
 // or null if no common ancestor exists (focus to/from outside the root).
@@ -121,8 +113,8 @@ function findLCA(pathA, pathB) {
 //      innermost first (so the deepest field gets focusenter before containers
 //      do, matching the bubbling direction used by .onAll() listeners).
 async function emitFocusBoundaryEvents(oldComp, newComp) {
-    const oldPath = oldComp ? ancestorPath(oldComp) : [];
-    const newPath = newComp ? ancestorPath(newComp) : [];
+    const oldPath = oldComp ? ([oldComp, ...oldComp.parents]) : [];
+    const newPath = newComp ? ([newComp, ...newComp.parents]) : [];
     const lca = findLCA(oldPath, newPath);
 
     for (const comp of oldPath) {
