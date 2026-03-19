@@ -120,7 +120,7 @@ For further details, please refer to the following documentation files:
 █    data-smark='{"action":"import","context":"demo","target":"../editor","setDefault":false}'
 █    title="Import 'editor' textarea contents to 'demo' subform"
 █    >⬆️ Import</button></span>
-█<span><button
+█<span{% if demoValue == '-' %} style="visibility: hidden"{% endif %}><button
 █    data-smark='{"action":"reset","context":"demo"}'
 █    title="Reset the demo form to its default values"
 █    >♻️ Reset</button></span>
