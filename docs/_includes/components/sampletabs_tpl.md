@@ -163,7 +163,7 @@ endcapture %}
 {% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
 {% capture full_htmlSource %}<div id="myForm$$">
     <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
+        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}{{ demoValue_inner | raw }}}' style="flex-grow: 1">{{
 htmlSource | replace: "█", "            "
 }}        </div>
         <div style="display: flex; justify-content: space-evenly">
