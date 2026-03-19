@@ -2,9 +2,11 @@
 // =============
 
 const sym_local_events = Symbol("Events");
+const sym_on_events = Symbol("onEvents");
 const sym_all_events = Symbol("allEvents");
 const re_actionEvHandler = /^on(?:Before|After)Action_/;
 const re_localEvHandler = /^onLocal_/;
+const re_onEvHandler = /^on_/;
 const re_allEvHandler = /^onAll_/;
 
 // WORKAROUND: Detect native IME-driven focus advances (Chromium mobile IME_ACTION_NEXT) and
@@ -23,19 +25,65 @@ const IME_FOCUS_AGE_MS = 20;
 
 import {createArrayPuller} from "./helpers.js";
 
-const supportedFieldEventTypes = [
-    "keydown", "keyup", "keypress",
-    "beforeinput", "input", "change",
-    "focus", "blur",
-    "click", "dblclick", "contextmenu",
-    "mousedown", "mouseup", "mousemove", "mouseenter", "mouseleave", "mouseover", "mouseout",
-    "focusin", "focusout",
+// Per-event metadata.
+//
+// `bubbles` controls whether `.on()` propagates the event up the SmarkForm
+// component tree.  It intentionally mirrors native DOM bubbling for same-named
+// events so that `.on()` behaves like a DOM addEventListener with the default
+// (bubble) phase: events that don't bubble in the DOM (focus, blur,
+// mouseenter, mouseleave) also don't bubble in SmarkForm under `.on()`.
+//
+// `.onAll()` always bubbles regardless of this flag.
+// `.onLocal()` never bubbles regardless of this flag.
+//
+// Events marked `synthetic: true` are pure SmarkForm-level events; no DOM
+// listener is attached for them.
+//
+// Events NOT listed here (e.g. action lifecycle events such as
+// AfterAction_export) default to { bubbles: true } so that existing behaviour
+// is preserved.
+const supportedFieldEventTypes = {
+    // Keyboard
+    keydown:      { bubbles: true },
+    keyup:        { bubbles: true },
+    keypress:     { bubbles: true },
+    // Input
+    beforeinput:  { bubbles: true },
+    input:        { bubbles: true },
+    change:       { bubbles: true },
+    // Focus — do NOT bubble under .on() (matches DOM)
+    focus:        { bubbles: false },
+    blur:         { bubbles: false },
+    focusin:      { bubbles: true },
+    focusout:     { bubbles: true },
+    // Mouse
+    click:        { bubbles: true },
+    dblclick:     { bubbles: true },
+    contextmenu:  { bubbles: true },
+    mousedown:    { bubbles: true },
+    mouseup:      { bubbles: true },
+    mousemove:    { bubbles: true },
+    mouseenter:   { bubbles: false }, // does not bubble in DOM
+    mouseleave:   { bubbles: false }, // does not bubble in DOM
+    mouseover:    { bubbles: true },
+    mouseout:     { bubbles: true },
+    // Synthetic SmarkForm-level focus-boundary events (no DOM listener).
+    // Emitted by the root's focusin/focusout capture handler using an LCA
+    // algorithm to track focus transitions across component boundaries.
+    focusenter:   { bubbles: true, synthetic: true },
+    focusleave:   { bubbles: true, synthetic: true },
 
-    // "select", "dragstart", "dragend", "dragover", "dragenter", "dragleave", "drop",
-    // "touchstart", "touchend", "touchmove", "touchcancel",
-    // "wheel", "scroll", "resize",
-    // "copy", "cut", "paste",
-];
+    // Uncomment to enable additional DOM event types:
+    // select:    { bubbles: true },
+    // dragstart: { bubbles: true }, dragend: { bubbles: true },
+    // dragover:  { bubbles: true }, dragenter: { bubbles: true },
+    // dragleave: { bubbles: true }, drop:      { bubbles: true },
+    // touchstart:{ bubbles: true }, touchend:  { bubbles: true },
+    // touchmove: { bubbles: true }, touchcancel:{ bubbles: true },
+    // wheel:     { bubbles: true }, scroll:    { bubbles: true },
+    // copy:      { bubbles: true }, cut:       { bubbles: true },
+    // paste:     { bubbles: true },
+};
 
 function registerEvHandler(evList, evType, evHandler) {
     const me = this;
@@ -44,15 +92,58 @@ function registerEvHandler(evList, evType, evHandler) {
     return me; // Make chainable.
 };
 
+// Return the ancestor path of `component` as an array:
+//   [component, component.parent, ..., root]
+function ancestorPath(component) {
+    const path = [component];
+    for (const p of component.parents) path.push(p);
+    return path;
+};
+
+// Find the lowest common ancestor (LCA) of two ancestor-path arrays.
+// Returns the first element of `pathA` that also appears in `pathB`,
+// or null if no common ancestor exists (focus to/from outside the root).
+function findLCA(pathA, pathB) {
+    const setB = new Set(pathB);
+    return pathA.find(c => setB.has(c)) ?? null;
+};
+
+// Emit focusleave / focusenter events for a focus transition from
+// `oldComp` to `newComp` (either may be null when focus crosses the
+// SmarkForm root boundary).
+//
+// Algorithm:
+//   1. Compute ancestor paths for both components.
+//   2. Find their LCA.
+//   3. Emit focusleave on each component in oldPath up to (excluding) LCA,
+//      innermost first.
+//   4. Emit focusenter on each component in newPath up to (excluding) LCA,
+//      innermost first (so the deepest field gets focusenter before containers
+//      do, matching the bubbling direction used by .onAll() listeners).
+async function emitFocusBoundaryEvents(oldComp, newComp) {
+    const oldPath = oldComp ? ancestorPath(oldComp) : [];
+    const newPath = newComp ? ancestorPath(newComp) : [];
+    const lca = findLCA(oldPath, newPath);
+
+    for (const comp of oldPath) {
+        if (comp === lca) break;
+        await comp.emit('focusleave', { type: 'focusleave', context: comp });
+    }
+    for (const comp of newPath) {
+        if (comp === lca) break;
+        await comp.emit('focusenter', { type: 'focusenter', context: comp });
+    }
+};
+
 
 export const events = function events_decorator(targetComponentType, {kind}) {
     if (kind == "class") {
         return class eventEnabledTarget extends targetComponentType {
             constructor(target, optionsSrc, ...args) {// {{{
 
-                // Capture before/after action event hanlers through
+                // Capture before/after action event handlers through
                 // onBeforeAction_xxx / onAfterAction_xxx options
-                // ...and onLocal_xxx / onAll_xxx regular event handlers.
+                // ...and onLocal_xxx / on_xxx / onAll_xxx regular event handlers.
                 const options = {};
                 const onOptionCallbacks = [];
                 for (
@@ -62,10 +153,12 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     onOptionCallbacks.push([key.substring(2), value, "onLocal"])
                 } else if (re_localEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(8), value, "onLocal"])
+                } else if (re_onEvHandler.test(key)) {
+                    onOptionCallbacks.push([key.substring(3), value, "on"])
                 } else if (re_allEvHandler.test(key)) {
                     onOptionCallbacks.push([key.substring(6), value, "onAll"])
                 } else {
-                    // Threat the rest as regular options:
+                    // Treat the rest as regular options:
                     options[key] = value;
                 };
 
@@ -75,10 +168,14 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                 // Events enhancing:
                 const me = this;
                 me[sym_local_events] = new Map();
+                me[sym_on_events] = new Map();
                 me[sym_all_events] = new Map();
                 me.onLocal = registerEvHandler.bind(me, me[sym_local_events]);
+                // .on() uses DOM-like bubbling: the event's `bubbles` metadata
+                // determines whether it propagates to ancestor components.
+                me.on = registerEvHandler.bind(me, me[sym_on_events]);
+                // .onAll() always bubbles, regardless of event metadata.
                 me.onAll = registerEvHandler.bind(me, me[sym_all_events]);
-                me.on = me.onAll; // Handy alias for listening all events.
 
                 // Create event hooks object:
                 me.eventHooks = createArrayPuller(super.eventHooks);
@@ -147,7 +244,10 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             if (focusAge < IME_FOCUS_AGE_MS) ev._sfImeAdvanced = true;
                         }
                     }, true); // synchronous, capture phase
-                    for (const evType of supportedFieldEventTypes) {
+
+                    // Attach DOM listeners for all non-synthetic event types.
+                    for (const [evType, meta] of Object.entries(supportedFieldEventTypes)) {
+                        if (meta.synthetic) continue;
                         me.targetNode.addEventListener(evType, ev=>{
                             const targetComponent = me.getComponent(ev.target);
                             const evData = {
@@ -164,6 +264,53 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             void targetComponent.emit(evType, evData);
                         }, true); // Use capture phase
                     };
+
+                    // focusenter / focusleave synthetic boundary events.
+                    //
+                    // Track the last focused SmarkForm component.  On every
+                    // focusin compute the LCA of old and new components and emit
+                    // focusleave / focusenter for the components that crossed a
+                    // container boundary.  This is done without relying on
+                    // relatedTarget (omitted by some browsers) and correctly
+                    // handles focus travelling to/from outside the root.
+                    //
+                    // IMPORTANT: In Chrome (and many browsers), Promise microtasks
+                    // run BETWEEN the focusout and focusin events that occur during
+                    // a focus transition within the root.  Using Promise.resolve()
+                    // in the focusout handler would therefore incorrectly conclude
+                    // that focus left the root before the focusin fires.  We use
+                    // setTimeout(fn, 0) instead, which runs after the current task
+                    // (including the pending focusin), and cancel it in the focusin
+                    // handler when focus stays within the root.
+                    let lastFocusedComponent = null;
+                    let pendingFocusLeaveTimer = null;
+
+                    me.targetNode.addEventListener('focusin', ev => {
+                        // Cancel any pending "focus left root" timer — focus is
+                        // moving to another element inside the root.
+                        if (pendingFocusLeaveTimer !== null) {
+                            clearTimeout(pendingFocusLeaveTimer);
+                            pendingFocusLeaveTimer = null;
+                        }
+                        const newComp = me.getComponent(ev.target);
+                        void emitFocusBoundaryEvents(lastFocusedComponent, newComp);
+                        lastFocusedComponent = newComp;
+                    }, true);
+
+                    me.targetNode.addEventListener('focusout', ev => {
+                        // Defer: if focusin fires first (focus moved within root)
+                        // the timer is cancelled above.  If the timer fires,
+                        // focus truly left the root.
+                        const leavingComp = lastFocusedComponent;
+                        pendingFocusLeaveTimer = setTimeout(() => {
+                            pendingFocusLeaveTimer = null;
+                            if (lastFocusedComponent === leavingComp) {
+                                // Focus went outside the root.
+                                void emitFocusBoundaryEvents(leavingComp, null);
+                                lastFocusedComponent = null;
+                            }
+                        }, 0);
+                    }, true);
                 };
 
                 // Setup action handlers provided through options:
@@ -187,31 +334,44 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     event.stopPropagation = () => propagationStopped = true;
                     event.stopImmediatePropagation = () => immediatePropagationStopped = true;
                 };
-                // Event target phase:
-                const targetHandlers = [ // Local handlers, then global ones:
+
+                // Look up whether this event type bubbles for .on() handlers.
+                // Events not listed in supportedFieldEventTypes (e.g. action
+                // lifecycle events such as AfterAction_export) default to
+                // bubbles:true to preserve existing behaviour.
+                const eventBubbles = (supportedFieldEventTypes[evType]?.bubbles) ?? true;
+
+                // Event target phase — local, then on, then onAll handlers:
+                const targetHandlers = [
                     ...(me[sym_local_events].get(evType) || []),
+                    ...(me[sym_on_events].get(evType) || []),
                     ...(me[sym_all_events].get(evType) || []),
                 ];
                 for (const handler of targetHandlers) {
                     if (immediatePropagationStopped) break;
-                    await handler(evData);
+                    await handler(event);
                 };
                 // Events bubbling phase:
+                //   .on() handlers only run here if the event bubbles.
+                //   .onAll() handlers always run.
                 for (const parent of me.parents) {
                     if (propagationStopped) break;
-                    const parentHandlers = parent[sym_all_events].get(evType) || [];
+                    const parentHandlers = [
+                        ...(eventBubbles ? (parent[sym_on_events].get(evType) || []) : []),
+                        ...(parent[sym_all_events].get(evType) || []),
+                    ];
                     for (const handler of parentHandlers) {
                         if (immediatePropagationStopped) break;
-                        await handler(evData);
+                        await handler(event);
                     };
                 }
-                // Event hooks (default behavior hooks)::
+                // Event hooks (default behavior hooks):
                 for (const eventHook of me.eventHooks[evType]) {
                     // WARNING: eventHooks are called inconditionally!
                     // They should check if event.defaultPrevented is set by themselves.
                     // This may seem counter-intuitive and unhandy, but it will allow, for instance,
                     // to implement a fake default prevention to "change" events (which are not natively cancelable) by restoring previous value.
-                    await eventHook(evData);
+                    await eventHook(event);
                 };
                 return ! event.defaultPrevented;
             };// }}}

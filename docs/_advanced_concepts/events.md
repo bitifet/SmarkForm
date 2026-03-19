@@ -37,7 +37,7 @@ nav_order: 2
 * [Implementation Details](#implementation-details)
     * [The `@action` decorator](#the-action-decorator)
     * [Calling actions programmatically](#calling-actions-programmatically)
-    * [Event bubbling: local vs. all](#event-bubbling-local-vs-all)
+    * [Event bubbling: local, on, and all](#event-bubbling-local-on-and-all)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -142,24 +142,24 @@ The option key pattern is:
 
 | Key prefix | Scope |
 |---|---|
-| `onAfterAction_<name>` | After the named action runs |
-| `onBeforeAction_<name>` | Before the named action runs |
-| `onLocal_<domEvent>` | DOM event, handled **only** on this component |
-| `onAll_<domEvent>` / `on_<domEvent>` | DOM event, handled on this component **and** bubbled up |
+| `onAfterAction_<name>` | After the named action runs (local — fires on this component only) |
+| `onBeforeAction_<name>` | Before the named action runs (local — fires on this component only) |
+| `onLocal_<event>` | DOM or synthetic event, handled **only** on this component (never bubbles) |
+| `on_<event>` | DOM or synthetic event, bubbles for events with `bubbles:true` metadata (DOM-like) |
+| `onAll_<event>` | DOM or synthetic event, **always** bubbles regardless of metadata |
 
 ### Via the API (programmatic)
 
-After construction you can register handlers using the component's `.on()` or
-`.onLocal()` / `.onAll()` methods:
+After construction you can register handlers using the component's methods:
 
 ```javascript
-// Listen on this component and all ancestors (bubbles up):
+// DOM-like bubbling: bubbles only if the event's 'bubbles' metadata is true.
 myForm.on("AfterAction_export", handler);
 
-// Same as above (alias):
+// Always bubbles (superset of .on()):
 myForm.onAll("AfterAction_export", handler);
 
-// Listen only on this exact component (does NOT bubble):
+// Never bubbles — fires only when this component is the exact target:
 myForm.onLocal("AfterAction_export", handler);
 ```
 
@@ -167,11 +167,21 @@ myForm.onLocal("AfterAction_export", handler);
 
 | Method | Behaviour |
 |---|---|
-| `onLocal(evType, handler)` | Handler runs **only** when the event targets this component exactly. |
-| `onAll(evType, handler)` / `on(evType, handler)` | Handler runs when the event targets this component **or any descendant** (via SmarkForm's own bubbling). |
+| `onLocal(evType, handler)` | Handler runs **only** when the event targets this component exactly. Never bubbles. |
+| `on(evType, handler)` | Handler runs when the event targets this component, and also bubbles to ancestors for events whose `bubbles` metadata is `true` (DOM-like). |
+| `onAll(evType, handler)` | Handler **always** bubbles, regardless of event metadata. |
 
-This mirrors the capture/bubble model of the DOM but operates within the
-SmarkForm component tree rather than the HTML element tree.
+The three methods differ only in how bubbling behaves:
+
+- **`onLocal`** — "I only care about events on *this* component, never events from descendants."
+- **`on`** — "I want DOM-like bubbling: events that don't bubble in the browser (`focus`, `blur`, `mouseenter`, `mouseleave`) also don't bubble in SmarkForm."
+- **`onAll`** — "I want to see *every* event that touches this component or any of its descendants, regardless of the DOM event's bubbling behaviour."
+
+{: .info }
+> For synthetic SmarkForm events such as action lifecycle events
+> (`BeforeAction_*`, `AfterAction_*`) and the focus-boundary events
+> `focusenter` / `focusleave`, the `bubbles` flag defaults to `true`, so `.on()`
+> and `.onAll()` behave identically for those events.
 
 **Example — react to an export anywhere inside a sub-form:**
 
@@ -194,9 +204,37 @@ SmarkForm component, not just the one that contains the raw HTML input.
 
 - Keyboard: `keydown`, `keyup`, `keypress`
 - Input: `beforeinput`, `input`, `change`
-- Focus: `focus`, `blur`, `focusin`, `focusout`
-- Mouse: `click`, `dblclick`, `contextmenu`, `mousedown`, `mouseup`,
-  `mousemove`, `mouseenter`, `mouseleave`, `mouseover`, `mouseout`
+- Focus (DOM, do **not** bubble under `.on()`): `focus`, `blur`
+- Focus (DOM, bubble under `.on()`): `focusin`, `focusout`
+- Mouse (bubble under `.on()`): `click`, `dblclick`, `contextmenu`, `mousedown`, `mouseup`,
+  `mousemove`, `mouseover`, `mouseout`
+- Mouse (do **not** bubble under `.on()`): `mouseenter`, `mouseleave`
+
+**Synthetic focus-boundary events** (not DOM events — emitted by SmarkForm automatically):
+
+| Event | When emitted |
+|---|---|
+| `focusenter` | Focus moves from **outside** a component's subtree to **inside** it |
+| `focusleave` | Focus moves from **inside** a component's subtree to **outside** it |
+
+These events are available on **all** component types (scalar fields, forms,
+lists). They bubble under `.on()` and `.onAll()`, and are available via
+`.onLocal()` for the exact component that crossed the boundary.
+
+**Example — sort a list when the user finishes editing it:**
+
+```javascript
+const schedule = myForm.find("schedule");
+schedule.onLocal("focusleave", async () => {
+    await schedule.actions.sort();
+});
+```
+
+{: .hint }
+> When focus moves between two items *inside* the same list, the list itself
+> does **not** receive `focusleave` / `focusenter` — only the items do.  The
+> list's `focusleave` fires only when focus crosses the list boundary entirely.
+> To observe all focus movements inside a list, use `.onAll("focusleave", ...)`.
 
 ### Event data payload
 
@@ -352,15 +390,27 @@ There are two ways to invoke an action in JavaScript:
 Most internal calls (e.g. from `import()` or `removeItem()`) use the prototype
 method directly to avoid overhead and event noise.
 
-### Event bubbling: local vs. all
+### Event bubbling: local, on, and all
 
-Events are stored in two separate maps per component:
+Events are stored in three separate maps per component:
 
 - `sym_local_events` — handlers registered via `onLocal()`
-- `sym_all_events` — handlers registered via `onAll()` / `on()`
+- `sym_on_events` — handlers registered via `on()`
+- `sym_all_events` — handlers registered via `onAll()`
 
-When an event fires on a component, its **local** handlers run first; then the
-event bubbles up the component tree and each ancestor's **all** handlers are
-invoked. This mirrors DOM event bubbling but at the SmarkForm component level.
+When an event fires on a component, its **local**, **on**, and **all** handlers
+run first (target phase); then the event bubbles up the component tree.  During
+bubbling, **on** handlers run only if the event's `bubbles` metadata is `true`,
+while **all** handlers always run.
+
+Per-event `bubbles` metadata intentionally mirrors native DOM behaviour:
+
+| Event | `bubbles` | DOM reference |
+|---|---|---|
+| `focus`, `blur` | `false` | Does not bubble in DOM |
+| `mouseenter`, `mouseleave` | `false` | Does not bubble in DOM |
+| `focusin`, `focusout`, `click`, `input`, `change`, … | `true` | Bubbles in DOM |
+| `focusenter`, `focusleave` (synthetic) | `true` | N/A — SmarkForm-level boundary events |
+| Action events (`BeforeAction_*`, `AfterAction_*`) | `true` | N/A |
 
 Event handling is implemented in `src/lib/events.js`.
