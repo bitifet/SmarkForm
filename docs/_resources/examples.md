@@ -35,9 +35,9 @@ nav_order: 4
     }
 </style>
 
-{% capture void %}
+{% capture void -%}
 {% include_relative examples.capture.md %}
-{% endcapture %}
+{%- endcapture %}
 
 
 

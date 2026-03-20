@@ -61,8 +61,8 @@ enhanced as another SmarkForm component. No matter if it is a direct child or a
 descendant of any depth.
 
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
-{% capture simple_form_example
-%}<p>
+{% capture simple_form_example -%}
+<p>
     <label data-smark>Name:</label>
     <input name='name' data-smark>
 </p>
@@ -74,7 +74,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_form_example_notes {{{ --> {% endraw %}
-{% capture simple_form_example_notes %}
+{% capture simple_form_example_notes -%}
 👉 For this to work you need to get SmarkForm loaded into your page or
 module (More information at *Getting SmarkForm* section).
 
@@ -85,7 +85,7 @@ JSON.
 
 🔨 Try to add more JSON keys, remove existing, and even provide invalid
 JSON data and see what happen.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -128,8 +128,8 @@ seamlessly handle either the whole form or individual fields.
 
 
 {% raw %} <!-- capture context_comparsion_example_simple {{{ --> {% endraw %}
-{% capture context_comparsion_example_simple
-%}<div data-smark='{"name":"demo"}'>
+{% capture context_comparsion_example_simple -%}
+<div data-smark='{"name":"demo"}'>
     <p>
         <label data-smark>Name:</label>
         <input name='name' data-smark>
@@ -173,7 +173,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
 by the same event handlers** (for "BeforeAction_import" and
 "AfterAction_export", respectively).
@@ -190,7 +190,7 @@ reads the previous value of the field (no matter its type) and provides it
 stringified as JSON as default value for the window.prompt() call. Making
 it easy to edit the value no matter if we are importing one of the text
 fields or the whole form.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="context_comparsion_simple"
@@ -217,8 +217,8 @@ This means that **we can nest forms** inside other forms as regular fields
 
 
 {% raw %} <!-- capture nested_forms_example {{{ --> {% endraw %}
-{% capture nested_forms_example
-%}<b>User:</b>
+{% capture nested_forms_example -%}
+<b>User:</b>
 <p>
     <label data-smark>Id:</label>
     <input name='userId' value='0001' data-smark>
@@ -249,13 +249,13 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 This example comes with pre-filled values to make it more illustrative,
 but feel free to change them if you like.
 
 👉 We could have also added nested lists (to allow multiple phone numbers
 and/or emails).
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -297,8 +297,8 @@ and export any imaginable JSON data structure**.
 
 
 {% raw %} <!-- capture fixed_list_example {{{ --> {% endraw %}
-{% capture fixed_list_example
-%}<b>Phones:</b>
+{% capture fixed_list_example -%}
+<b>Phones:</b>
 <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
     <li>
         <input data-smark type="tel" placeholder="Phone number" />
@@ -308,7 +308,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture fixed_list_example_notes {{{ --> {% endraw %}
-{% capture fixed_list_example_notes %}
+{% capture fixed_list_example_notes -%}
 👉 Here we used the *min_items* property to ensure at least 3 items are
    laid out.
 
@@ -337,7 +337,7 @@ phones: not an array of objects with a phone...
    contain exactly one *SmarkForm* field inside and will export the value
    of that type, not an object with it. **This is called the *singleton*
    pattern**.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -373,8 +373,8 @@ actions:
 
 
 {% raw %} <!-- capture pets_list_example {{{ --> {% endraw %}
-{% capture pets_list_example
-%}<b>Pets:</b>
+{% capture pets_list_example -%}
+<b>Pets:</b>
 <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
     <li>
         <select name='species' data-smark>
@@ -397,11 +397,12 @@ endcapture %}
 {% raw %} <!-- capture pets_list_example_css {{{ --> {% endraw %}
 {% capture pets_list_example_css %}.sortable>* {
     cursor: grab;
-}{% endcapture %}
+}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture pets_list_example_notes {{{ --> {% endraw %}
-{% capture pets_list_example_notes %}
+{% capture pets_list_example_notes -%}
 👉 Notice **you can rearrange list items** by simply dragging them having we
    set the *sortable* property to *true*.
 
@@ -412,7 +413,7 @@ endcapture %}
    *data-smark* attribute as "data-smark-&lt;prop_name&gt;" like attributes so that
    we will be able to use a selector like `[data-smark-sortable]` in the CSS
    rule and, hence, avoid having to set a custom class in template.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} ]() --> {% endraw %}
 
 {% capture demoValue -%}

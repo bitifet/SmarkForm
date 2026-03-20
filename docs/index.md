@@ -9,8 +9,8 @@ permalink: /
 {% include components/sampletabs_ctrl.md %}
 
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
-{% capture event_planner_html
-%}█<div class="ep">
+{% capture event_planner_html -%}
+█<div class="ep">
 █    <p>
 █        <label data-smark>📋 Event:</label>
 █        <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
@@ -53,8 +53,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- event_planner_css {{{ --> {% endraw %}
-{% capture event_planner_css
-%}{{""}}#myForm$$ .ep {
+{% capture event_planner_css -%}
+{{""}}#myForm$$ .ep {
     display: flex;
     flex-direction: column;
     gap: 0.35em;
@@ -174,7 +174,8 @@ endcapture %}
     const item = ev.context.targetNode;
     item.classList.remove("ongoing");
     await delay(150);
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 <style>

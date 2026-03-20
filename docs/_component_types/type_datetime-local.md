@@ -66,8 +66,8 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 **Example:**
 
 {% raw %} <!-- simple_datetime_local {{{ --> {% endraw %}
-{% capture simple_datetime_local
-%}<input type="datetime-local" name="appointmentTime" data-smark>{%
+{% capture simple_datetime_local -%}
+<input type="datetime-local" name="appointmentTime" data-smark>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -111,8 +111,8 @@ strings that cannot be parsed will result in a `null` value rather than
 throwing an error.
 
 {% raw %} <!-- datetime_local_error {{{ --> {% endraw %}
-{% capture datetime_local_error
-%}<input type="text" name="appointmentTime" data-smark='{"type":"datetime-local"}'>{%
+{% capture datetime_local_error -%}
+<input type="text" name="appointmentTime" data-smark='{"type":"datetime-local"}'>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

@@ -9,8 +9,8 @@ nav_order: 2
 {% include components/sampletabs_ctrl.md %}
 
 {% raw %} <!-- capture generic_sample_css {{{ --> {% endraw %}
-{% capture generic_sample_css
-%}/* Make disabled buttons more evident to the eye */
+{% capture generic_sample_css -%}
+/* Make disabled buttons more evident to the eye */
 button:disabled {
     opacity: .5;
 }{%
@@ -111,8 +111,8 @@ specified the *data-smark* attribute or not).
 **Example:**
 
 {% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
-{% capture simple_list_example
-%}<section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
+{% capture simple_list_example -%}
+<section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
     <fieldset style="text-align:right"><!-- ☛ 2, 3, 6 -->
         <p><label data-smark>User name:</label><input name='name' type='text' data-smark/></p>
         <p><label data-smark>Phone number:</label><input name='phone' type='tel' data-smark/></p>
@@ -125,13 +125,13 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_list_example_notes {{{ --> {% endraw %}
-{% capture simple_list_example_notes %}
+{% capture simple_list_example_notes -%}
 👉 With *exportEmpties* option set to false (default), lists won't export empty
    items.
 
 👉 ...unless there is no enough non empty items to satisfy *minItems* option,
     in which case up tu *minItems* empty items will be exported.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -181,8 +181,8 @@ like in the following example.
 **Example:**
 
 {% raw %} <!-- capture scalar_list_example {{{ --> {% endraw %}
-{% capture scalar_list_example
-%}<section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
+{% capture scalar_list_example -%}
+<section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
     <input placeholder='Phone number' type='tel'/><!-- ☛ 4, 6 -->
 </section>
 <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
@@ -233,8 +233,8 @@ inside.
 **Example:**
 
 {% raw %} <!-- capture singleton_list_example {{{ --> {% endraw %}
-{% capture singleton_list_example
-%}<ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
+{% capture singleton_list_example -%}
+<ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
     <li>
         <input placeholder='Phone Number' type="tel" data-smark>
         <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
@@ -284,8 +284,8 @@ say, up to three phone numbers and up to three emails.
 **Example:**
 
 {% raw %} <!-- capture nesting_list_example {{{ --> {% endraw %}
-{% capture nesting_list_example
-%}<section data-smark='{"type":"list","name":"users"}'>
+{% capture nesting_list_example -%}
+<section data-smark='{"type":"list","name":"users"}'>
     <fieldset>
         <legend>User</legend>
         <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>

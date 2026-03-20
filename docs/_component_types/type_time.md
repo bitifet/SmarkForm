@@ -66,8 +66,8 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 **Example:**
 
 {% raw %} <!-- simple_time {{{ --> {% endraw %}
-{% capture simple_time
-%}<input type="time" name="meetingTime" data-smark>{%
+{% capture simple_time -%}
+<input type="time" name="meetingTime" data-smark>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -109,8 +109,8 @@ strings that cannot be parsed will result in a `null` value rather than
 throwing an error.
 
 {% raw %} <!-- time_error {{{ --> {% endraw %}
-{% capture time_error
-%}<input type="text" name="meetingTime" data-smark='{"type":"time"}'>{%
+{% capture time_error -%}
+<input type="text" name="meetingTime" data-smark='{"type":"time"}'>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

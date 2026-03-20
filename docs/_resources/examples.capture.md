@@ -14,9 +14,9 @@ nav_order: 1000
 
 {% for item in site.data.examples %}
 
-{% capture full_html_content %}
+{% capture full_html_content -%}
 {% include_relative {{ current_directory }}{{ item.url }} %}
-{% endcapture %}
+{%- endcapture %}
 
 
 
@@ -28,7 +28,7 @@ nav_order: 1000
 
 <!-- ]() -->
 
-{% capture html_content %}
+{% capture html_content -%}
 ```html
       <div class="SmarkForm">
         {{ html_foot_stripped }}
@@ -36,24 +36,24 @@ nav_order: 1000
 ```
 {% endcapture | replace: '^ {6}', '' %}
 
-{% capture js_content %}
+{% capture js_content -%}
 ```javascript
           {{ js_foot_stripped }}
 ```
 {% endcapture | replace: '^ {6}', '' %}
 
 
-{% capture html_origin %}
+{% capture html_origin -%}
 <div class="example-source" data-source="{{item.url | relative_url }}">
 {{ html_content | markdownify }}
 </div>
-{% endcapture %}
+{%- endcapture %}
 
-{% capture js_origin %}
+{% capture js_origin -%}
 <div class="example-source" data-source="{{item.url | relative_url }}">
 {{ js_content | markdownify }}
 </div>
-{% endcapture %}
+{%- endcapture %}
 
 
 {% assign html_sources = html_sources | append: html_origin %}

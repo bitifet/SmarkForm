@@ -61,8 +61,8 @@ any number of *SmarkForm* fields, **including nested forms**.
 Following example shows a simple *SmarkForm* form with two nested forms:
 
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
-{% capture simple_form_example
-%}<p>
+{% capture simple_form_example -%}
+<p>
     <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
 </p>
@@ -96,7 +96,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture simple_form_example_notes {{{ --> {% endraw %}
-{% capture simple_form_example_notes %}
+{% capture simple_form_example_notes -%}
 👉 The outer form doesn't need the "data-smark" attribute having it is the
    the one we passed to the SmarkForm constructor.
 
@@ -108,7 +108,7 @@ endcapture %}
 
 🚀 This is a simple showcase form. You can extend it with any valid
    *SmarkForm* field.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -141,8 +141,8 @@ endcapture %}
 The following example demonstrates the distinction between `clear` and `reset` actions:
 
 {% raw %} <!-- capture clear_reset_example {{{ --> {% endraw %}
-{% capture clear_reset_example
-%}<fieldset>
+{% capture clear_reset_example -%}
+<fieldset>
     <legend>User Profile (with defaults)</legend>
     <p>
         <label data-smark>Name:</label>
@@ -166,8 +166,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture clear_reset_example_js {{{ --> {% endraw %}
-{% capture clear_reset_example_js
-%}
+{% capture clear_reset_example_js -%}
+
 /* Show exported data in an alert() window */
 myForm.on("AfterAction_export", (ev) => {
     alert(JSON.stringify(ev.data, null, 2));
@@ -176,7 +176,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture clear_reset_example_tests {{{ --> {% endraw %}
-{% capture clear_reset_example_tests %}
+{% capture clear_reset_example_tests -%}
 export default async ({ page, expect, id, root }) => {
     await expect(root).toBeVisible();
 
@@ -190,11 +190,11 @@ export default async ({ page, expect, id, root }) => {
         await buttons.nth(i).click();
     }
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture clear_reset_example_notes {{{ --> {% endraw %}
-{% capture clear_reset_example_notes %}
+{% capture clear_reset_example_notes -%}
 👉 This form is initialized with default values for all fields.
 
 🔘 **Clear All** - Removes all values, leaving fields empty (ignoring defaults).
@@ -211,7 +211,7 @@ export default async ({ page, expect, id, root }) => {
 🕵️  Notice the value passed as default for the age field (in the `⚙️  JS tab`)
 is a string (for a nuber field) but SmarkForm's number field correctly
 sanitizes it and it is correctly exported as a number afterwards.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}

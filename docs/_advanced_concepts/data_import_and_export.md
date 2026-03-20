@@ -91,8 +91,8 @@ value:
 The structure of the exported value mirrors the nesting of the form:
 
 {% raw %} <!-- capture export_structure_html {{{ --> {% endraw %}
-{% capture export_structure_html
-%}<fieldset data-smark='{"type":"form","name":"order"}'>
+{% capture export_structure_html -%}
+<fieldset data-smark='{"type":"form","name":"order"}'>
     <legend>Order</legend>
     <p>
         <label data-smark>Customer:</label>
@@ -225,8 +225,8 @@ The `import` action accepts:
 > in the data object but absent from the form are silently ignored.
 
 {% raw %} <!-- capture import_example_html {{{ --> {% endraw %}
-{% capture import_example_html
-%}<p>
+{% capture import_example_html -%}
+<p>
     <label data-smark>Name:</label>
     <input data-smark type="text" name="name">
 </p>
@@ -364,8 +364,8 @@ Use **`clear`** to blank every field without regard to defaults — for example,
 a "New record" button.
 
 {% raw %} <!-- capture clear_vs_reset_html {{{ --> {% endraw %}
-{% capture clear_vs_reset_html
-%}<div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
+{% capture clear_vs_reset_html -%}
+<div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
     <p>
         <label data-smark>Title:</label>
         <input data-smark type="text" name="title">
@@ -382,13 +382,13 @@ a "New record" button.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture clearResetNotes %}
+{% capture clearResetNotes -%}
 The `task` form is initialized with `value` defaults.
 
 1. Modify the fields.
 2. Click **❌ Clear** — all fields become empty.
 3. Click **♻️ Reset** — the original defaults are restored.
-{% endcapture %}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="clear_vs_reset"
@@ -456,8 +456,8 @@ The following example shows a practical copy-between-sections workflow. The
 directly into its target (the shipping address) subform:
 
 {% raw %} <!-- capture pipe_example_html {{{ --> {% endraw %}
-{% capture pipe_example_html
-%}<fieldset data-smark='{"type":"form","name":"billing"}'>
+{% capture pipe_example_html -%}
+<fieldset data-smark='{"type":"form","name":"billing"}'>
     <legend>Billing address</legend>
     <p>
         <label data-smark>Street:</label>
@@ -497,10 +497,10 @@ directly into its target (the shipping address) subform:
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture pipe_example_notes %}
+{% capture pipe_example_notes -%}
 Fill in the billing address, then click **📋 Copy to shipping** to copy the
 data to the shipping address with no JavaScript required.
-{% endcapture %}
+{%- endcapture %}
 
 {% capture demoValue -%}
 {

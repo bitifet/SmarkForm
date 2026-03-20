@@ -86,7 +86,7 @@ To begin with the basics, we'll start with a simple form that includes a few
 input fields.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 Notice that **most SmarkForm fields can be null**, to explicitly mean that
 the information is unknown or indifferent.
 
@@ -114,11 +114,11 @@ the information is unknown or indifferent.
   * ...unless the *value* property is omitted, in which case inner text is
     used "as is".
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- basic_form {{{ --> {% endraw %}
-{% capture basic_form
-%}█<h2>Model details</h2>
+{% capture basic_form -%}
+█<h2>Model details</h2>
 █<p>
 █    <label data-smark>Model Name:</label>
 █    <input type="text" name="model" data-smark />
@@ -164,7 +164,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- basic_form_tests {{{ --> {% endraw %}
-{% capture basic_form_tests %}
+{% capture basic_form_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -230,7 +230,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     expect(data).toEqual(expectedData);
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -265,8 +265,8 @@ the name "safety".
 
 
 {% raw %} <!-- nested_forms {{{ --> {% endraw %}
-{% capture nested_forms
-%}{{ basic_form }}
+{% capture nested_forms -%}
+{{ basic_form }}
 █<fieldset data-smark='{"name":"safety","type":"form"}'>
 █    <legend>Safety Features:</legend>
 █    <span>
@@ -289,7 +289,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- nested_forms_tests {{{ --> {% endraw %}
-{% capture nested_forms_tests %}
+{% capture nested_forms_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -357,7 +357,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     expect(data).toEqual(expectedData);
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -381,16 +381,16 @@ that can grow or shrink as needed:
 
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
   * By default, empty items in lists are not expoted to keep data clean.
   * But for this very first example, we added the `{exportEmpties: true}`
     option so that you can see every added item no matter if you typed anything
     or not.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list {{{ --> {% endraw %}
-{% capture simple_list
-%}█<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
+{% capture simple_list -%}
+█<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
 █<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
 █<strong data-smark="label">Phones:</strong>
 █<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
@@ -400,7 +400,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_tests {{{ --> {% endraw %}
-{% capture simple_list_tests %}
+{% capture simple_list_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -461,7 +461,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     ).toEqual({ phones: ['0987654321'] });
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -503,8 +503,8 @@ in the following example:
 
 
 {% raw %} <!-- simple_list_singleton {{{ --> {% endraw %}
-{% capture simple_list_singleton
-%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+{% capture simple_list_singleton -%}
+█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █    <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
 █    <strong data-smark="label">Phones:</strong>
@@ -523,15 +523,15 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_singleton_css {{{ --> {% endraw %}
-{% capture simple_list_singleton_css
-%}#myForm$$ ul li {
+{% capture simple_list_singleton_css -%}
+#myForm$$ ul li {
     list-style-type: none !important;
 }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 In this example we:
   * Established a maximum of 5 items in the list.
   * Allowed the list to be empty (default minimum items is 1).
@@ -547,10 +547,10 @@ endcapture %}
     trigger, like the `➕` button is automatically disabled.
   * ...Same applies to *removeItem* triggers when the min_items limit is
     reached.
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_singleton_tests {{{ --> {% endraw %}
-{% capture simple_list_singleton_tests %}
+{% capture simple_list_singleton_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -701,7 +701,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     ).toEqual({ phones: ['0987654321', '1234567890'] });
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -743,11 +743,16 @@ out of the box.
 🤔 ...it's just that part is omitted in the shown HTML source to keep the
 examples simple and focused on the subject they are intended to illustrate.
 
-🕵️ If you go to any of the interactive examples in this page (or in the rest of the documentation) and check the `📝 Edit` checkbox, you'll notice the editor disappears (in order to match the code you are now editting). But if you also check the `📋 Include playground editor` checkbox, the editor comes back and you'll how it is implemented just by wrapping the form in an additional nesting level.
+🕵️ If you go to any of the interactive examples in this page (or in the rest of
+the documentation) and check the `📝 Edit` checkbox, you'll notice the editor
+disappears (in order to match the code you are now editing). But if you also
+check the `📋 Include playground editor` checkbox, the editor comes back and
+you'll see how it is implemented — just by wrapping the form in an additional
+nesting level.
 
 
   * If you look close to the HTML source, you will see that `⬆️ Import` and
-    `⬇️ Export` buttons buttons only imports/exports a subform called *demo*
+    `⬇️ Export` buttons only import/export a subform called *demo*
      from/to a *textarea* field called *editor*.
 
   * ...And if you look at its *JS* tab you'll see that in most of them **there
@@ -792,8 +797,8 @@ list like the following example:
 > Shortcuts](#context-driven-keyboard-shortcuts-hot-keys) to learn more.
 
 {% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
-{% capture hotkeys_reveal_css
-%}/* Materialize hotkey hints from data-hotkey attribute */
+{% capture hotkeys_reveal_css -%}
+/* Materialize hotkey hints from data-hotkey attribute */
 {{""}}#myForm$$ [data-hotkey] {
   position: relative;
   overflow-x: visible;
@@ -817,12 +822,12 @@ list like the following example:
   white-space: nowrap;
   transform: scale(1.8) translate(0.1em, 0.1em);
 }
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_list {{{ --> {% endraw %}
-{% capture schedule_list
-%}<p>
+{% capture schedule_list -%}
+<p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
     <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
     <strong data-smark="label">Schedule:</strong>
@@ -839,7 +844,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 Here we opted for a different layout.
   * Usually lists are laid out with single HTML node inside which plays the
     role of a template for every item in the list.
@@ -854,7 +859,7 @@ endcapture %}
     to any number).
   * In case of not being enough, we can just increase *max_items* when needed.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
 {
@@ -871,7 +876,8 @@ endcapture %}
 }
 {%- endcapture %}
 
-{% capture schedule_list_css %}{{ hotkeys_reveal_css }}{% endcapture %}
+{% capture schedule_list_css %}{{ hotkeys_reveal_css }}
+{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
@@ -894,8 +900,8 @@ But it could look kind of messy if you need to introduce several schedules that 
 
 
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
-{% capture schedule_table
-%}█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+{% capture schedule_table -%}
+█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
 █    <div class="schedule-row" data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
 █        <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
 █        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
@@ -949,8 +955,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- schedule_table_css {{{ --> {% endraw %}
-{% capture schedule_table_css
-%}
+{% capture schedule_table_css -%}
+
 {{""}}#myForm$$ .schtbl {
     display: flex;
     flex-direction: column;
@@ -1033,11 +1039,11 @@ endcapture %}
 {{""}}  }
 {{""}}}
 {{ hotkeys_reveal_css }}
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 Here we replaced the original `<table>` layout with CSS grid to prevent
   horizontal scrollbars when multiple intervals are added:
   * Each schedule list (`.schedule-row`) is a CSS grid with three columns:
@@ -1051,7 +1057,7 @@ endcapture %}
 the `placeholder` had been removed since the grid handles column sizing without
 needing DOM filler elements.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
 {
@@ -1121,8 +1127,8 @@ every list item and so forth to any depth.
 👉 Let's focus on the seasons by now:
 
 {% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
-{% capture nested_schedule_table
-%}<h2 data-smark="label">🗓️ Periods:</h2>
+{% capture nested_schedule_table -%}
+<h2 data-smark="label">🗓️ Periods:</h2>
 <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
     <fieldset style='margin-top: 1em'>
         <legend>Period
@@ -1146,7 +1152,7 @@ every list item and so forth to any depth.
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -1263,8 +1269,8 @@ allow the list to be empty emptied even showing one initial item for better
 usability by default:
 
 {% raw %} <!-- nested_schedule_table_duplicable {{{ --> {% endraw %}
-{% capture nested_schedule_table_duplicable
-%}<h2>🗓️ Periods:</h2>
+{% capture nested_schedule_table_duplicable -%}
+<h2>🗓️ Periods:</h2>
 <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
     <fieldset data-smark='{"role": "empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
     <fieldset style='margin-top: 1em'>
@@ -1294,11 +1300,11 @@ usability by default:
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 
 👉 Customize a period by adding different schedules for each service.
 
@@ -1308,10 +1314,10 @@ usability by default:
 👉 Remove all pereiods and notice the `🔒 Out of Service` message shown when
    the list is empty.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- nested_schedule_table_duplicable_tests {{{ --> {% endraw %}
-{% capture nested_schedule_table_duplicable_tests %}
+{% capture nested_schedule_table_duplicable_tests -%}
 export default async ({ page, expect, id, root, readField, writeField}) => {
     await expect(root).toBeVisible();
 
@@ -1426,7 +1432,7 @@ export default async ({ page, expect, id, root, readField, writeField}) => {
     ).toHaveText(/Out of Service/);
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- demoValue {{{ --> {% endraw %}
@@ -1546,55 +1552,21 @@ where and how the *exportEntries* property is used in the lists:
 
 ## Import and Export Data
 
-Exporting and importing data in SmarkForm cannot be easier. 
+Exporting and importing data in SmarkForm cannot be easier.
 
-Let's recall the example showing the full HTML source in the [Deeply nested
-forms](#deeply-nested-forms) section:
+The `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons used in all examples in
+this documentation are just *triggers* that call the *export* and *import*
+actions on a subform called "demo" **(their *context*)**:
 
-
-{% capture demoValue -%}
-{
-    "model": "Toyota Yaris",
-    "type": "Car",
-    "longdesc": "A reliable compact car perfect for city driving.",
-    "seats": 5,
-    "side": "left",
-    "color": "#3a7bd5",
-    "safety": {
-        "airbag": true,
-        "abs": true,
-        "esp": false,
-        "tc": false
-    }
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="nested_forms_bis"
-    htmlSource=nested_forms
-    height=65
-    selected="preview"
-    demoValue=demoValue
-    showEditor=true
-    showEditorSource=true
-    tests=false
-%}
-
-
-There we learned that the `⬇️ Export`, `⬆️ Import` and `❌  Clear` buttons used
-in all examples in this documentation are just *triggers* that call the
-*export* and *import* actions on a subform called "demo" **(their *context*)**:
-
-  * `⬇️ Export` Exports the "demo" subform to the "editor" textarea **(its target)**.
-  * `⬆️ Import` Imports the JSON data from the "editor" textarea to the "demo" subform **(its target)**.
-  * `❌  Clear` Clears the "demo" subform **(its context)**.
-
+  * `⬇️ Export` exports the "demo" subform to the "editor" textarea **(its target)**.
+  * `⬆️ Import` imports the JSON data from the "editor" textarea to the "demo" subform **(its target)**.
+  * `❌ Clear` clears the "demo" subform **(its context)**.
 
 {: .hint :}
-> This is a very handy use case for the *import* and *export* actions because
-> it does not require any additional JavaScript code.
->
-> But this is not the only way to use the *import* and *export* actions.
+> You can see all of this in action by checking the `📝 Edit` and `📋 Include
+> playground editor` checkboxes in any interactive example on this page — the
+> HTML and JS source tabs reveal the full implementation with no JavaScript
+> wiring required.
 
 
 ### Intercepting the *import* and *export* events
@@ -1614,14 +1586,14 @@ In the *JS* tab there is a simple JavaScript code that:
     whole form.
 
 {% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
-{% capture nested_forms_with_load_save %}
+{% capture nested_forms_with_load_save -%}
 {{ nested_forms | replace: "█", "            " }}
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- form_export_example_import_export_js {{{ --> {% endraw %}
-{% capture form_export_example_import_export_js
-%}
+{% capture form_export_example_import_export_js -%}
+
 
 myForm.on("AfterAction_export", ({context, data})=>{
     /* Only for the whole form */
@@ -1656,11 +1628,12 @@ myForm.on("BeforeAction_import", async (ev)=>{
         alert(err.message); /* ← Show error message */
         ev.preventDefault();
     };
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 
 👉 Since `💾` and `📂` buttons are in the higher context level, in this case we
 used a little JavaScript code intercepting the related events to, respectively,
@@ -1670,7 +1643,7 @@ to the whole form through a `window.prompt(...)`.
 👉 See the JS tab to see how the <em>BeforeAction_import</em> event handler
 prefills the prompt dialog with the JSON export of the whole form.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% capture demoValue -%}
@@ -1700,7 +1673,6 @@ prefills the prompt dialog with the JSON export of the whole form.
     demoValue=demoValue
     showEditor=true
     addLoadSaveButtons=true
-    showEditorSource=true
     tests=false
 %}
 
@@ -1753,8 +1725,8 @@ The example below shows a simple contact form submitted via `mailto:`. When the
 with the form data:
 
 {% raw %} <!-- submit_form_example {{{ --> {% endraw %}
-{% capture submit_form_example
-%}█<form id="myForm$$"
+{% capture submit_form_example -%}
+█<form id="myForm$$"
     action="mailto:you@example.com?subject=Contact%20Form%20Submission"
     method="post"
     enctype="text/plain"
@@ -1791,7 +1763,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- submit_form_example_notes {{{ --> {% endraw %}
-{% capture submit_form_example_notes %}
+{% capture submit_form_example_notes -%}
 👉 Clicking **📧 Send Email** opens the user's email client with:
 
   * **To:** `test@example.com`
@@ -1818,7 +1790,7 @@ will send the data as a JSON payload via `fetch()`.
 > You can also intercept or extend the submission via *SmarkForm* events:
 > `BeforeAction_submit` (fired before sending — you can `preventDefault()` to
 > cancel) and `AfterAction_submit` (fired after the data has been sent).
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -1858,7 +1830,7 @@ As we have seen in the previous examples:
 look to the following example:
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
 by the same event handlers** (for "BeforeAction_import" and
 "AfterAction_export", respectively).
@@ -1870,12 +1842,12 @@ by the same event handlers** (for "BeforeAction_import" and
 ℹ️  Different field types may import/export different data types (*forms*
 import/export JSON while regular *inputs* import/export text --or number--).
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- capture context_comparsion_example {{{ --> {% endraw %}
-{% capture context_comparsion_example
-%}    <div data-smark='{"name":"demo"}'>
+{% capture context_comparsion_example -%}
+    <div data-smark='{"name":"demo"}'>
         <p>
             <label data-smark>Name:</label>
             <input name='name' data-smark>
@@ -1953,8 +1925,8 @@ slight modifications:
   2. Add a little CSS to make the disabled buttons more evident.
 
 {% raw %} <!-- simple_list_autodisable {{{ --> {% endraw %}
-{% capture simple_list_autodisable
-%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+{% capture simple_list_autodisable -%}
+█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █    <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
 █    <strong data-smark="label">Phones:</strong>
@@ -1972,8 +1944,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_autodisable_css {{{ --> {% endraw %}
-{% capture simple_list_autodisable_css
-%}/* Hide list bullets */
+{% capture simple_list_autodisable_css -%}
+/* Hide list bullets */
 {{""}}#myForm$$ ul li {
     list-style-type: none !important;
 }
@@ -2021,8 +1993,8 @@ In the following example you can use the `Ctrl`+`+` and `Ctrl`+`-` combinations
 to add or remove phone numbers from the list, respectively.
 
 {% raw %} <!-- simple_list_hotkeys {{{ --> {% endraw %}
-{% capture simple_list_hotkeys
-%}█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+{% capture simple_list_hotkeys -%}
+█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
 █<button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
 █<button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
 █<strong data-smark="label">Phones:</strong>
@@ -2040,10 +2012,10 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_hotkeys_css {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_css
-%}{{ hotkeys_reveal_css }}
+{% capture simple_list_hotkeys_css -%}
+{{ hotkeys_reveal_css }}
 {{ simple_list_autodisable_css }}
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -2115,8 +2087,8 @@ repeatedly pressing the `Tab` key) and press the `Ctrl` key, you'll see that
 now the hotkeys we defined are available again.
 
 {% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_with_context
-%}█<p>
+{% capture simple_list_hotkeys_with_context -%}
+█<p>
 █    <label data-smark='{"type": "label"}'>Name:</label>
 █    <input name='name' data-smark='{"type": "input"}' />
 █</p>
@@ -2221,8 +2193,8 @@ higher level to reveal.
 Try it in the following example:
 
 {% raw %} <!-- 2nd_level_hotkeys_html {{{ --> {% endraw %}
-{% capture 2nd_level_hotkeys_html
-%}█<div data-smark='{"type": "list", "name": "phonelist", "sortable": true}'>
+{% capture 2nd_level_hotkeys_html -%}
+█<div data-smark='{"type": "list", "name": "phonelist", "sortable": true}'>
 █    <fieldset>
 █        <legend>
 █            <span data-smark='{"action":"removeItem", "hotkey":"-"}' title='Delete this phonebook entry' style='cursor:pointer'>[➖]</span>
@@ -2242,11 +2214,11 @@ Try it in the following example:
 █    data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}'
 █    style="float: right; margin-top: 1em"
 █>➕ Add Contact</button>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- 2nd_level_hotkeys_tests {{{ --> {% endraw %}
-{% capture 2nd_level_hotkeys_tests %}
+{% capture 2nd_level_hotkeys_tests -%}
 export default async ({ page, expect, id, root }) => {
     await expect(root).toBeVisible();
     
@@ -2391,7 +2363,7 @@ export default async ({ page, expect, id, root }) => {
     expect(data).toEqual(expectedData);
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -2445,8 +2417,8 @@ accessible through their hotkeys.
 
 
 {% raw %} <!-- hidden_actions_css {{{ --> {% endraw %}
-{% capture hidden_actions_css
-%}
+{% capture hidden_actions_css -%}
+
 {{""}}#myForm$$ li.row button[data-smark] {
     visibility: hidden;
     width: 0px;
@@ -2456,7 +2428,7 @@ accessible through their hotkeys.
     visibility: visible;
 }
 {{ simple_list_hotkeys_css }}
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -2503,7 +2475,7 @@ pair of listeners covers every list in the form — including nested ones — wi
 no per-list wiring required.
 
 {% raw %} <!-- capture animations_css {{{ --> {% endraw %}
-{% capture animations_css %}
+{% capture animations_css -%}
 .animated_item {
     transform: translateX(-100%); /* Start off-screen to the left */
     opacity: 0; /* Optional: Start invisible for smoother effect */
@@ -2526,7 +2498,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture animations_js {{{ --> {% endraw %}
-{% capture animations_js %}
+{% capture animations_js -%}
 const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
 {{""}}myForm.onAll("afterRender", async function(ev) {
     if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
@@ -2541,11 +2513,12 @@ const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
     item.classList.remove("ongoing");
     /* Await for transition to be finished before item removal: */
     await delay(150);
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- animations_notes {{{ --> {% endraw %}
-{% capture animations_notes %}
+{% capture animations_notes -%}
 **Why add `animated_item` via JavaScript instead of directly in the HTML?**
 
 If the class were baked into the template, every item would start hidden even
@@ -2582,7 +2555,7 @@ just long enough for the exit animation to finish.
 direct child of a list — subforms, labels, buttons, etc. The result is that any
 list added anywhere in the form hierarchy is automatically animated without
 further wiring.
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -2621,7 +2594,7 @@ single `email` string is upgraded to accept a list of `emails`, old saved data
 continues to work without any transformation step.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 **Scalar-to-array coercion**: If you import a plain string instead of an
 array, *SmarkForm* automatically places it in a single-item list.
 
@@ -2639,11 +2612,11 @@ array, *SmarkForm* automatically places it in a single-item list.
     (useful in draft-save workflows where you want to preserve the user's
     position in the list).
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- smart_value_coercion {{{ --> {% endraw %}
-{% capture smart_value_coercion
-%}█<button data-smark='{"action":"removeItem","context":"email","preserve_non_empty":true}' title="Remove email">➖</button>
+{% capture smart_value_coercion -%}
+█<button data-smark='{"action":"removeItem","context":"email","preserve_non_empty":true}' title="Remove email">➖</button>
 █<button data-smark='{"action":"addItem","context":"email"}' title="Add email">➕</button>
 █<strong data-smark="label">Emails:</strong>
 █<ul data-smark='{"type":"list","name":"email","of":"input","min_items":0}'>
@@ -2654,8 +2627,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- smart_value_coercion_css {{{ --> {% endraw %}
-{% capture smart_value_coercion_css
-%}{{""}}#myForm$$ ul {
+{% capture smart_value_coercion_css -%}
+{{""}}#myForm$$ ul {
     list-style: none;
     padding-left: 0;
 }{%
@@ -2663,7 +2636,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- smart_value_coercion_tests {{{ --> {% endraw %}
-{% capture smart_value_coercion_tests %}
+{% capture smart_value_coercion_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -2696,7 +2669,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         'Filled item IS exported'
     ).toEqual(['carol@example.com', 'dave@example.com', 'eve@example.com']);
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -2735,7 +2708,7 @@ round-trips: the field stores the value internally as a JSON string but
 *exports* it as a parsed JavaScript value (object, array, number, or `null`).
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 **Number coercion**: The *Age* field is `<input type="number">`.
 
   * *SmarkForm* always exports its value as a JavaScript **number**, not a
@@ -2761,11 +2734,11 @@ round-trips: the field stores the value internally as a JSON string but
     your saved data contains a **real object**, not a raw JSON string.
   * Works with any valid JSON: objects, arrays, numbers, booleans, and `null`.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- type_coercion {{{ --> {% endraw %}
-{% capture type_coercion
-%}█<p>
+{% capture type_coercion -%}
+█<p>
 █    <label data-smark>Name:</label>
 █    <input type="text" name="name" data-smark>
 █</p>
@@ -2785,7 +2758,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- type_coercion_tests {{{ --> {% endraw %}
-{% capture type_coercion_tests %}
+{% capture type_coercion_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -2832,7 +2805,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         'JSON-encoded textarea exports null when cleared'
     ).toStrictEqual(null);
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -2894,7 +2867,7 @@ It leverages the *singleton* pattern to avoid specifying the context for every
 button. Then a very simple JavaScript code makes the rest...
 
 {% raw %} <!-- calculator {{{ --> {% endraw %}
-{% capture calculator %}
+{% capture calculator -%}
 <div class="calculator" data-smark='{"type": "input", "name": "display"}'>
     <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
     <input
@@ -2973,11 +2946,11 @@ button. Then a very simple JavaScript code makes the rest...
         >=</button>
     </div>
 </div>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- calculatorStyles_css {{{ --> {% endraw %}
-{% capture calculatorStyles_css %}
+{% capture calculatorStyles_css -%}
 {{""}}#myForm$$ .calculator {
     background-color: #333;
     border-radius: 10px;
@@ -3039,18 +3012,18 @@ button. Then a very simple JavaScript code makes the rest...
     background-color: #ef5350;
 }
 {{ hotkeys_reveal_css }}
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- calculator_css {{{ --> {% endraw %}
-{% capture calculator_css %}
+{% capture calculator_css -%}
 {{ calculatorStyles_css }}
 {{ hotkeys_reveal_css }}
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- calculator_js {{{ --> {% endraw %}
-{% capture calculator_js %}
+{% capture calculator_js -%}
 
 const invalidChars = /[^0-9+\-*\/().]+/g;
 
@@ -3086,7 +3059,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 The code in this example is listening to all *import* actions in the whole
 form.
 
@@ -3115,7 +3088,7 @@ intercept every "BeforeAcction_import" event in it **or its children** while
 .onLocal() will only intercept those triggered by the form itself.  Not from
 any of its descendants.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="calculator"
@@ -3156,7 +3129,7 @@ Let's handle the keydown event too and notice the so little effort is needed to
 reach a perfect UX.
 
 {% raw %} <!-- supercalculator {{{ --> {% endraw %}
-{% capture supercalculator %}
+{% capture supercalculator -%}
 <div class="calculator" data-smark='{"type": "input", "name": "display"}'>
     <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
     <input
@@ -3235,11 +3208,11 @@ reach a perfect UX.
         >=</button>
     </div>
 </div>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- supercalculator_js {{{ --> {% endraw %}
-{% capture supercalculator_js %}
+{% capture supercalculator_js -%}
 
 var invalidChars = /[^0-9+\-*\/().]+/g;
 
@@ -3290,16 +3263,16 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- supercalculator_css {{{ --> {% endraw %}
-{% capture supercalculator_css %}
+{% capture supercalculator_css -%}
 {{""}}#myForm$$ .calculator input.display  {
     caret-color: transparent; /* Hide caret */
 }
 {{ calculatorStyles_css }}
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 
 🕵️ It's off-topic but worth to mention the trick of doing `!!
 key.match(invalidChars))` instead of `invalidChars.test(key)` is not arbitrary
@@ -3312,7 +3285,7 @@ fail after first usage.
 The `!!` bit is just stylistic to note we want to evaluate the result of
 `.match()` as a boolean.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="supercalculator"
@@ -3373,8 +3346,8 @@ Use the JSON editor below to inspect the exported data as you interact with the
 form, or import your own JSON to pre-populate it.
 
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
-{% capture event_planner_html
-%}█<div class="ep">
+{% capture event_planner_html -%}
+█<div class="ep">
 █    <p>
 █        <label data-smark>📋 Event:</label>
 █        <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
@@ -3417,8 +3390,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- event_planner_css {{{ --> {% endraw %}
-{% capture event_planner_css
-%}{{""}}#myForm$$ .ep {
+{% capture event_planner_css -%}
+{{""}}#myForm$$ .ep {
     display: flex;
     flex-direction: column;
     gap: 0.35em;
@@ -3538,11 +3511,12 @@ endcapture %}
     const item = ev.context.targetNode;
     item.classList.remove("ongoing");
     await delay(150);
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 This demo highlights several SmarkForm features at once:
 
   * **Nested subform**: The `organizer` fieldset is a subform — its fields are
@@ -3564,7 +3538,7 @@ endcapture %}
     `beforeUnrender` event handlers that toggle CSS classes — no animation
     library required.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
 {

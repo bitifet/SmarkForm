@@ -48,7 +48,7 @@ Enhanced SmarkForm `label` elements work similarly to standard HTML labels but o
 **Examples:**
 
 {% raw %} <!-- basic_examples {{{ --> {% endraw %}
-{% capture basic_examples %}
+{% capture basic_examples -%}
     <h2>Explicit association</h2>
     <label data-smark>Click me!</label>
     <span><!-- Intermediate DOM nodes are transparent to SmarkForm's fields tree -->
@@ -67,11 +67,11 @@ Enhanced SmarkForm `label` elements work similarly to standard HTML labels but o
         <input data-smark name="field03" placeholder="...and focus will come here">
     </label>
     <p>📌 Wrapping the field inside still works likewise standard HTML.</p>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 
 👉 In this example, we've set `formOptions='{"focus_on_click":false}'` to avoid
 interfering with the demonstration of the label's behavior since, if enabled
@@ -79,7 +79,7 @@ interfering with the demonstration of the label's behavior since, if enabled
 in the form (except for actual fields and labels) masking the actual behavior
 of the first label.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% include components/sampletabs_tpl.md
@@ -92,7 +92,7 @@ of the first label.
 %}
 
 {% raw %} <!-- basic_tests {{{ --> {% endraw %}
-{% capture basic_tests %}
+{% capture basic_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
@@ -158,7 +158,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     expect(data).toEqual(expectedData);
 
 };
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -209,7 +209,7 @@ You can use any other element in place, like `<span>`, `<b>` or even `<legend>`.
 **Examples:**
 
 {% raw %} <!-- advanced_examples {{{ --> {% endraw %}
-{% capture advanced_examples %}
+{% capture advanced_examples -%}
     <h2>Targetting nested forms...</h2>
     <span data-smark='{"type": "label"}'>Click me (auto pairing)!</span>
     <fieldset data-smark name="subform01">
@@ -247,12 +247,12 @@ You can use any other element in place, like `<span>`, `<b>` or even `<legend>`.
         <span class="button" title="Remove last item" data-smark='{"action":"removeItem", "context": "list01"}'>-</span>
     </fieldset>
     <p>📌 Fieldset's <code>&lt;legend&gt;</code> tags are special case where the containing <code>&lt;fieldset&gt;</code> is automatically targetted.</p>
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- advanced_examples_css {{{ --> {% endraw %}
-{% capture advanced_examples_css
-%}#myForm$$ .button {
+{% capture advanced_examples_css -%}
+#myForm$$ .button {
   display: inline-block;
   padding: 3px 12px;
   margin: 0 4px;
@@ -281,7 +281,7 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 
 👉 Notice that, in the case of the list example, the `<fieldset>` is only stylistic (it has no `data-smark` attribute), since it has to wrap also list controls to add or remove items that that conceptually goes together with the list itself.
   - In this case, the `<legend>` (since the `<fieldset> is not enhanced)
@@ -290,7 +290,7 @@ endcapture %}
 👉 Likewise in the previous one, this example uses `formOptions='{"focus_on_click":false}'` to avoid
 interfering with the demonstration of the label's behavior.
 
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% include components/sampletabs_tpl.md

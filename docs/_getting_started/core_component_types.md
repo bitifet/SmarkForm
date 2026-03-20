@@ -84,8 +84,8 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
 
 
 {% raw %} <!-- input_example {{{ --> {% endraw %}
-{% capture input_example
-%}<p>
+{% capture input_example -%}
+<p>
     <label data-smark>Name:</label>
     <!-- Implicit (automatically inferred) component type: -->
     <input type='text' name='name' data-smark>
@@ -199,8 +199,8 @@ would be cleared.
 
 
 {% raw %} <!-- no_singleton_example {{{ --> {% endraw %}
-{% capture no_singleton_example
-%}<p>
+{% capture no_singleton_example -%}
+<p>
     <label data-smark>Pick a Color:</label>
     <input type="color" name="color" data-smark>
     <button data-smark='{"action":"clear","context":"color"}'>❌ Reset</button>
@@ -230,8 +230,8 @@ but, also, **it could avoid future issues** in case of field name being changed
 
 
 {% raw %} <!-- singleton_color_example {{{ --> {% endraw %}
-{% capture singleton_color_example
-%}<p>
+{% capture singleton_color_example -%}
+<p>
     <label data-smark>Pick a Color:</label>
     <span data-smark='{"type":"color", "name":"bgcolor"}'>
         <input data-smark>
@@ -279,8 +279,8 @@ component type providding extra sanitation (when importing) and formatting
 
 
 {% raw %} <!-- number_and_date_example {{{ --> {% endraw %}
-{% capture number_and_date_example
-%}<p>
+{% capture number_and_date_example -%}
+<p>
     <label data-smark>Price:</label>
     <input data-smark='{"type":"number","name":"price"}'>
 </p>
@@ -341,8 +341,8 @@ selected pure black (#000000) or simply overlooked the field altogether.
 
 
 {% raw %} <!-- color_example {{{ --> {% endraw %}
-{% capture color_example
-%}<p>
+{% capture color_example -%}
+<p>
     <label data-smark>Pick a Color:</label>
     <span data-smark='{"type":"color", "name":"bgcolor"}'>
         <input data-smark>
@@ -373,8 +373,8 @@ endcapture %}
 <p><b>Example:</b></p>
 
 {% raw %} <!-- clear_others_example {{{ --> {% endraw %}
-{% capture clear_others_example
-%}<p>
+{% capture clear_others_example -%}
+<p>
     <label data-smark>A Color:</label>
     <span data-smark='{"type":"color", "name":"color"}'>
         <input data-smark>
@@ -394,7 +394,8 @@ endcapture %}
         <input data-smark>
         <button data-smark='{"action":"clear"}'>❌ Reset</button>
     </span>
-</p>{% endcapture %}
+</p>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}

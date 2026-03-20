@@ -127,8 +127,8 @@ Start by writing the form markup in plain HTML. For example, let's create a
 simple form like the following:
 
 {% raw %} <!-- html_source_legacy {{{ --> {% endraw %}
-{% capture html_source_legacy
-%}<p>
+{% capture html_source_legacy -%}
+<p>
     <label for="nameField$$">Name:</label>
     <input type="text" id="nameField$$" name="name">
 </p>
@@ -191,8 +191,8 @@ attribute.
 Let's mark all fields, buttons and labels... by adding a *data-smark* attribute :
 
 {% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
-{% capture html_source_enhanced
-%}<p>
+{% capture html_source_enhanced -%}
+<p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
 </p>
@@ -203,7 +203,8 @@ Let's mark all fields, buttons and labels... by adding a *data-smark* attribute 
 <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>{% endcapture %}
+</p>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -266,8 +267,8 @@ The context of actions called by triggers is, by default, their *natural context
 Let's add more `❌ Clear` buttons to clear each specific field:
 
 {% raw %} <!-- html_source_enhanced_with_clears {{{ --> {% endraw %}
-{% capture html_source_enhanced_with_clears
-%}<p>
+{% capture html_source_enhanced_with_clears -%}
+<p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
     <button data-smark='{"action":"clear", "context":"name"}'>❌ Clear</button>
@@ -280,7 +281,8 @@ Let's add more `❌ Clear` buttons to clear each specific field:
 <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>{% endcapture %}
+</p>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -332,19 +334,20 @@ In the following example we listen to the *AfterAction_export* event and show th
 **Example:**
 
 {% raw %} <!-- form_export_example_js {{{ --> {% endraw %}
-{% capture form_export_example_js
-%}
+{% capture form_export_example_js -%}
+
 /* Show exported data in an alert() window */
 myForm.on("AfterAction_export", (event)=>{
     window.alert(JSON.stringify(event.data, null, 4));
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture form_export_example_notes {{{ --> {% endraw %}
 {%capture form_export_example_notes
 %}👉 Alternatively, most event handlers can be provided at once through the [options
 object](#the-options-object).
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -382,8 +385,8 @@ To load (JSON) data into the form, we use the *import* action which works in a
 similar way to the *export* action but in the opposite direction.
 
 {% raw %} <!-- html_source_enhanced_withImport {{{ --> {% endraw %}
-{% capture html_source_enhanced_withImport
-%}<p>
+{% capture html_source_enhanced_withImport -%}
+<p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
 </p>
@@ -395,13 +398,14 @@ similar way to the *export* action but in the opposite direction.
     <button data-smark='{"action":"import"}'>📂 Import</button>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>{% endcapture %}
+</p>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- form_export_example_withImport_js {{{ --> {% endraw %}
-{% capture form_export_example_withImport_js
-%}/* Import data from prompt() window */
+{% capture form_export_example_withImport_js -%}
+/* Import data from prompt() window */
 myForm.on("BeforeAction_import", async (ev)=>{
     /* Read new value: */
     const json_template = '{"name": "", "email": ""}'; /* Little help to edit */
@@ -452,8 +456,8 @@ It takes a single argument with a "path-like" route to the field we want to acce
 This path can be either relative (to the current field) or absolute (to the form root).
 
 {% raw %} <!-- capture traversing_form_example {{{ --> {% endraw %}
-{% capture traversing_form_example
-%}<p>
+{% capture traversing_form_example -%}
+<p>
     <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
 </p>
@@ -487,8 +491,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- traversing_form_example_callback_js {{{ --> {% endraw %}
-{% capture traversing_form_example_callback_js
-%}/* Set business name */
+{% capture traversing_form_example_callback_js -%}
+/* Set business name */
 myForm.onRendered(async ()=>{
     myForm.find("/businessData").import({name: "Bitifet"});
      /* 👉 Since we don't provide the address field, it will be cleared */
@@ -497,8 +501,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- traversing_form_example_async_js {{{ --> {% endraw %}
-{% capture traversing_form_example_async_js
-%}/* Set business name */
+{% capture traversing_form_example_async_js -%}
+/* Set business name */
 (async ()=>{
     await myForm.rendered;
     myForm.find("/businessData").import({name: "Bitifet"});
@@ -580,8 +584,8 @@ For instance, the *addItem* and *removeItem* actions are implemented only by
 the *list* component type so, if you put a *removeItem* trigger inside a list
 item, it will remove that item from the list. **No wiring code needed!**
 
-{% capture simple_list_example
-%}<p>
+{% capture simple_list_example -%}
+<p>
     <strong data-smark='label'>Phones:</strong>
     <ul data-smark='{"name": "phones", "of": "input"}'>
         <li>
@@ -595,8 +599,8 @@ item, it will remove that item from the list. **No wiring code needed!**
 endcapture %}
 
 {% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
-{% capture simple_list_js
-%}
+{% capture simple_list_js -%}
+
 
 /* Nothing to se here...
 
@@ -609,7 +613,7 @@ endcapture %}
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% capture simple_list_example_notes %}
+{% capture simple_list_example_notes -%}
 👉 This example uses the *singleton* pattern which is out of the scope of this
    section. But, by now, you can just think of the list items as *SmarkForm*
    field components of the type specified in the *of* property of the list
@@ -655,15 +659,16 @@ received data-) **with no single line of JS code** like in the following
 example:
 
 {% raw %} <!-- html_source_simplified {{{ --> {% endraw %}
-{% capture html_source_simplified
-%}█<p>
+{% capture html_source_simplified -%}
+█<p>
 █    <label data-smark>Name:</label>
 █    <input type="text" name="name" data-smark>
 █</p>
 █<p>
 █    <label data-smark>Email:</label>
 █    <input type="email" name="email" data-smark>
-█</p>{% endcapture %}
+█</p>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -678,12 +683,15 @@ example:
     htmlSource=html_source_simplified
     demoValue=demoValue
     showEditor=true
-    showEditorSource=true
     tests=false
 %}
 
-⚡ Check the JS tab to see there is no import/export JS code at all and the
+⚡ Check the JS tab to see there is no import/export JS code at all, and the
 preview tab to see how it works perfectly.
+
+{: .hint :}
+>  Check the `📝 Edit` and `📋 Include playground editor` checkboxes to see
+>  how the editor is implemented — all SmarkForm, no custom JavaScript.
 
 {: .hint :}
 >  This trick is used in almost all the examples in the rest of this manual to
@@ -727,8 +735,8 @@ confirmation and prevent the action if they don't confirm.
 **Example:**
 
 {% raw %} <!-- simple_confirm_cancel_example_js {{{ --> {% endraw %}
-{% capture simple_confirm_cancel_example_js
-%}/* Ask for confirmation unless form is already empty: */
+{% capture simple_confirm_cancel_example_js -%}
+/* Ask for confirmation unless form is already empty: */
 myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     if (
         ! confirm("Are you sure?") /* User clicked the "Cancel" btn. */
@@ -736,13 +744,14 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
         /* Prevent default (clear form) behaviour: */
         preventDefault();
     };
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- simple_confirm_cancel_example_hidden_js {{{ --> {% endraw %}
-{% capture simple_confirm_cancel_example_hidden_js
-%}{{ form_export_example_js }}{{ form_export_example_withImport_js }}{%
+{% capture simple_confirm_cancel_example_hidden_js -%}
+{{ form_export_example_js }}{{ form_export_example_withImport_js }}{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -762,8 +771,8 @@ endcapture %}
 
 
 {% raw %} <!-- confirm_cancel_example_with_confirm_js {{{ --> {% endraw %}
-{% capture confirm_cancel_example_with_confirm_js
-%}
+{% capture confirm_cancel_example_with_confirm_js -%}
+
 /* Ask for confirmation unless form is already empty: */
 myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
     if (
@@ -773,7 +782,8 @@ myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
         /* Prevent default (clear form) behaviour: */
         preventDefault();
     };
-});{% endcapture %}
+});
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -832,8 +842,8 @@ additional capabilities of the library:
 **List of telephones:**
 
 {% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
-{% capture html_phone_list
-%}<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
+{% capture html_phone_list -%}
+<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
   <div>
     <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
     <input data-smark type='tel' placeholder='Telephone'/>
@@ -875,7 +885,8 @@ button[data-hotkey]::before {
 
     transform: scale(1.4) translate(.1em, .1em);
 
-}{% endcapture %}
+}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture phone_list_form_example_notes {{{ --> {% endraw %}
@@ -895,7 +906,7 @@ button[data-hotkey]::before {
 
 👉 Change items order by just dragging and dropping them.
 
-{% endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -912,8 +923,8 @@ button[data-hotkey]::before {
 **Simple schedule:**
 
 {% raw %} <!-- capture html_schedule_list {{{ --> {% endraw %}
-{% capture html_schedule_list
-%}<p>
+{% capture html_schedule_list -%}
+<p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
         <span role='img' aria-label='Remove interval'>➖</span>
     </button>
@@ -933,7 +944,8 @@ button[data-hotkey]::before {
 <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>{% endcapture %}
+</p>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

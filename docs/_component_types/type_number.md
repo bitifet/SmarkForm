@@ -54,8 +54,8 @@ set to `number` automatically.
 **Example:**
 
 {% raw %} <!-- simple_number {{{ --> {% endraw %}
-{% capture simple_number
-%}<input type="number" name="amount" data-smark>{%
+{% capture simple_number -%}
+<input type="number" name="amount" data-smark>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -85,8 +85,8 @@ element or its type is explicitly defined and different to "number". Invalid
 numbers will result in a `null` value rather than throwing an error.
 
 {% raw %} <!-- number_error {{{ --> {% endraw %}
-{% capture number_error
-%}<input type="text" name="amount" data-smark='{"type":"number"}'>{%
+{% capture number_error -%}
+<input type="text" name="amount" data-smark='{"type":"number"}'>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

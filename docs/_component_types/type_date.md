@@ -66,8 +66,8 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 **Example:**
 
 {% raw %} <!-- simple_color {{{ --> {% endraw %}
-{% capture simple_color
-%}<input type="date" name="birthdate" data-smark>{%
+{% capture simple_color -%}
+<input type="date" name="birthdate" data-smark>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -107,8 +107,8 @@ strings that cannot be parsed will result in a `null` value rather than
 throwing an error.
 
 {% raw %} <!-- date_error {{{ --> {% endraw %}
-{% capture date_error
-%}<input type="text" name="birthdate" data-smark='{"type":"date"}'>{%
+{% capture date_error -%}
+<input type="text" name="birthdate" data-smark='{"type":"date"}'>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

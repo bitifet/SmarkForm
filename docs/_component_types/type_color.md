@@ -76,8 +76,8 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 **Example:**
 
 {% raw %} <!-- simple_color {{{ --> {% endraw %}
-{% capture simple_color
-%}<input type="color" name="myColor" data-smark>{%
+{% capture simple_color -%}
+<input type="color" name="myColor" data-smark>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -108,7 +108,7 @@ the input field and the clear button:
 
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
-{% capture notes %}
+{% capture notes -%}
 👉 Without recurring to the [Singleton
 Pattern](/getting_started/core_component_types#the-singleton-pattern), you
 would have to specify the context in the button action, like this:
@@ -121,12 +121,12 @@ would have to specify the context in the button action, like this:
 👉 Here we used a explicitly relative path for the context. But you could also use:
    → `"context":"myColor"` (non explicit relative path)
    → `"context":"/myColor"` (absolute path)
-{% endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
 {% raw %} <!-- singleton_color {{{ --> {% endraw %}
-{% capture singleton_color
-%}<span data-smark='{"type":"color", "name":"myColor"}'>
+{% capture singleton_color -%}
+<span data-smark='{"type":"color", "name":"myColor"}'>
     <input data-smark>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
 </span>{%
@@ -155,8 +155,8 @@ The number component will throw a *RenderError* if the target field is not an
 INPUT element or its type is explicitly defined and different to "color".
 
 {% raw %} <!-- singleton_color_error {{{ --> {% endraw %}
-{% capture singleton_color_error
-%}<span data-smark='{"type":"color", "name":"myColor"}'>
+{% capture singleton_color_error -%}
+<span data-smark='{"type":"color", "name":"myColor"}'>
     <input type="text" name="myColor" data-smark>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
 </span>{%

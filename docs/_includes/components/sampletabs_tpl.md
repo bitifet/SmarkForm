@@ -45,10 +45,10 @@ For further details, please refer to the following documentation files:
 {% comment %} ### Read arguments and apply defaults ### {% endcomment %}
 {% comment %} ### ################################# ### {% endcomment %}
 
-{% capture no_reset_editor_hack %}
+{% capture no_reset_editor_hack -%}
 // JSON playground editor hack:
-// To avoid the reset button resetting the editor along with the form, we did  tho things:
-//   1. We left the "editor" property undefined in the default value (that will make it to fill with its default value).
+// To avoid the reset button resetting the editor along with the form, we did two things:
+//   1. We left the "editor" property undefined in the default value (so it fills with its own default value).
 //   2. Import its own contents on every change to keep its default value updated.
 // ...this preserves user edits when the "reset" button is clicked.
 myForm.rendered.then(function() {
@@ -60,7 +60,7 @@ myForm.rendered.then(function() {
         );
     });
 });
-{% endcapture %}
+{%- endcapture %}
 
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
@@ -68,23 +68,24 @@ myForm.rendered.then(function() {
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
     "value": {{ include.demoValue }}
-});{% endcapture %}
+});
+{%- endcapture %}
   {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
     "value": {
         // To implement the playground editor, the form of the example is
         // wrapped in a "demo" subform, so the default value should be wrapped
-        // accordingly.:
+        // accordingly:
         "demo": {{ include.demoValue }},
     }
 });
 {{ no_reset_editor_hack }}
-{% endcapture %}
+{%- endcapture %}
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
   {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {{ no_reset_editor_hack }}
-{% endcapture %}
+{%- endcapture %}
 {% endif %}
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
@@ -137,8 +138,8 @@ myForm.rendered.then(function() {
 {% comment %} ### ################# ### {% endcomment %}
 
 {% raw %} <!-- default_buttons {{{ --> {% endraw %}
-{% capture default_buttons
-%}█<span><button
+{% capture default_buttons -%}
+█<span><button
 █    data-smark='{"action":"export","context":"demo","target":"../editor"}'
 █    title="Export 'demo' subform to 'editor' textarea"
 █    >⬇️ Export</button></span>
@@ -159,8 +160,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- json_editor {{{ --> {% endraw %}
-{% capture json_editor
-%}█<textarea
+{% capture json_editor -%}
+█<textarea
 █    cols="20"
 █    placeholder="JSON playground editor"
 █    data-smark='{"name":"editor","type":"input"}'
@@ -170,8 +171,8 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- load_save_buttons {{{ --> {% endraw %}
-{% capture load_save_buttons
-%}█<button
+{% capture load_save_buttons -%}
+█<button
 █    data-smark='{"action":"export"}'
 █    title="Export the whole form as JSON (see JS tab)"
 █    >💾 Save</button>
@@ -207,20 +208,23 @@ htmlSource | replace: "█", "            "
 endif
 %}
     </div>
-</div>{% endcapture %}
+</div>
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% assign htmlSource_root_check = htmlSource | replace: "█", "" | lstrip | downcase | slice: 0, 6 %}
 {% raw %} <!-- partial_htmlSource {{{ --> {% endraw %}
 {% if htmlSource_root_check == "<form " or htmlSource_root_check == "<form>" %}
-{% capture partial_htmlSource %}{{ htmlSource | replace: "█", "    " | lstrip }}{% endcapture %}
+{% capture partial_htmlSource %}{{ htmlSource | replace: "█", "    " | lstrip }}
+{%- endcapture %}
 {% else %}
 {% capture partial_htmlSource %}<div id="myForm$$"{{ formOptions_source | raw }}>
 {{
     htmlSource
     | replace: "█", "    "
 }}
-</div>{% endcapture %}
+</div>
+{%- endcapture %}
 {% endif %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -266,7 +270,7 @@ endif
     partial_htmlSource
 }}{% endif %}
 ```
-{% endcapture %}
+{%- endcapture %}
 
 
 {% comment %} ### #################### ### {% endcomment %}
@@ -277,7 +281,7 @@ endif
 ```css
 {{ cssSource | replace: " !important", "" }}
 ```
-{% endcapture %}
+{%- endcapture %}
 {% comment %}
     👉 We use !important in some css snippets to avoid Jekyll layout's rules
        precedence in the preview tab.
@@ -291,7 +295,7 @@ endif
 {% comment %} ### ################### ### {% endcomment %}
 
 {% if jsHead != '-' or jsSource != '-' %}
-{% capture rendered_jsSource %}
+{% capture rendered_jsSource -%}
 ```javascript
 {% if jsHead_display != '-'
 %}{% if showEditorSource == true %}{{ jsHead_display_with_editor }}{% else %}{{ jsHead_display }}{% endif %}{%
@@ -303,7 +307,7 @@ endif %}{% if jsHidden != '-'
     jsSource
 }}{% endif %}
 ```
-{% endcapture %}
+{%- endcapture %}
 {% else %}
 {% assign rendered_jsSource = '' %}
 {% endif %}
@@ -329,9 +333,9 @@ endif %}{% if jsHidden != '-'
   <div class="tab-labels">
     {% if current_tab == "html" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
     <div class="tab-label {{active_class}}" title="HTML Source">🗒️ HTML</div>
-    {% if cssSource != '-' %}
-        {% if current_tab == "css" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-        <div class="tab-label {{active_class}}" title="CSS Source">🎨 CSS</div>
+    {% if current_tab == "css" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+    {% if cssSource == '-' %}<div class="tab-label {{active_class}}" style="opacity:0.4" title="CSS Source (empty)">🎨 CSS</div>
+    {% else %}<div class="tab-label {{active_class}}" title="CSS Source">🎨 CSS</div>
     {% endif %}
     {% if jsHead != '-' or jsSource != '-' %}
         {% if current_tab == "js" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -360,6 +364,10 @@ endif %}{% if jsHidden != '-'
       {% if current_tab == "css" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
       <div class="tab-content tab-code tab-content-css {{active_class}}">
           {{ rendered_cssSource | replace: "$$", "" | markdownify }}
+      </div>
+  {% else %}
+      {% if current_tab == "css" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
+      <div class="tab-content tab-code tab-content-css {{active_class}}">
       </div>
   {% endif %}
   {% if jsHead != '-' or jsSource != '-' %}
