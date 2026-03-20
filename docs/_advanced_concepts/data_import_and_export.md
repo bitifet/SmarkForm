@@ -426,6 +426,13 @@ const value = await source.export();
 await destination.import(value);
 ```
 
+The chained `destination.import()` respects the **`setDefault`** option from
+the trigger: if you add `"setDefault": false` to the export trigger, the
+target component's `defaultValue` will **not** be updated by the import.
+Omitting `setDefault` (the default) leaves it as `true`, so the target's
+`defaultValue` is updated — meaning ♻️ Reset will later restore the copied
+value rather than the target's previous default.
+
 ### Using `target` with `import`
 
 Conversely, when an `import` trigger has a `target` property, SmarkForm
