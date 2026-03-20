@@ -54,11 +54,31 @@ For further details, please refer to the following documentation files:
 });{% endcapture %}
   {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
     value: {"demo": {{ include.demoValue }}}
+});
+// Sync editor.defaultValue on every change so ♻️ Reset always restores
+// the last exported or manually edited JSON, not the original demoValue.
+// (The ⬇️ Export button already does this via target.import; this
+// closes the gap for manual edits in the textarea.)
+myForm.rendered.then(function() {
+    myForm.find('/editor').on('change', async function() {
+        const v = await this.export();
+        await this.import(v);
+    });
 });{% endcapture %}
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
-  {% assign default_jsHead_display_with_editor = default_jsHead %}
+  {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
+// Sync editor.defaultValue on every change so ♻️ Reset always restores
+// the last exported or manually edited JSON.
+// (The ⬇️ Export button already does this via target.import; this
+// closes the gap for manual edits in the textarea.)
+myForm.rendered.then(function() {
+    myForm.find('/editor').on('change', async function() {
+        const v = await this.export();
+        await this.import(v);
+    });
+});{% endcapture %}
 {% endif %}
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
@@ -268,7 +288,7 @@ endif
 {% capture rendered_jsSource %}
 ```javascript
 {% if jsHead_display != '-'
-%}{{ jsHead_display }}{%
+%}{% if showEditorSource == true %}{{ jsHead_display_with_editor }}{% else %}{{ jsHead_display }}{% endif %}{%
 endif %}{% if jsHidden != '-'
 %}
 /* ... (Code already discussed) ... */
