@@ -45,40 +45,46 @@ For further details, please refer to the following documentation files:
 {% comment %} ### Read arguments and apply defaults ### {% endcomment %}
 {% comment %} ### ################################# ### {% endcomment %}
 
+{% capture no_reset_editor_hack %}
+// JSON playground editor hack:
+// To avoid the reset button resetting the editor along with the form, we did  tho things:
+//   1. We left the "editor" property undefined in the default value (that will make it to fill with its default value).
+//   2. Import its own contents on every change to keep its default value updated.
+// ...this preserves user edits when the "reset" button is clicked.
+myForm.rendered.then(function() {
+    const editor = myForm.find('/editor');
+    editor.on('change', async function() {
+        // Import its own value to set it as default:
+        await this.import(
+            await this.export()
+        );
+    });
+});
+{% endcapture %}
+
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
 {% if include.demoValue and include.demoValue != '-' %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {{ include.demoValue }}
+    "value": {{ include.demoValue }}
 });{% endcapture %}
   {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {"demo": {{ include.demoValue }}}
+    "value": {
+        // To implement the playground editor, the form of the example is
+        // wrapped in a "demo" subform, so the default value should be wrapped
+        // accordingly.:
+        "demo": {{ include.demoValue }},
+    }
 });
-// Sync editor.defaultValue on every change so ♻️ Reset always restores
-// the last exported or manually edited JSON, not the original demoValue.
-// (The ⬇️ Export button already does this via target.import; this
-// closes the gap for manual edits in the textarea.)
-myForm.rendered.then(function() {
-    myForm.find('/editor').on('change', async function() {
-        const v = await this.export();
-        await this.import(v);
-    });
-});{% endcapture %}
+{{ no_reset_editor_hack }}
+{% endcapture %}
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
   {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-// Sync editor.defaultValue on every change so ♻️ Reset always restores
-// the last exported or manually edited JSON.
-// (The ⬇️ Export button already does this via target.import; this
-// closes the gap for manual edits in the textarea.)
-myForm.rendered.then(function() {
-    myForm.find('/editor').on('change', async function() {
-        const v = await this.export();
-        await this.import(v);
-    });
-});{% endcapture %}
+{{ no_reset_editor_hack }}
+{% endcapture %}
 {% endif %}
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
@@ -343,7 +349,7 @@ endif %}{% if jsHidden != '-'
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include editor <span class="smarkform-hint-icon" title="The JSON playground editor is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused. In edit mode it is not included in the snippets by default, but you can add it back by checking this box. Note: for some examples the editor is intentionally excluded and this checkbox is disabled.">ℹ️</span></label>
+    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON playground editor is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused. In edit mode it is not included in the snippets by default, but you can add it back by checking this box. Note: for some examples the editor is intentionally excluded and this checkbox is disabled.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -398,7 +404,7 @@ endif %}{% if jsHidden != '-'
     <p>🛠️ Between the tab labels and the content there is always an <strong>edit toolbar</strong>:</p>
     <ul>
       <li><code>✏️ Edit</code> — activates edit mode: each source tab turns into a syntax-highlighted code editor (powered by <a href="https://ace.c9.io/" target="_blank">Ace</a>) pre-filled with the full, merged source. Changes are sandboxed — the original example is not affected.</li>
-      <li><code>📋 Include editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> is included in the preview. When toggled, the HTML and JS editors update instantly so you can see exactly what code is needed to add or remove it.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
+      <li><code>📋 Include playground editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> is included in the preview. When toggled, the HTML and JS editors update instantly so you can see exactly what code is needed to add or remove it.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
       <li><code>▶️ Run</code> — (only visible in edit mode) re-renders the Preview from the current editor contents and switches to the Preview tab.</li>
     </ul>
   </div>

@@ -736,52 +736,24 @@ Despite of usability concerns, there is no limit in form nesting depth.
 In fact, all examples in this chapter are entirely built with SmarkForm itself
 **with no additional JS code**.
 
-🚀 Including `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons are just
-*SmarkForm* trigger components that work out of the box.
+🚀 Including the *JSON playground editor* and the `⬇️ Export`, `⬆️ Import`, `♻️
+Reset` and `❌ Clear` buttons are just *SmarkForm* trigger components that work
+out of the box.
 
 🤔 ...it's just that part is omitted in the shown HTML source to keep the
 examples simple and focused on the subject they are intended to illustrate.
 
-🕵️ Below this line you can explore the previous example again with all the HTML
-source code:
+🕵️ If you go to any of the interactive examples in this page (or in the rest of the documentation) and check the `📝 Edit` checkbox, you'll notice the editor disappears (in order to match the code you are now editting). But if you also check the `📋 Include playground editor` checkbox, the editor comes back and you'll how it is implemented just by wrapping the form in an additional nesting level.
 
 
-{% capture demoValue -%}
-{
-    "model": "Toyota Yaris",
-    "type": "Car",
-    "longdesc": "A reliable compact car perfect for city driving.",
-    "seats": 5,
-    "side": "left",
-    "color": "#3a7bd5",
-    "safety": {
-        "airbag": true,
-        "abs": true,
-        "esp": false,
-        "tc": false
-    }
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="nested_forms_full"
-    htmlSource=nested_forms
-    height=65
-    selected="preview"
-    demoValue=demoValue
-    showEditor=true
-    showEditorSource=true
-    selected="html"
-    tests=false
-%}
-
-
-  * If you look closer to the HTML source, you will see that `⬆️ Import` and
+  * If you look close to the HTML source, you will see that `⬆️ Import` and
     `⬇️ Export` buttons buttons only imports/exports a subform called *demo*
      from/to a *textarea* field called *editor*.
 
-  * ...And if you look at its *JS* tab you'll see that **there is no JavaScript
-    code except for the SmarkForm instantiation** itself.
+  * ...And if you look at its *JS* tab you'll see that in most of them **there
+    is no JavaScript code except for the SmarkForm instantiation** itself.
+    - Except for, when the `📋 Include playground editor` is checked, a small
+      hack to avoid your edits being lost when you click the `♻️ Reset` button.
 
 {: .info :}
 > 👉 The trick here is that you did not import/export the whole form but just a
