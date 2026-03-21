@@ -3,9 +3,17 @@
 PIDFILE="${TMPDIR:-/tmp}/smarkform_dev_${USER}.pid"
 PIDFILE_MARKER="SMARKFORM_DEV"
 
-# Ensure we run as our own process-group leader so that
-# `kill -- -$$` reliably terminates all spawned child processes.
-[ -z "$SMARKFORM_DEV_SETSID" ] && exec env SMARKFORM_DEV_SETSID=1 setsid "$0" "$@"
+# Ensure the inner script runs as its own process-group leader (via setsid)
+# so that `kill -- -PID` reliably terminates all spawned child processes.
+# The outer shell stays attached to the terminal so that Ctrl+C still works:
+# SIGINT/SIGTERM are caught here and forwarded to the inner process group.
+if [ -z "$SMARKFORM_DEV_SETSID" ]; then
+    env SMARKFORM_DEV_SETSID=1 setsid "$0" "$@" &
+    INNER_PID=$!
+    trap 'kill -- -${INNER_PID} 2>/dev/null' INT TERM
+    wait "$INNER_PID"
+    exit $?
+fi
 
 # Stop any already-running instance before starting a new one.
 # This allows seamless switching between git worktrees without having
