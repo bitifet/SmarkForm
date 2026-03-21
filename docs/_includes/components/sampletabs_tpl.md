@@ -83,9 +83,7 @@ myForm.rendered.then(function() {
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
-  {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"));
-{{ no_reset_editor_hack }}
-{%- endcapture %}
+  {% assign default_jsHead_display_with_editor = default_jsHead %}
 {% endif %}
 {% assign default_jsHidden = '-' %}
 {% assign default_jsSource = '-' %}
