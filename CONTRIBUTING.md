@@ -81,6 +81,9 @@ This:
 - Generates sourcemaps
 - Watches files and rebuilds on change
 - Serves a local site so you can open examples quickly
+- **Automatically stops any previously running instance** before starting — so switching branches or worktrees and running `npm run dev` again is safe: the old server is always cleanly terminated first
+
+Stop it at any time with **Ctrl+C** in the terminal where it was started.
 
 
 ## Tests
