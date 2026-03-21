@@ -232,6 +232,8 @@ npm run dev
 - Uses `concurrently` to run multiple processes
 - Library changes trigger automatic rebuilds
 - Documentation server provides live reload
+- **Automatically stops any previously running instance** on startup — running `npm run dev` in a different branch or worktree always cleanly terminates the previous server first, so you never accidentally test against the wrong build
+- Stop with **Ctrl+C** in the terminal where it was started
 
 **Troubleshooting**:
 - If changes don't appear, check that watchers are running
