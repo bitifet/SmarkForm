@@ -39,7 +39,7 @@ nav_order: 6
 * [Scripts and Styles](#scripts-and-styles)
     * [Styles](#styles)
     * [Scripts](#scripts)
-    * [Open Questions — Cross-Origin Script Security Policy](#open-questions--cross-origin-script-security-policy)
+    * [Open Questions — Cross-Origin Script Security Policy](#open-questions-cross-origin-script-security-policy)
 * [Error Codes](#error-codes)
 
 <!-- vim-markdown-toc -->
@@ -113,7 +113,7 @@ Reference a template in the same document by its `id`, prefixed with `#`:
 </template>
 
 <!-- Use the mixin type anywhere in the form -->
-<form data-smark='{"id":"myForm"}'>
+<form id='myForm'>
   <div data-smark='{"type":"#labeledInput","name":"firstName"}'></div>
   <div data-smark='{"type":"#labeledInput","name":"lastName"}'></div>
 </form>
@@ -125,7 +125,7 @@ Reference a template in an external HTML file using a relative or absolute URL
 followed by `#<templateId>`:
 
 ```html
-<form data-smark='{"id":"myForm"}'>
+<form id='myForm'>
   <!-- Load template from a shared widget library -->
   <div data-smark='{"type":"./shared/widgets.html#phoneField","name":"phone"}'></div>
   <div data-smark='{"type":"./shared/widgets.html#emailField","name":"email"}'></div>
@@ -410,8 +410,8 @@ component instance, enabling direct API access.
   <input data-smark type="text">
   <script>
     // `this` is the SmarkForm component instance
-    this.on("AfterAction_import", () => {
-      this.el.focus();
+    this.on("AfterAction_import", (ev) => {
+      console.log("Form loaded with:", ev.data);
     });
   </script>
 </template>
