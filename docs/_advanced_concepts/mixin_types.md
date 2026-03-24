@@ -429,13 +429,19 @@ component instance, enabling direct API access.
 > **This sub-section is a draft and the policy has not been finalised.**
 
 Executing scripts sourced from a cross-origin mixin template poses security
-risks.  The proposed default behaviour and opt-in options are:
+risks.  The behaviour is controlled by the `crossOriginMixins` option on the
+root SmarkForm instance:
 
-| Behaviour | Description |
+| Value | Behaviour |
 |---|---|
-| **Default: block** | Scripts from cross-origin mixin templates are not executed.  Rendering continues without the script (a `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` warning is emitted). |
-| **`allowCrossOriginScripts: true`** | Opt-in option on the root SmarkForm instance to allow cross-origin scripts.  Authors accept full responsibility for security. |
-| **`disableScripts: true`** | Opt-in option to disable all script execution globally (same-origin and cross-origin alike) without failing rendering. |
+| `"block"` *(default)* | Encountering a cross-origin mixin that contains a `<script>` throws a `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` error and halts rendering.  This is the safest default: fail loudly so the developer is forced to make an explicit decision. |
+| `"noscript"` | Cross-origin mixin templates are rendered normally but any `<script>` elements they contain are silently discarded.  Use this when you trust the external template's markup but do not want to execute its scripts. |
+| `"allow"` | Scripts from cross-origin mixin templates are executed without restriction.  Use only when you fully control and trust the external source. |
+
+```html
+<!-- Opt-in to degraded (script-less) rendering of cross-origin mixins -->
+<form id="myForm" data-smark='{"crossOriginMixins":"noscript"}'> ... </form>
+```
 
 These options will be specified in more detail during implementation.  Input
 from the community on the appropriate defaults is welcome.
@@ -454,4 +460,4 @@ distinguish error causes programmatically.
 | `MIXIN_TEMPLATE_INVALID_ROOT` | The template does not contain exactly one root element node |
 | `MIXIN_TEMPLATE_ROOT_HAS_NAME` | The template root element's `data-smark` options specify a `name` |
 | `MIXIN_CIRCULAR_DEPENDENCY` | The expansion stack already contains the current mixin key (infinite loop detected) |
-| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | *(Draft)* A cross-origin script was blocked by the default security policy |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | *(Draft)* A cross-origin mixin template contains a `<script>` and `crossOriginMixins` is `"block"` (the default) |
