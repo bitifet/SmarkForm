@@ -1961,6 +1961,59 @@ runs on the final data — whether the item is brand new or duplicated.
 }
 {%- endcapture %}
 
+{% raw %} <!-- period_mixin_duplicable_tests {{{ --> {% endraw %}
+{% capture period_mixin_duplicable_tests -%}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    // ── Initial state ─────────────────────────────────────────────────────────
+    // The list starts with one empty period from value:[{}]
+    const initialPeriods = await readField('/periods');
+    expect(initialPeriods, 'form starts with one empty period').toHaveLength(1);
+    expect(initialPeriods[0].start_date, 'initial period has no start_date').toBeNull();
+    expect(initialPeriods[0].end_date, 'initial period has no end_date').toBeNull();
+
+    // ── Outer ➕ Add Period button — dates prefilled from previous period ─────
+    // Fill the initial period with known dates.
+    await writeField('/periods/0/start_date', '2025-01-01');
+    await writeField('/periods/0/end_date', '2025-06-30');
+
+    // Click the outer Add Period button (outside the mixin template).
+    const addPeriodBtn = page.getByRole('button', { name: '➕ Add Period' });
+    await addPeriodBtn.click();
+    // Give the AfterAction_addItem handler time to run its async export()+import()
+    await page.waitForTimeout(300);
+
+    const afterOuter = await readField('/periods');
+    expect(afterOuter, 'outer ➕ adds a second period').toHaveLength(2);
+    expect(afterOuter[1].start_date,
+        'start_date is one day after prev end_date (2025-06-30 + 1)'
+    ).toBe('2025-07-01');
+    expect(afterOuter[1].end_date,
+        'end_date mirrors the prev 6-month (Jan–Jun) span: Jul–Dec'
+    ).toBe('2025-12-31');
+
+    // ── ✨ Clone and ➕ outer produce identical dates ──────────────────────────
+    // Remove the period just added and verify we are back to 1 period.
+    await page.getByTitle('Remove this period').last().click();
+    expect(await readField('/periods'), 'back to 1 period after removal').toHaveLength(1);
+
+    // Click the ✨ (duplicate) button on the first period.
+    await page.getByTitle('Duplicate this period').click();
+    await page.waitForTimeout(300);
+
+    const afterClone = await readField('/periods');
+    expect(afterClone, '✨ also produces 2 periods').toHaveLength(2);
+    expect(afterClone[1].start_date,
+        '✨ clone produces the same start_date as ➕ outer button'
+    ).toBe('2025-07-01');
+    expect(afterClone[1].end_date,
+        '✨ clone produces the same end_date as ➕ outer button'
+    ).toBe('2025-12-31');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="period_mixin_duplicable"
     htmlSource=period_mixin_duplicable
@@ -1969,7 +2022,7 @@ runs on the final data — whether the item is brand new or duplicated.
     cssSource=schedule_table_css
     selected="preview"
     showEditor=true
-    tests=false
+    tests=period_mixin_duplicable_tests
 %}
 
 
