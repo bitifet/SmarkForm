@@ -5,6 +5,7 @@ const componentTypes = {};
 import {events} from "./events.js";
 import legacy from "./legacy.js";
 import {parseJSON, replaceWrongNode} from "./helpers.js";
+import {isMixinRef, expandMixin} from "./mixin.js";
 
 const sym_smart = Symbol("smart_component");
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
@@ -240,6 +241,20 @@ export class SmarkComponent {
         let options = me.getNodeOptions(node, defaultOptions);
         //}}}
 
+        // Mixin expansion (preprocessing step):{{{
+        // When the type is a mixin reference ("url#id" or "#id"), expand the
+        // placeholder into a template clone before normal enhancement begins.
+        let mixinExpansion = null;
+        if (isMixinRef(options.type)) {
+            mixinExpansion = await expandMixin(node, options, me);
+            node = mixinExpansion.node;
+            options = mixinExpansion.options;
+            // Re-read options through getNodeOptions so that inferType and
+            // singleton-target merges are applied correctly on the clone.
+            options = me.getNodeOptions(node, {});
+        }
+        //}}}
+
         // Prevent default behaviours:{{{
         legacy.disEnhance(me);
         //}}}
@@ -265,11 +280,37 @@ export class SmarkComponent {
             "UNKNOWN_TYPE"
             , `Unimplemented SmarkForm component controller: ${options.type}`,
         );
-        return new ctrl (
+        const component = new ctrl(
             node
             , options
             , me
         );
+
+        // Post-expansion hooks (only when a mixin was expanded):{{{
+        if (mixinExpansion) {
+            // Store the mixin chain on the component so that nested renders
+            // can continue circular-dependency detection for this subtree.
+            component._mixinChain = mixinExpansion.childChain;
+
+            // Execute per-instance mixin scripts after rendering completes.
+            if (mixinExpansion.scripts.length > 0) {
+                component.onRendered(async () => {
+                    for (const scriptEl of mixinExpansion.scripts) {
+                        // Execute script with `this` bound to the component.
+                        // eslint-disable-next-line no-new-func
+                        const fn = new Function(scriptEl.textContent);
+                        fn.call(component);
+                    }
+                });
+            }
+        } else if (me._mixinChain) {
+            // Propagate the mixin chain through non-mixin components so that
+            // indirect cycles (A → plain-form → B → A) are also detected.
+            component._mixinChain = me._mixinChain;
+        }
+        //}}}
+
+        return component;
         //}}}
 
     };//}}}
