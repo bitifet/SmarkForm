@@ -59,6 +59,12 @@ around edge cases or features that might catch you off guard at first.
 * [API & JavaScript](#api-javascript)
     * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
     * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
+* [Mixin Types](#mixin-types)
+    * [Can I implement my own component types?](#can-i-implement-my-own-component-types)
+    * [Are mixin styles isolated / scoped?](#are-mixin-styles-isolated--scoped)
+    * [Can I pass parameters to a mixin?](#can-i-pass-parameters-to-a-mixin)
+    * [Can a mixin template reference another mixin?](#can-a-mixin-template-reference-another-mixin)
+    * [Can mixins load from external files?](#can-mixins-load-from-external-files)
 * [Integration & Deployment](#integration-deployment)
     * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
     * [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
@@ -224,6 +230,12 @@ SmarkForm infers the type from context in most cases:
 - `<label>` → `label`
 - A `data-smark` with an `"action"` key → `trigger`
 - Explicit `"type":"form"` or `"type":"list"` for container elements
+
+Beyond the built-in types, you can define **Mixin Types** — reusable component
+blueprints stored in `<template>` elements.  A mixin reference starts with `#`
+(e.g. `"type":"#myWidget"`).  See
+[Can I implement my own component types?](#can-i-implement-my-own-component-types)
+for a quick overview.
 
 See [Core Component Types]({{ "/getting_started/core_component_types" | relative_url }})
 for the full reference.
@@ -920,6 +932,123 @@ items on demand. It is **not yet implemented**.
 Stay tuned — details will land in the docs when it's ready. See the
 [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for more
 context.
+
+
+## Mixin Types
+
+### Can I implement my own component types?
+
+Yes — **Mixin Types** are the built-in extensibility mechanism.
+
+A *mixin type* is an HTML `<template>` element that bundles a component's
+markup, styles, and behaviour in one place.  Instead of a native type keyword
+(`"form"`, `"list"`, …) you write the template's `id` prefixed with `#`:
+
+```html
+<!-- Define the blueprint once -->
+<template id="labeledInput">
+  <label data-smark>
+    <span class="li-label"></span>
+    <input type="text">
+  </label>
+  <style>
+    .li-label { font-weight: 600; display: block; margin-bottom: 0.2em; }
+  </style>
+  <script>
+    const header = this.targetNode.querySelector('.li-label');
+    if (header && this.targetNode.dataset.label) {
+      header.textContent = this.targetNode.dataset.label;
+    }
+  </script>
+</template>
+
+<!-- Use it anywhere in the form -->
+<form id="myForm">
+  <div data-smark='{"type":"#labeledInput","name":"firstName"}' data-label="First name"></div>
+  <div data-smark='{"type":"#labeledInput","name":"lastName"}'  data-label="Last name"></div>
+</form>
+```
+
+The `<style>` sibling is injected into `<head>` once (deduplicated), and the
+`<script>` sibling runs once per instance with `this` bound to the SmarkForm
+component — so you get full API access for event listeners, value manipulation,
+and anything else the component API exposes.
+
+For a complete reference including external templates, option merge semantics,
+and error codes, see [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
+
+### Are mixin styles isolated / scoped?
+
+No — styles injected by a mixin are added to the page's `<head>` and are
+therefore **global** (just like any other `<style>` tag you write by hand).
+
+This is by design: SmarkForm keeps the library simple and avoids the complexity
+of Shadow DOM scoping or CSS Modules.  In practice it is easy to work around:
+
+* Use **sufficiently specific CSS class names** — e.g. a `sf-` or `myapp-`
+  prefix keeps mixin styles from clashing with the rest of the page.
+* Use **child selectors** (`.my-mixin-root > .label`) rather than bare
+  descendant selectors to reduce the chance of collisions.
+* Keep mixin CSS focused on the component — background colours, layout,
+  typography — rather than page-wide resets.
+
+The deduplication guarantee (same style block never appears twice in `<head>`)
+means you can use a mixin many times on the page without the CSS accumulating.
+
+### Can I pass parameters to a mixin?
+
+Yes, in two complementary ways:
+
+**Via `data-smark` options** (placeholder overrides template defaults):
+
+```html
+<!-- Template defines a default of min_items:1 -->
+<template id="tagList">
+  <span data-smark='{"type":"list","min_items":1,"max_items":10}'> … </span>
+</template>
+
+<!-- Usage site overrides to min_items:3 -->
+<div data-smark='{"type":"#tagList","name":"skills","min_items":3}'></div>
+```
+
+Any option in the placeholder's `data-smark` wins over the template default.
+The mixin type reference (`"type":"#tagList"`) is consumed and not forwarded —
+the resolved type (`list`) from the template root is used instead.
+
+**Via HTML attributes** (`data-*`, `aria-*`, `class`, `style`):
+
+```html
+<div data-smark='{"type":"#labeledInput","name":"city"}' data-label="City"></div>
+```
+
+`data-*` attributes from the placeholder are merged into the expanded node
+(placeholder wins), so mixin scripts can read `this.targetNode.dataset.label`
+to pick up per-instance values.
+
+### Can a mixin template reference another mixin?
+
+Yes — nested mixin expansion is fully supported.  A template can itself use a
+`"type":"#innerId"` reference, and SmarkForm will expand them in order.
+Circular references (`A` → `B` → `A`) are detected and throw a
+`MIXIN_CIRCULAR_DEPENDENCY` error before any infinite loop can occur.
+
+### Can mixins load from external files?
+
+Yes.  Prefix the `#id` fragment with a relative or absolute URL:
+
+```html
+<div data-smark='{"type":"./widgets.html#scheduleRow","name":"hours"}'></div>
+```
+
+SmarkForm fetches the file once, parses it, and caches the resulting document
+for all subsequent references to the same URL on the same page.  `<style>` and
+`<script>` handling, option merging, and all other semantics work identically
+for external and local templates.
+
+Cross-origin scripts are subject to the `crossOriginMixins` policy
+(`"block"` by default — see the
+[Mixin Types reference]({{ "/advanced_concepts/mixin_types" | relative_url }}#cross-origin-script-security-policy)
+for details).
 
 
 ## Integration & Deployment
