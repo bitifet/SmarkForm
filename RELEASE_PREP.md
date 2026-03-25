@@ -19,7 +19,7 @@
 
 ### Key Files to Review Before Publishing
 
-| What | Where |
+| Item | Location |
 |------|--------|
 | Version number | `package.json` · `docs/_data/package.json` |
 | Changelog entry | `CHANGELOG.md` — replace `TBD` date and refine bullets |
