@@ -1,5 +1,5 @@
 ---
-title: "Mixin Types (Draft)"
+title: "Mixin Types"
 layout: chapter
 permalink: /advanced_concepts/mixin_types
 nav_order: 6
@@ -7,12 +7,9 @@ nav_order: 6
 ---
 
 {% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
-
-{: .caution }
-> **This document is a DRAFT specification.** The feature described here has
-> not yet been implemented. Details are subject to change as design is refined.
 
 <details class="chaptertoc">
 <summary>
@@ -40,6 +37,9 @@ nav_order: 6
     * [Styles](#styles)
     * [Scripts](#scripts)
     * [Open Questions — Cross-Origin Script Security Policy](#open-questions-cross-origin-script-security-policy)
+* [Examples](#examples)
+    * [Reusable contact block](#reusable-contact-block)
+    * [Option override per usage site](#option-override-per-usage-site)
 * [Error Codes](#error-codes)
 
 <!-- vim-markdown-toc -->
@@ -375,12 +375,8 @@ is thrown.
 
 ## Scripts and Styles
 
-{: .caution }
-> **This section describes intended behaviour that has not yet been
-> implemented.  Details may change.**
-
 Support for `<style>` and `<script>` elements inside component markup is
-intended as a **general feature** available to `form` and `list` component
+a **general feature** available to `form` and `list` component
 types (and via a singleton pattern for scalar fields).  It is documented here
 because mixin templates are the most natural place to bundle component-specific
 styles and behaviour alongside their markup.
@@ -423,10 +419,7 @@ component instance, enabling direct API access.
 > Ensure handlers are idempotent or clean up on `unrender` to avoid memory
 > leaks.
 
-### Open Questions — Cross-Origin Script Security Policy
-
-{: .caution }
-> **This sub-section is a draft and the policy has not been finalised.**
+### Cross-Origin Script Security Policy
 
 Executing scripts sourced from a cross-origin mixin template poses security
 risks.  The behaviour is controlled by the `crossOriginMixins` option on the
@@ -443,8 +436,167 @@ root SmarkForm instance:
 <form id="myForm" data-smark='{"crossOriginMixins":"noscript"}'> ... </form>
 ```
 
-These options will be specified in more detail during implementation.  Input
-from the community on the appropriate defaults is welcome.
+
+## Examples
+
+### Reusable contact block
+
+The following example defines a single `#contactBlock` mixin template and
+stamps it out twice — once for the **primary** contact and once for an
+**emergency** contact.  Both instances share the same structure but are
+completely independent, each carrying its own `name` and therefore its own
+data path in the exported value.
+
+{% raw %} <!-- capture mixin_contact_block_html {{{ --> {% endraw %}
+{% capture mixin_contact_block_html -%}
+<!-- Mixin template — defined once, reused anywhere -->
+<template id="contactBlock">
+    <fieldset data-smark='{"type":"form"}'>
+        <label data-smark>
+            Name: <input data-smark type="text" name="name">
+        </label>
+        <label data-smark>
+            E-mail: <input data-smark type="email" name="email">
+        </label>
+        <label data-smark>
+            Phone: <input data-smark type="tel" name="phone">
+        </label>
+    </fieldset>
+</template>
+
+<!-- Form — the same mixin is used for both contacts -->
+<fieldset data-smark='{"type":"form","name":"contacts"}'>
+    <legend>Contacts</legend>
+    <h3>Primary</h3>
+    <div data-smark='{"type":"#contactBlock","name":"primary"}'></div>
+    <h3>Emergency</h3>
+    <div data-smark='{"type":"#contactBlock","name":"emergency"}'></div>
+</fieldset>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_contact_block_tests {{{ --> {% endraw %}
+{% capture mixin_contact_block_tests -%}
+export default async ({ page, expect, root, writeField, readField }) => {
+    await expect(root).toBeVisible();
+
+    // Populate the two mixin instances independently.
+    await writeField('contacts/primary/name', 'Alice Smith');
+    await writeField('contacts/primary/email', 'alice@example.com');
+    await writeField('contacts/emergency/name', 'Bob Smith');
+    await writeField('contacts/emergency/phone', '555-9999');
+
+    // Each instance exports its own data at its own path.
+    expect(await readField('contacts/primary/name')).toBe('Alice Smith');
+    expect(await readField('contacts/emergency/name')).toBe('Bob Smith');
+    expect(await readField('contacts/emergency/phone')).toBe('555-9999');
+
+    // Export the whole form and verify the structure.
+    const data = await page.evaluate(async () => myForm.export());
+    expect(data.contacts.primary.email).toBe('alice@example.com');
+    expect(data.contacts.emergency.name).toBe('Bob Smith');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "contacts": {
+        "primary": {
+            "name": "Alice Smith",
+            "email": "alice@example.com",
+            "phone": "555-1234"
+        },
+        "emergency": {
+            "name": "Bob Jones",
+            "email": "bob@example.com",
+            "phone": "555-5678"
+        }
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_contact_block"
+    htmlSource=mixin_contact_block_html
+    demoValue=demoValue
+    showEditor=true
+    selected="preview"
+    tests=mixin_contact_block_tests
+%}
+
+The exported value mirrors the nesting: both `primary` and `emergency` objects
+appear under a `contacts` key, each with `name`, `email`, and `phone` fields —
+exactly what you would get from two independently hand-authored `<fieldset>`
+blocks, but with zero markup duplication.
+
+
+### Option override per usage site
+
+Placeholder options **override** template defaults on a per-key basis.  The
+following example uses a single `#tagList` template that declares
+`"min_items":3` as its default.  One of the two usage sites overrides that to
+`"min_items":1` so it starts with only one slot, while the other keeps the
+template's default of three.
+
+{% raw %} <!-- capture mixin_option_override_html {{{ --> {% endraw %}
+{% capture mixin_option_override_html -%}
+<template id="tagList">
+    <!-- Template default: start with 3 items -->
+    <ul data-smark='{"type":"list","min_items":3}'>
+        <li>
+            <input data-smark type="text" name="tag" placeholder="tag…">
+            <button data-smark='{"action":"removeItem"}'>✕</button>
+        </li>
+    </ul>
+</template>
+
+<fieldset data-smark='{"type":"form","name":"labels"}'>
+    <legend>Labels</legend>
+    <h3>Priority tags (3 slots by default)</h3>
+    <!-- No min_items override — keeps template default of 3 -->
+    <div data-smark='{"type":"#tagList","name":"priority"}'></div>
+    <button data-smark='{"action":"addItem","context":"priority"}'>➕ Add</button>
+
+    <h3>Optional tags (1 slot override)</h3>
+    <!-- Overrides min_items to 1 -->
+    <div data-smark='{"type":"#tagList","name":"optional","min_items":1}'></div>
+    <button data-smark='{"action":"addItem","context":"optional"}'>➕ Add</button>
+</fieldset>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_option_override_tests {{{ --> {% endraw %}
+{% capture mixin_option_override_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // Export the initial form state (no items added by the test).
+    const data = await page.evaluate(async () => myForm.export());
+
+    // "priority" keeps the template default of min_items:3 →
+    // three empty slots are present after initialisation.
+    expect(data.labels.priority).toHaveLength(3);
+
+    // "optional" overrides to min_items:1 →
+    // only one empty slot is present after initialisation.
+    expect(data.labels.optional).toHaveLength(1);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_option_override"
+    htmlSource=mixin_option_override_html
+    showEditor=true
+    selected="preview"
+    tests=mixin_option_override_tests
+%}
+
+Notice how both `priority` and `optional` use the same `#tagList` blueprint,
+but each instance gets its own initial item count controlled by the `min_items`
+option — set by the placeholder for `optional` and falling through to the
+template default for `priority`.
 
 
 ## Error Codes
@@ -460,4 +612,4 @@ distinguish error causes programmatically.
 | `MIXIN_TEMPLATE_INVALID_ROOT` | The template does not contain exactly one root element node |
 | `MIXIN_TEMPLATE_ROOT_HAS_NAME` | The template root element's `data-smark` options specify a `name` |
 | `MIXIN_CIRCULAR_DEPENDENCY` | The expansion stack already contains the current mixin key (infinite loop detected) |
-| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | *(Draft)* A cross-origin mixin template contains a `<script>` and `crossOriginMixins` is `"block"` (the default) |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `crossOriginMixins` is `"block"` (the default) |
