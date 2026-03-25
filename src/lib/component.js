@@ -72,11 +72,17 @@ export class SmarkComponent {
         targetNode
         , {
             property_name = "smark",
+            _mixinChain,
             ...options
         } = {}
         , parent
     ) {
         const me = this;
+
+        // Store the mixin chain for circular-dependency detection.
+        // Passed via constructor options so it is available immediately
+        // (before the async IIFE runs its first render/enhance cycle).
+        me._mixinChain = _mixinChain || null;
 
         me.validName = (function nameGenerator() {//{{{
             let counter = 0;
@@ -280,18 +286,21 @@ export class SmarkComponent {
             "UNKNOWN_TYPE"
             , `Unimplemented SmarkForm component controller: ${options.type}`,
         );
+
+        // Pass the mixin chain via constructor options so it is available
+        // immediately when the component's async IIFE starts its render cycle
+        // (before `new ctrl()` returns).
+        const inheritedChain = mixinExpansion
+            ? mixinExpansion.childChain
+            : (me._mixinChain || null);
         const component = new ctrl(
             node
-            , options
+            , { ...options, _mixinChain: inheritedChain }
             , me
         );
 
         // Post-expansion hooks (only when a mixin was expanded):{{{
         if (mixinExpansion) {
-            // Store the mixin chain on the component so that nested renders
-            // can continue circular-dependency detection for this subtree.
-            component._mixinChain = mixinExpansion.childChain;
-
             // Execute per-instance mixin scripts after rendering completes.
             if (mixinExpansion.scripts.length > 0) {
                 component.onRendered(async () => {
@@ -303,10 +312,6 @@ export class SmarkComponent {
                     }
                 });
             }
-        } else if (me._mixinChain) {
-            // Propagate the mixin chain through non-mixin components so that
-            // indirect cycles (A → plain-form → B → A) are also detected.
-            component._mixinChain = me._mixinChain;
         }
         //}}}
 
