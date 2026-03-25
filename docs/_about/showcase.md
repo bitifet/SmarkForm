@@ -1174,6 +1174,11 @@ as a **direct sibling** of the template root:
     .sf-slot { display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center; }
     .sf-from, .sf-to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
     .sf-time { width: 5.5em; }
+    @media (max-width: 30em) {
+      .sf-sched-row { grid-template-columns: 1fr auto; }
+      .sf-sched-row > .sf-slot { grid-column: 1; }
+      .sf-sched-row > [data-role="footer"] { grid-column: 2; grid-row: 2 / -1; }
+    }
   </style>
 </template>
 {%- endcapture %}
