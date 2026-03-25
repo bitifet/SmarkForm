@@ -1201,10 +1201,86 @@ every list item and so forth to any depth.
 }
 {%- endcapture %}
 
+{% raw %} <!-- nested_schedule_table_js {{{ --> {% endraw %}
+{% capture nested_schedule_table_js -%}
+myForm.on('AfterAction_addItem', async function(ev) {
+
+    // Only react to additions to the 'periods' list.
+    if (!ev.target.getPath().endsWith('/periods')) return;
+
+    // ev.data is the newly created item component (returned by addItem).
+    const newItem = ev.data;
+    if (!newItem) return;
+
+    // The item's path ends with its 0-based index (e.g. ".../periods/2").
+    const newIdx = parseInt(newItem.getPath().split('/').pop());
+
+    // Export the full list so we can inspect surrounding periods.
+    // exportEmpties:true ensures the brand-new empty item appears in the array.
+    const items = await ev.target.export({ exportEmpties: true });
+    const prev = newIdx > 0               ? items[newIdx - 1] : null;
+    const next = newIdx < items.length - 1 ? items[newIdx + 1] : null;
+
+    // ── Start date ────────────────────────────────────────────────────────────
+    // Begin the day after the previous period ends, or today if there is none.
+    let startDate;
+    if (prev?.end_date) {
+        const d = new Date(prev.end_date + 'T00:00:00');
+        d.setDate(d.getDate() + 1);  // setDate handles month/year wrap correctly
+        startDate = d.toISOString().slice(0, 10);
+    } else {
+        startDate = new Date().toISOString().slice(0, 10);
+    }
+
+    // ── End date ──────────────────────────────────────────────────────────────
+    let endDate = null;
+
+    if (!next) {
+        // Appended at the end: mirror the duration of the previous period so
+        // the user gets a sensible default length to adjust.
+        if (prev?.start_date && prev?.end_date) {
+            const duration = Math.round(
+                (new Date(prev.end_date   + 'T00:00:00') -
+                 new Date(prev.start_date + 'T00:00:00')) / 86400000
+            );
+            const d = new Date(startDate + 'T00:00:00');
+            d.setDate(d.getDate() + duration);
+            endDate = d.toISOString().slice(0, 10);
+        }
+
+    } else if (next.start_date) {
+        // Inserted between two periods.
+        // "No gap" means next starts exactly where this new period starts
+        // (i.e. prev.end_date + 1 === next.start_date).  In that case the
+        // user must decide the split manually → leave end_date blank.
+        //
+        // "Gap" means there are days between the previous end and the next
+        // start.  Fill the whole gap: end_date = next.start_date − 1 day.
+        if (next.start_date > startDate) {
+            const d = new Date(next.start_date + 'T00:00:00');
+            d.setDate(d.getDate() - 1);
+            endDate = d.toISOString().slice(0, 10);
+        }
+    }
+
+    // ── Apply ─────────────────────────────────────────────────────────────────
+    const startField = newItem.find('start_date');
+    if (startField) await startField.import(startDate, { setDefault: false });
+
+    if (endDate) {
+        const endField = newItem.find('end_date');
+        if (endField) await endField.import(endDate, { setDefault: false });
+    }
+
+});
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
     htmlSource=nested_schedule_table
     cssSource=schedule_table_css
+    jsSource=nested_schedule_table_js
     notes=notes
     selected="preview"
     demoValue=demoValue
