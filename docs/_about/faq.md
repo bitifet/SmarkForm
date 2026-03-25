@@ -1023,6 +1023,13 @@ A *mixin type* is an HTML `<template>` element that bundles a component's
 markup, styles, and behaviour in one place.  Instead of a native type keyword
 (`"form"`, `"list"`, …) you write the template's `id` prefixed with `#`:
 
+The example below wraps two `#labeledInput` usages inside a nested `form`
+component (`"name":"person"`) so the exported data is grouped under a `person`
+key — a common pattern for sub-objects within a larger form.  The mixin
+template itself uses the **Singleton Pattern** (`<span data-smark='{"type":"input"}'>`)
+as its root so that both the `<input>` and the `<label>` are natural children
+of the named component without requiring an extra wrapper:
+
 {% raw %} <!-- faq_mixin_labeled_input {{{ --> {% endraw %}
 {% capture faq_mixin_labeled_input_html -%}
 <div data-smark='{"type":"form","name":"person"}'>
