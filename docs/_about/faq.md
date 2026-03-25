@@ -66,7 +66,7 @@ around edge cases or features that might catch you off guard at first.
     * [Can a mixin template reference another mixin?](#can-a-mixin-template-reference-another-mixin)
     * [Can mixins load from external files?](#can-mixins-load-from-external-files)
 * [Integration & Deployment](#integration-deployment)
-    * [Which browsers does SmarkForm support?](#which-browsers-does-smarkform-support)
+    * [Which browsers has SmarkForm been tested on?](#which-browsers-has-smarkform-been-tested-on)
     * [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
     * [Where does SmarkForm really shine?](#where-does-smarkform-really-shine)
         * [Server-rendered HTML stacks](#server-rendered-html-stacks)
@@ -399,19 +399,41 @@ or whether a custom event handler is interfering.
 
 ### How do I add animations to list items?
 
-SmarkForm applies CSS classes during add/remove transitions, giving you a hook
-for animations:
+SmarkForm deliberately provides no built-in animation engine — transitions are a
+design concern that belongs to your CSS. The mechanism is simple: use SmarkForm's
+lifecycle events to add and remove CSS classes on list items, and let CSS
+`transition` do the rest.
 
-- When a new item is added, SmarkForm briefly adds a configurable class (e.g.
-  `new_item`) to the new element — attach a CSS animation to "slide it in".
-- When an item is removed, SmarkForm adds another configurable class (e.g.
-  `removing_item`) and waits for any running CSS transition to finish before
-  removing the DOM node — attach your "slide out" animation to that class.
+- **`afterRender`** fires after a new item is inserted into the DOM. Add an
+  initial CSS class that hides or offsets the element, then — after a minimal
+  delay to let the browser paint the initial state — add a second class that
+  transitions it to its final visible position.
+- **`beforeUnrender`** fires before an item is removed. Remove the "visible"
+  class and return a `Promise` that resolves after the transition duration.
+  SmarkForm awaits that promise, so the element stays in the document long enough
+  for the exit animation to complete.
 
-The exact class names can be configured in the list's `data-smark` options.
+```javascript
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+myForm.onAll("afterRender", async (ev) => {
+    if (ev.context.parent?.options.type !== "list") return;
+    const item = ev.context.targetNode;
+    item.classList.add("animated_item");
+    await delay(1); // yield one tick so the browser paints the hidden state
+    item.classList.add("ongoing");
+});
+
+myForm.onAll("beforeUnrender", async (ev) => {
+    if (ev.context.parent?.options.type !== "list") return;
+    const item = ev.context.targetNode;
+    item.classList.remove("ongoing");
+    await delay(150); // wait for the CSS transition to finish
+});
+```
 
 See [Showcase — Animations]({{ "/about/showcase" | relative_url }}#animations)
-for a working, copy-pasteable example.
+for a complete working example with the matching CSS.
 
 
 ## Data: Import, Export & Reset
@@ -955,10 +977,11 @@ markup, styles, and behaviour in one place.  Instead of a native type keyword
     .li-label { font-weight: 600; display: block; margin-bottom: 0.2em; }
   </style>
   <script>
-    const header = this.targetNode.querySelector('.li-label');
-    if (header && this.targetNode.dataset.label) {
-      header.textContent = this.targetNode.dataset.label;
-    }
+    // `this` is the SmarkForm component instance — use its API to personalise
+    // each instance. Show the per-usage data-label, falling back to the
+    // component's own name when no label is supplied.
+    const labelEl = this.targetNode.querySelector('.li-label');
+    if (labelEl) labelEl.textContent = this.targetNode.dataset.label ?? this.name;
   </script>
 </template>
 
@@ -1053,20 +1076,22 @@ for details).
 
 ## Integration & Deployment
 
-### Which browsers does SmarkForm support?
+### Which browsers has SmarkForm been tested on?
 
-SmarkForm targets the browsers covered by its Babel configuration and is tested
-with Playwright across **Chromium**, **Firefox**, and **WebKit** (Safari engine).
-
-In practice this means modern versions of:
+SmarkForm follows web standards and avoids browser-specific code, aiming for
+compatibility with any standard-compliant browser.  The test suite currently
+exercises the following engines via Playwright:
 
 | Browser | Engine |
 |---------|--------|
-| Chrome / Edge | Chromium |
+| Chrome / Edge | Chromium (desktop) |
+| Chrome for Android / Brave | Chromium Mobile (Pixel 5 emulation) |
 | Firefox | Gecko |
-| Safari / iOS Safari | WebKit |
+| Safari / iOS Safari | WebKit (desktop + iPhone 12 emulation) |
 
-Older browsers (IE 11, legacy Edge) are not supported.
+These are not "the only supported browsers" — they are simply the ones covered
+by the automated test matrix.  SmarkForm is expected to work in any browser
+that supports modern ES2017+ JavaScript and the standard DOM APIs it relies on.
 
 ### Can I use SmarkForm in React (or Vue, Angular, etc.) projects?
 
