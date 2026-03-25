@@ -8,6 +8,8 @@ permalink: /about/faq
 
 {% include links.md %}
 
+{% include components/sampletabs_ctrl.md %}
+
 # SmarkForm {{ page.title }}
 
 
@@ -303,16 +305,31 @@ field inside a non-field container tag and declare **that container** as the
 SmarkForm component. The container becomes the component; the inner `<input>`
 (or `<textarea>` or `<select>`) is just the rendering surface.
 
-```html
-<!-- Without Singleton Pattern — bare input, no room for sibling triggers -->
-<input type="color" name="bgcolor" data-smark>
+Without the Singleton Pattern, a bare `<input>` has no room for sibling
+triggers:
 
-<!-- With Singleton Pattern — container IS the component; has room for extras -->
+```html
+<input type="color" name="bgcolor" data-smark>
+```
+
+With the Singleton Pattern, the container IS the component — triggers placed
+inside have it as their natural context:
+
+{% raw %} <!-- faq_singleton_color {{{ --> {% endraw %}
+{% capture faq_singleton_color_html -%}
 <span data-smark='{"type":"color","name":"bgcolor"}'>
     <input data-smark>
-    <button data-smark='{"action":"clear"}'>❌ Reset</button>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
 </span>
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="faq_singleton_color"
+    htmlSource=faq_singleton_color_html
+    demoValue='{"bgcolor":"#6366f1"}'
+    tests=false
+%}
 
 Because the trigger (`clear`) is now **inside** the component, its natural
 context is the `color` component itself — no explicit `context` path needed.
@@ -413,7 +430,37 @@ lifecycle events to add and remove CSS classes on list items, and let CSS
   SmarkForm awaits that promise, so the element stays in the document long enough
   for the exit animation to complete.
 
-```javascript
+The following example demonstrates the full technique:
+
+{% raw %} <!-- faq_animations {{{ --> {% endraw %}
+{% capture faq_animations_html -%}
+<ul data-smark='{"type":"list","name":"items","min_items":1}'>
+  <li>
+    <input data-smark type="text" name="value" placeholder="Item…">
+    <button data-smark='{"action":"removeItem"}'>✕</button>
+  </li>
+</ul>
+<button data-smark='{"action":"addItem","context":"items"}'>➕ Add item</button>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- faq_animations_css {{{ --> {% endraw %}
+{% capture faq_animations_css -%}
+.animated_item {
+    transform: translateX(-100%);
+    opacity: 0;
+    transition: transform 200ms ease-out, opacity 200ms ease-out;
+}
+.animated_item.ongoing {
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 200ms ease-in, opacity 200ms ease-in;
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- faq_animations_js {{{ --> {% endraw %}
+{% capture faq_animations_js -%}
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 myForm.onAll("afterRender", async (ev) => {
@@ -430,10 +477,20 @@ myForm.onAll("beforeUnrender", async (ev) => {
     item.classList.remove("ongoing");
     await delay(150); // wait for the CSS transition to finish
 });
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-See [Showcase — Animations]({{ "/about/showcase" | relative_url }}#animations)
-for a complete working example with the matching CSS.
+{% include components/sampletabs_tpl.md
+    formId="faq_animations"
+    htmlSource=faq_animations_html
+    cssSource=faq_animations_css
+    jsSource=faq_animations_js
+    demoValue='{"items":[{"value":"First item"},{"value":"Second item"}]}'
+    tests=false
+%}
+
+See the [Showcase — Animations]({{ "/about/showcase" | relative_url }}#animations)
+for detailed notes and a more elaborate example.
 
 
 ## Data: Import, Export & Reset
@@ -966,31 +1023,40 @@ A *mixin type* is an HTML `<template>` element that bundles a component's
 markup, styles, and behaviour in one place.  Instead of a native type keyword
 (`"form"`, `"list"`, …) you write the template's `id` prefixed with `#`:
 
-```html
-<!-- Define the blueprint once -->
-<template id="labeledInput">
-  <label data-smark>
-    <span class="li-label"></span>
-    <input type="text">
-  </label>
-  <style>
-    .li-label { font-weight: 600; display: block; margin-bottom: 0.2em; }
-  </style>
-  <script>
-    // `this` is the SmarkForm component instance — use its API to personalise
-    // each instance. Show the per-usage data-label, falling back to the
-    // component's own name when no label is supplied.
-    const labelEl = this.targetNode.querySelector('.li-label');
-    if (labelEl) labelEl.textContent = this.targetNode.dataset.label ?? this.name;
-  </script>
-</template>
+{% raw %} <!-- faq_mixin_labeled_input {{{ --> {% endraw %}
+{% capture faq_mixin_labeled_input_html -%}
+<div data-smark='{"type":"form","name":"person"}'>
+    <div data-smark='{"type":"#labeledInput","name":"firstName"}' data-label="First name"></div>
+    <div data-smark='{"type":"#labeledInput","name":"lastName"}'  data-label="Last name"></div>
+</div>
 
-<!-- Use it anywhere in the form -->
-<form id="myForm">
-  <div data-smark='{"type":"#labeledInput","name":"firstName"}' data-label="First name"></div>
-  <div data-smark='{"type":"#labeledInput","name":"lastName"}'  data-label="Last name"></div>
-</form>
-```
+<template id="labeledInput">
+    <span data-smark='{"type":"input"}'>
+        <label>
+            <span class="li-label"></span>
+            <input data-smark type="text">
+        </label>
+    </span>
+    <style>
+        .li-label { font-weight: 600; display: block; margin-bottom: 0.2em; }
+    </style>
+    <script>
+        // `this` is the SmarkForm component instance — use its API to personalise
+        // each instance. Show the per-usage data-label, falling back to the
+        // component's own name when no label is supplied.
+        const labelEl = this.targetNode.querySelector('.li-label');
+        if (labelEl) labelEl.textContent = this.targetNode.dataset.label ?? this.name;
+    </script>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="faq_mixin_labeled_input"
+    htmlSource=faq_mixin_labeled_input_html
+    demoValue='{"person":{"firstName":"Alice","lastName":"Smith"}}'
+    tests=false
+%}
 
 The `<style>` sibling is injected into `<head>` once (deduplicated), and the
 `<script>` sibling runs once per instance with `this` bound to the SmarkForm
