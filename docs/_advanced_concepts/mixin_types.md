@@ -508,7 +508,7 @@ export default async ({ page, expect, root, writeField, readField }) => {
             "phone": "555-1234"
         },
         "emergency": {
-            "name": "Bob Jones",
+            "name": "Bob Smith",
             "email": "bob@example.com",
             "phone": "555-5678"
         }
@@ -590,6 +590,7 @@ export default async ({ page, expect, root }) => {
     htmlSource=mixin_option_override_html
     showEditor=true
     selected="preview"
+    demoValue='{"labels":{"priority":[{"tag":"critical"},{"tag":"needs-review"},{"tag":"assigned"}],"optional":[{"tag":"nice-to-have"}]}}'
     tests=mixin_option_override_tests
 %}
 
