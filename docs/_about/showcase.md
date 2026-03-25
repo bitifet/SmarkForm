@@ -46,6 +46,7 @@ featured ones.
     * [Nested lists and forms](#nested-lists-and-forms)
     * [Item duplication and closure state](#item-duplication-and-closure-state)
     * [A note on empty values](#a-note-on-empty-values)
+    * [Mixins](#mixins)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
@@ -1548,6 +1549,154 @@ where and how the *exportEntries* property is used in the lists:
     - This way, when importing the exported data (or if item is duplicated with
       the `✨` button), the unfilled intervals are correctly shown as
       "(Closed)".
+
+
+### Mixins
+
+The `.schedule-row` pattern was repeated **four times** in the hotel example
+above — once for each service row. With **Mixin Types**, you define that pattern
+**once** inside a `<template>` element and reference it from as many usage
+sites as you need.
+
+Beyond reuse, the `<template>` tag unlocks two companion features that can live
+as **direct siblings** of the template root:
+
+* **A `<style>` sibling** — injected into `<head>` exactly once, regardless of
+  how many times the mixin is used.
+* **A `<script>` sibling** — executed once per component instance with `this`
+  bound to the SmarkForm component, giving direct API access.
+
+The example below rebuilds the hotel schedule as a single `#scheduleRow` mixin.
+Each usage site passes a `data-label` attribute that the script picks up to set
+the row header dynamically.
+
+{: .hint }
+> Press and hold `Ctrl` to reveal the available hotkeys on the ➖ / ➕ buttons.
+
+{% raw %} <!-- schedule_mixin_html {{{ --> {% endraw %}
+{% capture schedule_mixin_html -%}
+<template id="scheduleRow">
+  <div class="sf-sched-row"
+       data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+    <strong data-smark='{"role":"header"}'>Schedule</strong>
+    <span class="sf-slot" data-smark='{"role":"empty_list"}'>(Closed)</span>
+    <span class="sf-slot">
+      <span class="sf-from">From <input class="sf-time" data-smark type="time" name="start"></span>
+      <span class="sf-to">to <input class="sf-time" data-smark type="time" name="end"></span>
+    </span>
+    <span data-smark='{"role":"footer"}'>
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Fewer intervals">➖</button>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title="More intervals">➕</button>
+    </span>
+  </div>
+  <style>
+    .sf-schtbl {
+      display: flex; flex-direction: column; gap: 0.25em; padding: 0.5em;
+    }
+    .sf-sched-row {
+      display: grid;
+      grid-template-columns: 10em 1fr auto;
+      align-items: start;
+      gap: 0.25em 0.5em;
+      padding: 0.3em 0.6em;
+      border-radius: 0.5em;
+      background: linear-gradient(135deg,rgba(99,102,241,.06),rgba(168,85,247,.06));
+      border: 1px solid rgba(99,102,241,.2);
+      transition: border-color .2s;
+    }
+    .sf-sched-row:focus-within { border-color: rgba(99,102,241,.6); }
+    .sf-sched-row > [data-role="header"] {
+      grid-column: 1; grid-row: 1;
+      padding-top: .3em; font-weight: 600; color: #6366f1;
+    }
+    .sf-sched-row > .sf-slot    { grid-column: 2; }
+    .sf-sched-row > [data-role="footer"] {
+      grid-column: 3; grid-row: 1 / -1; align-self: center; white-space: nowrap;
+    }
+    .sf-slot { display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center; }
+    .sf-from, .sf-to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
+    .sf-time { width: 5.5em; }
+  </style>
+  <script>
+    const list = this;
+    const header = list.targetNode.querySelector('[data-role="header"]');
+    if (header && list.targetNode.dataset.label) {
+      header.textContent = list.targetNode.dataset.label;
+    }
+  </script>
+</template>
+
+<div class="sf-schtbl" data-smark='{"type":"form","name":"schedules"}'>
+  <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'
+       data-label="🛎️ Reception:"></div>
+  <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'
+       data-label="🍸 Bar:"></div>
+  <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'
+       data-label="🍽️ Restaurant:"></div>
+  <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'
+       data-label="🏊 Pool:"></div>
+</div>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_mixin_notes {{{ --> {% endraw %}
+{% capture schedule_mixin_notes -%}
+👉 The `#scheduleRow` template bundles markup, styles, and behaviour in one place:
+  * The **`<style>`** sibling is injected into `<head>` once — it doesn't matter how many times the mixin is used on the page; the same CSS block is never duplicated.
+  * The **`<script>`** sibling runs once per component instance (`this` = the SmarkForm component wrapping that row).
+    * It reads `data-label` from the DOM node to set the row header dynamically.
+
+👉 Each usage site (placeholder) keeps its own identity:
+  * `name` is supplied by the placeholder, not the template — each row gets its own field name and data path.
+  * `data-label` is merged as an HTML attribute (placeholder wins over template), so every row can carry a different label without touching the template itself.
+  * Any `data-smark` option in the placeholder **overrides** the template default — e.g. you can pass `"max_items":5` to allow more intervals on a specific row.
+
+👉 External templates:
+  * In this example the `<template>` lives in the same document (local mixin, `"type":"#scheduleRow"`).
+  * You can equally point to a template in another file: `"type":"./shared/widgets.html#scheduleRow"`.
+    The external document is fetched once and all references to it share the same cached copy.
+
+{: .hint }
+> **Tip:** Use sufficiently unique CSS class names inside mixin `<style>` blocks — injected styles are global. The `sf-` prefix used here is one simple convention to keep them from clashing with page styles.
+
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture schedule_mixin_demoValue -%}
+{
+    "schedules": {
+        "rcpt_schedule": [
+            {"start": "08:00:00", "end": "20:00:00"}
+        ],
+        "bar_schedule": [
+            {"start": "11:00:00", "end": "23:00:00"}
+        ],
+        "restaurant_schedule": [
+            {"start": "07:30:00", "end": "10:30:00"},
+            {"start": "19:00:00", "end": "22:00:00"}
+        ],
+        "pool_schedule": [
+            {"start": "09:00:00", "end": "18:00:00"}
+        ]
+    }
+}
+{%- endcapture %}
+
+{% capture schedule_mixin_css %}{{ hotkeys_reveal_css }}{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="schedule_mixin"
+    htmlSource=schedule_mixin_html
+    cssHidden=schedule_mixin_css
+    notes=schedule_mixin_notes
+    selected="preview"
+    demoValue=schedule_mixin_demoValue
+    showEditor=true
+    tests=false
+%}
+
+{: .info }
+> **Want to learn more?** See the full reference in
+> [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
 
 
 ## Import and Export Data
