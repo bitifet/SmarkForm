@@ -225,19 +225,13 @@ export async function expandMixin(node, options, component) { //{{{
     // Deep-clone the template root:
     const clone = templateRoot.cloneNode(true);
 
-    // Gather styles from both the template top level AND direct children of
-    // the clone, then inject them into <head>:
-    const cloneDirectStyles = [...clone.children]
-        .filter(c => c.tagName.toLowerCase() === 'style');
-    for (const styleEl of cloneDirectStyles) styleEl.remove();
-    injectStyles([...topLevelStyles, ...cloneDirectStyles]);
+    // Gather styles from the template top level (siblings of the root element)
+    // and inject them into <head> once per unique content:
+    injectStyles(topLevelStyles);
 
-    // Gather scripts from both the template top level AND direct children of
-    // the clone.  These run once per component instance after rendering.
-    const cloneDirectScripts = [...clone.children]
-        .filter(c => c.tagName.toLowerCase() === 'script');
-    for (const scriptEl of cloneDirectScripts) scriptEl.remove();
-    let scripts = [...topLevelScripts, ...cloneDirectScripts];
+    // Gather scripts from the template top level (siblings of the root element).
+    // These run once per component instance after rendering.
+    let scripts = [...topLevelScripts];
 
     // Apply cross-origin script policy (external templates only):
     if (urlPart && scripts.length > 0 && isCrossOrigin(absoluteUrl)) {

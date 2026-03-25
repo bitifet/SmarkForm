@@ -36,7 +36,7 @@ nav_order: 6
 * [Scripts and Styles](#scripts-and-styles)
     * [Styles](#styles)
     * [Scripts](#scripts)
-    * [Open Questions — Cross-Origin Script Security Policy](#open-questions-cross-origin-script-security-policy)
+    * [Cross-Origin Script Security Policy](#cross-origin-script-security-policy)
 * [Examples](#examples)
     * [Reusable contact block](#reusable-contact-block)
     * [Option override per usage site](#option-override-per-usage-site)
@@ -172,6 +172,7 @@ SmarkForm raises a normative error (see [Error Codes](#error-codes)):
 |---|---|
 | The `<template>` element must exist and its `id` must match the fragment | Without it there is nothing to clone |
 | The template must contain **exactly one root element node** | SmarkForm replaces the placeholder with a single node; extra text or comment nodes are ignored, but extra element nodes are an error |
+| `<style>` and `<script>` siblings of the root are allowed and **do not count** toward the one-element limit | They carry component styles/behaviour, not markup |
 | The template root element must **not** specify a `name` inside its `data-smark` options | The name belongs to the placeholder (the usage site), not the blueprint |
 
 ```html
@@ -183,6 +184,13 @@ SmarkForm raises a normative error (see [Error Codes](#error-codes)):
 <!-- ✅ Valid: root may omit data-smark entirely -->
 <template id="simpleWidget">
   <div class="widget"> ... </div>
+</template>
+
+<!-- ✅ Valid: <style> and <script> siblings are allowed alongside the root -->
+<template id="styledWidget">
+  <div data-smark='{"type":"form"}'> ... </div>
+  <style>.widget { border: 1px solid #ccc; }</style>
+  <script>this.targetNode.classList.add('widget');</script>
 </template>
 
 <!-- ❌ Invalid: two root elements -->
@@ -375,19 +383,47 @@ is thrown.
 
 ## Scripts and Styles
 
-Support for `<style>` and `<script>` elements inside component markup is
-a **general feature** available to `form` and `list` component
-types (and via a singleton pattern for scalar fields).  It is documented here
-because mixin templates are the most natural place to bundle component-specific
-styles and behaviour alongside their markup.
+`<style>` and `<script>` elements can be placed as **siblings** of the root
+element inside a `<template>`, giving mixin authors a way to bundle
+component-specific styles and behaviour alongside their markup.
+
+{: .info }
+> This feature is **exclusive to mixin templates**.  Placing `<style>` or
+> `<script>` directly inside a regular page element (outside a `<template>`)
+> causes the browser to parse and execute them immediately at page load, making
+> deferred/per-instance execution impossible.  The `<template>` tag prevents
+> that and is therefore the only supported location.
+
+A mixin template may contain **up to three direct children**:
+
+1. **One root element** (the component markup — required)
+2. **One `<style>` element** (component styles — optional)
+3. **One `<script>` element** (component behaviour — optional)
+
+```html
+<template id="myWidget">
+  <div data-smark='{"type":"form"}'>
+    <!-- component markup -->
+    <input data-smark type="text" name="value">
+  </div>
+  <style>
+    /* Component-specific styles */
+    .widget-root { border: 1px solid #ccc; }
+  </style>
+  <script>
+    // Component-specific behaviour (`this` = SmarkForm component instance)
+    this.targetNode.classList.add('widget-root');
+  </script>
+</template>
+```
 
 ### Styles
 
-A `<style>` element found inside a component root (including a mixin template
-root) is extracted and injected into `<head>` once per unique source.
-Deduplication is by source identity (same external document + template id for
-external styles, or by content for inline `<style>` blocks; the specific
-deduplication algorithm is an implementation detail).
+A `<style>` element that is a **direct sibling** of the template root element
+is extracted and injected into `<head>` exactly once per unique content.
+Injecting the same style block from multiple mixin instances is safe — the
+deduplication ensures the `<style>` appears in `<head>` only once, regardless
+of how many times the mixin is used.
 
 {: .info }
 > Injected styles are **global**.  Authors are responsible for using specific
@@ -396,10 +432,10 @@ deduplication algorithm is an implementation detail).
 
 ### Scripts
 
-A `<script>` element found inside a component root is extracted, wrapped into
-a function, and executed **once per component instance** after the component
-has finished rendering.  The function receives `this` bound to the SmarkForm
-component instance, enabling direct API access.
+A `<script>` element that is a **direct sibling** of the template root element
+is extracted, wrapped into a function, and executed **once per component
+instance** after the component has finished rendering.  The function receives
+`this` bound to the SmarkForm component instance, enabling direct API access.
 
 ```html
 <template id="autoFocus">

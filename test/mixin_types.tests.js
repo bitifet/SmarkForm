@@ -242,9 +242,8 @@ test.describe('Mixin Types — local template expansion', () => {
         try {
             const { url, onClosed: oc } = await renderHtml(page(`
 <template id="styled">
-  <div data-smark='{"type":"form"}'>
-    <style>.mixin-marker { color: blue; }</style>
-  </div>
+  <div data-smark='{"type":"form"}'></div>
+  <style>.mixin-marker { color: blue; }</style>
 </template>
 
 <form id="myForm">
@@ -271,9 +270,8 @@ test.describe('Mixin Types — local template expansion', () => {
         try {
             const { url, onClosed: oc } = await renderHtml(page(`
 <template id="styled">
-  <div data-smark='{"type":"form"}'>
-    <style>.once-style { color: green; }</style>
-  </div>
+  <div data-smark='{"type":"form"}'></div>
+  <style>.once-style { color: green; }</style>
 </template>
 
 <form id="myForm">
