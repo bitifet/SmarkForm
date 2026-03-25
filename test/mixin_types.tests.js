@@ -497,13 +497,8 @@ test.describe('Mixin Types — error codes', () => {
 </form>
 `));
             onClosed = oc;
-            // The circular dependency causes form.root's rendered Promise to
-            // hang (form"top"'s rendered never settles), so the browser's
-            // 'load' event may be delayed indefinitely.  Use a short
-            // navigation timeout and catch the expected timeout, then
-            // confirm the error node was already rendered via microtask.
-            await pg.goto(url, { waitUntil: 'domcontentloaded', timeout: 8000 }).catch(() => {/* expected */});
-            await pg.waitForTimeout(2000);
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
 
             await expect(pg.getByText('MIXIN_CIRCULAR_DEPENDENCY')).toBeVisible({ timeout: 3000 });
         } finally {
