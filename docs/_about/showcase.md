@@ -1776,6 +1776,14 @@ runs on the final data — whether the item is brand new or duplicated.
       const prev  = idx > 0               ? items[idx - 1] : null;
       const next  = idx < items.length - 1 ? items[idx + 1] : null;
 
+      // Format a Date as "YYYY-MM-DD" using LOCAL calendar fields so the result
+      // is never shifted by the browser's UTC offset (toISOString() is UTC-based
+      // and would produce the wrong date in any UTC+ timezone).
+      const fmtDate = d =>
+        d.getFullYear() + '-'
+        + String(d.getMonth() + 1).padStart(2, '0') + '-'
+        + String(d.getDate()).padStart(2, '0');
+
       // ── Start date ────────────────────────────────────────────────────────
       // Anchor start_date just after the previous period ends.
       // No previous period → default to today.
@@ -1784,9 +1792,9 @@ runs on the final data — whether the item is brand new or duplicated.
       if (prev?.end_date) {
         const d = new Date(prev.end_date + 'T00:00:00');
         d.setDate(d.getDate() + 1);       // setDate handles month/year boundaries
-        startDate = d.toISOString().slice(0, 10);
+        startDate = fmtDate(d);
       } else if (!prev) {
-        startDate = new Date().toISOString().slice(0, 10);
+        startDate = fmtDate(new Date());
       }
 
       // ── End date ──────────────────────────────────────────────────────────
@@ -1813,15 +1821,15 @@ runs on the final data — whether the item is brand new or duplicated.
               (pEnd.getFullYear()  - pStart.getFullYear()) * 12 +
               (pEnd.getMonth()     - pStart.getMonth()   ) + 1;
             // End on the last day of the Nth month from nStart.
-            endDate = new Date(
-              nStart.getFullYear(), nStart.getMonth() + months, 0
-            ).toISOString().slice(0, 10);
+            endDate = fmtDate(
+              new Date(nStart.getFullYear(), nStart.getMonth() + months, 0)
+            );
           } else {
             // Day-level: count days and apply the same span.
             const days = Math.round((pEnd - pStart) / 86400000);
             const d = new Date(nStart);
             d.setDate(d.getDate() + days);
-            endDate = d.toISOString().slice(0, 10);
+            endDate = fmtDate(d);
           }
         }
 
@@ -1838,7 +1846,7 @@ runs on the final data — whether the item is brand new or duplicated.
         if (next.start_date > startDate) {
           const d = new Date(next.start_date + 'T00:00:00');
           d.setDate(d.getDate() - 1);
-          endDate = d.toISOString().slice(0, 10);
+          endDate = fmtDate(d);
         }
         // Contiguous (next.start_date === startDate) → endDate stays null.
       }
