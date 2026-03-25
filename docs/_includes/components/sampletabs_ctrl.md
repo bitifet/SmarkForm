@@ -340,6 +340,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .tab-content.tab-code {
   padding: 0px;
+  min-height: 3em;
 }
 .tab-content.tab-code>* {
   margin-bottom: 0px;
