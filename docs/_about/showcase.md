@@ -43,10 +43,11 @@ featured ones.
     * [Lists](#lists)
     * [Deeply nested forms](#deeply-nested-forms)
     * [More on lists](#more-on-lists)
+    * [Mixins](#mixins)
     * [Nested lists and forms](#nested-lists-and-forms)
     * [Item duplication and closure state](#item-duplication-and-closure-state)
     * [A note on empty values](#a-note-on-empty-values)
-    * [Mixins](#mixins)
+    * [Nesting Mixins](#nesting-mixins)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
     * [Submitting the form](#submitting-the-form)
@@ -1112,6 +1113,162 @@ needing DOM filler elements.
 %}
 
 
+### Mixins
+
+The `.schedule-row` pattern was repeated **four times** in the hotel example
+above — once for each service row. With **Mixin Types**, you define that pattern
+**once** inside a `<template>` element and reference it from as many usage
+sites as you need.
+
+Beyond reuse, the `<template>` tag unlocks a companion feature that can live as
+a **direct sibling** of the template root:
+
+* **A `<style>` sibling** — injected into `<head>` exactly once, regardless of
+  how many times the mixin is used, keeping your page free of duplicate CSS.
+
+{: .hint }
+> Press and hold `Ctrl` to reveal the available hotkeys on the ➖ / ➕ buttons.
+
+{% raw %} <!-- schedule_row_tpl {{{ --> {% endraw %}
+{% capture schedule_row_tpl -%}
+<template id="scheduleRow">
+  <div class="sf-sched-row"
+       data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+    <strong data-smark='{"role":"header"}'>Schedule</strong>
+    <span class="sf-slot" data-smark='{"role":"empty_list"}'>(Closed)</span>
+    <span class="sf-slot">
+      <span class="sf-from">From <input class="sf-time" data-smark type="time" name="start"></span>
+      <span class="sf-to">to <input class="sf-time" data-smark type="time" name="end"></span>
+    </span>
+    <span data-smark='{"role":"footer"}'>
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Less intervals">➖</button>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title="More intervals">➕</button>
+    </span>
+  </div>
+  <style>
+    .sf-schtbl {
+      display: flex; flex-direction: column; gap: 0.25em; padding: 0.5em;
+    }
+    .sf-sched-row {
+      display: grid;
+      grid-template-columns: 10em 1fr auto;
+      align-items: start;
+      gap: 0.25em 0.5em;
+      padding: 0.3em 0.6em;
+      border-radius: 0.5em;
+      background: linear-gradient(135deg,rgba(99,102,241,.06),rgba(168,85,247,.06));
+      border: 1px solid rgba(99,102,241,.2);
+      transition: border-color .2s;
+    }
+    .sf-sched-row:focus-within { border-color: rgba(99,102,241,.6); }
+    .sf-sched-row > [data-role="header"] {
+      grid-column: 1; grid-row: 1;
+      padding-top: .3em; font-weight: 600; color: #6366f1;
+    }
+    .sf-sched-row > .sf-slot    { grid-column: 2; }
+    .sf-sched-row > [data-role="footer"] {
+      grid-column: 3; grid-row: 1 / -1; align-self: center; white-space: nowrap;
+    }
+    .sf-slot { display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center; }
+    .sf-from, .sf-to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
+    .sf-time { width: 5.5em; }
+  </style>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_row_form {{{ --> {% endraw %}
+{% capture schedule_row_form -%}
+█<div class="sf-schtbl" data-smark='{"type":"form","name":"schedules"}'>
+█  <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'
+█       data-label="🛎️ Reception:"></div>
+█  <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'
+█       data-label="🍸 Bar:"></div>
+█  <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'
+█       data-label="🍽️ Restaurant:"></div>
+█  <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'
+█       data-label="🏊 Pool:"></div>
+█</div>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_mixin_html {{{ --> {% endraw %}
+{% capture schedule_mixin_html -%}
+{{ schedule_row_form | replace: "█", "" }}
+{{ schedule_row_tpl }}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- schedule_mixin_notes {{{ --> {% endraw %}
+{% capture schedule_mixin_notes -%}
+👉 The `#scheduleRow` template bundles markup and styles in one place:
+  * The **`<style>`** sibling is injected into `<head>` once — it doesn't matter
+    how many times the mixin is used on the page; the same CSS block is never
+    duplicated.
+
+👉 Each usage site (placeholder) keeps its own identity:
+  * `name` is supplied by the placeholder, not the template — each row gets its
+    own field name and data path.
+  * `data-label` is merged as an HTML attribute (placeholder wins over template),
+    so every row can carry a different label without touching the template itself.
+  * Any `data-smark` option in the placeholder **overrides** the template default
+    — e.g. pass `"max_items":5` to allow more intervals on a specific row.
+
+👉 Templates are placed **after the form** for readability: the usage is visible
+   first, and the definition follows.
+
+👉 External templates:
+  * In this example the `<template>` lives in the same document
+    (local mixin, `"type":"#scheduleRow"`).
+  * You can equally point to a template in another file:
+    `"type":"./shared/widgets.html#scheduleRow"`. The external document is
+    fetched once and all references share the same cached copy.
+
+{: .hint }
+> **Tip:** Use sufficiently unique CSS class names inside mixin `<style>` blocks
+> — injected styles are global. The `sf-` prefix used here is one simple
+> convention to keep them from clashing with page styles.
+
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture schedule_mixin_demoValue -%}
+{
+    "schedules": {
+        "rcpt_schedule": [
+            {"start": "08:00:00", "end": "20:00:00"}
+        ],
+        "bar_schedule": [
+            {"start": "11:00:00", "end": "23:00:00"}
+        ],
+        "restaurant_schedule": [
+            {"start": "07:30:00", "end": "10:30:00"},
+            {"start": "19:00:00", "end": "22:00:00"}
+        ],
+        "pool_schedule": [
+            {"start": "09:00:00", "end": "18:00:00"}
+        ]
+    }
+}
+{%- endcapture %}
+
+{% capture schedule_mixin_css %}{{ hotkeys_reveal_css }}{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="schedule_mixin"
+    htmlSource=schedule_mixin_html
+    cssHidden=schedule_mixin_css
+    notes=schedule_mixin_notes
+    selected="preview"
+    demoValue=schedule_mixin_demoValue
+    showEditor=true
+    tests=false
+%}
+
+{: .info }
+> **Want to learn more?** See the full reference in
+> [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
+
+
 ### Nested lists and forms
 
 
@@ -1146,13 +1303,14 @@ every list item and so forth to any depth.
           <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
           <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
         </p>
-{{ schedule_table | replace: "█", "                    " }}
+{{ schedule_row_form | replace: "█", "        " }}
     </fieldset>
 </div>
 <button
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
+{{ schedule_row_tpl }}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1201,86 +1359,11 @@ every list item and so forth to any depth.
 }
 {%- endcapture %}
 
-{% raw %} <!-- nested_schedule_table_js {{{ --> {% endraw %}
-{% capture nested_schedule_table_js -%}
-myForm.on('AfterAction_addItem', async function(ev) {
-
-    // Only react to additions to the 'periods' list.
-    if (!ev.target.getPath().endsWith('/periods')) return;
-
-    // ev.data is the newly created item component (returned by addItem).
-    const newItem = ev.data;
-    if (!newItem) return;
-
-    // The item's path ends with its 0-based index (e.g. ".../periods/2").
-    const newIdx = parseInt(newItem.getPath().split('/').pop());
-
-    // Export the full list so we can inspect surrounding periods.
-    // exportEmpties:true ensures the brand-new empty item appears in the array.
-    const items = await ev.target.export({ exportEmpties: true });
-    const prev = newIdx > 0               ? items[newIdx - 1] : null;
-    const next = newIdx < items.length - 1 ? items[newIdx + 1] : null;
-
-    // ── Start date ────────────────────────────────────────────────────────────
-    // Begin the day after the previous period ends, or today if there is none.
-    let startDate;
-    if (prev?.end_date) {
-        const d = new Date(prev.end_date + 'T00:00:00');
-        d.setDate(d.getDate() + 1);  // setDate handles month/year wrap correctly
-        startDate = d.toISOString().slice(0, 10);
-    } else {
-        startDate = new Date().toISOString().slice(0, 10);
-    }
-
-    // ── End date ──────────────────────────────────────────────────────────────
-    let endDate = null;
-
-    if (!next) {
-        // Appended at the end: mirror the duration of the previous period so
-        // the user gets a sensible default length to adjust.
-        if (prev?.start_date && prev?.end_date) {
-            const duration = Math.round(
-                (new Date(prev.end_date   + 'T00:00:00') -
-                 new Date(prev.start_date + 'T00:00:00')) / 86400000
-            );
-            const d = new Date(startDate + 'T00:00:00');
-            d.setDate(d.getDate() + duration);
-            endDate = d.toISOString().slice(0, 10);
-        }
-
-    } else if (next.start_date) {
-        // Inserted between two periods.
-        // "No gap" means next starts exactly where this new period starts
-        // (i.e. prev.end_date + 1 === next.start_date).  In that case the
-        // user must decide the split manually → leave end_date blank.
-        //
-        // "Gap" means there are days between the previous end and the next
-        // start.  Fill the whole gap: end_date = next.start_date − 1 day.
-        if (next.start_date > startDate) {
-            const d = new Date(next.start_date + 'T00:00:00');
-            d.setDate(d.getDate() - 1);
-            endDate = d.toISOString().slice(0, 10);
-        }
-    }
-
-    // ── Apply ─────────────────────────────────────────────────────────────────
-    const startField = newItem.find('start_date');
-    if (startField) await startField.import(startDate, { setDefault: false });
-
-    if (endDate) {
-        const endField = newItem.find('end_date');
-        if (endField) await endField.import(endDate, { setDefault: false });
-    }
-
-});
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
     htmlSource=nested_schedule_table
     cssSource=schedule_table_css
-    jsSource=nested_schedule_table_js
     notes=notes
     selected="preview"
     demoValue=demoValue
@@ -1370,13 +1453,14 @@ usability by default:
           <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
           <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
         </p>
-{{ schedule_table | replace: "█", "                    " }}
+{{ schedule_row_form | replace: "█", "        " }}
     </fieldset>
 </div>
 <button
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
 >➕ Add Period</button>
+{{ schedule_row_tpl }}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1627,152 +1711,258 @@ where and how the *exportEntries* property is used in the lists:
       "(Closed)".
 
 
-### Mixins
+### Nesting Mixins
 
-The `.schedule-row` pattern was repeated **four times** in the hotel example
-above — once for each service row. With **Mixin Types**, you define that pattern
-**once** inside a `<template>` element and reference it from as many usage
-sites as you need.
+Mixin templates can themselves reference other mixins — creating a **composition
+chain** where each level adds its own behaviour.
 
-Beyond reuse, the `<template>` tag unlocks two companion features that can live
-as **direct siblings** of the template root:
+In the example below we introduce a second mixin, `#periodItem`, that wraps the
+entire period fieldset (including the embedded `#scheduleRow` rows).
 
-* **A `<style>` sibling** — injected into `<head>` exactly once, regardless of
-  how many times the mixin is used.
-* **A `<script>` sibling** — executed once per component instance with `this`
-  bound to the SmarkForm component, giving direct API access.
+* The **inner mixin** (`#scheduleRow`) keeps its `<style>` — injected once for
+  the whole page.
+* The **outer mixin** (`#periodItem`) adds a `<script>` sibling — a per-instance
+  hook that registers a smart date-prefill handler on the parent `periods` list.
 
-The example below rebuilds the hotel schedule as a single `#scheduleRow` mixin.
-Each usage site passes a `data-label` attribute that the script picks up to set
-the row header dynamically.
+The script fires through `AfterAction_addItem`, which fires **after** any source
+import (used by the `✨` duplicate button). This guarantees the date logic always
+runs on the final data — whether the item is brand new or duplicated.
 
-{: .hint }
-> Press and hold `Ctrl` to reveal the available hotkeys on the ➖ / ➕ buttons.
-
-{% raw %} <!-- schedule_mixin_html {{{ --> {% endraw %}
-{% capture schedule_mixin_html -%}
-<template id="scheduleRow">
-  <div class="sf-sched-row"
-       data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-    <strong data-smark='{"role":"header"}'>Schedule</strong>
-    <span class="sf-slot" data-smark='{"role":"empty_list"}'>(Closed)</span>
-    <span class="sf-slot">
-      <span class="sf-from">From <input class="sf-time" data-smark type="time" name="start"></span>
-      <span class="sf-to">to <input class="sf-time" data-smark type="time" name="end"></span>
-    </span>
-    <span data-smark='{"role":"footer"}'>
-      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Fewer intervals">➖</button>
-      <button data-smark='{"action":"addItem","hotkey":"+"}' title="More intervals">➕</button>
-    </span>
-  </div>
-  <style>
-    .sf-schtbl {
-      display: flex; flex-direction: column; gap: 0.25em; padding: 0.5em;
-    }
-    .sf-sched-row {
-      display: grid;
-      grid-template-columns: 10em 1fr auto;
-      align-items: start;
-      gap: 0.25em 0.5em;
-      padding: 0.3em 0.6em;
-      border-radius: 0.5em;
-      background: linear-gradient(135deg,rgba(99,102,241,.06),rgba(168,85,247,.06));
-      border: 1px solid rgba(99,102,241,.2);
-      transition: border-color .2s;
-    }
-    .sf-sched-row:focus-within { border-color: rgba(99,102,241,.6); }
-    .sf-sched-row > [data-role="header"] {
-      grid-column: 1; grid-row: 1;
-      padding-top: .3em; font-weight: 600; color: #6366f1;
-    }
-    .sf-sched-row > .sf-slot    { grid-column: 2; }
-    .sf-sched-row > [data-role="footer"] {
-      grid-column: 3; grid-row: 1 / -1; align-self: center; white-space: nowrap;
-    }
-    .sf-slot { display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center; }
-    .sf-from, .sf-to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
-    .sf-time { width: 5.5em; }
-  </style>
+{% raw %} <!-- period_item_tpl {{{ --> {% endraw %}
+{% capture period_item_tpl -%}
+<template id="periodItem">
+  <fieldset data-smark='{"type":"form","exportEmpties":true}' style='margin-top: 1em'>
+    <legend>Period
+      <span data-smark='{"action":"position"}'>N</span>
+      of
+      <span data-smark='{"action":"count"}'>M</span>
+    </legend>
+    <button
+      data-smark='{"action":"addItem","source":".-1","hotkey":"d"}'
+      title='Duplicate this period'
+      style="float: right"
+    >✨</button>
+    <button
+      data-smark='{"action":"removeItem","hotkey":"-"}'
+      title='Remove this period'
+      style="float: right"
+    >➖</button>
+    <p class='period-dates'>
+      <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
+      <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
+    </p>
+    <div class="sf-schtbl" data-smark='{"type":"form","name":"schedules"}'>
+      <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}' data-label="🛎️ Reception:"></div>
+      <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}' data-label="🍸 Bar:"></div>
+      <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}' data-label="🍽️ Restaurant:"></div>
+      <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}' data-label="🏊 Pool:"></div>
+    </div>
+  </fieldset>
   <script>
-    const list = this;
-    const header = list.targetNode.querySelector('[data-role="header"]');
-    if (header && list.targetNode.dataset.label) {
-      header.textContent = list.targetNode.dataset.label;
-    }
+    const item = this;
+
+    // Register on the parent 'periods' list.  Each period's script adds one
+    // listener, but each listener only ever handles its own item (identified by
+    // path) so accumulation is harmless — O(N) listeners, O(1) work each.
+    item.parent.on('AfterAction_addItem', async function(ev) {
+
+      // Only process the event for THIS specific period.
+      if (!ev.data || ev.data.getPath() !== item.getPath()) return;
+
+      // Find this item's 0-based position in the exported data.
+      const idx   = parseInt(item.getPath().split('/').pop());
+      // Export with empties so the newly added item appears in the array.
+      const items = await item.parent.export({ exportEmpties: true });
+      const prev  = idx > 0               ? items[idx - 1] : null;
+      const next  = idx < items.length - 1 ? items[idx + 1] : null;
+
+      // ── Start date ────────────────────────────────────────────────────────
+      // Anchor start_date just after the previous period ends.
+      // No previous period → default to today.
+      // Previous period without an end_date → leave blank (no anchor available).
+      let startDate = null;
+      if (prev?.end_date) {
+        const d = new Date(prev.end_date + 'T00:00:00');
+        d.setDate(d.getDate() + 1);       // setDate handles month/year boundaries
+        startDate = d.toISOString().slice(0, 10);
+      } else if (!prev) {
+        startDate = new Date().toISOString().slice(0, 10);
+      }
+
+      // ── End date ──────────────────────────────────────────────────────────
+      let endDate = null;
+
+      if (startDate && !next) {
+        // Appended at the end — mirror the previous period's duration so the
+        // user has a sensible default to adjust rather than a blank end date.
+        if (prev?.start_date && prev?.end_date) {
+          const pStart = new Date(prev.start_date + 'T00:00:00');
+          const pEnd   = new Date(prev.end_date   + 'T00:00:00');
+          const nStart = new Date(startDate        + 'T00:00:00');
+
+          // Month-aware: if the previous period starts on the 1st and ends on
+          // the last day of a month it spans whole calendar months → mirror
+          // in months so the new period aligns with month boundaries too.
+          const pStartsFirst = pStart.getDate() === 1;
+          const pEndsLast    = pEnd.getDate() ===
+            new Date(pEnd.getFullYear(), pEnd.getMonth() + 1, 0).getDate();
+
+          if (pStartsFirst && pEndsLast) {
+            // Count months from start to end (inclusive).
+            const months =
+              (pEnd.getFullYear()  - pStart.getFullYear()) * 12 +
+              (pEnd.getMonth()     - pStart.getMonth()   ) + 1;
+            // End on the last day of the Nth month from nStart.
+            endDate = new Date(
+              nStart.getFullYear(), nStart.getMonth() + months, 0
+            ).toISOString().slice(0, 10);
+          } else {
+            // Day-level: count days and apply the same span.
+            const days = Math.round((pEnd - pStart) / 86400000);
+            const d = new Date(nStart);
+            d.setDate(d.getDate() + days);
+            endDate = d.toISOString().slice(0, 10);
+          }
+        }
+
+      } else if (startDate && next?.start_date) {
+        // Inserted between two existing periods.
+        //
+        // "Contiguous" case: next starts on the same day as our computed
+        // start_date (no gap between prev.end and next.start).  The user
+        // must decide the split point manually → leave end_date blank.
+        //
+        // "Gap" case: next.start_date is later than our start_date, meaning
+        // there are unassigned days between the two periods.  Fill the gap:
+        // set end_date = the day before next.start_date.
+        if (next.start_date > startDate) {
+          const d = new Date(next.start_date + 'T00:00:00');
+          d.setDate(d.getDate() - 1);
+          endDate = d.toISOString().slice(0, 10);
+        }
+        // Contiguous (next.start_date === startDate) → endDate stays null.
+      }
+
+      // ── Conflict guard ────────────────────────────────────────────────────
+      // Never propose an end date that predates the start date.
+      if (endDate && startDate && endDate < startDate) endDate = null;
+
+      // ── Write to fields ───────────────────────────────────────────────────
+      // Always overwrite both fields (clears stale dates from a duplication).
+      const startField = item.find('start_date');
+      const endField   = item.find('end_date');
+      if (startField) await startField.import(startDate, { setDefault: false });
+      if (endField)   await endField.import(endDate,   { setDefault: false });
+    });
   </script>
 </template>
-
-<div class="sf-schtbl" data-smark='{"type":"form","name":"schedules"}'>
-  <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'
-       data-label="🛎️ Reception:"></div>
-  <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'
-       data-label="🍸 Bar:"></div>
-  <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'
-       data-label="🍽️ Restaurant:"></div>
-  <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'
-       data-label="🏊 Pool:"></div>
-</div>
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- schedule_mixin_notes {{{ --> {% endraw %}
-{% capture schedule_mixin_notes -%}
-👉 The `#scheduleRow` template bundles markup, styles, and behaviour in one place:
-  * The **`<style>`** sibling is injected into `<head>` once — it doesn't matter how many times the mixin is used on the page; the same CSS block is never duplicated.
-  * The **`<script>`** sibling runs once per component instance (`this` = the SmarkForm component wrapping that row).
-    * It reads `data-label` from the DOM node to set the row header dynamically.
+{% raw %} <!-- period_mixin_duplicable {{{ --> {% endraw %}
+{% capture period_mixin_duplicable -%}
+<h2>🗓️ Periods:</h2>
+<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+  <fieldset data-smark='{"role":"empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
+  <div data-smark='{"type":"#periodItem"}'></div>
+</div>
+<button
+  data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
+  style="float: right; margin-top: 1em"
+>➕ Add Period</button>
+{{ period_item_tpl }}
+{{ schedule_row_tpl }}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-👉 Each usage site (placeholder) keeps its own identity:
-  * `name` is supplied by the placeholder, not the template — each row gets its own field name and data path.
-  * `data-label` is merged as an HTML attribute (placeholder wins over template), so every row can carry a different label without touching the template itself.
-  * Any `data-smark` option in the placeholder **overrides** the template default — e.g. you can pass `"max_items":5` to allow more intervals on a specific row.
+{% raw %} <!-- period_mixin_notes {{{ --> {% endraw %}
+{% capture period_mixin_notes -%}
 
-👉 External templates:
-  * In this example the `<template>` lives in the same document (local mixin, `"type":"#scheduleRow"`).
-  * You can equally point to a template in another file: `"type":"./shared/widgets.html#scheduleRow"`.
-    The external document is fetched once and all references to it share the same cached copy.
+👉 **Two templates, one example:**
+  * `#scheduleRow` (inner) — provides the time-interval list with its fancy
+    grid `<style>` injected once into `<head>`.
+  * `#periodItem` (outer) — wraps the whole period fieldset and uses
+    `#scheduleRow` inside it, demonstrating mixin composition.
 
-{: .hint }
-> **Tip:** Use sufficiently unique CSS class names inside mixin `<style>` blocks — injected styles are global. The `sf-` prefix used here is one simple convention to keep them from clashing with page styles.
+👉 **The `<script>` in `#periodItem` — smart date prefill:**
+  * Runs once per period component instance with `this` bound to the form
+    component for that period.
+  * Registers an `AfterAction_addItem` listener on the parent list.
+    The listener fires **after** any source import (used by `✨`), so it always
+    operates on the final data — whether the item is brand new or duplicated.
+    Stale dates from duplication are always overwritten.
+  * Date logic applied:
+
+| Situation | `start_date` | `end_date` |
+|---|---|---|
+| No previous period | today | blank |
+| Has previous (no end_date) | blank | blank |
+| Has previous, no next | prev.end + 1 day | start + same duration as prev (month-aware) |
+| Inserted — gap exists | prev.end + 1 day | next.start − 1 day |
+| Inserted — contiguous | prev.end + 1 day | blank (user decides the split) |
+
+  * end_date is cleared whenever it would predate start_date.
+
+👉 The `<style>` from `#scheduleRow` is **only injected once** even though it
+   appears inside `#periodItem` which is instantiated multiple times.
 
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% capture schedule_mixin_demoValue -%}
+{% capture period_mixin_demoValue -%}
 {
-    "schedules": {
-        "rcpt_schedule": [
-            {"start": "08:00:00", "end": "20:00:00"}
-        ],
-        "bar_schedule": [
-            {"start": "11:00:00", "end": "23:00:00"}
-        ],
-        "restaurant_schedule": [
-            {"start": "07:30:00", "end": "10:30:00"},
-            {"start": "19:00:00", "end": "22:00:00"}
-        ],
-        "pool_schedule": [
-            {"start": "09:00:00", "end": "18:00:00"}
-        ]
-    }
+    "periods": [
+        {
+            "start_date": "2025-01-01",
+            "end_date": "2025-06-30",
+            "schedules": {
+                "rcpt_schedule": [
+                    {"start": "00:00:00", "end": "23:59:00"}
+                ],
+                "bar_schedule": [
+                    {"start": "10:00:00", "end": "23:30:00"}
+                ],
+                "restaurant_schedule": [
+                    {"start": "07:30:00", "end": "10:30:00"},
+                    {"start": "13:00:00", "end": "15:30:00"},
+                    {"start": "19:00:00", "end": "22:00:00"}
+                ],
+                "pool_schedule": []
+            }
+        },
+        {
+            "start_date": "2025-07-01",
+            "end_date": "2025-12-31",
+            "schedules": {
+                "rcpt_schedule": [
+                    {"start": "00:00:00", "end": "23:59:00"}
+                ],
+                "bar_schedule": [
+                    {"start": "10:00:00", "end": "23:30:00"}
+                ],
+                "restaurant_schedule": [
+                    {"start": "07:30:00", "end": "10:30:00"},
+                    {"start": "13:00:00", "end": "15:30:00"},
+                    {"start": "19:00:00", "end": "22:00:00"}
+                ],
+                "pool_schedule": [
+                    {"start": "09:30:00", "end": "19:30:00"}
+                ]
+            }
+        }
+    ]
 }
 {%- endcapture %}
 
-{% capture schedule_mixin_css %}{{ hotkeys_reveal_css }}{%- endcapture %}
-
 {% include components/sampletabs_tpl.md
-    formId="schedule_mixin"
-    htmlSource=schedule_mixin_html
-    cssHidden=schedule_mixin_css
-    notes=schedule_mixin_notes
+    formId="period_mixin_duplicable"
+    htmlSource=period_mixin_duplicable
+    demoValue=period_mixin_demoValue
+    notes=period_mixin_notes
+    cssSource=schedule_table_css
     selected="preview"
-    demoValue=schedule_mixin_demoValue
     showEditor=true
     tests=false
 %}
-
-{: .info }
-> **Want to learn more?** See the full reference in
-> [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
 
 
 ## Import and Export Data
