@@ -526,7 +526,7 @@ endcapture %}
 
 {% raw %} <!-- simple_list_singleton_css {{{ --> {% endraw %}
 {% capture simple_list_singleton_css -%}
-#myForm$$ ul li {
+{{""}}#myForm$$ ul li {
     list-style-type: none !important;
 }{%
 endcapture %}
@@ -1120,11 +1120,13 @@ above — once for each service row. With **Mixin Types**, you define that patte
 **once** inside a `<template>` element and reference it from as many usage
 sites as you need.
 
-Beyond reuse, the `<template>` tag unlocks a companion feature that can live as
-a **direct sibling** of the template root:
+Beyond reuse, the `<template>` tag unlocks two companion features that can live
+as a **direct sibling** of the template root:
 
-* **A `<style>` sibling** — injected into `<head>` exactly once, regardless of
+* **An optional `<style>` sibling** — injected into `<head>` exactly once, regardless of
   how many times the mixin is used, keeping your page free of duplicate CSS.
+
+* **An optional `<script>` sibling** — that we'll discuss later.
 
 {: .hint }
 > Press and hold `Ctrl` to reveal the available hotkeys on the ➖ / ➕ buttons.
