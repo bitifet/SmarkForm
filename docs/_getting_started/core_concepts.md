@@ -524,7 +524,8 @@ last pet in the list would be removed.
 **In other words:** We can move the *removeItem* trigger button inside list
 items allowing users to cherry-pick which item to remove:
 
-```html
+{% raw %} <!-- core_remove_inside_item {{{ --> {% endraw %}
+{% capture core_remove_inside_item_html -%}
 <ul data-smark='{"type":"list","name":"pets"}'>
   <li>
     <input name='species' data-smark>
@@ -533,10 +534,15 @@ items allowing users to cherry-pick which item to remove:
   </li>
 </ul>
 <button data-smark='{"action":"addItem","context":"pets"}'>➕</button>
-<!-- (Optionally we can keep both)
-<button data-smark='{"action":"removeItem","context":"pets"}'>➖</button>
--->
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="core_remove_inside_item"
+    htmlSource=core_remove_inside_item_html
+    demoValue='{"pets":[{"species":"Cat","name":"Whiskers"},{"species":"Dog","name":"Rex"}]}'
+    tests=false
+%}
 
 {: .info }
 > Similarly, we could have placed an "addItem" button too inside the list item
@@ -640,7 +646,8 @@ This special behavior of the *input* component type is what we call a
 
 **Example:**
 
-```html
+{% raw %} <!-- core_singleton_phones {{{ --> {% endraw %}
+{% capture core_singleton_phones_html -%}
 <div data-smark='{"type":"form","name":"personal_data"}'>
   <input name='name'  data-smark>
   <input name='surname' data-smark>
@@ -652,7 +659,15 @@ This special behavior of the *input* component type is what we call a
   </ul>
   <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
 </div>
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="core_singleton_phones"
+    htmlSource=core_singleton_phones_html
+    demoValue='{"personal_data":{"name":"Alice","surname":"Smith","phones":["555-1234","555-5678"]}}'
+    tests=false
+%}
 
 {: .hint}
 > This forced us to explicitly specify the *data-smark* property in the list

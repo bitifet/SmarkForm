@@ -6,6 +6,8 @@ nav_order: 9
 
 ---
 
+{% include components/sampletabs_ctrl.md %}
+
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -51,8 +53,8 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
 
 **Example:**
 
-```html
-<!-- Radio button group for gender selection -->
+{% raw %} <!-- radio_group_example {{{ --> {% endraw %}
+{% capture radio_group_example_html -%}
 <fieldset>
     <legend>Gender:</legend>
     <label>
@@ -65,7 +67,15 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
         <input type="radio" data-smark name="gender" value="other"> Other
     </label>
 </fieldset>
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="radio_group_example"
+    htmlSource=radio_group_example_html
+    demoValue='{"gender":"female"}'
+    tests=false
+%}
 
 ## Radio Button Groups
 

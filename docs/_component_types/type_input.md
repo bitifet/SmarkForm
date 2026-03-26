@@ -6,6 +6,8 @@ nav_order: 3
 
 ---
 
+{% include components/sampletabs_ctrl.md %}
+
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -49,10 +51,18 @@ To use the `input` component type, simply add the `data-smark` attribute to your
 
 **Example:**
 
-```html
-<!-- Example of text input field -->
+{% raw %} <!-- input_basic_usage {{{ --> {% endraw %}
+{% capture input_basic_usage_html -%}
 <input type="text" data-smark='{"name":"username"}' placeholder="Enter your username">
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="input_basic_usage"
+    htmlSource=input_basic_usage_html
+    demoValue='{"username":"alice"}'
+    tests=false
+%}
 
 
 
