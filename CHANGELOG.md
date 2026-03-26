@@ -11,6 +11,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.14.0] — 2026-03-26
+
+✨ Mixin Types · 🎯 DOM-like event API (`on`/`onAll`/`onLocal`) · 🛠️ Improved tooling.
+
+SmarkForm 0.14.0 is a feature release centred on **Mixin Types** — a powerful new mechanism that lets components be enriched with reusable behaviour, styles, and scripts declared directly inside `<template>` elements. This release also ships a cleaner DOM-like event API and improved developer tooling.
+
+### Features
+- **Mixin Types**: Components can now reference typed mixins (via `#` in the `data-smark-type` attribute). Mixin `<style>` and `<script>` blocks declared as top-level siblings inside `<template>` are extracted and applied per-instance, enabling fully self-contained, reusable interactive components.
+- **DOM-like event API**: New `on()`, `onAll()`, and `onLocal()` methods; `focusenter`/`focusleave` events; enriched event metadata for cleaner scripting.
+- **Auto-stop dev server**: `npm run dev` now automatically terminates any previously running instance before starting a new one.
+
+### Other
+- Dev-dependency updates (Rollup bump).
+- Minor documentation corrections.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.14.0)
+
+---
+
 ## [0.13.2] — 2026-03-16
 
 🐛 Workaround for Chromium/Brave Android IME "Next" double-advance bug in scalar list fields · 🧪 Chromium mobile and Safari mobile added to CI test matrix · ✨ Smart value coercion docs · 📖 Responsive iframe height in sampletabs · 🎞️ List item animations in showcase demo.
