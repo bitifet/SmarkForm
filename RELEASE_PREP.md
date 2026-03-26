@@ -74,20 +74,12 @@ A **mixin type** is a component whose `data-smark-type` attribute contains a `#`
 SmarkForm 0.14.0 is a feature release centred on **Mixin Types** — a powerful new mechanism
 that lets components be enriched with reusable behaviour, styles, and scripts declared directly
 inside `<template>` elements. This release also ships a cleaner DOM-like event API
-(`on`/`onAll`/`onLocal`, `focusenter`/`focusleave`) and several bug fixes.
+(`on`/`onAll`/`onLocal`, `focusenter`/`focusleave`) and improved developer tooling.
 
 ### Features
 - **Mixin Types**: Components can now reference typed mixins (via `#` in `data-smark-type`). Mixin `<style>` and `<script>` blocks declared as top-level siblings inside `<template>` are extracted and applied per-instance, enabling fully self-contained, reusable interactive components.
 - **DOM-like event API**: New `on()`, `onAll()`, and `onLocal()` methods; `focusenter`/`focusleave` events; enriched event metadata for cleaner scripting.
 - **Auto-stop dev server**: `npm run dev` now automatically terminates any previously running instance before starting a new one.
-
-### Bug Fixes
-- Fixed `setDefault` propagation in `export_to_target` (values no longer leak into descendants).
-- Fixed Reset button targeting (now correctly targets the root form).
-- Restored Ctrl+C support for `npm run dev`.
-- Fixed CSS tab collapse when no `cssSource` and edit mode is off.
-- Replaced `toISOString()` with local date formatter to avoid UTC day-shift in `UTC+` timezones.
-- Added responsive CSS breakpoint to `scheduleRow` mixin; fixed `draggable` typo in `sortable`.
 
 ### Other
 - Dev-dependency updates (Rollup bump).
@@ -114,14 +106,6 @@ per-instance, enabling fully self-contained, composable components with no extra
 - **DOM-like event API**: `on()`, `onAll()`, `onLocal()`; `focusenter`/`focusleave` events; richer event metadata.
 - **Auto-stop dev server**: `npm run dev` terminates any previous instance automatically.
 
-### 🐛 Bug Fixes
-- Fixed `setDefault` propagation in `export_to_target`.
-- Fixed Reset button targeting (root form instead of demo sub-form).
-- Restored Ctrl+C support for `npm run dev`.
-- Fixed CSS tab collapse when `cssSource` is absent and edit mode is off.
-- Replaced `toISOString()` with local date formatter (avoids UTC day-shift in `UTC+` timezones).
-- Responsive CSS breakpoint for `scheduleRow` mixin; fixed `draggable` typo in `sortable`.
-
 ### 📦 Other
 - Dev-dependency updates (Rollup bump).
 - Minor documentation corrections.
@@ -147,12 +131,12 @@ Version 0.14.0
 
 This release introduces **Mixin Types**: package behaviour, styles, and scripts directly inside
 `<template>` elements for fully self-contained, reusable components. Also ships a cleaner
-DOM-like event API and several bug fixes.
+DOM-like event API and improved developer tooling.
 
 Key highlights:
 - 🧩 Mixin Types: `<style>`/`<script>` siblings in templates, applied per instance
 - 🎯 New DOM-like event API: `on()` / `onAll()` / `onLocal()`, `focusenter`/`focusleave`
-- 🐛 Bug fixes: `setDefault` propagation, Reset button, date formatting, and more
+- 🛠️ Improved developer tooling (`npm run dev` auto-stop, Rollup bump)
 
 📦 npm: `npm install smarkform@0.14.0`
 🔗 Docs: https://smarkform.bitifet.net
@@ -166,175 +150,693 @@ Key highlights:
 
 ### Twitter / X
 
+> Each community gets a **4-tweet thread**. Tweet 1 announces the release and signals the
+> thread; tweets 2–3 cover the key Mixin Types features and nuances; tweet 4 wraps up with
+> additional improvements and a call to action. **The documentation links are identical in every
+> thread** (same link per tweet position); only wording, emoji, and hashtags vary between
+> communities. Deeper angle changes are applied where the community warrants it.
+>
+> **Link sets per tweet position (same across all 13 threads):**
+> - Tweet 1: 📖 `/advanced_concepts/mixin_types` · 🎯 `/about/showcase#mixins`
+> - Tweet 2: 📖 `/advanced_concepts/mixin_types#styles` · ❓ `/about/faq#mixin-types`
+> - Tweet 3: 📖 `/advanced_concepts/mixin_types#scripts` · 🔒 `/advanced_concepts/mixin_types#cross-origin-script-security-policy`
+> - Tweet 4: 📖 `/advanced_concepts/events` · 📦 `npm i smarkform@0.14.0` · 🔗 `https://smarkform.bitifet.net`
+
+---
+
 #### Public (general audience)
 
+**Tweet 1/4**
 ```
-🚀 #SmarkForm 0.14.0 released — Mixin Types!
+🚀 #SmarkForm 0.14.0 — Mixin Types! 🧵 1/4
 
 Package behaviour, styles & scripts inside <template> elements.
-Self-contained, reusable form components — no extra JS modules needed.
+Self-contained, reusable form components — no extra JS modules.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Styles in your templates
+
+Add a <style> sibling inside <template>.
+SmarkForm injects it once per document — deduplicated across all instances.
+Components carry their own CSS. No extra stylesheet.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, nesting & safety
+
+<script> siblings run per instance as lifecycle hooks.
+Compose via `#` chains · load from external URLs.
+XSS guard (crossOriginMixins) + circular dep detection.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+New DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave events with richer metadata.
 
 #OpenSource #JavaScript #WebDev #Forms
-
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
 ```
 
+---
+
 #### Frontend Developers
 
+**Tweet 1/4**
 ```
-🧩 #SmarkForm 0.14.0 — Mixin Types are here!
+🧩 #SmarkForm 0.14.0 — Mixin Types are here! 🧵 1/4
 
-Drop a <style> or <script> as a sibling inside your <template>.
-SmarkForm extracts & applies them per instance automatically.
-Self-contained components with zero extra module wiring. 🚀
+Drop a <style> or <script> as siblings inside your <template>.
+SmarkForm extracts & applies them per instance. Zero extra module wiring.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — CSS lives in the template
+
+Add a <style> sibling inside <template>.
+Injected once per document — deduplicated across all instances.
+Your component carries its own CSS. No separate stylesheet needed.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, composability & safety
+
+<script> siblings run as lifecycle hooks per rendered instance.
+Compose via `#` chains · load mixins from external URLs.
+XSS guard via crossOriginMixins · circular dep detection built in.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+New DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave events with enriched metadata.
 
 #FrontEnd #JavaScript #WebComponents #Forms
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
+🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### HTML-driven devs
 
+**Tweet 1/4**
 ```
-🚀 #SmarkForm 0.14.0 brings Mixin Types — all in plain HTML!
+🚀 #SmarkForm 0.14.0 — Mixin Types, all in HTML! 🧵 1/4
 
 Add <style> and <script> directly inside <template> tags.
 No build step, no module bundler — your templates just work.
 
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Style with plain HTML
+
+A <style> element inside <template> is all it takes.
+SmarkForm extracts it and applies it — no preprocessors, no naming conventions.
+Pure HTML. Pure CSS. Pure simplicity.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Behaviour, composition & safety
+
+Add a <script> sibling for per-instance behaviour.
+Reference mixins locally (#id) or from external files (URL#id).
+XSS protection via crossOriginMixins. No circular deps possible.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+Cleaner event API: on() / onAll() / onLocal().
+focusenter & focusleave events — progressively enhanced.
+
 #HTML #ProgressiveEnhancement #WebDev #NoFramework
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Open Source Contributors
 
+**Tweet 1/4**
 ```
-🎉 #SmarkForm 0.14.0 is out!
+🎉 #SmarkForm 0.14.0 is out — Mixin Types! 🧵 1/4
 
-New: Mixin Types, DOM-like event API & bug fixes.
-OSS, MIT-licensed, zero runtime deps. Contributions welcome!
+OSS, MIT-licensed, zero runtime deps.
+Self-contained reusable components via <template> siblings. Contributions welcome!
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Styles in your templates
+
+Add a <style> sibling inside <template>.
+SmarkForm injects it into the document once — deduplicated across all instances.
+Components carry their own CSS. No extra files.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, nesting & safety
+
+<script> siblings run per instance as lifecycle hooks.
+Nest mixins freely via `#` chains · load from external URLs.
+XSS guard (crossOriginMixins) + circular dep detection included.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+New DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave events with richer metadata.
 
 #OpenSource #OSS #JavaScript #Community
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
-🔗 https://smarkform.bitifet.net
+�� https://smarkform.bitifet.net
 ```
+
+---
 
 #### Software Engineering
 
+**Tweet 1/4**
 ```
-⚙️ #SmarkForm 0.14.0 — Mixin Types via <template> siblings
+⚙️ #SmarkForm 0.14.0 — Mixin Types 🧵 1/4
 
-Behaviour, styles & scripts travel with the component definition.
-No side-channel wiring, circular-dep detection included.
-Clean separation of concerns for complex form UIs. 🧱
+Components now carry their own behaviour, styles & scripts.
+No side-channel wiring. Clean separation of concerns.
 
-#SoftwareEngineering #JavaScript #DesignPatterns #WebDev
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Co-located styles
+
+<style> as a top-level sibling inside <template>.
+Injected once per document — deduplicated. Scoped by design.
+The component definition is the source of truth.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, composability & safety
+
+<script> siblings run as onRendered tasks — per instance.
+Mixin chains via `#`. External load via URL.
+XSS protection: crossOriginMixins opt-in. Circular dep detection at construction time.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+DOM-consistent event API: on() / onAll() / onLocal().
+focusenter & focusleave events; enriched event metadata.
+
+#SoftwareEngineering #JavaScript #DesignPatterns
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
+🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Build in Public
 
+**Tweet 1/4**
 ```
-🏗️ Shipped #SmarkForm 0.14.0 — Mixin Types
+🏗️ Shipped #SmarkForm 0.14.0 — Mixin Types! 🧵 1/4
 
-Biggest feature yet: self-contained components via <template> blocks.
-Style + script + markup in one place. Zero extra wiring. 🚀
+Biggest feature to date: self-contained components via <template> blocks.
+Style + script + markup — all in one place. Zero extra wiring.
 
-Building in public — here's what's next 👇 [thread]
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — What Mixin Styles look like
+
+Drop a <style> sibling inside <template>.
+SmarkForm injects it once per document — deduplicated across instances.
+The template *is* the component. Styles included.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, nesting & safety
+
+Add a <script> sibling for per-instance lifecycle hooks.
+Compose mixins via `#` · load from URLs (XSS-guarded).
+Circular dep detection baked in. No surprises.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also shipped in 0.14.0
+
+New DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave with richer metadata.
 
 #BuildInPublic #IndieHacker #JavaScript #OpenSource
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
+🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### I can code
 
+**Tweet 1/4**
 ```
-💡 New release! #SmarkForm 0.14.0
+💡 New release! #SmarkForm 0.14.0 — Mixin Types 🧵 1/4
 
 Ever wanted form components that bring their own styles & logic?
-Now you can — just add <style>/<script> inside your <template>. 🧩
+Now you can — just add <style>/<script> inside your <template>. 👇
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — CSS inside <template>? Yes!
+
+Add a <style> block as a sibling of your template's root element.
+SmarkForm injects it automatically — once per page, not per instance.
+Your component now has its own style. No extra files to manage.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, reuse & safety
+
+Add a <script> to give your component behaviour.
+Reuse the same mixin many times. Load from external files.
+Built-in XSS protection and circular dep detection keep you safe.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — More in 0.14.0
+
+Easier event handling: on() / onAll() / onLocal().
+New focusenter & focusleave events.
 
 #ICanCode #LearnToCode #JavaScript #WebDev
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Tech Founders
 
+**Tweet 1/4**
 ```
-🚀 #SmarkForm 0.14.0 — Mixin Types for form components
+🚀 #SmarkForm 0.14.0 — Mixin Types for form components 🧵 1/4
 
-Build reusable, self-contained form widgets with styles & logic
-baked in. Less glue code = faster product iteration. ⚡
+Build self-contained form widgets with styles & logic baked in.
+Less glue code = faster product iteration. ⚡
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Self-contained styles
+
+Add a <style> sibling inside <template>.
+SmarkForm handles injection & deduplication automatically.
+One component definition. Works everywhere you use it.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, composability & safety
+
+<script> siblings give components their own behaviour.
+Compose mixins via `#` chains · load from external URLs.
+XSS guard & circular dep detection included. Ship with confidence.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+Cleaner event API: on() / onAll() / onLocal().
+focusenter & focusleave for better UX hooks.
 
 #TechFounders #JavaScript #ProductDev #WebDev
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Web Developers
 
+**Tweet 1/4**
 ```
-🌐 #SmarkForm 0.14.0 is live!
+🌐 #SmarkForm 0.14.0 is live — Mixin Types! 🧵 1/4
 
-Mixin Types let you bundle styles + scripts inside <template>.
-Also: DOM-like event API (on/onAll/onLocal) & bug fixes.
+Bundle styles & scripts inside <template> elements.
+Self-contained, reusable components — no extra files or module wiring.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Styles in the template
+
+Add a <style> sibling inside <template>.
+Injected once per document — deduplicated across all instances.
+Your component brings its own CSS wherever it's used.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, nesting & safety
+
+<script> siblings run per instance as lifecycle hooks.
+Compose via `#` chains · load from external URLs.
+XSS guard via crossOriginMixins · circular dep detection built in.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+New DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave events with richer metadata.
 
 #WebDevelopment #JavaScript #HTML #Forms
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
 ```
 
+---
+
 #### Tech Twitter
 
+**Tweet 1/4**
 ```
-🔥 #SmarkForm 0.14.0 drops Mixin Types
+🔥 #SmarkForm 0.14.0 — Mixin Types 🧵 1/4
 
 Components now carry their own <style> & <script> siblings.
-Per-instance injection, circular-dep detection, zero extra modules.
+Per-instance injection, deduplication, zero extra modules.
+This is how reusable form UIs should work. 👇
 
-This is how reusable form UIs should work. 🧵👇
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Styles
+
+<style> top-level sibling inside <template>.
+→ Injected once into the document.
+→ Deduplicated across all instances.
+→ Zero extra CSS files. Zero tooling.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, chains & safety
+
+<script> siblings → run per instance as lifecycle hooks.
+Mixin chains via `#`. External load via URL + fetch cache.
+XSS protection: crossOriginMixins opt-in. Cyclic ref detection built in.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave. Richer event metadata.
 
 #TechTwitter #JavaScript #WebDev #OpenSource
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
+🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Javascript
 
+**Tweet 1/4**
 ```
-⚡ #SmarkForm 0.14.0 — Mixin Types in plain JS!
+⚡ #SmarkForm 0.14.0 — Mixin Types in plain JS! 🧵 1/4
 
-- <style>/<script> siblings inside <template> → applied per instance
-- New on() / onAll() / onLocal() event API
-- focusenter / focusleave events with rich metadata
+<style>/<script> siblings inside <template> → applied per instance.
+No bundler, no module wiring. Pure browser JS.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — CSS from <template> siblings
+
+Add a <style> inside <template> as a top-level sibling.
+SmarkForm extracts & injects it once — deduplicated per mixin id.
+Your components carry their own style declarations.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, composition & safety
+
+<script> siblings execute as onRendered tasks per instance.
+Compose via `#` chains. Fetch from external URLs with cache.
+crossOriginMixins opt-in for XSS safety. Cyclic dep detection built in.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+New on() / onAll() / onLocal() event API.
+focusenter / focusleave events with rich metadata.
 
 #JavaScript #JS #ESModules #WebDev
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
+🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Actually Build in Public
 
+**Tweet 1/4**
 ```
-✅ Shipped: #SmarkForm 0.14.0 — Mixin Types
+✅ Shipped: #SmarkForm 0.14.0 — Mixin Types 🧵 1/4
 
 Weeks of work distilled into one clean API:
-drop <style>/<script> inside <template>, SmarkForm does the rest.
+drop <style>/<script> inside <template> and SmarkForm handles the rest.
+Here's what you get 👇
 
-What I learned building this → [thread] 🧵
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — Styles that travel with the component
+
+A <style> sibling inside <template>.
+Injected once per document, deduplicated automatically.
+No separate stylesheet. No naming convention. Just HTML.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, nesting & protection
+
+<script> siblings run per instance — full lifecycle access.
+Chain mixins via `#`. Pull from external URLs.
+XSS opt-in guard + circular dep detection. No silent failures.
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also shipped
+
+DOM-like event API: on() / onAll() / onLocal().
+focusenter / focusleave events with proper metadata.
 
 #ActuallyBuildInPublic #JavaScript #OpenSource #Shipping
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
+🔗 https://smarkform.bitifet.net
 ```
+
+---
 
 #### Front End Fraternity
 
+**Tweet 1/4**
 ```
-👊 #SmarkForm 0.14.0 is here, fam!
+👊 #SmarkForm 0.14.0 — Mixin Types! 🧵 1/4
 
-Mixin Types: self-contained components with styles & logic in <template>.
-DOM-like event API. Bug fixes. Ship it. 🚢
+Self-contained components with styles & logic in <template>.
+Drop in, stamp out, no wiring needed. Let's go! 🚢
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types
+🎯 https://smarkform.bitifet.net/about/showcase#mixins
+```
+
+**Tweet 2/4**
+```
+🎨 #SmarkForm 2/4 — CSS in your <template>
+
+Add a <style> sibling inside <template>.
+SmarkForm injects it once — deduplicated across instances.
+Your components carry their own CSS. No extra stylesheet. 🎯
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#styles
+❓ https://smarkform.bitifet.net/about/faq#mixin-types
+```
+
+**Tweet 3/4**
+```
+⚙️ #SmarkForm 3/4 — Scripts, nesting & safety
+
+<script> siblings run per instance as lifecycle hooks.
+Chain mixins via `#`. Load from URLs with XSS guard.
+Circular dep detection built in. No surprises. 🧱
+
+📖 https://smarkform.bitifet.net/advanced_concepts/mixin_types#scripts
+🔒 https://smarkform.bitifet.net/advanced_concepts/mixin_types#cross-origin-script-security-policy
+```
+
+**Tweet 4/4**
+```
+✨ #SmarkForm 4/4 — Also in 0.14.0
+
+DOM-like event API: on() / onAll() / onLocal().
+focusenter & focusleave events with richer metadata.
 
 #FrontEndFraternity #FrontEnd #JavaScript #CSS #HTML
+📖 https://smarkform.bitifet.net/advanced_concepts/events
 📦 npm i smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
 ```
@@ -384,9 +886,7 @@ active before the first action fires.
 **Other highlights in 0.14.0**
 
 Beyond Mixin Types, this release ships a DOM-like event API (`on()`, `onAll()`, `onLocal()`)
-with `focusenter`/`focusleave` events and richer metadata, plus several bug fixes (including a
-`setDefault` propagation edge case, Reset button targeting, and a UTC day-shift date formatting
-bug).
+with `focusenter`/`focusleave` events and richer metadata, plus improved developer tooling.
 
 **Get started**
 
@@ -421,7 +921,7 @@ No separate modules, no manual wiring. The template *is* the component.
 What's new:
 • 🧩 Mixin Types — self-contained components via <template> siblings
 • 🎯 DOM-like event API: on() / onAll() / onLocal(), focusenter/focusleave
-• 🐛 Bug fixes: setDefault propagation, date formatting, Reset button
+• 🛠️ Improved developer tooling
 
 If you're building complex forms in a full-stack JS project and want to cut the glue
 code, SmarkForm 0.14.0 is worth a look.
@@ -444,7 +944,7 @@ It's a small API surface with a big impact on how you organise form UI code.
 What's new:
 • Mixin Types (<style>/<script> siblings in <template>)
 • on() / onAll() / onLocal() event API with focusenter/focusleave
-• Bug fixes across setDefault, Reset button, date formatting, and dev tooling
+• Improved developer tooling
 
 📦 npm install smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
@@ -465,7 +965,7 @@ HTML + CSS, the way it should be — self-contained and composable.
 What's new:
 • <style> and <script> siblings inside <template>
 • DOM-like event API for cleaner scripting
-• Several bug fixes
+• Improved developer tooling
 
 🔗 https://smarkform.bitifet.net
 #HTML5 #CSS3 #FrontEnd #WebComponents #JavaScript
@@ -483,7 +983,7 @@ deduplication, and instance-scoped execution automatically.
 Highlights:
 • Mixin Types: self-contained components, zero extra wiring
 • DOM-like event API (on/onAll/onLocal) + focusenter/focusleave
-• Bug fixes: setDefault propagation, date UTC shift, dev server Ctrl+C
+• Improved developer tooling
 
 MIT licensed, zero runtime dependencies.
 
@@ -508,7 +1008,7 @@ detection and cross-origin controls built in.
 Also in this release:
 • on() / onAll() / onLocal() for a DOM-consistent event API
 • focusenter / focusleave with enriched event metadata
-• Bug fixes: setDefault propagation, reset button scoping, UTC date shift
+• Improved developer tooling
 
 📦 npm install smarkform@0.14.0
 🔗 https://smarkform.bitifet.net
