@@ -6,6 +6,8 @@ nav_order: 3
 
 ---
 
+{% include components/sampletabs_ctrl.md %}
+
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -105,21 +107,54 @@ was revealed).
 Hotkeys are **scoped to the focus context**.  The same key binding can be
 re-used in different parts of the form without conflict:
 
-```html
+{% raw %} <!-- hotkeys_context_sensitivity {{{ --> {% endraw %}
+{% capture hotkeys_context_sensitivity_html -%}
 <ul data-smark='{"type":"list","name":"users"}'>
     <li>
+        <input data-smark type="text" name="name" placeholder="User name">
         <ul data-smark='{"type":"list","name":"phones"}'>
             <li>
-                <input type="tel" data-smark>
-                <!-- "-" removes a phone when focus is inside the phones list -->
-                <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖</button>
+                <input type="tel" data-smark name="phone" placeholder="Phone">
+                <!-- Ctrl+- removes a phone when focus is inside the phones list -->
+                <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Phone</button>
             </li>
         </ul>
-        <!-- "-" removes a user when focus is inside a user item (but outside phones) -->
+        <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}'>➕ Add phone</button>
+        <!-- Ctrl+- removes a user when focus is at the user level (outside phones) -->
         <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Remove user</button>
     </li>
 </ul>
-```
+<button data-smark='{"action":"addItem","context":"users","hotkey":"+"}'>➕ Add user</button>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- hotkeys_context_sensitivity_css {{{ --> {% endraw %}
+{% capture hotkeys_context_sensitivity_css -%}
+/* Hold Ctrl to reveal hotkey hints */
+button { position: relative; }
+[data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute;
+    top: -1.6em;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.7em;
+    background: #333;
+    color: #fff;
+    padding: 1px 4px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="hotkeys_context_sensitivity"
+    htmlSource=hotkeys_context_sensitivity_html
+    cssSource=hotkeys_context_sensitivity_css
+    demoValue='{"users":[{"name":"Alice","phones":[{"phone":"555-1234"}]},{"name":"Bob","phones":[{"phone":"555-5678"}]}]}'
+    tests=false
+%}
 
 When the focus is inside the `phones` list, pressing `Ctrl+-` removes a phone.
 When focus is at the user level (but not inside `phones`), `Ctrl+-` removes the

@@ -8,6 +8,8 @@ nav_order: 1
 
 {% include links.md %}
 
+{% include components/sampletabs_ctrl.md %}
+
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -373,22 +375,27 @@ while (currentItem) {
 
 #### Copy Data Between Adjacent List Items
 
-```html
+{% raw %} <!-- form_trav_copy_adjacent {{{ --> {% endraw %}
+{% capture form_trav_copy_adjacent_html -%}
 <ul data-smark='{"name": "employees", "type": "list", "of": "form"}'>
     <li>
         <input name="name" data-smark placeholder="Name">
         <input name="email" data-smark placeholder="Email">
-        <button data-smark='{
-            "action": "export",
-            "target": ".+1"
-        }'>Copy to Next</button>
-        <button data-smark='{
-            "action": "import", 
-            "target": ".-1"
-        }'>Copy from Previous</button>
+        <button data-smark='{"action":"export","target":".+1"}'>Copy to Next</button>
+        <button data-smark='{"action":"import","target":".-1"}'>Copy from Previous</button>
+        <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
     </li>
 </ul>
-```
+<button data-smark='{"action":"addItem","context":"employees"}'>➕ Add</button>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="form_trav_copy_adjacent"
+    htmlSource=form_trav_copy_adjacent_html
+    demoValue='{"employees":[{"name":"Alice","email":"alice@example.com"},{"name":"Bob","email":"bob@example.com"},{"name":"Carol","email":"carol@example.com"}]}'
+    tests=false
+%}
 
 #### Sequential Form Validation
 
@@ -413,26 +420,28 @@ async function validateSequentially(list) {
 
 #### Dynamic List Navigation UI
 
-```html
-<!-- Navigation controls within list items -->
+{% raw %} <!-- form_trav_navigation_ui {{{ --> {% endraw %}
+{% capture form_trav_navigation_ui_html -%}
 <div data-smark='{"name": "records", "type": "list", "of": "form"}'>
     <div>
         <input name="data" data-smark>
         <div class="navigation">
-            <button data-smark='{
-                "action": "import",
-                "context": ".",
-                "target": ".-1"
-            }'>← Copy from Previous</button>
-            <button data-smark='{
-                "action": "export",
-                "context": ".",
-                "target": ".+1"
-            }'>Copy to Next →</button>
+            <button data-smark='{"action":"import","context":".","target":".-1"}'>← Copy from Previous</button>
+            <button data-smark='{"action":"export","context":".","target":".+1"}'>Copy to Next →</button>
         </div>
+        <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
     </div>
 </div>
-```
+<button data-smark='{"action":"addItem","context":"records"}'>➕ Add</button>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="form_trav_navigation_ui"
+    htmlSource=form_trav_navigation_ui_html
+    demoValue='{"records":[{"data":"first"},{"data":"second"},{"data":"third"}]}'
+    tests=false
+%}
 
 Both buttons use `context:"."` — the trigger's parent resolves `"."` to the current list item.
 
@@ -480,39 +489,40 @@ employees.forEach(async (employee) => {
 
 This example demonstrates a practical implementation of sibling navigation for data copying in a contact list:
 
-```html
-<div id="contactForm">
-    <div data-smark='{"name": "contacts", "type": "list", "of": "form", "min_items": 1}'>
-        <fieldset>
-            <legend>Contact Information</legend>
-            <p>
-                <label data-smark>Name:</label>
-                <input name="name" data-smark type="text">
-            </p>
-            <p>
-                <label data-smark>Email:</label>
-                <input name="email" data-smark type="email">
-            </p>
-            <p>
-                <label data-smark>Phone:</label>
-                <input name="phone" data-smark type="tel">
-            </p>
-            <div class="actions">
-                <button data-smark='{
-                    "action": "export",
-                    "target": ".+1"
-                }'>📋 Copy to Next</button>
-                <button data-smark='{
-                    "action": "import",
-                    "target": ".-1"
-                }'>📥 Copy from Previous</button>
-                <button data-smark='{"action": "removeItem"}'>🗑️ Remove</button>
-            </div>
-        </fieldset>
-    </div>
-    <button data-smark='{"action": "addItem", "context": "contacts"}'>➕ Add Contact</button>
+{% raw %} <!-- form_trav_practical_copy {{{ --> {% endraw %}
+{% capture form_trav_practical_copy_html -%}
+<div data-smark='{"name": "contacts", "type": "list", "of": "form", "min_items": 1}'>
+    <fieldset>
+        <legend>Contact Information</legend>
+        <p>
+            <label data-smark>Name:</label>
+            <input name="name" data-smark type="text">
+        </p>
+        <p>
+            <label data-smark>Email:</label>
+            <input name="email" data-smark type="email">
+        </p>
+        <p>
+            <label data-smark>Phone:</label>
+            <input name="phone" data-smark type="tel">
+        </p>
+        <div class="actions">
+            <button data-smark='{"action":"export","target":".+1"}'>📋 Copy to Next</button>
+            <button data-smark='{"action":"import","target":".-1"}'>📥 Copy from Previous</button>
+            <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
+        </div>
+    </fieldset>
 </div>
-```
+<button data-smark='{"action":"addItem","context":"contacts"}'>➕ Add Contact</button>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="form_trav_practical_copy"
+    htmlSource=form_trav_practical_copy_html
+    demoValue='{"contacts":[{"name":"Alice","email":"alice@example.com","phone":"555-1234"},{"name":"Bob","email":"bob@example.com","phone":"555-5678"}]}'
+    tests=false
+%}
 
 ### Complex Form Navigation
 

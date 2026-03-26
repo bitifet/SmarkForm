@@ -8,6 +8,8 @@ nav_order: 2
 
 {% include links.md %}
 
+{% include components/sampletabs_ctrl.md %}
+
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -269,34 +271,37 @@ The recommended pattern is to use an `export` trigger and intercept the
 
 **HTML** — a plain submit button:
 
-```html
-<div id="myForm">
-    <input data-smark type="text" name="firstName">
-    <input data-smark type="text" name="lastName">
-    <button data-smark='{"action":"export"}'>Submit</button>
-</div>
-```
+{% raw %} <!-- events_submit_example {{{ --> {% endraw %}
+{% capture events_submit_example_html -%}
+<input data-smark type="text" name="firstName" placeholder="First name">
+<input data-smark type="text" name="lastName" placeholder="Last name">
+<button data-smark='{"action":"export"}'>Submit</button>
+<pre id="output" style="background:#f4f4f4;padding:0.5em;margin-top:0.5em;min-height:2em"></pre>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-**JavaScript** — handle the exported data:
-
-```javascript
-const myForm = new SmarkForm(document.getElementById("myForm"), {
-    async onAfterAction_export(ev) {
-        const payload = ev.data;  // Plain JSON-serialisable object
-        try {
-            const res = await fetch("/api/submit", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload),
-            });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            console.log("Saved successfully");
-        } catch (err) {
-            console.error("Save failed:", err);
-        }
-    },
+{% raw %} <!-- events_submit_example_js {{{ --> {% endraw %}
+{% capture events_submit_example_js -%}
+myForm.on("AfterAction_export", async (ev) => {
+    const payload = ev.data;  // Plain JSON-serialisable object
+    // In a real app you would POST to your server:
+    // const res = await fetch("/api/submit", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify(payload),
+    // });
+    document.getElementById("output").textContent = JSON.stringify(payload, null, 2);
 });
-```
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="events_submit_example"
+    htmlSource=events_submit_example_html
+    jsSource=events_submit_example_js
+    demoValue='{"firstName":"Alice","lastName":"Smith"}'
+    tests=false
+%}
 
 {: .hint }
 > The `onAfterAction_export` handler is called **every time** an export action
