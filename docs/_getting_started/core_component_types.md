@@ -85,6 +85,7 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
 
 {% raw %} <!-- input_example {{{ --> {% endraw %}
 {% capture input_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Name:</label>
     <!-- Implicit (automatically inferred) component type: -->
@@ -119,7 +120,8 @@ But every present and future HTML *&lt;input&gt;* tag could be used as
     <label data-smark>Email:</label>
     <!-- Just another example:                                         -->
     <input type='email' data-smark='{"type":"input","name":"email"}'>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -200,11 +202,13 @@ would be cleared.
 
 {% raw %} <!-- no_singleton_example {{{ --> {% endraw %}
 {% capture no_singleton_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Pick a Color:</label>
     <input type="color" name="color" data-smark>
     <button data-smark='{"action":"clear","context":"color"}'>❌ Reset</button>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -231,13 +235,15 @@ but, also, **it could avoid future issues** in case of field name being changed
 
 {% raw %} <!-- singleton_color_example {{{ --> {% endraw %}
 {% capture singleton_color_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Pick a Color:</label>
     <span data-smark='{"type":"color", "name":"bgcolor"}'>
         <input data-smark>
         <button data-smark='{"action":"clear"}'>❌ Reset</button>
     </span>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -280,6 +286,7 @@ component type providding extra sanitation (when importing) and formatting
 
 {% raw %} <!-- number_and_date_example {{{ --> {% endraw %}
 {% capture number_and_date_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Price:</label>
     <input data-smark='{"type":"number","name":"price"}'>
@@ -287,7 +294,8 @@ component type providding extra sanitation (when importing) and formatting
 <p>
     <label data-smark>Date:</label>
     <input data-smark='{"type":"date","name":"date"}'>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -342,13 +350,15 @@ selected pure black (#000000) or simply overlooked the field altogether.
 
 {% raw %} <!-- color_example {{{ --> {% endraw %}
 {% capture color_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Pick a Color:</label>
     <span data-smark='{"type":"color", "name":"bgcolor"}'>
         <input data-smark>
         <button data-smark='{"action":"clear"}'>❌ Reset</button>
     </span>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -374,6 +384,7 @@ endcapture %}
 
 {% raw %} <!-- clear_others_example {{{ --> {% endraw %}
 {% capture clear_others_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>A Color:</label>
     <span data-smark='{"type":"color", "name":"color"}'>
@@ -395,7 +406,7 @@ endcapture %}
         <button data-smark='{"action":"clear"}'>❌ Reset</button>
     </span>
 </p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}

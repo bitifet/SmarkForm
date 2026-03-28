@@ -288,8 +288,16 @@ for (const example of examples) {
       return typeof window.SmarkForm !== 'undefined';
     }, { timeout: 5000 });
     
-    // Give the example a moment to render
-    await page.waitForTimeout(500);
+    // Wait for the form instance to finish rendering (covers focus_on_click and
+    // any render-dependent behaviour).  Uses a short race timeout so that error
+    // examples (where rendered may never resolve/reject) don't stall the suite.
+    await page.evaluate(() => Promise.race([
+      window.myForm ? window.myForm.rendered : Promise.resolve(),
+      new Promise(r => setTimeout(r, 1000)),
+    ])).catch(() => {});
+    
+    // Give the example a small moment to settle after rendering
+    await page.waitForTimeout(100);
     
     // Execute commonplace tests
     await smoke_tests.default({

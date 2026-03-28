@@ -10,6 +10,7 @@ permalink: /
 
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
 {% capture event_planner_html -%}
+<div id="myForm$$">
 █<div class="ep">
 █    <p>
 █        <label data-smark>📋 Event:</label>
@@ -48,7 +49,8 @@ permalink: /
 █        </ul>
 █    </div>
 █    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
-█</div>{%
+█</div>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

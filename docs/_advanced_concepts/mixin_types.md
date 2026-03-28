@@ -485,6 +485,7 @@ data path in the exported value.
 
 {% raw %} <!-- capture mixin_contact_block_html {{{ --> {% endraw %}
 {% capture mixin_contact_block_html -%}
+<div id="myForm$$">
 <!-- Mixin template — defined once, reused anywhere -->
 <template id="contactBlock">
     <fieldset data-smark='{"type":"form"}'>
@@ -508,7 +509,7 @@ data path in the exported value.
     <h3>Emergency</h3>
     <div data-smark='{"type":"#contactBlock","name":"emergency"}'></div>
 </fieldset>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture mixin_contact_block_tests {{{ --> {% endraw %}
@@ -577,6 +578,7 @@ template's default of three.
 
 {% raw %} <!-- capture mixin_option_override_html {{{ --> {% endraw %}
 {% capture mixin_option_override_html -%}
+<div id="myForm$$">
 <template id="tagList">
     <!-- Template default: start with 3 items -->
     <ul data-smark='{"type":"list","min_items":3}'>
@@ -599,7 +601,7 @@ template's default of three.
     <div data-smark='{"type":"#tagList","name":"optional","min_items":1}'></div>
     <button data-smark='{"action":"addItem","context":"optional"}'>➕ Add</button>
 </fieldset>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture mixin_option_override_tests {{{ --> {% endraw %}

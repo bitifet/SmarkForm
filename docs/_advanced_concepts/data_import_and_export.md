@@ -92,6 +92,7 @@ The structure of the exported value mirrors the nesting of the form:
 
 {% raw %} <!-- capture export_structure_html {{{ --> {% endraw %}
 {% capture export_structure_html -%}
+<div id="myForm$$">
 <fieldset data-smark='{"type":"form","name":"order"}'>
     <legend>Order</legend>
     <p>
@@ -110,7 +111,8 @@ The structure of the exported value mirrors the nesting of the form:
         </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"items"}'>➕ Add item</button>
-</fieldset>{%
+</fieldset>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -226,6 +228,7 @@ The `import` action accepts:
 
 {% raw %} <!-- capture import_example_html {{{ --> {% endraw %}
 {% capture import_example_html -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Name:</label>
     <input data-smark type="text" name="name">
@@ -237,7 +240,8 @@ The `import` action accepts:
 <p>
     <label data-smark>Role:</label>
     <input data-smark type="text" name="role">
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -365,6 +369,7 @@ a "New record" button.
 
 {% raw %} <!-- capture clear_vs_reset_html {{{ --> {% endraw %}
 {% capture clear_vs_reset_html -%}
+<div id="myForm$$">
 <div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
     <p>
         <label data-smark>Title:</label>
@@ -378,6 +383,7 @@ a "New record" button.
         <button data-smark='{"action":"clear","context":"task"}'>❌ Clear</button>
         <button data-smark='{"action":"reset","context":"task"}'>♻️ Reset</button>
     </p>
+</div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -457,6 +463,7 @@ directly into its target (the shipping address) subform:
 
 {% raw %} <!-- capture pipe_example_html {{{ --> {% endraw %}
 {% capture pipe_example_html -%}
+<div id="myForm$$">
 <fieldset data-smark='{"type":"form","name":"billing"}'>
     <legend>Billing address</legend>
     <p>
@@ -493,7 +500,8 @@ directly into its target (the shipping address) subform:
         <label data-smark>Postcode:</label>
         <input data-smark type="text" name="postcode">
     </p>
-</fieldset>{%
+</fieldset>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

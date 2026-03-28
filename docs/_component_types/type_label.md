@@ -49,7 +49,8 @@ Enhanced SmarkForm `label` elements work similarly to standard HTML labels but o
 
 {% raw %} <!-- basic_examples {{{ --> {% endraw %}
 {% capture basic_examples -%}
-    <h2>Explicit association</h2>
+<div id="myForm$$" data-smark='{"focus_on_click":false}'>
+<h2>Explicit association</h2>
     <label data-smark>Click me!</label>
     <span><!-- Intermediate DOM nodes are transparent to SmarkForm's fields tree -->
         <input type="text" data-smark name="field01" placeholder="...and focus will come here">
@@ -67,13 +68,13 @@ Enhanced SmarkForm `label` elements work similarly to standard HTML labels but o
         <input data-smark name="field03" placeholder="...and focus will come here">
     </label>
     <p>📌 Wrapping the field inside still works likewise standard HTML.</p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes -%}
 
-👉 In this example, we've set `formOptions='{"focus_on_click":false}'` to avoid
+👉 In this example, we've set `focus_on_click: false` in the form container's `data-smark` attribute to avoid
 interfering with the demonstration of the label's behavior since, if enabled
 (default), it would cause the first field to be focused when clicking anywere
 in the form (except for actual fields and labels) masking the actual behavior
@@ -87,7 +88,6 @@ of the first label.
     htmlSource=basic_examples
     notes=notes
     showEditor=false
-    formOptions='{"focus_on_click":false}'
     tests=false
 %}
 
@@ -210,7 +210,8 @@ You can use any other element in place, like `<span>`, `<b>` or even `<legend>`.
 
 {% raw %} <!-- advanced_examples {{{ --> {% endraw %}
 {% capture advanced_examples -%}
-    <h2>Targetting nested forms...</h2>
+<div id="myForm$$" data-smark='{"focus_on_click":false}'>
+<h2>Targetting nested forms...</h2>
     <span data-smark='{"type": "label"}'>Click me (auto pairing)!</span>
     <fieldset data-smark name="subform01">
         <input data-smark name="field01" placeholder="First field">
@@ -247,7 +248,7 @@ You can use any other element in place, like `<span>`, `<b>` or even `<legend>`.
         <span class="button" title="Remove last item" data-smark='{"action":"removeItem", "context": "list01"}'>-</span>
     </fieldset>
     <p>📌 Fieldset's <code>&lt;legend&gt;</code> tags are special case where the containing <code>&lt;fieldset&gt;</code> is automatically targetted.</p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- advanced_examples_css {{{ --> {% endraw %}
@@ -287,7 +288,7 @@ endcapture %}
   - In this case, the `<legend>` (since the `<fieldset> is not enhanced)
     correctly targets the list field after itself.
 
-👉 Likewise in the previous one, this example uses `formOptions='{"focus_on_click":false}'` to avoid
+👉 Likewise in the previous one, this example uses `focus_on_click: false` in the form container's `data-smark` attribute to avoid
 interfering with the demonstration of the label's behavior.
 
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
@@ -299,7 +300,6 @@ interfering with the demonstration of the label's behavior.
     cssSource=advanced_examples_css
     notes=notes
     showEditor=false
-    formOptions='{"focus_on_click":false}'
     tests=false
 %}
 
