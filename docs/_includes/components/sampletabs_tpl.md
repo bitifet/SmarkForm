@@ -4,18 +4,9 @@ Accepted arguments:
 -------------------
 
   * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
-  * formOptions: JSON object with SmarkForm initialization options (if any);
-  * htmlSource (mandatory)
-  * cssSource
-  * cssHidden: CSS already discussed (not shown in the "CSS Source" tab).
-  * jsHead: JS initialization code.
-  * jsHidden: JS source already discussed (not shown in the "JS Source" tab).
-  * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
-  * notes: Optional notes for further clarifications.
-  * selected: Default selected tab (defaults to "html").
+  * formOptions: (Removed in v2 — embed SmarkForm options directly in the data-smark attribute on your form container)
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
-  * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
   * height: Optional iframe height factor (0–100). If omitted, a default is computed from the
             HTML source line count. Larger values allow a taller iframe relative to the viewport.
 
