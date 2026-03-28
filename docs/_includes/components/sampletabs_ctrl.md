@@ -32,15 +32,52 @@ function smarkformComputeHeightPct(data) {
     }
     return SMARKFORM_HEIGHT_PCT_DEFAULT;
 }
-/* Render SmarkForm example into an iframe. srcs = {html, css, js} */
+/* Build the human-readable editor scaffold HTML for the HTML ace editor tab
+   when "Include playground editor" is active in edit mode. */
+function smarkformEditorScaffoldHtml(showReset) {
+    return (
+        '<div id="sf-editor-scaffold">\n'
+        + '  <div>\n'
+        + '    <span><button id="sf-export-btn" title="Export form to JSON editor">\u2b07\ufe0f Export</button></span>\n'
+        + '    <span><button id="sf-import-btn" title="Import from JSON editor to form">\u2b06\ufe0f Import</button></span>\n'
+        + '    <span' + (showReset ? '' : ' style="visibility:hidden"') + '><button id="sf-reset-btn" title="Reset the form to its default values">\u267b\ufe0f Reset</button></span>\n'
+        + '    <span><button id="sf-clear-btn" title="Clear the whole form">\u274c Clear</button></span>\n'
+        + '  </div>\n'
+        + '  <textarea id="sf-editor-ta" placeholder="JSON playground editor"></textarea>\n'
+        + '</div>'
+    );
+}
+/* Build the human-readable editor binding JS for the JS ace editor tab
+   when "Include playground editor" is active in edit mode. */
+function smarkformEditorScaffoldJs() {
+    return (
+        'var _sfTa = document.getElementById("sf-editor-ta");\n'
+        + 'document.getElementById("sf-export-btn").addEventListener("click", function() {\n'
+        + '    myForm.rendered.then(async function() {\n'
+        + '        _sfTa.value = JSON.stringify(await myForm.export(), null, 2);\n'
+        + '    });\n'
+        + '});\n'
+        + 'document.getElementById("sf-import-btn").addEventListener("click", function() {\n'
+        + '    try { myForm.import(JSON.parse(_sfTa.value)); } catch(e) {}\n'
+        + '});\n'
+        + 'document.getElementById("sf-reset-btn").addEventListener("click", function() { myForm.reset(); });\n'
+        + 'document.getElementById("sf-clear-btn").addEventListener("click", function() { myForm.clear(); });'
+    );
+}
+/* Render SmarkForm example into an iframe.
+   srcs = {html, css, js, hasEditor, inlineEditor}
+   - hasEditor:    inject the editor scaffold externally (normal preview mode)
+   - inlineEditor: editor scaffold already present in srcs.html/srcs.js; only
+                   apply editor CSS, do NOT re-inject HTML or JS. */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
+    var inlineEditor = !!srcs.inlineEditor;
     var heightPct = smarkformComputeHeightPct(data);
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
     var baseCss = 'button{padding:.5em;margin:0 4px;}';
-    var editorCss = hasEditor ? '#sf-editor-scaffold{display:flex;flex-direction:column;gap:0.5em;padding:0.5em 0;margin-top:0.5em;}#sf-editor-scaffold>div{display:flex;flex-wrap:wrap;justify-content:space-evenly;gap:4px;}#sf-editor-ta{resize:vertical;min-height:8em;width:100%;box-sizing:border-box;}' : '';
+    var editorCss = (hasEditor || inlineEditor) ? '#sf-editor-scaffold{display:flex;flex-direction:column;gap:0.5em;padding:0.5em 0;margin-top:0.5em;}#sf-editor-scaffold>div{display:flex;flex-wrap:wrap;justify-content:space-evenly;gap:4px;}#sf-editor-ta{resize:vertical;min-height:8em;width:100%;box-sizing:border-box;}' : '';
     var editorHtml = hasEditor ? (
         '<div id="sf-editor-scaffold">'
         + '<div>'
@@ -62,7 +99,7 @@ function smarkformRenderIframe(iframe, data, srcs) {
     var S = 'script';
     var jsSrc = (srcs.js || '') + editorJs;
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';
-    iframe.dataset.hasEditor = hasEditor ? '1' : '';
+    iframe.dataset.hasEditor = (hasEditor || inlineEditor) ? '1' : '';
     iframe.srcdoc = '<!DOCTYPE html>'
         + '\u003chtml\u003e\u003chead\u003e'
         + '\u003cmeta charset="UTF-8"\u003e'
@@ -79,7 +116,7 @@ function smarkformRenderIframe(iframe, data, srcs) {
         try {
             var doc = this.contentDocument;
             var naturalH = doc.documentElement.scrollHeight;
-            var maxH = hasEditor
+            var maxH = (hasEditor || inlineEditor)
                 ? Math.round(window.innerHeight * 0.85)
                 : Math.round(window.innerHeight * heightPct / 100);
             this.style.height = Math.max(100, Math.min(naturalH + 20, maxH)) + 'px';
@@ -162,10 +199,23 @@ document.addEventListener('DOMContentLoaded', function() {
         var aceEditors = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
+            var baseJs = [r(data.jsHeadDisplay || data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n');
+            if (editMode && withEditor) {
+                /* In edit mode with "Include playground editor" checked, include the
+                   editor scaffold inline in HTML/JS so the ace editors show the
+                   complete source needed to reproduce the example with the editor. */
+                return {
+                    html: r(data.htmlSource) + '\n' + smarkformEditorScaffoldHtml(!!data.showEditor),
+                    css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
+                    js:   baseJs ? baseJs + '\n' + smarkformEditorScaffoldJs() : smarkformEditorScaffoldJs(),
+                    hasEditor: false,
+                    inlineEditor: true,
+                };
+            }
             return {
                 html: r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
-                js:   [r(data.jsHeadDisplay || data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
+                js:   baseJs,
                 hasEditor: useEditor
             };
         };
@@ -237,7 +287,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (editorToggle) {
             editorToggle.addEventListener('change', function() {
                 withEditor = this.checked;
-                smarkformRenderIframe(iframe, data, previewSrcs());
+                /* Update ace editor contents to include/exclude the editor scaffold
+                   source so the user sees what will actually render. */
+                var srcs = previewSrcs();
+                if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
+                if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
+                smarkformRenderIframe(iframe, data, srcs);
             });
         }
         /* Hint icon: show tooltip as alert on tap/click (mobile accessibility) */
@@ -253,7 +308,9 @@ document.addEventListener('DOMContentLoaded', function() {
             smarkformRenderIframe(iframe, data, {
                 html: aceEditors.html ? aceEditors.html.getValue() : srcs.html,
                 css:  aceEditors.css  ? aceEditors.css.getValue()  : srcs.css,
-                js:   aceEditors.js   ? aceEditors.js.getValue()   : srcs.js
+                js:   aceEditors.js   ? aceEditors.js.getValue()   : srcs.js,
+                hasEditor: srcs.hasEditor,
+                inlineEditor: srcs.inlineEditor,
             });
             activatePreview();
         });
