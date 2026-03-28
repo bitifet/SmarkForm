@@ -39,10 +39,28 @@ function smarkformRenderIframe(iframe, data, srcs) {
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
-    var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:12em;}' : '';
+    var baseCss = 'button{padding:.5em;margin:0 4px;}';
+    var editorCss = hasEditor ? '#sf-editor-scaffold{display:flex;flex-direction:column;gap:0.5em;padding:0.5em 0;margin-top:0.5em;}#sf-editor-scaffold>div{display:flex;flex-wrap:wrap;justify-content:space-evenly;gap:4px;}#sf-editor-ta{resize:vertical;min-height:8em;width:100%;box-sizing:border-box;}' : '';
+    var editorHtml = hasEditor ? (
+        '<div id="sf-editor-scaffold">'
+        + '<div>'
+        + '<span><button id="sf-export-btn" title="Export form to JSON editor">\u2b07\ufe0f Export</button></span>'
+        + '<span><button id="sf-import-btn" title="Import from JSON editor to form">\u2b06\ufe0f Import</button></span>'
+        + '<span' + (data.showEditor ? '' : ' style="visibility:hidden"') + '><button id="sf-reset-btn" title="Reset the form to its default values">\u267b\ufe0f Reset</button></span>'
+        + '<span><button id="sf-clear-btn" title="Clear the whole form">\u274c Clear</button></span>'
+        + '</div>'
+        + '<textarea id="sf-editor-ta" placeholder="JSON playground editor"></textarea>'
+        + '</div>'
+    ) : '';
+    var editorJs = hasEditor ? (
+        '\nvar _sfTa=document.getElementById("sf-editor-ta");'
+        + '\ndocument.getElementById("sf-export-btn").addEventListener("click",function(){myForm.rendered.then(async function(){_sfTa.value=JSON.stringify(await myForm.export(),null,2);});});'
+        + '\ndocument.getElementById("sf-import-btn").addEventListener("click",function(){try{myForm.import(JSON.parse(_sfTa.value));}catch(e){}});'
+        + '\ndocument.getElementById("sf-reset-btn").addEventListener("click",function(){myForm.reset();});'
+        + '\ndocument.getElementById("sf-clear-btn").addEventListener("click",function(){myForm.clear();});'
+    ) : '';
     var S = 'script';
-    var jsSrc = srcs.js || '';
+    var jsSrc = (srcs.js || '') + editorJs;
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';
     iframe.dataset.hasEditor = hasEditor ? '1' : '';
     iframe.srcdoc = '<!DOCTYPE html>'
@@ -52,6 +70,7 @@ function smarkformRenderIframe(iframe, data, srcs) {
         + '\u003cstyle\u003e' + baseCss + '\n' + editorCss + '\n' + (srcs.css || '') + '\u003c/style\u003e'
         + '\u003c/head\u003e\u003cbody\u003e'
         + (srcs.html || '')
+        + editorHtml
         + sTag
         + '\u003c/body\u003e\u003c/html\u003e';
     iframe.onload = function() {
@@ -59,43 +78,11 @@ function smarkformRenderIframe(iframe, data, srcs) {
         this.style.display = 'block';
         try {
             var doc = this.contentDocument;
-            var naturalH, maxH;
-            if (hasEditor) {
-                /* editorCss sets height:100%/overflow:hidden on html, body, #myForm and
-                   its flex child, which makes scrollHeight circular (equals the iframe
-                   height rather than the natural content height). To measure the true
-                   content height — so that toggling the editor adjusts the iframe by
-                   exactly the editor element's height — temporarily override those rules
-                   with inline styles (higher specificity), read scrollHeight, then restore
-                   so the flex layout CSS takes effect on the final sized iframe. */
-                var html = doc.documentElement, body = doc.body;
-                var myForm = doc.querySelector('#myForm');
-                var myFormDiv = myForm ? myForm.firstElementChild : null;
-                var demoDiv = myFormDiv ? myFormDiv.firstElementChild : null;
-                var saved = [
-                    [html, 'height', html.style.height], [html, 'overflow', html.style.overflow],
-                    [body, 'height', body.style.height], [body, 'overflow', body.style.overflow]
-                ];
-                if (myForm) saved.push([myForm, 'height', myForm.style.height]);
-                if (myFormDiv) { saved.push([myFormDiv, 'height', myFormDiv.style.height]); saved.push([myFormDiv, 'overflow', myFormDiv.style.overflow]); }
-                if (demoDiv) { saved.push([demoDiv, 'flexGrow', demoDiv.style.flexGrow], [demoDiv, 'flexShrink', demoDiv.style.flexShrink], [demoDiv, 'flexBasis', demoDiv.style.flexBasis], [demoDiv, 'minHeight', demoDiv.style.minHeight]); }
-                html.style.height = 'auto'; html.style.overflow = 'visible';
-                body.style.height = 'auto'; body.style.overflow = 'visible';
-                if (myForm) myForm.style.height = 'auto';
-                if (myFormDiv) { myFormDiv.style.height = 'auto'; myFormDiv.style.overflow = 'visible'; }
-                if (demoDiv) { demoDiv.style.flexGrow = '0'; demoDiv.style.flexShrink = '0'; demoDiv.style.flexBasis = 'auto'; demoDiv.style.minHeight = ''; }
-                naturalH = html.scrollHeight;
-                saved.forEach(function(s) { s[0].style[s[1]] = s[2]; });
-                /* Use a generous cap for editor mode so the editor is not clipped.
-                   Use heightPct (not a fixed 100px) as the minimum so that complex
-                   forms with async SmarkForm init don't collapse to near-zero height
-                   before their components have finished rendering. */
-                maxH = Math.round(window.innerHeight * 0.85);
-            } else {
-                naturalH = doc.documentElement.scrollHeight;
-                maxH = Math.round(window.innerHeight * heightPct / 100);
-            }
-            this.style.height = Math.max(hasEditor ? Math.round(window.innerHeight * heightPct / 100) : 100, Math.min(naturalH + 20, maxH)) + 'px';
+            var naturalH = doc.documentElement.scrollHeight;
+            var maxH = hasEditor
+                ? Math.round(window.innerHeight * 0.85)
+                : Math.round(window.innerHeight * heightPct / 100);
+            this.style.height = Math.max(100, Math.min(naturalH + 20, maxH)) + 'px';
         } catch(e) {}
     };
 }
@@ -145,11 +132,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 contents[index].classList.add('tab-active');
                 /* Re-measure iframe height now that it is visible (it may have loaded while hidden) */
                 var frame = contents[index].querySelector('.smarkform-preview-frame');
-                if (frame && !frame.dataset.hasEditor) {
+                if (frame) {
                     try {
                         var h = frame.contentDocument.documentElement.scrollHeight;
                         if (h > 50) {
-                            var maxH = Math.round(window.innerHeight * smarkformComputeHeightPct(data) / 100);
+                            var hasEd = !!frame.dataset.hasEditor;
+                            var maxH = hasEd
+                                ? Math.round(window.innerHeight * 0.85)
+                                : Math.round(window.innerHeight * smarkformComputeHeightPct(data) / 100);
                             frame.style.height = Math.max(100, Math.min(h + 20, maxH)) + 'px';
                         }
                     } catch(e) {}
@@ -172,17 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
         var aceEditors = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
-            /* When editor is hidden, demoValue is passed directly as value: {...}.
-               When editor is shown, demoValue is wrapped as value: {"demo": {...}} because
-               the HTML wraps the form in a "demo" subform. This keeps the JS tab accurate
-               and lets readers see the value morph as they toggle "Include editor". */
-            var jsHeadSrc = useEditor
-                ? (data.jsHeadDisplayWithEditor || data.jsHead)
-                : (data.jsHeadDisplay || data.jsHead);
             return {
-                html: useEditor ? r(data.html) : r(data.htmlSource),
+                html: r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
-                js:   [r(jsHeadSrc), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
+                js:   [r(data.jsHeadDisplay || data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
                 hasEditor: useEditor
             };
         };
@@ -254,15 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (editorToggle) {
             editorToggle.addEventListener('change', function() {
                 withEditor = this.checked;
-                if (editMode) {
-                    var srcs = previewSrcs();
-                    /* Update HTML and JS editors to reflect the changed editor inclusion */
-                    if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
-                    if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
-                    smarkformRenderIframe(iframe, data, srcs);
-                } else {
-                    smarkformRenderIframe(iframe, data, previewSrcs());
-                }
+                smarkformRenderIframe(iframe, data, previewSrcs());
             });
         }
         /* Hint icon: show tooltip as alert on tap/click (mobile accessibility) */
@@ -475,10 +450,8 @@ button[data-smark] {
     page-break-inside: avoid;
   }
   
-  /* Hide JSON editor textarea in print */
-  /* Uses attribute selector to match data-smark JSON containing "name":"editor" */
-  /* This matches the textarea element defined in sampletabs_tpl.md line 109 */
-  textarea[data-smark*='"name":"editor"'] {
+  /* Hide JSON editor scaffold in print */
+  #sf-editor-scaffold {
     display: none !important;
   }
 

@@ -45,23 +45,6 @@ For further details, please refer to the following documentation files:
 {% comment %} ### Read arguments and apply defaults ### {% endcomment %}
 {% comment %} ### ################################# ### {% endcomment %}
 
-{% capture no_reset_editor_hack -%}
-// JSON playground editor hack:
-// To avoid the reset button resetting the editor along with the form, we did two things:
-//   1. We left the "editor" property undefined in the default value (so it fills with its own default value).
-//   2. Import its own contents on every change to keep its default value updated.
-// ...this preserves user edits when the "reset" button is clicked.
-myForm.rendered.then(function() {
-    const editor = myForm.find('/editor');
-    editor.on('change', async function() {
-        // Import its own value to set it as default:
-        await this.import(
-            await this.export()
-        );
-    });
-});
-{%- endcapture %}
-
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
 {% if include.demoValue and include.demoValue != '-' %}
@@ -70,16 +53,7 @@ myForm.rendered.then(function() {
     "value": {{ include.demoValue }}
 });
 {%- endcapture %}
-  {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    "value": {
-        // To implement the playground editor, the form of the example is
-        // wrapped in a "demo" subform, so the default value should be wrapped
-        // accordingly:
-        "demo": {{ include.demoValue }},
-    }
-});
-{{ no_reset_editor_hack }}
-{%- endcapture %}
+  {% assign default_jsHead_display_with_editor = default_jsHead_display %}
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
@@ -105,151 +79,29 @@ myForm.rendered.then(function() {
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
-{% assign formOptions = include.formOptions | default: default_formOptions %}
 {% assign demoValue = include.demoValue | default: default_demoValue %}
-
-{% if formOptions == '-' %}
-{% assign formOptions_source = "" %}
-{% assign formOptions_inner = "" %}
-{% else %}
-{% assign formOptions_source = " data-smark='" | append: formOptions | append: "'" %}
-    {% assign s = formOptions %}
-    {% assign inner_len = s | size | minus: 2 %}
-    {% assign formOptions_inner = s | slice: 1, inner_len | prepend: ', ' %}
-{% endif %}
-
-{% if demoValue != '-' %}
-{% assign demoValue_inner = ',"value":' | append: demoValue %}
-{% else %}
-{% assign demoValue_inner = '' %}
-{% endif %}
 
 
 {% assign current_tab = include.selected | default: "html" %}
 {% assign showEditor = include.showEditor | default: false %}
-{% assign showEditorSource = include.showEditorSource | default: false %}
-{% assign addLoadSaveButtons = include.addLoadSaveButtons | default: false %}
 
 
-{% comment %} ### ################# ### {% endcomment %}
-{% comment %} ### Layout components ### {% endcomment %}
-{% comment %} ### ################# ### {% endcomment %}
 
-{% raw %} <!-- default_buttons {{{ --> {% endraw %}
-{% capture default_buttons -%}
-█<span><button
-█    data-smark='{"action":"export","context":"demo","target":"../editor"}'
-█    title="Export 'demo' subform to 'editor' textarea"
-█    >⬇️ Export</button></span>
-█<span><button
-█    data-smark='{"action":"import","context":"demo","target":"../editor","setDefault":false}'
-█    title="Import 'editor' textarea contents to 'demo' subform"
-█    >⬆️ Import</button></span>
+{% comment %} ### ############################################## ### {% endcomment %}
+{% comment %} ### Build partial_htmlSource (used as preview)   ### {% endcomment %}
+{% comment %} ### ############################################## ### {% endcomment %}
 
-█<span{% if demoValue == '-' %} style="visibility: hidden"{% endif %}><button
-█    data-smark='{"action":"reset"}'
-█    title="Reset the form to its default values"
-█    >♻️ Reset</button></span>
-█<span><button
-█    data-smark='{"action":"clear", "context":"demo"}'
-█    title="Clear the whole form"
-█    >❌ Clear</button></span>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- json_editor {{{ --> {% endraw %}
-{% capture json_editor -%}
-█<textarea
-█    cols="20"
-█    placeholder="JSON playground editor"
-█    data-smark='{"name":"editor","type":"input"}'
-█    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"
-█></textarea>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- load_save_buttons {{{ --> {% endraw %}
-{% capture load_save_buttons -%}
-█<button
-█    data-smark='{"action":"export"}'
-█    title="Export the whole form as JSON (see JS tab)"
-█    >💾 Save</button>
-█<button
-█    data-smark='{"action":"import"}'
-█    title="Import the whole form as JSON (see JS tab)"
-█    >📂 Load</button>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% comment %} ### ######################## ### {% endcomment %}
-{% comment %} ### Render (optional) editor ### {% endcomment %}
-{% comment %} ### ######################## ### {% endcomment %}
-
-{% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
-{% capture full_htmlSource %}<div id="myForm$$">
-    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
-htmlSource | replace: "█", "            "
-}}        </div>
-        <div style="display: flex; justify-content: space-evenly">
-{{ default_buttons | replace: "█", "            "
-}}        </div>
-{{
-    json_editor | replace: "█", "        "
-}}{%
-    if addLoadSaveButtons==true
-%}
-        <div style="display: flex; justify-content: space-evenly">
-{{ load_save_buttons | replace: "█", "            " }}
-        </div>{%
-endif
-%}
-    </div>
-</div>
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% assign htmlSource_root_check = htmlSource | replace: "█", "" | lstrip | downcase | slice: 0, 6 %}
 {% raw %} <!-- partial_htmlSource {{{ --> {% endraw %}
-{% if htmlSource_root_check == "<form " or htmlSource_root_check == "<form>" %}
 {% capture partial_htmlSource %}{{ htmlSource | replace: "█", "    " | lstrip }}
 {%- endcapture %}
-{% else %}
-{% capture partial_htmlSource %}<div id="myForm$$"{{ formOptions_source | raw }}>
-{{
-    htmlSource
-    | replace: "█", "    "
-}}
-</div>
-{%- endcapture %}
-{% endif %}
 {% raw %} <!-- }}} --> {% endraw %}
-
-
-{% comment %} ### ############################################## ### {% endcomment %}
-{% comment %} ### Pass optional height override to controller  ### {% endcomment %}
-{% comment %} ### (sanitization and formula live in the JS)    ### {% endcomment %}
-{% comment %} ### ############################################## ### {% endcomment %}
 
 {% comment %}
     Pass the raw include.height value (0 when omitted) to the JSON blob so the
     JavaScript controller can apply the formula, defaults and clamping there.
 {% endcomment %}
 
-
-{% comment %}
-
-    🚧 FIXME!!
-    👉 Why the fuck the editor gets unconditionally rendered!!!
-  
-{% endcomment %}
-
-{% if showEditor == true %}
-{% assign preview_source = full_htmlSource %}
-{% else %}
 {% assign preview_source = partial_htmlSource %}
-{% endif %}
 
 
 
@@ -261,12 +113,7 @@ endif
 
 {% capture rendered_htmlSource | raw %}
 ```html
-{% if showEditorSource
-%}{{
-    full_htmlSource
-}}{% else %}{{
-    partial_htmlSource
-}}{% endif %}
+{{ partial_htmlSource }}
 ```
 {%- endcapture %}
 
@@ -296,7 +143,7 @@ endif
 {% capture rendered_jsSource -%}
 ```javascript
 {% if jsHead_display != '-'
-%}{% if showEditorSource == true %}{{ jsHead_display_with_editor }}{% else %}{{ jsHead_display }}{% endif %}{%
+%}{{ jsHead_display }}{%
 endif %}{% if jsHidden != '-'
 %}
 /* ... (Code already discussed) ... */
@@ -351,7 +198,7 @@ endif %}{% if jsHidden != '-'
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON playground editor is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused. In edit mode it is not included in the snippets by default, but you can add it back by checking this box. Note: for some examples the editor is intentionally excluded and this checkbox is disabled.">ℹ️</span></label>
+    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON playground editor scaffold is added transparently to the preview — it is not part of the example source. In edit mode it is hidden by default, but you can show it by checking this box.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -405,12 +252,12 @@ endif %}{% if jsHidden != '-'
       <li><code>♻️ Reset</code> to reset the form to its default values.</li>
       <li><code>❌ Clear</code> to clear the whole form.</li>
     </ul>
-    <p>💡 The <em>JSON playground editor</em> is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused on what matters.</p>
+    <p>💡 The <em>JSON playground editor</em> scaffold is added transparently to the preview — it is not part of the example source code.</p>
     {% endif %}
     <p>🛠️ Between the tab labels and the content there is always an <strong>edit toolbar</strong>:</p>
     <ul>
       <li><code>✏️ Edit</code> — activates edit mode: each source tab turns into a syntax-highlighted code editor (powered by <a href="https://ace.c9.io/" target="_blank">Ace</a>) pre-filled with the full, merged source. Changes are sandboxed — the original example is not affected.</li>
-      <li><code>📋 Include playground editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> is included in the preview. When toggled, the HTML and JS editors update instantly so you can see exactly what code is needed to add or remove it.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
+      <li><code>📋 Include playground editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> scaffold is shown in the preview. The HTML and JS source stay the same — the scaffold is always injected externally.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
       <li><code>▶️ Run</code> — (only visible in edit mode) re-renders the Preview from the current editor contents and switches to the Preview tab.</li>
     </ul>
   </div>
@@ -422,7 +269,6 @@ endif %}{% if jsHidden != '-'
     "cssHidden": {{ cssHidden | jsonify | replace: "<", "\u003c" }},
     "jsHead": {{ jsHead | jsonify | replace: "<", "\u003c" }},
     "jsHeadDisplay": {{ jsHead_display | jsonify | replace: "<", "\u003c" }},
-    "jsHeadDisplayWithEditor": {{ jsHead_display_with_editor | jsonify | replace: "<", "\u003c" }},
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
     "showEditor": {{ showEditor | jsonify }},

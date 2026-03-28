@@ -106,12 +106,12 @@ function normalizeForLooseComparison(value) {
  * Generate a minimal HTML page for testing an example
  */
 /**
- * Returns true when the htmlSource's root element is a <form> tag, meaning
- * it must not be wrapped in an extra container (it already carries
- * id="myForm-<formId>" itself).
+ * Returns true when the htmlSource already contains a root element with
+ * id="myForm-<formId>" (either a <form> tag or a <div id="myForm-...">),
+ * meaning it must not be wrapped in an extra container.
  */
 function isFormRoot(htmlSource) {
-  return /^\s*<form[\s>]/i.test(htmlSource);
+  return /^\s*<[\w]+[^>]*\bid="myForm[^"]*"/i.test(htmlSource);
 }
 
 function generateTestHTML(example) {
