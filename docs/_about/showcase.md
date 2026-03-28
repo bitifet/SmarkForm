@@ -216,7 +216,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     expect(await readField('color'), 'Can be set').toStrictEqual('#ff0000');
     await writeField('color', '#fea'); // Browser color picker UX may differ
     expect(await readField('color'), 'Accepts short format').toStrictEqual('#ffeeaa');
-    await page.keyboard.press('Delete'); 
+    await page.getByRole('button', { name: '❌' }).click(); // Use clear button (Delete key may not fire if focus moved)
     expect(await readField('color'), 'Can be cleared').toStrictEqual(null);
 
 
@@ -410,8 +410,8 @@ that can grow or shrink as needed:
 █<strong data-smark="label">Phones:</strong>
 █<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
 █    <input type="tel" style="display: block">
-█</div>{%
-endcapture %}
+█</div>
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_tests {{{ --> {% endraw %}
@@ -477,7 +477,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 };
 
-</div>{%- endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -563,9 +563,7 @@ endcapture %}
   * Also notice that when the max_items limit is reached, every *addItem*
     trigger, like the `➕` button is automatically disabled.
   * ...Same applies to *removeItem* triggers when the min_items limit is
-    reached.
-
-</div>{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+    reached.{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- simple_list_singleton_tests {{{ --> {% endraw %}
 {% capture simple_list_singleton_tests -%}
@@ -875,10 +873,7 @@ list like the following example:
 👉 Limiting the number of intervals in the list let set reasonable limits.
   * A maximum of 3 intervals looks reasonable for a schedule (but it can be set
     to any number).
-  * In case of not being enough, we can just increase *max_items* when needed.
-
-
-</div>{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+  * In case of not being enough, we can just increase *max_items* when needed.{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
 {
@@ -2304,9 +2299,7 @@ endcapture %}
         "+1 555 867 5309",
         "+1 555 234 5678"
     ]
-}
-
-</div>{%- endcapture %}
+}{%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="simple_list_autodisable"
@@ -3028,7 +3021,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     ).toEqual(['carol@example.com', 'dave@example.com', 'eve@example.com']);
 };
 
-</div>{%- endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -3166,7 +3159,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     ).toStrictEqual(null);
 };
 
-</div>{%- endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -3877,9 +3870,7 @@ endcapture %}
     const item = ev.context.targetNode;
     item.classList.remove("ongoing");
     await delay(150);
-});
-
-</div>{%- endcapture %}
+});{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
