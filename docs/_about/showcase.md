@@ -216,7 +216,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     expect(await readField('color'), 'Can be set').toStrictEqual('#ff0000');
     await writeField('color', '#fea'); // Browser color picker UX may differ
     expect(await readField('color'), 'Accepts short format').toStrictEqual('#ffeeaa');
-    await page.getByRole('button', { name: '❌' }).click(); // Use clear button (Delete key may not fire if focus moved)
+    await page.getByTitle('Indifferent or unknown').click(); // Use clear button (Delete key may not fire if focus moved)
     expect(await readField('color'), 'Can be cleared').toStrictEqual(null);
 
 
