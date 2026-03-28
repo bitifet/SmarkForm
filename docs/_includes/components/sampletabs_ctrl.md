@@ -32,74 +32,73 @@ function smarkformComputeHeightPct(data) {
     }
     return SMARKFORM_HEIGHT_PCT_DEFAULT;
 }
-/* Build the human-readable editor scaffold HTML for the HTML ace editor tab
-   when "Include playground editor" is active in edit mode. */
-function smarkformEditorScaffoldHtml(showReset) {
-    return (
-        '<div id="sf-editor-scaffold">\n'
-        + '  <div>\n'
-        + '    <span><button id="sf-export-btn" title="Export form to JSON editor">\u2b07\ufe0f Export</button></span>\n'
-        + '    <span><button id="sf-import-btn" title="Import from JSON editor to form">\u2b06\ufe0f Import</button></span>\n'
-        + '    <span' + (showReset ? '' : ' style="visibility:hidden"') + '><button id="sf-reset-btn" title="Reset the form to its default values">\u267b\ufe0f Reset</button></span>\n'
-        + '    <span><button id="sf-clear-btn" title="Clear the whole form">\u274c Clear</button></span>\n'
-        + '  </div>\n'
-        + '  <textarea id="sf-editor-ta" placeholder="JSON playground editor"></textarea>\n'
-        + '</div>'
-    );
+/* Extract the opening tag, inner content, and closing tag from a root-wrapped HTML string.
+   The root element is expected to be a <div id="myForm..."> or <form id="myForm..."> */
+function smarkformExtractWrapperAndInner(htmlSrc) {
+    var s = htmlSrc.trim();
+    /* Find the end of the first opening tag (handle quoted attribute values) */
+    var i = 0, inQ = null;
+    while (i < s.length) {
+        var c = s[i];
+        if (inQ) { if (c === inQ) inQ = null; }
+        else if (c === '"' || c === "'") { inQ = c; }
+        else if (c === '>') break;
+        i++;
+    }
+    var lastTagStart = s.lastIndexOf('</');
+    return { openTag: s.slice(0, i + 1), inner: s.slice(i + 1, lastTagStart), closeTag: s.slice(lastTagStart) };
 }
-/* Build the human-readable editor binding JS for the JS ace editor tab
-   when "Include playground editor" is active in edit mode. */
-function smarkformEditorScaffoldJs() {
-    return (
-        'var _sfTa = document.getElementById("sf-editor-ta");\n'
-        + 'document.getElementById("sf-export-btn").addEventListener("click", function() {\n'
-        + '    myForm.rendered.then(async function() {\n'
-        + '        _sfTa.value = JSON.stringify(await myForm.export(), null, 2);\n'
-        + '    });\n'
-        + '});\n'
-        + 'document.getElementById("sf-import-btn").addEventListener("click", function() {\n'
-        + '    try { myForm.import(JSON.parse(_sfTa.value)); } catch(e) {}\n'
-        + '});\n'
-        + 'document.getElementById("sf-reset-btn").addEventListener("click", function() { myForm.reset(); });\n'
-        + 'document.getElementById("sf-clear-btn").addEventListener("click", function() { myForm.clear(); });'
-    );
+/* Build the SmarkForm playground editor HTML from htmlSource.
+   The htmlSource is expected to contain a root wrapper (e.g. <div id="myForm...">...inner...</div>).
+   The inner content is placed in a "demo" subform, with Export/Import/Reset/Clear buttons
+   and a JSON editor textarea — all implemented as SmarkForm components. */
+function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
+    var p = smarkformExtractWrapperAndInner(htmlSrc);
+    return p.openTag + '\n'
+        + '    <div style="display: flex; flex-direction: column; align-items: left; gap: 1em">\n'
+        + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
+        + p.inner
+        + '        </div>\n'
+        + '        <div style="display: flex; justify-content: space-evenly">\n'
+        + '<span><button\n'
+        + '    data-smark=\'{"action":"export","context":"demo","target":"../editor"}\'\n'
+        + '    title="Export \'demo\' subform to \'editor\' textarea"\n'
+        + '    >\u2b07\ufe0f Export</button></span>\n'
+        + '<span><button\n'
+        + '    data-smark=\'{"action":"import","context":"demo","target":"../editor","setDefault":false}\'\n'
+        + '    title="Import \'editor\' textarea contents to \'demo\' subform"\n'
+        + '    >\u2b06\ufe0f Import</button></span>\n'
+        + '<span' + (hasDemoValue ? '' : ' style="visibility: hidden"') + '><button\n'
+        + '    data-smark=\'{"action":"reset"}\'\n'
+        + '    title="Reset the form to its default values"\n'
+        + '    >\u267b\ufe0f Reset</button></span>\n'
+        + '<span><button\n'
+        + '    data-smark=\'{"action":"clear","context":"demo"}\'\n'
+        + '    title="Clear the whole form"\n'
+        + '    >\u274c Clear</button></span>\n'
+        + '        </div>\n'
+        + '<textarea\n'
+        + '    cols="20"\n'
+        + '    placeholder="JSON playground editor"\n'
+        + '    data-smark=\'{"name":"editor","type":"input"}\'\n'
+        + '    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"\n'
+        + '></textarea>\n'
+        + '    </div>\n'
+        + p.closeTag;
 }
-/* Render SmarkForm example into an iframe.
-   srcs = {html, css, js, hasEditor, inlineEditor}
-   - hasEditor:    inject the editor scaffold externally (normal preview mode)
-   - inlineEditor: editor scaffold already present in srcs.html/srcs.js; only
-                   apply editor CSS, do NOT re-inject HTML or JS. */
+/* Render SmarkForm example into an iframe. srcs = {html, css, js, hasEditor} */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
-    var inlineEditor = !!srcs.inlineEditor;
     var heightPct = smarkformComputeHeightPct(data);
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-    var baseCss = 'button{padding:.5em;margin:0 4px;}';
-    var editorCss = (hasEditor || inlineEditor) ? '#sf-editor-scaffold{display:flex;flex-direction:column;gap:0.5em;padding:0.5em 0;margin-top:0.5em;}#sf-editor-scaffold>div{display:flex;flex-wrap:wrap;justify-content:space-evenly;gap:4px;}#sf-editor-ta{resize:vertical;min-height:8em;width:100%;box-sizing:border-box;}' : '';
-    var editorHtml = hasEditor ? (
-        '<div id="sf-editor-scaffold">'
-        + '<div>'
-        + '<span><button id="sf-export-btn" title="Export form to JSON editor">\u2b07\ufe0f Export</button></span>'
-        + '<span><button id="sf-import-btn" title="Import from JSON editor to form">\u2b06\ufe0f Import</button></span>'
-        + '<span' + (data.showEditor ? '' : ' style="visibility:hidden"') + '><button id="sf-reset-btn" title="Reset the form to its default values">\u267b\ufe0f Reset</button></span>'
-        + '<span><button id="sf-clear-btn" title="Clear the whole form">\u274c Clear</button></span>'
-        + '</div>'
-        + '<textarea id="sf-editor-ta" placeholder="JSON playground editor"></textarea>'
-        + '</div>'
-    ) : '';
-    var editorJs = hasEditor ? (
-        '\nvar _sfTa=document.getElementById("sf-editor-ta");'
-        + '\ndocument.getElementById("sf-export-btn").addEventListener("click",function(){myForm.rendered.then(async function(){_sfTa.value=JSON.stringify(await myForm.export(),null,2);});});'
-        + '\ndocument.getElementById("sf-import-btn").addEventListener("click",function(){try{myForm.import(JSON.parse(_sfTa.value));}catch(e){}});'
-        + '\ndocument.getElementById("sf-reset-btn").addEventListener("click",function(){myForm.reset();});'
-        + '\ndocument.getElementById("sf-clear-btn").addEventListener("click",function(){myForm.clear();});'
-    ) : '';
+    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
+    var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:12em;}' : '';
     var S = 'script';
-    var jsSrc = (srcs.js || '') + editorJs;
+    var jsSrc = srcs.js || '';
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';
-    iframe.dataset.hasEditor = (hasEditor || inlineEditor) ? '1' : '';
+    iframe.dataset.hasEditor = hasEditor ? '1' : '';
     iframe.srcdoc = '<!DOCTYPE html>'
         + '\u003chtml\u003e\u003chead\u003e'
         + '\u003cmeta charset="UTF-8"\u003e'
@@ -107,7 +106,6 @@ function smarkformRenderIframe(iframe, data, srcs) {
         + '\u003cstyle\u003e' + baseCss + '\n' + editorCss + '\n' + (srcs.css || '') + '\u003c/style\u003e'
         + '\u003c/head\u003e\u003cbody\u003e'
         + (srcs.html || '')
-        + editorHtml
         + sTag
         + '\u003c/body\u003e\u003c/html\u003e';
     iframe.onload = function() {
@@ -115,11 +113,43 @@ function smarkformRenderIframe(iframe, data, srcs) {
         this.style.display = 'block';
         try {
             var doc = this.contentDocument;
-            var naturalH = doc.documentElement.scrollHeight;
-            var maxH = (hasEditor || inlineEditor)
-                ? Math.round(window.innerHeight * 0.85)
-                : Math.round(window.innerHeight * heightPct / 100);
-            this.style.height = Math.max(100, Math.min(naturalH + 20, maxH)) + 'px';
+            var naturalH, maxH;
+            if (hasEditor) {
+                /* editorCss sets height:100%/overflow:hidden on html, body, #myForm and
+                   its flex child, which makes scrollHeight circular (equals the iframe
+                   height rather than the natural content height). To measure the true
+                   content height — so that toggling the editor adjusts the iframe by
+                   exactly the editor element's height — temporarily override those rules
+                   with inline styles (higher specificity), read scrollHeight, then restore
+                   so the flex layout CSS takes effect on the final sized iframe. */
+                var html = doc.documentElement, body = doc.body;
+                var myForm = doc.querySelector('#myForm');
+                var myFormDiv = myForm ? myForm.firstElementChild : null;
+                var demoDiv = myFormDiv ? myFormDiv.firstElementChild : null;
+                var saved = [
+                    [html, 'height', html.style.height], [html, 'overflow', html.style.overflow],
+                    [body, 'height', body.style.height], [body, 'overflow', body.style.overflow]
+                ];
+                if (myForm) saved.push([myForm, 'height', myForm.style.height]);
+                if (myFormDiv) { saved.push([myFormDiv, 'height', myFormDiv.style.height]); saved.push([myFormDiv, 'overflow', myFormDiv.style.overflow]); }
+                if (demoDiv) { saved.push([demoDiv, 'flexGrow', demoDiv.style.flexGrow], [demoDiv, 'flexShrink', demoDiv.style.flexShrink], [demoDiv, 'flexBasis', demoDiv.style.flexBasis], [demoDiv, 'minHeight', demoDiv.style.minHeight]); }
+                html.style.height = 'auto'; html.style.overflow = 'visible';
+                body.style.height = 'auto'; body.style.overflow = 'visible';
+                if (myForm) myForm.style.height = 'auto';
+                if (myFormDiv) { myFormDiv.style.height = 'auto'; myFormDiv.style.overflow = 'visible'; }
+                if (demoDiv) { demoDiv.style.flexGrow = '0'; demoDiv.style.flexShrink = '0'; demoDiv.style.flexBasis = 'auto'; demoDiv.style.minHeight = ''; }
+                naturalH = html.scrollHeight;
+                saved.forEach(function(s) { s[0].style[s[1]] = s[2]; });
+                /* Use a generous cap for editor mode so the editor is not clipped.
+                   Use heightPct (not a fixed 100px) as the minimum so that complex
+                   forms with async SmarkForm init don't collapse to near-zero height
+                   before their components have finished rendering. */
+                maxH = Math.round(window.innerHeight * 0.85);
+            } else {
+                naturalH = doc.documentElement.scrollHeight;
+                maxH = Math.round(window.innerHeight * heightPct / 100);
+            }
+            this.style.height = Math.max(hasEditor ? Math.round(window.innerHeight * heightPct / 100) : 100, Math.min(naturalH + 20, maxH)) + 'px';
         } catch(e) {}
     };
 }
@@ -180,8 +210,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             frame.style.height = Math.max(100, Math.min(h + 20, maxH)) + 'px';
                         }
                     } catch(e) {}
-                }
-                /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
+                }                /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
                 SMARKFORM_EDITOR_KINDS.forEach(function(k) {
                     if (aceEditors[k] && aceEditors[k].resize) aceEditors[k].resize();
                 });
@@ -199,23 +228,19 @@ document.addEventListener('DOMContentLoaded', function() {
         var aceEditors = {};
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
-            var baseJs = [r(data.jsHeadDisplay || data.jsHead), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n');
-            if (editMode && withEditor) {
-                /* In edit mode with "Include playground editor" checked, include the
-                   editor scaffold inline in HTML/JS so the ace editors show the
-                   complete source needed to reproduce the example with the editor. */
-                return {
-                    html: r(data.htmlSource) + '\n' + smarkformEditorScaffoldHtml(!!data.showEditor),
-                    css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
-                    js:   baseJs ? baseJs + '\n' + smarkformEditorScaffoldJs() : smarkformEditorScaffoldJs(),
-                    hasEditor: false,
-                    inlineEditor: true,
-                };
-            }
+            /* When editor is hidden, demoValue is passed directly as value: {...}.
+               When editor is shown, demoValue is wrapped as value: {"demo": {...}} because
+               the HTML wraps the form in a "demo" subform. This keeps the JS tab accurate
+               and lets readers see the value morph as they toggle "Include editor". */
+            var jsHeadSrc = useEditor
+                ? (data.jsHeadDisplayWithEditor || data.jsHead)
+                : (data.jsHeadDisplay || data.jsHead);
             return {
-                html: r(data.htmlSource),
+                html: useEditor
+                    ? smarkformBuildEditorHtml(r(data.htmlSource), !!(data.demoValue && data.demoValue !== '-'))
+                    : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
-                js:   baseJs,
+                js:   [r(jsHeadSrc), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
                 hasEditor: useEditor
             };
         };
@@ -287,12 +312,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (editorToggle) {
             editorToggle.addEventListener('change', function() {
                 withEditor = this.checked;
-                /* Update ace editor contents to include/exclude the editor scaffold
-                   source so the user sees what will actually render. */
-                var srcs = previewSrcs();
-                if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
-                if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
-                smarkformRenderIframe(iframe, data, srcs);
+                if (editMode) {
+                    var srcs = previewSrcs();
+                    /* Update HTML and JS editors to reflect the changed editor inclusion */
+                    if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
+                    if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
+                    smarkformRenderIframe(iframe, data, srcs);
+                } else {
+                    smarkformRenderIframe(iframe, data, previewSrcs());
+                }
             });
         }
         /* Hint icon: show tooltip as alert on tap/click (mobile accessibility) */
@@ -309,8 +337,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 html: aceEditors.html ? aceEditors.html.getValue() : srcs.html,
                 css:  aceEditors.css  ? aceEditors.css.getValue()  : srcs.css,
                 js:   aceEditors.js   ? aceEditors.js.getValue()   : srcs.js,
-                hasEditor: srcs.hasEditor,
-                inlineEditor: srcs.inlineEditor,
+                hasEditor: srcs.hasEditor
             });
             activatePreview();
         });

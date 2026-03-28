@@ -36,6 +36,23 @@ For further details, please refer to the following documentation files:
 {% comment %} ### Read arguments and apply defaults ### {% endcomment %}
 {% comment %} ### ################################# ### {% endcomment %}
 
+{% capture no_reset_editor_hack -%}
+// JSON playground editor hack:
+// To avoid the reset button resetting the editor along with the form, we did two things:
+//   1. We left the "editor" property undefined in the default value (so it fills with its own default value).
+//   2. Import its own contents on every change to keep its default value updated.
+// ...this preserves user edits when the "reset" button is clicked.
+myForm.rendered.then(function() {
+    const editor = myForm.find('/editor');
+    editor.on('change', async function() {
+        // Import its own value to set it as default:
+        await this.import(
+            await this.export()
+        );
+    });
+});
+{%- endcapture %}
+
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
 {% if include.demoValue and include.demoValue != '-' %}
@@ -44,7 +61,16 @@ For further details, please refer to the following documentation files:
     "value": {{ include.demoValue }}
 });
 {%- endcapture %}
-  {% assign default_jsHead_display_with_editor = default_jsHead_display %}
+  {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    "value": {
+        // To implement the playground editor, the form of the example is
+        // wrapped in a "demo" subform, so the default value should be wrapped
+        // accordingly:
+        "demo": {{ include.demoValue }},
+    }
+});
+{{ no_reset_editor_hack }}
+{%- endcapture %}
 {% else %}
   {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
   {% assign default_jsHead_display = default_jsHead %}
@@ -189,7 +215,7 @@ endif %}{% if jsHidden != '-'
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON playground editor scaffold is added transparently to the preview — it is not part of the example source. In edit mode it is hidden by default, but you can show it by checking this box.">ℹ️</span></label>
+    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON playground editor is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused. In edit mode it is not included in the snippets by default, but you can add it back by checking this box. Note: for some examples the editor is intentionally excluded and this checkbox is disabled.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -243,12 +269,12 @@ endif %}{% if jsHidden != '-'
       <li><code>♻️ Reset</code> to reset the form to its default values.</li>
       <li><code>❌ Clear</code> to clear the whole form.</li>
     </ul>
-    <p>💡 The <em>JSON playground editor</em> scaffold is added transparently to the preview — it is not part of the example source code.</p>
+    <p>💡 The <em>JSON playground editor</em> is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused on what matters.</p>
     {% endif %}
     <p>🛠️ Between the tab labels and the content there is always an <strong>edit toolbar</strong>:</p>
     <ul>
       <li><code>✏️ Edit</code> — activates edit mode: each source tab turns into a syntax-highlighted code editor (powered by <a href="https://ace.c9.io/" target="_blank">Ace</a>) pre-filled with the full, merged source. Changes are sandboxed — the original example is not affected.</li>
-      <li><code>📋 Include playground editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> scaffold is shown in the preview. The HTML and JS source stay the same — the scaffold is always injected externally.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
+      <li><code>📋 Include playground editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> is included in the preview. When toggled, the HTML and JS editors update instantly so you can see exactly what code is needed to add or remove it.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
       <li><code>▶️ Run</code> — (only visible in edit mode) re-renders the Preview from the current editor contents and switches to the Preview tab.</li>
     </ul>
   </div>
@@ -260,8 +286,10 @@ endif %}{% if jsHidden != '-'
     "cssHidden": {{ cssHidden | jsonify | replace: "<", "\u003c" }},
     "jsHead": {{ jsHead | jsonify | replace: "<", "\u003c" }},
     "jsHeadDisplay": {{ jsHead_display | jsonify | replace: "<", "\u003c" }},
+    "jsHeadDisplayWithEditor": {{ jsHead_display_with_editor | jsonify | replace: "<", "\u003c" }},
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
+    "demoValue": {{ demoValue | jsonify }},
     "showEditor": {{ showEditor | jsonify }},
     "height": {{ include.height | plus: 0 }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
