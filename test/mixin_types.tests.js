@@ -507,8 +507,273 @@ test.describe('Mixin Types — error codes', () => {
 });
 
 // ---------------------------------------------------------------------------
-// Test suite: external template loading
+// Test suite: snippet parameters (data-for)
 // ---------------------------------------------------------------------------
+test.describe('Mixin Types — snippet parameters (data-for)', () => {
+
+    test('data-for child replaces the targeted element inside the template', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="labeled">
+  <label data-smark>
+    <span id="labelText">Default label</span>
+    <input data-smark type="text">
+  </label>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#labeled","name":"field"}'>
+    <span data-for="labelText">Custom label</span>
+  </div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            // The substituted element should be present with the custom text.
+            const text = await pg.evaluate(() =>
+                document.querySelector('[name="field"] span, label[data-smark] span')?.textContent
+                || document.querySelector('label span')?.textContent
+            );
+            expect(text).toBe('Custom label');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('original data-for children are consumed and not rendered', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="widget">
+  <div data-smark='{"type":"form"}'>
+    <span id="slotA">Default A</span>
+  </div>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#widget","name":"w"}'>
+    <span data-for="slotA">Override A</span>
+  </div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            // The data-for attribute should not appear anywhere in the final DOM.
+            const dataForCount = await pg.evaluate(() =>
+                document.querySelectorAll('[data-for]').length
+            );
+            expect(dataForCount).toBe(0);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('surviving template ids are converted to data-id', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="defaults">
+  <div data-smark='{"type":"form"}'>
+    <span id="slotA">Default A</span>
+    <span id="slotB">Default B</span>
+  </div>
+</template>
+
+<form id="myForm">
+  <!-- No data-for children — both slots survive with data-id -->
+  <div data-smark='{"type":"#defaults","name":"w"}'></div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            // Original ids must be gone; data-id must be present instead.
+            const idCount = await pg.evaluate(() =>
+                document.querySelectorAll('#slotA, #slotB').length
+            );
+            expect(idCount).toBe(0);
+
+            const dataIdA = await pg.evaluate(() =>
+                document.querySelector('[data-id="slotA"]')?.textContent
+            );
+            const dataIdB = await pg.evaluate(() =>
+                document.querySelector('[data-id="slotB"]')?.textContent
+            );
+            expect(dataIdA).toBe('Default A');
+            expect(dataIdB).toBe('Default B');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('ids on parameter elements are converted to data-id', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="widget">
+  <div data-smark='{"type":"form"}'>
+    <span id="slot">Default</span>
+  </div>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#widget","name":"w"}'>
+    <!-- id="injected" on the param element should be stripped / converted -->
+    <span data-for="slot" id="injected">Custom</span>
+  </div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            // id="injected" must not appear in the final DOM.
+            const idCount = await pg.evaluate(() =>
+                document.querySelectorAll('#injected').length
+            );
+            expect(idCount).toBe(0);
+
+            // The inserted element should carry data-id="injected" instead.
+            const dataId = await pg.evaluate(() =>
+                document.querySelector('[data-id="injected"]')?.textContent
+            );
+            expect(dataId).toBe('Custom');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('two instances with different data-for substitutions are independent', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="namedField">
+  <div data-smark='{"type":"form"}'>
+    <span id="label">Label</span>
+    <input data-smark type="text" name="value">
+  </div>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#namedField","name":"first"}'>
+    <span data-for="label">First label</span>
+  </div>
+  <div data-smark='{"type":"#namedField","name":"second"}'>
+    <span data-for="label">Second label</span>
+  </div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            // Both substitutions should appear in the DOM independently.
+            const spans = await pg.evaluate(() =>
+                [...document.querySelectorAll('span')]
+                    .map(s => s.textContent)
+            );
+            expect(spans).toContain('First label');
+            expect(spans).toContain('Second label');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('data-for with no matching id in template is silently ignored', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="simple">
+  <input data-smark type="text">
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#simple","name":"field"}'>
+    <span data-for="nonExistentId">Ignored</span>
+  </div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            // Form should still render correctly despite the unmatched data-for.
+            const exported = await pg.evaluate(() => window.myForm.export());
+            expect(exported).toHaveProperty('field');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});
+
+// ---------------------------------------------------------------------------
+// Test suite: nested script security
+// ---------------------------------------------------------------------------
+test.describe('Mixin Types — nested script security', () => {
+
+    test('MIXIN_NESTED_SCRIPT_DISALLOWED: <script> inside template root throws', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="badTemplate">
+  <div data-smark='{"type":"form"}'>
+    <script>alert('nested!');</script>
+    <input data-smark type="text" name="value">
+  </div>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#badTemplate","name":"w"}'></div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+
+            await expect(pg.getByText('MIXIN_NESTED_SCRIPT_DISALLOWED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('top-level sibling <script> in template still executes normally', async ({ page: pg }) => {//{{{
+        // Regression: top-level scripts (siblings of root, not inside it) must still work.
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="withScript">
+  <input data-smark type="text">
+  <script>
+    this.targetNode.dataset.scriptOk = 'yes';
+  </script>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#withScript","name":"field"}'></div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered);
+
+            const scriptOk = await pg.evaluate(() => {
+                const field = window.myForm.find('field');
+                return field?.targetNode?.dataset?.scriptOk;
+            });
+            expect(scriptOk).toBe('yes');
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});
 test.describe('Mixin Types — external template loading', () => {
 
     test('loads a template from an external HTML file', async ({ page: pg }) => {//{{{
