@@ -365,6 +365,12 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     // to implement a fake default prevention to "change" events (which are not natively cancelable) by restoring previous value.
                     await eventHook(event);
                 };
+                // Sync handler-modified data back to evData so action decorators
+                // that do `data = options.data` after emit() pick up handler changes
+                // (e.g. BeforeAction_import handlers that modify ev.data).
+                if (evData && Object.prototype.hasOwnProperty.call(evData, 'data')) {
+                    evData.data = event.data;
+                };
                 return ! event.defaultPrevented;
             };// }}}
         };
