@@ -11,6 +11,69 @@ const docCache = new Map();           // absoluteUrl → Promise<Document>
 const injectedStyleSrcs = new Set();  // dedup injected <style> content
 
 // ----------------------------------------------------------------------------
+// Internal: applySnippetParams(clone, params, component)
+// Applies "snippet parameters" to a cloned template root.
+//
+// For each param element (a direct child of the placeholder with data-for):
+//   1. Locate the target element inside `clone` by id.
+//   2. Strip/convert ids on the param element and its descendants.
+//   3. Replace the target with a clone of the param element.
+//
+// After all substitutions:
+//   4. Convert every remaining id in the clone subtree to data-id.
+//
+// Also enforces that no <script> elements exist anywhere inside the clone
+// subtree (throws MIXIN_NESTED_SCRIPT_DISALLOWED).
+// ----------------------------------------------------------------------------
+
+function convertIds(root) { //{{{
+    // Convert id → data-id for root and all descendants.
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT);
+    let node = walker.currentNode;
+    while (node) {
+        if (node.hasAttribute('id')) {
+            node.setAttribute('data-id', node.getAttribute('id'));
+            node.removeAttribute('id');
+        }
+        node = walker.nextNode();
+    }
+}; //}}}
+
+function enforceNoNestedScripts(root, component) { //{{{
+    // Throw if any <script> element exists anywhere inside the clone root.
+    if (root.querySelector('script')) {
+        throw component.renderError(
+            'MIXIN_NESTED_SCRIPT_DISALLOWED'
+            , 'Mixin template root subtree must not contain <script> elements.'
+            + ' Scripts are only supported as direct siblings of the template'
+            + ' root element (top-level <script> inside <template>).'
+        );
+    }
+}; //}}}
+
+function applySnippetParams(clone, params) { //{{{
+    // For each param element, find the target by id in the clone and replace.
+    for (const param of params) {
+        const targetId = param.getAttribute('data-for');
+        const target = clone.querySelector(`[id="${CSS.escape(targetId)}"]`);
+        if (! target) continue; // Target not found — silently skip.
+
+        // Deep-clone the param to detach it from the live DOM before
+        // mutating (id→data-id conversion) and insertion.
+        const paramClone = param.cloneNode(true);
+
+        // Convert ids on the inserted node (bad practice / disallowed).
+        convertIds(paramClone);
+
+        // Remove the data-for attribute from the inserted element.
+        paramClone.removeAttribute('data-for');
+
+        // Replace target in the clone subtree with the param clone.
+        target.replaceWith(paramClone);
+    }
+}; //}}}
+
+// ----------------------------------------------------------------------------
 // Public: isMixinRef(type)
 // Returns true when `type` is a mixin reference, i.e. it contains a '#'.
 // Native SmarkForm types (form, list, input, …) never contain '#'.
@@ -224,6 +287,25 @@ export async function expandMixin(node, options, component) { //{{{
 
     // Deep-clone the template root:
     const clone = templateRoot.cloneNode(true);
+
+    // Enforce no nested <script> elements inside the template root subtree.
+    // Scripts are only supported as top-level siblings of the root element.
+    enforceNoNestedScripts(clone, component);
+
+    // Collect snippet parameter nodes: direct children of the placeholder
+    // that carry a `data-for` attribute, referencing elements inside the clone
+    // by their id.  These are consumed (not rendered as children).
+    const params = [...node.children].filter(el => el.hasAttribute('data-for'));
+
+    // Apply snippet parameter substitutions on the clone:
+    if (params.length > 0) {
+        applySnippetParams(clone, params);
+    }
+
+    // Convert any surviving id attributes inside the clone to data-id.
+    // This prevents id collisions when the mixin is used multiple times and
+    // makes default snippet slots self-documenting via data-id.
+    convertIds(clone);
 
     // Gather styles from the template top level (siblings of the root element)
     // and inject them into <head> once per unique content:
