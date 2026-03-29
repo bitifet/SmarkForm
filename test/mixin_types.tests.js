@@ -773,6 +773,37 @@ test.describe('Mixin Types — nested script security', () => {
         }
     });//}}}
 
+    test('MIXIN_NESTED_SCRIPT_DISALLOWED: <script> inside data-for param also throws', async ({ page: pg }) => {//{{{
+        // Security: param elements with nested scripts must also be rejected.
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="paramTarget">
+  <div data-smark='{"type":"form"}'>
+    <span id="slot">Default</span>
+  </div>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#paramTarget","name":"w"}'>
+    <!-- Attempt to inject a script via the data-for parameter -->
+    <div data-for="slot">
+      <script>alert('injected!');</script>
+      Injected content
+    </div>
+  </div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+
+            await expect(pg.getByText('MIXIN_NESTED_SCRIPT_DISALLOWED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
 });
 test.describe('Mixin Types — external template loading', () => {
 
