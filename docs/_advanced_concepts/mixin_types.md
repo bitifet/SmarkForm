@@ -28,6 +28,10 @@ nav_order: 6
 * [Expansion Semantics](#expansion-semantics)
 * [Option Merge Semantics](#option-merge-semantics)
 * [Attribute Merge Semantics](#attribute-merge-semantics)
+* [Snippet Parameters](#snippet-parameters)
+    * [How snippet parameters work](#how-snippet-parameters-work)
+    * [id → data-id conversion](#id--data-id-conversion)
+    * [Security: no nested scripts](#security-no-nested-scripts)
 * [External Loading and Caching](#external-loading-and-caching)
     * [URL resolution](#url-resolution)
     * [Fetch and cache strategy](#fetch-and-cache-strategy)
@@ -40,6 +44,7 @@ nav_order: 6
 * [Examples](#examples)
     * [Reusable contact block](#reusable-contact-block)
     * [Option override per usage site](#option-override-per-usage-site)
+    * [Snippet parameters — custom labels](#snippet-parameters--custom-labels)
 * [Error Codes](#error-codes)
 
 <!-- vim-markdown-toc -->
@@ -293,6 +298,113 @@ After expansion the effective element is:
   aria-required="true"
 >
 ```
+
+
+## Snippet Parameters
+
+**Snippet parameters** let you customise the internals of a mixin at each usage
+site by supplying replacement elements as children of the placeholder node.
+Each replacement child must carry a `data-for` attribute that names the
+element inside the template it should replace.
+
+This is a purely DOM-level substitution — no template engine, no string
+interpolation.  The supplied element (including its tag name, attributes, and
+all descendants) replaces the template element entirely, giving you the full
+power to redefine any part of the template.
+
+### How snippet parameters work
+
+1. **Mark replaceable slots** inside the mixin template by giving them an `id`.
+2. **Supply the replacement** as a direct child of the placeholder, with a
+   matching `data-for="<id>"` attribute.
+3. SmarkForm swaps out the template element before rendering begins — the
+   original element is gone and the replacement takes its place.
+4. The `data-for` child is **consumed**: it never appears in the final DOM as
+   a child of the placeholder.
+
+```html
+<!-- Template declares a slot via id="labelText" -->
+<template id="labeledInput">
+  <label data-smark>
+    <span id="labelText">Default label</span>
+    <input type="text">
+  </label>
+</template>
+
+<!-- Usage site supplies a replacement for that slot -->
+<div data-smark='{"type":"#labeledInput","name":"email"}'>
+  <span data-for="labelText">E-mail address</span>
+</div>
+
+<!-- Another usage site with a different label -->
+<div data-smark='{"type":"#labeledInput","name":"phone"}'>
+  <span data-for="labelText">Phone number</span>
+</div>
+```
+
+Each instance gets its own independent content — the template is cloned fresh
+for every expansion.
+
+{: .info }
+> If the `data-for` value does not match any element `id` in the template, the
+> parameter is silently ignored and the template default remains in place.
+
+### id → data-id conversion
+
+After snippet substitutions have been applied, SmarkForm converts **every**
+remaining `id` attribute in the cloned subtree to a `data-id` attribute.  This
+means:
+
+- **Surviving template slots** (those not replaced by a `data-for` child)
+  become self-documenting: you can inspect `data-id` to discover which ids are
+  available for parameterisation.
+- **id attributes on inserted parameter nodes** are also converted (using an
+  `id` inside a mixin is considered bad practice).
+- The mixin can be used multiple times on the same page without ever
+  introducing duplicate `id` attributes.
+
+```html
+<!-- Before expansion: template has two slots -->
+<template id="twoSlots">
+  <div data-smark='{"type":"form"}'>
+    <span id="title">Default title</span>
+    <p id="description">Default description</p>
+  </div>
+</template>
+
+<!-- Usage: override only the title -->
+<div data-smark='{"type":"#twoSlots","name":"section"}'>
+  <span data-for="title">Custom title</span>
+</div>
+
+<!--
+After expansion the rendered subtree looks like:
+  <div data-smark='{"type":"form","name":"section"}'>
+    <span>Custom title</span>           ← replaced, no id/data-id
+    <p data-id="description">Default description</p>  ← surviving, data-id
+  </div>
+-->
+```
+
+{: .hint }
+> Because ids inside mixin templates are always removed before rendering,
+> mixin styles should use **CSS classes** to target elements — never ids.
+> SmarkForm automatically handles label/field association internally.
+
+### Security: no nested scripts
+
+SmarkForm disallows `<script>` elements **anywhere inside the template root
+subtree** (i.e., nested within the root element and its descendants).
+Attempting to place a `<script>` there throws a
+`MIXIN_NESTED_SCRIPT_DISALLOWED` error.
+
+`<script>` elements are **only** supported as direct siblings of the root
+element — the top-level position inside the `<template>` tag — where they are
+extracted and run as per-instance behaviour (see [Scripts](#scripts)).
+
+This restriction also applies to any elements injected via `data-for`: if a
+replacement element contains a nested `<script>`, the error is thrown before
+any enhancement takes place.
 
 
 ## External Loading and Caching
@@ -638,6 +750,82 @@ option — set by the placeholder for `optional` and falling through to the
 template default for `priority`.
 
 
+### Snippet parameters — custom labels
+
+The following example shows a `#personEntry` mixin where each usage site
+customises the label of the name field via a snippet parameter.  The template
+uses `id="nameLabel"` to mark the slot, and each placeholder supplies its own
+`<span data-for="nameLabel">` replacement.
+
+{% raw %} <!-- capture mixin_snippet_params_html {{{ --> {% endraw %}
+{% capture mixin_snippet_params_html -%}
+<div id="myForm$$">
+<fieldset data-smark='{"type":"form","name":"people"}'>
+    <legend>People</legend>
+    <div data-smark='{"type":"#personEntry","name":"author"}'>
+        <span data-for="nameLabel">Author name</span>
+    </div>
+    <div data-smark='{"type":"#personEntry","name":"reviewer"}'>
+        <span data-for="nameLabel">Reviewer name</span>
+    </div>
+</fieldset>
+</div>
+<!-- Mixin template — nameLabel slot is the default text for the label -->
+<template id="personEntry">
+    <fieldset data-smark='{"type":"form"}'>
+        <label>
+            <span id="nameLabel">Name</span>
+            <input data-smark type="text" name="name">
+        </label>
+    </fieldset>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_snippet_params_tests {{{ --> {% endraw %}
+{% capture mixin_snippet_params_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // The snippet parameters replaced the label text.
+    const spans = await page.evaluate(() =>
+        [...document.querySelectorAll('span')].map(s => s.textContent)
+    );
+    expect(spans).toContain('Author name');
+    expect(spans).toContain('Reviewer name');
+
+    // Original id is gone; data-id is present on any surviving slot.
+    const idCount = await page.evaluate(() =>
+        document.querySelectorAll('#nameLabel').length
+    );
+    expect(idCount).toBe(0);
+
+    // Form data is still accessible at the correct paths.
+    await page.evaluate(() => myForm.import({
+        people: { author: { name: 'Alice' }, reviewer: { name: 'Bob' } }
+    }));
+    const data = await page.evaluate(() => myForm.export());
+    expect(data.people.author.name).toBe('Alice');
+    expect(data.people.reviewer.name).toBe('Bob');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_snippet_params"
+    htmlSource=mixin_snippet_params_html
+    showEditor=true
+    selected="preview"
+    demoValue='{"people":{"author":{"name":"Alice Smith"},"reviewer":{"name":"Bob Jones"}}}'
+    tests=mixin_snippet_params_tests
+%}
+
+Each placeholder supplies its own label text; the template default (`"Name"`)
+would appear on any instance that does not provide a `data-for="nameLabel"`
+child.  After expansion there are no `id` attributes in the rendered DOM — the
+slot is self-documented via `data-id="nameLabel"` on surviving nodes.
+
+
 ## Error Codes
 
 The following normative error codes are defined for the mixin types feature.
@@ -652,3 +840,4 @@ distinguish error causes programmatically.
 | `MIXIN_TEMPLATE_ROOT_HAS_NAME` | The template root element's `data-smark` options specify a `name` |
 | `MIXIN_CIRCULAR_DEPENDENCY` | The expansion stack already contains the current mixin key (infinite loop detected) |
 | `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `crossOriginMixins` is `"block"` (the default) |
+| `MIXIN_NESTED_SCRIPT_DISALLOWED` | A `<script>` element was found inside the template root subtree (nested scripts are not allowed; use top-level sibling `<script>` inside the `<template>` instead) |
