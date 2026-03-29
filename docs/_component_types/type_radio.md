@@ -55,6 +55,7 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
 
 {% raw %} <!-- radio_group_example {{{ --> {% endraw %}
 {% capture radio_group_example_html -%}
+<div id="myForm$$">
 <fieldset>
     <legend>Gender:</legend>
     <label>
@@ -67,7 +68,7 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
         <input type="radio" data-smark name="gender" value="other"> Other
     </label>
 </fieldset>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

@@ -62,6 +62,7 @@ Following example shows a simple *SmarkForm* form with two nested forms:
 
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
 {% capture simple_form_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
@@ -91,7 +92,8 @@ Following example shows a simple *SmarkForm* form with two nested forms:
         <label data-smark>Address:</label>
         <input data-smark type='text' name='address' />
     </p>
-</fieldset>{%
+</fieldset>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -142,6 +144,7 @@ The following example demonstrates the distinction between `clear` and `reset` a
 
 {% raw %} <!-- capture clear_reset_example {{{ --> {% endraw %}
 {% capture clear_reset_example -%}
+<div id="myForm$$">
 <fieldset>
     <legend>User Profile (with defaults)</legend>
     <p>
@@ -161,7 +164,8 @@ The following example demonstrates the distinction between `clear` and `reset` a
         <button data-smark='{"action":"reset"}'>Reset to Defaults</button>
         <button data-smark='{"action":"export"}'>Show Data</button>
     </p>
-</fieldset>{%
+</fieldset>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

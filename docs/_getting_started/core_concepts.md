@@ -62,6 +62,7 @@ descendant of any depth.
 
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
 {% capture simple_form_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Name:</label>
     <input name='name' data-smark>
@@ -69,7 +70,8 @@ descendant of any depth.
 <p>
     <label data-smark>Surname:</label>
     <input name='surname' data-smark>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -129,6 +131,7 @@ seamlessly handle either the whole form or individual fields.
 
 {% raw %} <!-- capture context_comparsion_example_simple {{{ --> {% endraw %}
 {% capture context_comparsion_example_simple -%}
+<div id="myForm$$">
 <div data-smark='{"name":"demo"}'>
     <p>
         <label data-smark>Name:</label>
@@ -168,6 +171,7 @@ seamlessly handle either the whole form or individual fields.
         style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"
     >
     </textarea>
+</div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -218,6 +222,7 @@ This means that **we can nest forms** inside other forms as regular fields
 
 {% raw %} <!-- capture nested_forms_example {{{ --> {% endraw %}
 {% capture nested_forms_example -%}
+<div id="myForm$$">
 <b>User:</b>
 <p>
     <label data-smark>Id:</label>
@@ -244,7 +249,8 @@ This means that **we can nest forms** inside other forms as regular fields
             <input name='email' type='mail' value='john@dohe.example.org' data-smark>
         </p>
     </fieldset>
-</fieldset>{%
+</fieldset>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -298,12 +304,14 @@ and export any imaginable JSON data structure**.
 
 {% raw %} <!-- capture fixed_list_example {{{ --> {% endraw %}
 {% capture fixed_list_example -%}
+<div id="myForm$$">
 <b>Phones:</b>
 <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
     <li>
         <input data-smark type="tel" placeholder="Phone number" />
     </li>
-</ul>{%
+</ul>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -374,6 +382,7 @@ actions:
 
 {% raw %} <!-- capture pets_list_example {{{ --> {% endraw %}
 {% capture pets_list_example -%}
+<div id="myForm$$">
 <b>Pets:</b>
 <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
     <li>
@@ -390,7 +399,8 @@ actions:
         <button data-smark='{"action":"removeItem"}' title="Remove Pet">❌</button>
     </li>
 </ul>
-<button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>{%
+<button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -526,6 +536,7 @@ items allowing users to cherry-pick which item to remove:
 
 {% raw %} <!-- core_remove_inside_item {{{ --> {% endraw %}
 {% capture core_remove_inside_item_html -%}
+<div id="myForm$$">
 <ul data-smark='{"type":"list","name":"pets"}'>
   <li>
     <input name='species' data-smark>
@@ -534,7 +545,7 @@ items allowing users to cherry-pick which item to remove:
   </li>
 </ul>
 <button data-smark='{"action":"addItem","context":"pets"}'>➕</button>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -648,6 +659,7 @@ This special behavior of the *input* component type is what we call a
 
 {% raw %} <!-- core_singleton_phones {{{ --> {% endraw %}
 {% capture core_singleton_phones_html -%}
+<div id="myForm$$">
 <div data-smark='{"type":"form","name":"personal_data"}'>
   <input name='name'  data-smark>
   <input name='surname' data-smark>
@@ -659,7 +671,7 @@ This special behavior of the *input* component type is what we call a
   </ul>
   <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
 </div>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

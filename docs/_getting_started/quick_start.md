@@ -128,6 +128,7 @@ simple form like the following:
 
 {% raw %} <!-- html_source_legacy {{{ --> {% endraw %}
 {% capture html_source_legacy -%}
+<div id="myForm$$">
 <p>
     <label for="nameField$$">Name:</label>
     <input type="text" id="nameField$$" name="name">
@@ -139,7 +140,8 @@ simple form like the following:
 <p>
     <button>❌ Clear</button>
     <button>💾 Submit</button>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -192,6 +194,7 @@ Let's mark all fields, buttons and labels... by adding a *data-smark* attribute 
 
 {% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
 {% capture html_source_enhanced -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
@@ -204,7 +207,7 @@ Let's mark all fields, buttons and labels... by adding a *data-smark* attribute 
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
 </p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -268,6 +271,7 @@ Let's add more `❌ Clear` buttons to clear each specific field:
 
 {% raw %} <!-- html_source_enhanced_with_clears {{{ --> {% endraw %}
 {% capture html_source_enhanced_with_clears -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
@@ -282,7 +286,7 @@ Let's add more `❌ Clear` buttons to clear each specific field:
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
 </p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -386,6 +390,7 @@ similar way to the *export* action but in the opposite direction.
 
 {% raw %} <!-- html_source_enhanced_withImport {{{ --> {% endraw %}
 {% capture html_source_enhanced_withImport -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
@@ -399,7 +404,7 @@ similar way to the *export* action but in the opposite direction.
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
 </p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 
@@ -457,6 +462,7 @@ This path can be either relative (to the current field) or absolute (to the form
 
 {% raw %} <!-- capture traversing_form_example {{{ --> {% endraw %}
 {% capture traversing_form_example -%}
+<div id="myForm$$">
 <p>
     <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
@@ -486,7 +492,8 @@ This path can be either relative (to the current field) or absolute (to the form
         <label data-smark>Address:</label>
         <input data-smark type='text' name='address' />
     </p>
-</fieldset>{%
+</fieldset>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -585,6 +592,7 @@ the *list* component type so, if you put a *removeItem* trigger inside a list
 item, it will remove that item from the list. **No wiring code needed!**
 
 {% capture simple_list_example -%}
+<div id="myForm$$">
 <p>
     <strong data-smark='label'>Phones:</strong>
     <ul data-smark='{"name": "phones", "of": "input"}'>
@@ -595,7 +603,8 @@ item, it will remove that item from the list. **No wiring code needed!**
         </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 
 {% raw %} <!-- traversing_form_example_js {{{ --> {% endraw %}
@@ -660,6 +669,7 @@ example:
 
 {% raw %} <!-- html_source_simplified {{{ --> {% endraw %}
 {% capture html_source_simplified -%}
+<div id="myForm$$">
 █<p>
 █    <label data-smark>Name:</label>
 █    <input type="text" name="name" data-smark>
@@ -668,7 +678,7 @@ example:
 █    <label data-smark>Email:</label>
 █    <input type="email" name="email" data-smark>
 █</p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
@@ -843,6 +853,7 @@ additional capabilities of the library:
 
 {% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
 {% capture html_phone_list -%}
+<div id="myForm$$">
 <div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
   <div>
     <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
@@ -853,7 +864,8 @@ additional capabilities of the library:
 <p>
   <button data-smark='{"action":"clear"}'>❌ Clear</button>
   <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>{%
+</p>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -924,6 +936,7 @@ button[data-hotkey]::before {
 
 {% raw %} <!-- capture html_schedule_list {{{ --> {% endraw %}
 {% capture html_schedule_list -%}
+<div id="myForm$$">
 <p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
         <span role='img' aria-label='Remove interval'>➖</span>
@@ -945,7 +958,7 @@ button[data-hotkey]::before {
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
 </p>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

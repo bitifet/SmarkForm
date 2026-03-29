@@ -109,6 +109,7 @@ re-used in different parts of the form without conflict:
 
 {% raw %} <!-- hotkeys_context_sensitivity {{{ --> {% endraw %}
 {% capture hotkeys_context_sensitivity_html -%}
+<div id="myForm$$">
 <ul data-smark='{"type":"list","name":"users"}'>
     <li>
         <input data-smark type="text" name="name" placeholder="User name">
@@ -125,7 +126,7 @@ re-used in different parts of the form without conflict:
     </li>
 </ul>
 <button data-smark='{"action":"addItem","context":"users","hotkey":"+"}'>➕ Add user</button>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- hotkeys_context_sensitivity_css {{{ --> {% endraw %}

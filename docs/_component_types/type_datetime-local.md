@@ -67,7 +67,9 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 
 {% raw %} <!-- simple_datetime_local {{{ --> {% endraw %}
 {% capture simple_datetime_local -%}
-<input type="datetime-local" name="appointmentTime" data-smark>{%
+<div id="myForm$$">
+<input type="datetime-local" name="appointmentTime" data-smark>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -112,7 +114,9 @@ throwing an error.
 
 {% raw %} <!-- datetime_local_error {{{ --> {% endraw %}
 {% capture datetime_local_error -%}
-<input type="text" name="appointmentTime" data-smark='{"type":"datetime-local"}'>{%
+<div id="myForm$$">
+<input type="text" name="appointmentTime" data-smark='{"type":"datetime-local"}'>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

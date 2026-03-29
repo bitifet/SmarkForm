@@ -32,7 +32,88 @@ function smarkformComputeHeightPct(data) {
     }
     return SMARKFORM_HEIGHT_PCT_DEFAULT;
 }
-/* Render SmarkForm example into an iframe. srcs = {html, css, js} */
+/* Extract the opening tag, inner content, closing tag, and any sibling elements
+   that follow the root element (e.g. <template> nodes for mixin examples).
+   The root element is expected to be a <div id="myForm..."> or <form id="myForm..."> */
+function smarkformExtractWrapperAndInner(htmlSrc) {
+    var s = htmlSrc.trim();
+    /* Find the end of the first opening tag (handle quoted attribute values) */
+    var i = 0, inQ = null;
+    while (i < s.length) {
+        var c = s[i];
+        if (inQ) { if (c === inQ) inQ = null; }
+        else if (c === '"' || c === "'") { inQ = c; }
+        else if (c === '>') break;
+        i++;
+    }
+    var openTagEnd = i + 1;
+    /* Extract the root element tag name so we can track nesting depth correctly.
+       Using depth-tracking avoids falsely matching a </template> or other closing
+       tag that belongs to a sibling element appended after the root's </div>. */
+    var tnMatch = s.slice(0, openTagEnd).match(/^<([A-Za-z][A-Za-z0-9]*)/);
+    var tn = tnMatch ? tnMatch[1].toLowerCase() : 'div';
+    var reOpen = new RegExp('<' + tn + '[\\s>\\/]', 'i');
+    var reClose = new RegExp('<\\/' + tn + '\\s*>', 'i');
+    var depth = 1, j = openTagEnd, closeStart = -1;
+    while (j < s.length && depth > 0) {
+        var rem = s.slice(j);
+        var no = rem.search(reOpen);
+        var nc = rem.search(reClose);
+        if (nc < 0) break;
+        if (no >= 0 && no < nc) { depth++; j += no + 1; }
+        else { depth--; if (depth === 0) closeStart = j + nc; j += nc + 1; }
+    }
+    if (closeStart < 0) closeStart = s.lastIndexOf('</');
+    var closeEnd = s.indexOf('>', closeStart) + 1;
+    return {
+        openTag: s.slice(0, openTagEnd),
+        inner: s.slice(openTagEnd, closeStart),
+        closeTag: s.slice(closeStart, closeEnd),
+        after: s.slice(closeEnd) /* sibling elements after root (e.g. <template> for mixins) */
+    };
+}
+/* Build the SmarkForm playground editor HTML from htmlSource.
+   The htmlSource is expected to contain a root wrapper (e.g. <div id="myForm...">...inner...</div>)
+   optionally followed by sibling <template> elements.
+   The inner content is placed in a "demo" subform, with Export/Import/Reset/Clear buttons
+   and a JSON editor textarea — all implemented as SmarkForm components.
+   Sibling <template> elements are preserved after the outer container, NOT inside the demo subform. */
+function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
+    var p = smarkformExtractWrapperAndInner(htmlSrc);
+    return p.openTag + '\n'
+        + '    <div style="display: flex; flex-direction: column; align-items: left; gap: 1em">\n'
+        + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
+        + p.inner
+        + '        </div>\n'
+        + '        <div style="display: flex; justify-content: space-evenly">\n'
+        + '<span><button\n'
+        + '    data-smark=\'{"action":"export","context":"demo","target":"../editor"}\'\n'
+        + '    title="Export \'demo\' subform to \'editor\' textarea"\n'
+        + '    >\u2b07\ufe0f Export</button></span>\n'
+        + '<span><button\n'
+        + '    data-smark=\'{"action":"import","context":"demo","target":"../editor","setDefault":false}\'\n'
+        + '    title="Import \'editor\' textarea contents to \'demo\' subform"\n'
+        + '    >\u2b06\ufe0f Import</button></span>\n'
+        + '<span' + (hasDemoValue ? '' : ' style="visibility: hidden"') + '><button\n'
+        + '    data-smark=\'{"action":"reset"}\'\n'
+        + '    title="Reset the form to its default values"\n'
+        + '    >\u267b\ufe0f Reset</button></span>\n'
+        + '<span><button\n'
+        + '    data-smark=\'{"action":"clear","context":"demo"}\'\n'
+        + '    title="Clear the whole form"\n'
+        + '    >\u274c Clear</button></span>\n'
+        + '        </div>\n'
+        + '<textarea\n'
+        + '    cols="20"\n'
+        + '    placeholder="JSON playground editor"\n'
+        + '    data-smark=\'{"name":"editor","type":"input"}\'\n'
+        + '    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"\n'
+        + '></textarea>\n'
+        + '    </div>\n'
+        + p.closeTag
+        + (p.after || ''); /* append sibling <template> elements outside the form */
+}
+/* Render SmarkForm example into an iframe. srcs = {html, css, js, hasEditor} */
 function smarkformRenderIframe(iframe, data, srcs) {
     var hasEditor = !!srcs.hasEditor;
     var heightPct = smarkformComputeHeightPct(data);
@@ -145,16 +226,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 contents[index].classList.add('tab-active');
                 /* Re-measure iframe height now that it is visible (it may have loaded while hidden) */
                 var frame = contents[index].querySelector('.smarkform-preview-frame');
-                if (frame && !frame.dataset.hasEditor) {
+                if (frame) {
                     try {
                         var h = frame.contentDocument.documentElement.scrollHeight;
                         if (h > 50) {
-                            var maxH = Math.round(window.innerHeight * smarkformComputeHeightPct(data) / 100);
+                            var hasEd = !!frame.dataset.hasEditor;
+                            var maxH = hasEd
+                                ? Math.round(window.innerHeight * 0.85)
+                                : Math.round(window.innerHeight * smarkformComputeHeightPct(data) / 100);
                             frame.style.height = Math.max(100, Math.min(h + 20, maxH)) + 'px';
                         }
                     } catch(e) {}
-                }
-                /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
+                }                /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
                 SMARKFORM_EDITOR_KINDS.forEach(function(k) {
                     if (aceEditors[k] && aceEditors[k].resize) aceEditors[k].resize();
                 });
@@ -180,7 +263,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 ? (data.jsHeadDisplayWithEditor || data.jsHead)
                 : (data.jsHeadDisplay || data.jsHead);
             return {
-                html: useEditor ? r(data.html) : r(data.htmlSource),
+                html: useEditor
+                    ? smarkformBuildEditorHtml(r(data.htmlSource), !!(data.demoValue && data.demoValue !== '-'))
+                    : r(data.htmlSource),
                 css:  [r(data.css), r(data.cssHidden)].filter(Boolean).join('\n'),
                 js:   [r(jsHeadSrc), r(data.jsHidden), r(data.jsSource)].filter(Boolean).join('\n'),
                 hasEditor: useEditor
@@ -278,7 +363,8 @@ document.addEventListener('DOMContentLoaded', function() {
             smarkformRenderIframe(iframe, data, {
                 html: aceEditors.html ? aceEditors.html.getValue() : srcs.html,
                 css:  aceEditors.css  ? aceEditors.css.getValue()  : srcs.css,
-                js:   aceEditors.js   ? aceEditors.js.getValue()   : srcs.js
+                js:   aceEditors.js   ? aceEditors.js.getValue()   : srcs.js,
+                hasEditor: srcs.hasEditor
             });
             activatePreview();
         });
@@ -475,10 +561,8 @@ button[data-smark] {
     page-break-inside: avoid;
   }
   
-  /* Hide JSON editor textarea in print */
-  /* Uses attribute selector to match data-smark JSON containing "name":"editor" */
-  /* This matches the textarea element defined in sampletabs_tpl.md line 109 */
-  textarea[data-smark*='"name":"editor"'] {
+  /* Hide JSON editor scaffold in print */
+  #sf-editor-scaffold {
     display: none !important;
   }
 

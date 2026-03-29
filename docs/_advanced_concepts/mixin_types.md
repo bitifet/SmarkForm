@@ -485,6 +485,16 @@ data path in the exported value.
 
 {% raw %} <!-- capture mixin_contact_block_html {{{ --> {% endraw %}
 {% capture mixin_contact_block_html -%}
+<div id="myForm$$">
+<!-- Form — the same mixin is used for both contacts -->
+<fieldset data-smark='{"type":"form","name":"contacts"}'>
+    <legend>Contacts</legend>
+    <h3>Primary</h3>
+    <div data-smark='{"type":"#contactBlock","name":"primary"}'></div>
+    <h3>Emergency</h3>
+    <div data-smark='{"type":"#contactBlock","name":"emergency"}'></div>
+</fieldset>
+</div>
 <!-- Mixin template — defined once, reused anywhere -->
 <template id="contactBlock">
     <fieldset data-smark='{"type":"form"}'>
@@ -499,15 +509,6 @@ data path in the exported value.
         </label>
     </fieldset>
 </template>
-
-<!-- Form — the same mixin is used for both contacts -->
-<fieldset data-smark='{"type":"form","name":"contacts"}'>
-    <legend>Contacts</legend>
-    <h3>Primary</h3>
-    <div data-smark='{"type":"#contactBlock","name":"primary"}'></div>
-    <h3>Emergency</h3>
-    <div data-smark='{"type":"#contactBlock","name":"emergency"}'></div>
-</fieldset>
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -577,16 +578,7 @@ template's default of three.
 
 {% raw %} <!-- capture mixin_option_override_html {{{ --> {% endraw %}
 {% capture mixin_option_override_html -%}
-<template id="tagList">
-    <!-- Template default: start with 3 items -->
-    <ul data-smark='{"type":"list","min_items":3}'>
-        <li>
-            <input data-smark type="text" name="tag" placeholder="tag…">
-            <button data-smark='{"action":"removeItem"}'>✕</button>
-        </li>
-    </ul>
-</template>
-
+<div id="myForm$$">
 <fieldset data-smark='{"type":"form","name":"labels"}'>
     <legend>Labels</legend>
     <h3>Priority tags (3 slots by default)</h3>
@@ -599,6 +591,16 @@ template's default of three.
     <div data-smark='{"type":"#tagList","name":"optional","min_items":1}'></div>
     <button data-smark='{"action":"addItem","context":"optional"}'>➕ Add</button>
 </fieldset>
+</div>
+<template id="tagList">
+    <!-- Template default: start with 3 items -->
+    <ul data-smark='{"type":"list","min_items":3}'>
+        <li>
+            <input data-smark type="text" name="tag" placeholder="tag…">
+            <button data-smark='{"action":"removeItem"}'>✕</button>
+        </li>
+    </ul>
+</template>
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

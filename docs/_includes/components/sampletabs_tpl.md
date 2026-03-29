@@ -4,18 +4,9 @@ Accepted arguments:
 -------------------
 
   * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
-  * formOptions: JSON object with SmarkForm initialization options (if any);
-  * htmlSource (mandatory)
-  * cssSource
-  * cssHidden: CSS already discussed (not shown in the "CSS Source" tab).
-  * jsHead: JS initialization code.
-  * jsHidden: JS source already discussed (not shown in the "JS Source" tab).
-  * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
-  * notes: Optional notes for further clarifications.
-  * selected: Default selected tab (defaults to "html").
+  * formOptions: (Removed in v2 — embed SmarkForm options directly in the data-smark attribute on your form container)
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
-  * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
   * height: Optional iframe height factor (0–100). If omitted, a default is computed from the
             HTML source line count. Larger values allow a taller iframe relative to the viewport.
 
@@ -105,151 +96,29 @@ myForm.rendered.then(function() {
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
-{% assign formOptions = include.formOptions | default: default_formOptions %}
 {% assign demoValue = include.demoValue | default: default_demoValue %}
-
-{% if formOptions == '-' %}
-{% assign formOptions_source = "" %}
-{% assign formOptions_inner = "" %}
-{% else %}
-{% assign formOptions_source = " data-smark='" | append: formOptions | append: "'" %}
-    {% assign s = formOptions %}
-    {% assign inner_len = s | size | minus: 2 %}
-    {% assign formOptions_inner = s | slice: 1, inner_len | prepend: ', ' %}
-{% endif %}
-
-{% if demoValue != '-' %}
-{% assign demoValue_inner = ',"value":' | append: demoValue %}
-{% else %}
-{% assign demoValue_inner = '' %}
-{% endif %}
 
 
 {% assign current_tab = include.selected | default: "html" %}
 {% assign showEditor = include.showEditor | default: false %}
-{% assign showEditorSource = include.showEditorSource | default: false %}
-{% assign addLoadSaveButtons = include.addLoadSaveButtons | default: false %}
 
 
-{% comment %} ### ################# ### {% endcomment %}
-{% comment %} ### Layout components ### {% endcomment %}
-{% comment %} ### ################# ### {% endcomment %}
 
-{% raw %} <!-- default_buttons {{{ --> {% endraw %}
-{% capture default_buttons -%}
-█<span><button
-█    data-smark='{"action":"export","context":"demo","target":"../editor"}'
-█    title="Export 'demo' subform to 'editor' textarea"
-█    >⬇️ Export</button></span>
-█<span><button
-█    data-smark='{"action":"import","context":"demo","target":"../editor","setDefault":false}'
-█    title="Import 'editor' textarea contents to 'demo' subform"
-█    >⬆️ Import</button></span>
+{% comment %} ### ############################################## ### {% endcomment %}
+{% comment %} ### Build partial_htmlSource (used as preview)   ### {% endcomment %}
+{% comment %} ### ############################################## ### {% endcomment %}
 
-█<span{% if demoValue == '-' %} style="visibility: hidden"{% endif %}><button
-█    data-smark='{"action":"reset"}'
-█    title="Reset the form to its default values"
-█    >♻️ Reset</button></span>
-█<span><button
-█    data-smark='{"action":"clear", "context":"demo"}'
-█    title="Clear the whole form"
-█    >❌ Clear</button></span>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- json_editor {{{ --> {% endraw %}
-{% capture json_editor -%}
-█<textarea
-█    cols="20"
-█    placeholder="JSON playground editor"
-█    data-smark='{"name":"editor","type":"input"}'
-█    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"
-█></textarea>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- load_save_buttons {{{ --> {% endraw %}
-{% capture load_save_buttons -%}
-█<button
-█    data-smark='{"action":"export"}'
-█    title="Export the whole form as JSON (see JS tab)"
-█    >💾 Save</button>
-█<button
-█    data-smark='{"action":"import"}'
-█    title="Import the whole form as JSON (see JS tab)"
-█    >📂 Load</button>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% comment %} ### ######################## ### {% endcomment %}
-{% comment %} ### Render (optional) editor ### {% endcomment %}
-{% comment %} ### ######################## ### {% endcomment %}
-
-{% raw %} <!-- full_htmlSource {{{ --> {% endraw %}
-{% capture full_htmlSource %}<div id="myForm$$">
-    <div style="display: flex; flex-direction:column; align-items:left; gap: 1em">
-        <div data-smark='{"name":"demo"{{ formOptions_inner | raw }}}' style="flex-grow: 1">{{
-htmlSource | replace: "█", "            "
-}}        </div>
-        <div style="display: flex; justify-content: space-evenly">
-{{ default_buttons | replace: "█", "            "
-}}        </div>
-{{
-    json_editor | replace: "█", "        "
-}}{%
-    if addLoadSaveButtons==true
-%}
-        <div style="display: flex; justify-content: space-evenly">
-{{ load_save_buttons | replace: "█", "            " }}
-        </div>{%
-endif
-%}
-    </div>
-</div>
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% assign htmlSource_root_check = htmlSource | replace: "█", "" | lstrip | downcase | slice: 0, 6 %}
 {% raw %} <!-- partial_htmlSource {{{ --> {% endraw %}
-{% if htmlSource_root_check == "<form " or htmlSource_root_check == "<form>" %}
 {% capture partial_htmlSource %}{{ htmlSource | replace: "█", "    " | lstrip }}
 {%- endcapture %}
-{% else %}
-{% capture partial_htmlSource %}<div id="myForm$$"{{ formOptions_source | raw }}>
-{{
-    htmlSource
-    | replace: "█", "    "
-}}
-</div>
-{%- endcapture %}
-{% endif %}
 {% raw %} <!-- }}} --> {% endraw %}
-
-
-{% comment %} ### ############################################## ### {% endcomment %}
-{% comment %} ### Pass optional height override to controller  ### {% endcomment %}
-{% comment %} ### (sanitization and formula live in the JS)    ### {% endcomment %}
-{% comment %} ### ############################################## ### {% endcomment %}
 
 {% comment %}
     Pass the raw include.height value (0 when omitted) to the JSON blob so the
     JavaScript controller can apply the formula, defaults and clamping there.
 {% endcomment %}
 
-
-{% comment %}
-
-    🚧 FIXME!!
-    👉 Why the fuck the editor gets unconditionally rendered!!!
-  
-{% endcomment %}
-
-{% if showEditor == true %}
-{% assign preview_source = full_htmlSource %}
-{% else %}
 {% assign preview_source = partial_htmlSource %}
-{% endif %}
 
 
 
@@ -261,12 +130,7 @@ endif
 
 {% capture rendered_htmlSource | raw %}
 ```html
-{% if showEditorSource
-%}{{
-    full_htmlSource
-}}{% else %}{{
-    partial_htmlSource
-}}{% endif %}
+{{ partial_htmlSource }}
 ```
 {%- endcapture %}
 
@@ -296,7 +160,7 @@ endif
 {% capture rendered_jsSource -%}
 ```javascript
 {% if jsHead_display != '-'
-%}{% if showEditorSource == true %}{{ jsHead_display_with_editor }}{% else %}{{ jsHead_display }}{% endif %}{%
+%}{{ jsHead_display }}{%
 endif %}{% if jsHidden != '-'
 %}
 /* ... (Code already discussed) ... */
@@ -425,6 +289,7 @@ endif %}{% if jsHidden != '-'
     "jsHeadDisplayWithEditor": {{ jsHead_display_with_editor | jsonify | replace: "<", "\u003c" }},
     "jsHidden": {{ jsHidden | jsonify | replace: "<", "\u003c" }},
     "jsSource": {{ jsSource | jsonify | replace: "<", "\u003c" }},
+    "demoValue": {{ demoValue | jsonify }},
     "showEditor": {{ showEditor | jsonify }},
     "height": {{ include.height | plus: 0 }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"

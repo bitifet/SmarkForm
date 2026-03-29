@@ -53,8 +53,9 @@ To use the `input` component type, simply add the `data-smark` attribute to your
 
 {% raw %} <!-- input_basic_usage {{{ --> {% endraw %}
 {% capture input_basic_usage_html -%}
+<div id="myForm$$">
 <input type="text" data-smark='{"name":"username"}' placeholder="Enter your username">
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

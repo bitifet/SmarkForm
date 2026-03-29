@@ -67,7 +67,9 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 
 {% raw %} <!-- simple_color {{{ --> {% endraw %}
 {% capture simple_color -%}
-<input type="date" name="birthdate" data-smark>{%
+<div id="myForm$$">
+<input type="date" name="birthdate" data-smark>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -108,7 +110,9 @@ throwing an error.
 
 {% raw %} <!-- date_error {{{ --> {% endraw %}
 {% capture date_error -%}
-<input type="text" name="birthdate" data-smark='{"type":"date"}'>{%
+<div id="myForm$$">
+<input type="text" name="birthdate" data-smark='{"type":"date"}'>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

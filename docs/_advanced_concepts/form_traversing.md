@@ -377,6 +377,7 @@ while (currentItem) {
 
 {% raw %} <!-- form_trav_copy_adjacent {{{ --> {% endraw %}
 {% capture form_trav_copy_adjacent_html -%}
+<div id="myForm$$">
 <ul data-smark='{"name": "employees", "type": "list", "of": "form"}'>
     <li>
         <input name="name" data-smark placeholder="Name">
@@ -387,7 +388,7 @@ while (currentItem) {
     </li>
 </ul>
 <button data-smark='{"action":"addItem","context":"employees"}'>➕ Add</button>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -422,6 +423,7 @@ async function validateSequentially(list) {
 
 {% raw %} <!-- form_trav_navigation_ui {{{ --> {% endraw %}
 {% capture form_trav_navigation_ui_html -%}
+<div id="myForm$$">
 <div data-smark='{"name": "records", "type": "list", "of": "form"}'>
     <div>
         <input name="data" data-smark>
@@ -433,7 +435,7 @@ async function validateSequentially(list) {
     </div>
 </div>
 <button data-smark='{"action":"addItem","context":"records"}'>➕ Add</button>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -491,6 +493,7 @@ This example demonstrates a practical implementation of sibling navigation for d
 
 {% raw %} <!-- form_trav_practical_copy {{{ --> {% endraw %}
 {% capture form_trav_practical_copy_html -%}
+<div id="myForm$$">
 <div data-smark='{"name": "contacts", "type": "list", "of": "form", "min_items": 1}'>
     <fieldset>
         <legend>Contact Information</legend>
@@ -514,7 +517,7 @@ This example demonstrates a practical implementation of sibling navigation for d
     </fieldset>
 </div>
 <button data-smark='{"action":"addItem","context":"contacts"}'>➕ Add Contact</button>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

@@ -317,11 +317,12 @@ inside have it as their natural context:
 
 {% raw %} <!-- faq_singleton_color {{{ --> {% endraw %}
 {% capture faq_singleton_color_html -%}
+<div id="myForm$$">
 <span data-smark='{"type":"color","name":"bgcolor"}'>
     <input data-smark>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
 </span>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -434,6 +435,7 @@ The following example demonstrates the full technique:
 
 {% raw %} <!-- faq_animations {{{ --> {% endraw %}
 {% capture faq_animations_html -%}
+<div id="myForm$$">
 <ul data-smark='{"type":"list","name":"items","min_items":1}'>
   <li>
     <input data-smark type="text" name="value" placeholder="Item…">
@@ -441,7 +443,7 @@ The following example demonstrates the full technique:
   </li>
 </ul>
 <button data-smark='{"action":"addItem","context":"items"}'>➕ Add item</button>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- faq_animations_css {{{ --> {% endraw %}
@@ -1032,6 +1034,7 @@ of the named component without requiring an extra wrapper:
 
 {% raw %} <!-- faq_mixin_labeled_input {{{ --> {% endraw %}
 {% capture faq_mixin_labeled_input_html -%}
+<div id="myForm$$">
 <div data-smark='{"type":"form","name":"person"}'>
     <div data-smark='{"type":"#labeledInput","name":"firstName"}' data-label="First name"></div>
     <div data-smark='{"type":"#labeledInput","name":"lastName"}'  data-label="Last name"></div>
@@ -1055,7 +1058,7 @@ of the named component without requiring an extra wrapper:
         if (labelEl) labelEl.textContent = this.targetNode.dataset.label ?? this.name;
     </script>
 </template>
-{%- endcapture %}
+</div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
