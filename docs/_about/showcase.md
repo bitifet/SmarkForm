@@ -1148,13 +1148,13 @@ as a **direct sibling** of the template root:
 {% raw %} <!-- schedule_row_tpl {{{ --> {% endraw %}
 {% capture schedule_row_tpl -%}
 <template id="scheduleRow">
-  <div class="sf-sched-row"
+  <div class="schedule-row"
        data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-    <strong data-smark='{"role":"header"}'>Schedule</strong>
-    <span class="sf-slot" data-smark='{"role":"empty_list"}'>(Closed)</span>
-    <span class="sf-slot">
-      <span class="sf-from">From <input class="sf-time" data-smark type="time" name="start"></span>
-      <span class="sf-to">to <input class="sf-time" data-smark type="time" name="end"></span>
+    <strong data-smark='{"role":"header"}'><span id="label">Schedule</span></strong>
+    <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
+    <span class='time_slot'>
+      <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+      <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
     </span>
     <span data-smark='{"role":"footer"}'>
       <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Less intervals">➖</button>
@@ -1162,36 +1162,42 @@ as a **direct sibling** of the template root:
     </span>
   </div>
   <style>
-    .sf-schtbl {
-      display: flex; flex-direction: column; gap: 0.25em; padding: 0.5em;
+    .schtbl {
+      display: flex; flex-direction: column; gap: 0.1em;
     }
-    .sf-sched-row {
+    .schedule-row {
       display: grid;
       grid-template-columns: 10em 1fr auto;
       align-items: start;
       gap: 0.25em 0.5em;
-      padding: 0.3em 0.6em;
-      border-radius: 0.5em;
-      background: linear-gradient(135deg,rgba(99,102,241,.06),rgba(168,85,247,.06));
-      border: 1px solid rgba(99,102,241,.2);
-      transition: border-color .2s;
+      padding: 0.2em 0.4em;
+      border-radius: 0.3em;
     }
-    .sf-sched-row:focus-within { border-color: rgba(99,102,241,.6); }
-    .sf-sched-row > [data-role="header"] {
+    .schedule-row:nth-child(even) {
+      background-color: rgba(128, 128, 128, 0.08);
+    }
+    .schedule-row > [data-role="header"] {
       grid-column: 1; grid-row: 1;
-      padding-top: .3em; font-weight: 600; color: #6366f1;
+      padding-top: 0.3em;
     }
-    .sf-sched-row > .sf-slot    { grid-column: 2; }
-    .sf-sched-row > [data-role="footer"] {
+    .schedule-row > .time_slot    { grid-column: 2; }
+    .schedule-row > [data-role="empty_list"] { padding-right: 5em; }
+    .schedule-row > [data-role="footer"] {
       grid-column: 3; grid-row: 1 / -1; align-self: center; white-space: nowrap;
     }
-    .sf-slot { display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center; }
-    .sf-from, .sf-to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
-    .sf-time { width: 5.5em; }
+    .time_slot {
+      display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center;
+      justify-content: flex-end;
+    }
+    .time_slot input.small { max-width: 5.5em; }
+    .time_from, .time_to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
     @media (max-width: 30em) {
-      .sf-sched-row { grid-template-columns: 1fr auto; }
-      .sf-sched-row > .sf-slot { grid-column: 1; }
-      .sf-sched-row > [data-role="footer"] { grid-column: 2; grid-row: 2 / -1; }
+      .schedule-row { grid-template-columns: 1fr auto; }
+      .schedule-row > .time_slot,
+      .schedule-row > [data-role="empty_list"] {
+        grid-column: 1; padding-left: 0.5em; text-align: right;
+      }
+      .schedule-row > [data-role="footer"] { grid-column: 2; grid-row: 2 / -1; }
     }
   </style>
 </template>
@@ -1200,15 +1206,15 @@ as a **direct sibling** of the template root:
 
 {% raw %} <!-- schedule_row_form {{{ --> {% endraw %}
 {% capture schedule_row_form -%}
-█<div class="sf-schtbl" data-smark='{"type":"form","name":"schedules"}'>
-█  <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'
-█       data-label="🛎️ Reception:"></div>
-█  <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'
-█       data-label="🍸 Bar:"></div>
-█  <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'
-█       data-label="🍽️ Restaurant:"></div>
-█  <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'
-█       data-label="🏊 Pool:"></div>
+█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+█  <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'>
+█    <span data-for="label">🛎️ Reception:</span></div>
+█  <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'>
+█    <span data-for="label">🍸 Bar:</span></div>
+█  <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'>
+█    <span data-for="label">🍽️ Restaurant:</span></div>
+█  <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'>
+█    <span data-for="label">🏊 Pool:</span></div>
 █</div>
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -1230,8 +1236,9 @@ as a **direct sibling** of the template root:
 👉 Each usage site (placeholder) keeps its own identity:
   * `name` is supplied by the placeholder, not the template — each row gets its
     own field name and data path.
-  * `data-label` is merged as an HTML attribute (placeholder wins over template),
-    so every row can carry a different label without touching the template itself.
+  * The **`<span data-for="label">`** child inside each placeholder replaces the
+    `<span id="label">` slot in the template (which defaults to `"Schedule"`),
+    so every row shows its own label without touching the template itself.
   * Any `data-smark` option in the placeholder **overrides** the template default
     — e.g. pass `"max_items":5` to allow more intervals on a specific row.
 
@@ -1247,8 +1254,8 @@ as a **direct sibling** of the template root:
 
 {: .hint }
 > **Tip:** Use sufficiently unique CSS class names inside mixin `<style>` blocks
-> — injected styles are global. The `sf-` prefix used here is one simple
-> convention to keep them from clashing with page styles.
+> — injected styles are global. The `schedule-row` / `schtbl` names used here
+> mirror the plain-HTML example above, keeping the showcase consistent.
 
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -1776,11 +1783,15 @@ runs on the final data — whether the item is brand new or duplicated.
       <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
       <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
     </p>
-    <div class="sf-schtbl" data-smark='{"type":"form","name":"schedules"}'>
-      <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}' data-label="🛎️ Reception:"></div>
-      <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}' data-label="🍸 Bar:"></div>
-      <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}' data-label="🍽️ Restaurant:"></div>
-      <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}' data-label="🏊 Pool:"></div>
+    <div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+      <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'>
+        <span data-for="label">🛎️ Reception:</span></div>
+      <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'>
+        <span data-for="label">🍸 Bar:</span></div>
+      <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'>
+        <span data-for="label">🍽️ Restaurant:</span></div>
+      <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'>
+        <span data-for="label">🏊 Pool:</span></div>
     </div>
   </fieldset>
   <script>
