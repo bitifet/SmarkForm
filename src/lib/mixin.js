@@ -288,10 +288,6 @@ export async function expandMixin(node, options, component) { //{{{
     // Deep-clone the template root:
     const clone = templateRoot.cloneNode(true);
 
-    // Enforce no nested <script> elements inside the template root subtree.
-    // Scripts are only supported as top-level siblings of the root element.
-    enforceNoNestedScripts(clone, component);
-
     // Collect snippet parameter nodes: direct children of the placeholder
     // that carry a `data-for` attribute, referencing elements inside the clone
     // by their id.  These are consumed (not rendered as children).
@@ -301,6 +297,12 @@ export async function expandMixin(node, options, component) { //{{{
     if (params.length > 0) {
         applySnippetParams(clone, params);
     }
+
+    // Enforce no nested <script> elements inside the template root subtree.
+    // This check runs after snippet substitutions so it also catches any
+    // <script> elements that might have been injected via data-for params.
+    // Scripts are only supported as top-level siblings of the root element.
+    enforceNoNestedScripts(clone, component);
 
     // Convert any surviving id attributes inside the clone to data-id.
     // This prevents id collisions when the mixin is used multiple times and
