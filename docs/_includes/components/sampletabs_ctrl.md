@@ -324,12 +324,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (editorToggle) { editorToggle.disabled = true; editorToggle.checked = false; }
                 withEditor = false;
                 /* Destroy Ace editors and restore saved syntax-highlighted content */
-                Object.keys(aceEditors).forEach(function(k) { aceEditors[k].destroy(); });
+                Object.keys(aceEditors).forEach(function(k) { if (aceEditors[k] && typeof aceEditors[k].destroy === 'function') aceEditors[k].destroy(); });
                 aceEditors = {};
                 SMARKFORM_EDITOR_KINDS.forEach(function(kind) {
-                    if (savedContents[kind]) {
+                    if (Object.prototype.hasOwnProperty.call(savedContents, kind)) {
                         var tab = container.querySelector('.tab-content-' + kind);
-                        if (tab) tab.innerHTML = savedContents[kind];
+                        if (tab) tab.innerHTML = savedContents[kind] || '';
                     }
                 });
                 savedContents = {};
