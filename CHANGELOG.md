@@ -11,6 +11,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+<!-- Add new entries here when preparing the next release. -->
+
+---
+
+## [0.14.1] — 2026-03-29
+
+🐛 Bug fix: `BeforeAction_import` handlers can now alter imported data.
+
+`BeforeAction_import` handlers that modified `ev.data` were silently ignored — the import action was reading the original value instead of the handler-modified one. This patch syncs `ev.data` back to the options object after all `Before` handlers run, so modifications are properly applied.
+
+### Bug Fixes
+- **`BeforeAction_import` data modification**: Changes made to `ev.data` inside a `BeforeAction_import` handler are now correctly applied before the import proceeds.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.14.1)
+
+---
+
 ## [0.14.0] — 2026-03-26
 
 ✨ Mixin Types · 🎯 DOM-like event API (`on`/`onAll`/`onLocal`) · 🛠️ Improved tooling.
