@@ -965,7 +965,8 @@ But it could look kind of messy if you need to introduce several schedules that 
 █            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
 █        </span>
 █    </div>
-█</div>{%
+█</div>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1054,8 +1055,7 @@ endcapture %}
 {{""}}  }
 {{""}}}
 {{ hotkeys_reveal_css }}
-
-</div>{%- endcapture %}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
