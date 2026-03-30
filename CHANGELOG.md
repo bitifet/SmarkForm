@@ -11,6 +11,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.14.2] — 2026-03-31
+
+✨ Mixin parameterization · 🐛 Preserve native `preventDefault()` in event API · 🔒 Security: script check after param substitution · 🧪 HTML validity testing in docs smoke tests.
+
+This release delivers the principal new feature of **mixin parameterization** — DOM snippet parameters for mixin types (`data-for` / `data-id`) — enabling safe, per-instance DOM binding in reusable mixin templates. It also fixes several important bugs in the event API and security pipeline, and integrates HTML validity checks into the co-located docs smoke tests.
+
+### Features
+- **DOM snippet parameters for mixin types**: Snippet parameters (direct children of a placeholder with `data-for="<id>"`) replace elements in the template clone by id, with ids converted to `data-id` for safe scoping. See the new "Snippet Parameters" section in the mixin types documentation.
+
+### Bug Fixes
+- **Event API `preventDefault()` preservation**: Preserve the real DOM `preventDefault()` in `emit()` and call it synchronously in the `keydown` handler, so native browser defaults are correctly suppressed.
+- **Security — nested script check order**: Moved the nested `<script>` check to run *after* snippet parameter substitution, so injected parameters are also validated.
+- **Docs example HTML fixes**: Fixed invalid HTML in showcase examples, including an unclosed `<div>` in `event_planner_showcase`, and corrected textarea CSS alignment.
+
+### Tests / Tooling
+- **HTML validity testing**: Integrated HTML validity checks into the co-located docs smoke tests; removed the separate static test file.
+
+### Documentation
+- Added "Snippet Parameters" section to `mixin_types.md` with examples.
+- Updated showcase mixin examples to use `data-for` / `data-id` and aligned CSS classes.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.14.2)
+
+---
+
 ## [0.14.1] — 2026-03-29
 
 🐛 Bug fix: `BeforeAction_import` handlers can now alter imported data.
