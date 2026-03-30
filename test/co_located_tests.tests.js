@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { getServerPort } from '../src/lib/test/helpers.js';
 import { minimatch } from 'minimatch';
 import * as smoke_tests from './co_located_tests_smoke.include.js';
+import { parseFragment } from 'parse5';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -99,6 +100,64 @@ function normalizeForLooseComparison(value) {
 
   // Everything else → unchanged
   return value;
+}
+
+
+/**
+ * Validate a collected htmlSource fragment for well-formed HTML.
+ *
+ * Two complementary checks:
+ *
+ * 1. parse5 syntax errors (malformed tags, broken attribute syntax, unclosed
+ *    tag delimiters, etc.). parse5 follows the HTML5 parsing spec and fires
+ *    parse-error callbacks for spec-defined violations.
+ *
+ * 2. Tag-balance check: counts opening vs. closing tags for a set of non-void
+ *    block elements. The HTML5 parser silently recovers from unclosed elements
+ *    without emitting a spec error, so we need a separate count to detect them
+ *    (e.g. a missing </div> on the outer form wrapper).
+ *
+ * Note: <li>, <p>, <dt>, <dd> are optional-close in HTML5 — they are excluded
+ * from the balance check to avoid false positives from legitimate omitted
+ * close tags. Self-closing syntax for non-void elements (e.g. <div/>) is
+ * already caught by parse5 as a spec error, so the regex uses `[\\s>]` and
+ * does not count `<div/>` as an open tag.
+ *
+ * @param {string} html  Raw HTML fragment string.
+ * @returns {string[]}   Array of issue descriptions. Empty ⇒ valid.
+ */
+const BALANCED_TAGS = [
+  'div', 'form', 'fieldset',
+  'ul', 'ol', 'table', 'tbody', 'thead', 'tfoot', 'tr', 'td', 'th',
+  'details', 'summary',
+  'script', 'template',
+  'select', 'datalist',
+];
+
+function validateHtmlSource(html) {
+  const issues = [];
+
+  // --- Check 1: parse5 syntax errors ---
+  const parseErrors = [];
+  parseFragment(html, {
+    onParseError(err) {
+      parseErrors.push(
+        `parse5 error "${err.code}" at line ${err.startLine}, col ${err.startCol}`
+      );
+    },
+  });
+  issues.push(...parseErrors);
+
+  // --- Check 2: tag balance ---
+  for (const tag of BALANCED_TAGS) {
+    const openCount  = (html.match(new RegExp(`<${tag}[\\s>]`, 'gi')) || []).length;
+    const closeCount = (html.match(new RegExp(`<\\/${tag}\\s*>`,  'gi')) || []).length;
+    if (openCount !== closeCount) {
+      issues.push(`Unbalanced <${tag}> tags: ${openCount} opening, ${closeCount} closing`);
+    }
+  }
+
+  return issues;
 }
 
 
@@ -244,6 +303,22 @@ function helpers(id, page) {
 for (const example of examples) {
   if (skipFile(example.file)) continue;
   test(`[${example.file}] ${example.formId}`, async ({ page }) => {
+
+    // --- HTML validity smoke check (static, no browser needed) -----------
+    // Runs as the first assertion so markup errors surface immediately with
+    // a clear message before any browser overhead.
+    if (example.htmlSource && example.htmlSource !== '-') {
+      const htmlIssues = validateHtmlSource(example.htmlSource);
+      if (htmlIssues.length > 0) {
+        const msg = [
+          `HTML validity failed for example "${example.formId}" in ${example.file}:`,
+          ...htmlIssues.map(i => `  • ${i}`),
+        ].join('\n');
+        expect(htmlIssues, msg).toHaveLength(0);
+      }
+    }
+    // ---------------------------------------------------------------------
+
     const testHTML = generateTestHTML(example);
     
     // Create a temporary HTML file
