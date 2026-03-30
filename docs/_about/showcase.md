@@ -3661,10 +3661,10 @@ The `!!` bit is just stylistic to note we want to evaluate the result of
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
-    // Enter first number "123": click button "1", then press Ctrl+2 (keyboard
-    // with Control modifier — no native character insertion), then click "3"
+    // Enter first number "123": click button "1", press "2" (bare key, no
+    // modifier), then click "3"
     await root.getByRole('button', { name: '1' }).click();
-    await page.keyboard.press('Control+2');
+    await page.keyboard.press('2');
     await root.getByRole('button', { name: '3' }).click();
     expect(await readField('display')).toBe('123');
 
@@ -3672,13 +3672,12 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     await root.getByRole('button', { name: '+' }).click();
     expect(await readField('display')).toBe('123+');
 
-    // Enter second number "45": press Ctrl+4 (keyboard with Control modifier),
-    // then click button "5"
-    await page.keyboard.press('Control+4');
+    // Enter second number "45": press "4" (bare key, no modifier), then click "5"
+    await page.keyboard.press('4');
     await root.getByRole('button', { name: '5' }).click();
     expect(await readField('display')).toBe('123+45');
 
-    // Evaluate by pressing Enter (keyboard without Control modifier)
+    // Evaluate by pressing Enter (keyboard without any modifier)
     await page.keyboard.press('Enter');
 
     // Export the form and verify the result in the display field
