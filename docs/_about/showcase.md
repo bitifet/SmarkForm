@@ -3656,6 +3656,39 @@ The `!!` bit is just stylistic to note we want to evaluate the result of
 
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- supercalculator_tests {{{ --> {% endraw %}
+{% capture supercalculator_tests -%}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    // Enter first number "123": click button "1", then press Ctrl+2 (keyboard
+    // with Control modifier — no native character insertion), then click "3"
+    await root.getByRole('button', { name: '1' }).click();
+    await page.keyboard.press('Control+2');
+    await root.getByRole('button', { name: '3' }).click();
+    expect(await readField('display')).toBe('123');
+
+    // Enter the operator: click the + button
+    await root.getByRole('button', { name: '+' }).click();
+    expect(await readField('display')).toBe('123+');
+
+    // Enter second number "45": press Ctrl+4 (keyboard with Control modifier),
+    // then click button "5"
+    await page.keyboard.press('Control+4');
+    await root.getByRole('button', { name: '5' }).click();
+    expect(await readField('display')).toBe('123+45');
+
+    // Evaluate by pressing Enter (keyboard without Control modifier)
+    await page.keyboard.press('Enter');
+
+    // Export the form and verify the result in the display field
+    const data = await page.evaluate(async () => {
+        return await myForm.export();
+    });
+    expect(String(data.display)).toBe('168');
+};
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="supercalculator"
     htmlSource=supercalculator
@@ -3663,7 +3696,7 @@ The `!!` bit is just stylistic to note we want to evaluate the result of
     cssSource=supercalculator_css
     notes=notes
     selected="preview"
-    tests=false
+    tests=supercalculator_tests
 %}
 
 In this example we no longer need to define hotkeys since we are directly
