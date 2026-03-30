@@ -50,7 +50,6 @@ featured ones.
     * [Nesting Mixins](#nesting-mixins)
 * [Import and Export Data](#import-and-export-data)
     * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
-    * [Submitting the form](#submitting-the-form)
     * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Advanced UX Improvements](#advanced-ux-improvements)
     * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
@@ -484,6 +483,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     formId="simple_list"
     htmlSource=simple_list
     notes=notes
+    height=40
     selected="preview"
     showEditor=true
     tests=simple_list_tests
@@ -725,6 +725,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="simple_list_singleton"
     htmlSource=simple_list_singleton
+    height=40
     cssSource=simple_list_singleton_css
     notes=notes
     selected="preview"
@@ -1114,6 +1115,10 @@ needing DOM filler elements.
 }
 {%- endcapture %}
 
+{: .hint }
+> Press and hold `Ctrl` to reveal the available hotkeys on the corresponding ➖
+> / ➕ buttons depending on where the focus is.
+
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
     htmlSource=schedule_table
@@ -1141,9 +1146,6 @@ as a **direct sibling** of the template root:
   how many times the mixin is used, keeping your page free of duplicate CSS.
 
 * **An optional `<script>` sibling** — that we'll discuss later.
-
-{: .hint }
-> Press and hold `Ctrl` to reveal the available hotkeys on the ➖ / ➕ buttons.
 
 {% raw %} <!-- schedule_row_tpl {{{ --> {% endraw %}
 {% capture schedule_row_tpl -%}

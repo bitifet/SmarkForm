@@ -63,7 +63,7 @@ around edge cases or features that might catch you off guard at first.
     * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
 * [Mixin Types](#mixin-types)
     * [Can I implement my own component types?](#can-i-implement-my-own-component-types)
-    * [Are mixin styles isolated / scoped?](#are-mixin-styles-isolated--scoped)
+    * [Are mixin styles isolated / scoped?](#are-mixin-styles-isolated-scoped)
     * [Can I pass parameters to a mixin?](#can-i-pass-parameters-to-a-mixin)
     * [Can a mixin template reference another mixin?](#can-a-mixin-template-reference-another-mixin)
     * [Can mixins load from external files?](#can-mixins-load-from-external-files)
@@ -485,6 +485,7 @@ myForm.onAll("beforeUnrender", async (ev) => {
 {% include components/sampletabs_tpl.md
     formId="faq_animations"
     htmlSource=faq_animations_html
+    selected="js"
     cssSource=faq_animations_css
     jsSource=faq_animations_js
     demoValue='{"items":[{"value":"First item"},{"value":"Second item"}]}'
