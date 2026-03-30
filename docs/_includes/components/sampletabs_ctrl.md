@@ -81,7 +81,7 @@ function smarkformExtractWrapperAndInner(htmlSrc) {
 function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
     var p = smarkformExtractWrapperAndInner(htmlSrc);
     return p.openTag + '\n'
-        + '    <div style="display: flex; flex-direction: column; align-items: left; gap: 1em">\n'
+        + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em">\n'
         + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
         + p.inner
         + '        </div>\n'
@@ -104,10 +104,9 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
         + '    >\u274c Clear</button></span>\n'
         + '        </div>\n'
         + '<textarea\n'
-        + '    cols="20"\n'
         + '    placeholder="JSON playground editor"\n'
         + '    data-smark=\'{"name":"editor","type":"input"}\'\n'
-        + '    style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"\n'
+        + '    style="resize: vertical; min-height: 8em; flex-grow: 1; width: 100%; box-sizing: border-box;"\n'
         + '></textarea>\n'
         + '    </div>\n'
         + p.closeTag

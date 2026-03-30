@@ -3789,7 +3789,8 @@ form, or import your own JSON to pre-populate it.
 █        </ul>
 █    </div>
 █    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
-█</div>{%
+█</div>
+</div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
