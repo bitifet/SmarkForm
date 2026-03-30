@@ -3622,9 +3622,9 @@ myForm.on("BeforeAction_import", async (ev)=>{
 });
 
 myForm.on("keydown", async (ev)=>{
+    ev.preventDefault();
     const prevValue = await ev.context.export();
     const key = ev.originalEvent.key;
-    ev.preventDefault();
     const data = updateDisplay(prevValue, key);
     await ev.context.import(data);
 });{%
