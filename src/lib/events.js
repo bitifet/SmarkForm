@@ -322,7 +322,11 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                     defaultPrevented: false,
                 };
                 if (preventable) {
-                    event.preventDefault = () => event.defaultPrevented = true;
+                    const realPreventDefault = event.preventDefault;
+                    event.preventDefault = () => {
+                        event.defaultPrevented = true;
+                        if (typeof realPreventDefault === 'function') realPreventDefault();
+                    };
                     event.stopPropagation = () => propagationStopped = true;
                     event.stopImmediatePropagation = () => immediatePropagationStopped = true;
                 };
