@@ -54,6 +54,12 @@ try {
  *
  * Note: <li>, <p>, <dt>, <dd> are optional-close in HTML5, so we skip them
  * to avoid false positives from legitimate omitted close tags.
+ *
+ * Note on `<tag/>` syntax: in HTML5, using a trailing `/` on non-void elements
+ * (e.g. `<div/>`) is invalid — the parser treats it as `<div>` and emits a
+ * `non-void-html-element-start-tag-with-trailing-solidus` parse error (caught
+ * by the parse5 check above).  The balance regex below uses `[\\s>]` so that
+ * `<div/>` is NOT counted as an open tag; parse5 already flags those patterns.
  */
 const BALANCED_TAGS = [
     'div', 'form', 'fieldset',
@@ -99,8 +105,9 @@ function validateHtmlFragment(html) {
 
     // --- Check 2: tag balance --------------------------------------------
     for (const tag of BALANCED_TAGS) {
-        // Match opening tags like <div>, <div id="x">, <div/> (self-closed)
-        const openCount  = (html.match(new RegExp(`<${tag}[\\s>/]`, 'gi')) || []).length;
+        // Match opening tags like <div>, <div id="x"> but NOT <div/> (which
+        // parse5 already flags as non-void-html-element-start-tag-with-trailing-solidus)
+        const openCount  = (html.match(new RegExp(`<${tag}[\\s>]`, 'gi')) || []).length;
         // Match closing tags like </div> and </div   >
         const closeCount = (html.match(new RegExp(`<\\/${tag}\\s*>`, 'gi')) || []).length;
         if (openCount !== closeCount) {
@@ -132,10 +139,7 @@ for (const example of examples) {
                 `HTML validity failed for example "${example.formId}" in ${example.file}:`,
                 ...issues.map(i => `  • ${i}`),
             ].join('\n');
-            expect.soft(issues, msg).toHaveLength(0);
+            expect(issues, msg).toHaveLength(0);
         }
-
-        // Explicit final assertion so Playwright marks the test as failed
-        expect(issues, `${issues.length} HTML issue(s) in "${example.formId}"`).toHaveLength(0);
     });
 }
