@@ -11,45 +11,45 @@ permalink: /
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
 {% capture event_planner_html -%}
 <div id="myForm$$">
-  █<div class="ep">
-    █    <p>
-      █        <label data-smark>📋 Event:</label>
-      █        <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
-      █    </p>
-    █    <p>
-      █        <label data-smark>📅 Date:</label>
-      █        <input data-smark name="date" type="date">
-      █    </p>
-    █    <p>
-      █        <label data-smark>⏰ Time:</label>
-      █        <input data-smark name="time" type="time">
-      █    </p>
-    █    <fieldset data-smark='{"type":"form","name":"organizer"}'>
-      █        <legend data-smark='label'>👤 Organizer</legend>
-      █        <p>
-        █            <label data-smark>Name:</label>
-        █            <input data-smark name="name" type="text">
-        █        </p>
-      █        <p>
-        █            <label data-smark>Email:</label>
-        █            <input data-smark name="email" type="email">
-        █        </p>
-      █    </fieldset>
-    █    <div class="ep-list">
-      █        <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
-      █        <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
-      █        <strong data-smark='label'>👥 Attendees:</strong>
-      █        <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
-        █            <li>
-          █                <span data-smark='{"action":"position"}'>N</span>.
-          █                <input data-smark type="text" placeholder="Name">
-          █                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
-          █                <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
-          █            </li>
-        █        </ul>
-      █    </div>
-    █    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
-    █</div>
+  <div class="ep">
+    <p>
+      <label data-smark>📋 Event:</label>
+      <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
+    </p>
+    <p>
+      <label data-smark>📅 Date:</label>
+      <input data-smark name="date" type="date">
+    </p>
+    <p>
+      <label data-smark>⏰ Time:</label>
+      <input data-smark name="time" type="time">
+    </p>
+    <fieldset data-smark='{"type":"form","name":"organizer"}'>
+      <legend data-smark='label'>👤 Organizer</legend>
+      <p>
+        <label data-smark>Name:</label>
+        <input data-smark name="name" type="text">
+      </p>
+      <p>
+        <label data-smark>Email:</label>
+        <input data-smark name="email" type="email">
+      </p>
+    </fieldset>
+    <div class="ep-list">
+      <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
+      <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
+      <strong data-smark='label'>👥 Attendees:</strong>
+      <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
+        <li>
+          <span data-smark='{"action":"position"}'>N</span>.
+          <input data-smark type="text" placeholder="Name">
+          <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
+          <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+        </li>
+      </ul>
+    </div>
+    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

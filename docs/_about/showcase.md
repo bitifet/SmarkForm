@@ -119,53 +119,53 @@ the information is unknown or indifferent.
 
 {% raw %} <!-- basic_form {{{ --> {% endraw %}
 {% capture basic_form_fields -%}
-█<h2>Model details</h2>
-█<p>
-█    <label data-smark>Model Name:</label>
-█    <input type="text" name="model" data-smark />
-█</p>
-█<p>
-█    <label data-smark>Type:</label>
-█    <select name="type" data-smark='{"encoding":"json"}'>
-█        <option value='null'>👇 Please select...</option>
-█        <!-- json encoding allow us return null values -->
-█        <option value='"Car"'>Car</option>
-█        <!-- ...but now we must wrap strings in double quotes -->
-█        <!-- (it also gives us the ability to return objects and arrays) -->
-█        <option>Bicycle</option>
-█        <!-- ...but if we are Ok with inner text as value, we can just omit the value attribute -->
-█        <option>Motorcycle</option>
-█        <option>Van</option>
-█        <option>Pickup</option>
-█        <option>Quad</option>
-█        <option>Truck</option>
-█    </select>
-█</p>
-█<p>
-█    <label data-smark>Detailed description:</label>
-█    <textarea name="longdesc" data-smark ></textarea>
-█</p>
-█<p>
-█    <label data-smark>Seats:</label>
-█    <input type="number" name="seats" min=4 max=9 data-smark />
-█</p>
-█<p>
-█    <label data-smark>Driving Side:</label>
-█    <input type="radio" name="side" value="left" data-smark /> Left
-█    <input type="radio" name="side" value="right" data-smark /> Right
-█</p>
-█<p>
-█    <label data-smark>Color:</label>
-█    <span data-smark='{"type":"color", "name":"color"}'>
-█        <input data-smark>
-█        <button data-smark='{"action":"clear"}' title='Indifferent or unknown' >❌ </button>
-█    </span>
-█</p>{%
+    <h2>Model details</h2>
+    <p>
+        <label data-smark>Model Name:</label>
+        <input type="text" name="model" data-smark />
+    </p>
+    <p>
+        <label data-smark>Type:</label>
+        <select name="type" data-smark='{"encoding":"json"}'>
+            <option value='null'>👇 Please select...</option>
+            <!-- json encoding allow us return null values -->
+            <option value='"Car"'>Car</option>
+            <!-- ...but now we must wrap strings in double quotes -->
+            <!-- (it also gives us the ability to return objects and arrays) -->
+            <option>Bicycle</option>
+            <!-- ...but if we are Ok with inner text as value, we can just omit the value attribute -->
+            <option>Motorcycle</option>
+            <option>Van</option>
+            <option>Pickup</option>
+            <option>Quad</option>
+            <option>Truck</option>
+        </select>
+    </p>
+    <p>
+        <label data-smark>Detailed description:</label>
+        <textarea name="longdesc" data-smark ></textarea>
+    </p>
+    <p>
+        <label data-smark>Seats:</label>
+        <input type="number" name="seats" min=4 max=9 data-smark />
+    </p>
+    <p>
+        <label data-smark>Driving Side:</label>
+        <input type="radio" name="side" value="left" data-smark /> Left
+        <input type="radio" name="side" value="right" data-smark /> Right
+    </p>
+    <p>
+        <label data-smark>Color:</label>
+        <span data-smark='{"type":"color", "name":"color"}'>
+            <input data-smark>
+            <button data-smark='{"action":"clear"}' title='Indifferent or unknown' >❌ </button>
+        </span>
+    </p>{%
 endcapture %}
 
 {% capture basic_form -%}
 <div id="myForm$$">
-{{ basic_form_fields | replace: "█", "    " }}
+{{ basic_form_fields }}
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -274,29 +274,29 @@ the name "safety".
 {% raw %} <!-- nested_forms {{{ --> {% endraw %}
 {% capture nested_forms -%}
 {{ basic_form_fields }}
-█<fieldset data-smark='{"name":"safety","type":"form"}'>
-█    <legend>Safety Features:</legend>
-█    <span>
-█        <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
-█    </span>
-█    &nbsp;&nbsp;
-█    <span>
-█        <label><input type="checkbox" name="abs" data-smark /> ABS.</label>
-█    </span>
-█    &nbsp;&nbsp;
-█    <span>
-█        <label><input type="checkbox" name="esp" data-smark /> ESP.</label>
-█    </span>
-█    &nbsp;&nbsp;
-█    <span>
-█        <label><input type="checkbox" name="tc" data-smark />TC.</label>
-█    </span>
-█</fieldset>{%
+    <fieldset data-smark='{"name":"safety","type":"form"}'>
+        <legend>Safety Features:</legend>
+        <span>
+            <label><input type="checkbox" name="airbag" data-smark /> Airbag.</label>
+        </span>
+        &nbsp;&nbsp;
+        <span>
+            <label><input type="checkbox" name="abs" data-smark /> ABS.</label>
+        </span>
+        &nbsp;&nbsp;
+        <span>
+            <label><input type="checkbox" name="esp" data-smark /> ESP.</label>
+        </span>
+        &nbsp;&nbsp;
+        <span>
+            <label><input type="checkbox" name="tc" data-smark />TC.</label>
+        </span>
+    </fieldset>{%
 endcapture %}
 
 {% capture nested_forms_html -%}
 <div id="myForm$$">
-{{ nested_forms | replace: "█", "    " }}
+{{ nested_forms }}
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -404,12 +404,12 @@ that can grow or shrink as needed:
 {% raw %} <!-- simple_list {{{ --> {% endraw %}
 {% capture simple_list -%}
 <div id="myForm$$">
-█<button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
-█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█<strong data-smark="label">Phones:</strong>
-█<div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
-█    <input type="tel" style="display: block">
-█</div>
+  <button data-smark='{"action":"removeItem", "context":"phones"}' title='Remove phone number'>➖</button>
+  <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+  <strong data-smark="label">Phones:</strong>
+  <div data-smark='{"type":"list", "name": "phones", "of": "input", "exportEmpties": true}'>
+    <input type="tel" style="display: block">
+  </div>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -521,21 +521,21 @@ in the following example:
 {% raw %} <!-- simple_list_singleton {{{ --> {% endraw %}
 {% capture simple_list_singleton -%}
 <div id="myForm$$">
-█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
-█<button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
-█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█<strong data-smark="label">Phones:</strong>
-█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
-█    <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
-█    <li class="row">
-█        <label data-smark>📞 Telephone
-█        <span data-smark='{"action":"position"}'>N</span>
-█        </label>
-█        <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
-█        <input type="tel" data-smark>
-█        <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
-█    </li>
-█</ul>
+  <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+  <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
+  <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+  <strong data-smark="label">Phones:</strong>
+  <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
+    <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+    <li class="row">
+      <label data-smark>📞 Telephone
+      <span data-smark='{"action":"position"}'>N</span>
+      </label>
+      <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+      <input type="tel" data-smark>
+      <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
+    </li>
+  </ul>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -917,56 +917,56 @@ But it could look kind of messy if you need to introduce several schedules that 
 {% raw %} <!-- schedule_table {{{ --> {% endraw %}
 {% capture schedule_table -%}
 <div id="myForm$$">
-█<div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
-█    <div class="schedule-row" data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
-█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
-█        <span class='time_slot'>
-█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
-█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
-█        </span>
-█        <span data-smark='{"role":"footer"}'>
-█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
-█        </span>
-█    </div>
-█    <div class="schedule-row" data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <strong data-smark='{"role":"header"}'>🍸 Bar</strong>
-█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
-█        <span class='time_slot'>
-█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
-█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
-█        </span>
-█        <span data-smark='{"role":"footer"}'>
-█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
-█        </span>
-█    </div>
-█    <div class="schedule-row" data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <strong data-smark='{"role":"header"}'>🍽️ Restaurant:</strong>
-█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
-█        <span class='time_slot'>
-█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
-█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
-█        </span>
-█        <span data-smark='{"role":"footer"}'>
-█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
-█        </span>
-█    </div>
-█    <div class="schedule-row" data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-█        <strong data-smark='{"role":"header"}'>🏊 Pool:</strong>
-█        <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
-█        <span class='time_slot'>
-█            <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
-█            <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
-█        </span>
-█        <span data-smark='{"role":"footer"}'>
-█            <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
-█            <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
-█        </span>
-█    </div>
-█</div>
+  <div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+    <div class="schedule-row" data-smark='{"type":"list","name":"rcpt_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+      <strong data-smark='{"role":"header"}'>🛎️ Reception:</strong>
+      <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
+      <span class='time_slot'>
+        <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+        <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+      </span>
+      <span data-smark='{"role":"footer"}'>
+        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+      </span>
+    </div>
+    <div class="schedule-row" data-smark='{"type":"list","name":"bar_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+      <strong data-smark='{"role":"header"}'>🍸 Bar</strong>
+      <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
+      <span class='time_slot'>
+        <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+        <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+      </span>
+      <span data-smark='{"role":"footer"}'>
+        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+      </span>
+    </div>
+    <div class="schedule-row" data-smark='{"type":"list","name":"restaurant_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+      <strong data-smark='{"role":"header"}'>🍽️ Restaurant:</strong>
+      <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
+      <span class='time_slot'>
+        <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+        <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+      </span>
+      <span data-smark='{"role":"footer"}'>
+        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+      </span>
+    </div>
+    <div class="schedule-row" data-smark='{"type":"list","name":"pool_schedule","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+      <strong data-smark='{"role":"header"}'>🏊 Pool:</strong>
+      <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
+      <span class='time_slot'>
+        <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+        <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+      </span>
+      <span data-smark='{"role":"footer"}'>
+        <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Less intervals'>➖</button>
+        <button data-smark='{"action":"addItem","hotkey":"+"}' title='More intervals'>➕</button>
+      </span>
+    </div>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -2051,7 +2051,7 @@ In the *JS* tab there is a simple JavaScript code that:
 {% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
 {% capture nested_forms_with_load_save -%}
 <div id="myForm$$">
-{{ nested_forms | replace: "█", "    " }}
+{{ nested_forms }}
     <div style="display: flex; justify-content: space-evenly; margin-top: 0.5em">
         <button
             data-smark='{"action":"export"}'
@@ -2068,39 +2068,39 @@ endcapture %}
 
 {% raw %} <!-- submit_form_example {{{ --> {% endraw %}
 {% capture submit_form_example -%}
-█<form id="myForm$$"
-    action="mailto:you@example.com?subject=Contact%20Form%20Submission"
-    method="post"
-    enctype="text/plain"
+<form id="myForm$$"
+  action="mailto:you@example.com?subject=Contact%20Form%20Submission"
+  method="post"
+  enctype="text/plain"
 >
-█<p>
-█    <label data-smark>Abstract</label>
-█    <input data-smark type="text"
-█      name="name"
-█      placeholder="Brief summary or description"
-█    />
-█</p>
-█<p>
-█    <label data-smark>Reason for contacting us:</label>
-█    <select data-smark name="reason" required>
-█      <option value="" disabled selected>— Choose —</option>
-█      <option value="question">Question</option>
-█      <option value="support">Support / Technical help</option>
-█      <option value="feedback">Suggestion or feedback</option>
-█      <option value="complaint">Complaint</option>
-█      <option value="praise">Praise / Thank you</option>
-█      <option value="business">Business / Sales inquiry</option>
-█      <option value="other">Something else</option>
-█    </select>
-█</p>
-█<p>
-█    <label data-smark>Message:</label>
-█    <textarea data-smark name="message"></textarea>
-█</p>
-█<p>
-█    <button data-smark='{"action":"submit"}'>📧 Send Email</button>
-█</p>
-█</form>{%
+  <p>
+    <label data-smark>Abstract</label>
+    <input data-smark type="text"
+      name="name"
+      placeholder="Brief summary or description"
+    />
+  </p>
+  <p>
+    <label data-smark>Reason for contacting us:</label>
+    <select data-smark name="reason" required>
+      <option value="" disabled selected>— Choose —</option>
+      <option value="question">Question</option>
+      <option value="support">Support / Technical help</option>
+      <option value="feedback">Suggestion or feedback</option>
+      <option value="complaint">Complaint</option>
+      <option value="praise">Praise / Thank you</option>
+      <option value="business">Business / Sales inquiry</option>
+      <option value="other">Something else</option>
+    </select>
+  </p>
+  <p>
+    <label data-smark>Message:</label>
+    <textarea data-smark name="message"></textarea>
+  </p>
+  <p>
+    <button data-smark='{"action":"submit"}'>📧 Send Email</button>
+  </p>
+</form>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -2276,20 +2276,20 @@ slight modifications:
 {% raw %} <!-- simple_list_autodisable {{{ --> {% endraw %}
 {% capture simple_list_autodisable -%}
 <div id="myForm$$">
-█<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
-█<button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
-█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█<strong data-smark="label">Phones:</strong>
-█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
-█    <li class="row">
-█        <label data-smark>📞 Telephone
-█        <span data-smark='{"action":"position"}'>N</span>
-█        </label>
-█        <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
-█        <input type="tel" data-smark>
-█        <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
-█    </li>
-█</ul>
+  <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+  <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
+  <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+  <strong data-smark="label">Phones:</strong>
+  <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+    <li class="row">
+      <label data-smark>📞 Telephone
+      <span data-smark='{"action":"position"}'>N</span>
+      </label>
+      <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+      <input type="tel" data-smark>
+      <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
+    </li>
+  </ul>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -3751,45 +3751,45 @@ form, or import your own JSON to pre-populate it.
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
 {% capture event_planner_html -%}
 <div id="myForm$$">
-█<div class="ep">
-█    <p>
-█        <label data-smark>📋 Event:</label>
-█        <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
-█    </p>
-█    <p>
-█        <label data-smark>📅 Date:</label>
-█        <input data-smark name="date" type="date">
-█    </p>
-█    <p>
-█        <label data-smark>⏰ Time:</label>
-█        <input data-smark name="time" type="time">
-█    </p>
-█    <fieldset data-smark='{"type":"form","name":"organizer"}'>
-█        <legend data-smark='label'>👤 Organizer</legend>
-█        <p>
-█            <label data-smark>Name:</label>
-█            <input data-smark name="name" type="text">
-█        </p>
-█        <p>
-█            <label data-smark>Email:</label>
-█            <input data-smark name="email" type="email">
-█        </p>
-█    </fieldset>
-█    <div class="ep-list">
-█        <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
-█        <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
-█        <strong data-smark='label'>👥 Attendees:</strong>
-█        <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
-█            <li>
-█                <span data-smark='{"action":"position"}'>N</span>.
-█                <input data-smark type="text" placeholder="Name">
-█                <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
-█                <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
-█            </li>
-█        </ul>
-█    </div>
-█    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
-█</div>
+  <div class="ep">
+    <p>
+      <label data-smark>📋 Event:</label>
+      <input data-smark name="title" type="text" placeholder="e.g. Sprint Review">
+    </p>
+    <p>
+      <label data-smark>📅 Date:</label>
+      <input data-smark name="date" type="date">
+    </p>
+    <p>
+      <label data-smark>⏰ Time:</label>
+      <input data-smark name="time" type="time">
+    </p>
+    <fieldset data-smark='{"type":"form","name":"organizer"}'>
+      <legend data-smark='label'>👤 Organizer</legend>
+      <p>
+        <label data-smark>Name:</label>
+        <input data-smark name="name" type="text">
+      </p>
+      <p>
+        <label data-smark>Email:</label>
+        <input data-smark name="email" type="email">
+      </p>
+    </fieldset>
+    <div class="ep-list">
+      <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
+      <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
+      <strong data-smark='label'>👥 Attendees:</strong>
+      <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
+        <li>
+          <span data-smark='{"action":"position"}'>N</span>.
+          <input data-smark type="text" placeholder="Name">
+          <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
+          <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+        </li>
+      </ul>
+    </div>
+    <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

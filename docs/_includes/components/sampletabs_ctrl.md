@@ -78,12 +78,20 @@ function smarkformExtractWrapperAndInner(htmlSrc) {
    The inner content is placed in a "demo" subform, with Export/Import/Reset/Clear buttons
    and a JSON editor textarea — all implemented as SmarkForm components.
    Sibling <template> elements are preserved after the outer container, NOT inside the demo subform. */
+function smarkformReindentHtml(content, spaces) {
+    /* Prepend `spaces` additional spaces to every non-blank line. */
+    var pad = '';
+    for (var i = 0; i < spaces; i++) pad += ' ';
+    return content.split('\n').map(function(line) {
+        return line.trim() ? pad + line : line;
+    }).join('\n');
+}
 function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
     var p = smarkformExtractWrapperAndInner(htmlSrc);
     return p.openTag + '\n'
         + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em">\n'
         + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
-        + p.inner
+        + smarkformReindentHtml(p.inner, 8)
         + '        </div>\n'
         + '        <div style="display: flex; justify-content: space-evenly">\n'
         + '<span><button\n'
