@@ -129,18 +129,18 @@ simple form like the following:
 {% raw %} <!-- html_source_legacy {{{ --> {% endraw %}
 {% capture html_source_legacy -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label for="nameField$$">Name:</label>
     <input type="text" id="nameField$$" name="name">
-</p>
-<p>
+  </p>
+  <p>
     <label for="emailField$$">Email:</label>
     <input type="email" id="emailField$$" name="email">
-</p>
-<p>
+  </p>
+  <p>
     <button>❌ Clear</button>
     <button>💾 Submit</button>
-</p>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -195,18 +195,18 @@ Let's mark all fields, buttons and labels... by adding a *data-smark* attribute 
 {% raw %} <!-- html_source_enhanced {{{ --> {% endraw %}
 {% capture html_source_enhanced -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
-</p>
-<p>
+  </p>
+  <p>
     <label data-smark>Email:</label>
     <input type="email" name="email" data-smark>
-</p>
-<p>
+  </p>
+  <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
+  </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -272,20 +272,20 @@ Let's add more `❌ Clear` buttons to clear each specific field:
 {% raw %} <!-- html_source_enhanced_with_clears {{{ --> {% endraw %}
 {% capture html_source_enhanced_with_clears -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
     <button data-smark='{"action":"clear", "context":"name"}'>❌ Clear</button>
-</p>
-<p>
+  </p>
+  <p>
     <label data-smark>Email:</label>
     <input type="email" name="email" data-smark>
     <button data-smark='{"action":"clear", "context":"email"}'>❌ Clear</button>
-</p>
-<p>
+  </p>
+  <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
+  </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -391,19 +391,19 @@ similar way to the *export* action but in the opposite direction.
 {% raw %} <!-- html_source_enhanced_withImport {{{ --> {% endraw %}
 {% capture html_source_enhanced_withImport -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Name:</label>
     <input type="text" name="name" data-smark>
-</p>
-<p>
+  </p>
+  <p>
     <label data-smark>Email:</label>
     <input type="email" name="email" data-smark>
-</p>
-<p>
+  </p>
+  <p>
     <button data-smark='{"action":"import"}'>📂 Import</button>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
+  </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -463,36 +463,36 @@ This path can be either relative (to the current field) or absolute (to the form
 {% raw %} <!-- capture traversing_form_example {{{ --> {% endraw %}
 {% capture traversing_form_example -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
-</p>
-<fieldset data-smark='{"type":"form","name":"personalData"}'>
-<legend>Personal Data:</legend>
+  </p>
+  <fieldset data-smark='{"type":"form","name":"personalData"}'>
+    <legend>Personal Data:</legend>
     <p>
-        <label data-smark>Name:</label>
-        <input data-smark type='text' name='name' placheolder='Family name'/>
+      <label data-smark>Name:</label>
+      <input data-smark type='text' name='name' placheolder='Family name'/>
     </p>
     <p>
-        <label data-smark>Surname:</label>
-        <input data-smark type='text' name='surname' />
+      <label data-smark>Surname:</label>
+      <input data-smark type='text' name='surname' />
     </p>
     <p>
-        <label data-smark>Address:</label>
-        <input data-smark type='text' name='address' />
+      <label data-smark>Address:</label>
+      <input data-smark type='text' name='address' />
     </p>
-</fieldset>
-<fieldset data-smark='{"type":"form","name":"businessData"}'>
-<legend>Business Data:</legend>
+  </fieldset>
+  <fieldset data-smark='{"type":"form","name":"businessData"}'>
+    <legend>Business Data:</legend>
     <p>
-        <label data-smark>Company Name:</label>
-        <input data-smark type='text' name='name' placheolder='Company Name'/>
+      <label data-smark>Company Name:</label>
+      <input data-smark type='text' name='name' placheolder='Company Name'/>
     </p>
     <p>
-        <label data-smark>Address:</label>
-        <input data-smark type='text' name='address' />
+      <label data-smark>Address:</label>
+      <input data-smark type='text' name='address' />
     </p>
-</fieldset>
+  </fieldset>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -593,17 +593,17 @@ item, it will remove that item from the list. **No wiring code needed!**
 
 {% capture simple_list_example -%}
 <div id="myForm$$">
-<p>
+  <p>
     <strong data-smark='label'>Phones:</strong>
     <ul data-smark='{"name": "phones", "of": "input"}'>
-        <li>
-            <label data-smark>📞 </label>
-            <input placeholder='+34...' type="tel" data-smark>
-            <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
-        </li>
+      <li>
+        <label data-smark>📞 </label>
+        <input placeholder='+34...' type="tel" data-smark>
+        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+      </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
-</p>
+  </p>
 </div>{%
 endcapture %}
 
@@ -670,14 +670,14 @@ example:
 {% raw %} <!-- html_source_simplified {{{ --> {% endraw %}
 {% capture html_source_simplified -%}
 <div id="myForm$$">
-█<p>
-█    <label data-smark>Name:</label>
-█    <input type="text" name="name" data-smark>
-█</p>
-█<p>
-█    <label data-smark>Email:</label>
-█    <input type="email" name="email" data-smark>
-█</p>
+  █<p>
+    █    <label data-smark>Name:</label>
+    █    <input type="text" name="name" data-smark>
+    █</p>
+  █<p>
+    █    <label data-smark>Email:</label>
+    █    <input type="email" name="email" data-smark>
+    █</p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -854,11 +854,11 @@ additional capabilities of the library:
 {% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
 {% capture html_phone_list -%}
 <div id="myForm$$">
-<div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
-  <div>
-    <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
-    <input data-smark type='tel' placeholder='Telephone'/>
-    <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+  <div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
+    <div>
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
+      <input data-smark type='tel' placeholder='Telephone'/>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
   </div>
 </div>
 <p>
@@ -937,27 +937,27 @@ button[data-hotkey]::before {
 {% raw %} <!-- capture html_schedule_list {{{ --> {% endraw %}
 {% capture html_schedule_list -%}
 <div id="myForm$$">
-<p>
+  <p>
     <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'>
-        <span role='img' aria-label='Remove interval'>➖</span>
+      <span role='img' aria-label='Remove interval'>➖</span>
     </button>
     <button data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}' title='More intrevals'>
-        <span role='img' aria-label='Add new interval'>➕</span>
+      <span role='img' aria-label='Add new interval'>➕</span>
     </button>
     <strong data-smark='label'>Schedule:</strong>
     <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
-        <span>
-            <input data-smark type='time' name='start'/>
-            to
-            <input data-smark type='time' name='end'/>
-        </span>
-        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+      <span>
+        <input data-smark type='time' name='start'/>
+        to
+        <input data-smark type='time' name='end'/>
+      </span>
+      <span data-smark='{"role":"empty_list"}'>(Closed)</span>
     </span>
-</p>
-<p>
+  </p>
+  <p>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
     <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
+  </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

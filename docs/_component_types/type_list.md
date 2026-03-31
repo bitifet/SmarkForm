@@ -113,15 +113,15 @@ specified the *data-smark* attribute or not).
 {% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
 {% capture simple_list_example -%}
 <div id="myForm$$">
-<section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
+  <section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
     <fieldset style="text-align:right"><!-- ☛ 2, 3, 6 -->
-        <p><label data-smark>User name:</label><input name='name' type='text' data-smark/></p>
-        <p><label data-smark>Phone number:</label><input name='phone' type='tel' data-smark/></p>
-        <p><label data-smark>Email:</label><input name='email' type='text' data-smark/></p>
-        <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+      <p><label data-smark>User name:</label><input name='name' type='text' data-smark/></p>
+      <p><label data-smark>Phone number:</label><input name='phone' type='tel' data-smark/></p>
+      <p><label data-smark>Email:</label><input name='email' type='text' data-smark/></p>
+      <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
     </fieldset>
-</section>
-<button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
+  </section>
+  <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -185,11 +185,11 @@ like in the following example.
 {% raw %} <!-- capture scalar_list_example {{{ --> {% endraw %}
 {% capture scalar_list_example -%}
 <div id="myForm$$">
-<section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
+  <section style="display:grid" data-smark='{"type":"list","name":"phones"}'>
     <input placeholder='Phone number' type='tel'/><!-- ☛ 4, 6 -->
-</section>
-<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
-<button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- ☛ 5 -->
+  </section>
+  <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+  <button data-smark='{"action":"removeItem","context":"phones"}' title='Remove Phone'>➖</button> <!-- ☛ 5 -->
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -239,13 +239,13 @@ inside.
 {% raw %} <!-- capture singleton_list_example {{{ --> {% endraw %}
 {% capture singleton_list_example -%}
 <div id="myForm$$">
-<ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
+  <ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
     <li>
-        <input placeholder='Phone Number' type="tel" data-smark>
-        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+      <input placeholder='Phone Number' type="tel" data-smark>
+      <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
     </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -292,30 +292,30 @@ say, up to three phone numbers and up to three emails.
 {% raw %} <!-- capture nesting_list_example {{{ --> {% endraw %}
 {% capture nesting_list_example -%}
 <div id="myForm$$">
-<section data-smark='{"type":"list","name":"users"}'>
+  <section data-smark='{"type":"list","name":"users"}'>
     <fieldset>
-        <legend>User</legend>
-        <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
-        <input name='name' placeholder='User name' type='text' data-smark/>
-        <fieldset>
-            <legend>
-                <span
-                    data-smark='{"action":"addItem","context":"phones"}'
-                    title='Add Phone'
-                    style="background: lightgray; padding:.3em; border-radius:3px; margin: .4em"
-                >➕</span>
-                Phone Numbers
-            </legend>
-            <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
-                <li>
-                    <input type="tel" data-smark>
-                    <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
-                </li>
-            </ul>
-        </fieldset>
+      <legend>User</legend>
+      <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+      <input name='name' placeholder='User name' type='text' data-smark/>
+      <fieldset>
+        <legend>
+          <span
+          data-smark='{"action":"addItem","context":"phones"}'
+          title='Add Phone'
+          style="background: lightgray; padding:.3em; border-radius:3px; margin: .4em"
+          >➕</span>
+        Phone Numbers
+      </legend>
+      <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
+        <li>
+          <input type="tel" data-smark>
+          <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+        </li>
+      </ul>
     </fieldset>
-</section>
-<button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕ Add user</button>
+  </fieldset>
+  </section>
+  <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕ Add user</button>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

@@ -93,25 +93,25 @@ The structure of the exported value mirrors the nesting of the form:
 {% raw %} <!-- capture export_structure_html {{{ --> {% endraw %}
 {% capture export_structure_html -%}
 <div id="myForm$$">
-<fieldset data-smark='{"type":"form","name":"order"}'>
+  <fieldset data-smark='{"type":"form","name":"order"}'>
     <legend>Order</legend>
     <p>
-        <label data-smark>Customer:</label>
-        <input data-smark type="text" name="customer">
+      <label data-smark>Customer:</label>
+      <input data-smark type="text" name="customer">
     </p>
     <p>
-        <label data-smark>Notes:</label>
-        <textarea data-smark name="notes"></textarea>
+      <label data-smark>Notes:</label>
+      <textarea data-smark name="notes"></textarea>
     </p>
     <ul data-smark='{"type":"list","name":"items","min_items":0}'>
-        <li>
-            <input data-smark type="text" name="product" placeholder="Product">
-            <input data-smark type="number" name="qty" placeholder="Qty">
-            <button data-smark='{"action":"removeItem"}'>➖</button>
-        </li>
+      <li>
+        <input data-smark type="text" name="product" placeholder="Product">
+        <input data-smark type="number" name="qty" placeholder="Qty">
+        <button data-smark='{"action":"removeItem"}'>➖</button>
+      </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"items"}'>➕ Add item</button>
-</fieldset>
+  </fieldset>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -229,18 +229,18 @@ The `import` action accepts:
 {% raw %} <!-- capture import_example_html {{{ --> {% endraw %}
 {% capture import_example_html -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Name:</label>
     <input data-smark type="text" name="name">
-</p>
-<p>
+  </p>
+  <p>
     <label data-smark>Email:</label>
     <input data-smark type="email" name="email">
-</p>
-<p>
+  </p>
+  <p>
     <label data-smark>Role:</label>
     <input data-smark type="text" name="role">
-</p>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -370,18 +370,18 @@ a "New record" button.
 {% raw %} <!-- capture clear_vs_reset_html {{{ --> {% endraw %}
 {% capture clear_vs_reset_html -%}
 <div id="myForm$$">
-<div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
+  <div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
     <p>
-        <label data-smark>Title:</label>
-        <input data-smark type="text" name="title">
+      <label data-smark>Title:</label>
+      <input data-smark type="text" name="title">
     </p>
     <p>
-        <label data-smark>Priority:</label>
-        <input data-smark type="text" name="priority">
+      <label data-smark>Priority:</label>
+      <input data-smark type="text" name="priority">
     </p>
     <p>
-        <button data-smark='{"action":"clear","context":"task"}'>❌ Clear</button>
-        <button data-smark='{"action":"reset","context":"task"}'>♻️ Reset</button>
+      <button data-smark='{"action":"clear","context":"task"}'>❌ Clear</button>
+      <button data-smark='{"action":"reset","context":"task"}'>♻️ Reset</button>
     </p>
 </div>
 </div>{%
@@ -464,43 +464,43 @@ directly into its target (the shipping address) subform:
 {% raw %} <!-- capture pipe_example_html {{{ --> {% endraw %}
 {% capture pipe_example_html -%}
 <div id="myForm$$">
-<fieldset data-smark='{"type":"form","name":"billing"}'>
+  <fieldset data-smark='{"type":"form","name":"billing"}'>
     <legend>Billing address</legend>
     <p>
-        <label data-smark>Street:</label>
-        <input data-smark type="text" name="street">
+      <label data-smark>Street:</label>
+      <input data-smark type="text" name="street">
     </p>
     <p>
-        <label data-smark>City:</label>
-        <input data-smark type="text" name="city">
+      <label data-smark>City:</label>
+      <input data-smark type="text" name="city">
     </p>
     <p>
-        <label data-smark>Postcode:</label>
-        <input data-smark type="text" name="postcode">
+      <label data-smark>Postcode:</label>
+      <input data-smark type="text" name="postcode">
     </p>
-</fieldset>
-<p>
+  </fieldset>
+  <p>
     <button data-smark='{
-        "action":"export",
-        "context":"billing",
-        "target":"../shipping"
+    "action":"export",
+    "context":"billing",
+    "target":"../shipping"
     }'>📋 Copy to shipping</button>
-</p>
-<fieldset data-smark='{"type":"form","name":"shipping"}'>
+  </p>
+  <fieldset data-smark='{"type":"form","name":"shipping"}'>
     <legend>Shipping address</legend>
     <p>
-        <label data-smark>Street:</label>
-        <input data-smark type="text" name="street">
+      <label data-smark>Street:</label>
+      <input data-smark type="text" name="street">
     </p>
     <p>
-        <label data-smark>City:</label>
-        <input data-smark type="text" name="city">
+      <label data-smark>City:</label>
+      <input data-smark type="text" name="city">
     </p>
     <p>
-        <label data-smark>Postcode:</label>
-        <input data-smark type="text" name="postcode">
+      <label data-smark>Postcode:</label>
+      <input data-smark type="text" name="postcode">
     </p>
-</fieldset>
+  </fieldset>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

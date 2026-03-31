@@ -56,18 +56,18 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
 {% raw %} <!-- radio_group_example {{{ --> {% endraw %}
 {% capture radio_group_example_html -%}
 <div id="myForm$$">
-<fieldset>
+  <fieldset>
     <legend>Gender:</legend>
     <label>
-        <input type="radio" data-smark name="gender" value="male"> Male
+      <input type="radio" data-smark name="gender" value="male"> Male
     </label>
     <label>
-        <input type="radio" data-smark name="gender" value="female"> Female
+      <input type="radio" data-smark name="gender" value="female"> Female
     </label>
     <label>
-        <input type="radio" data-smark name="gender" value="other"> Other
+      <input type="radio" data-smark name="gender" value="other"> Other
     </label>
-</fieldset>
+  </fieldset>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

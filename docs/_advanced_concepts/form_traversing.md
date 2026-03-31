@@ -378,16 +378,16 @@ while (currentItem) {
 {% raw %} <!-- form_trav_copy_adjacent {{{ --> {% endraw %}
 {% capture form_trav_copy_adjacent_html -%}
 <div id="myForm$$">
-<ul data-smark='{"name": "employees", "type": "list", "of": "form"}'>
+  <ul data-smark='{"name": "employees", "type": "list", "of": "form"}'>
     <li>
-        <input name="name" data-smark placeholder="Name">
-        <input name="email" data-smark placeholder="Email">
-        <button data-smark='{"action":"export","target":".+1"}'>Copy to Next</button>
-        <button data-smark='{"action":"import","target":".-1"}'>Copy from Previous</button>
-        <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
+      <input name="name" data-smark placeholder="Name">
+      <input name="email" data-smark placeholder="Email">
+      <button data-smark='{"action":"export","target":".+1"}'>Copy to Next</button>
+      <button data-smark='{"action":"import","target":".-1"}'>Copy from Previous</button>
+      <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
     </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"employees"}'>➕ Add</button>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"employees"}'>➕ Add</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -424,14 +424,14 @@ async function validateSequentially(list) {
 {% raw %} <!-- form_trav_navigation_ui {{{ --> {% endraw %}
 {% capture form_trav_navigation_ui_html -%}
 <div id="myForm$$">
-<div data-smark='{"name": "records", "type": "list", "of": "form"}'>
+  <div data-smark='{"name": "records", "type": "list", "of": "form"}'>
     <div>
-        <input name="data" data-smark>
-        <div class="navigation">
-            <button data-smark='{"action":"import","context":".","target":".-1"}'>← Copy from Previous</button>
-            <button data-smark='{"action":"export","context":".","target":".+1"}'>Copy to Next →</button>
-        </div>
-        <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
+      <input name="data" data-smark>
+      <div class="navigation">
+        <button data-smark='{"action":"import","context":".","target":".-1"}'>← Copy from Previous</button>
+        <button data-smark='{"action":"export","context":".","target":".+1"}'>Copy to Next →</button>
+      </div>
+      <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
     </div>
 </div>
 <button data-smark='{"action":"addItem","context":"records"}'>➕ Add</button>
@@ -494,25 +494,25 @@ This example demonstrates a practical implementation of sibling navigation for d
 {% raw %} <!-- form_trav_practical_copy {{{ --> {% endraw %}
 {% capture form_trav_practical_copy_html -%}
 <div id="myForm$$">
-<div data-smark='{"name": "contacts", "type": "list", "of": "form", "min_items": 1}'>
+  <div data-smark='{"name": "contacts", "type": "list", "of": "form", "min_items": 1}'>
     <fieldset>
-        <legend>Contact Information</legend>
-        <p>
-            <label data-smark>Name:</label>
-            <input name="name" data-smark type="text">
-        </p>
-        <p>
-            <label data-smark>Email:</label>
-            <input name="email" data-smark type="email">
-        </p>
-        <p>
-            <label data-smark>Phone:</label>
-            <input name="phone" data-smark type="tel">
-        </p>
-        <div class="actions">
-            <button data-smark='{"action":"export","target":".+1"}'>📋 Copy to Next</button>
-            <button data-smark='{"action":"import","target":".-1"}'>📥 Copy from Previous</button>
-            <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
+      <legend>Contact Information</legend>
+      <p>
+        <label data-smark>Name:</label>
+        <input name="name" data-smark type="text">
+      </p>
+      <p>
+        <label data-smark>Email:</label>
+        <input name="email" data-smark type="email">
+      </p>
+      <p>
+        <label data-smark>Phone:</label>
+        <input name="phone" data-smark type="tel">
+      </p>
+      <div class="actions">
+        <button data-smark='{"action":"export","target":".+1"}'>📋 Copy to Next</button>
+        <button data-smark='{"action":"import","target":".-1"}'>📥 Copy from Previous</button>
+        <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
         </div>
     </fieldset>
 </div>

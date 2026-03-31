@@ -56,7 +56,7 @@ set to `number` automatically.
 {% raw %} <!-- simple_number {{{ --> {% endraw %}
 {% capture simple_number -%}
 <div id="myForm$$">
-<input type="number" name="amount" data-smark>
+  <input type="number" name="amount" data-smark>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -89,7 +89,7 @@ numbers will result in a `null` value rather than throwing an error.
 {% raw %} <!-- number_error {{{ --> {% endraw %}
 {% capture number_error -%}
 <div id="myForm$$">
-<input type="text" name="amount" data-smark='{"type":"number"}'>
+  <input type="text" name="amount" data-smark='{"type":"number"}'>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

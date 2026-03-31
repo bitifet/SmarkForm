@@ -110,22 +110,22 @@ re-used in different parts of the form without conflict:
 {% raw %} <!-- hotkeys_context_sensitivity {{{ --> {% endraw %}
 {% capture hotkeys_context_sensitivity_html -%}
 <div id="myForm$$">
-<ul data-smark='{"type":"list","name":"users"}'>
+  <ul data-smark='{"type":"list","name":"users"}'>
     <li>
-        <input data-smark type="text" name="name" placeholder="User name">
-        <ul data-smark='{"type":"list","name":"phones"}'>
-            <li>
-                <input type="tel" data-smark name="phone" placeholder="Phone">
-                <!-- Ctrl+- removes a phone when focus is inside the phones list -->
-                <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Phone</button>
-            </li>
-        </ul>
-        <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}'>➕ Add phone</button>
-        <!-- Ctrl+- removes a user when focus is at the user level (outside phones) -->
-        <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Remove user</button>
+      <input data-smark type="text" name="name" placeholder="User name">
+      <ul data-smark='{"type":"list","name":"phones"}'>
+        <li>
+          <input type="tel" data-smark name="phone" placeholder="Phone">
+          <!-- Ctrl+- removes a phone when focus is inside the phones list -->
+          <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Phone</button>
+        </li>
+      </ul>
+      <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}'>➕ Add phone</button>
+      <!-- Ctrl+- removes a user when focus is at the user level (outside phones) -->
+      <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Remove user</button>
     </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"users","hotkey":"+"}'>➕ Add user</button>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"users","hotkey":"+"}'>➕ Add user</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

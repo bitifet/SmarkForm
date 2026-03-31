@@ -274,10 +274,10 @@ The recommended pattern is to use an `export` trigger and intercept the
 {% raw %} <!-- events_submit_example {{{ --> {% endraw %}
 {% capture events_submit_example_html -%}
 <div id="myForm$$">
-<input data-smark type="text" name="firstName" placeholder="First name">
-<input data-smark type="text" name="lastName" placeholder="Last name">
-<button data-smark='{"action":"export"}'>Submit</button>
-<pre id="output" style="background:#f4f4f4;padding:0.5em;margin-top:0.5em;min-height:2em"></pre>
+  <input data-smark type="text" name="firstName" placeholder="First name">
+  <input data-smark type="text" name="lastName" placeholder="Last name">
+  <button data-smark='{"action":"export"}'>Submit</button>
+  <pre id="output" style="background:#f4f4f4;padding:0.5em;margin-top:0.5em;min-height:2em"></pre>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
