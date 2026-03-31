@@ -17,6 +17,11 @@ var SMARKFORM_ACE_MAX_LINES = 35;
 var SMARKFORM_HEIGHT_PCT_DEFAULT = 50;
 var SMARKFORM_HEIGHT_PCT_MIN = 25;
 var SMARKFORM_HEIGHT_PCT_MAX = 90;
+/* Maximum number of iframes that may be initializing concurrently.
+   High-priority tasks (visible or user-activated) bypass this limit; once the
+   active count exceeds it due to those bursts, lower-priority tasks are held
+   back until active renders return to at/below this number. */
+var SMARKFORM_MAX_CONCURRENT_RENDERS = 3;
 /* Compute the heightPct for a given data object.
    Uses data.height (explicit override from the template) when > 0; otherwise derives
    from the htmlSource line count using the formula lines*3+15.
@@ -120,8 +125,10 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
         + p.closeTag
         + (p.after || ''); /* append sibling <template> elements outside the form */
 }
-/* Render SmarkForm example into an iframe. srcs = {html, css, js, hasEditor} */
-function smarkformRenderIframe(iframe, data, srcs) {
+/* Render SmarkForm example into an iframe. srcs = {html, css, js, hasEditor}
+   done (optional): called when the iframe has finished loading, used by the
+   render scheduler to know when a slot has freed up. */
+function smarkformRenderIframe(iframe, data, srcs, done) {
     var hasEditor = !!srcs.hasEditor;
     var heightPct = smarkformComputeHeightPct(data);
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
@@ -185,8 +192,76 @@ function smarkformRenderIframe(iframe, data, srcs) {
             }
             this.style.height = Math.max(hasEditor ? Math.round(window.innerHeight * heightPct / 100) : 100, Math.min(naturalH + 20, maxH)) + 'px';
         } catch(e) {}
+        if (done) done();
     };
 }
+/* ─── Render scheduler ─────────────────────────────────────────────────────
+   Shared by all sampletabs instances on the page.
+   Controls when each example iframe is rendered, limiting concurrency while
+   favouring visible and user-activated examples.
+
+   Priority values (lower = higher priority):
+     0  user-activated  – user clicked the Preview tab   → always runs immediately
+     1  visible + selected=preview                       → always runs immediately
+     2  visible (near viewport via IntersectionObserver) → always runs immediately
+     3  selected=preview (not yet visible)               → respects MAX limit
+     4  everything else                                  → respects MAX limit
+
+   Tie-breaking within the same priority level: document order (task.index).
+   Anti-starvation: document order ensures lower-priority tasks drain in a
+   predictable sequence once high-priority work is done. */
+var smarkformRenderScheduler = (function() {
+    var queue    = [];
+    var taskMap  = new Map(); /* iframe → queued task; enables O(1) lookup for markVisible/activate */
+    var active   = 0;
+    var MAX      = SMARKFORM_MAX_CONCURRENT_RENDERS;
+    function taskPriority(t) {
+        if (t.userActivated)                return 0;
+        if (t.visible && t.selectedPreview) return 1;
+        if (t.visible)                      return 2;
+        if (t.selectedPreview)              return 3;
+        return 4;
+    }
+    function run(task) {
+        active++;
+        taskMap.delete(task.iframe); /* task is now running; remove from lookup map */
+        task.fn(function() { active--; schedule(); });
+    }
+    function schedule() {
+        queue.sort(function(a, b) {
+            var pa = taskPriority(a), pb = taskPriority(b);
+            return pa !== pb ? pa - pb : a.index - b.index;
+        });
+        var i = 0;
+        while (i < queue.length) {
+            var t = queue[i];
+            /* Silently discard tasks that were canceled by a direct re-render
+               (edit mode toggle, run button, etc.) before the scheduler got to them. */
+            if (t.canceled) { queue.splice(i, 1); taskMap.delete(t.iframe); continue; }
+            /* High-priority tasks (priority ≤ 2) bypass the concurrency limit.
+               Normal-priority tasks wait until active count is below the cap. */
+            if (taskPriority(t) <= 2 || active < MAX) {
+                queue.splice(i, 1);
+                run(t);
+            } else {
+                i++;
+            }
+        }
+    }
+    return {
+        enqueue: function(task) { queue.push(task); taskMap.set(task.iframe, task); schedule(); },
+        /* Mark the task for the given iframe as viewport-visible and reschedule. */
+        markVisible: function(iframe) {
+            var t = taskMap.get(iframe);
+            if (t) { t.visible = true; schedule(); }
+        },
+        /* User explicitly activated the Preview tab: promote to highest priority. */
+        activate: function(iframe) {
+            var t = taskMap.get(iframe);
+            if (t) { t.userActivated = true; schedule(); }
+        }
+    };
+})();
 /* Escape HTML special chars for display in non-edit mode (unchanged source tabs). */
 function smarkformEscapeHtml(str) {
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -221,7 +296,7 @@ function smarkformMakeAceEditor(tab, mode, content) {
 }
 document.addEventListener('DOMContentLoaded', function() {
     var tabContainers = document.querySelectorAll('.tab-container');
-    tabContainers.forEach(function(container) {
+    tabContainers.forEach(function(container, containerIndex) {
         var tabs = container.querySelectorAll('.tab-label');
         var contents = container.querySelectorAll('.tab-content');
         /* --- Tab switching --- */
@@ -231,9 +306,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 contents.forEach(function(c) { c.classList.remove('tab-active'); });
                 tab.classList.add('tab-label-active');
                 contents[index].classList.add('tab-active');
-                /* Re-measure iframe height now that it is visible (it may have loaded while hidden) */
+                /* If the user explicitly opens the Preview tab, promote the render task
+                   to the highest priority so it starts immediately, even if queued. */
                 var frame = contents[index].querySelector('.smarkform-preview-frame');
                 if (frame) {
+                    smarkformRenderScheduler.activate(frame);
                     try {
                         var h = frame.contentDocument.documentElement.scrollHeight;
                         if (h > 50) {
@@ -308,8 +385,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 aceEditors.js = smarkformMakeAceEditor(jsTab, 'ace/mode/javascript', srcs.js);
             }
         };
-        /* --- Initial render --- */
-        smarkformRenderIframe(iframe, data, previewSrcs());
+        /* --- Schedule initial render via shared priority scheduler --- */
+        var previewTabEl = container.querySelector('.tab-content-preview');
+        var renderTask = {
+            iframe: iframe,
+            index: containerIndex,
+            selectedPreview: previewTabEl ? previewTabEl.classList.contains('tab-active') : false,
+            visible: false,
+            userActivated: false,
+            canceled: false,
+            fn: function(done) {
+                /* If a direct (user-triggered) re-render has already happened by the
+                   time the scheduler picks this task up, skip it to avoid a stale
+                   overwrite and free the concurrency slot immediately. */
+                if (renderTask.canceled) { done(); return; }
+                smarkformRenderIframe(iframe, data, previewSrcs(), done);
+            }
+        };
+        smarkformRenderScheduler.enqueue(renderTask);
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
         var editorLabel  = container.querySelector('.smarkform-editor-label');
@@ -318,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!editToggle || !runBtn) return;
         editToggle.addEventListener('change', function() {
             editMode = this.checked;
+            renderTask.canceled = true; /* cancel scheduled initial render if still pending */
             if (editMode) {
                 runBtn.style.display = '';
                 if (editorLabel) editorLabel.style.display = '';
@@ -346,6 +440,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (editorToggle) {
             editorToggle.addEventListener('change', function() {
                 withEditor = this.checked;
+                renderTask.canceled = true; /* cancel scheduled initial render if still pending */
                 if (editMode) {
                     var srcs = previewSrcs();
                     /* Update HTML and JS editors to reflect the changed editor inclusion */
@@ -366,6 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
         runBtn.addEventListener('click', function() {
+            renderTask.canceled = true; /* cancel scheduled initial render if still pending */
             var srcs = previewSrcs();
             smarkformRenderIframe(iframe, data, {
                 html: aceEditors.html ? aceEditors.html.getValue() : srcs.html,
@@ -376,6 +472,26 @@ document.addEventListener('DOMContentLoaded', function() {
             activatePreview();
         });
     });
+    /* ── IntersectionObserver: boost render priority for near-viewport examples ──
+       rootMargin "100% 0px" means: trigger when the container is within one full
+       viewport height above or below the visible area, giving enough lead time to
+       start rendering before the user actually sees the example.
+       Once a container is marked visible its priority is permanently raised (we do
+       not downgrade it if it scrolls back out of view). */
+    if (typeof IntersectionObserver !== 'undefined') {
+        var smarkformIO = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    var frame = entry.target.querySelector('.smarkform-preview-frame');
+                    if (frame) smarkformRenderScheduler.markVisible(frame);
+                    smarkformIO.unobserve(entry.target); /* one-shot: no need to keep watching */
+                }
+            });
+        }, {rootMargin: '100% 0px'});
+        tabContainers.forEach(function(container) {
+            smarkformIO.observe(container);
+        });
+    }
 });
 </script>
 <style>
