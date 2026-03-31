@@ -859,12 +859,12 @@ additional capabilities of the library:
       <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
       <input data-smark type='tel' placeholder='Telephone'/>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+    </div>
   </div>
-</div>
-<p>
-  <button data-smark='{"action":"clear"}'>❌ Clear</button>
-  <button data-smark='{"action":"export"}'>💾 Submit</button>
-</p>
+  <p>
+    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark='{"action":"export"}'>💾 Submit</button>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
