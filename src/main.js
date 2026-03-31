@@ -3,6 +3,7 @@
 
 import {createType} from "./lib/component.js";
 import {hotKeys_handler} from "./lib/hotkeys.js";
+import {createValidation} from "./lib/validation/index.js";
 
 // Import core component types and event handlers:
 import {trigger, onTriggerClick} from "./types/trigger.type.js";
@@ -77,6 +78,7 @@ class SmarkForm extends form {
 };
 
 SmarkForm.createType = createType;
+SmarkForm.createValidation = createValidation;
 
 export default SmarkForm;
 
