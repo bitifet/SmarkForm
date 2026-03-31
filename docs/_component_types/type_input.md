@@ -54,7 +54,7 @@ To use the `input` component type, simply add the `data-smark` attribute to your
 {% raw %} <!-- input_basic_usage {{{ --> {% endraw %}
 {% capture input_basic_usage_html -%}
 <div id="myForm$$">
-<input type="text" data-smark='{"name":"username"}' placeholder="Enter your username">
+  <input type="text" data-smark='{"name":"username"}' placeholder="Enter your username">
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

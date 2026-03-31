@@ -63,14 +63,14 @@ descendant of any depth.
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
 {% capture simple_form_example -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Name:</label>
     <input name='name' data-smark>
-</p>
-<p>
+  </p>
+  <p>
     <label data-smark>Surname:</label>
     <input name='surname' data-smark>
-</p>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -132,36 +132,36 @@ seamlessly handle either the whole form or individual fields.
 {% raw %} <!-- capture context_comparsion_example_simple {{{ --> {% endraw %}
 {% capture context_comparsion_example_simple -%}
 <div id="myForm$$">
-<div data-smark='{"name":"demo"}'>
+  <div data-smark='{"name":"demo"}'>
     <p>
-        <label data-smark>Name:</label>
-        <input name='name' data-smark>
+      <label data-smark>Name:</label>
+      <input name='name' data-smark>
     </p>
     <p>
-        <label data-smark>Surname:</label>
-        <input name='surname' data-smark>
+      <label data-smark>Surname:</label>
+      <input name='surname' data-smark>
     </p>
     <table>
-        <tr style="text-align:center">
-            <th>Name field:</th>
-            <th>Surname field:</th>
-            <th>Whole Form:</th>
-        </tr>
-        <tr style="text-align:center">
-            <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
-            <td><button data-smark='{"action":"import","context":"surname","target":"/editor"}'>⬆️  Import</button></td>
-            <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
-        </tr>
-        <tr style="text-align:center">
-            <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
-            <td><button data-smark='{"action":"export","context":"surname","target":"/editor"}'>⬇️  Export</button></td>
-            <td><button data-smark='{"action":"export","target":"/editor"}'>⬇️  Export</button></td>
-        </tr>
-        <tr style="text-align:center">
-            <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
-            <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
-            <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
-        </tr>
+      <tr style="text-align:center">
+        <th>Name field:</th>
+        <th>Surname field:</th>
+        <th>Whole Form:</th>
+      </tr>
+      <tr style="text-align:center">
+        <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
+        <td><button data-smark='{"action":"import","context":"surname","target":"/editor"}'>⬆️  Import</button></td>
+        <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
+      </tr>
+      <tr style="text-align:center">
+        <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
+        <td><button data-smark='{"action":"export","context":"surname","target":"/editor"}'>⬇️  Export</button></td>
+        <td><button data-smark='{"action":"export","target":"/editor"}'>⬇️  Export</button></td>
+      </tr>
+      <tr style="text-align:center">
+        <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
+        <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
+        <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
+      </tr>
     </table>
 </div>
 <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; width: 100%">
@@ -223,33 +223,33 @@ This means that **we can nest forms** inside other forms as regular fields
 {% raw %} <!-- capture nested_forms_example {{{ --> {% endraw %}
 {% capture nested_forms_example -%}
 <div id="myForm$$">
-<b>User:</b>
-<p>
+  <b>User:</b>
+  <p>
     <label data-smark>Id:</label>
     <input name='userId' value='0001' data-smark>
-</p>
-<fieldset data-smark='{"type":"form","name":"personal_data"}'>
+  </p>
+  <fieldset data-smark='{"type":"form","name":"personal_data"}'>
     <legend>Personal Data</legend>
     <p>
-        <label data-smark>Name:</label>
-        <input name='name' value='John' data-smark>
+      <label data-smark>Name:</label>
+      <input name='name' value='John' data-smark>
     </p>
     <p>
-        <label data-smark>Surname:</label>
-        <input name='surname' value='Doe' data-smark>
+      <label data-smark>Surname:</label>
+      <input name='surname' value='Doe' data-smark>
     </p>
     <fieldset data-smark='{"type":"form","name":"contact"}'>
-        <legend>Contact Data</legend>
-        <p>
-            <label data-smark>Phone:</label>
-            <input name='phone' type='tel' value='555444999' data-smark>
-        </p>
-        <p>
-            <label data-smark>eMail:</label>
-            <input name='email' type='mail' value='john@dohe.example.org' data-smark>
-        </p>
+      <legend>Contact Data</legend>
+      <p>
+        <label data-smark>Phone:</label>
+        <input name='phone' type='tel' value='555444999' data-smark>
+      </p>
+      <p>
+        <label data-smark>eMail:</label>
+        <input name='email' type='mail' value='john@dohe.example.org' data-smark>
+      </p>
     </fieldset>
-</fieldset>
+  </fieldset>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -305,12 +305,12 @@ and export any imaginable JSON data structure**.
 {% raw %} <!-- capture fixed_list_example {{{ --> {% endraw %}
 {% capture fixed_list_example -%}
 <div id="myForm$$">
-<b>Phones:</b>
-<ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
+  <b>Phones:</b>
+  <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
     <li>
-        <input data-smark type="tel" placeholder="Phone number" />
+      <input data-smark type="tel" placeholder="Phone number" />
     </li>
-</ul>
+  </ul>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -383,23 +383,23 @@ actions:
 {% raw %} <!-- capture pets_list_example {{{ --> {% endraw %}
 {% capture pets_list_example -%}
 <div id="myForm$$">
-<b>Pets:</b>
-<ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
+  <b>Pets:</b>
+  <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
     <li>
-        <select name='species' data-smark>
-            <option value="cat">Cat</option>
-            <option value="dog">Dog</option>
-            <option value="hamster">Hamster</option>
-            <option value="fish">Fish</option>
-            <option value="bird">Bird</option>
-            <option value="turtle">Turtle</option>
-            <option value="turtle">Other</option>
-        </select>
-        <input name='name' placeholder="Name" data-smark>
-        <button data-smark='{"action":"removeItem"}' title="Remove Pet">❌</button>
+      <select name='species' data-smark>
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+        <option value="hamster">Hamster</option>
+        <option value="fish">Fish</option>
+        <option value="bird">Bird</option>
+        <option value="turtle">Turtle</option>
+        <option value="turtle">Other</option>
+      </select>
+      <input name='name' placeholder="Name" data-smark>
+      <button data-smark='{"action":"removeItem"}' title="Remove Pet">❌</button>
     </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -537,14 +537,14 @@ items allowing users to cherry-pick which item to remove:
 {% raw %} <!-- core_remove_inside_item {{{ --> {% endraw %}
 {% capture core_remove_inside_item_html -%}
 <div id="myForm$$">
-<ul data-smark='{"type":"list","name":"pets"}'>
-  <li>
-    <input name='species' data-smark>
-    <input name='name' data-smark>
-    <button data-smark='{"action":"removeItem"}'>❌</button>
-  </li>
-</ul>
-<button data-smark='{"action":"addItem","context":"pets"}'>➕</button>
+  <ul data-smark='{"type":"list","name":"pets"}'>
+    <li>
+      <input name='species' data-smark>
+      <input name='name' data-smark>
+      <button data-smark='{"action":"removeItem"}'>❌</button>
+    </li>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"pets"}'>➕</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -660,16 +660,16 @@ This special behavior of the *input* component type is what we call a
 {% raw %} <!-- core_singleton_phones {{{ --> {% endraw %}
 {% capture core_singleton_phones_html -%}
 <div id="myForm$$">
-<div data-smark='{"type":"form","name":"personal_data"}'>
-  <input name='name'  data-smark>
-  <input name='surname' data-smark>
-  <ul data-smark='{"type":"list","name":"phones"}'>
-    <li data-smark='{"type":"input"}'>
-      <input placeholder='Phone Number' type="tel" data-smark>
-      <button data-smark='{"action":"removeItem"}'>❌</button>
-    </li>
-  </ul>
-  <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+  <div data-smark='{"type":"form","name":"personal_data"}'>
+    <input name='name'  data-smark>
+    <input name='surname' data-smark>
+    <ul data-smark='{"type":"list","name":"phones"}'>
+      <li data-smark='{"type":"input"}'>
+        <input placeholder='Phone Number' type="tel" data-smark>
+        <button data-smark='{"action":"removeItem"}'>❌</button>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
 </div>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

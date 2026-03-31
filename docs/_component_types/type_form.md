@@ -63,36 +63,36 @@ Following example shows a simple *SmarkForm* form with two nested forms:
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
 {% capture simple_form_example -%}
 <div id="myForm$$">
-<p>
+  <p>
     <label data-smark>Id:</label>
     <input data-smark type='text' name='id' />
-</p>
-<fieldset data-smark='{"type":"form","name":"personalData"}'>
+  </p>
+  <fieldset data-smark='{"type":"form","name":"personalData"}'>
     <legend>Personal Data:</legend>
     <p>
-        <label data-smark>Name:</label>
-        <input data-smark type='text' name='name' placheolder='Family name'/>
+      <label data-smark>Name:</label>
+      <input data-smark type='text' name='name' placheolder='Family name'/>
     </p>
     <p>
-        <label data-smark>Surname:</label>
-        <input data-smark type='text' name='surname' />
+      <label data-smark>Surname:</label>
+      <input data-smark type='text' name='surname' />
     </p>
     <p>
-        <label data-smark>Address:</label>
-        <input data-smark type='text' name='address' />
+      <label data-smark>Address:</label>
+      <input data-smark type='text' name='address' />
     </p>
-</fieldset>
-<fieldset data-smark='{"type":"form","name":"businessData"}'>
+  </fieldset>
+  <fieldset data-smark='{"type":"form","name":"businessData"}'>
     <legend>Business Data:</legend>
     <p>
-        <label data-smark>Company Name:</label>
-        <input data-smark type='text' name='name' placheolder='Company Name'/>
+      <label data-smark>Company Name:</label>
+      <input data-smark type='text' name='name' placheolder='Company Name'/>
     </p>
     <p>
-        <label data-smark>Address:</label>
-        <input data-smark type='text' name='address' />
+      <label data-smark>Address:</label>
+      <input data-smark type='text' name='address' />
     </p>
-</fieldset>
+  </fieldset>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -145,26 +145,26 @@ The following example demonstrates the distinction between `clear` and `reset` a
 {% raw %} <!-- capture clear_reset_example {{{ --> {% endraw %}
 {% capture clear_reset_example -%}
 <div id="myForm$$">
-<fieldset>
+  <fieldset>
     <legend>User Profile (with defaults)</legend>
     <p>
-        <label data-smark>Name:</label>
-        <input data-smark type='text' name='name' />
+      <label data-smark>Name:</label>
+      <input data-smark type='text' name='name' />
     </p>
     <p>
-        <label data-smark>Email:</label>
-        <input data-smark type='email' name='email' />
+      <label data-smark>Email:</label>
+      <input data-smark type='email' name='email' />
     </p>
     <p>
-        <label data-smark>Age:</label>
-        <input data-smark type='number' name='age' />
+      <label data-smark>Age:</label>
+      <input data-smark type='number' name='age' />
     </p>
     <p>
-        <button data-smark='{"action":"clear"}'>Clear All</button>
-        <button data-smark='{"action":"reset"}'>Reset to Defaults</button>
-        <button data-smark='{"action":"export"}'>Show Data</button>
+      <button data-smark='{"action":"clear"}'>Clear All</button>
+      <button data-smark='{"action":"reset"}'>Reset to Defaults</button>
+      <button data-smark='{"action":"export"}'>Show Data</button>
     </p>
-</fieldset>
+  </fieldset>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

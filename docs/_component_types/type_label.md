@@ -50,24 +50,24 @@ Enhanced SmarkForm `label` elements work similarly to standard HTML labels but o
 {% raw %} <!-- basic_examples {{{ --> {% endraw %}
 {% capture basic_examples -%}
 <div id="myForm$$" data-smark='{"focus_on_click":false}'>
-<h2>Explicit association</h2>
-    <label data-smark>Click me!</label>
-    <span><!-- Intermediate DOM nodes are transparent to SmarkForm's fields tree -->
-        <input type="text" data-smark name="field01" placeholder="...and focus will come here">
-    </span>
-    <p>📌 Label propperly guesses the more appropriate target, even though the intermediate <code>&lt;span&gt;</code>.</p>
+  <h2>Explicit association</h2>
+  <label data-smark>Click me!</label>
+  <span><!-- Intermediate DOM nodes are transparent to SmarkForm's fields tree -->
+    <input type="text" data-smark name="field01" placeholder="...and focus will come here">
+  </span>
+  <p>📌 Label propperly guesses the more appropriate target, even though the intermediate <code>&lt;span&gt;</code>.</p>
 
-    <h2>Explicit target specification</h2>
-    <label data-smark='{"target":"field02"}'>Click me!</label>
-    <input data-smark name="not_field02" placeholder="(skipped)">
-    <input data-smark name="field02" placeholder="...and focus will come here">
-    <p>📌 Explicit target specified by relative path.</p>
+  <h2>Explicit target specification</h2>
+  <label data-smark='{"target":"field02"}'>Click me!</label>
+  <input data-smark name="not_field02" placeholder="(skipped)">
+  <input data-smark name="field02" placeholder="...and focus will come here">
+  <p>📌 Explicit target specified by relative path.</p>
 
-    <h2>Implicit pairing</h2>
-    <label data-smark>Click me!
-        <input data-smark name="field03" placeholder="...and focus will come here">
-    </label>
-    <p>📌 Wrapping the field inside still works likewise standard HTML.</p>
+  <h2>Implicit pairing</h2>
+  <label data-smark>Click me!
+    <input data-smark name="field03" placeholder="...and focus will come here">
+  </label>
+  <p>📌 Wrapping the field inside still works likewise standard HTML.</p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -211,43 +211,43 @@ You can use any other element in place, like `<span>`, `<b>` or even `<legend>`.
 {% raw %} <!-- advanced_examples {{{ --> {% endraw %}
 {% capture advanced_examples -%}
 <div id="myForm$$" data-smark='{"focus_on_click":false}'>
-<h2>Targetting nested forms...</h2>
-    <span data-smark='{"type": "label"}'>Click me (auto pairing)!</span>
-    <fieldset data-smark name="subform01">
+  <h2>Targetting nested forms...</h2>
+  <span data-smark='{"type": "label"}'>Click me (auto pairing)!</span>
+  <fieldset data-smark name="subform01">
+    <input data-smark name="field01" placeholder="First field">
+    <input data-smark name="field02" placeholder="Second field">
+  </fieldset>
+  <span data-smark='{"type": "label"}'>Click me (nested pairing)!
+    <fieldset data-smark name="subform02">
+      <input data-smark name="field01" placeholder="First field">
+      <input data-smark name="field02" placeholder="Second field">
+    </fieldset>
+  </span>
+  <p>📌 <code>&lt;label&gt;</code> tag cannot be used here (See <i>Notes</i> tab).</p>
+
+  <h2>Using &lt;legend&gt;...</h2>
+  <fieldset data-smark name="subform03">
+    <legend data-smark='{"type": "label"}'>Click me (using legend)!</legend>
+    <input data-smark name="field01" placeholder="First field">
+    <input data-smark name="field02" placeholder="Second field">
+  </fieldset>
+  <p>📌 Fieldset's <code>&lt;legend&gt;</code> tags are special case where the containing <code>&lt;fieldset&gt;</code> is automatically targetted.</p>
+
+  <h2>Targetting lists...</h2>
+  <fieldset>
+    <legend data-smark='{"type": "label"}'>
+      <span class="button" title="Add new item" data-smark='{"action":"addItem", "context": "list01"}'>+</span>
+      Click me (using legend)!
+    </legend>
+    <ul data-smark='{"type":"list", "name": "list01"}'>
+      <li>
         <input data-smark name="field01" placeholder="First field">
         <input data-smark name="field02" placeholder="Second field">
-    </fieldset>
-    <span data-smark='{"type": "label"}'>Click me (nested pairing)!
-        <fieldset data-smark name="subform02">
-            <input data-smark name="field01" placeholder="First field">
-            <input data-smark name="field02" placeholder="Second field">
-        </fieldset>
-    </span>
-    <p>📌 <code>&lt;label&gt;</code> tag cannot be used here (See <i>Notes</i> tab).</p>
-
-    <h2>Using &lt;legend&gt;...</h2>
-    <fieldset data-smark name="subform03">
-        <legend data-smark='{"type": "label"}'>Click me (using legend)!</legend>
-        <input data-smark name="field01" placeholder="First field">
-        <input data-smark name="field02" placeholder="Second field">
-    </fieldset>
-    <p>📌 Fieldset's <code>&lt;legend&gt;</code> tags are special case where the containing <code>&lt;fieldset&gt;</code> is automatically targetted.</p>
-
-    <h2>Targetting lists...</h2>
-    <fieldset>
-        <legend data-smark='{"type": "label"}'>
-            <span class="button" title="Add new item" data-smark='{"action":"addItem", "context": "list01"}'>+</span>
-            Click me (using legend)!
-        </legend>
-        <ul data-smark='{"type":"list", "name": "list01"}'>
-            <li>
-                <input data-smark name="field01" placeholder="First field">
-                <input data-smark name="field02" placeholder="Second field">
-            </li>
-        </ul>
-        <span class="button" title="Remove last item" data-smark='{"action":"removeItem", "context": "list01"}'>-</span>
-    </fieldset>
-    <p>📌 Fieldset's <code>&lt;legend&gt;</code> tags are special case where the containing <code>&lt;fieldset&gt;</code> is automatically targetted.</p>
+      </li>
+    </ul>
+    <span class="button" title="Remove last item" data-smark='{"action":"removeItem", "context": "list01"}'>-</span>
+  </fieldset>
+  <p>📌 Fieldset's <code>&lt;legend&gt;</code> tags are special case where the containing <code>&lt;fieldset&gt;</code> is automatically targetted.</p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

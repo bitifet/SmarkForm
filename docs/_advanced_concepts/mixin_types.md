@@ -598,14 +598,14 @@ data path in the exported value.
 {% raw %} <!-- capture mixin_contact_block_html {{{ --> {% endraw %}
 {% capture mixin_contact_block_html -%}
 <div id="myForm$$">
-<!-- Form — the same mixin is used for both contacts -->
-<fieldset data-smark='{"type":"form","name":"contacts"}'>
+  <!-- Form — the same mixin is used for both contacts -->
+  <fieldset data-smark='{"type":"form","name":"contacts"}'>
     <legend>Contacts</legend>
     <h3>Primary</h3>
     <div data-smark='{"type":"#contactBlock","name":"primary"}'></div>
     <h3>Emergency</h3>
     <div data-smark='{"type":"#contactBlock","name":"emergency"}'></div>
-</fieldset>
+  </fieldset>
 </div>
 <!-- Mixin template — defined once, reused anywhere -->
 <template id="contactBlock">
@@ -691,7 +691,7 @@ template's default of three.
 {% raw %} <!-- capture mixin_option_override_html {{{ --> {% endraw %}
 {% capture mixin_option_override_html -%}
 <div id="myForm$$">
-<fieldset data-smark='{"type":"form","name":"labels"}'>
+  <fieldset data-smark='{"type":"form","name":"labels"}'>
     <legend>Labels</legend>
     <h3>Priority tags (3 slots by default)</h3>
     <!-- No min_items override — keeps template default of 3 -->
@@ -702,7 +702,7 @@ template's default of three.
     <!-- Overrides min_items to 1 -->
     <div data-smark='{"type":"#tagList","name":"optional","min_items":1}'></div>
     <button data-smark='{"action":"addItem","context":"optional"}'>➕ Add</button>
-</fieldset>
+  </fieldset>
 </div>
 <template id="tagList">
     <!-- Template default: start with 3 items -->
@@ -760,10 +760,10 @@ uses `id="nameLabel"` to mark the slot, and each placeholder supplies its own
 {% raw %} <!-- capture mixin_snippet_params_html {{{ --> {% endraw %}
 {% capture mixin_snippet_params_html -%}
 <div id="myForm$$">
-<fieldset data-smark='{"type":"form","name":"people"}'>
+  <fieldset data-smark='{"type":"form","name":"people"}'>
     <legend>People</legend>
     <div data-smark='{"type":"#personEntry","name":"author"}'>
-        <span data-for="nameLabel">Author name</span>
+      <span data-for="nameLabel">Author name</span>
     </div>
     <div data-smark='{"type":"#personEntry","name":"reviewer"}'>
         <span data-for="nameLabel">Reviewer name</span>

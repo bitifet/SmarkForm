@@ -522,20 +522,20 @@ in the following example:
 {% capture simple_list_singleton -%}
 <div id="myForm$$">
 █<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
-█    <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
-█    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█    <strong data-smark="label">Phones:</strong>
-█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
-█        <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
-█        <li class="row">
-█            <label data-smark>📞 Telephone
-█            <span data-smark='{"action":"position"}'>N</span>
-█            </label>
-█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
-█            <input type="tel" data-smark>
-█            <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
-█        </li>
-█    </ul>
+█<button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
+█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█<strong data-smark="label">Phones:</strong>
+█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5}'>
+█    <li data-smark='{"role": "empty_list"}' class="row">(None)</li>
+█    <li class="row">
+█        <label data-smark>📞 Telephone
+█        <span data-smark='{"action":"position"}'>N</span>
+█        </label>
+█        <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+█        <input type="tel" data-smark>
+█        <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
+█    </li>
+█</ul>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -844,19 +844,19 @@ list like the following example:
 {% raw %} <!-- schedule_list {{{ --> {% endraw %}
 {% capture schedule_list -%}
 <div id="myForm$$">
-<p>
-    <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
-    <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
-    <strong data-smark="label">Schedule:</strong>
-    <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
-        <span>
-            <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
+    <p>
+        <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
+        <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
+        <strong data-smark="label">Schedule:</strong>
+        <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+            <span>
+                <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
+            </span>
+            <span data-smark='{"role":"empty_list"}'>(Closed)</span>
+            <span data-smark='{"role":"separator"}'>, </span>
+            <span data-smark='{"role":"last_separator"}'> and </span>
         </span>
-        <span data-smark='{"role":"empty_list"}'>(Closed)</span>
-        <span data-smark='{"role":"separator"}'>, </span>
-        <span data-smark='{"role":"last_separator"}'> and </span>
-    </span>
-</p>
+    </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -2052,16 +2052,16 @@ In the *JS* tab there is a simple JavaScript code that:
 {% capture nested_forms_with_load_save -%}
 <div id="myForm$$">
 {{ nested_forms | replace: "█", "    " }}
-<div style="display: flex; justify-content: space-evenly; margin-top: 0.5em">
-    <button
-        data-smark='{"action":"export"}'
-        title="Export the whole form as JSON (see JS tab)"
-        >💾 Save</button>
-    <button
-        data-smark='{"action":"import"}'
-        title="Import the whole form as JSON (see JS tab)"
-        >📂 Load</button>
-</div>
+    <div style="display: flex; justify-content: space-evenly; margin-top: 0.5em">
+        <button
+            data-smark='{"action":"export"}'
+            title="Export the whole form as JSON (see JS tab)"
+            >💾 Save</button>
+        <button
+            data-smark='{"action":"import"}'
+            title="Import the whole form as JSON (see JS tab)"
+            >📂 Load</button>
+    </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -2277,19 +2277,19 @@ slight modifications:
 {% capture simple_list_autodisable -%}
 <div id="myForm$$">
 █<button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
-█    <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
-█    <button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
-█    <strong data-smark="label">Phones:</strong>
-█    <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
-█        <li class="row">
-█            <label data-smark>📞 Telephone
-█            <span data-smark='{"action":"position"}'>N</span>
-█            </label>
-█            <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
-█            <input type="tel" data-smark>
-█            <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
-█        </li>
-█    </ul>
+█<button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
+█<button data-smark='{"action":"addItem","context":"phones"}' title='Add phone number'>➕ </button>
+█<strong data-smark="label">Phones:</strong>
+█<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+█    <li class="row">
+█        <label data-smark>📞 Telephone
+█        <span data-smark='{"action":"position"}'>N</span>
+█        </label>
+█        <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+█        <input type="tel" data-smark>
+█        <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
+█    </li>
+█</ul>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -3236,84 +3236,84 @@ button. Then a very simple JavaScript code makes the rest...
 {% raw %} <!-- calculator {{{ --> {% endraw %}
 {% capture calculator -%}
 <div id="myForm$$">
-<div class="calculator" data-smark='{"type": "input", "name": "display"}'>
-    <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
-    <input
-        data-smark
-        type="text"
-        class="display"
-        value="0"
-        pattern="[0-9+\-*\/\(\).]+"
-    >
-    <div class="buttons">
-        <button
-            data-smark='{"action": "import", "data": "C", "hotkey": "c"}'
-            class="clear"
-        >C</button>
-        <button
-            data-smark='{"action": "import", "data": "("}'
-        >(</button>
-        <button
-            data-smark='{"action": "import", "data": ")"}'
-        >)</button>
-        <button
-            data-smark='{"action": "import", "data": "/", "hotkey": "/"}'
-            class="operator"
-        >÷</button>
-        <button
-            data-smark='{"action": "import", "data": "7"}'
-        >7</button>
-        <button
-            data-smark='{"action": "import", "data": "8"}'
-        >8</button>
-        <button
-            data-smark='{"action": "import", "data": "9"}'
-        >9</button>
-        <button
-            data-smark='{"action": "import", "data": "*", "hotkey": "*"}'
-            class="operator"
-        >×</button>
-        <button
-            data-smark='{"action": "import", "data": "4"}'
-        >4</button>
-        <button
-            data-smark='{"action": "import", "data": "5"}'
-        >5</button>
-        <button
-            data-smark='{"action": "import", "data": "6"}'
-        >6</button>
-        <button
-            data-smark='{"action": "import", "data": "-", "hotkey": "-"}'
-            class="operator"
-        >-</button>
-        <button
-            data-smark='{"action": "import", "data": "1"}'
-        >1</button>
-        <button
-            data-smark='{"action": "import", "data": "2"}'
-        >2</button>
-        <button
-            data-smark='{"action": "import", "data": "3"}'
-        >3</button>
-        <button
-            data-smark='{"action": "import", "data": "+", "hotkey": "+"}'
-            class="operator"
-        >+</button>
-        <button
-            data-smark='{"action": "import", "data": "0"}'
-        >0</button>
-        <button
-            data-smark='{"action": "import", "data": "."}'
-        >.</button>
-        <button
-            data-smark='{"action": "import", "data": "Del"}'
-        >←</button>
-        <button
-            data-smark='{"action": "import", "data": "=", "hotkey": "Enter"}'
-            class="equals"
-        >=</button>
+    <div class="calculator" data-smark='{"type": "input", "name": "display"}'>
+        <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
+        <input
+            data-smark
+            type="text"
+            class="display"
+            value="0"
+            pattern="[0-9+\-*\/\(\).]+"
+        >
+        <div class="buttons">
+            <button
+                data-smark='{"action": "import", "data": "C", "hotkey": "c"}'
+                class="clear"
+            >C</button>
+            <button
+                data-smark='{"action": "import", "data": "("}'
+            >(</button>
+            <button
+                data-smark='{"action": "import", "data": ")"}'
+            >)</button>
+            <button
+                data-smark='{"action": "import", "data": "/", "hotkey": "/"}'
+                class="operator"
+            >÷</button>
+            <button
+                data-smark='{"action": "import", "data": "7"}'
+            >7</button>
+            <button
+                data-smark='{"action": "import", "data": "8"}'
+            >8</button>
+            <button
+                data-smark='{"action": "import", "data": "9"}'
+            >9</button>
+            <button
+                data-smark='{"action": "import", "data": "*", "hotkey": "*"}'
+                class="operator"
+            >×</button>
+            <button
+                data-smark='{"action": "import", "data": "4"}'
+            >4</button>
+            <button
+                data-smark='{"action": "import", "data": "5"}'
+            >5</button>
+            <button
+                data-smark='{"action": "import", "data": "6"}'
+            >6</button>
+            <button
+                data-smark='{"action": "import", "data": "-", "hotkey": "-"}'
+                class="operator"
+            >-</button>
+            <button
+                data-smark='{"action": "import", "data": "1"}'
+            >1</button>
+            <button
+                data-smark='{"action": "import", "data": "2"}'
+            >2</button>
+            <button
+                data-smark='{"action": "import", "data": "3"}'
+            >3</button>
+            <button
+                data-smark='{"action": "import", "data": "+", "hotkey": "+"}'
+                class="operator"
+            >+</button>
+            <button
+                data-smark='{"action": "import", "data": "0"}'
+            >0</button>
+            <button
+                data-smark='{"action": "import", "data": "."}'
+            >.</button>
+            <button
+                data-smark='{"action": "import", "data": "Del"}'
+            >←</button>
+            <button
+                data-smark='{"action": "import", "data": "=", "hotkey": "Enter"}'
+                class="equals"
+            >=</button>
+        </div>
     </div>
-</div>
 
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -3500,84 +3500,84 @@ reach a perfect UX.
 {% raw %} <!-- supercalculator {{{ --> {% endraw %}
 {% capture supercalculator -%}
 <div id="myForm$$">
-<div class="calculator" data-smark='{"type": "input", "name": "display"}'>
-    <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
-    <input
-        data-smark
-        type="text"
-        class="display"
-        value="0"
-        pattern="[0-9+\-*\/\(\).]+"
-    >
-    <div class="buttons">
-        <button
-            data-smark='{"action": "import", "data": "C"}'
-            class="clear"
-        >C</button>
-        <button
-            data-smark='{"action": "import", "data": "("}'
-        >(</button>
-        <button
-            data-smark='{"action": "import", "data": ")"}'
-        >)</button>
-        <button
-            data-smark='{"action": "import", "data": "/"}'
-            class="operator"
-        >÷</button>
-        <button
-            data-smark='{"action": "import", "data": "7"}'
-        >7</button>
-        <button
-            data-smark='{"action": "import", "data": "8"}'
-        >8</button>
-        <button
-            data-smark='{"action": "import", "data": "9"}'
-        >9</button>
-        <button
-            data-smark='{"action": "import", "data": "*"}'
-            class="operator"
-        >×</button>
-        <button
-            data-smark='{"action": "import", "data": "4"}'
-        >4</button>
-        <button
-            data-smark='{"action": "import", "data": "5"}'
-        >5</button>
-        <button
-            data-smark='{"action": "import", "data": "6"}'
-        >6</button>
-        <button
-            data-smark='{"action": "import", "data": "-"}'
-            class="operator"
-        >-</button>
-        <button
-            data-smark='{"action": "import", "data": "1"}'
-        >1</button>
-        <button
-            data-smark='{"action": "import", "data": "2"}'
-        >2</button>
-        <button
-            data-smark='{"action": "import", "data": "3"}'
-        >3</button>
-        <button
-            data-smark='{"action": "import", "data": "+"}'
-            class="operator"
-        >+</button>
-        <button
-            data-smark='{"action": "import", "data": "0"}'
-        >0</button>
-        <button
-            data-smark='{"action": "import", "data": "."}'
-        >.</button>
-        <button
-            data-smark='{"action": "import", "data": "Backspace"}'
-        >←</button>
-        <button
-            data-smark='{"action": "import", "data": "="}'
-            class="equals"
-        >=</button>
+    <div class="calculator" data-smark='{"type": "input", "name": "display"}'>
+        <!-- Using singleton pattern here allows us to avoid specifying the context for every button -->
+        <input
+            data-smark
+            type="text"
+            class="display"
+            value="0"
+            pattern="[0-9+\-*\/\(\).]+"
+        >
+        <div class="buttons">
+            <button
+                data-smark='{"action": "import", "data": "C"}'
+                class="clear"
+            >C</button>
+            <button
+                data-smark='{"action": "import", "data": "("}'
+            >(</button>
+            <button
+                data-smark='{"action": "import", "data": ")"}'
+            >)</button>
+            <button
+                data-smark='{"action": "import", "data": "/"}'
+                class="operator"
+            >÷</button>
+            <button
+                data-smark='{"action": "import", "data": "7"}'
+            >7</button>
+            <button
+                data-smark='{"action": "import", "data": "8"}'
+            >8</button>
+            <button
+                data-smark='{"action": "import", "data": "9"}'
+            >9</button>
+            <button
+                data-smark='{"action": "import", "data": "*"}'
+                class="operator"
+            >×</button>
+            <button
+                data-smark='{"action": "import", "data": "4"}'
+            >4</button>
+            <button
+                data-smark='{"action": "import", "data": "5"}'
+            >5</button>
+            <button
+                data-smark='{"action": "import", "data": "6"}'
+            >6</button>
+            <button
+                data-smark='{"action": "import", "data": "-"}'
+                class="operator"
+            >-</button>
+            <button
+                data-smark='{"action": "import", "data": "1"}'
+            >1</button>
+            <button
+                data-smark='{"action": "import", "data": "2"}'
+            >2</button>
+            <button
+                data-smark='{"action": "import", "data": "3"}'
+            >3</button>
+            <button
+                data-smark='{"action": "import", "data": "+"}'
+                class="operator"
+            >+</button>
+            <button
+                data-smark='{"action": "import", "data": "0"}'
+            >0</button>
+            <button
+                data-smark='{"action": "import", "data": "."}'
+            >.</button>
+            <button
+                data-smark='{"action": "import", "data": "Backspace"}'
+            >←</button>
+            <button
+                data-smark='{"action": "import", "data": "="}'
+                class="equals"
+            >=</button>
+        </div>
     </div>
-</div>
 
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

@@ -78,7 +78,7 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 {% raw %} <!-- simple_color {{{ --> {% endraw %}
 {% capture simple_color -%}
 <div id="myForm$$">
-<input type="color" name="myColor" data-smark>
+  <input type="color" name="myColor" data-smark>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -129,10 +129,10 @@ would have to specify the context in the button action, like this:
 {% raw %} <!-- singleton_color {{{ --> {% endraw %}
 {% capture singleton_color -%}
 <div id="myForm$$">
-<span data-smark='{"type":"color", "name":"myColor"}'>
+  <span data-smark='{"type":"color", "name":"myColor"}'>
     <input data-smark>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
-</span>
+  </span>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -161,10 +161,10 @@ INPUT element or its type is explicitly defined and different to "color".
 {% raw %} <!-- singleton_color_error {{{ --> {% endraw %}
 {% capture singleton_color_error -%}
 <div id="myForm$$">
-<span data-smark='{"type":"color", "name":"myColor"}'>
+  <span data-smark='{"type":"color", "name":"myColor"}'>
     <input type="text" name="myColor" data-smark>
     <button data-smark='{"action":"clear"}'>❌ Clear</button>
-</span>
+  </span>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

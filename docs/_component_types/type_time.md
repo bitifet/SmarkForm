@@ -68,7 +68,7 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 {% raw %} <!-- simple_time {{{ --> {% endraw %}
 {% capture simple_time -%}
 <div id="myForm$$">
-<input type="time" name="meetingTime" data-smark>
+  <input type="time" name="meetingTime" data-smark>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -113,7 +113,7 @@ throwing an error.
 {% raw %} <!-- time_error {{{ --> {% endraw %}
 {% capture time_error -%}
 <div id="myForm$$">
-<input type="text" name="meetingTime" data-smark='{"type":"time"}'>
+  <input type="text" name="meetingTime" data-smark='{"type":"time"}'>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
