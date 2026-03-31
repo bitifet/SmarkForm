@@ -1224,7 +1224,8 @@ as a **direct sibling** of the template root:
 {% raw %} <!-- schedule_mixin_html {{{ --> {% endraw %}
 {% capture schedule_mixin_html -%}
 <div id="myForm$$">
-{{ schedule_row_form | replace: "█", "" }}</div>
+{{ schedule_row_form | replace: "█", "  " }}
+</div>
 {{ schedule_row_tpl }}{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1317,8 +1318,8 @@ every list item and so forth to any depth.
 {% raw %} <!-- nested_schedule_table {{{ --> {% endraw %}
 {% capture nested_schedule_table -%}
 <div id="myForm$$">
-<h2 data-smark="label">🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
+  <h2 data-smark="label">🗓️ Periods:</h2>
+  <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true}'>
     <fieldset style='margin-top: 1em'>
         <legend>Period
             <span data-smark='{"action":"position"}'>N</span>
@@ -1336,11 +1337,11 @@ every list item and so forth to any depth.
         </p>
 {{ schedule_row_form | replace: "█", "        " }}
     </fieldset>
-</div>
-<button
+  </div>
+  <button
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
->➕ Add Period</button>
+  >➕ Add Period</button>
 </div>
 {{ schedule_row_tpl }}
 {%- endcapture %}
@@ -1463,8 +1464,8 @@ usability by default:
 {% raw %} <!-- nested_schedule_table_duplicable {{{ --> {% endraw %}
 {% capture nested_schedule_table_duplicable -%}
 <div id="myForm$$">
-<h2>🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+  <h2>🗓️ Periods:</h2>
+  <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
     <fieldset data-smark='{"role": "empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
     <fieldset style='margin-top: 1em'>
         <legend>Period
@@ -1488,11 +1489,11 @@ usability by default:
         </p>
 {{ schedule_row_form | replace: "█", "        " }}
     </fieldset>
-</div>
-<button
+  </div>
+  <button
     data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
     style="float: right; margin-top: 1em"
->➕ Add Period</button>
+  >➕ Add Period</button>
 </div>
 {{ schedule_row_tpl }}
 {%- endcapture %}
@@ -1908,15 +1909,15 @@ runs on the final data — whether the item is brand new or duplicated.
 {% raw %} <!-- period_mixin_duplicable {{{ --> {% endraw %}
 {% capture period_mixin_duplicable -%}
 <div id="myForm$$">
-<h2>🗓️ Periods:</h2>
-<div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
-  <fieldset data-smark='{"role":"empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
-  <div data-smark='{"type":"#periodItem"}'></div>
-</div>
-<button
-  data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
-  style="float: right; margin-top: 1em"
->➕ Add Period</button>
+  <h2>🗓️ Periods:</h2>
+  <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+    <fieldset data-smark='{"role":"empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
+    <div data-smark='{"type":"#periodItem"}'></div>
+  </div>
+  <button
+    data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
+    style="float: right; margin-top: 1em"
+  >➕ Add Period</button>
 </div>
 {{ period_item_tpl }}
 {{ schedule_row_tpl }}

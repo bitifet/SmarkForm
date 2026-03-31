@@ -433,8 +433,8 @@ async function validateSequentially(list) {
       </div>
       <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
     </div>
-</div>
-<button data-smark='{"action":"addItem","context":"records"}'>➕ Add</button>
+  </div>
+  <button data-smark='{"action":"addItem","context":"records"}'>➕ Add</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -515,8 +515,8 @@ This example demonstrates a practical implementation of sibling navigation for d
         <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
         </div>
     </fieldset>
-</div>
-<button data-smark='{"action":"addItem","context":"contacts"}'>➕ Add Contact</button>
+  </div>
+  <button data-smark='{"action":"addItem","context":"contacts"}'>➕ Add Contact</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

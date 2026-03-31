@@ -768,7 +768,7 @@ uses `id="nameLabel"` to mark the slot, and each placeholder supplies its own
     <div data-smark='{"type":"#personEntry","name":"reviewer"}'>
         <span data-for="nameLabel">Reviewer name</span>
     </div>
-</fieldset>
+  </fieldset>
 </div>
 <!-- Mixin template — nameLabel slot is the default text for the label -->
 <template id="personEntry">

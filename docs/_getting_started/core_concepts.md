@@ -163,15 +163,15 @@ seamlessly handle either the whole form or individual fields.
         <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
       </tr>
     </table>
-</div>
-<div style="display: flex; flex-direction:column; align-items:left; gap: 1em; width: 100%">
+  </div>
+  <div style="display: flex; flex-direction:column; align-items:left; gap: 1em; width: 100%">
     <textarea
         placeholder="JSON data viewer / editor"
         data-smark='{"name":"editor","type":"input"}'
         style="resize: vertical; align-self: stretch; min-height: 8em; flex-grow: 1;"
     >
     </textarea>
-</div>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
