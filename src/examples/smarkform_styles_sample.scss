@@ -285,6 +285,22 @@
         margin-top: 1.5rem;
         margin-bottom: .8rem;
     }
+
+    // Restore disclosure marker when a details>summary uses .form-group
+    // (display:flex overrides display:list-item, hiding the native triangle).
+    details > summary.form-group {
+        cursor: pointer;
+        &::before {
+            content: "▶";
+            display: inline-block;
+            margin-right: .35em;
+            transition: transform .15s ease;
+            transform-origin: center center;
+        }
+    }
+    details[open] > summary.form-group::before {
+        transform: rotate(90deg);
+    }
     .form-group.f2 {
         border-top: solid 2px;
         margin-bottom: 1.5rem;

@@ -1,3 +1,4 @@
+@charset "UTF-8";
 *, *::after, *::before {
   box-sizing: border-box;
 }
@@ -242,6 +243,19 @@
   border-bottom: solid 2px;
   margin-top: 1.5rem;
   margin-bottom: 0.8rem;
+}
+.smarkForm details > summary.form-group {
+  cursor: pointer;
+}
+.smarkForm details > summary.form-group::before {
+  content: "▶";
+  display: inline-block;
+  margin-right: 0.35em;
+  transition: transform 0.15s ease;
+  transform-origin: center center;
+}
+.smarkForm details[open] > summary.form-group::before {
+  transform: rotate(90deg);
 }
 .smarkForm .form-group.f2 {
   border-top: solid 2px;
