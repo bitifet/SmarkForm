@@ -49,15 +49,8 @@ block mainForm
                 style='flex:2'
             )
     section
-        .form-group.h2
-            button.foldButton(
-                data-smark={
-                    action: "fold",
-                    hotkey: "f",
-                    context: "employees",
-                    foldedClass: "folded",
-                }
-            ) ⬇
+        details(open)
+          summary.form-group.h2
             span
                 span Employees (
                 span(data-smark={
@@ -89,7 +82,7 @@ block mainForm
                     preserve_non_empty: true,
                 }, title="Clear all empty employees")
                     span(role='img', aria-label='Remove all empty employees') 🧹
-        .form-group
+          .form-group
             .form-group(data-smark = {
                 name: "employees",
                 type: "list",
@@ -162,7 +155,7 @@ block mainForm
                                 max_items=4,
                                 placeholder="Email",
                             )
-        .form-group.f2
+          .form-group.f2
             .spacer
             button(data-smark = {
                 action: "addItem",

@@ -186,14 +186,24 @@ Updated programmatically via `import()`:
 await myForm.find('/total').import('$42.00');
 ```
 
-### Foldable section
+### Collapsible section
+
+Use the native `<details>` and `<summary>` HTML elements to create collapsible
+sections. SmarkForm fields inside `<details>` work normally; the browser handles
+show/hide natively.
 
 ```html
-<div data-smark='{"name":"advanced","foldable":true,"folded":true}'>
-  <input data-smark type="text" name="apiKey">
-</div>
-<button data-smark='{"action":"unfold","context":"advanced"}'>Show advanced</button>
+<details open>
+  <summary>Advanced settings</summary>
+  <div data-smark='{"name":"advanced"}'>
+    <input data-smark type="text" name="apiKey">
+  </div>
+</details>
 ```
+
+The `open` attribute makes the section expanded by default. Remove it to start
+collapsed. The `<summary>` can contain SmarkForm trigger buttons (add/remove
+items, count labels, etc.) alongside the heading text.
 
 ---
 
@@ -305,7 +315,6 @@ Context paths are resolved relative to the trigger's parent component.
 | `clear` | form / list | Clears to `emptyValue` |
 | `addItem` | list | Adds one item |
 | `removeItem` | list item | Removes the item containing this trigger |
-| `fold` / `unfold` | form / list | Toggles visibility |
 | `position` | list item | Shows 1-based index (label) |
 | `count` | list | Shows total item count (label) |
 

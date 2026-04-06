@@ -293,28 +293,6 @@
     }
 
 
-    .foldButton {
-        border: none;
-        background: none;
-        height: 1.2em;
-        padding: inherit !important;
-        display: inline-block;  // Allow transforms
-        transition: transform 150ms ease-in-out;
-        &.folded {
-            transform: rotate(-180deg);
-            &::before {
-                transform: rotate(180deg); // Revert rotation for the hotkey hint
-            }
-        }
-        @media (hover:hover) {
-            &:hover {
-                background: none !important;
-                transform: rotate(-90deg) !important;
-            }
-        }
-    }
-
-
     /* List items animation */
     .animated_item {
         transform: scaleY(0) translateY(-50%);
