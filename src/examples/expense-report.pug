@@ -55,15 +55,8 @@ block mainForm
             )
 
     section
-        .form-group.h2
-            button.foldButton(
-                data-smark={
-                    action: "fold",
-                    hotkey: "f",
-                    context: "expenses",
-                    foldedClass: "folded",
-                }
-            ) ⬇
+        details(open)
+          summary.form-group.h2
             span
                 span Expense Items (
                 span(data-smark={
@@ -95,7 +88,7 @@ block mainForm
                     preserve_non_empty: true,
                 }, title="Clear empty expenses")
                     span(role='img', aria-label='Remove empty expenses') 🧹
-        .form-group
+          .form-group
             .form-group(data-smark={
                 name: "expenses",
                 type: "list",
@@ -173,7 +166,7 @@ block mainForm
                                 placeholder="Additional details..."
                                 rows="2"
                             )
-        .form-group.f2
+          .form-group.f2
             .spacer
             button(data-smark={
                 action: "addItem",

@@ -42,7 +42,6 @@ SmarkForm/
 │   └── decorators/          # Cross-cutting decorators
 │       ├── export_to_target.deco.js
 │       ├── import_from_target.deco.js
-│       ├── foldable.deco.js
 │       └── mutex.deco.js
 ├── dist/                    # Built output (ESM + UMD, committed)
 │   ├── SmarkForm.esm.js
@@ -286,7 +285,6 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 | `removeItem` | list | Removes target item |
 | `position` | list item | Shows item's 1-based index |
 | `count` | list | Shows total item count |
-| `fold` / `unfold` | form/list | Toggles visibility |
 
 ### Action Context Resolution
 

@@ -5,7 +5,6 @@ import {SmarkField} from "../lib/field.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
 import {focusretention} from "./list.decorators/focusretention.deco.js";
 import {action} from "./trigger.type.js";
-import {foldable} from "../decorators/foldable.deco.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
@@ -62,7 +61,6 @@ function loadTemplates(me) {//{{{
 // List component type:
 // --------------------
 
-@foldable
 @sortable
 @smartdisabling
 export class list extends SmarkField {
@@ -82,7 +80,6 @@ export class list extends SmarkField {
     };//}}}
     async render () {//{{{
         const me = this;
-        me.originalDisplayProp = me.targetNode.style.display;
 
         me.min_items = Math.max(0,
             typeof me.options.min_items == "number" ? me.options.min_items

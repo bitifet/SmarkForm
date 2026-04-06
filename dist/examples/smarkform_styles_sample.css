@@ -249,26 +249,6 @@
   margin-top: 0.8rem;
   padding-top: 0.2em;
 }
-.smarkForm .foldButton {
-  border: none;
-  background: none;
-  height: 1.2em;
-  padding: inherit !important;
-  display: inline-block;
-  transition: transform 150ms ease-in-out;
-}
-.smarkForm .foldButton.folded {
-  transform: rotate(-180deg);
-}
-.smarkForm .foldButton.folded::before {
-  transform: rotate(180deg);
-}
-@media (hover: hover) {
-  .smarkForm .foldButton:hover {
-    background: none !important;
-    transform: rotate(-90deg) !important;
-  }
-}
 .smarkForm {
   /* List items animation */
 }

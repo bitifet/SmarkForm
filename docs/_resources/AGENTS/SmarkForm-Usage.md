@@ -197,7 +197,6 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 | `removeItem` | list | Removes target item |
 | `position` | list item | Shows item's 1-based index |
 | `count` | list | Shows total item count |
-| `fold` / `unfold` | form/list | Toggles visibility |
 
 ### Action Context Resolution
 

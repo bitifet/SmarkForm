@@ -95,15 +95,8 @@ block mainForm
             )
 
     section
-        .form-group.h2
-            button.foldButton(
-                data-smark={
-                    action: "fold",
-                    hotkey: "f",
-                    context: "preorders",
-                    foldedClass: "folded",
-                }
-            ) ⬇
+        details(open)
+          summary.form-group.h2
             span
                 span Preorder (
                 span(data-smark={
@@ -135,7 +128,7 @@ block mainForm
                     preserve_non_empty: true,
                 }, title="Clear empty preorders")
                     span(role='img', aria-label='Remove empty preorders') 🧹
-        .form-group
+          .form-group
             .form-group(data-smark={
                 name: "preorders",
                 type: "list",
@@ -224,7 +217,7 @@ block mainForm
                                 placeholder="e.g. Steak medium-rare, sauce on the side..."
                                 rows="2"
                             )
-        .form-group.f2
+          .form-group.f2
             .spacer
             button(data-smark={
                 action: "addItem",

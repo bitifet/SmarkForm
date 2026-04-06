@@ -7,13 +7,6 @@ block mainForm
     .section
         p
              .form-group.h1
-                 button.foldButton(
-                     data-smark={
-                         action: "fold",
-                         context: "company",
-                         foldedClass: "folded",
-                     }
-                 )
                  span Company
         div(
             data-smark={
@@ -58,13 +51,6 @@ block mainForm
                 )
     .section
         div
-            button.foldButton(
-                data-smark={
-                    action: "fold",
-                    context: "employees",
-                    foldedClass: "folded",
-                }
-            )
             span
                 span Employees (
                 span(data-smark={

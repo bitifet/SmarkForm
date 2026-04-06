@@ -69,15 +69,8 @@ block mainForm
                 |  Move-Out
 
     section
-        .form-group.h2
-            button.foldButton(
-                data-smark={
-                    action: "fold",
-                    hotkey: "f",
-                    context: "rooms",
-                    foldedClass: "folded",
-                }
-            ) ⬇
+        details(open)
+          summary.form-group.h2
             span
                 span Rooms (
                 span(data-smark={
@@ -109,7 +102,7 @@ block mainForm
                     preserve_non_empty: true,
                 }, title="Clear empty rooms")
                     span(role='img', aria-label='Remove empty rooms') 🧹
-        .form-group
+          .form-group
             .form-group(data-smark={
                 name: "rooms",
                 type: "list",
@@ -198,7 +191,7 @@ block mainForm
                                 placeholder="Additional notes for this room..."
                                 rows="2"
                             )
-        .form-group.f2
+          .form-group.f2
             .spacer
             button(data-smark={
                 action: "addItem",
