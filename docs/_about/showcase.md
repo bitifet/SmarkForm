@@ -2331,6 +2331,126 @@ value) and the same happens with the `➕` button when the list reaches its
 *max_items* limit.
 
 
+### Collapsible sections
+
+HTML's native `<details>` and `<summary>` elements provide a simple, accessible
+way to create collapsible content — no JavaScript or special SmarkForm
+properties needed. SmarkForm fields placed inside a `<details>` element work
+exactly as they would anywhere else; the browser handles the show/hide toggle
+natively.
+
+A particularly useful pattern is to use `<details>` elements as **list items**,
+placing an identifying field inside the `<summary>`. This way, even when an item
+is collapsed, its key information remains visible so the user can quickly scan
+the list.
+
+The following example shows a contact list where each item is a `<details>`
+element. The `<summary>` contains the contact's name so it is always visible,
+while the full details (email and phone) are revealed on expansion:
+
+{% raw %} <!-- collapsible_sections {{{ --> {% endraw %}
+{% capture collapsible_sections -%}
+<div id="myForm$$">
+  <div data-smark='{"name":"contacts","type":"list","min_items":1,"exportEmpties":false}'>
+    <details open>
+      <summary>
+        <input data-smark type="text" name="fullname" placeholder="Full name">
+      </summary>
+      <div class="contact-details">
+        <input data-smark type="email" name="email" placeholder="Email">
+        <input data-smark type="tel" name="phone" placeholder="Phone">
+        <button data-smark='{"action":"removeItem","failback":"clear"}' title="Remove">🗑</button>
+      </div>
+    </details>
+  </div>
+  <button data-smark='{"action":"addItem","context":"contacts"}'>➕ Add contact</button>
+</div>{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- collapsible_sections_css {{{ --> {% endraw %}
+{% capture collapsible_sections_css -%}
+{{""}}#myForm$$ {
+  font-family: sans-serif;
+  max-width: 380px;
+}
+{{""}}#myForm$$ details {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  padding: 4px 8px;
+}
+{{""}}#myForm$$ summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+{{""}}#myForm$$ summary::before {
+  content: "▶";
+  font-size: .75em;
+  transition: transform .15s;
+  flex-shrink: 0;
+}
+{{""}}#myForm$$ details[open] > summary::before {
+  transform: rotate(90deg);
+}
+{{""}}#myForm$$ summary input {
+  flex: 1;
+  min-width: 0;
+  font-weight: bold;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+{{""}}#myForm$$ .contact-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0 2px 1.2em;
+}
+{{""}}#myForm$$ .contact-details input {
+  flex: 1;
+  min-width: 120px;
+}
+{{""}}#myForm$$ .contact-details button {
+  margin-left: auto;
+}{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+  "contacts": [
+    {"fullname":"Alice Smith","email":"alice@example.com","phone":"+1 555 100 0001"},
+    {"fullname":"Bob Jones","email":"bob@example.com","phone":"+1 555 100 0002"},
+    {"fullname":"Carol White","email":"carol@example.com","phone":"+1 555 100 0003"}
+  ]
+}{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="collapsible_sections"
+    htmlSource=collapsible_sections
+    cssSource=collapsible_sections_css
+    selected="preview"
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
+
+👉 Notice that clicking a contact's name row (or the arrow at the left)
+toggles it. The name input inside `<summary>` is always visible and editable
+regardless of the collapsed/expanded state.
+
+{: .info :}
+> The same technique works for any form section, not just list items. Wrap a
+> `<div data-smark>` or `<fieldset data-smark>` in a `<details>` element and
+> add a `<summary>` heading — no SmarkForm-specific options needed. The
+> `open` attribute on `<details>` controls the initial state: include it to
+> start expanded (the default), or omit it to start collapsed.
+
+
 ### Context-Driven Keyboard Shortcuts (Hot Keys)
 
 All *SmarkForm* triggers can be assigned a *hotkey* property to
