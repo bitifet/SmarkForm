@@ -307,6 +307,15 @@ export class list extends SmarkField {
             };
         };
         //}}}
+        // Auto-open any closed <details> ancestors so the new item is visible:{{{
+        if (!options.silent && newItem) {
+            let node = me.targetNode.parentElement;
+            while (node) {
+                if (node.tagName === 'DETAILS' && !node.open) node.open = true;
+                node = node.parentElement;
+            };
+        };
+        //}}}
         // Autoscroll handling:{{{
         if (options.autoscroll == "elegant" && !! newItem) {
             makeRoom(newItem.targetNode, - newItem.offsetHeight);
