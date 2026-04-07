@@ -452,12 +452,26 @@ export class SmarkComponent {
         };
         return me.targetNode.id
     };//}}}
-    focus() {//{{{
+    focus({backwards = false} = {}) {//{{{
         const me = this;
-        for (const fname in me.children) {
-            // Pick first with minimal function calls.
-            return void me.children[fname].focus();
-        };
+        if (backwards) {
+            // When navigating backwards, dive into the last non-trigger child
+            // so that Shift+Enter lands on the last field of a container rather
+            // than the first.  The direction is passed down recursively so that
+            // nested containers (e.g. a list of forms) also resolve to their
+            // last leaf field.
+            const keys = Object.keys(me.children).reverse();
+            for (const fname of keys) {
+                const child = me.children[fname];
+                if (child.getTriggerArgs() !== undefined) continue; // skip triggers
+                return void child.focus({backwards: true});
+            }
+        } else {
+            for (const fname in me.children) {
+                // Pick first with minimal function calls.
+                return void me.children[fname].focus();
+            }
+        }
         if (me.targetFieldNode) {
             // Prefer fields over triggers, forms, etc...
             me.targetFieldNode.focus();

@@ -2747,6 +2747,59 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
             'Enter from last field of last form-type list item must navigate to field after the list'
         ).toBe(true);
     }
+
+    // ── Backward navigation: Shift+Enter from a field after a list/form ──────
+    // All contacts are still open from the previous test.
+    {
+        const notesFld = root.locator('[name="notes"]');
+        await notesFld.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Enter from the textarea (no Ctrl needed for backward navigation)
+        await page.keyboard.press('Shift+Enter');
+
+        // Should land on 'phone' of the last contact (last field of last item),
+        // NOT on 'fullname' (which would happen if focus always dives to first child).
+        const focusedOnLastPhone = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            const details = document.querySelectorAll(`${s} details`);
+            const lastDetail = details[details.length - 1];
+            const phone = lastDetail?.querySelector('input[name="phone"]');
+            return active === phone;
+        }, formSel);
+
+        expect(
+            focusedOnLastPhone,
+            'Shift+Enter from field after list must land on last field (phone) of last list item'
+        ).toBe(true);
+    }
+
+    // ── Backward navigation: Shift+Enter from first field of a list item ─────
+    {
+        // Start on 'fullname' of contact[2] (last contact, first field)
+        const lastFullname = root.locator('details').last().locator('summary input[name="fullname"]');
+        await lastFullname.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Enter should cross the list item boundary and land on 'phone'
+        // of the previous item (contact[1]) — the last field of that item.
+        await page.keyboard.press('Shift+Enter');
+
+        const focusedOnPrevPhone = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            const details = document.querySelectorAll(`${s} details`);
+            const secondDetail = details[1]; // contact[1]
+            const phone = secondDetail?.querySelector('input[name="phone"]');
+            return active === phone;
+        }, formSel);
+
+        expect(
+            focusedOnPrevPhone,
+            'Shift+Enter from first field of a list item must land on last field of previous item'
+        ).toBe(true);
+    }
 };
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
