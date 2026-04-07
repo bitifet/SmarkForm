@@ -11,6 +11,45 @@ import {parseJSON} from "../lib/helpers.js";
 // hook more than once.
 const sym_enter_handled = Symbol('smarkform_enter_handled');
 
+// Returns true when a DOM node is hidden inside a closed <details> element,
+// i.e. it is not within the <summary> of that <details>.
+// A node is "hidden" when any of its <details> ancestors is closed AND the
+// node is not inside the <summary> of that <details>.
+function isHiddenByClosedDetails(el) {
+    let node = el?.parentElement;
+    while (node) {
+        if (node.tagName === 'DETAILS' && !node.open) {
+            // The node is inside a closed <details>; check whether it is
+            // within the <summary> (which is always visible).
+            const summary = node.querySelector(':scope > summary');
+            if (!summary || !summary.contains(el)) return true;
+        }
+        node = node.parentElement;
+    }
+    return false;
+}
+
+// Find the adjacent field (next or prev) from `context`, walking up through
+// ancestor lists when the current level has no more siblings.  This replaces
+// the old 2-level `find(".+1") || find("../.+1")` pattern so that Enter
+// correctly crosses from the last field of a nested form-type list item up
+// into the parent form and beyond.
+function findAdjacentField(context, backwards) {
+    const delta = backwards ? '.-1' : '.+1';
+    // First try a sibling on the same level.
+    let candidate = context.find(delta);
+    if (!candidate) {
+        // Walk up through ancestors until we find a sibling or exhaust parents.
+        let ancestor = context;
+        while (!candidate) {
+            ancestor = ancestor?.parent;
+            if (!ancestor) break;
+            candidate = ancestor.find(delta);
+        }
+    }
+    return candidate || undefined;
+}
+
 export class input extends form {
     constructor(...args) {//{{{
         super(...args);
@@ -45,10 +84,22 @@ export class input extends form {
                         && ! ev.originalEvent.ctrlKey
                         && ! backwards
                     ) return; // Require Ctrl key to escape textareas.
-                    let nextField = (
-                        ! backwards ? ev.context.find(".+1") || ev.context.find("../.+1")
-                        : ev.context.find(".-1") || ev.context.find("../.-1")
-                    );
+                    // Find the adjacent field, traversing up through ancestor
+                    // lists as needed (fixes navigation from the last field of
+                    // a nested form-type list item to the next list item or to
+                    // the field after the list).
+                    let nextField = findAdjacentField(ev.context, backwards);
+                    // Skip fields that are hidden inside a closed <details>
+                    // (fixes Enter in a closed <summary> input navigating to
+                    // a hidden email/phone instead of the next visible item).
+                    const seen = new Set();
+                    while (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
+                        if (seen.has(nextField)) break; // Safety: prevent loops
+                        seen.add(nextField);
+                        const further = findAdjacentField(nextField, backwards);
+                        if (!further) { nextField = null; break; }
+                        nextField = further;
+                    }
                     if (nextField) {
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
