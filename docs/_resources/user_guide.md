@@ -31,6 +31,7 @@ nav_order: 1
     * [Adding and Removing Items](#adding-and-removing-items)
     * [Reordering Items](#reordering-items)
     * [Understanding List Limits](#understanding-list-limits)
+* [Working with Collapsible Sections](#working-with-collapsible-sections)
 * [Working with Nested Sections](#working-with-nested-sections)
 * [Accessibility Features](#accessibility-features)
 * [Tips for Efficient Form Filling](#tips-for-efficient-form-filling)
@@ -215,6 +216,35 @@ These limits are intentional constraints based on the form's requirements. When 
   <figcaption>Button becomes disabled when list limit is reached</figcaption>
 </figure>
 
+## Working with Collapsible Sections
+
+Some forms use collapsible sections — areas that can be expanded or collapsed to help you focus on what matters and keep the form tidy. These are typically built with the browser's native `<details>` element, which shows or hides its contents when you click its heading (the `<summary>` area).
+
+### Navigating Collapsible Sections with the Keyboard
+
+SmarkForm extends its keyboard navigation to work naturally with collapsible sections:
+
+- **Enter** — When a collapsible section is **closed**, pressing Enter while in its summary field skips the hidden fields inside and moves directly to the next visible field. This keeps navigation smooth when you don't need to edit the collapsed content.
+
+- **Alt+Enter** — When a collapsible section is **closed** and you want to navigate *into* its hidden fields, hold **Alt** while pressing Enter. The section opens automatically and focus moves to the first field inside, so you can edit it without reaching for the mouse.
+
+- **Space** — In the summary field of a collapsible section, pressing Space types a space character as usual. The section is **not** toggled, so you can freely type in the visible field without accidentally collapsing it.
+
+- **Alt+Space** — If you want to toggle the section open/closed using the keyboard, hold **Alt** while pressing Space. The Space character is **not** typed into the field — only the toggle happens.
+
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/08-collapsible-sections.png' | relative_url }}"
+       alt="A collapsible contact list showing one contact collapsed (only name visible) and another expanded (name, email and phone visible), with keyboard shortcut annotations for Alt+Enter (expand and enter) and Alt+Space (toggle)">
+  <figcaption>Collapsible sections: Enter skips closed sections, Alt+Enter opens and enters them, Alt+Space toggles open/closed</figcaption>
+</figure>
+
+{: .hint}
+> **Tip:** If a form shows contacts (or other items) as collapsible rows, keep sections closed while scanning the list and use **Alt+Enter** only when you need to edit a specific item's details. This keeps the form compact and easy to read.
+
+{: .info}
+> **Note:** Not all forms use collapsible sections. This feature is visible only when the form designer has chosen to wrap sections in `<details>` elements.
+
+
 ## Working with Nested Sections
 
 Some forms have sections nested within other sections (like contact details within a contact, or items within an order). From your perspective as a user, these work seamlessly:
@@ -257,9 +287,11 @@ Here are some tips to make form filling even faster:
 
 5. **Watch for smart features** — Notice how buttons disable themselves when limits are reached, or how new list items appear automatically. Lists of complex forms may provide a button to duplicate an item (huge time saver sometimes), etc...
 
-6. **Use the keyboard for everything** — Once you're comfortable with navigation and hotkeys, you can often complete entire forms without touching your mouse
+6. **Use Alt+Enter and Alt+Space in collapsible sections** — When a section is collapsed, **Alt+Enter** opens it and moves focus inside; **Alt+Space** toggles it open or closed without typing a space character
 
-7. **Context-aware shortcuts are a feature** — The same hotkey doing different things in different sections is intentional and makes the interface more intuitive
+7. **Use the keyboard for everything** — Once you're comfortable with navigation and hotkeys, you can often complete entire forms without touching your mouse
+
+8. **Context-aware shortcuts are a feature** — The same hotkey doing different things in different sections is intentional and makes the interface more intuitive
 
 ---
 

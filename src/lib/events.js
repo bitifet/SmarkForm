@@ -272,6 +272,27 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         )) return;
                         const summary = ev.target?.closest?.('summary');
                         if (!summary) return;
+                        if (ev.altKey) {
+                            // Alt+Space: allow the <details> toggle but prevent
+                            // the space character from being typed into the field.
+                            // We can't call ev.preventDefault() here because that
+                            // would also block the browser's keyboard activation
+                            // (the synthetic click that triggers the toggle).
+                            // Instead, capture the current value and restore it
+                            // after the keyup, undoing any inserted space.
+                            const target = ev.target;
+                            const selStart = target.selectionStart;
+                            const valueBefore = target.value;
+                            target.addEventListener('keyup', () => {
+                                if (target.value !== valueBefore) {
+                                    target.value = valueBefore;
+                                    try { target.setSelectionRange(selStart, selStart); } catch (_) {}
+                                }
+                            }, { once: true });
+                            return;
+                        }
+                        // Plain Space: prevent the <details> toggle but allow
+                        // the space character to be typed normally.
                         // One-shot suppressor for the synthetic click that the
                         // browser fires on <summary> after Space keyup.
                         const suppressor = e => {
