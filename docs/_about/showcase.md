@@ -2372,7 +2372,6 @@ while the full details (email and phone) are revealed on expansion:
 {% capture collapsible_sections_css -%}
 {{""}}#myForm$$ {
   font-family: sans-serif;
-  max-width: 380px;
 }
 {{""}}#myForm$$ details {
   border: 1px solid #ccc;
