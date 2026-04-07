@@ -2636,7 +2636,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         expect(stillOpen, 'Space key in summary input must not toggle <details>').toBe(true);
     }
 
-    // ── Alt+Space: allow toggle but prevent space character from being typed ──
+    // ── Shift+Space: toggle <details> but prevent space character from being typed
     {
         // Open the first contact's <details>
         await page.evaluate(s => {
@@ -2648,16 +2648,16 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         await firstSummaryInput.focus();
         await page.waitForTimeout(30);
 
-        // Alt+Space — must toggle the <details> but NOT type a space
-        await page.keyboard.press('Alt+ ');
+        // Shift+Space — must toggle the <details> but NOT type a space
+        await page.keyboard.press('Shift+ ');
 
         const nowClosed = await page.evaluate(
             s => !document.querySelector(`${s} details`).open, formSel
         );
-        expect(nowClosed, 'Alt+Space must toggle (close) the <details>').toBe(true);
+        expect(nowClosed, 'Shift+Space must toggle (close) the <details>').toBe(true);
 
         const valueAfter = await firstSummaryInput.inputValue();
-        expect(valueAfter, 'Alt+Space must not type a space into the input').toBe(valueBefore);
+        expect(valueAfter, 'Shift+Space must not type a space into the input').toBe(valueBefore);
     }
 
     // ── Issue 2: Enter in closed <summary> input → navigate to next item ─────

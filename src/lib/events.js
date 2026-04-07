@@ -237,22 +237,30 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         }
                     }, true); // synchronous, capture phase
 
-                    // Prevent the Space key on data inputs/textareas/selects
-                    // inside a <summary> element from triggering the native
-                    // <details> toggle.
+                    // Handle the Space key on data inputs/textareas/selects
+                    // inside a <summary> element.
                     //
-                    // How the toggle is triggered: when Space is pressed while
-                    // focus is on an element within <summary>, browsers fire a
-                    // synthetic click on the <summary> after keyup (keyboard
-                    // activation behavior).  The click causes the toggle.
+                    // How the browser toggle is triggered: when Space is pressed
+                    // while focus is on an element within <summary>, browsers
+                    // fire a synthetic click on the <summary> after keyup
+                    // (keyboard activation behavior).  The click causes the
+                    // <details> to toggle.
                     //
-                    // Fix: on Space keydown (capture phase on root), add a
-                    // one-shot capture-phase click listener directly on the
-                    // <summary> that calls preventDefault() +
-                    // stopImmediatePropagation() to prevent the toggle.
-                    // A cleanup listener on keyup removes it via setTimeout(0)
-                    // (after the synthetic click has already been suppressed)
-                    // as a safety fallback if no click follows the Space.
+                    // Two cases handled here:
+                    //
+                    //   Shift+Space — toggle the <details> open/closed without
+                    //   typing a space into the field.  Shift+Space has no
+                    //   OS-level or browser-level meaning (unlike Alt+Space,
+                    //   which is captured by Brave and other browsers before the
+                    //   page can see it).  We call ev.preventDefault() to stop
+                    //   the character from being inserted and manually flip the
+                    //   details.open flag ourselves.
+                    //
+                    //   Plain Space — type a space character normally without
+                    //   toggling the <details>.  A one-shot capture-phase click
+                    //   listener on the <summary> suppresses the synthetic click
+                    //   that browsers fire after Space keyup.  A keyup listener
+                    //   cleans it up via setTimeout(0) if no click arrives.
                     me.targetNode.addEventListener('keydown', ev => {
                         if (ev.key !== ' ') return;
                         const tag = (ev.target?.tagName ?? '').toUpperCase();
@@ -272,25 +280,15 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         )) return;
                         const summary = ev.target?.closest?.('summary');
                         if (!summary) return;
-                        if (ev.altKey) {
-                            // Alt+Space: allow the <details> toggle but prevent
-                            // the space character from being typed into the field.
-                            // We can't call ev.preventDefault() here because that
-                            // would also block the browser's keyboard activation
-                            // (the synthetic click that triggers the toggle).
-                            // Instead, capture the current value and restore it
-                            // after the keyup, undoing any inserted space.
-                            const target = ev.target;
-                            const selStart = target.selectionStart;
-                            const valueBefore = target.value;
-                            target.addEventListener('keyup', () => {
-                                if (target.value !== valueBefore) {
-                                    target.value = valueBefore;
-                                    try { target.setSelectionRange(selStart, selStart); } catch (_) {}
-                                }
-                            }, { once: true });
+                        if (ev.shiftKey && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
+                            // Shift+Space: toggle the <details> open/closed and
+                            // prevent the space character from being typed.
+                            ev.preventDefault();
+                            const details = summary.closest('details');
+                            if (details) details.open = !details.open;
                             return;
                         }
+                        if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
                         // Plain Space: prevent the <details> toggle but allow
                         // the space character to be typed normally.
                         // One-shot suppressor for the synthetic click that the
