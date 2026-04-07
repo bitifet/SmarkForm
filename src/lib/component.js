@@ -4,7 +4,7 @@ const componentTypes = {};
 
 import {events} from "./events.js";
 import legacy from "./legacy.js";
-import {parseJSON, replaceWrongNode} from "./helpers.js";
+import {parseJSON, replaceWrongNode, isHiddenByClosedDetails} from "./helpers.js";
 import {isMixinRef, expandMixin} from "./mixin.js";
 
 const sym_smart = Symbol("smart_component");
@@ -452,7 +452,7 @@ export class SmarkComponent {
         };
         return me.targetNode.id
     };//}}}
-    focus({backwards = false} = {}) {//{{{
+    focus({backwards = false, openHidden = false} = {}) {//{{{
         const me = this;
         if (backwards) {
             // When navigating backwards, dive into the last non-trigger child
@@ -464,23 +464,22 @@ export class SmarkComponent {
             for (const fname of keys) {
                 const child = me.children[fname];
                 if (child.getTriggerArgs() !== undefined) continue; // skip triggers
-                return void child.focus({backwards: true});
-            }
-            // At the leaf level: open any closed <details> ancestors so the
-            // target field is visible when backward navigation lands here.
-            // (e.g. Shift+Enter into a collapsed list item opens that item.)
-            const el = me.targetFieldNode || me.targetNode;
-            if (el) {
-                let node = el.parentElement;
-                while (node) {
-                    if (node.tagName === 'DETAILS' && !node.open) node.open = true;
-                    node = node.parentElement;
+                if (isHiddenByClosedDetails(child.targetNode)) {
+                    if (!openHidden) continue; // skip hidden fields in default nav
+                    // openHidden (Alt+Shift+Enter): open the closed <details>
+                    // ancestors of this child so it becomes visible, then recurse.
+                    let node = child.targetNode.parentElement;
+                    while (node) {
+                        if (node.tagName === 'DETAILS' && !node.open) node.open = true;
+                        node = node.parentElement;
+                    }
                 }
+                return void child.focus({backwards: true, openHidden});
             }
         } else {
             for (const fname in me.children) {
                 // Pick first with minimal function calls.
-                return void me.children[fname].focus();
+                return void me.children[fname].focus({openHidden});
             }
         }
         if (me.targetFieldNode) {

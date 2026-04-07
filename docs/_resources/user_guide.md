@@ -226,7 +226,11 @@ SmarkForm extends its keyboard navigation to work naturally with collapsible sec
 
 - **Enter** — When a collapsible section is **closed**, pressing Enter while in its summary field skips the hidden fields inside and moves directly to the next visible field. This keeps navigation smooth when you don't need to edit the collapsed content.
 
-- **Alt+Enter** — When a collapsible section is **closed** and you want to navigate *into* its hidden fields, hold **Alt** while pressing Enter. The section opens automatically and focus moves to the first field inside, so you can edit it without reaching for the mouse.
+- **Shift+Enter** — Backward navigation is fully symmetric: pressing Shift+Enter when a closed section lies before you also skips its hidden fields and lands on the last *visible* field of that section (i.e. the summary field), without opening it.
+
+- **Alt+Enter** — When a collapsible section is **closed** and you want to navigate *forward* into its hidden fields, hold **Alt** while pressing Enter. The section opens automatically and focus moves to the first field inside, so you can edit it without reaching for the mouse.
+
+- **Alt+Shift+Enter** — The backward equivalent of Alt+Enter: hold **Alt+Shift** while pressing Enter to open the *previous* closed section and land on its **last** field, ready to continue filling in backwards.
 
 - **Space** — In the summary field of a collapsible section, pressing Space types a space character as usual. The section is **not** toggled, so you can freely type in the visible field without accidentally collapsing it.
 
@@ -234,12 +238,12 @@ SmarkForm extends its keyboard navigation to work naturally with collapsible sec
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/08-collapsible-sections.png' | relative_url }}"
-       alt="A collapsible contact list showing one contact collapsed (only name visible) and another expanded (name, email and phone visible), with keyboard shortcut annotations for Alt+Enter (expand and enter) and Shift+Space (toggle)">
-  <figcaption>Collapsible sections: Enter skips closed sections, Alt+Enter opens and enters them, Shift+Space toggles open/closed</figcaption>
+       alt="A collapsible contact list showing one contact collapsed (only name visible) and another expanded (name, email and phone visible), with keyboard shortcut annotations for Alt+Enter (expand and enter forward), Alt+Shift+Enter (expand and enter backward) and Shift+Space (toggle)">
+  <figcaption>Collapsible sections: Enter/Shift+Enter skip closed sections, Alt+Enter opens and enters forward, Alt+Shift+Enter opens and enters backward, Shift+Space toggles open/closed</figcaption>
 </figure>
 
 {: .hint}
-> **Tip:** If a form shows contacts (or other items) as collapsible rows, keep sections closed while scanning the list and use **Alt+Enter** only when you need to edit a specific item's details. This keeps the form compact and easy to read.
+> **Tip:** If a form shows contacts (or other items) as collapsible rows, keep sections closed while scanning the list and use **Alt+Enter** / **Alt+Shift+Enter** only when you need to edit a specific item's details. This keeps the form compact and easy to read.
 
 {: .info}
 > **Note:** Not all forms use collapsible sections. This feature is visible only when the form designer has chosen to wrap sections in `<details>` elements.
@@ -287,7 +291,7 @@ Here are some tips to make form filling even faster:
 
 5. **Watch for smart features** — Notice how buttons disable themselves when limits are reached, or how new list items appear automatically. Lists of complex forms may provide a button to duplicate an item (huge time saver sometimes), etc...
 
-6. **Use Alt+Enter and Shift+Space in collapsible sections** — When a section is collapsed, **Alt+Enter** opens it and moves focus inside; **Shift+Space** toggles it open or closed without typing a space character
+6. **Use Alt+Enter / Alt+Shift+Enter and Shift+Space in collapsible sections** — When a section is collapsed, **Alt+Enter** opens it and moves focus to the first field inside; **Alt+Shift+Enter** opens it and moves focus to the *last* field inside; **Shift+Space** toggles it open or closed without typing a space character
 
 7. **Use the keyboard for everything** — Once you're comfortable with navigation and hotkeys, you can often complete entire forms without touching your mouse
 
