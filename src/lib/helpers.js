@@ -221,6 +221,21 @@ export function parseDateTime(str) {//{{{
     return NaN;
 };//}}}
 
+// Returns true when a DOM node is hidden inside a closed <details> element,
+// i.e. it is not within the <summary> of that <details>.
+export function isHiddenByClosedDetails(el) {//{{{
+    let node = el?.parentElement;
+    while (node) {
+        if (node.tagName === 'DETAILS' && !node.open) {
+            // Check whether the element is within the <summary> (always visible).
+            const summary = node.querySelector(':scope > summary');
+            if (!summary || !summary.contains(el)) return true;
+        }
+        node = node.parentElement;
+    }
+    return false;
+};//}}}
+
 export function setTabIndex(target, value = "-1") {//{{{
     // Set tabindex attribute only if not explicitly defined
     if (target.getAttribute("tabindex") === null) {

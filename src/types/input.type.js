@@ -4,30 +4,12 @@ import {form} from "./form.type.js";
 import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {parseJSON} from "../lib/helpers.js";
+import {parseJSON, isHiddenByClosedDetails} from "../lib/helpers.js";
 
 // Symbol used to mark a native keydown event as already handled for Enter
 // navigation.  Guards against the same event object being dispatched to our
 // hook more than once.
 const sym_enter_handled = Symbol('smarkform_enter_handled');
-
-// Returns true when a DOM node is hidden inside a closed <details> element,
-// i.e. it is not within the <summary> of that <details>.
-// A node is "hidden" when any of its <details> ancestors is closed AND the
-// node is not inside the <summary> of that <details>.
-function isHiddenByClosedDetails(el) {
-    let node = el?.parentElement;
-    while (node) {
-        if (node.tagName === 'DETAILS' && !node.open) {
-            // The node is inside a closed <details>; check whether it is
-            // within the <summary> (which is always visible).
-            const summary = node.querySelector(':scope > summary');
-            if (!summary || !summary.contains(el)) return true;
-        }
-        node = node.parentElement;
-    }
-    return false;
-}
 
 // Find the adjacent field (next or prev) from `context`, walking up through
 // ancestor lists when the current level has no more siblings.  This replaces
@@ -90,25 +72,29 @@ export class input extends form {
                     // a nested form-type list item to the next list item or to
                     // the field after the list).
                     let nextField = findAdjacentField(ev.context, backwards);
+                    let openHidden = false;
                     if (altKey) {
-                        // Alt+Enter: if the first candidate is hidden inside a
-                        // closed <details>, open that <details> (and all closed
-                        // ancestors) so the user can navigate into it normally.
-                        if (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
-                            // Open every closed <details> ancestor of the target
-                            // so it becomes visible before we focus it.
+                        // Alt+Enter / Alt+Shift+Enter: open closed <details> so
+                        // the user can navigate into hidden fields.
+                        if (nextField) {
+                            // If the destination's root is itself a closed
+                            // <details> (e.g. a list item form), open it first.
+                            if (
+                                nextField.targetNode.tagName === 'DETAILS'
+                                && !nextField.targetNode.open
+                            ) nextField.targetNode.open = true;
+                            // Open any remaining closed <details> ancestors.
                             let node = nextField.targetNode.parentElement;
                             while (node) {
                                 if (node.tagName === 'DETAILS' && !node.open) node.open = true;
                                 node = node.parentElement;
                             }
+                            openHidden = true; // let focus() recurse into hidden children
                         }
-                    } else if (!backwards) {
-                        // Default forward Enter: skip fields that are hidden
-                        // inside a closed <details> — keeps navigation on
-                        // visible fields only (e.g., Enter from a closed
-                        // <summary> input jumps to the next item's summary,
-                        // not to the hidden email/phone).
+                    } else {
+                        // Default Enter (both forward and backward): skip fields
+                        // that are hidden inside a closed <details> — keeps
+                        // navigation on visible fields only.
                         const seen = new Set();
                         while (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
                             if (seen.has(nextField)) break; // Safety: prevent loops
@@ -118,12 +104,10 @@ export class input extends form {
                             nextField = further;
                         }
                     }
-                    // Shift+Enter (backwards): no hidden-field skipping —
-                    // focus({backwards}) auto-opens closed <details> ancestors.
                     if (nextField) {
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
-                        nextField.focus({backwards});
+                        nextField.focus({backwards, openHidden});
                     };
                 };
             },

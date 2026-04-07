@@ -2802,7 +2802,8 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     }
 
     // ── Backward navigation into CLOSED (folded) items ───────────────────────
-    // Shift+Enter must auto-open a closed <details> and land on its last field.
+    // Shift+Enter must SKIP closed items (symmetric with forward navigation).
+    // Alt+Shift+Enter must open a closed item and land on its last field.
 
     // Close all contacts first.
     await page.evaluate(s => {
@@ -2811,13 +2812,54 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     await page.waitForTimeout(30);
 
     {
-        // Shift+Enter from notes textarea (no Ctrl needed for backward) must
-        // open the last contact's <details> and focus its 'phone' field.
+        // Plain Shift+Enter from notes must SKIP hidden fields and land on
+        // the last visible field of the last contact (fullname, in <summary>).
         const notesFld = root.locator('[name="notes"]');
         await notesFld.focus();
         await page.waitForTimeout(30);
 
         await page.keyboard.press('Shift+Enter');
+        await page.waitForTimeout(50);
+
+        const result = await page.evaluate(s => {
+            const active = document.activeElement;
+            const details = document.querySelectorAll(`${s} details`);
+            const lastDetail = details[details.length - 1];
+            return {
+                isOpen: lastDetail?.open,
+                focusedFullname: active === lastDetail?.querySelector('summary input[name="fullname"]'),
+                focusedPhone: active === lastDetail?.querySelector('input[name="phone"]'),
+            };
+        }, formSel);
+
+        expect(
+            result.isOpen,
+            'Plain Shift+Enter must NOT open a closed <details>'
+        ).toBe(false);
+        expect(
+            result.focusedFullname,
+            'Plain Shift+Enter into a closed item must land on its last VISIBLE field (fullname in summary)'
+        ).toBe(true);
+        expect(
+            result.focusedPhone,
+            'Plain Shift+Enter into a closed item must NOT land on the hidden phone field'
+        ).toBe(false);
+    }
+
+    // Close all again, then test Alt+Shift+Enter (should open and enter).
+    await page.evaluate(s => {
+        document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
+    }, formSel);
+    await page.waitForTimeout(30);
+
+    {
+        // Alt+Shift+Enter from notes must OPEN the last contact and land on its
+        // last field (phone).
+        const notesFld = root.locator('[name="notes"]');
+        await notesFld.focus();
+        await page.waitForTimeout(30);
+
+        await page.keyboard.press('Alt+Shift+Enter');
         await page.waitForTimeout(50);
 
         const result = await page.evaluate(s => {
@@ -2832,23 +2874,24 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
         expect(
             result.isOpen,
-            'Shift+Enter into a closed item must auto-open its <details>'
+            'Alt+Shift+Enter into a closed item must open its <details>'
         ).toBe(true);
         expect(
             result.focusedPhone,
-            'Shift+Enter into a closed item must land on its last field (phone)'
+            'Alt+Shift+Enter into a closed item must land on its last field (phone)'
         ).toBe(true);
     }
 
-    // Close all again, then test crossing item boundary into a closed previous item.
+    // Close all again, then test crossing item boundary with plain Shift+Enter.
     await page.evaluate(s => {
         document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
     }, formSel);
     await page.waitForTimeout(30);
 
     {
-        // Open last contact just enough to focus its fullname (in <summary>),
-        // then Shift+Enter must open the middle contact and land on its phone.
+        // Open last contact just enough to focus its fullname (in <summary>).
+        // Plain Shift+Enter must cross the item boundary and land on the last
+        // VISIBLE field of the middle contact (fullname in <summary>), NOT open it.
         const lastDetails = root.locator('details').last();
         await page.evaluate(s => {
             const details = document.querySelectorAll(`${s} details`);
@@ -2869,17 +2912,65 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
             const middleDetail = details[1]; // contact[1]
             return {
                 isOpen: middleDetail?.open,
+                focusedFullname: active === middleDetail?.querySelector('summary input[name="fullname"]'),
                 focusedPhone: active === middleDetail?.querySelector('input[name="phone"]'),
             };
         }, formSel);
 
         expect(
             result.isOpen,
-            'Shift+Enter crossing to a closed previous item must auto-open it'
+            'Plain Shift+Enter crossing to a closed previous item must NOT open it'
+        ).toBe(false);
+        expect(
+            result.focusedFullname,
+            'Plain Shift+Enter crossing to a closed previous item must land on its last visible field (fullname)'
         ).toBe(true);
         expect(
             result.focusedPhone,
-            'Shift+Enter crossing to a closed previous item must land on its last field (phone)'
+            'Plain Shift+Enter crossing to a closed previous item must NOT focus hidden phone'
+        ).toBe(false);
+    }
+
+    // Close all again, then test crossing boundary with Alt+Shift+Enter.
+    await page.evaluate(s => {
+        document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
+    }, formSel);
+    await page.waitForTimeout(30);
+
+    {
+        // Open last contact, focus fullname.  Alt+Shift+Enter must open the
+        // middle contact and land on its last field (phone).
+        const lastDetails = root.locator('details').last();
+        await page.evaluate(s => {
+            const details = document.querySelectorAll(`${s} details`);
+            details[details.length - 1].open = true;
+        }, formSel);
+        await page.waitForTimeout(30);
+
+        const lastFullname = lastDetails.locator('summary input[name="fullname"]');
+        await lastFullname.focus();
+        await page.waitForTimeout(30);
+
+        await page.keyboard.press('Alt+Shift+Enter');
+        await page.waitForTimeout(50);
+
+        const result = await page.evaluate(s => {
+            const active = document.activeElement;
+            const details = document.querySelectorAll(`${s} details`);
+            const middleDetail = details[1]; // contact[1]
+            return {
+                isOpen: middleDetail?.open,
+                focusedPhone: active === middleDetail?.querySelector('input[name="phone"]'),
+            };
+        }, formSel);
+
+        expect(
+            result.isOpen,
+            'Alt+Shift+Enter crossing to a closed previous item must open it'
+        ).toBe(true);
+        expect(
+            result.focusedPhone,
+            'Alt+Shift+Enter crossing to a closed previous item must land on its last field (phone)'
         ).toBe(true);
     }
 };
