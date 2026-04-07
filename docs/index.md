@@ -39,12 +39,20 @@ permalink: /
       <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
       <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
       <strong data-smark='label'>👥 Attendees:</strong>
-      <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
+      <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
         <li>
-          <span data-smark='{"action":"position"}'>N</span>.
-          <input data-smark type="text" placeholder="Name">
-          <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
-          <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+          <details>
+            <summary>
+              <span data-smark='{"action":"position"}'>N</span>.
+              <input data-smark type="text" name="name" placeholder="Name">
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+            </summary>
+            <div class="ep-attendee-details">
+              <input data-smark type="email" name="email" placeholder="Email">
+              <input data-smark type="tel" name="phone" placeholder="Phone">
+            </div>
+          </details>
         </li>
       </ul>
     </div>
@@ -105,9 +113,47 @@ endcapture %}
     gap: 0.25em;
 }
 {{""}}#myForm$$ .ep-list ul li {
+    display: block;
+}
+{{""}}#myForm$$ .ep-list ul li details {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.15s;
+}
+{{""}}#myForm$$ .ep-list ul li details[open] {
+    border-color: #ccc;
+    padding-bottom: 4px;
+}
+{{""}}#myForm$$ .ep-list ul li summary {
     display: flex;
     align-items: center;
     gap: 0.4em;
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.1em 0.2em;
+}
+{{""}}#myForm$$ .ep-list ul li summary::-webkit-details-marker { display: none; }
+{{""}}#myForm$$ .ep-list ul li summary::before {
+    content: "▶";
+    font-size: 0.65em;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    color: #999;
+}
+{{""}}#myForm$$ .ep-list ul li details[open] > summary::before {
+    transform: rotate(90deg);
+}
+{{""}}#myForm$$ .ep-attendee-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    padding: 0.35em 0.4em 0.1em 1.5em;
+}
+{{""}}#myForm$$ .ep-attendee-details input {
+    flex: 1;
+    min-width: 120px;
 }
 {{""}}#myForm$$ .ep-hint {
     font-size: 0.82em;
@@ -238,9 +284,9 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
         "email": "alice@example.com"
     },
     "attendees": [
-        "Bob Smith",
-        "Carol White",
-        "Dave Brown"
+        {"name": "Bob Smith",    "email": "bob@example.com",   "phone": "+1 555 200 0001"},
+        {"name": "Carol White",  "email": "carol@example.com", "phone": "+1 555 200 0002"},
+        {"name": "Dave Brown",   "email": "dave@example.com",  "phone": "+1 555 200 0003"}
     ]
 }
 {%- endcapture %}
