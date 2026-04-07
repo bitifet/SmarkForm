@@ -88,9 +88,7 @@ endcapture %}
     border-radius: 4px;
 }
 {{""}}#myForm$$ .ep input[type="text"],
-{{""}}#myForm$$ .ep input[type="email"] {
-    flex: 1;
-}
+{{""}}#myForm$$ .ep input[type="email"] { flex: 1; }
 {{""}}#myForm$$ .ep fieldset {
     border: 1px solid #ddd !important;
     border-radius: 6px;
@@ -100,10 +98,7 @@ endcapture %}
     flex-direction: column;
     gap: 0.3em;
 }
-{{""}}#myForm$$ .ep fieldset legend {
-    font-weight: bold;
-    padding: 0 0.3em;
-}
+{{""}}#myForm$$ .ep fieldset legend { font-weight: bold; padding: 0 0.3em; }
 {{""}}#myForm$$ .ep-list ul {
     list-style: none !important;
     padding: 0 !important;
@@ -112,9 +107,7 @@ endcapture %}
     flex-direction: column;
     gap: 0.25em;
 }
-{{""}}#myForm$$ .ep-list ul li {
-    display: block;
-}
+{{""}}#myForm$$ .ep-list ul li { display: block; }
 {{""}}#myForm$$ .ep-list ul li details {
     width: 100%;
     border: 1px solid transparent;
@@ -129,21 +122,9 @@ endcapture %}
     display: flex;
     align-items: center;
     gap: 0.4em;
-    list-style: none;
     cursor: pointer;
     user-select: none;
     padding: 0.1em 0.2em;
-}
-{{""}}#myForm$$ .ep-list ul li summary::-webkit-details-marker { display: none; }
-{{""}}#myForm$$ .ep-list ul li summary::before {
-    content: "▶";
-    font-size: 0.65em;
-    flex-shrink: 0;
-    transition: transform 0.15s;
-    color: #999;
-}
-{{""}}#myForm$$ .ep-list ul li details[open] > summary::before {
-    transform: rotate(90deg);
 }
 {{""}}#myForm$$ .ep-attendee-details {
     display: flex;
@@ -151,10 +132,7 @@ endcapture %}
     gap: 0.4em;
     padding: 0.35em 0.4em 0.1em 1.5em;
 }
-{{""}}#myForm$$ .ep-attendee-details input {
-    flex: 1;
-    min-width: 120px;
-}
+{{""}}#myForm$$ .ep-attendee-details input { flex: 1; min-width: 120px; }
 {{""}}#myForm$$ .ep-hint {
     font-size: 0.82em;
     color: #888;
@@ -167,43 +145,30 @@ endcapture %}
     padding: 1px 4px;
 }
 /* Hotkey hints revealed on Ctrl press */
-{{""}}#myForm$$ [data-hotkey] {
-    position: relative;
-    overflow-x: visible;
-}
+{{""}}#myForm$$ [data-hotkey] { position: relative; }
 {{""}}#myForm$$ [data-hotkey]::before {
     content: attr(data-hotkey);
-    display: inline-block;
     position: absolute;
-    top: 2px;
-    left: 2px;
-    z-index: 10;
+    top: 0; left: 0;
     pointer-events: none;
-    background-color: #ffd;
+    background: #ffd;
     color: #44f;
-    outline: 1px solid lightyellow;
-    padding: 2px 8px;
+    padding: 1px 6px;
     border-radius: 4px;
     font-weight: bold;
-    font-family: sans-serif;
     font-size: 0.8em;
     white-space: nowrap;
-    transform: scale(1.8) translate(0.1em, 0.1em);
+    transform: translate(-25%, -50%);
 }
 /* Attendee list item entry/exit animations */
 {{""}}#myForm$$ .ep-list ul li.animated_item {
     transform: translateX(-100%);
     opacity: 0;
-    transition:
-        transform 200ms ease-out,
-        opacity 200ms ease-out;
+    transition: transform 200ms ease, opacity 200ms ease;
 }
 {{""}}#myForm$$ .ep-list ul li.animated_item.ongoing {
     transform: translateX(0);
     opacity: 1;
-    transition:
-        transform 200ms ease-in,
-        opacity 200ms ease-in;
 }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
