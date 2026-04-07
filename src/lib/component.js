@@ -466,6 +466,17 @@ export class SmarkComponent {
                 if (child.getTriggerArgs() !== undefined) continue; // skip triggers
                 return void child.focus({backwards: true});
             }
+            // At the leaf level: open any closed <details> ancestors so the
+            // target field is visible when backward navigation lands here.
+            // (e.g. Shift+Enter into a collapsed list item opens that item.)
+            const el = me.targetFieldNode || me.targetNode;
+            if (el) {
+                let node = el.parentElement;
+                while (node) {
+                    if (node.tagName === 'DETAILS' && !node.open) node.open = true;
+                    node = node.parentElement;
+                }
+            }
         } else {
             for (const fname in me.children) {
                 // Pick first with minimal function calls.

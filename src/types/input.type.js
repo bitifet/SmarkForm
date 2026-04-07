@@ -103,11 +103,12 @@ export class input extends form {
                                 node = node.parentElement;
                             }
                         }
-                    } else {
-                        // Default Enter: skip fields that are hidden inside a
-                        // closed <details> — keeps navigation on visible fields
-                        // only (e.g., Enter from a closed <summary> input jumps
-                        // to the next item's summary, not to the hidden email/phone).
+                    } else if (!backwards) {
+                        // Default forward Enter: skip fields that are hidden
+                        // inside a closed <details> — keeps navigation on
+                        // visible fields only (e.g., Enter from a closed
+                        // <summary> input jumps to the next item's summary,
+                        // not to the hidden email/phone).
                         const seen = new Set();
                         while (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
                             if (seen.has(nextField)) break; // Safety: prevent loops
@@ -117,6 +118,8 @@ export class input extends form {
                             nextField = further;
                         }
                     }
+                    // Shift+Enter (backwards): no hidden-field skipping —
+                    // focus({backwards}) auto-opens closed <details> ancestors.
                     if (nextField) {
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
