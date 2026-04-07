@@ -79,6 +79,7 @@ export class input extends form {
                     // if (ev.originalEvent && ev.originalEvent._sfImeAdvanced) return;
                     if (ev.originalEvent._sfImeAdvanced) return;
                     const backwards = ev.originalEvent.shiftKey;
+                    const altKey = ev.originalEvent.altKey;
                     if (
                         ev.context.targetNode.tagName === "TEXTAREA"
                         && ! ev.originalEvent.ctrlKey
@@ -89,16 +90,32 @@ export class input extends form {
                     // a nested form-type list item to the next list item or to
                     // the field after the list).
                     let nextField = findAdjacentField(ev.context, backwards);
-                    // Skip fields that are hidden inside a closed <details>
-                    // (fixes Enter in a closed <summary> input navigating to
-                    // a hidden email/phone instead of the next visible item).
-                    const seen = new Set();
-                    while (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
-                        if (seen.has(nextField)) break; // Safety: prevent loops
-                        seen.add(nextField);
-                        const further = findAdjacentField(nextField, backwards);
-                        if (!further) { nextField = null; break; }
-                        nextField = further;
+                    if (altKey) {
+                        // Alt+Enter: if the first candidate is hidden inside a
+                        // closed <details>, open that <details> (and all closed
+                        // ancestors) so the user can navigate into it normally.
+                        if (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
+                            // Open every closed <details> ancestor of the target
+                            // so it becomes visible before we focus it.
+                            let node = nextField.targetNode.parentElement;
+                            while (node) {
+                                if (node.tagName === 'DETAILS' && !node.open) node.open = true;
+                                node = node.parentElement;
+                            }
+                        }
+                    } else {
+                        // Default Enter: skip fields that are hidden inside a
+                        // closed <details> — keeps navigation on visible fields
+                        // only (e.g., Enter from a closed <summary> input jumps
+                        // to the next item's summary, not to the hidden email/phone).
+                        const seen = new Set();
+                        while (nextField && isHiddenByClosedDetails(nextField.targetNode)) {
+                            if (seen.has(nextField)) break; // Safety: prevent loops
+                            seen.add(nextField);
+                            const further = findAdjacentField(nextField, backwards);
+                            if (!further) { nextField = null; break; }
+                            nextField = further;
+                        }
                     }
                     if (nextField) {
                         ev.originalEvent.preventDefault();

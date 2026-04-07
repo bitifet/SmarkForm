@@ -2636,6 +2636,30 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         expect(stillOpen, 'Space key in summary input must not toggle <details>').toBe(true);
     }
 
+    // ── Alt+Space: allow toggle but prevent space character from being typed ──
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        const firstSummaryInput = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        const valueBefore = await firstSummaryInput.inputValue();
+        await firstSummaryInput.focus();
+        await page.waitForTimeout(30);
+
+        // Alt+Space — must toggle the <details> but NOT type a space
+        await page.keyboard.press('Alt+ ');
+
+        const nowClosed = await page.evaluate(
+            s => !document.querySelector(`${s} details`).open, formSel
+        );
+        expect(nowClosed, 'Alt+Space must toggle (close) the <details>').toBe(true);
+
+        const valueAfter = await firstSummaryInput.inputValue();
+        expect(valueAfter, 'Alt+Space must not type a space into the input').toBe(valueBefore);
+    }
+
     // ── Issue 2: Enter in closed <summary> input → navigate to next item ─────
     {
         // Close all contacts
@@ -2664,6 +2688,39 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
             focusedInSecond,
             'Enter in closed summary input must skip hidden fields and go to next item\'s summary field'
         ).toBe(true);
+    }
+
+    // ── Alt+Enter: unfold closed <details> and navigate into hidden fields ────
+    {
+        // Close all contacts
+        await page.evaluate(s => {
+            for (const d of document.querySelectorAll(`${s} details`)) d.open = false;
+        }, formSel);
+
+        const firstFullname = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        await firstFullname.focus();
+        await page.waitForTimeout(30);
+
+        // Alt+Enter must open the first contact's <details> and navigate
+        // to the first hidden field (email) inside it
+        await page.keyboard.press('Alt+Enter');
+
+        const focusedOnEmail = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            return active.name === 'email'
+                && active.closest('details') === document.querySelector(`${s} details`);
+        }, formSel);
+
+        expect(
+            focusedOnEmail,
+            'Alt+Enter in closed summary must unfold the details and navigate to the first hidden field'
+        ).toBe(true);
+
+        const firstDetailOpen = await page.evaluate(
+            s => document.querySelector(`${s} details`).open, formSel
+        );
+        expect(firstDetailOpen, 'Alt+Enter must open the closed <details>').toBe(true);
     }
 
     // ── Issue 3: Enter from last field of last form-type list item ────────────
