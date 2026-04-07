@@ -2522,6 +2522,7 @@ while the full details (email and phone) are revealed on expansion:
     </details>
   </div>
   <button data-smark='{"action":"addItem","context":"contacts","hotkey":"+"}'>➕ Add contact</button>
+  <textarea data-smark name="notes" placeholder="Notes about this contact list"></textarea>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -2574,6 +2575,18 @@ while the full details (email and phone) are revealed on expansion:
 {{""}}#myForm$$ .contact-details button {
   margin-left: auto;
 }
+{{""}}#myForm$$ textarea[name="notes"] {
+  display: block;
+  width: 100%;
+  min-height: 60px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+}
 {{ hotkeys_reveal_css }}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -2584,18 +2597,112 @@ while the full details (email and phone) are revealed on expansion:
     {"fullname":"Alice Smith","email":"alice@example.com","phone":"+1 555 100 0001"},
     {"fullname":"Bob Jones","email":"bob@example.com","phone":"+1 555 100 0002"},
     {"fullname":"Carol White","email":"carol@example.com","phone":"+1 555 100 0003"}
-  ]
+  ],
+  "notes": ""
 }{%- endcapture %}
+
+{% raw %} <!-- collapsible_sections_tests {{{ --> {% endraw %}
+{% capture collapsible_sections_tests -%}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    const formSel = `#myForm-${id}`;
+    const addBtn = root.getByRole('button', { name: '➕ Add contact' });
+
+    // Set up: ensure we have 3 contacts for navigation tests.
+    // The form starts with 1 contact (min_items=1); add 2 more.
+    await addBtn.click();
+    await page.waitForTimeout(50);
+    await addBtn.click();
+    await page.waitForTimeout(50);
+
+    // ── Issue 1: Space key in <summary> input must NOT toggle <details> ──────
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        const firstSummaryInput = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        await firstSummaryInput.focus();
+        await page.waitForTimeout(30); // > IME_FOCUS_AGE_MS
+
+        // Press Space — must type a space, NOT close the <details>
+        await page.keyboard.press(' ');
+
+        const stillOpen = await page.evaluate(
+            s => document.querySelector(`${s} details`).open, formSel
+        );
+        expect(stillOpen, 'Space key in summary input must not toggle <details>').toBe(true);
+    }
+
+    // ── Issue 2: Enter in closed <summary> input → navigate to next item ─────
+    {
+        // Close all contacts
+        await page.evaluate(s => {
+            for (const d of document.querySelectorAll(`${s} details`)) d.open = false;
+        }, formSel);
+
+        const firstFullname = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        await firstFullname.focus();
+        await page.waitForTimeout(30);
+
+        // Enter must skip the hidden email/phone of contact[0] and go to
+        // the fullname (summary input) of contact[1]
+        await page.keyboard.press('Enter');
+
+        const focusedInSecond = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            if (!active.closest('summary')) return false;
+            const details = active.closest('details');
+            const allDetails = [...document.querySelectorAll(`${s} details`)];
+            return allDetails.indexOf(details) === 1;
+        }, formSel);
+
+        expect(
+            focusedInSecond,
+            'Enter in closed summary input must skip hidden fields and go to next item\'s summary field'
+        ).toBe(true);
+    }
+
+    // ── Issue 3: Enter from last field of last form-type list item ────────────
+    {
+        // Open all contacts so the phone fields are reachable
+        await page.evaluate(s => {
+            for (const d of document.querySelectorAll(`${s} details`)) d.open = true;
+        }, formSel);
+
+        const lastPhone = root.locator('details').last().locator('input[name="phone"]');
+        await lastPhone.focus();
+        await page.waitForTimeout(30);
+
+        // Enter must cross the list boundary and land on the notes textarea
+        await page.keyboard.press('Enter');
+
+        const focusedOnNotes = await page.evaluate(
+            s => document.activeElement === document.querySelector(`${s} [name="notes"]`),
+            formSel
+        );
+
+        expect(
+            focusedOnNotes,
+            'Enter from last field of last form-type list item must navigate to field after the list'
+        ).toBe(true);
+    }
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="collapsible_sections"
     htmlSource=collapsible_sections
-    height=50
+    height=65
     cssSource=collapsible_sections_css
     selected="preview"
     demoValue=demoValue
     showEditor=true
-    tests=false
+    tests=collapsible_sections_tests
 %}
 
 👉 Notice that clicking a contact's name row (or the arrow at the left)
