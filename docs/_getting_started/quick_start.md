@@ -871,32 +871,20 @@ endcapture %}
 
 {% raw %} <!-- capture advanced_sample_css {{{ --> {% endraw %}
 {% capture advanced_sample_css %}/* Emphasize disabled buttons */
-button:disabled {
-    opacity: .5;
-}
+button:disabled { opacity: .5; }
 
 /* Reveal hotkey hints */
-button[data-hotkey] {
-    position: relative;
-    overflow-x: display;
-}
-button[data-hotkey]::before {
+[data-hotkey] { position: relative; }
+[data-hotkey]::before {
     content: attr(data-hotkey);
-
-    display: inline-block;
     position: absolute;
-    top: 2px;
-    left: 2px;
-    z-index: 10;
-
-    background-color: #ffd;
-    outline: 1px solid lightyellow;
-    padding: 1px 4px;
-    border-radius: 4px;
+    top: 0; left: 0;
+    background: #ffd;
+    border: 1px solid #eee;
+    border-radius: .25em;
+    padding: 0 .35em;
     font-weight: bold;
-
-    transform: scale(1.4) translate(.1em, .1em);
-
+    transform: translate(-25%, -50%);
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
