@@ -53,6 +53,7 @@ featured ones.
     * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
 * [Advanced UX Improvements](#advanced-ux-improvements)
     * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
+    * [Collapsible sections](#collapsible-sections)
     * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
     * [Reveal of hot keys](#reveal-of-hot-keys)
     * [Hotkeys and context](#hotkeys-and-context)
@@ -2352,7 +2353,7 @@ while the full details (email and phone) are revealed on expansion:
 {% capture collapsible_sections -%}
 <div id="myForm$$">
   <div data-smark='{"name":"contacts","type":"list","min_items":1,"exportEmpties":false}'>
-    <details open>
+    <details>
       <summary>
         <input data-smark type="text" name="fullname" placeholder="Full name">
       </summary>
