@@ -451,12 +451,11 @@ The following example demonstrates the full technique:
 .animated_item {
     transform: translateX(-100%);
     opacity: 0;
-    transition: transform 200ms ease-out, opacity 200ms ease-out;
+    transition: transform 200ms ease, opacity 200ms ease;
 }
 .animated_item.ongoing {
     transform: translateX(0);
     opacity: 1;
-    transition: transform 200ms ease-in, opacity 200ms ease-in;
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
