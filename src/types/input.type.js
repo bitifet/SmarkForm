@@ -120,7 +120,7 @@ export class input extends form {
                     if (nextField) {
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
-                        nextField.focus();
+                        nextField.focus({backwards});
                     };
                 };
             },
