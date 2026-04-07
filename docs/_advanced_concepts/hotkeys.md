@@ -132,19 +132,14 @@ re-used in different parts of the form without conflict:
 {% raw %} <!-- hotkeys_context_sensitivity_css {{{ --> {% endraw %}
 {% capture hotkeys_context_sensitivity_css -%}
 /* Hold Ctrl to reveal hotkey hints */
-button { position: relative; }
-[data-hotkey]::after {
-    content: "Ctrl+" attr(data-hotkey);
-    position: absolute;
-    top: -1.6em;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.7em;
-    background: #333;
-    color: #fff;
-    padding: 1px 4px;
-    border-radius: 3px;
-    white-space: nowrap;
+button{position:relative}
+[data-hotkey]::after{
+    content:"Ctrl+" attr(data-hotkey);
+    position:absolute; top:-1.6em; left:0;
+    font-size:0.7em;
+    background:#333; color:#fff;
+    padding:1px 4px; border-radius:3px;
+    white-space:nowrap;
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
