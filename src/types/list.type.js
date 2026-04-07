@@ -307,8 +307,12 @@ export class list extends SmarkField {
             };
         };
         //}}}
-        // Auto-open any closed <details> ancestors so the new item is visible:{{{
+        // Auto-open <details> elements so the new item is visible and ready:{{{
         if (!options.silent && newItem) {
+            // If the new item itself is a <details> tag, open it so the user
+            // can immediately fill in data:
+            if (newItem.targetNode.tagName === 'DETAILS') newItem.targetNode.open = true;
+            // Also open any closed <details> ancestors of the list container:
             let node = me.targetNode.parentElement;
             while (node) {
                 if (node.tagName === 'DETAILS' && !node.open) node.open = true;
