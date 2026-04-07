@@ -237,7 +237,58 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         }
                     }, true); // synchronous, capture phase
 
-                    // Attach DOM listeners for all non-synthetic event types.
+                    // Prevent the Space key on data inputs/textareas/selects
+                    // inside a <summary> element from triggering the native
+                    // <details> toggle.
+                    //
+                    // How the toggle is triggered: when Space is pressed while
+                    // focus is on an element within <summary>, browsers fire a
+                    // synthetic click on the <summary> after keyup (keyboard
+                    // activation behavior).  The click causes the toggle.
+                    //
+                    // Fix: on Space keydown (capture phase on root), add a
+                    // one-shot capture-phase click listener directly on the
+                    // <summary> that calls preventDefault() +
+                    // stopImmediatePropagation() to prevent the toggle.
+                    // A cleanup listener on keyup removes it via setTimeout(0)
+                    // (after the synthetic click has already been suppressed)
+                    // as a safety fallback if no click follows the Space.
+                    me.targetNode.addEventListener('keydown', ev => {
+                        if (ev.key !== ' ') return;
+                        const tag = (ev.target?.tagName ?? '').toUpperCase();
+                        const type = (ev.target?.type ?? '').toLowerCase();
+                        if (!(
+                            (
+                                tag === 'INPUT'
+                                && type !== 'checkbox'
+                                && type !== 'radio'
+                                && type !== 'submit'
+                                && type !== 'button'
+                                && type !== 'image'
+                                && type !== 'reset'
+                            )
+                            || tag === 'TEXTAREA'
+                            || tag === 'SELECT'
+                        )) return;
+                        const summary = ev.target?.closest?.('summary');
+                        if (!summary) return;
+                        // One-shot suppressor for the synthetic click that the
+                        // browser fires on <summary> after Space keyup.
+                        const suppressor = e => {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                        };
+                        summary.addEventListener('click', suppressor, { capture: true, once: true });
+                        // Cleanup: if the browser doesn't fire a click (e.g.
+                        // the input is not inside a real <summary>), remove
+                        // the suppressor after the keyup completes.
+                        ev.target.addEventListener('keyup', () => {
+                            setTimeout(() => {
+                                summary.removeEventListener('click', suppressor, true);
+                            }, 0);
+                        }, { once: true });
+                    }, true); // synchronous, capture phase
+
                     for (const [evType, meta] of Object.entries(supportedFieldEventTypes)) {
                         if (meta.synthetic) continue;
                         me.targetNode.addEventListener(evType, ev=>{
