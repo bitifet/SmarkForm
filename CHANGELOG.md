@@ -11,6 +11,43 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+<!-- Add new entries here when preparing the next release. -->
+
+---
+
+## [0.15.0] — 2026-04-07
+
+🗑️ Remove `foldable` decorator · 🌿 Native `<details>`/`<summary>` collapsible sections · ⌨️ Rich keyboard navigation for collapsible fields · 🚀 Prioritized render scheduler · 🐛 Multiple UX and editor fixes.
+
+SmarkForm 0.15.0 bids farewell to the early `foldable` decorator — a layout-oriented feature that never quite fit SmarkForm's philosophy — and replaces it with something better: first-class support for the native HTML `<details>`/`<summary>` elements. This gives developers more power, cleaner markup, and a richer keyboard experience (auto-open on navigation, Shift+Space toggle, Alt+Enter unfold-and-enter) — while removing complexity from the library itself.
+
+### Removed
+- **`foldable` decorator**: Removed from `form` and `list` component types. Use native `<details>`/`<summary>` elements instead — they provide the same collapsing behaviour with more flexibility and better browser/assistive-technology support.
+
+### Features
+- **Native `<details>`/`<summary>` collapsible sections**: Full keyboard navigation support for forms using native HTML collapsible sections, including auto-open on Enter/addItem, Shift+Space toggle, Alt+Enter unfold-and-enter, and Shift+Enter symmetric skip.
+- **Auto-open `<details>` ancestors on `addItem`**: New list items now automatically expand their enclosing `<details>` elements so they are immediately visible and focusable.
+- **Prioritized render scheduler for sampletabs**: Concurrency-limited, priority-based iframe rendering so visible examples load first.
+- **Collapsible sections showcase example**: New showcase example demonstrating native `<details>`/`<summary>` in SmarkForm forms.
+
+### Bug Fixes
+- **Space key in `<summary>` inputs**: Prevented the Space key from toggling the parent `<details>` element when focus is inside a `<summary>`-hosted input.
+- **Multi-level Enter navigation**: Fixed Enter navigation skipping hidden fields inside closed `<details>` elements across multiple nesting levels.
+- **Shift+Enter backward navigation**: Fixed Shift+Enter to auto-open closed `<details>` when navigating backwards, symmetric with forward navigation.
+- **Alt+Shift+Enter**: Opens and enters the previous `<details>` section when navigating backwards.
+- **Docs editor indentation**: Fixed Ace editor losing indentation due to HTML compressor whitespace collapsing.
+
+### Other
+- Updated user guide with collapsible sections documentation and illustrations.
+- Upgraded home page attendees list to use collapsible `<details>` sections.
+- Dev-dependency updates (Playwright, Sass, minimatch).
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.15.0)
+
+---
+
 ## [0.14.2] — 2026-03-31
 
 ✨ Mixin parameterization · 🐛 Preserve native `preventDefault()` in event API · 🔒 Security: script check after param substitution · 🧪 HTML validity testing in docs smoke tests.
