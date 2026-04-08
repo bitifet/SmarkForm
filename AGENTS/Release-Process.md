@@ -41,6 +41,7 @@ Produce a **user-facing summary** grouped as:
 - **Other** — docs improvements, tooling, dependency bumps, internal refactors
 
 **Brevity rules:**
+- Focus on library changes (new features, bug fixes…) then documentation (new features first, then tweaks, improvements…) and finally tests (if changed).
 - Minor or trivial fixes may be grouped into a single line, e.g. *"Minor bug fixes and internal improvements."*
 - Dependency-only bumps can be grouped as *"Dev-dependency updates."*
 - Omit internal-only commits (refactors, CI tweaks) unless they have user-visible impact.
@@ -181,6 +182,10 @@ Key highlights:
 > All variants below are fully written and ready to copy. Adjust emoji or tone to taste.
 
 ### Twitter / X
+
+> **IMPORTANT:** All tweets should be checked against the `wc -c` command to ensure they are no more than 288 characters long. In case of failure they should be shrinked until they fit.
+
+> **ALSO IMPORTANT:** Ensure they link to the documentation site (https://smarkform.bitifet.net) or, if appropriate, to specific path and/or hashurl pointing to documentation relevant to the release.
 
 #### Public (general audience)
 
