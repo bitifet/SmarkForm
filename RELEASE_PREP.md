@@ -19,30 +19,30 @@ Recommended for GitHub Release title: **"Delete to evolve — native `<details>`
 
 ## Release Notes Summary
 
-SmarkForm 0.15.0 removes the early `foldable` decorator from `form` and `list` component types — an experiment that, after long reflection, didn't align with SmarkForm's philosophy of keeping layout concerns in HTML. In its place, this release delivers first-class support for native `<details>`/`<summary>` elements: the same collapsing behaviour, zero extra API surface, and a far richer keyboard experience. New keyboard shortcuts (Shift+Space toggle, Alt+Enter unfold-and-enter, Shift+Enter symmetric backward navigation) make collapsible sections feel like a first-class part of the form flow. Combined with a prioritized render scheduler for the docs playground and several UX bug fixes, this release is a net gain — even in what it removes.
+SmarkForm 0.15.0 removes the early `foldable` decorator from `form` and `list` component types — an experiment that, after long reflection, didn't align with SmarkForm's philosophy of keeping layout concerns in HTML. In its place, this release delivers first-class support for native `<details>`/`<summary>` elements: the same collapsing behaviour, zero extra API surface, and a far richer keyboard experience. New keyboard shortcuts (Shift+Space toggle, Alt+Enter unfold-and-enter, Shift+Enter symmetric backward navigation) make collapsible sections feel like a first-class part of the form flow. This release is a net gain — even in what it removes.
+
+### Removed
+
+- **`foldable` decorator**: Removed from `form` and `list` component types. Migrate to native `<details>`/`<summary>` — they provide equivalent collapsing behaviour with richer browser/AT support and no library overhead.
 
 ### Features
 
 - **Native `<details>`/`<summary>` collapsible sections**: Complete keyboard navigation — auto-open on Enter/addItem, Shift+Space toggle, Alt+Enter unfold-and-enter, Alt+Shift+Enter backward unfold-and-enter.
 - **Auto-open `<details>` ancestors on `addItem`**: When a new list item is added (non-silently), its enclosing `<details>` elements are automatically expanded so it is immediately visible and focusable.
-- **Prioritized render scheduler for sampletabs**: Concurrency-limited, priority-based iframe rendering ensures visible playground examples load first, improving docs page responsiveness.
-- **Collapsible sections showcase example**: New interactive showcase demonstrating native `<details>`/`<summary>` usage in SmarkForm forms.
-
-### Removed
-
-- **`foldable` decorator**: Removed from `form` and `list` component types. Migrate to native `<details>`/`<summary>` — they provide equivalent collapsing behaviour with richer browser/AT support and no library overhead.
 
 ### Bug Fixes
 
 - **Space key in `<summary>` inputs**: Space no longer toggles the parent `<details>` when focus is inside a `<summary>`-hosted SmarkForm field.
 - **Multi-level Enter navigation**: Enter now correctly skips hidden fields inside closed `<details>` elements at any nesting depth.
 - **Shift+Enter backward navigation**: Auto-opens closed `<details>` elements when navigating backwards, symmetric with forward Enter behaviour.
-- **Docs editor indentation**: Fixed Ace editor losing indentation in the playground due to HTML compressor whitespace collapsing.
 
-### Other
+### Pluses
 
+- New collapsible sections showcase example demonstrating native `<details>`/`<summary>` in action.
+- Updated the home page example to show off the new collapsible improvements.
 - Updated user guide with collapsible sections documentation, keyboard reference, and illustrations.
-- Upgraded home page attendees list to use collapsible `<details>` sections.
+- Fixed Ace editor losing indentation in the playground due to HTML compressor whitespace collapsing.
+- Prioritized render scheduler for the docs playground: concurrency-limited, priority-based iframe rendering so visible examples load first.
 - Dev-dependency updates: Playwright 1.59.1, Sass 1.99.0, minimatch 10.2.5.
 
 ---
@@ -64,7 +64,7 @@ collapsible section support with rich keyboard navigation.
 - Prioritized concurrency-limited render scheduler for sampletabs
 - Fix Ace editor indentation through HTML compressor
 - Update user guide with collapsible sections docs and illustrations
-- Upgrade home page attendees list to collapsible <details> sections
+- Update home page example to show off new collapsible improvements
 - Dev-dependency updates (Playwright, Sass, minimatch)
 - Bump version to 0.15.0
 ```
@@ -87,8 +87,9 @@ Key highlights:
 - ❌ `foldable` decorator removed from `form` and `list` types
 - 🌿 Native `<details>`/`<summary>` collapsibles with keyboard navigation (Shift+Space, Alt+Enter, Shift+Enter symmetric backward nav…)
 - 🔄 Auto-expand `<details>` ancestors when a new list item is added
-- 🚀 Prioritized render scheduler in docs playground
-- 🐛 Space key, multi-level Enter nav, editor indentation fixes
+- 🐛 Space key and multi-level Enter nav fixes
+
+➕ Plus: updated docs, showcase examples, and dev-dependency bumps.
 
 📦 npm: `npm install smarkform@0.15.0`
 🔗 Docs: https://smarkform.bitifet.net
