@@ -192,6 +192,30 @@ export async function expandMixin(node, options, component) { //{{{
     } else {
         // External reference: "url#templateId"
         absoluteUrl = new URL(urlPart, document.baseURI).href;
+
+        // Enforce external mixin fetch policy before attempting any network
+        // request.  The policy is inherited from the root SmarkForm instance.
+        const extPolicy = component.inheritedOption('allowExternalMixins', 'block');
+        if (extPolicy === 'block') {
+            throw component.renderError(
+                'MIXIN_EXTERNAL_FETCH_BLOCKED'
+                , `Mixin type "${typeRef}" references an external URL but`
+                + ' allowExternalMixins is "block" (the default).'
+                + ' Set allowExternalMixins to "same-origin" or "allow" on'
+                + ' the root SmarkForm instance to permit external mixin loading.'
+            );
+        } else if (extPolicy === 'same-origin' && isCrossOrigin(absoluteUrl)) {
+            throw component.renderError(
+                'MIXIN_CROSS_ORIGIN_FETCH_BLOCKED'
+                , `Mixin type "${typeRef}" references a cross-origin URL`
+                + ` (${new URL(absoluteUrl).origin}) but allowExternalMixins`
+                + ' is "same-origin". Set allowExternalMixins to "allow" to'
+                + ' permit cross-origin mixin loading.'
+            );
+        }
+        // extPolicy === 'allow', or 'same-origin' with a same-origin URL:
+        // proceed with the fetch.
+
         if (! docCache.has(absoluteUrl)) {
             docCache.set(
                 absoluteUrl
@@ -317,15 +341,30 @@ export async function expandMixin(node, options, component) { //{{{
     // These run once per component instance after rendering.
     let scripts = [...topLevelScripts];
 
-    // Apply cross-origin script policy (external templates only):
-    if (urlPart && scripts.length > 0 && isCrossOrigin(absoluteUrl)) {
-        const policy = component.inheritedOption('crossOriginMixins', 'block');
+    // Apply mixin script execution policy based on template origin class.
+    // Scripts are blocked by default for all origin classes.
+    if (scripts.length > 0) {
+        const isLocal = ! urlPart;
+        const isCross = ! isLocal && isCrossOrigin(absoluteUrl);
+        let policyOptionName;
+        let errorCode;
+        if (isLocal) {
+            policyOptionName = 'allowLocalMixinScripts';
+            errorCode = 'MIXIN_SCRIPT_LOCAL_BLOCKED';
+        } else if (isCross) {
+            policyOptionName = 'allowCrossOriginMixinScripts';
+            errorCode = 'MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED';
+        } else {
+            policyOptionName = 'allowSameOriginMixinScripts';
+            errorCode = 'MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED';
+        }
+        const policy = component.inheritedOption(policyOptionName, 'block');
         if (policy === 'block') {
             throw component.renderError(
-                'MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED'
+                errorCode
                 , `Mixin template "${mixinKey}" contains a <script> and`
-                + ' crossOriginMixins is "block" (the default).'
-                + ' Set crossOriginMixins to "noscript" or "allow" on the'
+                + ` ${policyOptionName} is "block" (the default).`
+                + ` Set ${policyOptionName} to "noscript" or "allow" on the`
                 + ' root SmarkForm instance to change this behaviour.'
             );
         } else if (policy === 'noscript') {

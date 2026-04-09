@@ -66,6 +66,9 @@
   },
   "browserslist": "> 0.25%, not dead",
   "files": [
-    "dist"
+    "dist/SmarkForm.esm.js",
+    "dist/SmarkForm.esm.js.map",
+    "dist/SmarkForm.umd.js",
+    "dist/SmarkForm.umd.js.map"
   ]
 }
