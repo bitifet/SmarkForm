@@ -102,8 +102,8 @@ export class list extends SmarkField {
             me.options.of
             && tplOptions.type != me.options.of
         ) throw me.renderError(
-            'LIST_ITEM_TYPE_MISSMATCH'
-            , `List item type missmatch`
+            'LIST_ITEM_TYPE_MISMATCH'
+            , `List item type mismatch`
         );
 
         for (const tpl of [
