@@ -4363,43 +4363,24 @@ endcapture %}
     padding: 1px 4px;
 }
 /* Hotkey hints revealed on Ctrl press */
-{{""}}#myForm$$ [data-hotkey] {
-    position: relative;
-    overflow-x: visible;
-}
-{{""}}#myForm$$ [data-hotkey]::before {
-    content: attr(data-hotkey);
-    display: inline-block;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    z-index: 10;
-    pointer-events: none;
-    background-color: #ffd;
-    color: #44f;
-    outline: 1px solid lightyellow;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-family: sans-serif;
-    font-size: 0.8em;
-    white-space: nowrap;
-    transform: scale(1.8) translate(0.1em, 0.1em);
+{{""}}#myForm$$ [data-hotkey]{position:relative}
+{{""}}#myForm$$ [data-hotkey]::after{
+    content:"Ctrl+" attr(data-hotkey);
+    position:absolute; top:-1.6em; left:0;
+    font-size:0.7em;
+    background:#333; color:#fff;
+    padding:1px 4px; border-radius:3px;
+    white-space:nowrap;
 }
 /* Attendee list item entry/exit animations */
 {{""}}#myForm$$ .ep-list ul li.animated_item {
     transform: translateX(-100%);
     opacity: 0;
-    transition:
-        transform 200ms ease-out,
-        opacity 200ms ease-out;
+    transition: transform 200ms ease, opacity 200ms ease;
 }
 {{""}}#myForm$$ .ep-list ul li.animated_item.ongoing {
     transform: translateX(0);
     opacity: 1;
-    transition:
-        transform 200ms ease-in,
-        opacity 200ms ease-in;
 }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
