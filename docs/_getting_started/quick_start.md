@@ -874,17 +874,14 @@ endcapture %}
 button:disabled { opacity: .5; }
 
 /* Reveal hotkey hints */
-[data-hotkey] { position: relative; }
-[data-hotkey]::before {
-    content: attr(data-hotkey);
-    position: absolute;
-    top: 0; left: 0;
-    background: #ffd;
-    border: 1px solid #eee;
-    border-radius: .25em;
-    padding: 0 .35em;
-    font-weight: bold;
-    transform: translate(-25%, -50%);
+[data-hotkey]{position:relative}
+[data-hotkey]::after{
+    content:"Ctrl+" attr(data-hotkey);
+    position:absolute; top:-1.6em; left:0;
+    font-size:0.7em;
+    background:#333; color:#fff;
+    padding:1px 4px; border-radius:3px;
+    white-space:nowrap;
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
