@@ -508,6 +508,39 @@ test.describe('Submit — native <form> root', () => {
 
 test.describe('Submit — JSON encoding', () => {
 
+    test('JSON encoding is blocked by default (enableJsonEncoding defaults to false)', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrcFlat,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.waitForFunction(() => typeof window.form !== 'undefined');
+
+            const errorMessage = await page.evaluate(async () => {
+                await form.rendered;
+                form.targetNode.setAttribute('enctype', 'application/json');
+                form.targetNode.setAttribute('method', 'post');
+                try {
+                    await form.actions.submit(null, {silent: true});
+                    return null;
+                } catch (err) {
+                    return err.message;
+                } finally {
+                    form.targetNode.removeAttribute('enctype');
+                    form.targetNode.removeAttribute('method');
+                }
+            });
+
+            expect(errorMessage).toMatch(/JSON encoding.*disabled by default/);
+            expect(errorMessage).toMatch(/enableJsonEncoding/);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
     test('JSON encoding does NOT include submitter name/value in request body', async ({ page }) => {//{{{
         let onClosed;
         try {
@@ -521,6 +554,9 @@ test.describe('Submit — JSON encoding', () => {
 
             const result = await page.evaluate(async () => {
                 await form.rendered;
+
+                // Opt in to JSON encoding.
+                form.options.enableJsonEncoding = true;
 
                 let capturedBody = null;
                 const origFetch = window.fetch;
@@ -708,6 +744,8 @@ test.describe('Submit — JSON encoding with non-HTTP action', () => {
 
             const errorMessage = await page.evaluate(async () => {
                 await form.rendered;
+                // Opt in to JSON encoding so the test reaches the HTTP-protocol check.
+                form.options.enableJsonEncoding = true;
                 form.targetNode.setAttribute('enctype', 'application/json');
                 form.targetNode.setAttribute('action', 'mailto:test@example.com');
                 form.targetNode.setAttribute('method', 'post');
