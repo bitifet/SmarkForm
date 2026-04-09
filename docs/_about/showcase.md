@@ -815,29 +815,15 @@ list like the following example:
 
 {% raw %} <!-- hotkeys_reveal_css {{{ --> {% endraw %}
 {% capture hotkeys_reveal_css -%}
-/* Materialize hotkey hints from data-hotkey attribute */
-{{""}}#myForm$$ [data-hotkey] {
-  position: relative;
-  overflow-x: visible;
-}
-{{""}}#myForm$$ [data-hotkey]::before {
-  content: attr(data-hotkey);
-  display: inline-block;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  z-index: 10;
-  pointer-events: none;
-  background-color: #ffd;
-  color: #44f;
-  outline: 1px solid lightyellow;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-family: sans-serif;
-  font-size: 0.8em;
-  white-space: nowrap;
-  transform: scale(1.8) translate(0.1em, 0.1em);
+/* Hotkey hints revealed on Ctrl press */
+{{""}}#myForm$$ [data-hotkey]{position:relative}
+{{""}}#myForm$$ [data-hotkey]::after{
+  content:"Ctrl+" attr(data-hotkey);
+  position:absolute; top:-1.6em; left:0;
+  font-size:0.7em;
+  background:#333; color:#fff;
+  padding:1px 4px; border-radius:3px;
+  white-space:nowrap;
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
