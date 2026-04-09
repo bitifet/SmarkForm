@@ -145,20 +145,14 @@ endcapture %}
     padding: 1px 4px;
 }
 /* Hotkey hints revealed on Ctrl press */
-{{""}}#myForm$$ [data-hotkey] { position: relative; }
-{{""}}#myForm$$ [data-hotkey]::before {
-    content: attr(data-hotkey);
-    position: absolute;
-    top: 0; left: 0;
-    pointer-events: none;
-    background: #ffd;
-    color: #44f;
-    padding: 1px 6px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.8em;
-    white-space: nowrap;
-    transform: translate(-25%, -50%);
+{{""}}#myForm$$ [data-hotkey]{position:relative}
+{{""}}#myForm$$ [data-hotkey]::after{
+    content:"Ctrl+" attr(data-hotkey);
+    position:absolute; top:-1.6em; left:0;
+    font-size:0.7em;
+    background:#333; color:#fff;
+    padding:1px 4px; border-radius:3px;
+    white-space:nowrap;
 }
 /* Attendee list item entry/exit animations */
 {{""}}#myForm$$ .ep-list ul li.animated_item {
