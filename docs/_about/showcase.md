@@ -2011,6 +2011,7 @@ runs on the final data — whether the item is brand new or duplicated.
     cssSource=schedule_table_css
     selected="preview"
     showEditor=true
+    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
     tests=false
 %}
 

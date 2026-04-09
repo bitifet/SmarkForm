@@ -174,8 +174,21 @@ function isFormRoot(htmlSource) {
 }
 
 function generateTestHTML(example) {
-  const { formId, htmlSource, cssSource, jsHead, jsHidden, jsSource } = example;
-  
+  const { formId, htmlSource, cssSource, jsHidden, jsSource, smarkformOptions } = example;
+  let { jsHead } = example;
+
+  // If smarkformOptions is present, patch the default constructor call to include options.
+  // Only applied when jsHead uses the simple no-options pattern so that custom jsHeads
+  // (which may already include options or have a different shape) are left untouched.
+  if (smarkformOptions) {
+    const defaultPattern = new RegExp(
+      `^(const myForm = new SmarkForm\\(document\\.getElementById\\("myForm-${formId}"\\))\\);\\s*$`
+    );
+    if (defaultPattern.test(jsHead.trim())) {
+      jsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), ${JSON.stringify(smarkformOptions)});`;
+    }
+  }
+
   // Combine all JS sections
   const combinedJS = [jsHead, jsHidden, jsSource]
     .filter(js => js && js.trim() !== '')
@@ -229,12 +242,15 @@ function generateTestHTML(example) {
  * listeners or extra setup defined by the example are still active.
  */
 function generateDemoValueTestHTML(example) {
-  const { formId, htmlSource, cssSource, jsHidden, jsSource, demoValue } = example;
+  const { formId, htmlSource, cssSource, jsHidden, jsSource, demoValue, smarkformOptions } = example;
 
   // Use a simple constructor that passes demoValue as the value option.
+  // Merge smarkformOptions (security/behaviour flags) with the value option so that
+  // examples requiring e.g. allowLocalMixinScripts:"allow" are initialised correctly.
   // Use JSON.stringify(JSON.parse(...)) to ensure the value is correctly
   // re-serialised and cannot contain unintended code fragments.
-  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), { value: ${JSON.stringify(demoValue)} });`;
+  const constructorOpts = Object.assign({}, smarkformOptions || {}, { value: JSON.parse(JSON.stringify(demoValue)) });
+  const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), ${JSON.stringify(constructorOpts)});`;
 
   // Replace alert() and window.alert() with console.log() so that any
   // dialog-blocking JS in jsSource does not stall Playwright's test runner.

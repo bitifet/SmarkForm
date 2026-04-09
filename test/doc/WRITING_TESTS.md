@@ -124,6 +124,38 @@ Every example must specify tests=… or tests=false.
 The collector records additional flags for completeness (not used by the runner today but maintained for future use):
 - showEditor, showEditorSource, addLoadSaveButtons
 
+### Security options — `smarkformOptions`
+
+Some examples use mixin templates with `<script>` or `<style>` siblings, or reference external templates.
+Because SmarkForm defaults to a secure-by-default stance (scripts blocked, external fetches blocked), such
+examples must **explicitly opt in** to the required permissions via the `smarkformOptions` include parameter.
+
+`smarkformOptions` is a JSON object whose keys are SmarkForm constructor options. The collector stores it in
+the manifest as a parsed JSON object. Both the normal smoke test and the demoValue round-trip test merge
+these options into the SmarkForm constructor so the example renders correctly:
+
+```markdown
+{% include components/sampletabs_tpl.md
+    formId="my_mixin_example"
+    htmlSource=my_mixin_example_html
+    demoValue='{"foo":"bar"}'
+    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
+    tests=false
+%}
+```
+
+Supported option keys (all optional):
+
+| Option | Allowed values | Default | Purpose |
+|---|---|---|---|
+| `allowLocalMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
+| `allowSameOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Allow `<script>` in same-origin external mixin templates |
+| `allowCrossOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Allow `<script>` in cross-origin external mixin templates |
+| `allowExternalMixins` | `"block"` / `"same-origin"` / `"allow"` | `"block"` | Allow fetching mixin templates from external URLs |
+
+The `smarkformOptions` parameter also updates the `default_jsHead` that the docs template generates for
+the iframe preview, so the interactive preview in the documentation also works correctly.
+
 ### Docs-only parameters (filtered out by the collector)
 
 Some include parameters exist solely to configure the Jekyll documentation rendering and are explicitly excluded from the test manifest in previous versions. **As of the current implementation, `demoValue` is now collected and used by the smoke tests** — see the demoValue round-trip section below.
