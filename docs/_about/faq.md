@@ -864,15 +864,12 @@ the visual style entirely up to you:
 
 ```css
 /* Show a small "Ctrl+X" badge above each active hotkey trigger */
-[data-hotkey] {
-    position: relative;
-}
+[data-hotkey] { position: relative; }
 [data-hotkey]::after {
     content: "Ctrl+" attr(data-hotkey);
     position: absolute;
-    top: -1.4em;
-    left: 50%;
-    transform: translateX(-50%);
+    top: -1.6em;
+    left: 0;
     font-size: 0.7em;
     background: #333;
     color: #fff;
