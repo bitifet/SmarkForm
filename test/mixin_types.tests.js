@@ -28,7 +28,10 @@ async function renderHtml(html, name = 'mixin') { //{{{
 }; //}}}
 
 // HTML page skeleton: loads SmarkForm and initialises it on #myForm.
-function page(body, extraScript = '') { //{{{
+function page(body, extraScript = '', formOptions = {}) { //{{{
+    const optsArg = Object.keys(formOptions).length
+        ? `, ${JSON.stringify(formOptions)}`
+        : '';
     return `<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>Mixin Test</title></head>
@@ -36,7 +39,7 @@ function page(body, extraScript = '') { //{{{
 ${body.trim()}
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'));
+  window.myForm = new SmarkForm(document.getElementById('myForm')${optsArg});
   ${extraScript}
 </script>
 </body>
@@ -309,7 +312,7 @@ test.describe('Mixin Types — local template expansion', () => {
 <form id="myForm">
   <div data-smark='{"type":"#scripted","name":"field"}'></div>
 </form>
-`));
+`, '', { allowLocalMixinScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered);
@@ -339,7 +342,7 @@ test.describe('Mixin Types — local template expansion', () => {
 <form id="myForm">
   <div data-smark='{"type":"#apiAccess","name":"myField"}'></div>
 </form>
-`));
+`, '', { allowLocalMixinScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered);
@@ -743,8 +746,9 @@ test.describe('Mixin Types — nested script security', () => {
         }
     });//}}}
 
-    test('top-level sibling <script> in template still executes normally', async ({ page: pg }) => {//{{{
-        // Regression: top-level scripts (siblings of root, not inside it) must still work.
+    test('top-level sibling <script> in template still executes when allowed', async ({ page: pg }) => {//{{{
+        // Regression: top-level scripts (siblings of root, not inside it) must
+        // still work when allowLocalMixinScripts is explicitly set to "allow".
         let onClosed;
         try {
             const { url, onClosed: oc } = await renderHtml(page(`
@@ -758,7 +762,7 @@ test.describe('Mixin Types — nested script security', () => {
 <form id="myForm">
   <div data-smark='{"type":"#withScript","name":"field"}'></div>
 </form>
-`));
+`, '', { allowLocalMixinScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered);
@@ -805,6 +809,234 @@ test.describe('Mixin Types — nested script security', () => {
     });//}}}
 
 });
+
+// ---------------------------------------------------------------------------
+// Test suite: mixin script execution policy
+// ---------------------------------------------------------------------------
+test.describe('Mixin Types — script execution policy', () => {
+
+    test('MIXIN_SCRIPT_LOCAL_BLOCKED: local template <script> blocked by default', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="withScript">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#withScript","name":"field"}'></div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+            await expect(pg.getByText('MIXIN_SCRIPT_LOCAL_BLOCKED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('allowLocalMixinScripts:"noscript" silently discards local <script>', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="withScript">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+
+<form id="myForm">
+  <div data-smark='{"type":"#withScript","name":"field"}'></div>
+</form>
+`, '', { allowLocalMixinScripts: 'noscript' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            // Script discarded — data attribute must not be set.
+            const ran = await pg.evaluate(() => {
+                return window.myForm.find('field')?.targetNode?.dataset?.ran;
+            });
+            expect(ran).toBeUndefined();
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+});
+
+// ---------------------------------------------------------------------------
+// Test suite: external mixin fetch policy
+// ---------------------------------------------------------------------------
+test.describe('Mixin Types — external fetch policy', () => {
+
+    test('MIXIN_EXTERNAL_FETCH_BLOCKED: external URL blocked by default', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_blocked_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t"><input data-smark type="text"></template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+            await expect(pg.getByText('MIXIN_EXTERNAL_FETCH_BLOCKED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowExternalMixins:"same-origin" allows same-origin external templates', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_same_origin_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t"><input data-smark type="text"></template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const exported = await pg.evaluate(() => window.myForm.export());
+            expect(exported).toHaveProperty('f');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED: same-origin external <script> blocked by default', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_script_blocked_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+            await expect(pg.getByText('MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowSameOriginMixinScripts:"allow" permits same-origin external <script>', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_script_allow_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: 'same-origin', allowSameOriginMixinScripts: 'allow' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const ran = await pg.evaluate(() => {
+                return window.myForm.find('f')?.targetNode?.dataset?.ran;
+            });
+            expect(ran).toBe('yes');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowSameOriginMixinScripts:"noscript" silently discards same-origin external <script>', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_script_noscript_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: 'same-origin', allowSameOriginMixinScripts: 'noscript' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            // Script silently discarded — data attribute must not be set.
+            const ran = await pg.evaluate(() => {
+                return window.myForm.find('f')?.targetNode?.dataset?.ran;
+            });
+            expect(ran).toBeUndefined();
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+});
 test.describe('Mixin Types — external template loading', () => {
 
     test('loads a template from an external HTML file', async ({ page: pg }) => {//{{{
@@ -829,7 +1061,7 @@ test.describe('Mixin Types — external template loading', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#remoteField","name":"remote"}'></div>
 </form>
-`));
+`, '', { allowExternalMixins: 'same-origin' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -865,7 +1097,7 @@ test.describe('Mixin Types — external template loading', () => {
   <div data-smark='{"type":"${extUrl}#simpleInput","name":"first"}'></div>
   <div data-smark='{"type":"${extUrl}#simpleInput","name":"second"}'></div>
 </form>
-`));
+`, '', { allowExternalMixins: 'same-origin' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
