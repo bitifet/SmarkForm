@@ -10,6 +10,28 @@ nav_order: 7
 
 # {{ page.title }}
 
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {{ "
+<!-- vim-markdown-toc GitLab -->
+
+* [Secure-by-Default Philosophy](#secure-by-default-philosophy)
+* [Security Options are Root-Only](#security-options-are-root-only)
+* [Mixin External Template Loading — `allowExternalMixins`](#mixin-external-template-loading--allowexternalmixins)
+* [Mixin Script Execution — `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`](#mixin-script-execution--allowlocalmixinscripts-allowsameoriginmixinscripts-allowcrossoriginmixinscripts)
+* [Nested Scripts — `MIXIN_NESTED_SCRIPT_DISALLOWED`](#nested-scripts--mixin_nested_script_disallowed)
+* [JSON Encoding — `enableJsonEncoding`](#json-encoding--enablejsonencoding)
+* [Error Codes Quick Reference](#error-codes-quick-reference)
+
+<!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
+
 SmarkForm is designed to be **secure by default**: features that could
 introduce cross-origin requests or arbitrary script execution are disabled
 unless you explicitly opt in.  This page summarises the security model,
@@ -29,10 +51,11 @@ When a blocked feature is triggered, SmarkForm throws a named error (e.g.
 This means you will notice the restriction immediately in the browser console
 and can make a conscious decision about whether and how to permit the feature.
 
-All opt-in options are **root-level SmarkForm constructor options**:
+Security options are set via the **root-level SmarkForm constructor options**
+(the second argument to `new SmarkForm(…)`):
 
 ```js
-new SmarkForm(document.getElementById("myForm"), {
+const myForm = new SmarkForm(document.getElementById("myForm"), {
   allowExternalMixins: 'same-origin',
   allowLocalMixinScripts: 'allow',
   enableJsonEncoding: true,
@@ -40,8 +63,31 @@ new SmarkForm(document.getElementById("myForm"), {
 });
 ```
 
-They are inherited by all descendant components via the `inheritedOption`
-mechanism, so you only need to set them once on the root instance.
+---
+
+## Security Options are Root-Only
+
+Security option values are **always read exclusively from the root SmarkForm
+instance**, regardless of what any descendant component's `data-smark`
+attribute may specify.
+
+This is a deliberate security constraint.  Because `data-smark` attributes
+can come from external sources (e.g. a cross-origin mixin template), allowing
+descendant components to override security options would create a privilege
+escalation path: a malicious external template could set
+`allowCrossOriginMixinScripts: "allow"` on itself, then reference another
+cross-origin mixin with a `<script>` that now executes freely — even if the
+root only permitted same-origin scripts.
+
+By reading security options only from the root, SmarkForm ensures the
+developer's intent expressed in JavaScript (which an attacker cannot tamper
+with) always takes precedence over anything that arrives in HTML.
+
+{: .hint }
+> This means you cannot loosen a security policy from within a `data-smark`
+> attribute, even for a specific sub-component.  If you need a more permissive
+> policy for part of your form, set the broadest policy you need at the root
+> level and rely on your template authoring discipline to keep things safe.
 
 ---
 
@@ -66,7 +112,9 @@ when you know exactly which URLs will be loaded and you trust them.
 
 ```js
 // Allow same-origin templates only (most common production case)
-new SmarkForm(el, { allowExternalMixins: 'same-origin' });
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+  allowExternalMixins: 'same-origin',
+});
 ```
 
 ---
@@ -90,7 +138,7 @@ Each option accepts:
 | Value | Behaviour |
 |---|---|
 | `"block"` *(default)* | Throws a script-blocked error and halts rendering.  Fail loudly. |
-| `"noscript"` | Renders the template without executing its `<script>`.  Useful when you trust the markup but not the script. |
+| `"noscript"` | Renders the template without executing its `<script>`.  Useful when you trust the template markup but not its scripts. |
 | `"allow"` | Executes the script normally. |
 
 **Why blocked by default?**  Mixin scripts run in the page context with full
@@ -107,10 +155,12 @@ data or perform other malicious actions.
 
 ```js
 // Allow scripts in your own in-page templates (local only)
-new SmarkForm(el, { allowLocalMixinScripts: 'allow' });
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+  allowLocalMixinScripts: 'allow',
+});
 
 // Allow templates and scripts from your own server
-new SmarkForm(el, {
+const myForm = new SmarkForm(document.getElementById("myForm"), {
   allowExternalMixins: 'same-origin',
   allowSameOriginMixinScripts: 'allow',
 });
@@ -150,19 +200,28 @@ visibility and control over them.
 
 ## JSON Encoding — `enableJsonEncoding`
 
-SmarkForm supports native HTML form submission with
-`enctype="application/json"` (sending form data as JSON via `fetch`).  This
-feature is **disabled by default** because JSON-encoded `fetch` submissions
-bypass the browser's built-in cross-site request forgery (CSRF) protections
-that apply to traditional form POSTs.
+SmarkForm supports all standard HTML `enctype` values (`application/x-www-form-urlencoded`,
+`multipart/form-data`, and `text/plain`) by constructing and submitting a real
+form under the hood.  In addition, SmarkForm provides its own non-standard
+`enctype="application/json"` extension that serialises the form data as JSON
+and submits it via `fetch`.
+
+This `application/json` extension is **disabled by default** as a caution
+measure.  Although it does not introduce a meaningful additional security risk
+compared to standard form submissions, the use of `fetch` can be flagged by
+automated security evaluation tools and, unlike traditional form POSTs, JSON
+`fetch` requests do not benefit from the browser's built-in same-origin
+cookie-sending restrictions that some CSRF defences rely on.
 
 | Setting | Behaviour |
 |---|---|
-| `enableJsonEncoding: false` *(default)* | Attempting to submit a form with `enctype="application/json"` throws an error pointing to this option. |
+| `enableJsonEncoding: false` *(default)* | Attempting to submit with `enctype="application/json"` throws an error pointing to this option. |
 | `enableJsonEncoding: true` | JSON encoding is enabled; `fetch` is used for the submission. |
 
 ```js
-new SmarkForm(el, { enableJsonEncoding: true });
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+  enableJsonEncoding: true,
+});
 ```
 
 **Before enabling JSON encoding**, ensure your backend is protected against

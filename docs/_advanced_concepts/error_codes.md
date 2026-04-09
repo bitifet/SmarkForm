@@ -10,6 +10,67 @@ nav_order: 8
 
 # {{ page.title }}
 
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {{ "
+<!-- vim-markdown-toc GitLab -->
+
+* [Overview](#overview)
+* [Component (Core)](#component-core)
+    * [`INVALID_PARENT`](#invalid_parent)
+    * [`INVALID_OPTIONS_OBJECT`](#invalid_options_object)
+    * [`SINGLETON_OPTION_CONFLICT`](#singleton_option_conflict)
+    * [`ACTION_IN_NON_TRIGGER`](#action_in_non_trigger)
+    * [`NO_TYPE_PROVIDED`](#no_type_provided)
+    * [`UNKNOWN_TYPE`](#unknown_type)
+    * [`UNKNOWN_ACTION`](#unknown_action)
+* [Form](#form)
+    * [`REPEATED_FIELD_NAME`](#repeated_field_name)
+* [List](#list)
+    * [`LIST_DUPLICATE_TEMPLATE`](#list_duplicate_template)
+    * [`LIST_UNKNOWN_TEMPLATE_ROLE`](#list_unknown_template_role)
+    * [`LIST_CONTAINS_ID`](#list_contains_id)
+    * [`LIST_ITEM_TYPE_MISMATCH`](#list_item_type_mismatch)
+    * [`FIELD_IN_WRONG_LIST_TEMPLATE`](#field_in_wrong_list_template)
+    * [`LIST_IMPORT_OVERFLOW` *(event)*](#list_import_overflow-event)
+    * [`LIST_MAX_ITEMS_REACHED` *(event)*](#list_max_items_reached-event)
+    * [`LIST_MIN_ITEMS_REACHED` *(event)*](#list_min_items_reached-event)
+    * [`LIST_WRONG_ADDITEM_POSITION`](#list_wrong_additem_position)
+* [Fields (base)](#fields-base)
+    * [`VALUE_CONFLICT`](#value_conflict)
+* [Input](#input)
+    * [`NOT_A_SINGLETON`](#not_a_singleton)
+    * [`SINGLETON_TYPE_MISMATCH`](#singleton_type_mismatch)
+* [Label](#label)
+    * [`EXTRA_FIELD_IN_LABEL`](#extra_field_in_label)
+    * [`LABEL_EXPLICIT_TARGET`](#label_explicit_target)
+    * [`LABEL_FOR_NONFIELD`](#label_for_nonfield)
+* [Mixin Types](#mixin-types)
+    * [`MIXIN_TYPE_MISSING_FRAGMENT`](#mixin_type_missing_fragment)
+    * [`MIXIN_EXTERNAL_FETCH_BLOCKED`](#mixin_external_fetch_blocked)
+    * [`MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`](#mixin_cross_origin_fetch_blocked)
+    * [`MIXIN_FETCH_ERROR`](#mixin_fetch_error)
+    * [`MIXIN_CIRCULAR_DEPENDENCY`](#mixin_circular_dependency)
+    * [`MIXIN_TEMPLATE_NOT_FOUND`](#mixin_template_not_found)
+    * [`MIXIN_TEMPLATE_INVALID_ROOT`](#mixin_template_invalid_root)
+    * [`MIXIN_TEMPLATE_ROOT_HAS_NAME`](#mixin_template_root_has_name)
+    * [`MIXIN_SCRIPT_LOCAL_BLOCKED`](#mixin_script_local_blocked)
+    * [`MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED`](#mixin_script_same_origin_blocked)
+    * [`MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED`](#mixin_script_cross_origin_blocked)
+    * [`MIXIN_NESTED_SCRIPT_DISALLOWED`](#mixin_nested_script_disallowed)
+* [Native Type Parsing Errors](#native-type-parsing-errors)
+
+<!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
+
+## Overview
+
 SmarkForm uses named error codes so that application code can distinguish error
 causes programmatically.  Every error thrown by SmarkForm's `renderError`
 helper includes:
@@ -22,6 +83,260 @@ Errors fired through the event system (e.g. when a list tries to exceed
 `max_items`) are delivered as `"error"` events carrying `{ code, message }`
 rather than thrown exceptions; you can intercept them with an `onError`
 listener.
+
+---
+
+## Component (Core)
+
+These errors come from the core component lifecycle in `src/lib/component.js`.
+
+### `INVALID_PARENT`
+
+A SmarkForm component was constructed without a valid SmarkForm parent.  This
+is an internal consistency error that should not occur in normal usage.
+
+---
+
+### `INVALID_OPTIONS_OBJECT`
+
+The `data-smark` attribute value is neither a valid JSON object nor a plain
+type-name shorthand (a string matching `[A-Za-z0-9_-]+`).
+
+**Example:** `data-smark='not-json-but-has-spaces'`
+
+**Fix:** Use a valid JSON object (`data-smark='{"type":"input"}'`) or a bare
+type name (`data-smark="input"`).
+
+---
+
+### `SINGLETON_OPTION_CONFLICT`
+
+A Singleton Pattern component and its only child both specify the same
+`data-smark` option key.  Options must appear at exactly one level.
+
+**Fix:** Remove the duplicated key from either the parent or child element.
+
+---
+
+### `ACTION_IN_NON_TRIGGER`
+
+A `data-smark` object contains an `"action"` property alongside an explicit
+`"type"` that is not `"trigger"`.  Buttons that trigger actions must either
+omit `"type"` (it will be inferred as `"trigger"`) or set `"type":"trigger"`
+explicitly.
+
+**Fix:** Remove the `"type"` override or change it to `"trigger"`.
+
+---
+
+### `NO_TYPE_PROVIDED`
+
+A non-action element has no determinable type: neither `"type"` was set in
+`data-smark`, nor could a type be inferred from the HTML element tag.
+
+**Fix:** Add a `"type"` property to the element's `data-smark` attribute.
+
+---
+
+### `UNKNOWN_TYPE`
+
+The `"type"` string in `data-smark` does not correspond to any registered
+SmarkForm component type and is not a mixin reference (i.e. it does not start
+with `#`).
+
+**Fix:** Use a valid built-in type name (`"input"`, `"form"`, `"list"`,
+`"label"`, `"trigger"`, `"color"`, `"date"`, `"datetime-local"`, `"time"`,
+`"number"`, `"radio"`) or a registered mixin reference.
+
+---
+
+### `UNKNOWN_ACTION`
+
+A trigger element specifies an `"action"` that does not exist on the resolved
+`context` component.
+
+**Fix:** Verify the `"action"` name is correctly spelled and that the
+`"context"` path resolves to a component that exposes that action.
+
+---
+
+## Form
+
+### `REPEATED_FIELD_NAME`
+
+Two or more fields at the same form level share the same `name`.  Field names
+within a form must be unique.
+
+**Fix:** Give each field a distinct `"name"` in its `data-smark` options (or
+remove the `name` from the duplicate and rely on the auto-generated name).
+
+---
+
+## List
+
+### `LIST_DUPLICATE_TEMPLATE`
+
+Two children of a `list` component declare the same template role
+(`data-smark='{"role":"item"}'`, `"header"`, `"footer"`, etc.).
+
+**Fix:** Each role may only appear once inside a list.  Remove the duplicate.
+
+---
+
+### `LIST_UNKNOWN_TEMPLATE_ROLE`
+
+A child element of a `list` component has a `data-smark` role that is not
+one of the recognised list template roles (`"item"`, `"header"`, `"footer"`,
+`"separator"`, `"last_separator"`, `"empty_list"`, `"placeholder"`).
+
+**Fix:** Use a valid role name, or remove `"role"` to default to `"item"`.
+
+---
+
+### `LIST_CONTAINS_ID`
+
+The list `item` template contains one or more elements with an `id` attribute.
+IDs inside templates are forbidden because each cloned list item would produce
+duplicate IDs in the page, breaking HTML validity.
+
+**Fix:** Remove all `id` attributes from the item template.  Use `class`
+or `data-*` attributes for styling and scripting hooks instead.
+
+---
+
+### `LIST_ITEM_TYPE_MISMATCH`
+
+The list declares an `"of"` type option but the item template's root element
+has a different type.
+
+**Fix:** Either remove `"of"` from the list options or update it to match the
+item template's actual type.
+
+---
+
+### `FIELD_IN_WRONG_LIST_TEMPLATE`
+
+A data field was found inside a list's `"header"` or `"footer"` template.
+Only the `"item"` template (and its clones) may contain data fields.
+
+**Fix:** Move all data fields into the item template.  Header and footer
+templates are for structural/decorative content only.
+
+---
+
+### `LIST_IMPORT_OVERFLOW` *(event, not exception)*
+
+Delivered as an `"error"` event when `import()` is called with an array
+that has more items than the list's `max_items` setting.  Items beyond the
+limit are silently discarded after the event fires.
+
+**Handle with:**
+
+```js
+const list = await myForm.find('/items');
+list.on('error', ({ code, message }) => {
+  if (code === 'LIST_IMPORT_OVERFLOW') {
+    console.warn('Import truncated:', message);
+  }
+});
+```
+
+---
+
+### `LIST_MAX_ITEMS_REACHED` *(event, not exception)*
+
+Delivered as an `"error"` event when `addItem()` is called but the list
+already has `max_items` items and `failback` is `"throw"` (the default).
+
+**Handle with:** Listen for `"error"` events on the list component, or set
+`failback: "none"` in the `addItem` call to silently ignore the limit.
+
+---
+
+### `LIST_MIN_ITEMS_REACHED` *(event, not exception)*
+
+Delivered as an `"error"` event when `removeItem()` is called but the list
+already has `min_items` items and `failback` is `"throw"` (the default).
+
+**Handle with:** Listen for `"error"` events on the list component, or set
+`failback: "none"` (or `"clear"`) in the `removeItem` call.
+
+---
+
+### `LIST_WRONG_ADDITEM_POSITION`
+
+The `position` option passed to `addItem()` is not `"before"` or `"after"`.
+
+**Fix:** Use `position: "before"` or `position: "after"` (the default).
+
+---
+
+## Fields (base)
+
+### `VALUE_CONFLICT`
+
+An element has both a `"value"` key in its `data-smark` options **and** an
+HTML `value` attribute.  Both cannot be used simultaneously.
+
+**Fix:** Remove one of the two: either the `"value"` from `data-smark` or the
+HTML `value=""` attribute.
+
+---
+
+## Input
+
+### `NOT_A_SINGLETON`
+
+A form component using the Singleton Pattern (only one child is expected) was
+found to contain more than one data field child.
+
+**Fix:** A Singleton must wrap exactly one field.  Remove or relocate extra
+fields.
+
+---
+
+### `SINGLETON_TYPE_MISMATCH`
+
+A Singleton component declares a `"type"` in its own `data-smark` that
+conflicts with the actual type of its single child field.
+
+**Fix:** Ensure the Singleton wrapper's `"type"` matches the inner field's
+type, or omit it and let SmarkForm infer it.
+
+---
+
+## Label
+
+### `EXTRA_FIELD_IN_LABEL`
+
+A `label` component found more than one data-field child.  A label can wrap
+at most one target field.
+
+**Fix:** Keep only one field inside the label component.
+
+---
+
+### `LABEL_EXPLICIT_TARGET`
+
+A `label` component that wraps its target field also specifies an explicit
+`"target"` option in `data-smark`.  These two ways of associating a label
+with a field are mutually exclusive.
+
+**Fix:** Either wrap the field directly (no `"target"`) or use a `"target"`
+path to point at a field elsewhere (no wrapped field child).
+
+---
+
+### `LABEL_FOR_NONFIELD`
+
+A native HTML `<label for="…">` element (rendered as a SmarkForm `label`
+component) targets a component that does not have a native form field node
+(`targetFieldNode`).  Native `<label>` can only point to natively focusable
+field elements.
+
+**Fix:** Use a different HTML tag (e.g. `<span>`) for labels that target
+non-native SmarkForm components, or ensure the target component renders a
+native field element.
 
 ---
 
@@ -160,269 +475,20 @@ root element inside the `<template>`, not children of it.
 
 ---
 
-## Component (Core)
-
-These errors come from the core component lifecycle in `src/lib/component.js`.
-
-### `INVALID_PARENT`
-
-A SmarkForm component was constructed without a valid SmarkForm parent.  This
-is an internal consistency error that should not occur in normal usage.
-
----
-
-### `INVALID_OPTIONS_OBJECT`
-
-The `data-smark` attribute value is neither a valid JSON object nor a plain
-type-name shorthand (a string matching `[A-Za-z0-9_-]+`).
-
-**Example:** `data-smark='not-json-but-has-spaces'`
-
-**Fix:** Use a valid JSON object (`data-smark='{"type":"input"}'`) or a bare
-type name (`data-smark="input"`).
-
----
-
-### `SINGLETON_OPTION_CONFLICT`
-
-A Singleton Pattern component and its only child both specify the same
-`data-smark` option key.  Options must appear at exactly one level.
-
-**Fix:** Remove the duplicated key from either the parent or child element.
-
----
-
-### `ACTION_IN_NON_TRIGGER`
-
-A `data-smark` object contains an `"action"` property alongside an explicit
-`"type"` that is not `"trigger"`.  Buttons that trigger actions must either
-omit `"type"` (it will be inferred as `"trigger"`) or set `"type":"trigger"`
-explicitly.
-
-**Fix:** Remove the `"type"` override or change it to `"trigger"`.
-
----
-
-### `NO_TYPE_PROVIDED`
-
-A non-action element has no determinable type: neither `"type"` was set in
-`data-smark`, nor could a type be inferred from the HTML element tag.
-
-**Fix:** Add a `"type"` property to the element's `data-smark` attribute.
-
----
-
-### `UNKNOWN_TYPE`
-
-The `"type"` string in `data-smark` does not correspond to any registered
-SmarkForm component type and is not a mixin reference (i.e. it does not start
-with `#`).
-
-**Fix:** Use a valid built-in type name (`"input"`, `"form"`, `"list"`,
-`"label"`, `"trigger"`, `"color"`, `"date"`, `"datetime-local"`, `"time"`,
-`"number"`, `"radio"`) or a registered mixin reference.
-
----
-
-### `UNKNOWN_ACTION`
-
-A trigger element specifies an `"action"` that does not exist on the resolved
-`context` component.
-
-**Fix:** Verify the `"action"` name is correctly spelled and that the
-`"context"` path resolves to a component that exposes that action.
-
----
-
-## Fields
-
-### `VALUE_CONFLICT`
-
-An element has both a `"value"` key in its `data-smark` options **and** an
-HTML `value` attribute.  Both cannot be used simultaneously.
-
-**Fix:** Remove one of the two: either the `"value"` from `data-smark` or the
-HTML `value=""` attribute.
-
----
-
-## Form
-
-### `REPEATED_FIELD_NAME`
-
-Two or more fields at the same form level share the same `name`.  Field names
-within a form must be unique.
-
-**Fix:** Give each field a distinct `"name"` in its `data-smark` options (or
-remove the `name` from the duplicate and rely on the auto-generated name).
-
----
-
-## Input
-
-### `NOT_A_SINGLETON`
-
-A form component using the Singleton Pattern (only one child is expected) was
-found to contain more than one data field child.
-
-**Fix:** A Singleton must wrap exactly one field.  Remove or relocate extra
-fields.
-
----
-
-### `SINGLETON_TYPE_MISMATCH`
-
-A Singleton component declares a `"type"` in its own `data-smark` that
-conflicts with the actual type of its single child field.
-
-**Fix:** Ensure the Singleton wrapper's `"type"` matches the inner field's
-type, or omit it and let SmarkForm infer it.
-
----
-
-## Label
-
-### `EXTRA_FIELD_IN_LABEL`
-
-A `label` component found more than one data-field child.  A label can wrap
-at most one target field.
-
-**Fix:** Keep only one field inside the label component.
-
----
-
-### `LABEL_EXPLICIT_TARGET`
-
-A `label` component that wraps its target field also specifies an explicit
-`"target"` option in `data-smark`.  These two ways of associating a label
-with a field are mutually exclusive.
-
-**Fix:** Either wrap the field directly (no `"target"`) or use a `"target"`
-path to point at a field elsewhere (no wrapped field child).
-
----
-
-### `LABEL_FOR_NONFIELD`
-
-A native HTML `<label for="…">` element (rendered as a SmarkForm `label`
-component) targets a component that does not have a native form field node
-(`targetFieldNode`).  Native `<label>` can only point to natively focusable
-field elements.
-
-**Fix:** Use a different HTML tag (e.g. `<span>`) for labels that target
-non-native SmarkForm components, or ensure the target component renders a
-native field element.
-
----
-
-## List
-
-### `LIST_DUPLICATE_TEMPLATE`
-
-Two children of a `list` component declare the same template role
-(`data-smark='{"role":"item"}'`, `"header"`, `"footer"`, etc.).
-
-**Fix:** Each role may only appear once inside a list.  Remove the duplicate.
-
----
-
-### `LIST_UNKNOWN_TEMPLATE_ROLE`
-
-A child element of a `list` component has a `data-smark` role that is not
-one of the recognised list template roles (`"item"`, `"header"`, `"footer"`,
-`"separator"`, `"last_separator"`, `"empty_list"`, `"placeholder"`).
-
-**Fix:** Use a valid role name, or remove `"role"` to default to `"item"`.
-
----
-
-### `LIST_CONTAINS_ID`
-
-The list `item` template contains one or more elements with an `id` attribute.
-IDs inside templates are forbidden because each cloned list item would produce
-duplicate IDs in the page, breaking HTML validity.
-
-**Fix:** Remove all `id` attributes from the item template.  Use `class`
-or `data-*` attributes for styling and scripting hooks instead.
-
----
-
-### `LIST_ITEM_TYPE_MISMATCH`
-
-The list declares an `"of"` type option but the item template's root element
-has a different type.
-
-**Fix:** Either remove `"of"` from the list options or update it to match the
-item template's actual type.
-
----
-
-### `FIELD_IN_WRONG_LIST_TEMPLATE`
-
-A data field was found inside a list's `"header"` or `"footer"` template.
-Only the `"item"` template (and its clones) may contain data fields.
-
-**Fix:** Move all data fields into the item template.  Header and footer
-templates are for structural/decorative content only.
-
----
-
-### `LIST_IMPORT_OVERFLOW` *(event, not exception)*
-
-Delivered as an `"error"` event when `import()` is called with an array
-that has more items than the list's `max_items` setting.  Items beyond the
-limit are silently discarded after the event fires.
-
-**Handle with:**
-
-```js
-const list = await myForm.find('/items');
-list.on('error', ({ code, message }) => {
-  if (code === 'LIST_IMPORT_OVERFLOW') {
-    console.warn('Import truncated:', message);
-  }
-});
-```
-
----
-
-### `LIST_MAX_ITEMS_REACHED` *(event, not exception)*
-
-Delivered as an `"error"` event when `addItem()` is called but the list
-already has `max_items` items and `failback` is `"throw"` (the default).
-
-**Handle with:** Listen for `"error"` events on the list component, or set
-`failback: "none"` in the `addItem` call to silently ignore the limit.
-
----
-
-### `LIST_MIN_ITEMS_REACHED` *(event, not exception)*
-
-Delivered as an `"error"` event when `removeItem()` is called but the list
-already has `min_items` items and `failback` is `"throw"` (the default).
-
-**Handle with:** Listen for `"error"` events on the list component, or set
-`failback: "none"` (or `"clear"`) in the `removeItem` call.
-
----
-
-### `LIST_WRONG_ADDITEM_POSITION`
-
-The `position` option passed to `addItem()` is not `"before"` or `"after"`.
-
-**Fix:** Use `position: "before"` or `position: "after"` (the default).
-
----
-
 ## Native Type Parsing Errors
 
 The `color`, `date`, `datetime-local`, `time`, `number`, and `radio`
-component types delegate to the browser's native parsing and may re-throw
-browser-generated errors under the corresponding error code.  These errors
-typically indicate a programmatically-imported value that the browser's
-underlying `<input>` cannot parse.
+component types delegate to the browser's native `<input>` parsing.  In some
+edge cases, the browser may reject a value and produce a parse error; SmarkForm
+re-throws it with the corresponding component's error code.
 
-**Fix:** Ensure the value passed to `import()` (or set as a default) is a
-valid string for the field's native type (e.g. `"#rrggbb"` for color,
-`"YYYY-MM-DD"` for date, `"HH:MM:SS"` for time, a finite number string for
-number, and a matching option value for radio).
+These errors should almost **never** occur in practice: SmarkForm is designed
+to coerce and normalise imported values so that they are always valid for the
+underlying native field.  If you do encounter one of these errors, treat it as
+a sign that something unexpected is happening — either a bug in SmarkForm's
+coercion logic, an undocumented browser behaviour, or a value type that the
+field genuinely cannot represent at all.
+
+If you run into one, please [open an issue](https://github.com/bitifet/SmarkForm/issues)
+describing the field type, the imported value, and the browser — it is most
+likely worth investigating.
