@@ -71,6 +71,7 @@ Example usage in a `.md` doc file:
 | `tests` | `false` | Co-located test code (JavaScript string) |
 | `expectedPageErrors` | `0` | Number of JS errors expected during render |
 | `demoValue` | `'-'` | JSON string for pre-populating the demo form (docs-only, filtered by collector) |
+| `smarkformOptions` | `'-'` | JSON object string with root-level SmarkForm constructor options (e.g. `'{"allowLocalMixinScripts":"allow"}'`). Merged into the generated `default_jsHead` constructor call and stored in the test manifest so the test harness also uses them. Required for examples that use mixin `<script>` tags or other features that are disabled by default as a security measure. |
 
 ## `demoValue` Parameter — How It Works
 
@@ -222,6 +223,37 @@ The collector scans all `.md` files in `docs/` looking for `include components/s
 Previously, the `demoValue` parameter was listed in `DOCS_ONLY_PARAMS` and filtered out before building the manifest. **This has changed**: `demoValue` is now collected and stored in the manifest, and a dedicated demoValue round-trip smoke test is generated for every example that declares one.
 
 There are currently no parameters in `DOCS_ONLY_PARAMS`.
+
+### `smarkformOptions` — security and behaviour options
+
+SmarkForm applies a **secure-by-default** policy for features that carry a security risk.
+Examples that need these features must explicitly opt in via `smarkformOptions`:
+
+```liquid
+{% include components/sampletabs_tpl.md
+    formId="my_mixin_example"
+    htmlSource=my_mixin_example_html
+    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
+    tests=my_mixin_example_tests
+%}
+```
+
+The `smarkformOptions` JSON is:
+- Merged into the generated `default_jsHead` constructor call in the iframe preview.
+- Stored in the test manifest and injected into the test harness for both smoke tests and demoValue round-trips.
+
+**Commonly needed options:**
+
+| Option | Values | Default | When needed |
+|--------|--------|---------|-------------|
+| `allowLocalMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Examples using `<script>` inside a local (`#id`) mixin template |
+| `allowSameOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Examples using `<script>` inside a same-origin external mixin template |
+| `allowCrossOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Examples using `<script>` inside a cross-origin mixin template |
+| `allowExternalMixins` | `"block"` / `"same-origin"` / `"allow"` | `"block"` | Examples using mixin type references with an external URL |
+| `enableJsonEncoding` | `true` / `false` | `false` | Examples using `enctype="application/json"` form submission |
+
+**Important:** `smarkformOptions` only works with the auto-generated `default_jsHead`. If you
+provide a custom `jsHead`, you must incorporate the security options into it manually.
 
 ### demoValue in the manifest
 
