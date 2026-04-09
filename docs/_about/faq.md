@@ -61,6 +61,7 @@ around edge cases or features that might catch you off guard at first.
 * [API & JavaScript](#api-javascript)
     * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
     * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
+    * [Is SmarkForm's API stable? Will upgrading break my code?](#is-smarkforms-api-stable-will-upgrading-break-my-code)
 * [Mixin Types](#mixin-types)
     * [Can I implement my own component types?](#can-i-implement-my-own-component-types)
     * [Are mixin styles isolated / scoped?](#are-mixin-styles-isolated-scoped)
@@ -1021,6 +1022,42 @@ items on demand. It is **not yet implemented**.
 Stay tuned — details will land in the docs when it's ready. See the
 [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for more
 context.
+
+### Is SmarkForm's API stable? Will upgrading break my code?
+
+**Short answer:** SmarkForm is in early development (version 0.x.y) and
+**breaking changes can occur in any minor release** (`0.x.0`).  We do not
+provide backward-compatibility guarantees at this stage because we are not
+yet aware of production deployments that depend on API stability.
+
+**What this means in practice:**
+
+A change in the *patch* digit (`0.x.y → 0.x.y+1`) is a safe upgrade — only
+bug fixes and documentation updates, no new features, no breaking changes.
+A change in the *minor* digit (`0.x.0 → 0.(x+1).0`) may introduce breaking
+changes; read the [CHANGELOG]({{ "/about/changelog" | relative_url }}) (or
+the GitHub release notes) carefully before upgrading.
+
+**Recommended npm version range for SmarkForm dependencies:**
+
+```json
+"smarkform": "~0.15.0"
+```
+
+The `~` (tilde) operator in npm restricts upgrades to patch releases only
+(`0.15.0`, `0.15.1`, … but **not** `0.16.0`), giving you automatic bug-fix
+updates while protecting you from breaking changes.
+
+**If you are using SmarkForm in production**, we would love to hear from you!
+Open a [GitHub discussion](https://github.com/bitifet/SmarkForm/discussions)
+or reach out on [Telegram](https://t.me/smarkformcommunity).  When we know
+someone is relying on a particular API in production we are happy to provide
+backward-compatibility assurances and migration paths — we only skip that work
+because we do not yet know anyone who needs it.
+
+Once SmarkForm reaches 1.0.0 we will adopt [Semantic
+Versioning](https://semver.org/) in full, with no breaking changes between
+minor releases.
 
 
 ## Mixin Types
