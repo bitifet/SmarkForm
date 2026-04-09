@@ -5,6 +5,11 @@ Accepted arguments:
 
   * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
   * formOptions: (Removed in v2 — embed SmarkForm options directly in the data-smark attribute on your form container)
+  * smarkformOptions: Optional JSON object with root-level SmarkForm constructor options (security/behaviour flags
+                      that cannot be embedded in data-smark). Example: '{"allowLocalMixinScripts":"allow"}'.
+                      When provided, the generated default jsHead includes these options so that the interactive
+                      preview, the regular smoke test and the demoValue round-trip test all see the same settings.
+                      Collected by scripts/collect-docs-examples.js and used by test/co_located_tests.tests.js.
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * height: Optional iframe height factor (0–100). If omitted, a default is computed from the
@@ -55,13 +60,21 @@ myForm.rendered.then(function() {
 
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
+{% comment %} smarkformOptions: optional JSON object with extra SmarkForm constructor options
+  (e.g. '{"allowLocalMixinScripts":"allow"}').  These are root-level security/behaviour
+  flags that cannot be embedded in data-smark and must be passed to the constructor. {% endcomment %}
+{% assign sf_opts = include.smarkformOptions | default: '' | strip %}
+{% if sf_opts != '' %}
+  {% assign sf_opts_base = sf_opts | rstrip | remove_last: "}" %}
+{% endif %}
 {% if include.demoValue and include.demoValue != '-' %}
-  {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
-  {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+  {% if sf_opts != '' %}
+    {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"), ' | append: sf_opts | append: ');' %}
+    {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {{ sf_opts_base }},
     "value": {{ include.demoValue }}
 });
 {%- endcapture %}
-  {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {{ sf_opts_base }},
     "value": {
         // To implement the playground editor, the form of the example is
         // wrapped in a "demo" subform, so the default value should be wrapped
@@ -71,8 +84,29 @@ myForm.rendered.then(function() {
 });
 {{ no_reset_editor_hack }}
 {%- endcapture %}
+  {% else %}
+    {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+    {% capture default_jsHead_display %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    "value": {{ include.demoValue }}
+});
+{%- endcapture %}
+    {% capture default_jsHead_display_with_editor %}const myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    "value": {
+        // To implement the playground editor, the form of the example is
+        // wrapped in a "demo" subform, so the default value should be wrapped
+        // accordingly:
+        "demo": {{ include.demoValue }},
+    }
+});
+{{ no_reset_editor_hack }}
+{%- endcapture %}
+  {% endif %}
 {% else %}
-  {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+  {% if sf_opts != '' %}
+    {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"), ' | append: sf_opts | append: ');' %}
+  {% else %}
+    {% assign default_jsHead = 'const myForm = new SmarkForm(document.getElementById("myForm$$"));' %}
+  {% endif %}
   {% assign default_jsHead_display = default_jsHead %}
   {% assign default_jsHead_display_with_editor = default_jsHead %}
 {% endif %}

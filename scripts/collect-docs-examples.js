@@ -309,6 +309,16 @@ function extractExamples(filePath) {
     // Default jsHead if not provided
     const defaultJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"));`;
     
+    // Parse smarkformOptions if provided (JSON object with extra SmarkForm constructor options)
+    let smarkformOptions = null;
+    if (resolvedParams.smarkformOptions && resolvedParams.smarkformOptions.trim() !== '') {
+      try {
+        smarkformOptions = jsonc.parse(resolvedParams.smarkformOptions.trim());
+      } catch {
+        console.warn(`  ⚠️  Could not parse smarkformOptions for ${formId}: ${resolvedParams.smarkformOptions}`);
+      }
+    }
+
     // Parse expected error counts if provided
     const expectedConsoleErrors = resolvedParams.expectedConsoleErrors 
       ? parseInt(resolvedParams.expectedConsoleErrors, 10) 
@@ -328,6 +338,7 @@ function extractExamples(filePath) {
       jsSource: jsSource || '',
       tests: tests,
       demoValue: demoValue,
+      smarkformOptions: smarkformOptions,
       expectedConsoleErrors: expectedConsoleErrors,
       expectedPageErrors: expectedPageErrors,
       notes: resolvedParams.notes || '',

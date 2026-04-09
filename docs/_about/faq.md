@@ -1066,6 +1066,7 @@ of the named component without requiring an extra wrapper:
     formId="faq_mixin_labeled_input"
     htmlSource=faq_mixin_labeled_input_html
     demoValue='{"person":{"firstName":"Alice","lastName":"Smith"}}'
+    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
     tests=false
 %}
 
