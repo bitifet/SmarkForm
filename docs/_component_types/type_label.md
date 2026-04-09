@@ -23,13 +23,11 @@ SmarkForm features like relative paths, and intelligent defaults.
   {{ "
 <!-- vim-markdown-toc GitLab -->
 
-    * [Overview](#overview)
-    * [Details](#details)
-    * [Targetting non scalar fields](#targetting-non-scalar-fields)
-* [myForm$$ .button:hover {](#myform-buttonhover-)
-* [myForm$$ .button:active {](#myform-buttonactive-)
-    * [Options](#options)
-    * [API Reference](#api-reference)
+* [Overview](#overview)
+* [Details](#details)
+* [Targetting non scalar fields](#targetting-non-scalar-fields)
+* [Options](#options)
+* [API Reference](#api-reference)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -253,31 +251,17 @@ You can use any other element in place, like `<span>`, `<b>` or even `<legend>`.
 
 {% raw %} <!-- advanced_examples_css {{{ --> {% endraw %}
 {% capture advanced_examples_css -%}
-#myForm$$ .button {
+{{""}}#myForm$$ .button {
   display: inline-block;
-  padding: 3px 12px;
-  margin: 0 4px;
-  font-family: system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  text-align: center;
-  cursor: pointer;
+  padding: .2em .6em;
+  margin: 0 .2em;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #f0f0f0;
-  color: #333;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  transition: background-color 0.2s;
+  border-radius: .25em;
+  background: #f3f3f3;
+  cursor: pointer;
 }
-
-#myForm$$ .button:hover {
-  background-color: #e0e0e0;
-}
-
-#myForm$$ .button:active {
-  background-color: #d0d0d0;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-}{%
+{{""}}#myForm$$ .button:hover { background: #e9e9e9; }
+{{""}}#myForm$$ .button:active { background: #ddd; }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

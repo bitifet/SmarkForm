@@ -452,12 +452,11 @@ The following example demonstrates the full technique:
 .animated_item {
     transform: translateX(-100%);
     opacity: 0;
-    transition: transform 200ms ease-out, opacity 200ms ease-out;
+    transition: transform 200ms ease, opacity 200ms ease;
 }
 .animated_item.ongoing {
     transform: translateX(0);
     opacity: 1;
-    transition: transform 200ms ease-in, opacity 200ms ease-in;
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -865,15 +864,12 @@ the visual style entirely up to you:
 
 ```css
 /* Show a small "Ctrl+X" badge above each active hotkey trigger */
-[data-hotkey] {
-    position: relative;
-}
+[data-hotkey] { position: relative; }
 [data-hotkey]::after {
     content: "Ctrl+" attr(data-hotkey);
     position: absolute;
-    top: -1.4em;
-    left: 50%;
-    transform: translateX(-50%);
+    top: -1.6em;
+    left: 0;
     font-size: 0.7em;
     background: #333;
     color: #fff;
