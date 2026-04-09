@@ -1144,10 +1144,17 @@ for all subsequent references to the same URL on the same page.  `<style>` and
 `<script>` handling, option merging, and all other semantics work identically
 for external and local templates.
 
-Cross-origin scripts are subject to the `crossOriginMixins` policy
-(`"block"` by default — see the
-[Mixin Types reference]({{ "/advanced_concepts/mixin_types" | relative_url }}#cross-origin-script-security-policy)
-for details).
+External template loading is **blocked by default**.  You must opt in via the
+`allowExternalMixins` option on the root SmarkForm instance:
+
+```js
+// Allow same-origin external templates only
+new SmarkForm(el, { allowExternalMixins: 'same-origin' });
+```
+
+Script execution in external templates is also blocked by default; see the
+[Mixin Types reference]({{ "/advanced_concepts/mixin_types" | relative_url }}#mixin-security-options)
+for the full security model.
 
 
 ## Integration & Deployment

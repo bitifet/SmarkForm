@@ -567,22 +567,67 @@ instance** after the component has finished rendering.  The function receives
 > Ensure handlers are idempotent or clean up on `unrender` to avoid memory
 > leaks.
 
-### Cross-Origin Script Security Policy
+### Mixin Security Options
 
-Executing scripts sourced from a cross-origin mixin template poses security
-risks.  The behaviour is controlled by the `crossOriginMixins` option on the
-root SmarkForm instance:
+SmarkForm uses a **secure-by-default** model: all mixin script execution and
+external template loading is **blocked** unless explicitly allowed.  This
+prevents unexpected dynamic-code execution or network requests introduced by
+mixin templates.
+
+Three separate concerns are controlled by root-level options on the SmarkForm
+instance (or any ancestor component via `inheritedOption`):
+
+#### 1. External template fetch policy — `allowExternalMixins`
+
+Controls whether SmarkForm is permitted to fetch templates from external URLs
+(any mixin type that contains a URL part before the `#` fragment).
 
 | Value | Behaviour |
 |---|---|
-| `"block"` *(default)* | Encountering a cross-origin mixin that contains a `<script>` throws a `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` error and halts rendering.  This is the safest default: fail loudly so the developer is forced to make an explicit decision. |
-| `"noscript"` | Cross-origin mixin templates are rendered normally but any `<script>` elements they contain are silently discarded.  Use this when you trust the external template's markup but do not want to execute its scripts. |
-| `"allow"` | Scripts from cross-origin mixin templates are executed without restriction.  Use only when you fully control and trust the external source. |
+| `"block"` *(default)* | Any attempt to load an external mixin template throws `MIXIN_EXTERNAL_FETCH_BLOCKED` and halts rendering. |
+| `"same-origin"` | Only same-origin URLs are permitted; cross-origin URLs throw `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`. |
+| `"allow"` | External templates may be loaded from any origin. |
 
-```html
-<!-- Opt-in to degraded (script-less) rendering of cross-origin mixins -->
-<form id="myForm" data-smark='{"crossOriginMixins":"noscript"}'> ... </form>
+```js
+// Allow loading templates from the same server only
+new SmarkForm(el, { allowExternalMixins: 'same-origin' });
 ```
+
+#### 2. Script execution policy — `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`
+
+Controls whether `<script>` elements found at the top level of a `<template>`
+are executed after the component renders.  The applicable option is determined
+by where the template was loaded from:
+
+| Template origin | Controlling option |
+|---|---|
+| Local (`#id` only, no URL) | `allowLocalMixinScripts` |
+| External, same origin | `allowSameOriginMixinScripts` |
+| External, cross-origin | `allowCrossOriginMixinScripts` |
+
+Each option accepts the same three values:
+
+| Value | Behaviour |
+|---|---|
+| `"block"` *(default)* | A template `<script>` throws a script-blocked error and halts rendering.  Fail loudly so the developer makes an explicit decision. |
+| `"noscript"` | The template renders normally but its `<script>` is silently discarded.  Useful when you trust the template markup but not its scripts. |
+| `"allow"` | Scripts are executed as normal. |
+
+```js
+// Allow local mixin scripts only
+new SmarkForm(el, { allowLocalMixinScripts: 'allow' });
+
+// Allow loading and executing scripts from same-origin external templates
+new SmarkForm(el, {
+  allowExternalMixins: 'same-origin',
+  allowSameOriginMixinScripts: 'allow',
+});
+```
+
+{: .warning }
+> Setting `allowCrossOriginMixinScripts` to `"allow"` grants full script
+> execution for templates loaded from third-party origins.  Only use this when
+> you fully control and trust those external sources.
 
 
 ## Examples
@@ -835,9 +880,13 @@ distinguish error causes programmatically.
 | Error code | When thrown |
 |---|---|
 | `MIXIN_TYPE_MISSING_FRAGMENT` | The mixin type reference does not contain a `#<templateId>` fragment |
+| `MIXIN_EXTERNAL_FETCH_BLOCKED` | The mixin type references an external URL but `allowExternalMixins` is `"block"` (the default) |
+| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | The mixin type references a cross-origin URL but `allowExternalMixins` is `"same-origin"` |
 | `MIXIN_TEMPLATE_NOT_FOUND` | No `<template>` element with the given `id` exists in the target document |
 | `MIXIN_TEMPLATE_INVALID_ROOT` | The template does not contain exactly one root element node |
 | `MIXIN_TEMPLATE_ROOT_HAS_NAME` | The template root element's `data-smark` options specify a `name` |
 | `MIXIN_CIRCULAR_DEPENDENCY` | The expansion stack already contains the current mixin key (infinite loop detected) |
-| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `crossOriginMixins` is `"block"` (the default) |
+| `MIXIN_SCRIPT_LOCAL_BLOCKED` | A local mixin template contains a `<script>` and `allowLocalMixinScripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | A same-origin external mixin template contains a `<script>` and `allowSameOriginMixinScripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `allowCrossOriginMixinScripts` is `"block"` (the default) |
 | `MIXIN_NESTED_SCRIPT_DISALLOWED` | A `<script>` element was found inside the template root subtree (nested scripts are not allowed; use top-level sibling `<script>` inside the `<template>` instead) |
