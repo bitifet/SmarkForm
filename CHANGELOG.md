@@ -59,10 +59,22 @@ options and are inherited throughout the component tree via `inheritedOption()`.
 - `docs/_advanced_concepts/mixin_types.md`: new "Mixin Security Options" section with
   option reference table, error code table, and `smarkformOptions` playground parameter.
 - `docs/_about/faq.md`: new FAQ entries for all four mixin security options and
-  `enableJsonEncoding`; updated JSON submission examples to include the opt-in requirement.
+  `enableJsonEncoding`; updated JSON submission examples to include the opt-in requirement;
+  added new Q&A on API stability and versioning policy (0.x.y, tilde-range recommendation,
+  invitation to production users to get in touch).
 - `docs/_component_types/type_form.md`: added `enableJsonEncoding` warning to the
   JSON encoding section of the `submit` action docs.
+- `docs/_advanced_concepts/security_considerations.md`: new dedicated **Security
+  Considerations** chapter summarising all secure-by-default options, the rationale
+  behind each restriction, and guidance on enabling features safely.
+- `docs/_advanced_concepts/error_codes.md`: new **Error Codes Reference** chapter with
+  a full catalogue of all SmarkForm error codes, descriptions, and fix guidance.
 - `test/doc/WRITING_TESTS.md`: documented the new `smarkformOptions` include parameter.
+
+> **⚠️ Breaking change policy (0.x.y):** SmarkForm is in early development.
+> Breaking changes may occur in any minor release (`0.x.0`).  Patch releases
+> (`0.x.y+1`) are always safe.  Pin to `~0.x.y` in npm to receive bug fixes
+> only.  See the new FAQ entry *"Is SmarkForm's API stable?"* for details.
 
 ---
 
