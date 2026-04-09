@@ -1,7 +1,11 @@
 
 {% assign smarkform_cdn_base = "https://cdn.jsdelivr.net/npm/smarkform" %}
+{% assign smarkform_gh_cdn_base = "https://cdn.jsdelivr.net/gh/bitifet/SmarkForm" %}
 
 {% assign smarkform_cdn_base_current = smarkform_cdn_base
+    | append: "@" | append: site.data.package.version
+%}
+{% assign smarkform_gh_cdn_base_current = smarkform_gh_cdn_base
     | append: "@" | append: site.data.package.version
 %}
 
@@ -18,10 +22,10 @@
 {% assign smarkform_umd_cdn_latest = smarkform_cdn_base
     | append: smarkform_umd_path
 %}
-{% assign css_layout_cdn_latest = smarkform_cdn_base
+{% assign css_layout_cdn_latest = smarkform_gh_cdn_base
     | append: css_layout_path
 %}
-{% assign css_styles_cdn_latest = smarkform_cdn_base
+{% assign css_styles_cdn_latest = smarkform_gh_cdn_base
     | append: css_styles_path
 %}
 
@@ -32,10 +36,10 @@
 {% assign smarkform_umd_cdn_current = smarkform_cdn_base_current
     | append: smarkform_umd_path
 %}
-{% assign css_layout_cdn_current = smarkform_cdn_base_current
+{% assign css_layout_cdn_current = smarkform_gh_cdn_base_current
     | append: css_layout_path
 %}
-{% assign css_styles_cdn_current = smarkform_cdn_base_current
+{% assign css_styles_cdn_current = smarkform_gh_cdn_base_current
     | append: css_styles_path
 %}
 
