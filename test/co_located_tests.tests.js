@@ -247,9 +247,9 @@ function generateDemoValueTestHTML(example) {
   // Use a simple constructor that passes demoValue as the value option.
   // Merge smarkformOptions (security/behaviour flags) with the value option so that
   // examples requiring e.g. allowLocalMixinScripts:"allow" are initialised correctly.
-  // Use JSON.stringify(JSON.parse(...)) to ensure the value is correctly
-  // re-serialised and cannot contain unintended code fragments.
-  const constructorOpts = Object.assign({}, smarkformOptions || {}, { value: JSON.parse(JSON.stringify(demoValue)) });
+  // JSON.stringify(constructorOpts) re-serialises the whole object safely; demoValue
+  // is already a parsed plain object from the manifest so no pre-sanitisation is needed.
+  const constructorOpts = Object.assign({}, smarkformOptions || {}, { value: demoValue });
   const demoJsHead = `const myForm = new SmarkForm(document.getElementById("myForm-${formId}"), ${JSON.stringify(constructorOpts)});`;
 
   // Replace alert() and window.alert() with console.log() so that any
