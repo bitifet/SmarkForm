@@ -505,3 +505,6 @@ Before submitting a SmarkForm implementation, verify:
       different behaviour.
 - [ ] No `value=""` HTML attribute AND `"value":...` in `data-smark` on the same element.
 - [ ] CDN URLs pin to a specific version for production code.
+- [ ] If using mixin templates with `<script>` tags, `allowLocalMixinScripts: "allow"` (or `allowSameOriginMixinScripts` / `allowCrossOriginMixinScripts` for external templates) is set on the root SmarkForm constructor — scripts are blocked by default.
+- [ ] If using mixin type references with an external URL, `allowExternalMixins: "same-origin"` or `"allow"` is set on the root constructor — external mixin fetches are blocked by default.
+- [ ] If using `enctype="application/json"` form submission, `enableJsonEncoding: true` is set on the root SmarkForm constructor — JSON encoding is disabled by default.
