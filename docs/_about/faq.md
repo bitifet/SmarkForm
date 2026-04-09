@@ -577,7 +577,8 @@ into URL-encoded pairs and submits them natively:
 </form>
 ```
 
-For JSON payloads, set `enctype="application/json"`:
+For JSON payloads, set `enctype="application/json"` **and** enable JSON encoding on
+the root SmarkForm instance:
 
 ```html
 <form id="myForm" method="post" action="/api/submit"
@@ -585,6 +586,12 @@ For JSON payloads, set `enctype="application/json"`:
   …
   <button type="submit">💾 Save</button>
 </form>
+```
+
+```javascript
+const myForm = new SmarkForm(document.querySelector('#myForm'), {
+    enableJsonEncoding: true,  // opt in — disabled by default
+});
 ```
 
 See [submit action]({{ "/component_types/type_form" | relative_url }}#async-submit-action)
@@ -702,6 +709,7 @@ fields. This lets you tell which button triggered the submission.
 > `export()`.
 
 **JSON encoding (`enctype="application/json"`):**
+JSON encoding must be explicitly enabled via `enableJsonEncoding: true` on the root SmarkForm instance.
 The submitter name/value is **not** automatically added to the JSON body.
 You have full control over the payload; access the submitter element via
 `options.submitter` inside a `BeforeAction_submit` handler and add it however

@@ -11,6 +11,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+🔒 Security & Distribution Hardening — secure-by-default mixin options · `enableJsonEncoding` opt-in · docs/CDN sync test.
+
+This unreleased batch introduces a **secure-by-default** posture for features that carry a
+cross-origin or script-injection risk. All new options are root-level SmarkForm constructor
+options and are inherited throughout the component tree via `inheritedOption()`.
+
+### Security
+
+- **`allowExternalMixins`** (`"block"` | `"same-origin"` | `"allow"`, default `"block"`):
+  Mixin type references that point to an external URL are now blocked by default.
+  Set to `"same-origin"` to allow same-origin templates, or `"allow"` to allow
+  cross-origin templates.  Blocked fetches throw `MIXIN_EXTERNAL_FETCH_BLOCKED`
+  (or `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` for `"same-origin"` mode + cross-origin URL).
+
+- **`allowLocalMixinScripts`** (`"block"` | `"noscript"` | `"allow"`, default `"block"`):
+  `<script>` elements inside local (`#id`) mixin templates are blocked by default.
+  Set to `"allow"` to execute them, or `"noscript"` to silently discard them
+  (render the mixin without scripts).  Blocked scripts throw `MIXIN_SCRIPT_LOCAL_BLOCKED`.
+
+- **`allowSameOriginMixinScripts`** (`"block"` | `"noscript"` | `"allow"`, default `"block"`):
+  Same policy control for same-origin external mixin templates (`MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED`).
+
+- **`allowCrossOriginMixinScripts`** (`"block"` | `"noscript"` | `"allow"`, default `"block"`):
+  Same policy control for cross-origin external mixin templates (`MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED`).
+
+- **`enableJsonEncoding`** (`boolean`, default `false`):
+  The `enctype="application/json"` submit path (which sends form data via `fetch()`) is
+  now **disabled by default**.  Set `enableJsonEncoding: true` on the root SmarkForm
+  instance to re-enable it.  Attempting JSON-encoded submission without the flag throws a
+  clear error pointing to this option.
+
+### Tests
+
+- Added security-option tests to `test/mixin_types.tests.js` covering all four mixin
+  security options and all associated error codes.
+- Added `enableJsonEncoding` tests to `test/type_form_submit.tests.js`:
+  - Blocked-by-default case (new test).
+  - Existing JSON-encoding tests updated to opt in with `enableJsonEncoding: true`.
+- Added `dist_sync.tests.js`: verifies that `dist/` and `docs/_resources/dist` are
+  byte-for-byte identical (guards against stale download files on the docs site).
+
+### Documentation
+
+- `docs/_advanced_concepts/mixin_types.md`: new "Mixin Security Options" section with
+  option reference table, error code table, and `smarkformOptions` playground parameter.
+- `docs/_about/faq.md`: new FAQ entries for all four mixin security options and
+  `enableJsonEncoding`; updated JSON submission examples to include the opt-in requirement.
+- `docs/_component_types/type_form.md`: added `enableJsonEncoding` warning to the
+  JSON encoding section of the `submit` action docs.
+- `test/doc/WRITING_TESTS.md`: documented the new `smarkformOptions` include parameter.
+
+---
+
 ## [0.15.0] — 2026-04-08
 
 🗑️ Remove `foldable` decorator · 🌿 Native `<details>`/`<summary>` collapsible sections · ⌨️ Rich keyboard navigation for collapsible fields · 🐛 Multiple UX fixes.
@@ -377,7 +432,7 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.13.1...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.15.0...HEAD
 [0.13.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 [0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
 [0.12.9]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.9

@@ -390,6 +390,17 @@ Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is sup
 - If the response body is `text/html`, the current document is replaced with it.
 - Otherwise, nothing happens by default.
 
+{: .warning :}
+> JSON encoding is **disabled by default** as a security measure. You must explicitly opt in
+> by setting `enableJsonEncoding: true` on the root SmarkForm instance:
+> ```js
+> const myForm = new SmarkForm(document.querySelector('#myForm'), {
+>     enableJsonEncoding: true,
+> });
+> ```
+> Without this option, attempting to submit a form with `enctype="application/json"` throws
+> a clear error at runtime.
+
 {: .info :}
 > The submitter name/value is **not** automatically added to the JSON body. For JSON
 > submissions the developer has full control over the payload. Access the submitter element via

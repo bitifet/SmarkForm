@@ -330,6 +330,17 @@ export class form extends SmarkField {
         }
 
         if (effectiveEnctype === 'application/json') {
+            // JSON encoding must be explicitly enabled via the root option
+            // `enableJsonEncoding: true`.  It defaults to false (disabled) as
+            // a secure-by-default measure: unknown or automatically-activated
+            // JSON fetch submissions could be exploited in CSRF scenarios.
+            if (! me.inheritedOption('enableJsonEncoding', false)) {
+                throw new Error(
+                    'SmarkForm: JSON encoding (enctype="application/json") is'
+                    + ' disabled by default. Set enableJsonEncoding: true on'
+                    + ' the root SmarkForm instance to enable it.'
+                );
+            }
             await _submitJSON(exportedData, {
                 action: effectiveAction,
                 method: effectiveMethod,
