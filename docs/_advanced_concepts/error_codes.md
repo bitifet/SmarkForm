@@ -347,7 +347,7 @@ or `data-*` attributes for styling and scripting hooks instead.
 
 ---
 
-### `LIST_ITEM_TYPE_MISSMATCH`
+### `LIST_ITEM_TYPE_MISMATCH`
 
 The list declares an `"of"` type option but the item template's root element
 has a different type.

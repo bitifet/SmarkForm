@@ -44,6 +44,13 @@ options and are inherited throughout the component tree via `inheritedOption()`.
   instance to re-enable it.  Attempting JSON-encoded submission without the flag throws a
   clear error pointing to this option.
 
+### Bug Fixes
+
+- Corrected error code typo: `LIST_ITEM_TYPE_MISSMATCH` → `LIST_ITEM_TYPE_MISMATCH`
+  (the previous spelling had a doubled S).  The updated code string is now consistent
+  with all other `*_MISMATCH` error codes in the library.  **This is a breaking change**
+  for any code that catches this specific error code by string comparison.
+
 ### Tests
 
 - Added security-option tests to `test/mixin_types.tests.js` covering all four mixin
