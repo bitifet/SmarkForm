@@ -39,7 +39,28 @@ of lines.
 
 ---
 
-## Callout Styles
+## Variable Naming Conventions in Code Examples
+
+When writing JavaScript code snippets in documentation, always use `myForm`
+(not `el`, `container`, or other generic names) as the variable name for the
+SmarkForm root element and instance.  This matches all pre-existing examples
+throughout the docs and keeps the codebase consistent:
+
+```js
+// ✅ Correct — use myForm
+const myForm = new SmarkForm(document.getElementById("myForm"), { … });
+await myForm.rendered;
+const field = myForm.find('/person/name');
+
+// ❌ Incorrect — do not use generic names like el
+const myForm = new SmarkForm(el, { … });
+```
+
+The first argument to `new SmarkForm(…)` should also use a concrete selector
+like `document.getElementById("myForm")` rather than a bare variable named
+`el`.  If the DOM element is obtained from a variable, call that variable
+`myForm` as well (or a domain-appropriate name like `contactForm`).
+
 
 The documentation uses the Just-the-docs theme's built-in callout styles for important notes, warnings, and tips. The syntax is:
 

@@ -38,6 +38,17 @@ options and are inherited throughout the component tree via `inheritedOption()`.
 - **`allowCrossOriginMixinScripts`** (`"block"` | `"noscript"` | `"allow"`, default `"block"`):
   Same policy control for cross-origin external mixin templates (`MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED`).
 
+- **Security options are now root-only** (privilege escalation fix):
+  All four mixin security options (`allowExternalMixins`, `allowLocalMixinScripts`,
+  `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`) are now read
+  exclusively from the root SmarkForm instance options.  Previously they used
+  `inheritedOption`, which walked the full component chain and could allow a
+  malicious external mixin template to set escalated permissions on its own
+  `data-smark` attribute and have them take effect for its descendants.  With this
+  fix, only the JavaScript-side root constructor options are honoured — HTML markup
+  cannot override them.  **This is a breaking change** if any non-root component
+  relied on overriding security options via `data-smark`.
+
 - **`enableJsonEncoding`** (`boolean`, default `false`):
   The `enctype="application/json"` submit path (which sends form data via `fetch()`) is
   now **disabled by default**.  Set `enableJsonEncoding: true` on the root SmarkForm
@@ -73,9 +84,14 @@ options and are inherited throughout the component tree via `inheritedOption()`.
   JSON encoding section of the `submit` action docs.
 - `docs/_advanced_concepts/security_considerations.md`: new dedicated **Security
   Considerations** chapter summarising all secure-by-default options, the rationale
-  behind each restriction, and guidance on enabling features safely.
+  behind each restriction, and guidance on enabling features safely.  Updated to include
+  a "Security Options are Root-Only" section explaining the privilege-escalation fix.
 - `docs/_advanced_concepts/error_codes.md`: new **Error Codes Reference** chapter with
-  a full catalogue of all SmarkForm error codes, descriptions, and fix guidance.
+  a full catalogue of all SmarkForm error codes, descriptions, and fix guidance.  Sections
+  reordered to Core → Form → List → Fields → Input → Label → Mixin Types → Native Type
+  Parsing Errors.
+- `AGENTS/Documentation-Guidelines.md`: added naming convention — use `myForm` (not `el`)
+  as the variable name in all JS code examples throughout the documentation.
 - `test/doc/WRITING_TESTS.md`: documented the new `smarkformOptions` include parameter.
 
 > **⚠️ Breaking change policy (0.x.y):** SmarkForm is in early development.

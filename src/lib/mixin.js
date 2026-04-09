@@ -194,8 +194,10 @@ export async function expandMixin(node, options, component) { //{{{
         absoluteUrl = new URL(urlPart, document.baseURI).href;
 
         // Enforce external mixin fetch policy before attempting any network
-        // request.  The policy is inherited from the root SmarkForm instance.
-        const extPolicy = component.inheritedOption('allowExternalMixins', 'block');
+        // request.  The policy is read exclusively from the root SmarkForm
+        // instance to prevent a malicious external template from escalating
+        // its own privileges by setting the option in its data-smark.
+        const extPolicy = component.root.options['allowExternalMixins'] ?? 'block';
         if (extPolicy === 'block') {
             throw component.renderError(
                 'MIXIN_EXTERNAL_FETCH_BLOCKED'
@@ -358,7 +360,9 @@ export async function expandMixin(node, options, component) { //{{{
             policyOptionName = 'allowSameOriginMixinScripts';
             errorCode = 'MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED';
         }
-        const policy = component.inheritedOption(policyOptionName, 'block');
+        // Read policy exclusively from the root to prevent privilege escalation
+        // from within mixin templates (see allowExternalMixins comment above).
+        const policy = component.root.options[policyOptionName] ?? 'block';
         if (policy === 'block') {
             throw component.renderError(
                 errorCode
