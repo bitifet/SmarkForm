@@ -65,6 +65,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (previewContent && previewContent.classList.contains('doctabs-active')) {
             renderFrame();
         }
+
+        /* Keyboard accessibility: make scrollable code blocks focusable so
+           keyboard users can scroll them without a pointing device. */
+        container.querySelectorAll('.doctabs-content pre.highlight').forEach(function(pre) {
+            pre.setAttribute('tabindex', '0');
+        });
     });
 });
 </script>
