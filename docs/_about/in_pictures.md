@@ -59,35 +59,6 @@ label associations and position counters are all built in.
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Planner – SmarkForm</title>
   <script src="{{ smarkform_umd_cdn_latest }}"></script>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
-    button[data-smark] { padding: .3em .6em; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; }
-    button[data-smark]:hover { background: #e9ecef; }
-    .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
-    .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
-    .ep label { min-width: 5em; font-weight: 500; white-space: nowrap; }
-    .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
-    .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
-    .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
-    .ep-list > div { display: flex; align-items: center; gap: .4em; margin-bottom: .2em; }
-    .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
-    .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
-    .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
-    .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
-    .ep-attendee input { flex: 1; min-width: 110px; }
-    .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
-    /* Hotkey hints — SmarkForm sets data-hotkey on buttons when Ctrl is held */
-    [data-hotkey] { position: relative; }
-    [data-hotkey]::after {
-      content: "Ctrl+" attr(data-hotkey);
-      position: absolute; top: -1.6em; left: 0;
-      font-size: .7em; background: #333; color: #fff;
-      padding: 1px 4px; border-radius: 3px;
-      white-space: nowrap; pointer-events: none;
-    }
-  </style>
 </head>
 <body>
   <div id="myForm">
@@ -144,6 +115,35 @@ label associations and position counters are all built in.
   <script>
     const myForm = new SmarkForm(document.getElementById('myForm'));
   </script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
+    button[data-smark] { padding: .3em .6em; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; }
+    button[data-smark]:hover { background: #e9ecef; }
+    .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
+    .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
+    .ep label { min-width: 5em; font-weight: 500; white-space: nowrap; }
+    .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
+    .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
+    .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
+    .ep-list > div { display: flex; align-items: center; gap: .4em; margin-bottom: .2em; }
+    .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
+    .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
+    .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
+    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
+    .ep-attendee input { flex: 1; min-width: 110px; }
+    .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — SmarkForm sets data-hotkey on buttons when Ctrl is held */
+    [data-hotkey] { position: relative; }
+    [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
+  </style>
 </body>
 </html>
 {%- endcapture %}
@@ -172,40 +172,24 @@ All form state and behaviour must be wired up explicitly.
   <script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@babel/standalone/babel.min.js"></script>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
-    button { padding: .3em .6em; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; }
-    button:hover { background: #e9ecef; }
-    .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
-    .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
-    .ep label { min-width: 5em; font-weight: 500; white-space: nowrap; }
-    .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
-    .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
-    .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
-    .ep-list > div { display: flex; align-items: center; gap: .4em; margin-bottom: .2em; }
-    .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
-    .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
-    .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
-    .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
-    .ep-attendee input { flex: 1; min-width: 110px; }
-    .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
-    /* Hotkey hints — revealed when body has class show-hotkeys */
-    [data-hotkey] { position: relative; }
-    body.show-hotkeys [data-hotkey]::after {
-      content: "Ctrl+" attr(data-hotkey);
-      position: absolute; top: -1.6em; left: 0;
-      font-size: .7em; background: #333; color: #fff;
-      padding: 1px 4px; border-radius: 3px;
-      white-space: nowrap; pointer-events: none;
-    }
-  </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
+
+    // Returns only inputs not inside a closed <details> element.
+    // Enter/Shift+Enter navigation skips inputs hidden in collapsed rows.
+    function getVisibleInputs() {
+      return Array.from(document.querySelectorAll('input')).filter(inp => {
+        let n = inp.parentElement;
+        while (n) {
+          if (n.tagName === 'DETAILS' && !n.open) return false;
+          n = n.parentElement;
+        }
+        return true;
+      });
+    }
 
     function EventPlanner() {
       const [title, setTitle] = useState('');
@@ -216,6 +200,9 @@ All form state and behaviour must be wired up explicitly.
         { name: '', email: '', phone: '' }
       ]);
 
+      // Queue a focus-by-index to be processed after the next render.
+      const pendingFocusIdx = useRef(null);
+
       const setOrg = (field) => (e) =>
         setOrganizer(o => ({ ...o, [field]: e.target.value }));
 
@@ -224,15 +211,21 @@ All form state and behaviour must be wired up explicitly.
           a.map((item, j) => j === i ? { ...item, [field]: e.target.value } : item)
         );
 
-      const addAfter = (i) =>
+      const addAfter = (i) => {
+        pendingFocusIdx.current = i + 1;
         setAttendees(a => [
           ...a.slice(0, i + 1),
           { name: '', email: '', phone: '' },
           ...a.slice(i + 1)
         ]);
+      };
 
       const removeAt = (i) =>
-        setAttendees(a => a.filter((_, j) => j !== i));
+        setAttendees(a => {
+          const next = a.filter((_, j) => j !== i);
+          pendingFocusIdx.current = Math.min(i, next.length - 1);
+          return next;
+        });
 
       const pruneEmpty = () =>
         setAttendees(a => {
@@ -240,18 +233,28 @@ All form state and behaviour must be wired up explicitly.
           return filled.length ? filled : [{ name: '', email: '', phone: '' }];
         });
 
+      // After each render, focus the name input of any queued attendee row.
+      useEffect(() => {
+        if (pendingFocusIdx.current === null) return;
+        const idx = pendingFocusIdx.current;
+        pendingFocusIdx.current = null;
+        const li = document.querySelector(`[data-ai="${idx}"]`);
+        if (li) (li.querySelector('summary input') || li.querySelector('input'))?.focus();
+      });
+
       // Mutable ref so the stable useEffect closure always reads the latest
       // state and functions without re-mounting the listeners on every render.
       const $ = useRef({});
       $.current = { attendees, addAfter, removeAt };
 
-      // Enter-key navigation (Enter = next field, Shift+Enter = previous).
-      // Also stops Space from toggling <details> when typed in a summary input.
+      // Enter/Shift+Enter: navigate between VISIBLE inputs only.
+      // Space: stop propagation so <details> does not toggle.
       function onInputKeyDown(e) {
         if (e.key === ' ') { e.stopPropagation(); return; }
         if (e.key === 'Enter') {
           e.preventDefault();
-          const inputs = Array.from(document.querySelectorAll('input'));
+          e.stopPropagation();
+          const inputs = getVisibleInputs();
           const idx = inputs.indexOf(e.target);
           if (idx < 0) return;
           const next = e.shiftKey ? inputs[idx - 1] : inputs[idx + 1];
@@ -367,32 +370,6 @@ All form state and behaviour must be wired up explicitly.
 
     ReactDOM.createRoot(document.getElementById('root')).render(<EventPlanner />);
   </script>
-</body>
-</html>
-{%- endcapture %}
-
-{% include components/doctabs_tpl.md tabId="react-event-planner" docSource=react_doc height=65 %}
-
-
----
-
-## Vue
-
-
-The same form using [Vue 3](https://vuejs.org/) (from CDN).
-Vue's `v-model` reduces boilerplate compared to React, but the component state
-and methods still need to be declared explicitly.
-
-{% comment %} ── Vue example document ── {% endcomment %}
-
-{% capture vue_doc -%}
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Planner – Vue</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
     button { padding: .3em .6em; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; }
@@ -422,11 +399,49 @@ and methods still need to be declared explicitly.
       white-space: nowrap; pointer-events: none;
     }
   </style>
+</body>
+</html>
+{%- endcapture %}
+
+{% include components/doctabs_tpl.md tabId="react-event-planner" docSource=react_doc height=65 %}
+
+
+---
+
+## Vue
+
+
+The same form using [Vue 3](https://vuejs.org/) (from CDN).
+Vue's `v-model` reduces boilerplate compared to React, but the component state
+and methods still need to be declared explicitly.
+
+{% comment %} ── Vue example document ── {% endcomment %}
+
+{% capture vue_doc -%}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Planner – Vue</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
 </head>
 <body>
   <div id="app"></div>
   <script>
-    const { createApp, ref, reactive, onMounted, onBeforeUnmount } = Vue;
+    const { createApp, ref, reactive, onMounted, onBeforeUnmount, nextTick } = Vue;
+
+    // Returns only inputs not inside a closed <details> element.
+    function getVisibleInputs() {
+      return Array.from(document.querySelectorAll('input')).filter(inp => {
+        let n = inp.parentElement;
+        while (n) {
+          if (n.tagName === 'DETAILS' && !n.open) return false;
+          n = n.parentElement;
+        }
+        return true;
+      });
+    }
 
     createApp({
       setup() {
@@ -436,11 +451,22 @@ and methods still need to be declared explicitly.
         const organizer = reactive({ name: '', email: '' });
         const attendees = ref([{ name: '', email: '', phone: '' }]);
 
+        // Focus the name input of attendee row idx after the next DOM update.
+        function focusAt(idx) {
+          nextTick(() => {
+            const li = document.querySelector(`[data-ai="${idx}"]`);
+            if (li) (li.querySelector('summary input') || li.querySelector('input'))?.focus();
+          });
+        }
+
         function addAfter(i) {
           attendees.value.splice(i + 1, 0, { name: '', email: '', phone: '' });
+          focusAt(i + 1);
         }
         function removeAt(i) {
+          const newLen = attendees.value.length - 1;
           attendees.value.splice(i, 1);
+          if (newLen > 0) focusAt(Math.min(i, newLen - 1));
         }
         function pruneEmpty() {
           const filled = attendees.value.filter(a => a.name || a.email || a.phone);
@@ -449,13 +475,14 @@ and methods still need to be declared explicitly.
             : [{ name: '', email: '', phone: '' }];
         }
 
-        // Enter-key navigation (Enter = next field, Shift+Enter = previous).
-        // Also stops Space from toggling <details> when typed in a summary input.
+        // Enter/Shift+Enter: navigate between VISIBLE inputs only.
+        // Space: stop propagation so <details> does not toggle.
         function onInputKeyDown(e) {
           if (e.key === ' ') { e.stopPropagation(); return; }
           if (e.key === 'Enter') {
             e.preventDefault();
-            const inputs = Array.from(document.querySelectorAll('input'));
+            e.stopPropagation();
+            const inputs = getVisibleInputs();
             const idx = inputs.indexOf(e.target);
             if (idx < 0) return;
             const next = e.shiftKey ? inputs[idx - 1] : inputs[idx + 1];
@@ -552,6 +579,35 @@ and methods still need to be declared explicitly.
       `
     }).mount('#app');
   </script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
+    button { padding: .3em .6em; cursor: pointer; border: 1px solid #ccc; border-radius: 4px; background: #f8f9fa; }
+    button:hover { background: #e9ecef; }
+    .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
+    .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
+    .ep label { min-width: 5em; font-weight: 500; white-space: nowrap; }
+    .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
+    .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
+    .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
+    .ep-list > div { display: flex; align-items: center; gap: .4em; margin-bottom: .2em; }
+    .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
+    .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
+    .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
+    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
+    .ep-attendee input { flex: 1; min-width: 110px; }
+    .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — revealed when body has class show-hotkeys */
+    [data-hotkey] { position: relative; }
+    body.show-hotkeys [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
+  </style>
 </body>
 </html>
 {%- endcapture %}
@@ -570,7 +626,8 @@ and methods still need to be declared explicitly.
 </thead>
 <tbody>
 <tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>3 (React + ReactDOM ≈44 kB gz + Babel standalone ≈300 kB gz†)</td><td>1 (Vue global, ~33 kB gz)</td></tr>
-<tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~100 lines</td><td>~65 lines</td></tr>
+<tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
+<tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
 <tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
