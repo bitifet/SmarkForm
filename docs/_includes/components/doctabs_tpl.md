@@ -56,6 +56,7 @@ Accepted arguments:
       <iframe
         class="doctabs-preview-frame"
         sandbox="allow-scripts"
+        title="Live preview of example code"
         style="width:100%;border:none;display:none;"
       ></iframe>
     </div>
@@ -66,5 +67,17 @@ Accepted arguments:
     "height": {{ include.height | plus: 0 }}
   }
   </script>
+  {% comment %}
+    The double-space replacement above (`replace: "  ", "\u0020\u0020"`) is a
+    workaround for the Just-The-Docs HTML compressor (vendor/compress.html),
+    which collapses two or more consecutive literal spaces to one space
+    everywhere outside <pre> blocks — including inside <script> elements.
+    By replacing "  " with its Unicode escape equivalent "\u0020\u0020",
+    the compressor no longer recognises the run as "two spaces" and leaves it
+    intact, while JSON.parse in the browser still decodes "\u0020" as U+0020
+    (space), faithfully restoring the original indentation.
+    The `replace: "<", "\u003c"` prevents any "</script>" inside the JSON
+    string from prematurely closing the outer <script> element.
+  {% endcomment %}
 </div>
 {% endif %}

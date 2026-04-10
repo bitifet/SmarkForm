@@ -429,7 +429,7 @@ and methods still need to be declared explicitly.
 <tr><th>Metric</th><th>SmarkForm</th><th>React</th><th>Vue</th></tr>
 </thead>
 <tbody>
-<tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~12 kB gz)</td><td>3 (React + ReactDOM + Babel)</td><td>1 (Vue global, ~33 kB gz)</td></tr>
+<tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>3 (React + ReactDOM ≈44 kB gz + Babel standalone ≈300 kB gz†)</td><td>1 (Vue global, ~33 kB gz)</td></tr>
 <tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~55 lines</td><td>~25 lines</td></tr>
 <tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
@@ -448,3 +448,9 @@ and methods still need to be declared explicitly.
 > rendering, and vast ecosystems. SmarkForm is purpose-built for HTML forms.
 > The take-away is not *"SmarkForm replaces React"*, but *"for forms,
 > SmarkForm lets you stay in HTML"*.
+
+† The React demo uses Babel Standalone for in-browser JSX compilation
+(no build step needed). In a real-world React project you would use a bundler
+(Webpack, Vite, …), which eliminates Babel Standalone from the runtime bundle.
+The demo weight is therefore not representative of production React — but the
+*amount of code you must write* is.
