@@ -78,6 +78,15 @@ label associations and position counters are all built in.
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — SmarkForm sets data-hotkey on buttons when Ctrl is held */
+    [data-hotkey] { position: relative; }
+    [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -181,12 +190,22 @@ All form state and behaviour must be wired up explicitly.
     .ep-list li summary::-webkit-details-marker { display: none; }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
+    .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — revealed when body has class show-hotkeys */
+    [data-hotkey] { position: relative; }
+    body.show-hotkeys [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
   </style>
 </head>
 <body>
   <div id="root"></div>
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useEffect, useRef } = React;
 
     function EventPlanner() {
       const [title, setTitle] = useState('');
@@ -221,65 +240,127 @@ All form state and behaviour must be wired up explicitly.
           return filled.length ? filled : [{ name: '', email: '', phone: '' }];
         });
 
+      // Mutable ref so the stable useEffect closure always reads the latest
+      // state and functions without re-mounting the listeners on every render.
+      const $ = useRef({});
+      $.current = { attendees, addAfter, removeAt };
+
+      // Enter-key navigation (Enter = next field, Shift+Enter = previous).
+      // Also stops Space from toggling <details> when typed in a summary input.
+      function onInputKeyDown(e) {
+        if (e.key === ' ') { e.stopPropagation(); return; }
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const inputs = Array.from(document.querySelectorAll('input'));
+          const idx = inputs.indexOf(e.target);
+          if (idx < 0) return;
+          const next = e.shiftKey ? inputs[idx - 1] : inputs[idx + 1];
+          if (next) next.focus();
+        }
+      }
+
+      // Global keyboard: Ctrl-hold reveals hotkey badges;
+      // Ctrl+= adds after focused row (or at end); Ctrl+- removes focused row.
+      useEffect(() => {
+        function onKeyDown(e) {
+          if (e.key === 'Control') document.body.classList.add('show-hotkeys');
+          if (!e.ctrlKey) return;
+          const { attendees: atts, addAfter: add, removeAt: rem } = $.current;
+          const li = document.activeElement && document.activeElement.closest('[data-ai]');
+          const idx = li ? +li.dataset.ai : -1;
+          if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            add(idx >= 0 ? idx : atts.length - 1);
+          } else if (e.key === '-' && idx >= 0) {
+            e.preventDefault();
+            rem(idx);
+          }
+        }
+        function onKeyUp(e) {
+          if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
+        }
+        document.addEventListener('keydown', onKeyDown);
+        document.addEventListener('keyup', onKeyUp);
+        return () => {
+          document.removeEventListener('keydown', onKeyDown);
+          document.removeEventListener('keyup', onKeyUp);
+        };
+      }, []);
+
       return (
         <div className="ep">
           <p>
             <label>📋 Event:</label>
             <input type="text" value={title}
               onChange={e => setTitle(e.target.value)}
+              onKeyDown={onInputKeyDown}
               placeholder="e.g. Sprint Review" />
           </p>
           <p>
             <label>📅 Date:</label>
             <input type="date" value={date}
-              onChange={e => setDate(e.target.value)} />
+              onChange={e => setDate(e.target.value)}
+              onKeyDown={onInputKeyDown} />
           </p>
           <p>
             <label>⏰ Time:</label>
             <input type="time" value={time}
-              onChange={e => setTime(e.target.value)} />
+              onChange={e => setTime(e.target.value)}
+              onKeyDown={onInputKeyDown} />
           </p>
           <fieldset>
             <legend>👤 Organizer</legend>
             <p>
               <label>Name:</label>
               <input type="text" value={organizer.name}
-                onChange={setOrg('name')} />
+                onChange={setOrg('name')}
+                onKeyDown={onInputKeyDown} />
             </p>
             <p>
               <label>Email:</label>
               <input type="email" value={organizer.email}
-                onChange={setOrg('email')} />
+                onChange={setOrg('email')}
+                onKeyDown={onInputKeyDown} />
             </p>
           </fieldset>
           <div className="ep-list">
             <div>
               <button onClick={pruneEmpty} title="Remove empty rows">🧹</button>
-              <button onClick={() => addAfter(attendees.length - 1)} title="Add attendee">➕</button>
+              <button onClick={() => addAfter(attendees.length - 1)}
+                data-hotkey="+" title="Add attendee">➕</button>
               <strong>👥 Attendees:</strong>
             </div>
             <ul>
               {attendees.map((att, i) => (
-                <li key={i}>
+                <li key={i} data-ai={i}>
                   <details>
                     <summary>
                       <span>{i + 1}.</span>
                       <input type="text" value={att.name}
-                        onChange={setAtt(i, 'name')} placeholder="Name" />
-                      <button onClick={() => removeAt(i)} title="Remove">➖</button>
-                      <button onClick={() => addAfter(i)} title="Insert here">➕</button>
+                        onChange={setAtt(i, 'name')}
+                        onKeyDown={onInputKeyDown}
+                        placeholder="Name" />
+                      <button onClick={() => removeAt(i)}
+                        data-hotkey="-" title="Remove">➖</button>
+                      <button onClick={() => addAfter(i)}
+                        data-hotkey="+" title="Insert here">➕</button>
                     </summary>
                     <div className="ep-attendee">
                       <input type="email" value={att.email}
-                        onChange={setAtt(i, 'email')} placeholder="Email" />
+                        onChange={setAtt(i, 'email')}
+                        onKeyDown={onInputKeyDown}
+                        placeholder="Email" />
                       <input type="tel" value={att.phone}
-                        onChange={setAtt(i, 'phone')} placeholder="Phone" />
+                        onChange={setAtt(i, 'phone')}
+                        onKeyDown={onInputKeyDown}
+                        placeholder="Phone" />
                     </div>
                   </details>
                 </li>
               ))}
             </ul>
           </div>
+          <p className="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
         </div>
       );
     }
@@ -330,12 +411,22 @@ and methods still need to be declared explicitly.
     .ep-list li summary::-webkit-details-marker { display: none; }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
+    .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — revealed when body has class show-hotkeys */
+    [data-hotkey] { position: relative; }
+    body.show-hotkeys [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
   </style>
 </head>
 <body>
   <div id="app"></div>
   <script>
-    const { createApp, ref, reactive } = Vue;
+    const { createApp, ref, reactive, onMounted, onBeforeUnmount } = Vue;
 
     createApp({
       setup() {
@@ -358,56 +449,105 @@ and methods still need to be declared explicitly.
             : [{ name: '', email: '', phone: '' }];
         }
 
-        return { title, date, time, organizer, attendees, addAfter, removeAt, pruneEmpty };
+        // Enter-key navigation (Enter = next field, Shift+Enter = previous).
+        // Also stops Space from toggling <details> when typed in a summary input.
+        function onInputKeyDown(e) {
+          if (e.key === ' ') { e.stopPropagation(); return; }
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            const inputs = Array.from(document.querySelectorAll('input'));
+            const idx = inputs.indexOf(e.target);
+            if (idx < 0) return;
+            const next = e.shiftKey ? inputs[idx - 1] : inputs[idx + 1];
+            if (next) next.focus();
+          }
+        }
+
+        // Global Ctrl key: reveal hotkeys + Ctrl+= / Ctrl+- shortcuts.
+        function onKeyDown(e) {
+          if (e.key === 'Control') document.body.classList.add('show-hotkeys');
+          if (!e.ctrlKey) return;
+          const li = document.activeElement && document.activeElement.closest('[data-ai]');
+          const idx = li ? +li.dataset.ai : -1;
+          if (e.key === '+' || e.key === '=') {
+            e.preventDefault();
+            addAfter(idx >= 0 ? idx : attendees.value.length - 1);
+          } else if (e.key === '-' && idx >= 0) {
+            e.preventDefault();
+            removeAt(idx);
+          }
+        }
+        function onKeyUp(e) {
+          if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
+        }
+
+        onMounted(() => {
+          document.addEventListener('keydown', onKeyDown);
+          document.addEventListener('keyup', onKeyUp);
+        });
+        onBeforeUnmount(() => {
+          document.removeEventListener('keydown', onKeyDown);
+          document.removeEventListener('keyup', onKeyUp);
+        });
+
+        return { title, date, time, organizer, attendees, addAfter, removeAt, pruneEmpty, onInputKeyDown };
       },
       template: `
         <div class="ep">
           <p>
             <label>📋 Event:</label>
-            <input v-model="title" type="text" placeholder="e.g. Sprint Review">
+            <input v-model="title" type="text" placeholder="e.g. Sprint Review"
+              @keydown="onInputKeyDown">
           </p>
           <p>
             <label>📅 Date:</label>
-            <input v-model="date" type="date">
+            <input v-model="date" type="date" @keydown="onInputKeyDown">
           </p>
           <p>
             <label>⏰ Time:</label>
-            <input v-model="time" type="time">
+            <input v-model="time" type="time" @keydown="onInputKeyDown">
           </p>
           <fieldset>
             <legend>👤 Organizer</legend>
             <p>
               <label>Name:</label>
-              <input v-model="organizer.name" type="text">
+              <input v-model="organizer.name" type="text" @keydown="onInputKeyDown">
             </p>
             <p>
               <label>Email:</label>
-              <input v-model="organizer.email" type="email">
+              <input v-model="organizer.email" type="email" @keydown="onInputKeyDown">
             </p>
           </fieldset>
           <div class="ep-list">
             <div>
               <button @click="pruneEmpty" title="Remove empty rows">🧹</button>
-              <button @click="addAfter(attendees.length - 1)" title="Add attendee">➕</button>
+              <button @click="addAfter(attendees.length - 1)"
+                data-hotkey="+" title="Add attendee">➕</button>
               <strong>👥 Attendees:</strong>
             </div>
             <ul>
-              <li v-for="(att, i) in attendees" :key="i">
+              <li v-for="(att, i) in attendees" :key="i" :data-ai="i">
                 <details>
                   <summary>
                     <span v-text="(i + 1) + '.'"></span>
-                    <input v-model="att.name" type="text" placeholder="Name">
-                    <button @click="removeAt(i)" title="Remove">➖</button>
-                    <button @click="addAfter(i)" title="Insert here">➕</button>
+                    <input v-model="att.name" type="text" placeholder="Name"
+                      @keydown="onInputKeyDown">
+                    <button @click="removeAt(i)"
+                      data-hotkey="-" title="Remove">➖</button>
+                    <button @click="addAfter(i)"
+                      data-hotkey="+" title="Insert here">➕</button>
                   </summary>
                   <div class="ep-attendee">
-                    <input v-model="att.email" type="email" placeholder="Email">
-                    <input v-model="att.phone" type="tel" placeholder="Phone">
+                    <input v-model="att.email" type="email" placeholder="Email"
+                      @keydown="onInputKeyDown">
+                    <input v-model="att.phone" type="tel" placeholder="Phone"
+                      @keydown="onInputKeyDown">
                   </div>
                 </details>
               </li>
             </ul>
           </div>
+          <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
         </div>
       `
     }).mount('#app');
@@ -430,14 +570,15 @@ and methods still need to be declared explicitly.
 </thead>
 <tbody>
 <tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>3 (React + ReactDOM ≈44 kB gz + Babel standalone ≈300 kB gz†)</td><td>1 (Vue global, ~33 kB gz)</td></tr>
-<tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~55 lines</td><td>~25 lines</td></tr>
+<tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~100 lines</td><td>~65 lines</td></tr>
 <tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
-<tr><td>Keyboard shortcuts</td><td>declarative (hotkey attr)</td><td>keydown listeners</td><td>keydown listeners</td></tr>
+<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
+<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware‡</td><td>manual (~20 lines)</td><td>manual (~18 lines)</td></tr>
 </tbody>
 </table>
 </div>
@@ -454,3 +595,8 @@ and methods still need to be declared explicitly.
 (Webpack, Vite, …), which eliminates Babel Standalone from the runtime bundle.
 The demo weight is therefore not representative of production React — but the
 *amount of code you must write* is.
+
+‡ SmarkForm's hotkey reveal is context-aware: it computes which buttons are
+reachable from the currently focused field and displays only their shortcuts.
+The React and Vue implementations show all `data-hotkey` badges simultaneously
+whenever Ctrl is held — a simpler but visually broader reveal.
