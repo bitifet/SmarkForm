@@ -18,18 +18,25 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                 me.sortable = !! me.options.sortable;
                 if (me.sortable) {
-                    // Mark item template as draggable so that items cloned
-                    // from it start with draggable=true (overridden by
-                    // _applyDraggable once the item is fully rendered).
+                    // The item template (and all cloned items) are draggable.
+                    // _applyDraggable re-confirms this and applies cursor hints.
                     me.templates.item.setAttribute("draggable", "true");
 
                     let dragSource = null;
                     let dragDest = null;
+
+                    // Track the last mousedown target so we can validate the
+                    // drag origin in dragstart (e.target is always the item
+                    // root when the whole <li> is draggable).
+                    let lastMousedownTarget = null;
+                    me.targetNode.addEventListener("mousedown", e => {
+                        lastMousedownTarget = e.target;
+                    }, { capture: true, passive: true });
+
                     me.targetNode.addEventListener("dragstart", e => {
                         if (dragSource === null) {
                             // Resolve dragSource to the item root (direct
-                            // child of the list container), even when the
-                            // drag started from a label handle.
+                            // child of the list container).
                             let itemRoot = e.target;
                             while (
                                 itemRoot.parentElement
@@ -38,30 +45,27 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                                 itemRoot = itemRoot.parentElement;
                             };
 
-                            // Guard: if using label handles, do not start
-                            // drag from interactive fields.
                             const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
                             if (handles.length > 0) {
-                                if (e.target.closest(INTERACTIVE_FIELDS_SELECTOR)) {
+                                // Label handles are present: only allow drag
+                                // when the pointer went down on a handle.
+                                // This lets clicks on the label bubble up to
+                                // <summary> for normal fold/unfold behaviour.
+                                if (!lastMousedownTarget?.closest(SMARK_LABEL_SELECTOR)) {
+                                    e.preventDefault();
+                                    return;
+                                };
+                            } else {
+                                // No handles: backward-compatible behaviour —
+                                // block drag originating from interactive
+                                // controls so text selection still works.
+                                if (lastMousedownTarget?.closest(INTERACTIVE_FIELDS_SELECTOR)) {
                                     e.preventDefault();
                                     return;
                                 };
                             };
 
                             dragSource = itemRoot;
-
-                            // Use the whole item as the drag image so the
-                            // user sees the full row being moved rather than
-                            // just the handle element.
-                            try {
-                                const rect = dragSource.getBoundingClientRect();
-                                e.dataTransfer.setDragImage(
-                                    dragSource,
-                                    e.clientX - rect.left,
-                                    e.clientY - rect.top,
-                                );
-                            } catch (_e) { /* setDragImage not available */ };
-
                             e.stopPropagation();
                         } else {
                             // Single dragging at a time.
@@ -135,9 +139,9 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
             async renum() {//{{{
                 const me = this;
                 const result = await super.renum();
-                // Re-apply draggable handles after every structural change.
-                // renum() is always called after items are fully rendered, so
-                // data-smark-label is guaranteed to be set by this point.
+                // Re-apply draggable/cursor hints after every structural
+                // change. renum() is always called after items are fully
+                // rendered so data-smark-label is guaranteed to be set.
                 if (me.sortable) {
                     me.children.forEach(c => _applyDraggable(me, c.targetNode));
                 };
@@ -148,26 +152,25 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 };
 
 /**
- * Apply draggable attribute to the appropriate node(s) for a list item.
+ * Ensure the item root is draggable and apply cursor hints to any label
+ * handles inside it.
  *
- * If the item contains SmarkForm label components (marked with
- * [data-smark-label]), those labels become the drag handles and the item root
- * is made non-draggable, restoring normal text selection inside input fields.
+ * The item root (<li>) is always the draggable element — NOT the individual
+ * label handles.  Keeping labels non-draggable means pointer events (clicks)
+ * bubble normally through <label> → <summary> so fold/unfold works.
  *
- * If no label handles are found, the item root itself is made draggable
- * (backward-compatible fallback).
+ * Origin validation (restrict drag to handle / block interactive fields) is
+ * done in the dragstart listener via the lastMousedownTarget tracker.
+ *
+ * Items with no label handles retain the original whole-item-draggable
+ * behaviour (backward-compatible).
  */
 function _applyDraggable(me, itemRoot) {
+    // Item root is always the draggable element.
+    itemRoot.setAttribute("draggable", "true");
+    // Apply grab cursor to any label handles as a visual hint.
     const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
-    if (handles.length > 0) {
-        itemRoot.setAttribute("draggable", "false");
-        handles.forEach(h => {
-            h.setAttribute("draggable", "true");
-            _applyCursorGrab(h);
-        });
-    } else {
-        itemRoot.setAttribute("draggable", "true");
-    };
+    handles.forEach(h => _applyCursorGrab(h));
 };
 
 /**
