@@ -756,14 +756,14 @@ still need to be declared explicitly in JavaScript.
 <tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>2 (React + ReactDOM ≈44 kB gz)<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
 <tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
 <tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
-<tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
+<tr><td>Explicit state management</td><td>Internal</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
-<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code></td><td>native <code>&lt;details&gt;</code></td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
-<tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id <a href="#gotchas" title="With gotchas">‼️</a></td><td>for + id (or wrapping) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
-<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~12 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
+<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
 <tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 </tbody>
 </table>
