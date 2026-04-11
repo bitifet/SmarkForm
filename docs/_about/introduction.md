@@ -120,7 +120,7 @@ the contrast can be striking. Below is the **exact same form** — a real-world
 three ways.
 
 - The first one is implemented with SmarkForm.
-- The otheres are implemented with modern web frameworks trying to mimic the same behaviour and user experience as closely as possible while keeping the code as simple as possible.
+- The others are implemented with modern web frameworks trying to mimic the same behaviour and user experience as closely as possible while keeping the code as simple as possible.
 
 The [metrics](#what-the-numbers-say) speak for themselves.
 
@@ -291,6 +291,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
       return Array.from(document.querySelectorAll('input')).filter(inp => {
         let n = inp.parentElement;
         while (n) {
+          if (n.tagName === 'SUMMARY') return true; // inside <summary>: always visible
           if (n.tagName === 'DETAILS' && !n.open) return false;
           n = n.parentElement;
         }
@@ -304,11 +305,15 @@ All form state and behaviour is wired up explicitly in JavaScript.
       const [time,  setTime]  = useState('');
       const [organizer, setOrganizer] = useState({ name: '', email: '' });
       const [attendees, setAttendees] = useState([
-        { name: '', email: '', phone: '' }
+        { id: 1, name: '', email: '', phone: '' }
       ]);
 
       // Queue a focus-by-index to be processed after the next render.
       const pendingFocusIdx = useRef(null);
+
+      // Stable id counter — prevents fold/unfold state from shifting on add/remove.
+      const nextId = useRef(2);
+      const mkItem = () => ({ id: nextId.current++, name: '', email: '', phone: '' });
 
       const setOrg = (field) => (e) =>
         setOrganizer(o => ({ ...o, [field]: e.target.value }));
@@ -322,7 +327,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
         pendingFocusIdx.current = i + 1;
         setAttendees(a => [
           ...a.slice(0, i + 1),
-          { name: '', email: '', phone: '' },
+          mkItem(),
           ...a.slice(i + 1)
         ]);
       };
@@ -337,7 +342,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
       const pruneEmpty = () =>
         setAttendees(a => {
           const filled = a.filter(x => x.name || x.email || x.phone);
-          return filled.length ? filled : [{ name: '', email: '', phone: '' }];
+          return filled.length ? filled : [mkItem()];
         });
 
       // After each render, focus the name input of any queued attendee row.
@@ -387,48 +392,50 @@ All form state and behaviour is wired up explicitly in JavaScript.
           }
         }
         function onKeyUp(e) {
+          // Capture phase: stop Space before <summary> can process it as a toggle.
+          if (e.key === ' ' && e.target.tagName === 'INPUT') { e.stopImmediatePropagation(); return; }
           if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
         }
         document.addEventListener('keydown', onKeyDown);
-        document.addEventListener('keyup', onKeyUp);
+        document.addEventListener('keyup', onKeyUp, { capture: true });
         return () => {
           document.removeEventListener('keydown', onKeyDown);
-          document.removeEventListener('keyup', onKeyUp);
+          document.removeEventListener('keyup', onKeyUp, { capture: true });
         };
       }, []);
 
       return (
         <div className="ep">
           <p>
-            <label>📋 Event:</label>
-            <input type="text" value={title}
+            <label htmlFor="ep-title">📋 Event:</label>
+            <input id="ep-title" type="text" value={title}
               onChange={e => setTitle(e.target.value)}
               onKeyDown={onInputKeyDown}
               placeholder="e.g. Sprint Review" />
           </p>
           <p>
-            <label>📅 Date:</label>
-            <input type="date" value={date}
+            <label htmlFor="ep-date">📅 Date:</label>
+            <input id="ep-date" type="date" value={date}
               onChange={e => setDate(e.target.value)}
               onKeyDown={onInputKeyDown} />
           </p>
           <p>
-            <label>⏰ Time:</label>
-            <input type="time" value={time}
+            <label htmlFor="ep-time">⏰ Time:</label>
+            <input id="ep-time" type="time" value={time}
               onChange={e => setTime(e.target.value)}
               onKeyDown={onInputKeyDown} />
           </p>
           <fieldset>
             <legend>👤 Organizer</legend>
             <p>
-              <label>Name:</label>
-              <input type="text" value={organizer.name}
+              <label htmlFor="ep-org-name">Name:</label>
+              <input id="ep-org-name" type="text" value={organizer.name}
                 onChange={setOrg('name')}
                 onKeyDown={onInputKeyDown} />
             </p>
             <p>
-              <label>Email:</label>
-              <input type="email" value={organizer.email}
+              <label htmlFor="ep-org-email">Email:</label>
+              <input id="ep-org-email" type="email" value={organizer.email}
                 onChange={setOrg('email')}
                 onKeyDown={onInputKeyDown} />
             </p>
@@ -442,7 +449,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
             </div>
             <ul>
               {attendees.map((att, i) => (
-                <li key={i} data-ai={i}>
+                <li key={att.id} data-ai={i}>
                   <details>
                     <summary>
                       <span>{i + 1}.</span>
@@ -538,10 +545,12 @@ still need to be declared explicitly in JavaScript.
     const { createApp, ref, reactive, onMounted, onBeforeUnmount, nextTick } = Vue;
 
     // Returns only inputs not inside a closed <details> element.
+    // Inputs inside <summary> are always treated as visible even when the row is collapsed.
     function getVisibleInputs() {
       return Array.from(document.querySelectorAll('input')).filter(inp => {
         let n = inp.parentElement;
         while (n) {
+          if (n.tagName === 'SUMMARY') return true; // inside <summary>: always visible
           if (n.tagName === 'DETAILS' && !n.open) return false;
           n = n.parentElement;
         }
@@ -555,7 +564,11 @@ still need to be declared explicitly in JavaScript.
         const date      = ref('');
         const time      = ref('');
         const organizer = reactive({ name: '', email: '' });
-        const attendees = ref([{ name: '', email: '', phone: '' }]);
+        const attendees = ref([{ id: 1, name: '', email: '', phone: '' }]);
+
+        // Stable id counter — prevents fold/unfold state from shifting on add/remove.
+        let nextId = 2;
+        const mkItem = () => ({ id: nextId++, name: '', email: '', phone: '' });
 
         // Focus the name input of attendee row idx after the next DOM update.
         function focusAt(idx) {
@@ -566,7 +579,7 @@ still need to be declared explicitly in JavaScript.
         }
 
         function addAfter(i) {
-          attendees.value.splice(i + 1, 0, { name: '', email: '', phone: '' });
+          attendees.value.splice(i + 1, 0, mkItem());
           focusAt(i + 1);
         }
         function removeAt(i) {
@@ -578,7 +591,7 @@ still need to be declared explicitly in JavaScript.
           const filled = attendees.value.filter(a => a.name || a.email || a.phone);
           attendees.value = filled.length
             ? filled
-            : [{ name: '', email: '', phone: '' }];
+            : [mkItem()];
         }
 
         // Enter/Shift+Enter: navigate between VISIBLE inputs only.
@@ -628,27 +641,27 @@ still need to be declared explicitly in JavaScript.
       template: `
         <div class="ep">
           <p>
-            <label>📋 Event:</label>
-            <input v-model="title" type="text" placeholder="e.g. Sprint Review"
+            <label for="ep-title">📋 Event:</label>
+            <input id="ep-title" v-model="title" type="text" placeholder="e.g. Sprint Review"
               @keydown="onInputKeyDown">
           </p>
           <p>
-            <label>📅 Date:</label>
-            <input v-model="date" type="date" @keydown="onInputKeyDown">
+            <label for="ep-date">📅 Date:</label>
+            <input id="ep-date" v-model="date" type="date" @keydown="onInputKeyDown">
           </p>
           <p>
-            <label>⏰ Time:</label>
-            <input v-model="time" type="time" @keydown="onInputKeyDown">
+            <label for="ep-time">⏰ Time:</label>
+            <input id="ep-time" v-model="time" type="time" @keydown="onInputKeyDown">
           </p>
           <fieldset>
             <legend>👤 Organizer</legend>
             <p>
-              <label>Name:</label>
-              <input v-model="organizer.name" type="text" @keydown="onInputKeyDown">
+              <label for="ep-org-name">Name:</label>
+              <input id="ep-org-name" v-model="organizer.name" type="text" @keydown="onInputKeyDown">
             </p>
             <p>
-              <label>Email:</label>
-              <input v-model="organizer.email" type="email" @keydown="onInputKeyDown">
+              <label for="ep-org-email">Email:</label>
+              <input id="ep-org-email" v-model="organizer.email" type="email" @keydown="onInputKeyDown">
             </p>
           </fieldset>
           <div class="ep-list">
@@ -659,12 +672,12 @@ still need to be declared explicitly in JavaScript.
               <strong>👥 Attendees:</strong>
             </div>
             <ul>
-              <li v-for="(att, i) in attendees" :key="i" :data-ai="i">
+              <li v-for="(att, i) in attendees" :key="att.id" :data-ai="i">
                 <details>
                   <summary>
                     <span v-text="(i + 1) + '.'"></span>
                     <input v-model="att.name" type="text" placeholder="Name"
-                      @keydown="onInputKeyDown">
+                      @keydown="onInputKeyDown" @keyup.space.stop>
                     <button @click="removeAt(i)"
                       data-hotkey="-" title="Remove">➖</button>
                     <button @click="addAfter(i)"
@@ -725,11 +738,24 @@ still need to be declared explicitly in JavaScript.
 ### Gotchas
 
 - Both [React](#react) and [Vue](#vue) implementations:
-  - Typing a space in any input inside a collapsed attendee row toggles the `<details>` open, which is unexpected and disruptive.
-  - Smooth navigation (with Enter/Shift+Enter) still does not work inside the list (neither to reach in from outside) for folded items.
-  - The *per-item* `➕` and `➖` buttons work correctly, but the folded/unfolded state is handled by positional indexing, which leads to an awkward behavior.
-  - Hotkeys implementation is limited (not context-aware) and misleading (multiple hints of the same key are revealed but always the same is picked).
-  - Labels does not work properly: clicking on them does not focus the associated input.
+  - ✅ **Space no longer toggles** a collapsed row when typed in the name
+    input. Fixed via `stopImmediatePropagation()` in a capture-phase `keyup`
+    listener (React) and `@keyup.space.stop` on the summary input (Vue).
+  - ✅ **Smooth navigation** (Enter / Shift+Enter) now correctly reaches the
+    name input of collapsed rows. Fields inside a collapsed row (email, phone)
+    remain unreachable until the row is expanded — which is expected behaviour.
+  - ✅ **Fold / unfold state** now correctly follows the data item through
+    add / remove operations. Stable `id` fields are used as React / Vue keys
+    instead of positional array indices, so open rows stay open regardless of
+    where items are inserted or deleted.
+  - ✅ **Labels** for the fixed fields (Event, Date, Time, Organizer Name /
+    Email) now correctly activate their associated inputs on click (`id` /
+    `htmlFor` pairs added). Attendee-list inputs are identified by placeholder
+    text rather than visible labels and are left unchanged.
+  - **Hotkeys** implementation is limited: hints are shown for all visible
+    hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
+    hints may appear at once even though only one applies. Fixing this properly
+    would require SmarkForm-level integration.
 
 ---
 
@@ -741,18 +767,18 @@ still need to be declared explicitly in JavaScript.
 <tr><th>Metric</th><th>SmarkForm</th><th>React</th><th>Vue</th></tr>
 </thead>
 <tbody>
-<tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>3 (React + ReactDOM ≈44 kB gz + Babel standalone ≈300 kB gz<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
+<tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>2 (React + ReactDOM ≈44 kB gz)<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
 <tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
 <tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
 <tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
-<tr><td>Fold / Unfold items</td><td>built-in</td><td>JS helpers <a href="#gotchas" title="With gotchas">‼️</a></td><td>JS helpers <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id <a href="#gotchas" title="With gotchas">‼️</a></td><td>for + id (or wrapping) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 <tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~12 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
-<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -767,11 +793,10 @@ still need to be declared explicitly in JavaScript.
 ------------
 
 <strong><a id="footnote_1" href="#foothook_1">(1)</a>:</strong> The React demo
-uses Babel Standalone for in-browser JSX compilation (no build step needed). In
-a real-world React project you would use a bundler (Webpack, Vite, …), which
-eliminates Babel Standalone from the runtime bundle. The demo weight is
-therefore not representative of production React — but the *amount of code you
-must write* is.
+also loads Babel Standalone for in-browser JSX compilation (no build step
+needed). It is excluded from the CDN dependency count because a real-world
+React project would use a bundler (Webpack, Vite, …) and Babel Standalone
+would not be part of the runtime bundle.
 
 <strong><a id="footnote_2" href="#foothook_2">(2)</a>:</strong> SmarkForm's
 hotkey reveal is context-aware: it computes which buttons are reachable from
