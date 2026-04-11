@@ -738,20 +738,6 @@ still need to be declared explicitly in JavaScript.
 ### Gotchas
 
 - Both [React](#react) and [Vue](#vue) implementations:
-  - ✅ **Space no longer toggles** a collapsed row when typed in the name
-    input. Fixed via `stopImmediatePropagation()` in a capture-phase `keyup`
-    listener (React) and `@keyup.space.stop` on the summary input (Vue).
-  - ✅ **Smooth navigation** (Enter / Shift+Enter) now correctly reaches the
-    name input of collapsed rows. Fields inside a collapsed row (email, phone)
-    remain unreachable until the row is expanded — which is expected behaviour.
-  - ✅ **Fold / unfold state** now correctly follows the data item through
-    add / remove operations. Stable `id` fields are used as React / Vue keys
-    instead of positional array indices, so open rows stay open regardless of
-    where items are inserted or deleted.
-  - ✅ **Labels** for the fixed fields (Event, Date, Time, Organizer Name /
-    Email) now correctly activate their associated inputs on click (`id` /
-    `htmlFor` pairs added). Attendee-list inputs are identified by placeholder
-    text rather than visible labels and are left unchanged.
   - **Hotkeys** implementation is limited: hints are shown for all visible
     hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
     hints may appear at once even though only one applies. Fixing this properly
