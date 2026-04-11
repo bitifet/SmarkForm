@@ -4283,6 +4283,7 @@ form, or import your own JSON to pre-populate it.
       <strong data-smark='label'>👥 Attendees:</strong>
       <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
         <li>
+          <label data-smark title="Drag to reorder">☰</label>
           <span data-smark='{"action":"position"}'>N</span>.
           <input data-smark type="text" placeholder="Name">
           <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
@@ -4350,6 +4351,12 @@ endcapture %}
     display: flex;
     align-items: center;
     gap: 0.4em;
+}
+{{""}}#myForm$$ .ep-list ul li [data-smark-label] {
+    cursor: grab;
+    min-width: auto;
+    font-weight: normal;
+    flex-shrink: 0;
 }
 {{""}}#myForm$$ .ep-hint {
     font-size: 0.82em;

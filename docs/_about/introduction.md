@@ -178,6 +178,8 @@ A moderately complex, real-world form:
   rows) attendees
 - A **position indicator** that reflects each item's current position in the
   list
+- Drag-and-drop to **reorder** attendees (with a dedicated drag handle so text
+  selection still works inside inputs)
 
 
 ---
@@ -234,6 +236,7 @@ label associations and position counters are all built in.
         </div>
         <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
           <li>
+            <label data-smark title="Drag to reorder">☰</label>
             <details>
               <summary>
                 <span data-smark='{"action":"position"}'>N</span>.
@@ -267,7 +270,9 @@ label associations and position counters are all built in.
     .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
     .ep-list > div { display: flex; align-items: center; gap: .4em; margin-bottom: .2em; }
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
-    .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
+    .ep-list li { display: flex; align-items: flex-start; gap: .3em; }
+    .ep-list li [data-smark-label] { cursor: grab; padding-top: .15em; flex-shrink: 0; min-width: auto; font-weight: normal; }
+    .ep-list li details { border: 1px solid transparent; border-radius: 4px; flex: 1; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
     .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
     .ep-list li summary::-webkit-details-marker { display: none; }
@@ -807,6 +812,12 @@ still need to be declared explicitly in JavaScript.
     hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
     hints may appear at once even though only one applies. Fixing this properly
     would require SmarkForm-level integration.
+  - **Drag to reorder** is not implemented. Adding it properly — including a
+    dedicated drag handle so that mouse gestures inside inputs still select text
+    rather than starting a drag — would require custom drag-event handlers and
+    state-reorder logic (~30–40 additional lines of JavaScript per
+    implementation). SmarkForm handles this automatically when `sortable: true`
+    is set and SmarkForm label components are present in the list item template.
 
 ---
 
@@ -832,6 +843,7 @@ still need to be declared explicitly in JavaScript.
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
 <tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
 <tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Drag to reorder</td><td>built-in (label drag handle, zero JS)</td><td>not implemented <a href="#gotchas" title="With gotchas">‼️</a></td><td>not implemented <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 </tbody>
 </table>
 </div>
