@@ -116,11 +116,14 @@ objects and arrays, which cannot be directly accommodated by legacy HTML forms.
 Web component libraries and frameworks, in turn, address this issue by shifting
 templating and design logic from the view to the controller layer. However,
 this approach forces developers to manually implement custom behaviors by
-connecting multiple form components together. Additionally, it places the
-burden of dealing with templating and styling details on developers, while
-designers lose control over the appearance of inner components. As a result,
-this approach leads to non-reusable and bespoke (unless you are Ok with
-sticking to the same appearance) implementations for each form.
+connecting multiple form components together. Every piece of form state — from
+field values to list structure and UI details such as which rows are
+expanded — must be explicitly declared, initialised, and kept in sync by the
+developer. Additionally, it places the burden of dealing with templating and
+styling details on developers, while designers lose control over the appearance
+of inner components. As a result, this approach leads to non-reusable and
+bespoke (unless you are Ok with sticking to the same appearance) implementations
+for each form.
 
 Repeatedly reinventing components or adapting complex frameworks with every
 design change, along with struggles in importing/exporting JSON, managing
@@ -390,7 +393,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
       $.current = { attendees, addAfter, removeAt };
 
       // Enter/Shift+Enter: navigate between VISIBLE inputs only.
-      // Space: stop propagation so <details> does not toggle.
+      // Space: stop keydown bubbling (toggle is blocked via onSummaryClick).
       function onInputKeyDown(e) {
         if (e.key === ' ') { e.stopPropagation(); return; }
         if (e.key === 'Enter') {
@@ -422,15 +425,23 @@ All form state and behaviour is wired up explicitly in JavaScript.
           }
         }
         function onKeyUp(e) {
-          // Capture phase: stop Space before <summary> can process it as a toggle.
-          if (e.key === ' ' && e.target.tagName === 'INPUT') { e.stopImmediatePropagation(); return; }
           if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
         }
+        // Block keyboard-synthesised click (e.detail===0) on <summary> when an
+        // input inside it has focus, so Space types in the input without toggling.
+        function onSummaryClick(e) {
+          if (e.detail) return;
+          const s = e.target.closest && e.target.closest('summary');
+          if (s && s.contains(document.activeElement) && document.activeElement.tagName === 'INPUT')
+            { e.preventDefault(); e.stopImmediatePropagation(); }
+        }
         document.addEventListener('keydown', onKeyDown);
-        document.addEventListener('keyup', onKeyUp, { capture: true });
+        document.addEventListener('keyup', onKeyUp);
+        document.addEventListener('click', onSummaryClick, { capture: true });
         return () => {
           document.removeEventListener('keydown', onKeyDown);
-          document.removeEventListener('keyup', onKeyUp, { capture: true });
+          document.removeEventListener('keyup', onKeyUp);
+          document.removeEventListener('click', onSummaryClick, { capture: true });
         };
       }, []);
 
@@ -625,7 +636,7 @@ still need to be declared explicitly in JavaScript.
         }
 
         // Enter/Shift+Enter: navigate between VISIBLE inputs only.
-        // Space: stop propagation so <details> does not toggle.
+        // Space: stop keydown bubbling (toggle is blocked via onSummaryClick).
         function onInputKeyDown(e) {
           if (e.key === ' ') { e.stopPropagation(); return; }
           if (e.key === 'Enter') {
@@ -654,18 +665,26 @@ still need to be declared explicitly in JavaScript.
           }
         }
         function onKeyUp(e) {
-          // Capture phase: stop Space before <summary> can process it as a toggle.
-          if (e.key === ' ' && e.target.tagName === 'INPUT') { e.stopImmediatePropagation(); return; }
           if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
+        }
+        // Block keyboard-synthesised click (e.detail===0) on <summary> when an
+        // input inside it has focus, so Space types in the input without toggling.
+        function onSummaryClick(e) {
+          if (e.detail) return;
+          const s = e.target.closest && e.target.closest('summary');
+          if (s && s.contains(document.activeElement) && document.activeElement.tagName === 'INPUT')
+            { e.preventDefault(); e.stopImmediatePropagation(); }
         }
 
         onMounted(() => {
           document.addEventListener('keydown', onKeyDown);
-          document.addEventListener('keyup', onKeyUp, { capture: true });
+          document.addEventListener('keyup', onKeyUp);
+          document.addEventListener('click', onSummaryClick, { capture: true });
         });
         onBeforeUnmount(() => {
           document.removeEventListener('keydown', onKeyDown);
-          document.removeEventListener('keyup', onKeyUp, { capture: true });
+          document.removeEventListener('keyup', onKeyUp);
+          document.removeEventListener('click', onSummaryClick, { capture: true });
         });
 
         return { title, date, time, organizer, attendees, addAfter, removeAt, pruneEmpty, onInputKeyDown };
@@ -770,7 +789,6 @@ still need to be declared explicitly in JavaScript.
 ### Gotchas
 
 - Both [React](#react) and [Vue](#vue) implementations:
-  - **Fold/Unfold** is triggered every time Space is typed in the input inside the `<summary>` (instead of only when combined with Shift key) which is an awkward UX quirk.
   - **Hotkeys** implementation is limited: hints are shown for all visible
     hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
     hints may appear at once even though only one applies. Fixing this properly
@@ -789,12 +807,12 @@ still need to be declared explicitly in JavaScript.
 </thead>
 <tbody>
 <tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>2 (React + ReactDOM ≈44 kB gz)<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
-<tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
+<tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~100 lines</td><td>~70 lines</td></tr>
 <tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
-<tr><td>Explicit state management</td><td>Internal</td><td>full</td><td>full</td></tr>
+<tr><td>State management</td><td>Internal</td><td>Manually handled</td><td>Manually handled</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
-<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code></td><td>native <code>&lt;details&gt;</code></td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
@@ -810,6 +828,12 @@ still need to be declared explicitly in JavaScript.
 > rendering, and vast ecosystems. SmarkForm is purpose-built for HTML forms.
 > The take-away is not *"SmarkForm replaces React"*, but *"for forms,
 > SmarkForm lets you stay in HTML"*.
+>
+> **On "State management":** in Virtual DOM frameworks, explicitly declaring
+> and syncing every piece of form state is an *obligation imposed by the
+> architecture*, not a feature. SmarkForm manages state internally and exposes
+> it through `export()` / `import()` — so it is always inspectable, but never
+> a burden to maintain.
 
 
 #### Implementation time
@@ -822,9 +846,9 @@ The following are estimations of the time it took to implement each version of t
 <tr><th>Metric</th><th>SmarkForm</th><th>React</th><th>Vue</th></tr>
 </thead>
 <tbody>
-<tr><td>Copilot time (this demo)</td><td>~5 min</td><td>~2 h</td><td>~1.5 h</td></tr>
-<tr><td>Reviewer time (this demo)</td><td>~20 min</td><td>~1 h</td><td>~1 h</td></tr>
-<tr><td>Total dev effort (this demo)</td><td>~25 min ⚡</td><td>~3 h 🕒</td><td>~2.5 h 🕑</td></tr>
+<tr><td>Copilot time (this demo)</td><td>~5 min</td><td>~2.5 h</td><td>~2 h</td></tr>
+<tr><td>Reviewer time (this demo)</td><td>~20 min</td><td>~1.25 h</td><td>~1.25 h</td></tr>
+<tr><td>Total dev effort (this demo)</td><td>~25 min ⚡</td><td>~3.75 h 🕒</td><td>~3.25 h 🕒</td></tr>
 </tbody>
 </table>
 </div>
