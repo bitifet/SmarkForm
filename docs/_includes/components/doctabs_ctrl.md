@@ -198,5 +198,50 @@ document.addEventListener('DOMContentLoaded', function() {
   margin: 0;
   border-radius: 0;
 }
+
+/* Print-friendly styles ─────────────────────────────────────────────────────
+   Goal: show only the source code tab, fully expanded with text wrapping.
+   The preview (interactive iframe) is meaningless on paper, so it is hidden.
+   The tab-bar is also hidden — there is only one thing left to show.
+   ─────────────────────────────────────────────────────────────────────────── */
+@media print {
+  /* Hide the tab labels bar */
+  .doctabs-labels {
+    display: none !important;
+  }
+
+  /* Hide the preview tab content (iframe is non-functional in print) */
+  .doctabs-content-preview {
+    display: none !important;
+  }
+
+  /* Always show the source tab, regardless of which tab is active */
+  .doctabs-content-source {
+    display: block !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
+  /* Remove the fixed max-height and let the code block expand fully */
+  .doctabs-content pre.highlight {
+    max-height: none !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  .doctabs-content pre.highlight code {
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+
+  /* Avoid splitting a code block across pages */
+  .doctabs-container {
+    page-break-inside: avoid;
+  }
+}
 </style>
 {% endif %}

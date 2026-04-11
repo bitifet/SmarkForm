@@ -158,7 +158,7 @@ three ways.
 
 The [metrics](#what-the-numbers-say) speak for themselves but the example used
 was designed to showcase SmarkForm's capabilities which may end up being
-favourable to it. That being said, Copilot was explicitly asked to use any existing component or plugin on top of those librearies that could help to make the comparison more fair.
+favourable to it. That being said, Copilot was explicitly asked to use any existing component or plugin on top of those libraries that could help to make the comparison more fair.
 
 Judge for yourself.
 
@@ -814,7 +814,7 @@ still need to be declared explicitly in JavaScript.
 
 #### Implementation time
 
-The following are estimations of the time it took to implement each version of the demo, including time spent prompting Copilot and manually reviewing / refining its suggestions. They're not real mesurements, just estimations made by Copilot itself retrospectively (no human adjustment) no matter they are exact or not. But I reckon they're close eonough.
+The following are estimations of the time it took to implement each version of the demo, including time spent prompting Copilot and manually reviewing / refining its suggestions. They're not real measurements, just estimations made by Copilot itself retrospectively (no human adjustment) no matter they are exact or not. But I reckon they're close enough.
  
 <div class="doctabs-metrics" style="overflow-x: auto;">
 <table>
