@@ -49,6 +49,19 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             };
 
                             dragSource = itemRoot;
+
+                            // Use the whole item as the drag image so the
+                            // user sees the full row being moved rather than
+                            // just the handle element.
+                            try {
+                                const rect = dragSource.getBoundingClientRect();
+                                e.dataTransfer.setDragImage(
+                                    dragSource,
+                                    e.clientX - rect.left,
+                                    e.clientY - rect.top,
+                                );
+                            } catch (_e) { /* setDragImage not available */ };
+
                             e.stopPropagation();
                         } else {
                             // Single dragging at a time.
@@ -148,8 +161,28 @@ function _applyDraggable(me, itemRoot) {
     const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
     if (handles.length > 0) {
         itemRoot.setAttribute("draggable", "false");
-        handles.forEach(h => h.setAttribute("draggable", "true"));
+        handles.forEach(h => {
+            h.setAttribute("draggable", "true");
+            _applyCursorGrab(h);
+        });
     } else {
         itemRoot.setAttribute("draggable", "true");
+    };
+};
+
+/**
+ * Set cursor:grab on a drag-handle element unless the cursor has already
+ * been explicitly customised via an inline style or a CSS rule other than
+ * the browser default.
+ */
+function _applyCursorGrab(handle) {
+    if (handle.style.cursor) return; // inline style already set — don't override
+    try {
+        const computed = getComputedStyle(handle).cursor;
+        if (computed === "auto" || computed === "default") {
+            handle.style.cursor = "grab";
+        };
+    } catch (_e) {
+        // Not in a browser context (e.g. unit-test environment) — skip.
     };
 };

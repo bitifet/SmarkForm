@@ -236,10 +236,11 @@ label associations and position counters are all built in.
         </div>
         <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
           <li>
-            <label data-smark title="Drag to reorder">☰</label>
             <details>
               <summary>
-                <span data-smark='{"action":"position"}'>N</span>.
+                <label data-smark class="bullet" title="Drag to reorder">
+                  <span data-smark='{"action":"position"}'>N</span>. ☰
+                </label>
                 <input data-smark type="text" name="name" placeholder="Name">
                 <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
                 <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert here">➕</button>
@@ -264,15 +265,14 @@ label associations and position counters are all built in.
     button[data-smark]:hover { background: #e9ecef; }
     .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
     .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
-    .ep label { min-width: 5em; font-weight: 500; white-space: nowrap; }
+    .ep label { font-weight: 500; white-space: nowrap; }
+    .ep label:not(.bullet) { min-width: 5em; }
     .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
     .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
     .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
     .ep-list > div { display: flex; align-items: center; gap: .4em; margin-bottom: .2em; }
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
-    .ep-list li { display: flex; align-items: flex-start; gap: .3em; }
-    .ep-list li [data-smark-label] { cursor: grab; padding-top: .15em; flex-shrink: 0; min-width: auto; font-weight: normal; }
-    .ep-list li details { border: 1px solid transparent; border-radius: 4px; flex: 1; }
+    .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
     .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
     .ep-list li summary::-webkit-details-marker { display: none; }
