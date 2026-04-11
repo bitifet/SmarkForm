@@ -393,9 +393,16 @@ All form state and behaviour is wired up explicitly in JavaScript.
       $.current = { attendees, addAfter, removeAt };
 
       // Enter/Shift+Enter: navigate between VISIBLE inputs only.
-      // Space: stop keydown bubbling (toggle is blocked via onSummaryClick).
+      // Space: type normally (fold/unfold blocked via onSummaryClick).
+      // Shift+Space: toggle fold/unfold of the closest <details> row.
       function onInputKeyDown(e) {
-        if (e.key === ' ') { e.stopPropagation(); return; }
+        if (e.key === ' ') {
+          if (e.shiftKey) {
+            const details = e.target.closest('details');
+            if (details) { e.preventDefault(); details.open = !details.open; }
+          } else { e.stopPropagation(); }
+          return;
+        }
         if (e.key === 'Enter') {
           e.preventDefault();
           e.stopPropagation();
@@ -636,9 +643,16 @@ still need to be declared explicitly in JavaScript.
         }
 
         // Enter/Shift+Enter: navigate between VISIBLE inputs only.
-        // Space: stop keydown bubbling (toggle is blocked via onSummaryClick).
+        // Space: type normally (fold/unfold blocked via onSummaryClick).
+        // Shift+Space: toggle fold/unfold of the closest <details> row.
         function onInputKeyDown(e) {
-          if (e.key === ' ') { e.stopPropagation(); return; }
+          if (e.key === ' ') {
+            if (e.shiftKey) {
+              const details = e.target.closest('details');
+              if (details) { e.preventDefault(); details.open = !details.open; }
+            } else { e.stopPropagation(); }
+            return;
+          }
           if (e.key === 'Enter') {
             e.preventDefault();
             e.stopPropagation();
