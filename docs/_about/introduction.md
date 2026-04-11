@@ -374,9 +374,11 @@ All form state and behaviour is wired up explicitly in JavaScript.
         }
       }
 
-      // Global keyboard: Ctrl+= adds after focused row (or at end); Ctrl+- removes focused row.
+      // Global keyboard: Ctrl-hold reveals hotkey badges;
+      // Ctrl+= adds after focused row (or at end); Ctrl+- removes focused row.
       useEffect(() => {
         function onKeyDown(e) {
+          if (e.key === 'Control') document.body.classList.add('show-hotkeys');
           if (!e.ctrlKey) return;
           const { attendees: atts, addAfter: add, removeAt: rem } = $.current;
           const li = document.activeElement && document.activeElement.closest('[data-ai]');
@@ -392,6 +394,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
         function onKeyUp(e) {
           // Capture phase: stop Space before <summary> can process it as a toggle.
           if (e.key === ' ' && e.target.tagName === 'INPUT') { e.stopImmediatePropagation(); return; }
+          if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
         }
         document.addEventListener('keydown', onKeyDown);
         document.addEventListener('keyup', onKeyUp, { capture: true });
@@ -441,7 +444,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
             <div>
               <button onClick={pruneEmpty} title="Remove empty rows">🧹</button>
               <button onClick={() => addAfter(attendees.length - 1)}
-                title="Add attendee">➕</button>
+                data-hotkey="+" title="Add attendee">➕</button>
               <strong>👥 Attendees:</strong>
             </div>
             <ul>
@@ -455,9 +458,9 @@ All form state and behaviour is wired up explicitly in JavaScript.
                         onKeyDown={onInputKeyDown}
                         placeholder="Name" />
                       <button onClick={() => removeAt(i)}
-                        title="Remove">➖</button>
+                        data-hotkey="-" title="Remove">➖</button>
                       <button onClick={() => addAfter(i)}
-                        title="Insert here">➕</button>
+                        data-hotkey="+" title="Insert here">➕</button>
                     </summary>
                     <div className="ep-attendee">
                       <input type="email" value={att.email}
@@ -474,7 +477,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
               ))}
             </ul>
           </div>
-          <p className="ep-hint">💡 Ctrl+= adds a row after the focused one (or at end); Ctrl+- removes the focused row</p>
+          <p className="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
         </div>
       );
     }
@@ -500,6 +503,15 @@ All form state and behaviour is wired up explicitly in JavaScript.
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — revealed when body has class show-hotkeys */
+    [data-hotkey] { position: relative; }
+    body.show-hotkeys [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
   </style>
 </body>
 </html>
@@ -597,8 +609,9 @@ still need to be declared explicitly in JavaScript.
           }
         }
 
-        // Global Ctrl key: Ctrl+= / Ctrl+- shortcuts.
+        // Global Ctrl key: reveal hotkeys + Ctrl+= / Ctrl+- shortcuts.
         function onKeyDown(e) {
+          if (e.key === 'Control') document.body.classList.add('show-hotkeys');
           if (!e.ctrlKey) return;
           const li = document.activeElement && document.activeElement.closest('[data-ai]');
           const idx = li ? +li.dataset.ai : -1;
@@ -610,12 +623,17 @@ still need to be declared explicitly in JavaScript.
             removeAt(idx);
           }
         }
+        function onKeyUp(e) {
+          if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
+        }
 
         onMounted(() => {
           document.addEventListener('keydown', onKeyDown);
+          document.addEventListener('keyup', onKeyUp);
         });
         onBeforeUnmount(() => {
           document.removeEventListener('keydown', onKeyDown);
+          document.removeEventListener('keyup', onKeyUp);
         });
 
         return { title, date, time, organizer, attendees, addAfter, removeAt, pruneEmpty, onInputKeyDown };
@@ -650,7 +668,7 @@ still need to be declared explicitly in JavaScript.
             <div>
               <button @click="pruneEmpty" title="Remove empty rows">🧹</button>
               <button @click="addAfter(attendees.length - 1)"
-                title="Add attendee">➕</button>
+                data-hotkey="+" title="Add attendee">➕</button>
               <strong>👥 Attendees:</strong>
             </div>
             <ul>
@@ -661,9 +679,9 @@ still need to be declared explicitly in JavaScript.
                     <input v-model="att.name" type="text" placeholder="Name"
                       @keydown="onInputKeyDown" @keyup.space.stop>
                     <button @click="removeAt(i)"
-                      title="Remove">➖</button>
+                      data-hotkey="-" title="Remove">➖</button>
                     <button @click="addAfter(i)"
-                      title="Insert here">➕</button>
+                      data-hotkey="+" title="Insert here">➕</button>
                   </summary>
                   <div class="ep-attendee">
                     <input v-model="att.email" type="email" placeholder="Email"
@@ -675,7 +693,7 @@ still need to be declared explicitly in JavaScript.
               </li>
             </ul>
           </div>
-          <p class="ep-hint">💡 Ctrl+= adds a row after the focused one (or at end); Ctrl+- removes the focused row</p>
+          <p class="ep-hint">💡 Hold <kbd>Ctrl</kbd> to reveal shortcuts</p>
         </div>
       `
     }).mount('#app');
@@ -699,12 +717,31 @@ still need to be declared explicitly in JavaScript.
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
+    /* Hotkey hints — revealed when body has class show-hotkeys */
+    [data-hotkey] { position: relative; }
+    body.show-hotkeys [data-hotkey]::after {
+      content: "Ctrl+" attr(data-hotkey);
+      position: absolute; top: -1.6em; left: 0;
+      font-size: .7em; background: #333; color: #fff;
+      padding: 1px 4px; border-radius: 3px;
+      white-space: nowrap; pointer-events: none;
+    }
   </style>
 </body>
 </html>
 {%- endcapture %}
 
 {% include components/doctabs_tpl.md tabId="vue-event-planner" docSource=vue_doc height=65 %}
+
+---
+
+### Gotchas
+
+- Both [React](#react) and [Vue](#vue) implementations:
+  - **Hotkeys** implementation is limited: hints are shown for all visible
+    hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
+    hints may appear at once even though only one applies. Fixing this properly
+    would require SmarkForm-level integration.
 
 ---
 
@@ -719,15 +756,15 @@ still need to be declared explicitly in JavaScript.
 <tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>2 (React + ReactDOM ≈44 kB gz)<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
 <tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
 <tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
-<tr><td>Explicit state management</td><td>Internal</td><td>✅ full</td><td>✅ full</td></tr>
+<tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
-<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code></td><td>native <code>&lt;details&gt;</code></td></tr>
+<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
-<tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
-<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
-<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines)</td><td>manual (~18 lines)</td></tr>
+<tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id <a href="#gotchas" title="With gotchas">‼️</a></td><td>for + id (or wrapping) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~12 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -748,6 +785,7 @@ React project would use a bundler (Webpack, Vite, …) and Babel Standalone
 would not be part of the runtime bundle.
 
 <strong><a id="footnote_2" href="#foothook_2">(2)</a>:</strong> SmarkForm's
-hotkey reveal is context-aware: it dynamically sets <code>data-hotkey</code>
-only on buttons reachable from the currently focused field, so the hints always
-reflect the shortcuts that actually apply in the current context.
+hotkey reveal is context-aware: it computes which buttons are reachable from
+the currently focused field and displays only their shortcuts. The React and
+Vue implementations show all `data-hotkey` badges simultaneously whenever Ctrl
+is held — a simpler but visually broader reveal.
