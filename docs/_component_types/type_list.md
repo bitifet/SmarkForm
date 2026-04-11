@@ -392,6 +392,52 @@ Controls wether the list can be user sorted by dragging and dropping list items.
   * **Type:** Boolean
   * **Default value:** false
 
+Sorting relies on the browser's native HTML drag-and-drop API.  Each list item
+becomes a drag source (or exposes drag handles — see below), and the list
+container is the drop target.
+
+**Label-based drag handles**
+
+When a list item contains one or more *SmarkForm label components* (any element
+rendered with `data-smark` and resolved as type `label` — including native
+`<label>`, `<legend>`, or any other tag with `data-smark='{"type":"label"}'`),
+SmarkForm automatically designates those labels as the drag handles:
+
+- The item root node is made **non-draggable** so that mouse gestures inside
+  input fields or textareas work normally (text selection is restored).
+- The label nodes are made **draggable**, and `cursor: grab` should be applied
+  to them via CSS (SmarkForm adds the `data-smark-label` attribute to every
+  rendered label, so you can use the `[data-smark-label]` selector).
+
+If no label components are found inside a list item, SmarkForm falls back to the
+original behaviour: the entire item root is draggable (backward compatible).
+
+{: .hint}
+> **Recommended layout for sortable lists with inputs:** Add a `<label
+> data-smark>` (or another label component) inside each list item as a drag
+> handle.  A small icon — emoji, an inner `<span>`, or an `<img>` — makes an
+> effective visual affordance without requiring extra markup.
+>
+> ```html
+> <li>
+>   <label data-smark title="Drag to reorder">☰</label>
+>   <input data-smark name="value" placeholder="…">
+>   <button data-smark='{"action":"removeItem"}'>✕</button>
+> </li>
+> ```
+>
+> SmarkForm label components are **non-selectable by default** (`user-select:
+> none`), which is exactly the right behaviour for a drag handle.  If you need
+> selectable label text separately, add a second label component dedicated to
+> the handle.
+
+{: .hint}
+> **Scalar-only list items with no labels** (i.e. items that consist of a
+> single input field and nothing else) fall back to the whole-item-draggable
+> mode.  The most advisable way to lay out single-field sortable lists is to
+> use the *singleton* pattern, which wraps the field in a richer item template
+> that can include a label handle.
+
 {: .hint}
 > Drag and Drop events are not natively supported by touch devices.
 >

@@ -37,6 +37,7 @@ around edge cases or features that might catch you off guard at first.
     * [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
     * [My list won't let me add items until I fill the current ones—is that intended?](#my-list-wont-let-me-add-items-until-i-fill-the-current-onesis-that-intended)
     * [How do I add animations to list items?](#how-do-i-add-animations-to-list-items)
+    * [I try to select text in a field inside a sortable list, but it starts dragging instead](#i-try-to-select-text-in-a-field-inside-a-sortable-list-but-it-starts-dragging-instead)
 * [Data: Import, Export & Reset](#data-import-export-reset)
     * [My exported JSON is missing some fields—what's up?](#my-exported-json-is-missing-some-fieldswhats-up)
     * [Why are my nested form fields named weirdly in the JSON?](#why-are-my-nested-form-fields-named-weirdly-in-the-json)
@@ -494,6 +495,63 @@ myForm.onAll("beforeUnrender", async (ev) => {
 
 See the [Showcase — Animations]({{ "/about/showcase" | relative_url }}#animations)
 for detailed notes and a more elaborate example.
+
+
+### I try to select text in a field inside a sortable list, but it starts dragging instead
+
+This happens because `sortable: true` makes each list item draggable at the DOM
+level. When the entire item is draggable, the browser intercepts mouse
+click-drag gestures to start a drag instead of performing a text selection
+inside the input.
+
+**The fix: add a SmarkForm label component inside each list item as a drag handle.**
+
+SmarkForm detects whether a list item contains any rendered label components
+(`<label data-smark>`, `<legend data-smark>`, or any element with
+`data-smark='{"type":"label"}'`). When labels are found:
+
+1. The item root is made **non-draggable** — mouse gestures inside inputs and
+   textareas work normally.
+2. Only the label nodes are made **draggable** — they act as drag handles.
+3. Dragging from an interactive control (input, textarea, select, button, link)
+   is always blocked, even if the event somehow reaches a draggable label.
+
+**Minimal example:**
+
+```html
+<ul data-smark='{"type":"list","name":"items","sortable":true}'>
+  <li>
+    <label data-smark title="Drag to reorder">☰</label>
+    <input data-smark name="value" placeholder="…">
+    <button data-smark='{"action":"removeItem"}'>✕</button>
+  </li>
+</ul>
+```
+
+Apply `cursor: grab` to the handle via CSS:
+
+```css
+[data-smark-label] { cursor: grab; }
+```
+
+SmarkForm automatically adds the `data-smark-label` attribute to every rendered
+label component, so the selector always works.
+
+**Design notes:**
+
+- The label content is entirely up to you — a hamburger icon (☰), a drag-dots
+  icon, an `<img>`, or an inner `<span>` all work.  A label is
+  `user-select: none` by default, which is ideal for a drag handle.
+- If you need selectable text *and* a drag handle, add a second, dedicated
+  label just for the handle.
+- List items that consist of a single input field and no label fall back to the
+  original "entire item is draggable" behaviour.  The recommended pattern for
+  single-field sortable lists is to use the [Singleton
+  pattern]({{ "/about/faq#what-is-the-singleton-pattern" | relative_url }})
+  with a label handle in the wrapping item template.
+
+For more details see the [sortable option
+documentation]({{ "/component_types/type_list#sortable" | relative_url }}).
 
 
 ## Data: Import, Export & Reset
