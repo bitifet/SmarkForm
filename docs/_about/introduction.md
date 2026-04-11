@@ -14,6 +14,34 @@ nav_order: 1
 # {{ page.title }}
 
 
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {{ "
+<!-- vim-markdown-toc GitLab -->
+
+* [What SmarkForm Is (and Isn't Yet)](#what-smarkform-is-and-isnt-yet)
+* [About SmarkForm](#about-smarkform)
+* [Motivation](#motivation)
+* [A Picture is Worth a Thousand Words](#a-picture-is-worth-a-thousand-words)
+    * [The Example: Event Planner](#the-example-event-planner)
+    * [SmarkForm](#smarkform)
+    * [React](#react)
+    * [Vue](#vue)
+    * [Gotchas](#gotchas)
+    * [What the numbers say](#what-the-numbers-say)
+        * [Metrics](#metrics)
+        * [Implementation time](#implementation-time)
+
+<!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
+
+
 ## What SmarkForm Is (and Isn't Yet)
 
 **SmarkForm is:**
@@ -122,15 +150,17 @@ three ways.
 - The first one is implemented with SmarkForm.
 - The others are implemented with modern web frameworks trying to mimic the same behaviour and user experience as closely as possible while keeping the code as simple as possible.
 
-The [metrics](#what-the-numbers-say) speak for themselves.
+{: .info :}
+>All implementations were written by the same AI assistant (GitHub Copilot)
+>with the explicit goal of making each as idiomatic and feature-equivalent as
+>possible. **The intent is a fair comparison — not advocacy for any particular
+>tool**.
+
+The [metrics](#what-the-numbers-say) speak for themselves but the example used
+was designed to showcase SmarkForm's capabilities which may end up being
+favourable to it. That being said, Copilot was explicitly asked to use any existing component or plugin on top of those librearies that could help to make the comparison more fair.
 
 Judge for yourself.
-
-{: .info :}
-> *The three implementations below were written by the same AI assistant
-> (GitHub Copilot) with the explicit goal of making each as idiomatic and
-> feature-equivalent as possible. The intent is a fair comparison — not
-> advocacy for any particular tool.*
 
 ---
 
@@ -740,6 +770,7 @@ still need to be declared explicitly in JavaScript.
 ### Gotchas
 
 - Both [React](#react) and [Vue](#vue) implementations:
+  - **Fold/Unfold** is triggered every time Space is typed in the input inside the `<summary>` (instead of only when combined with Shift key) which is an awkward UX quirk.
   - **Hotkeys** implementation is limited: hints are shown for all visible
     hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
     hints may appear at once even though only one applies. Fixing this properly
@@ -748,6 +779,8 @@ still need to be declared explicitly in JavaScript.
 ---
 
 ### What the numbers say
+
+#### Metrics
 
 <div class="doctabs-metrics" style="overflow-x: auto;">
 <table>
@@ -758,18 +791,15 @@ still need to be declared explicitly in JavaScript.
 <tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>2 (React + ReactDOM ≈44 kB gz)<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
 <tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
 <tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
-<tr><td>Explicit state management</td><td>Internal</td><td>✅ full</td><td>✅ full</td></tr>
+<tr><td>Explicit state management</td><td>Internal</td><td>full</td><td>full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
-<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code></td><td>native <code>&lt;details&gt;</code></td></tr>
+<tr><td>Fold / Unfold items</td><td>built-in</td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td><td>native <code>&lt;details&gt;</code> <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
 <tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
 <tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
-<tr><td>Copilot time (this demo)</td><td>~5 min</td><td>~2 h</td><td>~1.5 h</td></tr>
-<tr><td>Reviewer time (this demo)</td><td>~20 min</td><td>~1 h</td><td>~1 h</td></tr>
-<tr><td>Total dev effort (this demo)</td><td>~25 min</td><td>~3 h</td><td>~2.5 h</td></tr>
 </tbody>
 </table>
 </div>
@@ -780,6 +810,26 @@ still need to be declared explicitly in JavaScript.
 > rendering, and vast ecosystems. SmarkForm is purpose-built for HTML forms.
 > The take-away is not *"SmarkForm replaces React"*, but *"for forms,
 > SmarkForm lets you stay in HTML"*.
+
+
+#### Implementation time
+
+The following are estimations of the time it took to implement each version of the demo, including time spent prompting Copilot and manually reviewing / refining its suggestions. They're not real mesurements, just estimations made by Copilot itself retrospectively (no human adjustment) no matter they are exact or not. But I reckon they're close eonough.
+ 
+<div class="doctabs-metrics" style="overflow-x: auto;">
+<table>
+<thead>
+<tr><th>Metric</th><th>SmarkForm</th><th>React</th><th>Vue</th></tr>
+</thead>
+<tbody>
+<tr><td>Copilot time (this demo)</td><td>~5 min</td><td>~2 h</td><td>~1.5 h</td></tr>
+<tr><td>Reviewer time (this demo)</td><td>~20 min</td><td>~1 h</td><td>~1 h</td></tr>
+<tr><td>Total dev effort (this demo)</td><td>~25 min ⚡</td><td>~3 h 🕒</td><td>~2.5 h 🕑</td></tr>
+</tbody>
+</table>
+</div>
+
+
 
 ------------
 
