@@ -41,10 +41,11 @@ permalink: /
       <strong data-smark='label'>👥 Attendees:</strong>
       <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
         <li>
-          <label data-smark title="Drag to reorder">☰</label>
           <details>
             <summary>
-              <span data-smark='{"action":"position"}'>N</span>.
+              <label data-smark class="bullet" title="Drag to reorder">
+                <span data-smark='{"action":"position"}'>N</span>. ☰
+              </label>
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
               <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
@@ -79,9 +80,11 @@ endcapture %}
     margin: 0;
 }
 {{""}}#myForm$$ .ep label {
-    min-width: 4.5em;
     font-weight: 500;
     white-space: nowrap;
+}
+{{""}}#myForm$$ .ep label:not(.bullet) {
+    min-width: 4.5em;
 }
 {{""}}#myForm$$ .ep input {
     padding: 0.3em 0.5em;
