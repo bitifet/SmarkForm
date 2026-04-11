@@ -28,11 +28,10 @@ nav_order: 1
 
 **Not yet implemented (planned for a future release):**
 - ❌ Built-in validation (field-level error messages).
-- ❌ Native `<form>` tag POST submission — use `AfterAction_export` + `fetch` for now.
 - ❌ The "API interface" for dynamic dropdown/select options from a server.
 
-{: .info :}
-> ⚠️ SmarkForm is currently at **version 0.x**. The implemented features are
+{: .warning :}
+> SmarkForm is currently at **version 0.x**. The implemented features are
 > stable, but breaking changes may still occur before 1.0.
 > See the [Roadmap]({{ "/about/roadmap" | relative_url }}) for what's coming next.
 
@@ -114,19 +113,24 @@ import and manipulate complex data in JSON format.
 
 ## A Picture is Worth a Thousand Words
 
-
-> *The three implementations below were written by the same AI assistant
-> (GitHub Copilot) with the explicit goal of making each as idiomatic and
-> feature-equivalent as possible. The intent is a fair comparison — not
-> advocacy for any particular tool.*
-
 Modern web development offers many solutions for building dynamic forms — from
 dedicated libraries to general-purpose UI frameworks. For forms specifically,
 the contrast can be striking. Below is the **exact same form** — a real-world
 *Event Planner* with nested subforms and a dynamic attendees list — implemented
 three ways.
 
+- The first one is implemented with SmarkForm.
+- The otheres are implemented with modern web frameworks trying to mimic the same behaviour and user experience as closely as possible while keeping the code as simple as possible.
+
+The [metrics](#what-the-numbers-say) speak for themselves.
+
 Judge for yourself.
+
+{: .info :}
+> *The three implementations below were written by the same AI assistant
+> (GitHub Copilot) with the explicit goal of making each as idiomatic and
+> feature-equivalent as possible. The intent is a fair comparison — not
+> advocacy for any particular tool.*
 
 ---
 
@@ -508,7 +512,6 @@ All form state and behaviour is wired up explicitly in JavaScript.
 
 {% include components/doctabs_tpl.md tabId="react-event-planner" docSource=react_doc height=65 %}
 
-
 ---
 
 ### Vue
@@ -717,6 +720,16 @@ still need to be declared explicitly in JavaScript.
 
 {% include components/doctabs_tpl.md tabId="vue-event-planner" docSource=vue_doc height=65 %}
 
+---
+
+### Gotchas
+
+- Both [React](#react) and [Vue](#vue) implementations:
+  - Typing a space in any input inside a collapsed attendee row toggles the `<details>` open, which is unexpected and disruptive.
+  - Smooth navigation (with Enter/Shift+Enter) still does not work inside the list (neither to reach in from outside) for folded items.
+  - The *per-item* `➕` and `➖` buttons work correctly, but the folded/unfolded state is handled by positional indexing, which leads to an awkward behavior.
+  - Hotkeys implementation is limited (not context-aware) and misleading (multiple hints of the same key are revealed but always the same is picked).
+  - Labels does not work properly: clicking on them does not focus the associated input.
 
 ---
 
@@ -728,17 +741,18 @@ still need to be declared explicitly in JavaScript.
 <tr><th>Metric</th><th>SmarkForm</th><th>React</th><th>Vue</th></tr>
 </thead>
 <tbody>
-<tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>3 (React + ReactDOM ≈44 kB gz + Babel standalone ≈300 kB gz†)</td><td>1 (Vue global, ~33 kB gz)</td></tr>
+<tr><td>Dependencies loaded</td><td>1 (SmarkForm UMD, ~19 kB gz)</td><td>3 (React + ReactDOM ≈44 kB gz + Babel standalone ≈300 kB gz<a id="foothook_1" style="vertical-align: super" href="#footnote_1">(1)</a></td><td>1 (Vue global, ~33 kB gz)</td></tr>
 <tr><td>JavaScript written</td><td><strong>1 line</strong></td><td>~95 lines</td><td>~65 lines</td></tr>
 <tr><td>HTML / template markup lines</td><td>~50 lines</td><td>~44 lines (JSX)</td><td>~44 lines (template)</td></tr>
 <tr><td>Explicit state management</td><td>❌ none</td><td>✅ full</td><td>✅ full</td></tr>
 <tr><td>Two-way binding</td><td>built-in</td><td>manual (value + onChange)</td><td>v-model</td></tr>
 <tr><td>Add / remove items</td><td>declarative attribute</td><td>splice helpers</td><td>splice helpers</td></tr>
+<tr><td>Fold / Unfold items</td><td>built-in</td><td>JS helpers <a href="#gotchas" title="With gotchas">‼️</a></td><td>JS helpers <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 <tr><td>Position counter</td><td>declarative attribute</td><td>array index</td><td>array index</td></tr>
 <tr><td>JSON import / export</td><td>built-in</td><td>manual serialisation</td><td>manual serialisation</td></tr>
-<tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
-<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
-<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware‡</td><td>manual (~20 lines)</td><td>manual (~18 lines)</td></tr>
+<tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id <a href="#gotchas" title="With gotchas">‼️</a></td><td>for + id (or wrapping) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~12 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 </tbody>
 </table>
 </div>
@@ -750,13 +764,17 @@ still need to be declared explicitly in JavaScript.
 > The take-away is not *"SmarkForm replaces React"*, but *"for forms,
 > SmarkForm lets you stay in HTML"*.
 
-† The React demo uses Babel Standalone for in-browser JSX compilation
-(no build step needed). In a real-world React project you would use a bundler
-(Webpack, Vite, …), which eliminates Babel Standalone from the runtime bundle.
-The demo weight is therefore not representative of production React — but the
-*amount of code you must write* is.
+------------
 
-‡ SmarkForm's hotkey reveal is context-aware: it computes which buttons are
-reachable from the currently focused field and displays only their shortcuts.
-The React and Vue implementations show all `data-hotkey` badges simultaneously
-whenever Ctrl is held — a simpler but visually broader reveal.
+<strong><a id="footnote_1" href="#foothook_1">(1)</a>:</strong> The React demo
+uses Babel Standalone for in-browser JSX compilation (no build step needed). In
+a real-world React project you would use a bundler (Webpack, Vite, …), which
+eliminates Babel Standalone from the runtime bundle. The demo weight is
+therefore not representative of production React — but the *amount of code you
+must write* is.
+
+<strong><a id="footnote_2" href="#foothook_2">(2)</a>:</strong> SmarkForm's
+hotkey reveal is context-aware: it computes which buttons are reachable from
+the currently focused field and displays only their shortcuts. The React and
+Vue implementations show all `data-hotkey` badges simultaneously whenever Ctrl
+is held — a simpler but visually broader reveal.

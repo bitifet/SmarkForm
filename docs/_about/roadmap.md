@@ -23,7 +23,6 @@ nav_order: 5
     * [The «select» component type](#the-select-component-type)
     * [Conditional forms](#conditional-forms)
 * [Later](#later)
-    * [«form» tag enhancement](#form-tag-enhancement)
     * [The «UNDO» component](#the-undo-component)
     * [Infinite lists](#infinite-lists)
     * [Recursive lists](#recursive-lists)
@@ -88,14 +87,6 @@ is evaluated and the field becomes enabled or disabled accordingly.
 
 
 ## Later
-
-
-### «form» tag enhancement
-
-Currently the `<form>` tag is not mandatory and its native submission behaviour
-is suppressed by *SmarkForm*. A future enhancement would support classic form
-submission as a graceful-degradation path for simple applications, using naming
-conventions to encode nested data.
 
 
 ### The «UNDO» component
