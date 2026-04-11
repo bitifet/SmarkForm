@@ -93,6 +93,10 @@ export class label extends SmarkComponent {
                 };
             };
 
+            // Mark this node as a SmarkForm label so sortable lists can
+            // use it as a drag handle.
+            me.targetNode.setAttribute("data-smark-label", "");
+
             // Make labels non-selectable unless "allow_select" option is set
             // to true.
             if (! me.options.allow_select) {

@@ -3,6 +3,12 @@
 
 import {mutex} from "../../decorators/mutex.deco.js";
 
+// Selector for interactive fields where a drag should not start.
+const INTERACTIVE_FIELDS_SELECTOR = "input, textarea, select, button, a, [contenteditable='true']";
+
+// Selector for SmarkForm label components (marked during render).
+const SMARK_LABEL_SELECTOR = "[data-smark-label]";
+
 export const sortable = function list_sortable_decorator(target, {kind}) {
     if (kind == "class") {
         return class sortableTarget extends target {
@@ -11,14 +17,38 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 const me = this;
 
                 me.sortable = !! me.options.sortable;
-                me.templates.item.setAttribute("draggable", me.sortable);
-                me.children.forEach(c=>c.targetNode.setAttribute("draggable", me.sortable));
                 if (me.sortable) {
+                    // Mark item template as draggable so that items cloned
+                    // from it start with draggable=true (overridden by
+                    // _applyDraggable once the item is fully rendered).
+                    me.templates.item.setAttribute("draggable", "true");
+
                     let dragSource = null;
                     let dragDest = null;
                     me.targetNode.addEventListener("dragstart", e => {
                         if (dragSource === null) {
-                            dragSource = e.target
+                            // Resolve dragSource to the item root (direct
+                            // child of the list container), even when the
+                            // drag started from a label handle.
+                            let itemRoot = e.target;
+                            while (
+                                itemRoot.parentElement
+                                && itemRoot.parentElement !== me.targetNode
+                            ) {
+                                itemRoot = itemRoot.parentElement;
+                            };
+
+                            // Guard: if using label handles, do not start
+                            // drag from interactive fields.
+                            const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
+                            if (handles.length > 0) {
+                                if (e.target.closest(INTERACTIVE_FIELDS_SELECTOR)) {
+                                    e.preventDefault();
+                                    return;
+                                };
+                            };
+
+                            dragSource = itemRoot;
                             e.stopPropagation();
                         } else {
                             // Single dragging at a time.
@@ -43,6 +73,8 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                         dragSource = null;
                         dragDest = null;
                     });
+                } else {
+                    me.templates.item.setAttribute("draggable", "false");
                 };
 
                 return retv;
@@ -87,6 +119,37 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 to.targetNode[moveMethod](from.targetNode);
                 me.renum();
             };//}}}
+            async renum() {//{{{
+                const me = this;
+                const result = await super.renum();
+                // Re-apply draggable handles after every structural change.
+                // renum() is always called after items are fully rendered, so
+                // data-smark-label is guaranteed to be set by this point.
+                if (me.sortable) {
+                    me.children.forEach(c => _applyDraggable(me, c.targetNode));
+                };
+                return result;
+            };//}}}
         };
+    };
+};
+
+/**
+ * Apply draggable attribute to the appropriate node(s) for a list item.
+ *
+ * If the item contains SmarkForm label components (marked with
+ * [data-smark-label]), those labels become the drag handles and the item root
+ * is made non-draggable, restoring normal text selection inside input fields.
+ *
+ * If no label handles are found, the item root itself is made draggable
+ * (backward-compatible fallback).
+ */
+function _applyDraggable(me, itemRoot) {
+    const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
+    if (handles.length > 0) {
+        itemRoot.setAttribute("draggable", "false");
+        handles.forEach(h => h.setAttribute("draggable", "true"));
+    } else {
+        itemRoot.setAttribute("draggable", "true");
     };
 };
