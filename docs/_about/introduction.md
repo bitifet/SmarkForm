@@ -624,16 +624,18 @@ still need to be declared explicitly in JavaScript.
           }
         }
         function onKeyUp(e) {
+          // Capture phase: stop Space before <summary> can process it as a toggle.
+          if (e.key === ' ' && e.target.tagName === 'INPUT') { e.stopImmediatePropagation(); return; }
           if (e.key === 'Control') document.body.classList.remove('show-hotkeys');
         }
 
         onMounted(() => {
           document.addEventListener('keydown', onKeyDown);
-          document.addEventListener('keyup', onKeyUp);
+          document.addEventListener('keyup', onKeyUp, { capture: true });
         });
         onBeforeUnmount(() => {
           document.removeEventListener('keydown', onKeyDown);
-          document.removeEventListener('keyup', onKeyUp);
+          document.removeEventListener('keyup', onKeyUp, { capture: true });
         });
 
         return { title, date, time, organizer, attendees, addAfter, removeAt, pruneEmpty, onInputKeyDown };
@@ -677,7 +679,7 @@ still need to be declared explicitly in JavaScript.
                   <summary>
                     <span v-text="(i + 1) + '.'"></span>
                     <input v-model="att.name" type="text" placeholder="Name"
-                      @keydown="onInputKeyDown" @keyup.space.stop>
+                      @keydown="onInputKeyDown">
                     <button @click="removeAt(i)"
                       data-hotkey="-" title="Remove">➖</button>
                     <button @click="addAfter(i)"
@@ -765,6 +767,9 @@ still need to be declared explicitly in JavaScript.
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
 <tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
 <tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Copilot time (this demo)</td><td>~5 min</td><td>~2 h</td><td>~1.5 h</td></tr>
+<tr><td>Reviewer time (this demo)</td><td>~20 min</td><td>~1 h</td><td>~1 h</td></tr>
+<tr><td>Total dev effort (this demo)</td><td>~25 min</td><td>~3 h</td><td>~2.5 h</td></tr>
 </tbody>
 </table>
 </div>
