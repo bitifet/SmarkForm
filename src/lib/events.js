@@ -300,12 +300,19 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         summary.addEventListener('click', suppressor, { capture: true, once: true });
                         // Cleanup: if the browser doesn't fire a click (e.g.
                         // the input is not inside a real <summary>), remove
-                        // the suppressor after the keyup completes.
-                        ev.target.addEventListener('keyup', () => {
+                        // the suppressor after the Space keyup completes.
+                        // IMPORTANT: do NOT use { once: true } here — a different
+                        // key's keyup (e.g. 'a' in "a<Space>" typed fast) would
+                        // trigger a once-listener and remove the suppressor before
+                        // the Space keyup fires, letting the synthetic click through.
+                        const spaceKeyupCleanup = keyupEv => {
+                            if (keyupEv.key !== ' ') return;
+                            ev.target.removeEventListener('keyup', spaceKeyupCleanup);
                             setTimeout(() => {
                                 summary.removeEventListener('click', suppressor, true);
                             }, 0);
-                        }, { once: true });
+                        };
+                        ev.target.addEventListener('keyup', spaceKeyupCleanup);
                     }, true); // synchronous, capture phase
 
                     for (const [evType, meta] of Object.entries(supportedFieldEventTypes)) {

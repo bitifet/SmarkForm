@@ -43,7 +43,9 @@ permalink: /
         <li>
           <details>
             <summary>
-              <span data-smark='{"action":"position"}'>N</span>.
+              <span data-smark='{"type":"label"}' class="bullet">
+                <span data-smark='{"action":"position"}'>N</span> ☰
+              </span>
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
               <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
@@ -78,9 +80,11 @@ endcapture %}
     margin: 0;
 }
 {{""}}#myForm$$ .ep label {
-    min-width: 4.5em;
     font-weight: 500;
     white-space: nowrap;
+}
+{{""}}#myForm$$ .ep label:not(.bullet) {
+    min-width: 4.5em;
 }
 {{""}}#myForm$$ .ep input {
     padding: 0.3em 0.5em;
@@ -107,7 +111,7 @@ endcapture %}
     flex-direction: column;
     gap: 0.25em;
 }
-{{""}}#myForm$$ .ep-list ul li { display: block; }
+{{""}}#myForm$$ .ep-list ul li { display: flex; align-items: flex-start; gap: 0.3em; }
 {{""}}#myForm$$ .ep-list ul li details {
     width: 100%;
     border: 1px solid transparent;
@@ -122,9 +126,20 @@ endcapture %}
     display: flex;
     align-items: center;
     gap: 0.4em;
-    cursor: pointer;
+    cursor: default;
     user-select: none;
     padding: 0.1em 0.2em;
+    list-style: none;
+}
+{{""}}#myForm$$ .ep-list ul li summary::before {
+    content: "▶";
+    font-size: .75em;
+    transition: transform .15s;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+{{""}}#myForm$$ .ep-list ul li details[open] > summary::before {
+    transform: rotate(90deg);
 }
 {{""}}#myForm$$ .ep-attendee-details {
     display: flex;
