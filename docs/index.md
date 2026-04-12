@@ -42,10 +42,8 @@ permalink: /
       <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
         <li>
           <details>
-            <summary>
-              <span data-smark='{"type":"label"}' class="bullet" title="Drag to reorder">
-                <span data-smark='{"action":"position"}'>N</span>. ☰
-              </span>
+            <summary data-smark='{"type":"label"}'>
+              <span data-smark='{"action":"position"}'>N</span>. ☰
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
               <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
@@ -112,7 +110,6 @@ endcapture %}
     gap: 0.25em;
 }
 {{""}}#myForm$$ .ep-list ul li { display: flex; align-items: flex-start; gap: 0.3em; }
-{{""}}#myForm$$ .ep-list ul li [data-smark-label] { cursor: grab; padding-top: 0.15em; flex-shrink: 0; min-width: auto; font-weight: normal; }
 {{""}}#myForm$$ .ep-list ul li details {
     width: 100%;
     border: 1px solid transparent;

@@ -237,10 +237,8 @@ label associations and position counters are all built in.
         <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
           <li>
             <details>
-              <summary>
-                <span data-smark='{"type":"label"}' class="bullet" title="Drag to reorder">
-                  <span data-smark='{"action":"position"}'>N</span>. ☰
-                </span>
+              <summary data-smark='{"type":"label"}'>
+                <span data-smark='{"action":"position"}'>N</span>. ☰
                 <input data-smark type="text" name="name" placeholder="Name">
                 <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
                 <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert here">➕</button>
@@ -258,11 +256,13 @@ label associations and position counters are all built in.
   </div>
   <script>
     const myForm = new SmarkForm(document.getElementById('myForm'));
-    // Workaround: force drag ghost to reflect the element's current painted
-    // state (prevents stale ghost when dragging a folded <details> item).
+    // CDN drag-ghost workaround: use the compact <summary> row as the ghost
+    // so folded and unfolded items produce a consistently-sized ghost image.
     document.getElementById('myForm').addEventListener('dragstart', function(e) {
       var li = e.target.closest && e.target.closest('li[draggable="true"]');
-      if (li) e.dataTransfer.setDragImage(li, 10, 10);
+      if (!li) return;
+      var ghost = li.querySelector('summary') || li;
+      e.dataTransfer.setDragImage(ghost, 16, Math.round(ghost.offsetHeight / 2));
     }, true);
   </script>
   <style>
@@ -282,7 +282,6 @@ label associations and position counters are all built in.
     .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
     .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
     .ep-list li details[open] > summary::before { transform: rotate(90deg); }
-    .ep-list li [data-smark-label] { cursor: grab; font-weight: normal; flex-shrink: 0; }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }

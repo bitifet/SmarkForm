@@ -4284,10 +4284,8 @@ form, or import your own JSON to pre-populate it.
       <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
         <li>
           <details>
-            <summary>
-              <span data-smark='{"type":"label"}' class="bullet" title="Drag to reorder">
-                <span data-smark='{"action":"position"}'>N</span>. ☰
-              </span>
+            <summary data-smark='{"type":"label"}'>
+              <span data-smark='{"action":"position"}'>N</span>. ☰
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
               <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
@@ -4362,12 +4360,6 @@ endcapture %}
     display: flex;
     align-items: flex-start;
     gap: 0.3em;
-}
-{{""}}#myForm$$ .ep-list ul li [data-smark-label] {
-    cursor: grab;
-    font-weight: normal;
-    flex-shrink: 0;
-    padding-top: 0.15em;
 }
 {{""}}#myForm$$ .ep-list ul li details {
     width: 100%;
@@ -4464,10 +4456,10 @@ endcapture %}
 
   * **Foldable rows**: Each attendee row uses a native `<details>`/`<summary>`
     element. Click the ▶ triangle (or anywhere on the row header outside the
-    name field) to expand or collapse the extra fields.  A `<span>` with
-    `data-smark='{"type":"label"}'` is used as the drag handle instead of a
-    native `<label>`, so clicks are not suppressed by the browser's
-    label-activation behaviour inside `<summary>`.
+    name field) to expand or collapse the extra fields.  The `<summary>`
+    element is used directly as the SmarkForm label
+    (`data-smark='{"type":"label"}'`), making the whole header row the drag
+    handle for reordering and restoring the native disclosure triangle.
   * **Nested subform**: The `organizer` fieldset is a subform — its fields are
     grouped and exported as a nested object.
   * **Sortable list**: Attendees can be dragged to reorder them. The list uses
