@@ -156,8 +156,12 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
  * handles inside it.
  *
  * The item root (<li>) is always the draggable element — NOT the individual
- * label handles.  Keeping labels non-draggable means pointer events (clicks)
- * bubble normally through <label> → <summary> so fold/unfold works.
+ * label handles.  Label handles MUST be non-interactive elements (e.g.
+ * <span data-smark='{"type":"label"}'>) rather than native <label> elements.
+ * Per the HTML spec, native <label> is "interactive content", and browsers
+ * suppress the <details> toggle when a click target is interactive content
+ * inside <summary>.  A plain <span> is non-interactive, so clicks on it
+ * bubble normally to <summary> and toggle <details>.
  *
  * Origin validation (restrict drag to handle / block interactive fields) is
  * done in the dragstart listener via the lastMousedownTarget tracker.

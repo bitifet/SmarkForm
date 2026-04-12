@@ -238,9 +238,9 @@ label associations and position counters are all built in.
           <li>
             <details>
               <summary>
-                <label data-smark class="bullet" title="Drag to reorder">
+                <span data-smark='{"type":"label"}' class="bullet" title="Drag to reorder">
                   <span data-smark='{"action":"position"}'>N</span>. ☰
-                </label>
+                </span>
                 <input data-smark type="text" name="name" placeholder="Name">
                 <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
                 <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert here">➕</button>
@@ -258,6 +258,12 @@ label associations and position counters are all built in.
   </div>
   <script>
     const myForm = new SmarkForm(document.getElementById('myForm'));
+    // Workaround: force drag ghost to reflect the element's current painted
+    // state (prevents stale ghost when dragging a folded <details> item).
+    document.getElementById('myForm').addEventListener('dragstart', function(e) {
+      var li = e.target.closest && e.target.closest('li[draggable="true"]');
+      if (li) e.dataTransfer.setDragImage(li, 10, 10);
+    }, true);
   </script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
@@ -265,8 +271,7 @@ label associations and position counters are all built in.
     button[data-smark]:hover { background: #e9ecef; }
     .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
     .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
-    .ep label { font-weight: 500; white-space: nowrap; }
-    .ep label:not(.bullet) { min-width: 5em; }
+    .ep label { font-weight: 500; white-space: nowrap; min-width: 5em; }
     .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
     .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
     .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
@@ -274,8 +279,10 @@ label associations and position counters are all built in.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
+    .ep-list li details[open] > summary::before { transform: rotate(90deg); }
+    .ep-list li [data-smark-label] { cursor: grab; font-weight: normal; flex-shrink: 0; }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
@@ -551,8 +558,9 @@ All form state and behaviour is wired up explicitly in JavaScript.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
+    .ep-list li details[open] > summary::before { transform: rotate(90deg); }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
@@ -782,8 +790,9 @@ still need to be declared explicitly in JavaScript.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
+    .ep-list li details[open] > summary::before { transform: rotate(90deg); }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }

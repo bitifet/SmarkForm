@@ -43,9 +43,9 @@ permalink: /
         <li>
           <details>
             <summary>
-              <label data-smark class="bullet" title="Drag to reorder">
+              <span data-smark='{"type":"label"}' class="bullet" title="Drag to reorder">
                 <span data-smark='{"action":"position"}'>N</span>. ☰
-              </label>
+              </span>
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
               <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
@@ -130,6 +130,16 @@ endcapture %}
     cursor: pointer;
     user-select: none;
     padding: 0.1em 0.2em;
+    list-style: none;
+}
+{{""}}#myForm$$ .ep-list ul li summary::before {
+    content: "▶";
+    font-size: .75em;
+    transition: transform .15s;
+    flex-shrink: 0;
+}
+{{""}}#myForm$$ .ep-list ul li details[open] > summary::before {
+    transform: rotate(90deg);
 }
 {{""}}#myForm$$ .ep-attendee-details {
     display: flex;
