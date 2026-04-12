@@ -23,6 +23,21 @@ export class label extends SmarkComponent {
     };
     async render(){
         const me = this;
+        // Detect invalid use of a native <label> inside a <summary>:
+        // browsers suppress the <details> toggle for interactive content
+        // (including <label>) inside <summary>, so a native label cannot be
+        // placed there.  Developers should use the <summary> element itself
+        // as the SmarkForm label: <summary data-smark='{"type":"label"}'>.
+        if (
+            String(me.targetNode.tagName).toLowerCase() === "label"
+            && me.targetNode.closest("summary")
+        ) throw me.renderError(
+            'LABEL_INSIDE_SUMMARY'
+            , `Native <label> elements are not allowed inside a <summary> element `
+            + `because browsers suppress the <details> toggle for interactive content `
+            + `inside <summary>. Use the <summary> element as the SmarkForm label `
+            + `instead: <summary data-smark='{"type":"label"}'> in form ${me.getPath()}.`
+        );
         // Enhance triggers inside the label:
         let childField = null;
         for (

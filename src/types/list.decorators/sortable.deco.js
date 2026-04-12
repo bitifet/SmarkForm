@@ -49,9 +49,15 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             if (handles.length > 0) {
                                 // Label handles are present: only allow drag
                                 // when the pointer went down on a handle.
-                                // This lets clicks on the label bubble up to
-                                // <summary> for normal fold/unfold behaviour.
                                 if (!lastMousedownTarget?.closest(SMARK_LABEL_SELECTOR)) {
+                                    e.preventDefault();
+                                    return;
+                                };
+                                // Block drag when the pointer went down on an
+                                // interactive control even if it is nested inside
+                                // the label handle (e.g. an <input> or <button>
+                                // inside a <summary data-smark-label>).
+                                if (lastMousedownTarget?.closest(INTERACTIVE_FIELDS_SELECTOR)) {
                                     e.preventDefault();
                                     return;
                                 };
@@ -67,6 +73,20 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                             dragSource = itemRoot;
                             e.stopPropagation();
+
+                            // Use the <summary> row (compact header) as the drag
+                            // ghost image when one is present.  This produces a
+                            // consistently-sized ghost regardless of whether the
+                            // item is currently folded or unfolded — avoiding the
+                            // browser quirk where a closed <details> inside the
+                            // draggable <li> can still inflate the ghost to the
+                            // open layout dimensions.
+                            const _ghostEl = itemRoot.querySelector('summary') || itemRoot;
+                            e.dataTransfer.setDragImage(
+                                _ghostEl,
+                                Math.min(e.offsetX ?? 16, _ghostEl.offsetWidth  - 4),
+                                Math.round(_ghostEl.offsetHeight / 2),
+                            );
                         } else {
                             // Single dragging at a time.
                             e.preventDefault();
@@ -156,12 +176,13 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
  * handles inside it.
  *
  * The item root (<li>) is always the draggable element — NOT the individual
- * label handles.  Label handles MUST be non-interactive elements (e.g.
- * <span data-smark='{"type":"label"}'>) rather than native <label> elements.
- * Per the HTML spec, native <label> is "interactive content", and browsers
- * suppress the <details> toggle when a click target is interactive content
- * inside <summary>.  A plain <span> is non-interactive, so clicks on it
- * bubble normally to <summary> and toggle <details>.
+ * label handles.  The recommended drag-handle pattern is to use the <summary>
+ * element itself as the SmarkForm label:
+ *   <summary data-smark='{"type":"label"}'>
+ * This lets the entire summary row act as the drag handle while interactive
+ * descendants (inputs, buttons) are excluded by the dragstart guard.  The
+ * <summary> also provides the native disclosure triangle and fold/unfold on
+ * click, so no additional CSS workarounds are needed for those features.
  *
  * Origin validation (restrict drag to handle / block interactive fields) is
  * done in the dragstart listener via the lastMousedownTarget tracker.
