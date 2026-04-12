@@ -42,8 +42,10 @@ permalink: /
       <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
         <li>
           <details>
-            <summary data-smark='{"type":"label"}'>
-              <span data-smark='{"action":"position"}'>N</span>. ☰
+            <summary>
+              <span data-smark='{"type":"label"}' class="bullet">
+                <span data-smark='{"action":"position"}'>N</span> ☰
+              </span>
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
               <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
@@ -124,7 +126,7 @@ endcapture %}
     display: flex;
     align-items: center;
     gap: 0.4em;
-    cursor: pointer;
+    cursor: default;
     user-select: none;
     padding: 0.1em 0.2em;
     list-style: none;
@@ -134,6 +136,7 @@ endcapture %}
     font-size: .75em;
     transition: transform .15s;
     flex-shrink: 0;
+    cursor: pointer;
 }
 {{""}}#myForm$$ .ep-list ul li details[open] > summary::before {
     transform: rotate(90deg);

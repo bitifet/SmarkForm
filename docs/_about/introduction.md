@@ -237,8 +237,10 @@ label associations and position counters are all built in.
         <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
           <li>
             <details>
-              <summary data-smark='{"type":"label"}'>
-                <span data-smark='{"action":"position"}'>N</span>. ☰
+              <summary>
+                <span data-smark='{"type":"label"}' class="bullet">
+                  <span data-smark='{"action":"position"}'>N</span> ☰
+                </span>
                 <input data-smark type="text" name="name" placeholder="Name">
                 <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
                 <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert here">➕</button>
@@ -279,8 +281,8 @@ label associations and position counters are all built in.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
-    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: default; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; cursor: pointer; }
     .ep-list li details[open] > summary::before { transform: rotate(90deg); }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }

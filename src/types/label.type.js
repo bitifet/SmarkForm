@@ -9,6 +9,16 @@ export class label extends SmarkComponent {
         delete options.name; // Labels are always unnamed.
         super(node, {allow_select, ...options}, ...args);
         const me = this;
+        // If this label element is nested inside a <summary> (but is not the
+        // summary itself), stop the click from bubbling to <summary> so it
+        // does not trigger the <details> fold/unfold.  Only the disclosure
+        // triangle (::before / ::marker on <summary>) should fold/unfold.
+        // This must be a synchronous DOM listener — the SmarkForm async
+        // click hook fires too late to stop DOM propagation.
+        const parentSummary = me.targetNode.closest("summary");
+        if (parentSummary && parentSummary !== me.targetNode) {
+            me.targetNode.addEventListener('click', ev => ev.stopPropagation());
+        };
         me.eventHooks.click.push(
             function click_hook(ev) {
                 // Mimic native label behavior for non-native fields:
@@ -23,11 +33,28 @@ export class label extends SmarkComponent {
     };
     async render(){
         const me = this;
+        // Detect invalid use of the <summary> element directly as a SmarkForm
+        // label.  When <summary> is the label, its click behaviour (to focus
+        // the related field) conflicts with the browser's native <details>
+        // fold/unfold activation.  Use a non-native element (e.g. <span>)
+        // INSIDE the <summary> as the SmarkForm label instead, and preserve
+        // the disclosure triangle (::before / ::marker on <summary>) for
+        // fold/unfold.
+        if (
+            String(me.targetNode.tagName).toLowerCase() === "summary"
+        ) throw me.renderError(
+            'SUMMARY_AS_LABEL'
+            , `The <summary> element cannot be used directly as a SmarkForm label. `
+            + `Clicking a <summary>-as-label would both focus the related field AND `
+            + `toggle the <details> fold/unfold, which conflict. `
+            + `Use a non-native element inside the <summary> instead: `
+            + `<span data-smark='{"type":"label"}'> inside <summary> in form ${me.getPath()}.`
+        );
         // Detect invalid use of a native <label> inside a <summary>:
         // browsers suppress the <details> toggle for interactive content
         // (including <label>) inside <summary>, so a native label cannot be
-        // placed there.  Developers should use the <summary> element itself
-        // as the SmarkForm label: <summary data-smark='{"type":"label"}'>.
+        // placed there.  Use a non-native element (e.g. <span>) as the
+        // SmarkForm label inside <summary> instead.
         if (
             String(me.targetNode.tagName).toLowerCase() === "label"
             && me.targetNode.closest("summary")
@@ -35,8 +62,8 @@ export class label extends SmarkComponent {
             'LABEL_INSIDE_SUMMARY'
             , `Native <label> elements are not allowed inside a <summary> element `
             + `because browsers suppress the <details> toggle for interactive content `
-            + `inside <summary>. Use the <summary> element as the SmarkForm label `
-            + `instead: <summary data-smark='{"type":"label"}'> in form ${me.getPath()}.`
+            + `inside <summary>. Use a non-native element (e.g. <span>) as the `
+            + `SmarkForm label inside <summary> instead in form ${me.getPath()}.`
         );
         // Enhance triggers inside the label:
         let childField = null;
