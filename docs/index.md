@@ -131,16 +131,6 @@ endcapture %}
     padding: 0.1em 0.2em;
     list-style: none;
 }
-{{""}}#myForm$$ .ep-list ul li summary::before {
-    content: "▶";
-    font-size: .75em;
-    transition: transform .15s;
-    flex-shrink: 0;
-    cursor: pointer;
-}
-{{""}}#myForm$$ .ep-list ul li details[open] > summary::before {
-    transform: rotate(90deg);
-}
 {{""}}#myForm$$ .ep-attendee-details {
     display: flex;
     flex-wrap: wrap;

@@ -25,9 +25,13 @@ export class label extends SmarkComponent {
                 if (ev.defaultPrevented) return;
                 const {target} = me.getLabelArgs();
                 if (
-                    ! target?.targetFieldNode
-                    || (me.nodeType === "legend")
-                ) target.focus();
+                    ! target?.targetFieldNode  // Non-scalar: focus the component
+                    || (me.nodeType === "legend") // Legend: focus first child field
+                    || (me.nodeType !== "label")  // Non-native element (span, strong…):
+                                                  // must simulate focus explicitly since
+                                                  // setAttribute("for", …) has no effect
+                                                  // on non-<label> elements.
+                ) target?.focus();
             },
         );
     };
@@ -143,6 +147,54 @@ export class label extends SmarkComponent {
             // to true.
             if (! me.options.allow_select) {
                 me.targetNode.style["user-select"] = "none";
+            };
+
+            // Auto-fix missing disclosure triangle.
+            //
+            // When a SmarkForm label is placed inside a <summary> that uses
+            // display:flex / display:grid, the native ::marker disclosure
+            // triangle disappears (flex/grid items suppress list-item markers).
+            // Detect this condition and inject a lightweight CSS fallback so
+            // developers get the triangle automatically without having to add
+            // a manual ::before rule.
+            //
+            // Detection conditions (both must be true):
+            //   1. The parent <summary> has a computed display other than
+            //      "list-item" (e.g. flex / grid).
+            //   2. The <summary> has no custom ::before content set by the
+            //      page's CSS (content === "none" means nothing is provided).
+            //
+            // Fix: set data-sf-triangle-fix attribute on the <summary> and
+            // inject a once-per-document <style> tag that provides the
+            // fallback triangle via ::before.  The rules use :where() for
+            // zero specificity so any developer CSS takes precedence.
+            if (typeof window !== "undefined") {
+                const labelSummary = me.targetNode.closest("summary");
+                if (labelSummary && labelSummary !== me.targetNode) {
+                    const summaryDisplay = window.getComputedStyle(labelSummary).display;
+                    const beforeContent = window.getComputedStyle(labelSummary, "::before").content;
+                    if (
+                        summaryDisplay !== "list-item"
+                        && beforeContent === "none"
+                    ) {
+                        labelSummary.setAttribute("data-sf-triangle-fix", "");
+                        if (!document.getElementById("sf-disclosure-triangle-style")) {
+                            const style = document.createElement("style");
+                            style.id = "sf-disclosure-triangle-style";
+                            style.textContent = [
+                                ":where(summary[data-sf-triangle-fix]) { list-style: none; }",
+                                ":where(summary[data-sf-triangle-fix])::before {",
+                                "  content: \"▶\"; font-size: .75em;",
+                                "  transition: transform .15s; flex-shrink: 0; cursor: pointer;",
+                                "}",
+                                ":where(details[open] > summary[data-sf-triangle-fix])::before {",
+                                "  transform: rotate(90deg);",
+                                "}",
+                            ].join("\n");
+                            document.head.appendChild(style);
+                        };
+                    };
+                };
             };
         });
     };
