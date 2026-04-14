@@ -234,12 +234,14 @@ SmarkForm extends its keyboard navigation to work naturally with collapsible sec
 
 - **Space** — In the summary field of a collapsible section, pressing Space types a space character as usual. The section is **not** toggled, so you can freely type in the visible field without accidentally collapsing it.
 
-- **Shift+Space** — If you want to toggle the section open/closed using the keyboard, hold **Shift** while pressing Space. The Space character is **not** typed into the field — only the toggle happens.
+- **Shift+Space** — Hold **Shift** while pressing Space to fold or toggle the section without typing a space character:
+  - From a field **in the header row** (`<summary>`): *toggles* the section open or closed.
+  - From a field **inside the expanded body** (below the header): *folds* the section closed and moves focus back to the first field in the header row.
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/08-collapsible-sections.png' | relative_url }}"
        alt="A collapsible contact list showing one contact collapsed (only name visible) and another expanded (name, email and phone visible), with keyboard shortcut annotations for Alt+Enter (expand and enter forward), Alt+Shift+Enter (expand and enter backward) and Shift+Space (toggle)">
-  <figcaption>Collapsible sections: Enter/Shift+Enter skip closed sections, Alt+Enter opens and enters forward, Alt+Shift+Enter opens and enters backward, Shift+Space toggles open/closed</figcaption>
+  <figcaption>Collapsible sections: Enter/Shift+Enter skip closed sections, Alt+Enter opens and enters forward, Alt+Shift+Enter opens and enters backward, Shift+Space toggles (from header) or folds (from body)</figcaption>
 </figure>
 
 {: .hint}
@@ -291,7 +293,7 @@ Here are some tips to make form filling even faster:
 
 5. **Watch for smart features** — Notice how buttons disable themselves when limits are reached, or how new list items appear automatically. Lists of complex forms may provide a button to duplicate an item (huge time saver sometimes), etc...
 
-6. **Use Alt+Enter / Alt+Shift+Enter and Shift+Space in collapsible sections** — When a section is collapsed, **Alt+Enter** opens it and moves focus to the first field inside; **Alt+Shift+Enter** opens it and moves focus to the *last* field inside; **Shift+Space** toggles it open or closed without typing a space character
+6. **Use Alt+Enter / Alt+Shift+Enter and Shift+Space in collapsible sections** — When a section is collapsed, **Alt+Enter** opens it and moves focus to the first field inside; **Alt+Shift+Enter** opens it and moves focus to the *last* field inside; **Shift+Space** toggles it open/closed from the header row, or folds it and returns focus to the header when you are editing a field in the expanded body
 
 7. **Use the keyboard for everything** — Once you're comfortable with navigation and hotkeys, you can often complete entire forms without touching your mouse
 

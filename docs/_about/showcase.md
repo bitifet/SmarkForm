@@ -2647,6 +2647,35 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         expect(valueAfter, 'Shift+Space must not type a space into the input').toBe(valueBefore);
     }
 
+    // ── Shift+Space from body field: fold + refocus to summary ───────────────
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        // Focus a field that is inside the body (not <summary>)
+        const firstBodyInput = root.locator('details').nth(0).locator('input[name="email"]');
+        await firstBodyInput.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Space from the body — must fold (close) the <details>
+        await page.keyboard.press('Shift+ ');
+
+        const nowClosed = await page.evaluate(
+            s => !document.querySelector(`${s} details`).open, formSel
+        );
+        expect(nowClosed, 'Shift+Space from body must fold (close) the <details>').toBe(true);
+
+        // Focus must have moved to a field inside <summary> (not lost)
+        const focusInSummary = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            return !!active.closest('summary');
+        }, formSel);
+        expect(focusInSummary, 'Shift+Space from body must refocus a field in <summary>').toBe(true);
+    }
+
     // ── Issue 2: Enter in closed <summary> input → navigate to next item ─────
     {
         // Close all contacts
