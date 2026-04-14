@@ -200,7 +200,7 @@ label associations and position counters are all built in.
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Planner – SmarkForm</title>
-  <script src="{{ smarkform_umd_cdn_latest }}"></script>
+  <script src="{{ smarkform_umd_cdn_current }}"></script>
 </head>
 <body>
   <div id="myForm">
@@ -266,16 +266,6 @@ label associations and position counters are all built in.
       var ghost = li.querySelector('summary') || li;
       e.dataTransfer.setDragImage(ghost, 16, Math.round(ghost.offsetHeight / 2));
     }, true);
-    // CDN space-key workaround: block Space-key synthetic click on <summary>
-    // when an input inside it has focus (race-condition fix not yet in the
-    // published CDN release — remove this after the next npm release).
-    document.addEventListener('click', function(e) {
-      if (e.detail !== 0) return;
-      var s = e.target.closest && e.target.closest('summary');
-      if (s && s.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') {
-        e.preventDefault(); e.stopImmediatePropagation();
-      }
-    }, { capture: true });
   </script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }

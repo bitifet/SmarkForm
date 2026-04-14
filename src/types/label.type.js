@@ -17,7 +17,15 @@ export class label extends SmarkComponent {
         // click hook fires too late to stop DOM propagation.
         const parentSummary = me.targetNode.closest("summary");
         if (parentSummary && parentSummary !== me.targetNode) {
-            me.targetNode.addEventListener('click', ev => ev.stopPropagation());
+            // Synchronous DOM listener (click hook fires too late for propagation).
+            // stopPropagation alone is not always sufficient to prevent the
+            // native <details> toggle when the click passes through <summary>
+            // in the capture phase; preventDefault() cancels the activation
+            // behavior that triggers the toggle.
+            me.targetNode.addEventListener('click', ev => {
+                ev.stopPropagation();
+                ev.preventDefault();
+            });
         };
         me.eventHooks.click.push(
             function click_hook(ev) {
@@ -31,7 +39,9 @@ export class label extends SmarkComponent {
                                                   // must simulate focus explicitly since
                                                   // setAttribute("for", …) has no effect
                                                   // on non-<label> elements.
-                ) target?.focus();
+                ) target?.focus({openHidden: true}); // openHidden: open any closed
+                                                     // <details> ancestors so the
+                                                     // target field becomes reachable.
             },
         );
     };
