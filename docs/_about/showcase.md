@@ -2647,6 +2647,35 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         expect(valueAfter, 'Shift+Space must not type a space into the input').toBe(valueBefore);
     }
 
+    // ── Shift+Space from body field: fold + refocus to summary ───────────────
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        // Focus a field that is inside the body (not <summary>)
+        const firstBodyInput = root.locator('details').nth(0).locator('input[name="email"]');
+        await firstBodyInput.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Space from the body — must fold (close) the <details>
+        await page.keyboard.press('Shift+ ');
+
+        const nowClosed = await page.evaluate(
+            s => !document.querySelector(`${s} details`).open, formSel
+        );
+        expect(nowClosed, 'Shift+Space from body must fold (close) the <details>').toBe(true);
+
+        // Focus must have moved to a field inside <summary> (not lost)
+        const focusInSummary = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            return !!active.closest('summary');
+        }, formSel);
+        expect(focusInSummary, 'Shift+Space from body must refocus a field in <summary>').toBe(true);
+    }
+
     // ── Issue 2: Enter in closed <summary> input → navigate to next item ─────
     {
         // Close all contacts
@@ -4281,12 +4310,22 @@ form, or import your own JSON to pre-populate it.
       <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
       <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
       <strong data-smark='label'>👥 Attendees:</strong>
-      <ul data-smark='{"type":"list","name":"attendees","of":"input","sortable":true,"exportEmpties":false}'>
+      <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
         <li>
-          <span data-smark='{"action":"position"}'>N</span>.
-          <input data-smark type="text" placeholder="Name">
-          <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
-          <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+          <details>
+            <summary>
+              <span data-smark='{"type":"label"}' class="bullet">
+                <span data-smark='{"action":"position"}'>N</span> ☰
+              </span>
+              <input data-smark type="text" name="name" placeholder="Name">
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Insert here'>➕</button>
+            </summary>
+            <div class="ep-attendee">
+              <input data-smark type="email" name="email" placeholder="Email">
+              <input data-smark type="tel" name="phone" placeholder="Phone">
+            </div>
+          </details>
         </li>
       </ul>
     </div>
@@ -4312,9 +4351,11 @@ endcapture %}
     margin: 0;
 }
 {{""}}#myForm$$ .ep label {
-    min-width: 4.5em;
     font-weight: 500;
     white-space: nowrap;
+}
+{{""}}#myForm$$ .ep label:not(.bullet) {
+    min-width: 4.5em;
 }
 {{""}}#myForm$$ .ep input {
     padding: 0.3em 0.5em;
@@ -4348,8 +4389,37 @@ endcapture %}
 }
 {{""}}#myForm$$ .ep-list ul li {
     display: flex;
+    align-items: flex-start;
+    gap: 0.3em;
+}
+{{""}}#myForm$$ .ep-list ul li details {
+    width: 100%;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    transition: border-color 0.15s;
+}
+{{""}}#myForm$$ .ep-list ul li details[open] {
+    border-color: #ccc;
+    padding-bottom: 4px;
+}
+{{""}}#myForm$$ .ep-list ul li summary {
+    display: flex;
     align-items: center;
     gap: 0.4em;
+    cursor: default;
+    user-select: none;
+    padding: 0.1em 0.2em;
+    list-style: none;
+}
+{{""}}#myForm$$ .ep-attendee {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+    padding: 0.3em 0.4em 0.1em 1.5em;
+}
+{{""}}#myForm$$ .ep-attendee input {
+    flex: 1;
+    min-width: 120px;
 }
 {{""}}#myForm$$ .ep-hint {
     font-size: 0.82em;
@@ -4406,6 +4476,12 @@ endcapture %}
 {% capture notes -%}
 👉 This demo highlights several SmarkForm features at once:
 
+  * **Foldable rows**: Each attendee row uses a native `<details>`/`<summary>`
+    element. Click the ▶ triangle (or anywhere on the row header outside the
+    name field) to expand or collapse the extra fields.  The `<summary>`
+    element is used directly as the SmarkForm label
+    (`data-smark='{"type":"label"}'`), making the whole header row the drag
+    handle for reordering and restoring the native disclosure triangle.
   * **Nested subform**: The `organizer` fieldset is a subform — its fields are
     grouped and exported as a nested object.
   * **Sortable list**: Attendees can be dragged to reorder them. The list uses
@@ -4437,9 +4513,9 @@ endcapture %}
         "email": "alice@example.com"
     },
     "attendees": [
-        "Bob Smith",
-        "Carol White",
-        "Dave Brown"
+        {"name": "Bob Smith",   "email": "bob@example.com",   "phone": "+1 555 200 0001"},
+        {"name": "Carol White", "email": "carol@example.com", "phone": "+1 555 200 0002"},
+        {"name": "Dave Brown",  "email": "dave@example.com",  "phone": "+1 555 200 0003"}
     ]
 }
 {%- endcapture %}

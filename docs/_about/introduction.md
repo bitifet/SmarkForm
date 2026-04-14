@@ -178,6 +178,8 @@ A moderately complex, real-world form:
   rows) attendees
 - A **position indicator** that reflects each item's current position in the
   list
+- Drag-and-drop to **reorder** attendees (with a dedicated drag handle so text
+  selection still works inside inputs)
 
 
 ---
@@ -198,7 +200,7 @@ label associations and position counters are all built in.
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Event Planner – SmarkForm</title>
-  <script src="{{ smarkform_umd_cdn_latest }}"></script>
+  <script src="{{ smarkform_umd_cdn_current }}"></script>
 </head>
 <body>
   <div id="myForm">
@@ -236,7 +238,9 @@ label associations and position counters are all built in.
           <li>
             <details>
               <summary>
-                <span data-smark='{"action":"position"}'>N</span>.
+                <span data-smark='{"type":"label"}' class="bullet">
+                  <span data-smark='{"action":"position"}'>N</span> ☰
+                </span>
                 <input data-smark type="text" name="name" placeholder="Name">
                 <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
                 <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert here">➕</button>
@@ -254,6 +258,14 @@ label associations and position counters are all built in.
   </div>
   <script>
     const myForm = new SmarkForm(document.getElementById('myForm'));
+    // CDN drag-ghost workaround: use the compact <summary> row as the ghost
+    // so folded and unfolded items produce a consistently-sized ghost image.
+    document.getElementById('myForm').addEventListener('dragstart', function(e) {
+      var li = e.target.closest && e.target.closest('li[draggable="true"]');
+      if (!li) return;
+      var ghost = li.querySelector('summary') || li;
+      e.dataTransfer.setDragImage(ghost, 16, Math.round(ghost.offsetHeight / 2));
+    }, true);
   </script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; padding: 1em; margin: 0; }
@@ -261,7 +273,7 @@ label associations and position counters are all built in.
     button[data-smark]:hover { background: #e9ecef; }
     .ep { display: flex; flex-direction: column; gap: .4em; max-width: 460px; font-size: .95em; }
     .ep p { display: flex; align-items: center; gap: .5em; margin: 0; }
-    .ep label { min-width: 5em; font-weight: 500; white-space: nowrap; }
+    .ep label { font-weight: 500; white-space: nowrap; min-width: 5em; }
     .ep input { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; flex: 1; }
     .ep fieldset { border: 1px solid #ddd; border-radius: 6px; padding: .4em .8em .6em; margin: 0; display: flex; flex-direction: column; gap: .3em; }
     .ep fieldset legend { font-weight: bold; padding: 0 .3em; }
@@ -269,8 +281,9 @@ label associations and position counters are all built in.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: default; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; cursor: pointer; }
+    .ep-list li details[open] > summary::before { transform: rotate(90deg); }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
@@ -546,8 +559,9 @@ All form state and behaviour is wired up explicitly in JavaScript.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
+    .ep-list li details[open] > summary::before { transform: rotate(90deg); }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
@@ -777,8 +791,9 @@ still need to be declared explicitly in JavaScript.
     .ep-list ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .25em; }
     .ep-list li details { border: 1px solid transparent; border-radius: 4px; }
     .ep-list li details[open] { border-color: #ccc; padding-bottom: 4px; }
-    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; }
-    .ep-list li summary::-webkit-details-marker { display: none; }
+    .ep-list li summary { display: flex; align-items: center; gap: .4em; cursor: pointer; padding: .1em .2em; list-style: none; user-select: none; }
+    .ep-list li summary::before { content: "▶"; font-size: .75em; transition: transform .15s; flex-shrink: 0; }
+    .ep-list li details[open] > summary::before { transform: rotate(90deg); }
     .ep-attendee { display: flex; flex-wrap: wrap; gap: .4em; padding: .3em .4em .1em 1.4em; }
     .ep-attendee input { flex: 1; min-width: 110px; }
     .ep-hint { font-size: .8em; color: #888; margin: .1em 0 0; }
@@ -807,6 +822,12 @@ still need to be declared explicitly in JavaScript.
     hotkey buttons simultaneously (not context-aware), and multiple `➕` / `➖`
     hints may appear at once even though only one applies. Fixing this properly
     would require SmarkForm-level integration.
+  - **Drag to reorder** is not implemented. Adding it properly — including a
+    dedicated drag handle so that mouse gestures inside inputs still select text
+    rather than starting a drag — would require custom drag-event handlers and
+    state-reorder logic (~30–40 additional lines of JavaScript per
+    implementation). SmarkForm handles this automatically when `sortable: true`
+    is set and SmarkForm label components are present in the list item template.
 
 ---
 
@@ -832,6 +853,7 @@ still need to be declared explicitly in JavaScript.
 <tr><td>Label ↔ field wiring</td><td>automatic</td><td>htmlFor + id</td><td>for + id (or wrapping)</td></tr>
 <tr><td>Smooth field navigation (Enter / Shift+Enter)</td><td>built-in (zero JS)</td><td>manual (~15 lines)</td><td>manual (~12 lines)</td></tr>
 <tr><td>Keyboard shortcuts (Ctrl+= / Ctrl+-)</td><td>built-in, context-aware<a id="foothook_2" style="vertical-align: super" href="#footnote_2">(2)</a></td><td>manual (~20 lines) <a href="#gotchas" title="With gotchas">‼️</a></td><td>manual (~18 lines) <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
+<tr><td>Drag to reorder</td><td>built-in (label drag handle, zero JS)</td><td>not implemented <a href="#gotchas" title="With gotchas">‼️</a></td><td>not implemented <a href="#gotchas" title="With gotchas">‼️</a></td></tr>
 </tbody>
 </table>
 </div>

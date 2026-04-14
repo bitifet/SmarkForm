@@ -386,6 +386,7 @@ actions:
   <b>Pets:</b>
   <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
     <li>
+      <label data-smark title="Drag to reorder">☰</label>
       <select name='species' data-smark>
         <option value="cat">Cat</option>
         <option value="dog">Dog</option>
@@ -406,6 +407,9 @@ endcapture %}
 
 {% raw %} <!-- capture pets_list_example_css {{{ --> {% endraw %}
 {% capture pets_list_example_css %}.sortable>* {
+    cursor: default;
+}
+.sortable [data-smark-label] {
     cursor: grab;
 }
 {%- endcapture %}
@@ -413,11 +417,14 @@ endcapture %}
 
 {% raw %} <!-- capture pets_list_example_notes {{{ --> {% endraw %}
 {% capture pets_list_example_notes -%}
-👉 Notice **you can rearrange list items** by simply dragging them having we
-   set the *sortable* property to *true*.
+👉 Notice **you can rearrange list items** by dragging the ☰ handle label.
+   We set *sortable* to *true* and added a `<label data-smark>` as a drag
+   handle — SmarkForm automatically makes it the drag handle so you can still
+   **select text in the fields** without accidentally starting a drag.
 
-👉 Here we added the *sortable* class to list to set propper pointer cursor
-   over list items through a simple CSS rule.
+👉 The CSS applies `cursor: grab` only to the label handle via the
+   `[data-smark-label]` selector that SmarkForm adds automatically to
+   rendered label components.
 
 🚀 In the future we plan to automatically map all properties of the
    *data-smark* attribute as "data-smark-&lt;prop_name&gt;" like attributes so that

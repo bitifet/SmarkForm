@@ -279,15 +279,39 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             || tag === 'SELECT'
                         )) return;
                         const summary = ev.target?.closest?.('summary');
-                        if (!summary) return;
+                        // Also detect fields that are inside a <details> body
+                        // (outside <summary>): they can fold the section too.
+                        const details = summary?.closest('details')
+                            ?? ev.target?.closest?.('details');
+                        if (!details) return;
                         if (ev.shiftKey && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
-                            // Shift+Space: toggle the <details> open/closed and
-                            // prevent the space character from being typed.
+                            // Shift+Space: prevent the space character from
+                            // being typed and act on the <details> state.
                             ev.preventDefault();
-                            const details = summary.closest('details');
-                            if (details) details.open = !details.open;
+                            if (summary) {
+                                // Inside <summary>: toggle open/closed.
+                                details.open = !details.open;
+                            } else {
+                                // Inside <details> body (not <summary>): only
+                                // fold (close).  Unfolding is not needed here
+                                // because hidden fields are unreachable by
+                                // keyboard when the section is already closed.
+                                details.open = false;
+                                // After folding, the focused field is hidden
+                                // and focus is lost.  Restore it by focusing
+                                // the first focusable element inside <summary>,
+                                // or the <summary> itself as a fallback.
+                                const detailsSummary = details.querySelector('summary');
+                                if (detailsSummary) {
+                                    const firstFocusable = detailsSummary.querySelector(
+                                        'input, textarea, select, button, a[href], [tabindex]:not([tabindex="-1"])'
+                                    );
+                                    (firstFocusable ?? detailsSummary).focus();
+                                }
+                            }
                             return;
                         }
+                        if (!summary) return; // Plain-Space suppressor only needed inside <summary>
                         if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
                         // Plain Space: prevent the <details> toggle but allow
                         // the space character to be typed normally.
@@ -300,12 +324,19 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                         summary.addEventListener('click', suppressor, { capture: true, once: true });
                         // Cleanup: if the browser doesn't fire a click (e.g.
                         // the input is not inside a real <summary>), remove
-                        // the suppressor after the keyup completes.
-                        ev.target.addEventListener('keyup', () => {
+                        // the suppressor after the Space keyup completes.
+                        // IMPORTANT: do NOT use { once: true } here — a different
+                        // key's keyup (e.g. 'a' in "a<Space>" typed fast) would
+                        // trigger a once-listener and remove the suppressor before
+                        // the Space keyup fires, letting the synthetic click through.
+                        const spaceKeyupCleanup = keyupEv => {
+                            if (keyupEv.key !== ' ') return;
+                            ev.target.removeEventListener('keyup', spaceKeyupCleanup);
                             setTimeout(() => {
                                 summary.removeEventListener('click', suppressor, true);
                             }, 0);
-                        }, { once: true });
+                        };
+                        ev.target.addEventListener('keyup', spaceKeyupCleanup);
                     }, true); // synchronous, capture phase
 
                     for (const [evType, meta] of Object.entries(supportedFieldEventTypes)) {

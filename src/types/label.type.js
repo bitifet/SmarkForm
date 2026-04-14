@@ -9,20 +9,76 @@ export class label extends SmarkComponent {
         delete options.name; // Labels are always unnamed.
         super(node, {allow_select, ...options}, ...args);
         const me = this;
+        // If this label element is nested inside a <summary> (but is not the
+        // summary itself), stop the click from bubbling to <summary> so it
+        // does not trigger the <details> fold/unfold.  Only the disclosure
+        // triangle (::before / ::marker on <summary>) should fold/unfold.
+        // This must be a synchronous DOM listener — the SmarkForm async
+        // click hook fires too late to stop DOM propagation.
+        const parentSummary = me.targetNode.closest("summary");
+        if (parentSummary && parentSummary !== me.targetNode) {
+            // Synchronous DOM listener (click hook fires too late for propagation).
+            // stopPropagation alone is not always sufficient to prevent the
+            // native <details> toggle when the click passes through <summary>
+            // in the capture phase; preventDefault() cancels the activation
+            // behavior that triggers the toggle.
+            me.targetNode.addEventListener('click', ev => {
+                ev.stopPropagation();
+                ev.preventDefault();
+            });
+        };
         me.eventHooks.click.push(
             function click_hook(ev) {
                 // Mimic native label behavior for non-native fields:
                 if (ev.defaultPrevented) return;
                 const {target} = me.getLabelArgs();
                 if (
-                    ! target?.targetFieldNode
-                    || (me.nodeType === "legend")
-                ) target.focus();
+                    ! target?.targetFieldNode  // Non-scalar: focus the component
+                    || (me.nodeType === "legend") // Legend: focus first child field
+                    || (me.nodeType !== "label")  // Non-native element (span, strong…):
+                                                  // must simulate focus explicitly since
+                                                  // setAttribute("for", …) has no effect
+                                                  // on non-<label> elements.
+                ) target?.focus({openHidden: true}); // openHidden: open any closed
+                                                     // <details> ancestors so the
+                                                     // target field becomes reachable.
             },
         );
     };
     async render(){
         const me = this;
+        // Detect invalid use of the <summary> element directly as a SmarkForm
+        // label.  When <summary> is the label, its click behaviour (to focus
+        // the related field) conflicts with the browser's native <details>
+        // fold/unfold activation.  Use a non-native element (e.g. <span>)
+        // INSIDE the <summary> as the SmarkForm label instead, and preserve
+        // the disclosure triangle (::before / ::marker on <summary>) for
+        // fold/unfold.
+        if (
+            String(me.targetNode.tagName).toLowerCase() === "summary"
+        ) throw me.renderError(
+            'SUMMARY_AS_LABEL'
+            , `The <summary> element cannot be used directly as a SmarkForm label. `
+            + `Clicking a <summary>-as-label would both focus the related field AND `
+            + `toggle the <details> fold/unfold, which conflict. `
+            + `Use a non-native element inside the <summary> instead: `
+            + `<span data-smark='{"type":"label"}'> inside <summary> in form ${me.getPath()}.`
+        );
+        // Detect invalid use of a native <label> inside a <summary>:
+        // browsers suppress the <details> toggle for interactive content
+        // (including <label>) inside <summary>, so a native label cannot be
+        // placed there.  Use a non-native element (e.g. <span>) as the
+        // SmarkForm label inside <summary> instead.
+        if (
+            String(me.targetNode.tagName).toLowerCase() === "label"
+            && me.targetNode.closest("summary")
+        ) throw me.renderError(
+            'LABEL_INSIDE_SUMMARY'
+            , `Native <label> elements are not allowed inside a <summary> element `
+            + `because browsers suppress the <details> toggle for interactive content `
+            + `inside <summary>. Use a non-native element (e.g. <span>) as the `
+            + `SmarkForm label inside <summary> instead in form ${me.getPath()}.`
+        );
         // Enhance triggers inside the label:
         let childField = null;
         for (
@@ -93,10 +149,62 @@ export class label extends SmarkComponent {
                 };
             };
 
+            // Mark this node as a SmarkForm label so sortable lists can
+            // use it as a drag handle.
+            me.targetNode.setAttribute("data-smark-label", "");
+
             // Make labels non-selectable unless "allow_select" option is set
             // to true.
             if (! me.options.allow_select) {
                 me.targetNode.style["user-select"] = "none";
+            };
+
+            // Auto-fix missing disclosure triangle.
+            //
+            // When a SmarkForm label is placed inside a <summary> that uses
+            // display:flex / display:grid, the native ::marker disclosure
+            // triangle disappears (flex/grid items suppress list-item markers).
+            // Detect this condition and inject a lightweight CSS fallback so
+            // developers get the triangle automatically without having to add
+            // a manual ::before rule.
+            //
+            // Detection conditions (both must be true):
+            //   1. The parent <summary> has a computed display other than
+            //      "list-item" (e.g. flex / grid).
+            //   2. The <summary> has no custom ::before content set by the
+            //      page's CSS (content === "none" means nothing is provided).
+            //
+            // Fix: set data-sf-triangle-fix attribute on the <summary> and
+            // inject a once-per-document <style> tag that provides the
+            // fallback triangle via ::before.  The rules use :where() for
+            // zero specificity so any developer CSS takes precedence.
+            if (typeof window !== "undefined") {
+                const labelSummary = me.targetNode.closest("summary");
+                if (labelSummary && labelSummary !== me.targetNode) {
+                    const summaryDisplay = window.getComputedStyle(labelSummary).display;
+                    const beforeContent = window.getComputedStyle(labelSummary, "::before").content;
+                    if (
+                        summaryDisplay !== "list-item"
+                        && beforeContent === "none"
+                    ) {
+                        labelSummary.setAttribute("data-sf-triangle-fix", "");
+                        if (!document.getElementById("sf-disclosure-triangle-style")) {
+                            const style = document.createElement("style");
+                            style.id = "sf-disclosure-triangle-style";
+                            style.textContent = [
+                                ":where(summary[data-sf-triangle-fix]) { list-style: none; }",
+                                ":where(summary[data-sf-triangle-fix])::before {",
+                                "  content: \"▶\"; font-size: .75em;",
+                                "  transition: transform .15s; flex-shrink: 0; cursor: pointer;",
+                                "}",
+                                ":where(details[open] > summary[data-sf-triangle-fix])::before {",
+                                "  transform: rotate(90deg);",
+                                "}",
+                            ].join("\n");
+                            document.head.appendChild(style);
+                        };
+                    };
+                };
             };
         });
     };
