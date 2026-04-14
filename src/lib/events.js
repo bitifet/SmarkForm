@@ -297,6 +297,17 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                                 // because hidden fields are unreachable by
                                 // keyboard when the section is already closed.
                                 details.open = false;
+                                // After folding, the focused field is hidden
+                                // and focus is lost.  Restore it by focusing
+                                // the first focusable element inside <summary>,
+                                // or the <summary> itself as a fallback.
+                                const detailsSummary = details.querySelector('summary');
+                                if (detailsSummary) {
+                                    const firstFocusable = detailsSummary.querySelector(
+                                        'input, textarea, select, button, a[href], [tabindex]:not([tabindex="-1"])'
+                                    );
+                                    (firstFocusable ?? detailsSummary).focus();
+                                }
                             }
                             return;
                         }
