@@ -73,6 +73,10 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                             dragSource = itemRoot;
                             e.stopPropagation();
+                            // Focus the dragged item so it is clearly
+                            // selected and keyboard interaction remains
+                            // consistent after the drop.
+                            me.getComponent(dragSource)?.focus();
 
                             // Use the <summary> row (compact header) as the drag
                             // ghost image when one is present.  This produces a
