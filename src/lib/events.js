@@ -279,15 +279,28 @@ export const events = function events_decorator(targetComponentType, {kind}) {
                             || tag === 'SELECT'
                         )) return;
                         const summary = ev.target?.closest?.('summary');
-                        if (!summary) return;
+                        // Also detect fields that are inside a <details> body
+                        // (outside <summary>): they can fold the section too.
+                        const details = summary?.closest('details')
+                            ?? ev.target?.closest?.('details');
+                        if (!details) return;
                         if (ev.shiftKey && !ev.altKey && !ev.ctrlKey && !ev.metaKey) {
-                            // Shift+Space: toggle the <details> open/closed and
-                            // prevent the space character from being typed.
+                            // Shift+Space: prevent the space character from
+                            // being typed and act on the <details> state.
                             ev.preventDefault();
-                            const details = summary.closest('details');
-                            if (details) details.open = !details.open;
+                            if (summary) {
+                                // Inside <summary>: toggle open/closed.
+                                details.open = !details.open;
+                            } else {
+                                // Inside <details> body (not <summary>): only
+                                // fold (close).  Unfolding is not needed here
+                                // because hidden fields are unreachable by
+                                // keyboard when the section is already closed.
+                                details.open = false;
+                            }
                             return;
                         }
+                        if (!summary) return; // Plain-Space suppressor only needed inside <summary>
                         if (ev.altKey || ev.ctrlKey || ev.metaKey) return;
                         // Plain Space: prevent the <details> toggle but allow
                         // the space character to be typed normally.
