@@ -11,13 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [0.16.0] — 2026-04-14
 
-🔒 Security & Distribution Hardening — secure-by-default mixin options · `enableJsonEncoding` opt-in · docs/CDN sync test.
+🔒 Secure-by-default mixin & JSON options · 🖼️ Framework comparison page · 🎯 Drag-handle improvements · 🔑 Shift+Space in `<summary>` inputs · 📦 npm distribution fix.
 
-This unreleased batch introduces a **secure-by-default** posture for features that carry a
-cross-origin or script-injection risk. All new options are root-level SmarkForm constructor
-options and are inherited throughout the component tree via `inheritedOption()`.
+SmarkForm 0.16.0 ships a hardened security posture for mixin and JSON-encoding features (all disabled by default), introduces a brand-new "A Picture is Worth a Thousand Words" framework comparison page with live React and Vue side-by-side demos, improves drag handles for sortable lists, and fixes Shift+Space fold/unfold inside `<summary>` inputs.
 
 ### Security
 
@@ -55,12 +53,24 @@ options and are inherited throughout the component tree via `inheritedOption()`.
   instance to re-enable it.  Attempting JSON-encoded submission without the flag throws a
   clear error pointing to this option.
 
+### Features
+
+- **Sortable list drag handles**: SmarkForm `label` elements are now used as dedicated drag handles for sortable lists, preventing accidental drag initiation when selecting text inside inputs.
+- **Shift+Space fold/unfold inside `<summary>`**: Correctly toggles collapsible `<details>` sections when focus is on an input hosted inside a `<summary>`, with focus restored after folding.
+
 ### Bug Fixes
 
 - Corrected error code typo: `LIST_ITEM_TYPE_MISSMATCH` → `LIST_ITEM_TYPE_MISMATCH`
   (the previous spelling had a doubled S).  The updated code string is now consistent
   with all other `*_MISMATCH` error codes in the library.  **This is a breaking change**
   for any code that catches this specific error code by string comparison.
+- Fixed Shift+Space toggle in React and Vue framework demos (mirrors SmarkForm behaviour).
+
+### Distribution
+
+- **npm `files` allowlist**: Narrowed `files` in `package.json` to only the four
+  production bundle files (`dist/SmarkForm.{esm,umd}.js` + source maps), so
+  `dist/examples/**` is no longer included in the npm tarball.
 
 ### Tests
 
@@ -74,6 +84,12 @@ options and are inherited throughout the component tree via `inheritedOption()`.
 
 ### Documentation
 
+- **New "A Picture is Worth a Thousand Words" comparison page** (`docs/_about/in_pictures.md`):
+  Live side-by-side demos of the same event-planner form implemented in SmarkForm, React,
+  and Vue — including Enter/Shift+Enter navigation, Space toggle, Ctrl-hold hotkey reveal,
+  and Ctrl+=/Ctrl+- shortcuts — with a comparison table of JS line counts and features.
+- New `doctabs` component: a lightweight two-tab Source+Preview component for full HTML
+  document examples, using a sandboxed iframe and lazy tab activation.
 - `docs/_advanced_concepts/mixin_types.md`: new "Mixin Security Options" section with
   option reference table, error code table, and `smarkformOptions` playground parameter.
 - `docs/_about/faq.md`: new FAQ entries for all four mixin security options and
@@ -93,11 +109,15 @@ options and are inherited throughout the component tree via `inheritedOption()`.
 - `AGENTS/Documentation-Guidelines.md`: added naming convention — use `myForm` (not `el`)
   as the variable name in all JS code examples throughout the documentation.
 - `test/doc/WRITING_TESTS.md`: documented the new `smarkformOptions` include parameter.
+- Docs CDN: example CSS files now served from `cdn.jsdelivr.net/gh/bitifet/SmarkForm` (GitHub CDN) instead of jsDelivr npm CDN, so the latest styles are always available without a new npm publish.
+- CSS style standardisation: hotkey badge and animation styles unified across showcase, quick-start, FAQ, and index pages.
 
 > **⚠️ Breaking change policy (0.x.y):** SmarkForm is in early development.
 > Breaking changes may occur in any minor release (`0.x.0`).  Patch releases
 > (`0.x.y+1`) are always safe.  Pin to `~0.x.y` in npm to receive bug fixes
 > only.  See the new FAQ entry *"Is SmarkForm's API stable?"* for details.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.16.0)
 
 ---
 
