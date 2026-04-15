@@ -4478,10 +4478,12 @@ endcapture %}
 
   * **Foldable rows**: Each attendee row uses a native `<details>`/`<summary>`
     element. Click the ▶ triangle (or anywhere on the row header outside the
-    name field) to expand or collapse the extra fields.  The `<summary>`
-    element is used directly as the SmarkForm label
-    (`data-smark='{"type":"label"}'`), making the whole header row the drag
-    handle for reordering and restoring the native disclosure triangle.
+    name field and action buttons) to expand or collapse the extra fields. A
+    `<span data-smark='{"type":"label"}'>` inside the `<summary>` acts as the
+    SmarkForm label, making it the drag handle for reordering (shown as `☰`).
+    Because the `<summary>` itself is not the label, the native disclosure
+    triangle and fold/unfold on click are preserved without extra CSS
+    workarounds.
   * **Nested subform**: The `organizer` fieldset is a subform — its fields are
     grouped and exported as a nested object.
   * **Sortable list**: Attendees can be dragged to reorder them. The list uses

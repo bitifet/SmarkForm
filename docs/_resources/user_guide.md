@@ -186,16 +186,29 @@ Look for buttons with **plus** (+) or **minus** (−) icons, or use hotkeys if c
 
 ### Reordering Items
 
-Some forms allow you to reorder list items by dragging and dropping:
+Some forms allow you to reorder list items by dragging and dropping. The way
+you grab an item to drag it depends on how the form was designed:
 
-1. Click and hold on an item (usually by a drag handle or the item itself)
+- **With a drag handle** — Many forms include a dedicated drag handle, often
+  displayed as a `☰` icon or a similar visual cue. Grab that handle to drag
+  the item. The rest of the item (including any text fields) behaves normally:
+  you can still click, focus, and select text inside those fields without
+  accidentally starting a drag.
+
+- **Without a drag handle** — If no drag handle is present, the entire item is
+  draggable. You can click and hold anywhere on the item (except inside text
+  inputs or buttons) to start dragging.
+
+In both cases:
+
+1. Click and hold on the drag handle (or the item itself if there is no handle)
 2. Drag it to the new position
 3. Release to drop it in place
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/06-lists-reorder.png' | relative_url }}"
-       alt="List items being reordered through drag-and-drop interaction">
-  <figcaption>Drag and drop to reorder list items</figcaption>
+       alt="List items being reordered through drag-and-drop interaction, with a grab handle (☰) shown on the left of each item">
+  <figcaption>Drag and drop to reorder list items — grab the ☰ handle when one is provided</figcaption>
 </figure>
 
 {: .info}
