@@ -117,6 +117,9 @@ export class input extends form {
         const me = this;
         if (me.isSingleton) return; // (Only for real field)
         me.targetFieldNode.value = value;
+        if (me._maskInstance != null) {
+            me.targetFieldNode.dispatchEvent(new Event("input", {bubbles: true}));
+        };
     };//}}}
     async render() {//{{{
         const me = this;
@@ -200,6 +203,11 @@ export class input extends form {
             // Keep fallback working when encoding is json and value attribute is not set.
             // (and don't expetct <opton> inner text to be JSON)
             retv = JSON.stringify(nodeFld.options[nodeFld.selectedIndex].text);
+        } else if (
+            me._maskInstance != null
+            && me._maskInstance.unmaskedValue !== undefined
+        ) {
+            retv = me._maskInstance.unmaskedValue;
         } else {
             retv = nodeFld.value;
         };
@@ -262,5 +270,27 @@ export class input extends form {
         );
         return ! value.trim().length;
             // Native input's value type is always a string.
+    };//}}}
+    mask(callback) {//{{{
+        const me = this;
+        // For singletons, delegate to the inner field so _maskInstance lives
+        // where export() reads it from.
+        if (me.isSingleton) {
+            me.children[""].mask(callback);
+            return me;
+        };
+        const fld = me.targetFieldNode;
+        if (
+            fld
+            && fld.tagName === "INPUT"
+        ) {
+            const currentType = (fld.getAttribute("type") || "text").toLowerCase();
+            if (currentType !== "text") {
+                me._originalType = currentType;
+                fld.setAttribute("type", "text");
+            };
+        };
+        me._maskInstance = callback(fld) ?? null;
+        return me;
     };//}}}
 };
