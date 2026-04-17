@@ -361,7 +361,9 @@ The mixin type reference includes a URL part but `allowExternalMixins` is
 `"block"` (the default).  No network request was made.
 
 **Fix:** Set `allowExternalMixins: "same-origin"` or `"allow"` on the root
-SmarkForm instance to permit external template loading.  See
+SmarkForm instance to permit external template loading.  For fine-grained
+control, pass a per-origin object such as
+`{ 'https://trusted.example.com': 'allow', '*': 'block' }`.  See
 [Security Considerations]({{ "/advanced_concepts/security_considerations" | relative_url }}#mixin-external-template-loading--allowexternalmixins).
 
 ---
@@ -371,8 +373,10 @@ SmarkForm instance to permit external template loading.  See
 The mixin type reference points to a cross-origin URL but `allowExternalMixins`
 is `"same-origin"`.
 
-**Fix:** Either move the template to the same origin or set
-`allowExternalMixins: "allow"` if you trust the remote origin.
+**Fix:** Either move the template to the same origin, set
+`allowExternalMixins: "allow"` if you trust all remote origins, or use a
+per-origin policy object to allow only specific trusted origins:
+`{ 'https://trusted-cdn.example.com': 'allow', '*': 'block' }`.
 
 ---
 
@@ -443,7 +447,8 @@ top-level `<script>` and `allowLocalMixinScripts` is `"block"` (the default).
 The mixin template was fetched from a same-origin URL and contains a top-level
 `<script>`, but `allowSameOriginMixinScripts` is `"block"` (the default).
 
-**Fix:** Set `allowSameOriginMixinScripts: "allow"` (or `"noscript"`).
+**Fix:** Set `allowSameOriginMixinScripts: "allow"` (or `"noscript"`), or pass
+a per-origin object for fine-grained control.
 
 ---
 
@@ -454,6 +459,8 @@ The mixin template was fetched from a cross-origin URL and contains a top-level
 
 **Fix:** Set `allowCrossOriginMixinScripts: "allow"` (or `"noscript"`).
 Only use `"allow"` if you fully control and trust that external origin.
+For fine-grained per-origin control, pass an object such as:
+`{ 'https://trusted.example.com': 'allow', '*': 'block' }`.
 
 ---
 

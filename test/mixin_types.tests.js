@@ -1037,6 +1037,221 @@ test.describe('Mixin Types — external fetch policy', () => {
     });//}}}
 
 });
+
+// ---------------------------------------------------------------------------
+// Test suite: per-origin policy objects
+// Tests for the object form of allowExternalMixins and script policy options.
+// ---------------------------------------------------------------------------
+test.describe('Mixin Types — per-origin policy objects', () => {
+
+    test('allowExternalMixins as object with origin-specific "allow" permits fetch', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const port = await getServerPort();
+            const origin = `http://127.0.0.1:${port}`;
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `per_origin_allow_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t"><input data-smark type="text"></template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: { [origin]: 'allow', '*': 'block' } }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const exported = await pg.evaluate(() => window.myForm.export());
+            expect(exported).toHaveProperty('f');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowExternalMixins as object with "*": "block" blocks unlisted origins', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `per_origin_wildcard_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t"><input data-smark type="text"></template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            // No matching origin in map and '*' is 'block'.
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: { 'https://other-origin.example.com': 'allow', '*': 'block' } }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+            await expect(pg.getByText('MIXIN_EXTERNAL_FETCH_BLOCKED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowExternalMixins as object with "*": "allow" permits any origin', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `per_origin_wildcard_allow_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t"><input data-smark type="text"></template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            // Wildcard 'allow' — any origin including unlisted ones.
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: { '*': 'allow' } }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const exported = await pg.evaluate(() => window.myForm.export());
+            expect(exported).toHaveProperty('f');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowExternalMixins as object with no matching key defaults to "block"', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `per_origin_nokey_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t"><input data-smark type="text"></template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            // Empty object — no matching key, no wildcard → defaults to 'block'.
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', { allowExternalMixins: {} }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForTimeout(500);
+            await expect(pg.getByText('MIXIN_EXTERNAL_FETCH_BLOCKED')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowSameOriginMixinScripts as object with origin-specific "allow" permits scripts', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const port = await getServerPort();
+            const origin = `http://127.0.0.1:${port}`;
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `per_origin_script_allow_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', {
+                allowExternalMixins: 'same-origin',
+                allowSameOriginMixinScripts: { [origin]: 'allow', '*': 'block' },
+            }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const ran = await pg.evaluate(() => {
+                return window.myForm.find('f')?.targetNode?.dataset?.ran;
+            });
+            expect(ran).toBe('yes');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('allowSameOriginMixinScripts as object with "*": "noscript" discards scripts for unlisted origin', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `per_origin_script_noscript_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="t">
+  <input data-smark type="text">
+  <script>this.targetNode.dataset.ran = 'yes';</script>
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            // Origin not in map → falls back to '*': 'noscript' → silently discard.
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
+</form>
+`, '', {
+                allowExternalMixins: 'same-origin',
+                allowSameOriginMixinScripts: { 'https://other.example.com': 'allow', '*': 'noscript' },
+            }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const ran = await pg.evaluate(() => {
+                return window.myForm.find('f')?.targetNode?.dataset?.ran;
+            });
+            expect(ran).toBeUndefined();
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+});
+
 test.describe('Mixin Types — external template loading', () => {
 
     test('loads a template from an external HTML file', async ({ page: pg }) => {//{{{
