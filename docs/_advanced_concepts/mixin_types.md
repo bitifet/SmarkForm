@@ -582,15 +582,35 @@ instance (or any ancestor component via `inheritedOption`):
 Controls whether SmarkForm is permitted to fetch templates from external URLs
 (any mixin type that contains a URL part before the `#` fragment).
 
+**String form** (global policy):
+
 | Value | Behaviour |
 |---|---|
 | `"block"` *(default)* | Any attempt to load an external mixin template throws `MIXIN_EXTERNAL_FETCH_BLOCKED` and halts rendering. |
 | `"same-origin"` | Only same-origin URLs are permitted; cross-origin URLs throw `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`. |
 | `"allow"` | External templates may be loaded from any origin. |
 
+**Object form** (per-origin policy):
+
+Pass a plain object whose keys are origin strings (e.g. `"https://cdn.example.com"`)
+and whose values are `"block"` or `"allow"`.  The special key `"*"` acts as a
+wildcard default for origins not explicitly listed.  If neither a matching
+origin nor `"*"` is found, the policy defaults to `"block"`.
+
 ```js
 // Allow loading templates from the same server only
 new SmarkForm(el, { allowExternalMixins: 'same-origin' });
+
+// Allow templates from one specific CDN only; block everything else
+new SmarkForm(el, {
+  allowExternalMixins: {
+    'https://trusted-cdn.example.com': 'allow',
+    '*': 'block',
+  },
+});
+
+// Allow templates from any origin using wildcard
+new SmarkForm(el, { allowExternalMixins: { '*': 'allow' } });
 ```
 
 #### 2. Script execution policy — `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`
@@ -605,6 +625,8 @@ by where the template was loaded from:
 | External, same origin | `allowSameOriginMixinScripts` |
 | External, cross-origin | `allowCrossOriginMixinScripts` |
 
+**String form** (global policy):
+
 Each option accepts the same three values:
 
 | Value | Behaviour |
@@ -612,6 +634,14 @@ Each option accepts the same three values:
 | `"block"` *(default)* | A template `<script>` throws a script-blocked error and halts rendering.  Fail loudly so the developer makes an explicit decision. |
 | `"noscript"` | The template renders normally but its `<script>` is silently discarded.  Useful when you trust the template markup but not its scripts. |
 | `"allow"` | Scripts are executed as normal. |
+
+**Object form** (per-origin policy):
+
+Any of the three script options also accepts a plain object whose keys are
+origin strings and whose values are `"block"`, `"noscript"`, or `"allow"`.
+The special key `"*"` provides a wildcard fallback.  This is most useful for
+`allowCrossOriginMixinScripts` when templates from multiple third-party origins
+need different levels of trust.
 
 ```js
 // Allow local mixin scripts only
@@ -622,12 +652,24 @@ new SmarkForm(el, {
   allowExternalMixins: 'same-origin',
   allowSameOriginMixinScripts: 'allow',
 });
+
+// Fine-grained cross-origin script policy: trust one CDN, silence another,
+// block everything else
+new SmarkForm(el, {
+  allowExternalMixins: 'allow',
+  allowCrossOriginMixinScripts: {
+    'https://trusted-cdn.example.com': 'allow',
+    'https://partial-trust.example.com': 'noscript',
+    '*': 'block',
+  },
+});
 ```
 
 {: .warning }
-> Setting `allowCrossOriginMixinScripts` to `"allow"` grants full script
-> execution for templates loaded from third-party origins.  Only use this when
-> you fully control and trust those external sources.
+> Setting `allowCrossOriginMixinScripts` to `"allow"` (or to a per-origin
+> object whose `"*"` wildcard is `"allow"`) grants full script execution for
+> templates loaded from third-party origins.  Only use this when you fully
+> control and trust those external sources.
 
 
 ## Examples

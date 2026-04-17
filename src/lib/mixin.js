@@ -147,6 +147,45 @@ function isCrossOrigin(absoluteUrl) { //{{{
     }
 }; //}}}
 
+function getUrlOrigin(absoluteUrl) { //{{{
+    // Returns the origin string for absoluteUrl, or '' on parse failure.
+    try {
+        return new URL(absoluteUrl).origin;
+    } catch (_) {
+        return '';
+    }
+}; //}}}
+
+// ----------------------------------------------------------------------------
+// Internal: resolvePolicy(option, origin, fallback)
+// Resolves a mixin security option that may be either a plain string policy
+// or a per-origin object map.
+//
+// When `option` is a string, it is returned as-is.
+// When `option` is an object, the `origin` key is looked up first; if absent,
+// the wildcard '*' key is used; if that is also absent, `fallback` is returned.
+// This enables fine-grained per-origin trust policies such as:
+//
+//   allowExternalMixins: {
+//     'https://trusted-cdn.example.com': 'allow',
+//     '*': 'block',
+//   }
+//
+//   allowCrossOriginMixinScripts: {
+//     'https://trusted.example.com': 'allow',
+//     'https://untrusted.example.com': 'noscript',
+//     '*': 'block',
+//   }
+// ----------------------------------------------------------------------------
+function resolvePolicy(option, origin, fallback) { //{{{
+    if (typeof option === 'string') return option;
+    if (option !== null && typeof option === 'object') {
+        if (Object.prototype.hasOwnProperty.call(option, origin)) return option[origin];
+        if (Object.prototype.hasOwnProperty.call(option, '*')) return option['*'];
+    }
+    return fallback;
+}; //}}}
+
 // ----------------------------------------------------------------------------
 // Public: expandMixin(node, options, component)
 // Expands a mixin placeholder node into its template clone.
@@ -197,26 +236,32 @@ export async function expandMixin(node, options, component) { //{{{
         // request.  The policy is read exclusively from the root SmarkForm
         // instance to prevent a malicious external template from escalating
         // its own privileges by setting the option in its data-smark.
-        const extPolicy = component.root.options['allowExternalMixins'] ?? 'block';
+        // allowExternalMixins may be a string ('block'|'same-origin'|'allow')
+        // or a per-origin object map — see resolvePolicy().
+        const extPolicyRaw = component.root.options['allowExternalMixins'] ?? 'block';
+        const fetchOrigin = getUrlOrigin(absoluteUrl);
+        const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
         if (extPolicy === 'block') {
             throw component.renderError(
                 'MIXIN_EXTERNAL_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references an external URL but`
                 + ' allowExternalMixins is "block" (the default).'
-                + ' Set allowExternalMixins to "same-origin" or "allow" on'
-                + ' the root SmarkForm instance to permit external mixin loading.'
+                + ' Set allowExternalMixins to "same-origin", "allow", or a'
+                + ' per-origin policy object on the root SmarkForm instance'
+                + ' to permit external mixin loading.'
             );
         } else if (extPolicy === 'same-origin' && isCrossOrigin(absoluteUrl)) {
             throw component.renderError(
                 'MIXIN_CROSS_ORIGIN_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references a cross-origin URL`
-                + ` (${new URL(absoluteUrl).origin}) but allowExternalMixins`
-                + ' is "same-origin". Set allowExternalMixins to "allow" to'
+                + ` (${fetchOrigin}) but allowExternalMixins`
+                + ' is "same-origin". Set allowExternalMixins to "allow" or'
+                + ' add the origin to the per-origin policy object to'
                 + ' permit cross-origin mixin loading.'
             );
         }
-        // extPolicy === 'allow', or 'same-origin' with a same-origin URL:
-        // proceed with the fetch.
+        // extPolicy === 'allow', or 'same-origin' with a same-origin URL,
+        // or per-origin policy resolved to 'allow': proceed with the fetch.
 
         if (! docCache.has(absoluteUrl)) {
             docCache.set(
@@ -345,6 +390,10 @@ export async function expandMixin(node, options, component) { //{{{
 
     // Apply mixin script execution policy based on template origin class.
     // Scripts are blocked by default for all origin classes.
+    // Each policy option may be a string ('block'|'noscript'|'allow') or a
+    // per-origin object map — see resolvePolicy().  Per-origin maps are most
+    // useful for allowCrossOriginMixinScripts when templates from multiple
+    // different third-party origins need different trust levels.
     if (scripts.length > 0) {
         const isLocal = ! urlPart;
         const isCross = ! isLocal && isCrossOrigin(absoluteUrl);
@@ -362,14 +411,17 @@ export async function expandMixin(node, options, component) { //{{{
         }
         // Read policy exclusively from the root to prevent privilege escalation
         // from within mixin templates (see allowExternalMixins comment above).
-        const policy = component.root.options[policyOptionName] ?? 'block';
+        const policyRaw = component.root.options[policyOptionName] ?? 'block';
+        const scriptOrigin = getUrlOrigin(absoluteUrl);
+        const policy = resolvePolicy(policyRaw, scriptOrigin, 'block');
         if (policy === 'block') {
             throw component.renderError(
                 errorCode
                 , `Mixin template "${mixinKey}" contains a <script> and`
                 + ` ${policyOptionName} is "block" (the default).`
-                + ` Set ${policyOptionName} to "noscript" or "allow" on the`
-                + ' root SmarkForm instance to change this behaviour.'
+                + ` Set ${policyOptionName} to "noscript", "allow", or a`
+                + ' per-origin policy object on the root SmarkForm instance'
+                + ' to change this behaviour.'
             );
         } else if (policy === 'noscript') {
             scripts = []; // Silently discard.

@@ -148,10 +148,30 @@ Supported option keys (all optional):
 
 | Option | Allowed values | Default | Purpose |
 |---|---|---|---|
-| `allowLocalMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
-| `allowSameOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Allow `<script>` in same-origin external mixin templates |
-| `allowCrossOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Allow `<script>` in cross-origin external mixin templates |
-| `allowExternalMixins` | `"block"` / `"same-origin"` / `"allow"` | `"block"` | Allow fetching mixin templates from external URLs |
+| `allowLocalMixinScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
+| `allowSameOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in same-origin external mixin templates |
+| `allowCrossOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in cross-origin external mixin templates |
+| `allowExternalMixins` | `"block"` / `"same-origin"` / `"allow"` / per-origin object | `"block"` | Allow fetching mixin templates from external URLs |
+
+**Per-origin object form** (supported by all four options): instead of a single
+string, any option may be a plain object whose keys are origin strings
+(e.g. `"https://cdn.example.com"`) and whose values are the allowed string
+policy values for that option.  The special `"*"` key is a wildcard fallback.
+When neither a matching origin key nor `"*"` is present the option defaults to
+`"block"`.  Example:
+
+```json
+{
+  "allowExternalMixins": {
+    "https://trusted-cdn.example.com": "allow",
+    "*": "block"
+  },
+  "allowCrossOriginMixinScripts": {
+    "https://trusted-cdn.example.com": "allow",
+    "*": "noscript"
+  }
+}
+```
 
 The `smarkformOptions` parameter also updates the `default_jsHead` that the docs template generates for
 the iframe preview, so the interactive preview in the documentation also works correctly.
