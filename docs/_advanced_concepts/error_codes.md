@@ -35,13 +35,12 @@ nav_order: 8
     * [`LIST_CONTAINS_ID`](#list_contains_id)
     * [`LIST_ITEM_TYPE_MISMATCH`](#list_item_type_mismatch)
     * [`FIELD_IN_WRONG_LIST_TEMPLATE`](#field_in_wrong_list_template)
-    * [`LIST_IMPORT_OVERFLOW` *(event)*](#list_import_overflow-event)
-    * [`LIST_MAX_ITEMS_REACHED` *(event)*](#list_max_items_reached-event)
-    * [`LIST_MIN_ITEMS_REACHED` *(event)*](#list_min_items_reached-event)
+    * [`LIST_IMPORT_OVERFLOW` *(event, not exception)*](#list_import_overflow-event-not-exception)
+    * [`LIST_MAX_ITEMS_REACHED` *(event, not exception)*](#list_max_items_reached-event-not-exception)
+    * [`LIST_MIN_ITEMS_REACHED` *(event, not exception)*](#list_min_items_reached-event-not-exception)
     * [`LIST_WRONG_ADDITEM_POSITION`](#list_wrong_additem_position)
-* [Fields (base)](#fields-base)
+* [Scalar Fields](#scalar-fields)
     * [`VALUE_CONFLICT`](#value_conflict)
-* [Input](#input)
     * [`NOT_A_SINGLETON`](#not_a_singleton)
     * [`SINGLETON_TYPE_MISMATCH`](#singleton_type_mismatch)
 * [Label](#label)
@@ -271,7 +270,7 @@ The `position` option passed to `addItem()` is not `"before"` or `"after"`.
 
 ---
 
-## Fields (base)
+## Scalar Fields 
 
 ### `VALUE_CONFLICT`
 
@@ -283,7 +282,6 @@ HTML `value=""` attribute.
 
 ---
 
-## Input
 
 ### `NOT_A_SINGLETON`
 
