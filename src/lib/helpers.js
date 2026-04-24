@@ -1,15 +1,32 @@
 "use strict";
 export function getRoots(target, selector){//{{{
-    const parent = target.parentNode;
-    const isTop = (
-        parent === null ? n => n === null
-        : n=>(n===null)||n.isSameNode(target)
-    );
-    return [
-        ...target.querySelectorAll(selector)
-    ].filter(
-        e=>isTop(e.parentNode.closest(selector))
-    );
+    // Single-pass subtree traversal: return only the "topmost" elements
+    // matching `selector` under `target` — i.e. elements that match but have
+    // no intermediate matching ancestor between themselves and `target`.
+    //
+    // Strategy: iterative depth-first walk using an explicit stack.
+    // When a matching element is found, it is added to the result and its
+    // entire subtree is skipped (so nested matches are excluded).
+    // Children are pushed in reverse order so the leftmost child is processed
+    // first, preserving document (left-to-right) order in the result.
+    const result = [];
+    const stack = [];
+    for (let i = target.children.length - 1; i >= 0; i--) {
+        stack.push(target.children[i]);
+    };
+    while (stack.length) {
+        const node = stack.pop();
+        if (node.matches(selector)) {
+            // Match found: record it and do NOT descend into its children.
+            result.push(node);
+        } else {
+            // No match: descend into children (in document order).
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push(node.children[i]);
+            };
+        };
+    };
+    return result;
 };//}}}
 
 export function makeRoom(element, pixels) {//{{{

@@ -65,7 +65,9 @@ myForm.rendered.then(function() {
   flags that cannot be embedded in data-smark and must be passed to the constructor. {% endcomment %}
 {% assign sf_opts = include.smarkformOptions | default: '' | strip %}
 {% if sf_opts != '' %}
-  {% assign sf_opts_base = sf_opts | rstrip | remove_last: "}" %}
+  {% assign sf_opts_base = sf_opts | rstrip %}
+  {% assign new_sf_opts_base_size = sf_opts_base.size | minus: 1 %}
+  {% assign sf_opts_base = sf_opts_base | slice: 0, new_sf_opts_base_size %}
 {% endif %}
 {% if include.demoValue and include.demoValue != '-' %}
   {% if sf_opts != '' %}
