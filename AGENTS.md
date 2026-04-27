@@ -49,6 +49,21 @@ For convenience, include this exact sentence in the PR description when you want
 
 ## Detailed Component Documentation
 
+### Field Masking
+
+The `mask(callback)` method (see `src/types/input.type.js`) enables integration with external masking libraries like iMask.js. It converts input types (`number`, `date`, `time`, `datetime-local`, `radio`, `color`) to `text` for masking while keeping exported data typed correctly. The mask instance is stored in `_maskInstance` and provides `unmaskedValue` for clean exports.
+
+**Key methods**:
+- `mask(callback)`: Applies mask, stores instance, converts input type to text
+- `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
+- `import()`: Dispatches `input` event when `_maskInstance` exists, so masks stay synchronized
+- Singleton handling: delegates to inner field, `_maskInstance` lives on inner field
+- `_originalType` restoration: original input type is restored when field is destroyed
+
+**Configuration file locations**:
+- Tests: `test/mask.tests.js`
+- Implementation: `src/types/input.type.js` (lines 274-295 for mask method, lines 206-210 for export integration)
+
 ### Playwright Test Runner
 
 **What it does**: Runs end-to-end tests against the built distribution files and validates documentation examples.
