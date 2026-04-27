@@ -286,7 +286,6 @@ export class input extends form {
         ) {
             const currentType = (fld.getAttribute("type") || "text").toLowerCase();
             if (currentType !== "text") {
-                me._originalType = currentType;
                 fld.setAttribute("type", "text");
             };
         };

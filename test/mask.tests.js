@@ -62,12 +62,11 @@ test.describe('mask() method', () => {
                 const typeBefore = field.targetFieldNode.getAttribute("type");
                 field.mask(() => null);
                 const typeAfter = field.targetFieldNode.getAttribute("type");
-                return { typeBefore, typeAfter, originalType: field._originalType };
+                return { typeBefore, typeAfter /* masking is now permanent; _originalType removed */ };
             });
 
             expect(result.typeBefore).toBe("number");
             expect(result.typeAfter).toBe("text");
-            expect(result.originalType).toBe("number");
         } finally {
             if (onClosed) await onClosed();
         }
@@ -86,12 +85,11 @@ test.describe('mask() method', () => {
                 const typeBefore = field.targetFieldNode.getAttribute("type");
                 field.mask(() => null);
                 const typeAfter = field.targetFieldNode.getAttribute("type");
-                return { typeBefore, typeAfter, originalType: field._originalType };
+                return { typeBefore, typeAfter /* masking is now permanent; _originalType removed */ };
             });
 
             expect(result.typeBefore).toBe("date");
             expect(result.typeAfter).toBe("text");
-            expect(result.originalType).toBe("date");
         } finally {
             if (onClosed) await onClosed();
         }
@@ -110,12 +108,11 @@ test.describe('mask() method', () => {
                 const typeBefore = field.targetFieldNode.getAttribute("type");
                 field.mask(() => null);
                 const typeAfter = field.targetFieldNode.getAttribute("type");
-                return { typeBefore, typeAfter, originalType: field._originalType };
+                return { typeBefore, typeAfter /* masking is now permanent; _originalType removed */ };
             });
 
             expect(result.typeBefore).toBe("text");
             expect(result.typeAfter).toBe("text");
-            expect(result.originalType).toBeUndefined();
         } finally {
             if (onClosed) await onClosed();
         }

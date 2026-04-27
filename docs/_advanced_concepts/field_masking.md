@@ -134,18 +134,9 @@ priceField.mask(node => {
 });
 ```
 
-## `_originalType` Restoration
+## Masking is Permanent
 
-When a mask converts an input to `text`, SmarkForm remembers the original type (`number`, `date`, etc.) and restores it when the field is destroyed. This ensures the HTML5 input validation and native behaviors remain intact when masking is not active.
-
-```javascript
-const field = form.find('/quantity');
-console.log(field.targetFieldNode.getAttribute('type')); // "number"
-field.mask(node => new IMask(node, {mask: '0.00'}));
-console.log(field.targetFieldNode.getAttribute('type')); // "text"
-// On field destroy/restoration:
-console.log(field.targetFieldNode.getAttribute('type')); // "number"
-```
+When a mask converts an input to `text`, that change is permanent for the lifetime of the field instance. SmarkForm no longer tracks or restores the original type, as masking is treated as an intentional, final state. Native HTML5 behaviors are replaced by the mask's behavior, which is by design.
 
 ## Complete Example with CDN
 

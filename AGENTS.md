@@ -58,7 +58,7 @@ The `mask(callback)` method (see `src/types/input.type.js`) enables integration 
 - `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
 - `import()`: Dispatches `input` event when `_maskInstance` exists, so masks stay synchronized
 - Singleton handling: delegates to inner field, `_maskInstance` lives on inner field
-- `_originalType` restoration: original input type is restored when field is destroyed
+- Masking is permanent: the field's input type is set to text and not restored; this is intentional and simplifies the implementation
 
 **Configuration file locations**:
 - Tests: `test/mask.tests.js`
