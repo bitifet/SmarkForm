@@ -1,34 +1,35 @@
-mixin inputlist(label="Annonymous")
-    .input-group
-        -
-            //- Acccepted attributes:
-            const {
-                name=label.toLowerCase(),
-                min_items,
-                max_items,
-                removeFailback, // none / clear / throw
-                sortable,
-                ...atts // Extra attributes for inputs (placeholder, etc...)
-            } = attributes;
-        strong(data-smark="label")= label
-        div(data-smark = {
-            name: name,
-            type: "list",
-            of: "input",
-            sortable: sortable,
+//- Pug convenience wrapper for the `#inputlist` SmarkForm native mixin.
+//- The actual list behaviour lives in the <template id="inputlist"> defined in
+//- templates.pug (included by layout.pug at body level).
+//-
+//- Usage:
+//-   +inputlist("Label")(name="fieldName", type="email", max_items=5, placeholder="…")
+//-
+//- Accepted attributes (all optional except those with defaults shown):
+//-   name           - list field name (default: label.toLowerCase())
+//-   min_items      - minimum items allowed
+//-   max_items      - maximum items allowed
+//-   removeFailback - failback for removeItem action: "none" | "clear" | "throw"
+//-   sortable       - enable drag-to-reorder (boolean)
+//-   …rest          - extra attributes forwarded to the <input> (placeholder, type, …)
+mixin inputlist(label="Anonymous")
+    -
+        //- Extract known list options; anything left goes to the <input>.
+        const {
+            name = label.toLowerCase(),
             min_items,
             max_items,
-        })
-            .singleton
-                button(data-smark = {
-                    action: "removeItem",
-                    failback: removeFailback,
-                    hotkey: "-",
-                }, title="Remove this item")
+            removeFailback,
+            sortable,
+            ...atts
+        } = attributes;
+    .input-group
+        strong(data-smark="label")= label
+        div(data-smark={type:"#inputlist", name, min_items, max_items, sortable})
+            //- Snippet parameter: replaces the <input id="listInput"> slot in the template.
+            input(data-smark data-for="listInput")&attributes(atts)
+            //- Optional snippet parameter: replace the remove button when a custom
+            //- failback is needed (e.g. removeFailback="clear").
+            if removeFailback !== undefined
+                button(data-smark={action:"removeItem",failback:removeFailback,hotkey:"-"} data-for="removeBtn" title="Remove this item")
                     span(role='img', aria-label='Remove this item') ➖
-                input(data-smark)&attributes(atts)
-                button(data-smark = {
-                    action: "addItem",
-                    hotkey: "+",
-                }, title="Add new item below")
-                    span(role='img', aria-label='Add new item') ➕
