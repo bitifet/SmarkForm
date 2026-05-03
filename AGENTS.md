@@ -127,6 +127,10 @@ scripts/livebuild_dev_smarkform.sh
 - Cleanup plugin for code formatting
 - Custom Pug and Sass plugins for examples
 - Generates computed metadata (bundle size, last updated)
+- Shared example helpers: `src/examples/include/layout.pug` (base layout),
+  `src/examples/include/mixins.pug` (Pug convenience wrappers),
+  `src/examples/include/templates.pug` (SmarkForm native mixin `<template>`
+  elements included at body level by the layout)
 
 **Troubleshooting**:
 - If build fails, check Node.js version compatibility
@@ -308,6 +312,9 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
+| Example Pug layout | `src/examples/include/layout.pug` |
+| Example Pug mixins | `src/examples/include/mixins.pug` |
+| Example SmarkForm mixin templates | `src/examples/include/templates.pug` |
 
 ## Common Commands Reference
 
