@@ -8,8 +8,12 @@
 template#inputlist
     div(data-smark={type:"list",of:"input"})
         .singleton
+            //- id="removeBtn" is an optional snippet slot: when a custom removeFailback
+            //- is needed, supply a replacement button with data-for="removeBtn".
             button(data-smark={action:"removeItem",hotkey:"-"} title="Remove this item" id="removeBtn")
                 span(role='img', aria-label='Remove this item') ➖
+            //- id="listInput" is the required snippet slot for the <input> element.
+            //- Each usage site supplies its own type/placeholder via data-for="listInput".
             input(data-smark id="listInput")
             button(data-smark={action:"addItem",hotkey:"+"} title="Add new item below")
                 span(role='img', aria-label='Add new item') ➕
