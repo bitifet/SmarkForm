@@ -214,9 +214,10 @@ in GitHub.
 
   * Develop your own component types to suit your specific needs.
 
-  * 🚧 (Not yet implemented) Create you own components on top of SmarkForm
-    templates (I.e.: a complex schedule form returning well known JSON
-    structure).
+  * Use **SmarkForm native mixins** to define reusable component blueprints
+    from plain HTML `<template>` elements — no JavaScript required.  See
+    [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}) for a
+    full reference and examples.
 
 
 ## Directory-like addressability

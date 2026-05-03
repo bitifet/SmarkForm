@@ -346,15 +346,11 @@ endcapture %}
 {: .hint}
 > As you can see here, phones and emails lists share almost the same layout.
 > 
-> Since *SmarkForm* works just over the DOM, you can use your preferred HTML 
-> templating system. For instance, 
-> [here](https://github.com/bitifet/SmarkForm/blob/main/src/examples/include/mixins.pug)
-> you can see a similar *mixin* implemented whith [Pug templates](https://pugjs.org).
-> 
-> Also it 
-> [is planned]({{ "about/features" | relative_url }}#flexible-and-extendable)
-> to implement a *mixin* feature allowing to create SmarkForm components from
-> *SmarkForm* html code.
+> With **SmarkForm native mixins** you can define this pattern once and reuse
+> it everywhere.  The
+> [Mixin Types → Labelled list of inputs]({{ "/advanced_concepts/mixin_types" | relative_url }}#labelled-list-of-inputs--inputlist)
+> example shows a ready-to-use `#inputlist` template — one `<template>` element
+> and two lines per usage site instead of repeating the full list markup.
 
 
 

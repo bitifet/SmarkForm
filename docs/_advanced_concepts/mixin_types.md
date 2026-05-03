@@ -45,6 +45,7 @@ nav_order: 6
     * [Reusable contact block](#reusable-contact-block)
     * [Option override per usage site](#option-override-per-usage-site)
     * [Snippet parameters — custom labels](#snippet-parameters--custom-labels)
+    * [Labelled list of inputs — inputlist](#labelled-list-of-inputs--inputlist)
 * [Error Codes](#error-codes)
 
 <!-- vim-markdown-toc -->
@@ -869,6 +870,109 @@ Each placeholder supplies its own label text; the template default (`"Name"`)
 would appear on any instance that does not provide a `data-for="nameLabel"`
 child.  After expansion there are no `id` attributes in the rendered DOM — the
 slot is self-documented via `data-id="nameLabel"` on surviving nodes.
+
+
+### Labelled list of inputs — inputlist
+
+The following pattern appears throughout the SmarkForm documentation examples:
+a labelled, variable-length list where each item is a single `<input>` field
+with ➕ / ➖ hotkey-enabled buttons.  Rather than copy-pasting the list markup
+every time, you can define it once as a reusable `#inputlist` mixin and stamp
+it out anywhere in your form.
+
+The template's `id="listInput"` slot accepts a `data-for` snippet parameter so
+each usage site supplies a custom `<input>` (different `type`, `placeholder`,
+etc.).  List options such as `max_items`, `min_items`, and `sortable` are
+overridden per usage site directly on the placeholder's `data-smark` attribute.
+
+{% raw %} <!-- capture mixin_inputlist_html {{{ --> {% endraw %}
+{% capture mixin_inputlist_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"contacts"}'>
+    <div>
+      <strong data-smark="label">Phone numbers</strong>
+      <div data-smark='{"type":"#inputlist","name":"phones","max_items":4}'>
+        <input data-smark data-for="listInput" type="tel" placeholder="Phone number">
+      </div>
+    </div>
+    <div>
+      <strong data-smark="label">Email addresses</strong>
+      <div data-smark='{"type":"#inputlist","name":"emails","max_items":4}'>
+        <input data-smark data-for="listInput" type="email" placeholder="Email address">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SmarkForm native mixin template — defined once, reused anywhere -->
+<template id="inputlist">
+    <div data-smark='{"type":"list","of":"input"}'>
+        <div class="singleton">
+            <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this item">
+                <span role='img' aria-label='Remove this item'>➖</span>
+            </button>
+            <input data-smark id="listInput">
+            <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add new item below">
+                <span role='img' aria-label='Add new item'>➕</span>
+            </button>
+        </div>
+    </div>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_inputlist_tests {{{ --> {% endraw %}
+{% capture mixin_inputlist_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // Import two phones and one email address.
+    await page.evaluate(async () => myForm.import({
+        contacts: {
+            phones: ['+1 555 123 4567', '+1 555 987 6543'],
+            emails: ['alice@example.com'],
+        }
+    }));
+
+    const data = await page.evaluate(async () => myForm.export());
+
+    // Both lists export as arrays under their respective names.
+    expect(data.contacts.phones).toHaveLength(2);
+    expect(data.contacts.phones[0]).toBe('+1 555 123 4567');
+    expect(data.contacts.phones[1]).toBe('+1 555 987 6543');
+    expect(data.contacts.emails).toHaveLength(1);
+    expect(data.contacts.emails[0]).toBe('alice@example.com');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "contacts": {
+        "phones": ["+1 555 123 4567", "+1 555 987 6543"],
+        "emails": ["alice@example.com"]
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_inputlist"
+    htmlSource=mixin_inputlist_html
+    showEditor=true
+    selected="preview"
+    demoValue=demoValue
+    tests=mixin_inputlist_tests
+%}
+
+The same `#inputlist` template is reused for both lists — only `name`, input
+`type`, and `placeholder` differ between usages.  The exported value is a
+simple flat array for each field, not a nested object.
+
+{: .hint }
+> This `#inputlist` pattern is the mixin used throughout the SmarkForm
+> documentation examples wherever a labelled, expandable list of single-input
+> items appears — phones, emails, tags, goals, and similar fields.  See the
+> [List component type]({{ "/component_types/type_list" | relative_url }})
+> page for a full reference of available list options.
 
 
 ## Error Codes
