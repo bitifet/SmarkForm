@@ -470,7 +470,13 @@ kind of regular form-field types.
 
 ### Labels
 
-🚧 Work in progres... 🚧 
+*Labels* are non-field SmarkForm components that enhance standard `<label>`
+elements (or any inline element with `data-smark="label"`) with automatic
+association to the nearest field, support for SmarkForm-relative `target`
+paths, and correct behaviour inside nested subforms and lists.
+
+👉 See [Label component type]({{ "component_types/type_label" | relative_url }})
+for the full reference and examples.
 
 
 
