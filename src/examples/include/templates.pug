@@ -1,0 +1,15 @@
+//- SmarkForm native mixin templates for shared example components.
+//- This file is included by layout.pug at body level so templates are always
+//- available at document level, before any SmarkForm component is processed.
+
+//- inputlist mixin template:
+//- Provides a reusable labelled list-of-inputs pattern.
+//- Usage: reference as type:"#inputlist" (see mixins.pug for the Pug helper).
+template#inputlist
+    div(data-smark={type:"list",of:"input"})
+        .singleton
+            button(data-smark={action:"removeItem",hotkey:"-"} title="Remove this item" id="removeBtn")
+                span(role='img', aria-label='Remove this item') ➖
+            input(data-smark id="listInput")
+            button(data-smark={action:"addItem",hotkey:"+"} title="Add new item below")
+                span(role='img', aria-label='Add new item') ➕
