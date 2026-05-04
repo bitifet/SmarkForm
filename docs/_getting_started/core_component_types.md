@@ -431,12 +431,14 @@ endcapture %}
 ### type: select
 
 The 📋 [select]({{ "component_types/type_select" | relative_url }})
-component type handles HTML `<select>` elements.  It imports and exports the
-selected value as a string.
+compenent type **will** (🚧 since it is not yet implemented 🚧) provide support
+for advanced features like dynamic options loading and update, even reacting to
+changes of other fields in a really transparent manner thanks to the
+(future) "API interface".
 
-Advanced features such as dynamic option loading and updates driven by the
-[API interface]({{ "advanced_concepts/the_api_interface" | relative_url }})
-are still planned for a future release.
+  * Will inmport and export array of *String*.
+
+  * Will allow configuration to expor arrays of different types.
 
 
 ## Non field component types
