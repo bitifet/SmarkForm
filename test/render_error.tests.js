@@ -35,8 +35,15 @@ block mainForm
             await expect(page.getByText('VALUE_CONFLICT')).toBeVisible({ timeout: 3000 });
             await page.waitForFunction(() => window.form?.find?.('good'), null, { timeout: 2000 });
 
-            const goodPath = await page.evaluate(() => window.form.find('good').getPath());
-            expect(goodPath).toBe('/good');
+            const result = await page.evaluate(() => {
+                const good = window.form.find('good');
+                return {
+                    goodPath: good?.getPath(),
+                    hasBad: Boolean(window.form.find('bad')),
+                };
+            });
+            expect(result.goodPath).toBe('/good');
+            expect(result.hasBad).toBe(false);
         } finally {
             if (onClosed) await onClosed();
         }
