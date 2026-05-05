@@ -115,7 +115,14 @@ throwing an error.
 {% raw %} <!-- datetime_local_error {{{ --> {% endraw %}
 {% capture datetime_local_error -%}
 <div id="myForm$$">
-  <input type="text" name="appointmentTime" data-smark='{"type":"datetime-local"}'>
+  <p>
+    <label>Correct:</label>
+    <input type="datetime-local" name="appointmentTime1" data-smark='{"type":"datetime-local"}'>
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <input type="text" name="appointmentTime2" data-smark='{"type":"datetime-local"}'>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -125,7 +132,8 @@ endcapture %}
     htmlSource=datetime_local_error
     showEditor=true
     tests=false
-    expectedPageErrors=1
+    expectedPageErrors=0
+    expectedConsoleErrors=1
 %}
 
 
