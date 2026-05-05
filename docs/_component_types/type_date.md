@@ -111,7 +111,14 @@ throwing an error.
 {% raw %} <!-- date_error {{{ --> {% endraw %}
 {% capture date_error -%}
 <div id="myForm$$">
-  <input type="text" name="birthdate" data-smark='{"type":"date"}'>
+  <p>
+    <label>Correct:</label>
+    <input type="date" name="birthdate1" data-smark='{"type":"date"}'>
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <input type="text" name="birthdate2" data-smark='{"type":"date"}'>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -121,7 +128,8 @@ endcapture %}
     htmlSource=date_error
     showEditor=true
     tests=false
-    expectedPageErrors=1
+    expectedPageErrors=0
+    expectedConsoleErrors=1
 %}
 
 

@@ -89,7 +89,14 @@ numbers will result in a `null` value rather than throwing an error.
 {% raw %} <!-- number_error {{{ --> {% endraw %}
 {% capture number_error -%}
 <div id="myForm$$">
-  <input type="text" name="amount" data-smark='{"type":"number"}'>
+  <p>
+    <label>Correct:</label>
+    <input type="number" name="amount1" data-smark='{"type":"number"}'>
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <input type="text" name="amount2" data-smark='{"type":"number"}'>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -99,7 +106,8 @@ endcapture %}
     htmlSource=number_error
     showEditor=true
     tests=false
-    expectedPageErrors=1
+    expectedPageErrors=0
+    expectedConsoleErrors=1
 %}
 
 
