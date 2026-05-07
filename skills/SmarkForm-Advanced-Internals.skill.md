@@ -17,12 +17,11 @@ For standard form implementation, use:
 
 ## Source Priority
 
-1. https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage
-2. https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms
-3. `docs/_resources/AGENTS/SmarkForm-Usage.md`
-4. `docs/_resources/AGENTS/SmarkForm-Forms.md`
-5. `AGENTS/SmarkForm-Usage.md`
-6. `AGENTS/SmarkForm-Forms.md`
+Use the exact source-priority order defined in:
+- `skills/SmarkForm-Form-Builder.skill.md`
+
+Additionally, for internals-first tasks, start by reading:
+- https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage
 
 ## Non-negotiable Internals Rules
 

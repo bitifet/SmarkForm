@@ -16,17 +16,17 @@ nav_order: 6
 <!-- vim-markdown-toc GitLab -->
 
 * [Agent Knowledge Files](#agent-knowledge-files)
- * [How to Use These Files When Prompting an AI](#how-to-use-these-files-when-prompting-an-ai)
-     * [Quick Reference Prompts](#quick-reference-prompts)
+* [How to Use These Files When Prompting an AI](#how-to-use-these-files-when-prompting-an-ai)
+  * [Quick Reference Prompts](#quick-reference-prompts)
 * [Installable Skills](#installable-skills)
-    * [Core Skill (recommended)](#core-skill-recommended)
-    * [Optional Advanced Skill](#optional-advanced-skill)
-    * [Import into opencode or similar tools](#import-into-opencode-or-similar-tools)
+  * [Core Skill (recommended)](#core-skill-recommended)
+  * [Optional Advanced Skill](#optional-advanced-skill)
+  * [Import into opencode or similar tools](#import-into-opencode-or-similar-tools)
 * [Maintenance Rules for Skill Files](#maintenance-rules-for-skill-files)
 * [Prompt Templates](#prompt-templates)
-    * [Simple form](#simple-form)
-    * [Form with a repeating list](#form-with-a-repeating-list)
-    * [Adding SmarkForm to an existing page](#adding-smarkform-to-an-existing-page)
+  * [Simple form](#simple-form)
+  * [Form with a repeating list](#form-with-a-repeating-list)
+  * [Adding SmarkForm to an existing page](#adding-smarkform-to-an-existing-page)
 
 <!-- vim-markdown-toc -->
      " | markdownify }}
