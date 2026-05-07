@@ -54,8 +54,9 @@ Every response that delivers SmarkForm code must include:
 1. The implementation.
 2. A **SmarkForm compliance checklist** section showing pass/fail for each item.
 
-If any checklist item fails, the skill must treat output as incomplete and revise it before finalizing.
-If tool limitations prevent revision, explicitly report unmet items and why.
+If any checklist item fails, the skill must treat output as incomplete and revise
+it before finalizing. If revision is not possible, add a clear warning header
+(`SmarkForm compliance incomplete`) and explicitly report unmet items and why.
 
 ## SmarkForm Compliance Checklist (mandatory)
 
@@ -74,7 +75,8 @@ Do not leave this section as an untouched unchecked template.
 - [ ] `context` / `target` paths follow SmarkForm rules.
 - [ ] No conflicting dual defaults (`value=""` plus JSON `"value"` on same element).
 - [ ] Security-sensitive options are set at root constructor options when needed.
-- [ ] Production CDN examples are version-pinned (if CDN is used).
+- [ ] Production CDN examples use explicit version numbers (for example
+      `@0.16.0`) and do not use `@latest`.
 
 ## Distribution Notes
 

@@ -400,9 +400,9 @@ implementation behavior.
 
 Maintenance rule:
 - When `docs/_resources/AGENTS/SmarkForm-Forms.md` or
-  `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, update affected files in
-  `skills/` in the same PR so installable skills stay aligned with canonical
-  docs.
+  `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both
+  skill files in `skills/` if affected; when in doubt, update both in the same
+  PR so installable skills stay aligned with canonical docs.
 
 
 - **Contributing**: See `CONTRIBUTING.md`
