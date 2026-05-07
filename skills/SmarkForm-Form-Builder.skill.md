@@ -55,11 +55,15 @@ Every response that delivers SmarkForm code must include:
 2. A **SmarkForm compliance checklist** section showing pass/fail for each item.
 
 If any checklist item fails, the skill must treat output as incomplete and revise it before finalizing.
+If tool limitations prevent revision, explicitly report unmet items and why.
 
 ## SmarkForm Compliance Checklist (mandatory)
 
-When generating output, evaluate each item and report explicit pass/fail status;
-do not leave this as an unchecked template list.
+When generating output, evaluate each item and report explicit pass/fail status.
+Replace template markers with:
+- `[x]` for pass
+- `[ ]` for fail
+Do not leave this section as an untouched unchecked template.
 
 - [ ] Managed fields include `data-smark`.
 - [ ] Root element is passed to `new SmarkForm(...)` correctly.
