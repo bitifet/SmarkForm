@@ -16,8 +16,13 @@ nav_order: 6
 <!-- vim-markdown-toc GitLab -->
 
 * [Agent Knowledge Files](#agent-knowledge-files)
-* [How to Use These Files When Prompting an AI](#how-to-use-these-files-when-prompting-an-ai)
-    * [Quick Reference Prompts](#quick-reference-prompts)
+ * [How to Use These Files When Prompting an AI](#how-to-use-these-files-when-prompting-an-ai)
+     * [Quick Reference Prompts](#quick-reference-prompts)
+* [Installable Skills](#installable-skills)
+    * [Core Skill (recommended)](#core-skill-recommended)
+    * [Optional Advanced Skill](#optional-advanced-skill)
+    * [Import into opencode or similar tools](#import-into-opencode-or-similar-tools)
+* [Maintenance Rules for Skill Files](#maintenance-rules-for-skill-files)
 * [Prompt Templates](#prompt-templates)
     * [Simple form](#simple-form)
     * [Form with a repeating list](#form-with-a-repeating-list)
@@ -59,6 +64,53 @@ Read https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms
 then implement a contact form with fields: name, email, message.
 Load SmarkForm from CDN (pin to the latest stable version).
 ```
+
+---
+
+## Installable Skills
+
+The repository includes installable skill specs so AI tools can enforce
+SmarkForm-specific implementation rules.
+
+### Core Skill (recommended)
+
+- `skills/SmarkForm-Form-Builder.skill.md`
+
+Use this for general SmarkForm form implementation. It enforces:
+- source-priority lookups (deployed docs first)
+- event/action-first implementation patterns
+- required `await myForm.rendered` timing
+- list/context/template rules
+- root-level security option rules
+- mandatory “SmarkForm compliance checklist” in outputs
+
+### Optional Advanced Skill
+
+- `skills/SmarkForm-Advanced-Internals.skill.md`
+
+Use this when handling advanced internals and edge cases.
+
+### Import into opencode or similar tools
+
+1. Open the desired skill file from `skills/`.
+2. Copy its full content into your tool's skill/instruction definition.
+3. Keep the source-priority section unchanged so the agent always prefers:
+   - `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms`
+   - `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage`
+4. If your tool supports separate skills, install:
+   - core skill as default
+   - advanced skill as opt-in
+
+---
+
+## Maintenance Rules for Skill Files
+
+- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or
+  `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, update the relevant
+  files under `skills/` in the same PR.
+- Keep the source-priority order intact so deployed docs remain the primary
+  knowledge source for agents.
+- If behavioral rules change, update both the skill file(s) and this page.
 
 ---
 

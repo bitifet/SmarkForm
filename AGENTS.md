@@ -40,6 +40,7 @@ When you change or add any of the following, please update this file to reflect 
 - scripts/* (collector, build scripts, live-serve helpers)
 - rollup.config.js or rollup-plugins/
 - docs/ content, co-located examples, or test collection logic
+- skills/* (installable AI skill specifications)
 - .github/workflows/* (CI / Pages deployment)
 
 For convenience, include this exact sentence in the PR description when you want the assistant to update AGENTS.md automatically:
@@ -385,6 +386,23 @@ When you discover a new pattern, fix a bug caused by an undocumented constraint,
 2. **Add new entries** for anything you had to learn the hard way — gotchas, non-obvious constraints, error messages and their root causes.
 3. **Correct inaccurate entries** whenever you verify that something documented is wrong.
 4. You do not need a special PR description sentence to update `AGENTS/` files — just do it as part of your normal work.
+
+## Agent Skills Directory (`skills/`)
+
+The `skills/` directory contains installable skill specifications that can be
+copied into AI tools (opencode and similar) to enforce SmarkForm-specific
+implementation behavior.
+
+| File | Purpose |
+|------|---------|
+| `skills/SmarkForm-Form-Builder.skill.md` | Core skill for implementing SmarkForm forms with required rules and a mandatory compliance checklist |
+| `skills/SmarkForm-Advanced-Internals.skill.md` | Optional advanced skill for internals-heavy work (action semantics, list/context edge cases, security-sensitive patterns) |
+
+Maintenance rule:
+- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or
+  `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, update affected files in
+  `skills/` in the same PR so installable skills stay aligned with canonical
+  docs.
 
 
 - **Contributing**: See `CONTRIBUTING.md`
