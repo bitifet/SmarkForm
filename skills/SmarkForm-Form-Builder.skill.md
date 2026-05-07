@@ -60,6 +60,9 @@ it before finalizing. If revision is not possible, add a clear warning header
 
 ## SmarkForm Compliance Checklist (mandatory)
 
+Template below is intentionally unchecked in this skill spec. In generated
+outputs, agents must replace it with explicit pass/fail marks per item.
+
 When generating output, evaluate each item and report explicit pass/fail status.
 Replace template markers with:
 - `[x]` for pass

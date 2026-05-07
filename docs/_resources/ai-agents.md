@@ -107,7 +107,9 @@ Use this when handling advanced internals and edge cases.
 
 - When `docs/_resources/AGENTS/SmarkForm-Forms.md` or
   `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both
-  files under `skills/` if affected; when in doubt, update both in the same PR.
+  `skills/SmarkForm-Form-Builder.skill.md` and
+  `skills/SmarkForm-Advanced-Internals.skill.md` if affected; when in doubt,
+  update both in the same PR.
 - Apply the same update rule when their deployed equivalents change:
   `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms` and
   `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage`.
