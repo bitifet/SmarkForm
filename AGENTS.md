@@ -399,10 +399,7 @@ implementation behavior.
 | `skills/SmarkForm-Advanced-Internals.skill.md` | Optional advanced skill for internals-heavy work (action semantics, list/context edge cases, security-sensitive patterns) |
 
 Maintenance rule:
-- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or
-  `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both
-  skill files in `skills/` if affected; when in doubt, update both in the same
-  PR so installable skills stay aligned with canonical docs.
+- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both skill files in `skills/` if affected; when in doubt, update both in the same PR so installable skills stay aligned with canonical docs.
 
 
 - **Contributing**: See `CONTRIBUTING.md`
