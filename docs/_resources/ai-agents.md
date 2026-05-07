@@ -108,6 +108,9 @@ Use this when handling advanced internals and edge cases.
 - When `docs/_resources/AGENTS/SmarkForm-Forms.md` or
   `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, update the relevant
   files under `skills/` in the same PR.
+- Apply the same update rule when their deployed equivalents change:
+  `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms` and
+  `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage`.
 - Keep the source-priority order intact so deployed docs remain the primary
   knowledge source for agents.
 - If behavioral rules change, update both the skill file(s) and this page.

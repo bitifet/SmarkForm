@@ -58,6 +58,9 @@ If any checklist item fails, the skill must treat output as incomplete and revis
 
 ## SmarkForm Compliance Checklist (mandatory)
 
+When generating output, evaluate each item and report explicit pass/fail status;
+do not leave this as an unchecked template list.
+
 - [ ] Managed fields include `data-smark`.
 - [ ] Root element is passed to `new SmarkForm(...)` correctly.
 - [ ] Uses `myForm` variable naming convention.
