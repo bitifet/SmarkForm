@@ -1,7 +1,7 @@
 // types/list.decorators/sortable.deco.js
 // ======================================
 
-import {mutex} from "../../decorators/mutex.deco.js";
+import {mutex, sym_mutex_key} from "../../decorators/mutex.deco.js";
 
 // Selector for interactive fields where a drag should not start.
 const INTERACTIVE_FIELDS_SELECTOR = "input, textarea, select, button, a, [contenteditable='true']";
@@ -123,42 +123,43 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
             @mutex("list_mutating")
             async move(options = {}) {//{{{
                 const me = this;
-                let {
-                    from,
-                    to,
-                } = options;
+                let { from, to, targetList } = options;
+                const ongoingKey = options[sym_mutex_key];
 
-                // // FIXME: Avoid nested sortables to interact.
-                // console.log({from, to}); // <--- See this!!!
+                if (to === null || from === null) return;
+                if (Number(from.name) === Number(to.name) && (!targetList || targetList === me)) return;
 
-                //
-                // TODO: Convert to action!!!
-                //
-                if (
-                    to === null // Dropped outside
-                    || from === null // (Shouldn't happen)
-                ) return;
-                const fromi = Number(from?.name);
-                const toi = Number(to?.name);
-                if (fromi == toi) {
-                    return;
-                } else if (fromi < toi) {
-                    const newChunk = [
-                        ...me.children.slice(fromi + 1, toi + 1),
-                        me.children[fromi],
-                    ];
-                    me.children.splice(fromi, toi - fromi + 1, ...newChunk);
-                } else if (fromi > toi) {
-                    const newChunk = [
-                        me.children[fromi],
-                        ...me.children.slice(toi, fromi),
-                    ];
-                    me.children.splice(toi, fromi - toi + 1, ...newChunk);
-                };
-                const inc = fromi < toi ? 1 : -1;
-                const moveMethod = inc > 0 ? "after" : "before";
-                to.targetNode[moveMethod](from.targetNode);
-                me.renum();
+                const destList = targetList || me;
+                const fromi = Number(from.name);
+                const toi = Number(to.name);
+                const position = fromi < toi ? "after" : "before";
+
+                // 1. Export item data (preserve empties)
+                const data = await from.export(null, {silent: true, exportEmpties: true});
+
+                // 2. Remove from source
+                await me.removeItem(null, {
+                    target: from,
+                    silent: true,
+                    focus: false,
+                    failback: "none",
+                    [sym_mutex_key]: ongoingKey,
+                });
+
+                // 3. Insert into destination
+                const newItem = await destList.addItem(null, {
+                    target: to,
+                    position,
+                    silent: true,
+                    focus: false,
+                    ...(destList === me ? { [sym_mutex_key]: ongoingKey } : {}),
+                });
+
+                // 4. Restore data into the new item
+                await newItem.import(data, {silent: true, setDefault: false});
+
+                // 5. Restore focus to the moved item
+                if (me.renderedSync && !options.silent) newItem?.focus();
             };//}}}
             async renum() {//{{{
                 const me = this;
