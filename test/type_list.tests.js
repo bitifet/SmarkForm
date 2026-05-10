@@ -470,6 +470,73 @@ test.describe('List Component Type Test', () => {
 
 });
 
+// ─── Sortable list (drag-and-drop reorder) ────────────────────────────────────
+
+const sortablePugSrc = `extends layout.pug
+block mainForm
+    div(data-smark={
+        type: "list",
+        sortable: true,
+        name: "items",
+        min_items: 0,
+        max_items: 10,
+    })
+        input(data-smark={
+            type: "input",
+            name: "val",
+        })
+`;
+
+test.describe('Sortable List – move reorder integrity', () => {
+    test.describe.configure({ mode: 'serial' });
+
+    test('move reorders items and subsequent add/remove still works after', async ({ page }) => {
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: 'Sortable List Test',
+                src: sortablePugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const result = await page.evaluate(async () => {
+                const list = form.find("/items");
+
+                await list.addItem(null, {silent: true});
+                await list.addItem(null, {silent: true});
+                await list.addItem(null, {silent: true});
+
+                await list.children[0].import("first", {silent: true});
+                await list.children[1].import("second", {silent: true});
+                await list.children[2].import("third", {silent: true});
+
+                await list.move({
+                    from: list.children[2],
+                    to: list.children[0],
+                });
+
+                const afterMove = await list.export(null, {silent: true, exportEmpties: true});
+
+                await list.addItem(null, {silent: true});
+                await list.children[3].import("fourth", {silent: true});
+                const afterAdd = await list.export(null, {silent: true, exportEmpties: true});
+
+                await list.removeItem(null, {silent: true, failback: "none"});
+                const afterRemove = await list.export(null, {silent: true, exportEmpties: true});
+
+                return { afterMove, afterAdd, afterRemove };
+            });
+
+            expect(result.afterMove).toEqual(["third", "first", "second"]);
+            expect(result.afterAdd).toEqual(["third", "first", "second", "fourth"]);
+            expect(result.afterRemove).toEqual(["third", "first", "second"]);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });
+});
+
 // ─── Enter-key navigation inside a scalar list ────────────────────────────────
 // Regression for: mobile Brave skips one field per Enter keypress.
 //
