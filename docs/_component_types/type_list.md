@@ -338,6 +338,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="nesting_list"
     htmlSource=nesting_list_example
+    height=45
     cssSource=generic_sample_css
     demoValue=demoValue
     showEditor=true
@@ -505,37 +506,103 @@ item → employees → employee) — while still permitting same-list reordering
 {% raw %} <!-- capture cross_list_drag_example {{{ --> {% endraw %}
 {% capture cross_list_drag_example -%}
 <div id="myForm$$">
-  <section data-smark='{"type":"list","name":"departments","sortable":true,"min_items":1}'>
-    <fieldset>
-      <legend>
-        <span data-smark='{"action":"position"}'>N</span>.
-        <input name='name' placeholder='Department name' type='text' data-smark/>
-        <button data-smark='{"action":"removeItem"}' title='Remove department'>➖</button>
-      </legend>
-      <div data-smark='{"type":"list","name":"employees","sortable":true,"movingDepth":2,"min_items":0}'>
-        <p data-smark='{"role":"empty_list"}' style="font-style:italic;color:gray">(No employees)</p>
-        <p>
-          <label data-smark title="Drag to reorder or move between departments">⠿</label>
-          <input name='value' placeholder='Employee name' type='text' data-smark>
-          <button data-smark='{"action":"removeItem"}' title='Remove employee'>➖</button>
-        </p>
-      </div>
-      <button data-smark='{"action":"addItem","context":"employees"}' title='Add employee'>➕ Add Employee</button>
-    </fieldset>
-  </section>
-  <button data-smark='{"action":"addItem","context":"departments"}' title='Add department'>➕ Add Department</button>
+  <div class="cdd">
+    <ul data-smark='{"type":"list","name":"departments","sortable":true,"min_items":1}'>
+      <li>
+        <div class="cdd-dept">
+          <div class="cdd-dept-head">
+            <span data-smark='{"type":"label"}' class="cdd-handle">
+              <span data-smark='{"action":"position"}'>N</span> ⠿
+            </span>
+            <input name='name' placeholder='Dept. name' type='text' data-smark/>
+            <button data-smark='{"action":"removeItem"}' title='Remove department'>➖</button>
+          </div>
+          <div class="cdd-employees">
+            <ul data-smark='{"type":"list","name":"employees","sortable":true,"movingDepth":2,"min_items":0}'>
+              <li data-smark='{"role":"empty_list"}' class="cdd-empty">No employees yet</li>
+              <li>
+                <label data-smark title="Drag to reorder or move between departments">⠿</label>
+                <input name='value' placeholder='Employee name' type='text' data-smark>
+                <button data-smark='{"action":"removeItem"}' title='Remove employee'>➖</button>
+              </li>
+            </ul>
+            <button data-smark='{"action":"addItem","context":"employees"}' title='Add employee'>➕ Add Employee</button>
+          </div>
+        </div>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"departments"}' title='Add department'>➕ Add Department</button>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture cross_list_drag_css {{{ --> {% endraw %}
 {% capture cross_list_drag_css -%}
-{{""}}#myForm$$ fieldset { margin: 0.5em 0; padding: 0.5em; border-radius: 4px; }
-{{""}}#myForm$$ legend input { max-width: 14em; }
-{{""}}#myForm$$ .employees { padding-left: 1em; }
-{{""}}#myForm$$ p { margin: 0.3em 0; }
-{{""}}#myForm$$ button:disabled { opacity: 0.4; }{%
+{{""}}#myForm$$ .cdd { max-width: 500px; font-size: 0.95em; }
+{{""}}#myForm$$ .cdd ul { list-style: none; padding: 0; margin: 0; }
+{{""}}#myForm$$ .cdd-dept {
+    border: 1px solid #ddd; border-radius: 6px;
+    margin: 0.4em 0; padding: 0;
+    background: #fafafa;
+}
+{{""}}#myForm$$ .cdd-dept-head {
+    display: flex; align-items: center; gap: 0.4em;
+    padding: 0.35em 0.5em;
+    border-bottom: 1px solid #eee;
+    background: #fff; border-radius: 6px 6px 0 0;
+}
+{{""}}#myForm$$ .cdd-handle { cursor: grab; color: #aaa; font-size: 1.1em; user-select: none; }
+{{""}}#myForm$$ .cdd-dept-head input[type="text"] {
+    flex: 1; padding: 0.25em 0.4em;
+    border: 1px solid #ccc; border-radius: 4px;
+}
+{{""}}#myForm$$ .cdd-employees {
+    padding: 0.4em 0.5em 0.3em 1.8em;
+    display: flex; flex-direction: column; gap: 0.25em;
+}
+{{""}}#myForm$$ .cdd-employees ul li {
+    display: flex; align-items: center; gap: 0.4em; padding: 0.1em 0;
+}
+{{""}}#myForm$$ .cdd-employees ul li label { cursor: grab; color: #aaa; user-select: none; }
+{{""}}#myForm$$ .cdd-employees ul li input[type="text"] {
+    flex: 1; padding: 0.2em 0.4em;
+    border: 1px solid #ccc; border-radius: 4px;
+}
+{{""}}#myForm$$ .cdd-employees ul li.cdd-empty { display: block; font-style: italic; color: #aaa; padding: 0.3em 0; }
+{{""}}#myForm$$ .cdd button {
+    padding: 0.15em 0.6em; border: 1px solid #ccc; border-radius: 4px;
+    background: #fff; cursor: pointer; line-height: 1.5;
+}
+{{""}}#myForm$$ .cdd button:disabled { opacity: 0.4; }{%
 endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture cross_list_drag_demoValue {{{ --> {% endraw %}
+{% capture cross_list_drag_demoValue -%}
+{
+    "departments": [
+        {
+            "name": "Engineering",
+            "employees": [
+                {"value": "Alice Johnson"},
+                {"value": "Bob Smith"}
+            ]
+        },
+        {
+            "name": "Design",
+            "employees": [
+                {"value": "Carol White"},
+                {"value": "Dave Brown"}
+            ]
+        },
+        {
+            "name": "Marketing",
+            "employees": []
+        }
+    ]
+}
+{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- capture cross_list_drag_tests {{{ --> {% endraw %}
@@ -543,34 +610,24 @@ endcapture %}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
-    // — Setup: populate departments and employees —
+    // Import demo data to have a known starting state
     await page.evaluate(async () => {
-        const depts = myForm.find('/departments');
-        // depts[0] already exists (min_items: 1)
-        await depts.children[0].find('name').import('Engineering', {silent: true});
-        const engEmps = depts.children[0].find('employees');
-        await engEmps.addItem(null, {silent: true});
-        await engEmps.children[0].import({value: 'Alice'}, {silent: true});
-        await engEmps.addItem(null, {silent: true});
-        await engEmps.children[1].import({value: 'Bob'}, {silent: true});
-
-        // Add second department with its employees
-        await depts.addItem(null, {silent: true});
-        await depts.children[1].find('name').import('Design', {silent: true});
-        const desEmps = depts.children[1].find('employees');
-        await desEmps.addItem(null, {silent: true});
-        await desEmps.children[0].import({value: 'Carol'}, {silent: true});
-        await desEmps.addItem(null, {silent: true});
-        await desEmps.children[1].import({value: 'Dave'}, {silent: true});
+        await myForm.import({
+            departments: [
+                {name: "Engineering", employees: [{value: "Alice Johnson"}, {value: "Bob Smith"}]},
+                {name: "Design",      employees: [{value: "Carol White"},  {value: "Dave Brown"}]},
+                {name: "Marketing",   employees: []},
+            ],
+        });
     });
 
-    // — Cross-list move: "Alice" (Engineering[0]) → before "Carol" (Design[0]) —
+    // Cross-list move: "Alice Johnson" (Engineering[0]) → before "Carol White" (Design[0])
     await page.evaluate(async () => {
         const engEmps = myForm.find('/departments/0/employees');
         const desEmps = myForm.find('/departments/1/employees');
         await engEmps.move({
-            from: engEmps.children[0],  // Alice
-            to: desEmps.children[0],    // Carol
+            from: engEmps.children[0],  // Alice Johnson
+            to: desEmps.children[0],    // Carol White
             targetList: desEmps,
             position: 'before',
         });
@@ -578,18 +635,19 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
     expect(
         await readField('departments'),
-        'Alice moved from Engineering to Design (before Carol)'
+        'Alice Johnson moved from Engineering to Design (before Carol White)'
     ).toEqual([
-        {name: 'Engineering', employees: [{value: 'Bob'}]},
-        {name: 'Design',    employees: [{value: 'Alice'}, {value: 'Carol'}, {value: 'Dave'}]},
+        {name: 'Engineering', employees: [{value: 'Bob Smith'}]},
+        {name: 'Design', employees: [{value: 'Alice Johnson'}, {value: 'Carol White'}, {value: 'Dave Brown'}]},
+        {name: 'Marketing', employees: []},
     ]);
 
-    // — Cross-list move without `to`: "Dave" (Design[2]) → end of Engineering —
+    // Cross-list move without `to`: "Dave Brown" (Design[2]) → end of Engineering
     await page.evaluate(async () => {
         const engEmps = myForm.find('/departments/0/employees');
         const desEmps = myForm.find('/departments/1/employees');
         await desEmps.move({
-            from: desEmps.children[2],  // Dave
+            from: desEmps.children[2],  // Dave Brown
             targetList: engEmps,
             position: 'after',
         });
@@ -597,10 +655,11 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
     expect(
         await readField('departments'),
-        'Dave moved from Design to Engineering (append)'
+        'Dave Brown moved from Design to Engineering (append)'
     ).toEqual([
-        {name: 'Engineering', employees: [{value: 'Bob'}, {value: 'Dave'}]},
-        {name: 'Design',    employees: [{value: 'Alice'}, {value: 'Carol'}]},
+        {name: 'Engineering', employees: [{value: 'Bob Smith'}, {value: 'Dave Brown'}]},
+        {name: 'Design', employees: [{value: 'Alice Johnson'}, {value: 'Carol White'}]},
+        {name: 'Marketing', employees: []},
     ]);
 };
 {%- endcapture %}
@@ -611,6 +670,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     htmlSource=cross_list_drag_example
     height=60
     cssSource=cross_list_drag_css
+    demoValue=cross_list_drag_demoValue
     showEditor=true
     tests=cross_list_drag_tests
 %}
