@@ -37,6 +37,7 @@ endcapture %}
         * [min_items](#min_items)
         * [max_items](#max_items)
         * [sortable](#sortable)
+        * [movingDepth (Cross-List Drag scope)](#movingdepth-cross-list-drag-scope)
         * [exportEmpties](#exportempties)
         * [of](#of)
     * [Actions](#actions)
@@ -388,6 +389,10 @@ Controls wether the list can be user sorted by dragging and dropping list items.
   * **Type:** Boolean
   * **Default value:** false
 
+When `sortable` is `true` without setting [`movingDepth`](#movingdepth-cross-list-drag-scope),
+only same-list reordering is allowed.  Cross-list drag requires `movingDepth`
+on at least one of the lists involved.
+
 Sorting relies on the browser's native HTML drag-and-drop API.  Each list item
 becomes a drag source (or exposes drag handles — see below), and the list
 container is the drop target.
@@ -440,6 +445,175 @@ original behaviour: the entire item root is draggable (backward compatible).
 > They can be emulated in serveral ways. A quite straighforward one is through the *dragdroptouch* library from Bernardo Castilho:
 >
 > 🔗 [https://github.com/drag-drop-touch-js/dragdroptouch](https://github.com/drag-drop-touch-js/dragdroptouch)
+
+
+#### movingDepth (Cross-List Drag scope)
+
+Controls cross-list drag-and-drop by enforcing a maximum *sibling distance*
+between source and destination lists.
+
+  * **Type:** Number | true | false
+  * **Default value:** 0 (disabled)
+
+When `movingDepth` is set to a positive number or `true` on a list, its items
+become draggable even if `sortable` is `false`. However, same-list reordering
+is only allowed when `sortable` is enabled.
+
+**Sibling distance** is the number of nesting levels from the first divergent
+list-item ancestor between two lists.  For example, in a `departments →
+employees` nested structure, two employees from different departments have a
+sibling distance of 2 (department item → employees → employee).  Items within
+the same employees list have distance 0.
+
+A cross-list move is only allowed when the sibling distance between the source
+and destination list is **less than or equal to** `movingDepth` on **both**
+lists.  A value of `true` grants unlimited reach.
+
+{: .info}
+> **Sortable vs movingDepth**
+>
+> | `sortable` | `movingDepth` | Behaviour |
+> |---|---|---|
+> | `false` (default) | `0` (default) | Static list — no drag at all |
+> | `true` | `0` (default) | Same-list reorder only (legacy) |
+> | `false` | `1+` or `true` | Items draggable; same-list drops ignored; cross-list allowed up to distance limit |
+> | `true` | `1+` or `true` | Same-list reorder AND cross-list up to distance limit |
+
+**Programmatic moves**
+
+You can still trigger a cross-list move programmatically via `move()` by
+passing a `targetList` option pointing to the destination list instance.  The
+same distance guard applies:
+
+```js
+await sourceList.move({
+    from: srcItem,          // component to move
+    to: dstItem,            // component in the target list (position reference)
+    targetList: destList,   // the destination list instance
+    position: "before",     // or "after" (default)
+});
+```
+
+**Example — Cross-list drag between nested lists:**
+
+In this example the outer `departments` list has `sortable: true` (same-level
+reorder only), while each inner `employees` list has both `sortable: true` and
+`movingDepth: 2`.  This allows employees to be dragged between
+departments — the sibling distance between two employee lists is 2 (department
+item → employees → employee) — while still permitting same-list reordering.
+
+{% raw %} <!-- capture cross_list_drag_example {{{ --> {% endraw %}
+{% capture cross_list_drag_example -%}
+<div id="myForm$$">
+  <section data-smark='{"type":"list","name":"departments","sortable":true,"min_items":1}'>
+    <fieldset>
+      <legend>
+        <span data-smark='{"action":"position"}'>N</span>.
+        <input name='name' placeholder='Department name' type='text' data-smark/>
+        <button data-smark='{"action":"removeItem"}' title='Remove department'>➖</button>
+      </legend>
+      <div data-smark='{"type":"list","name":"employees","sortable":true,"movingDepth":2,"min_items":0}'>
+        <p data-smark='{"role":"empty_list"}' style="font-style:italic;color:gray">(No employees)</p>
+        <p>
+          <label data-smark title="Drag to reorder or move between departments">⠿</label>
+          <input name='value' placeholder='Employee name' type='text' data-smark>
+          <button data-smark='{"action":"removeItem"}' title='Remove employee'>➖</button>
+        </p>
+      </div>
+      <button data-smark='{"action":"addItem","context":"employees"}' title='Add employee'>➕ Add Employee</button>
+    </fieldset>
+  </section>
+  <button data-smark='{"action":"addItem","context":"departments"}' title='Add department'>➕ Add Department</button>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture cross_list_drag_css {{{ --> {% endraw %}
+{% capture cross_list_drag_css -%}
+{{""}}#myForm$$ fieldset { margin: 0.5em 0; padding: 0.5em; border-radius: 4px; }
+{{""}}#myForm$$ legend input { max-width: 14em; }
+{{""}}#myForm$$ .employees { padding-left: 1em; }
+{{""}}#myForm$$ p { margin: 0.3em 0; }
+{{""}}#myForm$$ button:disabled { opacity: 0.4; }{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture cross_list_drag_tests {{{ --> {% endraw %}
+{% capture cross_list_drag_tests -%}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    // — Setup: populate departments and employees —
+    await page.evaluate(async () => {
+        const depts = myForm.find('/departments');
+        // depts[0] already exists (min_items: 1)
+        await depts.children[0].find('name').import('Engineering', {silent: true});
+        const engEmps = depts.children[0].find('employees');
+        await engEmps.addItem(null, {silent: true});
+        await engEmps.children[0].import({value: 'Alice'}, {silent: true});
+        await engEmps.addItem(null, {silent: true});
+        await engEmps.children[1].import({value: 'Bob'}, {silent: true});
+
+        // Add second department with its employees
+        await depts.addItem(null, {silent: true});
+        await depts.children[1].find('name').import('Design', {silent: true});
+        const desEmps = depts.children[1].find('employees');
+        await desEmps.addItem(null, {silent: true});
+        await desEmps.children[0].import({value: 'Carol'}, {silent: true});
+        await desEmps.addItem(null, {silent: true});
+        await desEmps.children[1].import({value: 'Dave'}, {silent: true});
+    });
+
+    // — Cross-list move: "Alice" (Engineering[0]) → before "Carol" (Design[0]) —
+    await page.evaluate(async () => {
+        const engEmps = myForm.find('/departments/0/employees');
+        const desEmps = myForm.find('/departments/1/employees');
+        await engEmps.move({
+            from: engEmps.children[0],  // Alice
+            to: desEmps.children[0],    // Carol
+            targetList: desEmps,
+            position: 'before',
+        });
+    });
+
+    expect(
+        await readField('departments'),
+        'Alice moved from Engineering to Design (before Carol)'
+    ).toEqual([
+        {name: 'Engineering', employees: [{value: 'Bob'}]},
+        {name: 'Design',    employees: [{value: 'Alice'}, {value: 'Carol'}, {value: 'Dave'}]},
+    ]);
+
+    // — Cross-list move without `to`: "Dave" (Design[2]) → end of Engineering —
+    await page.evaluate(async () => {
+        const engEmps = myForm.find('/departments/0/employees');
+        const desEmps = myForm.find('/departments/1/employees');
+        await desEmps.move({
+            from: desEmps.children[2],  // Dave
+            targetList: engEmps,
+            position: 'after',
+        });
+    });
+
+    expect(
+        await readField('departments'),
+        'Dave moved from Design to Engineering (append)'
+    ).toEqual([
+        {name: 'Engineering', employees: [{value: 'Bob'}, {value: 'Dave'}]},
+        {name: 'Design',    employees: [{value: 'Alice'}, {value: 'Carol'}]},
+    ]);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="cross_list_drag"
+    htmlSource=cross_list_drag_example
+    height=60
+    cssSource=cross_list_drag_css
+    showEditor=true
+    tests=cross_list_drag_tests
+%}
 
 
 #### exportEmpties
