@@ -233,39 +233,33 @@ auto-numbers each group.
                           <div class="sg-grade-label">Math</div>
                           <div data-smark='{"type":"list","name":"math","min_items":0}'>
                             <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
-                            <div>
-                              <input name="grade" type="number" step="0.1" min="0" max="10" data-smark>
-                            </div>
+                            <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
-                            <button data-smark='{"action":"removeItem","context":"math"}' title="Remove grade">➖</button>
                             <button data-smark='{"action":"addItem","context":"math"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","context":"math"}' title="Remove grade">➖</button>
                           </div>
                         </div>
                         <div class="sg-grade-col">
                           <div class="sg-grade-label">Literature</div>
                           <div data-smark='{"type":"list","name":"literature","min_items":0}'>
                             <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
-                            <div>
-                              <input name="grade" type="number" step="0.1" min="0" max="10" data-smark>
-                            </div>
+                            <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
-                            <button data-smark='{"action":"removeItem","context":"literature"}' title="Remove grade">➖</button>
                             <button data-smark='{"action":"addItem","context":"literature"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","context":"literature"}' title="Remove grade">➖</button>
                           </div>
                         </div>
                         <div class="sg-grade-col">
                           <div class="sg-grade-label">Science</div>
                           <div data-smark='{"type":"list","name":"science","min_items":0}'>
                             <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
-                            <div>
-                              <input name="grade" type="number" step="0.1" min="0" max="10" data-smark>
-                            </div>
+                            <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
-                            <button data-smark='{"action":"removeItem","context":"science"}' title="Remove grade">➖</button>
                             <button data-smark='{"action":"addItem","context":"science"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","context":"science"}' title="Remove grade">➖</button>
                           </div>
                         </div>
                       </div>
@@ -377,15 +371,15 @@ endcapture %}
             "name": "Class A",
             "tutor": "Mr. Smith",
             "students": [
-                {"name": "Lisa Simpson",  "grades": {"math": [{"grade": 9.5}, {"grade": 8.0}], "literature": [{"grade": 7.3}], "science": [{"grade": 8.8}]}},
-                {"name": "Bart Simpson",  "grades": {"math": [{"grade": 4.0}], "literature": [{"grade": 5.5}], "science": [{"grade": 3.0}]}}
+                {"name": "Lisa Simpson",  "grades": {"math": [9.5, 8.0], "literature": [7.3], "science": [8.8]}},
+                {"name": "Bart Simpson",  "grades": {"math": [4.0], "literature": [5.5], "science": [3.0]}}
             ]
         },
         {
             "name": "Class B",
             "tutor": "Ms. Johnson",
             "students": [
-                {"name": "Milhouse Van Houten", "grades": {"math": [{"grade": 6.0}], "literature": [{"grade": 7.0}], "science": [{"grade": 6.5}]}}
+                {"name": "Milhouse Van Houten", "grades": {"math": [6.0], "literature": [7.0], "science": [6.5]}}
             ]
         }
     ]
@@ -409,15 +403,15 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
                     name: "Class A",
                     tutor: "Mr. Smith",
                     students: [
-                        {name: "Lisa Simpson", grades: {math: [{grade: 9.5}, {grade: 8.0}], literature: [{grade: 7.3}], science: [{grade: 8.8}]}},
-                        {name: "Bart Simpson", grades: {math: [{grade: 4.0}], literature: [{grade: 5.5}], science: [{grade: 3.0}]}},
+                        {name: "Lisa Simpson", grades: {math: [9.5, 8.0], literature: [7.3], science: [8.8]}},
+                        {name: "Bart Simpson", grades: {math: [4.0], literature: [5.5], science: [3.0]}},
                     ],
                 },
                 {
                     name: "Class B",
                     tutor: "Ms. Johnson",
                     students: [
-                        {name: "Milhouse Van Houten", grades: {math: [{grade: 6.0}], literature: [{grade: 7.0}], science: [{grade: 6.5}]}},
+                        {name: "Milhouse Van Houten", grades: {math: [6.0], literature: [7.0], science: [6.5]}},
                     ],
                 },
             ],
@@ -433,12 +427,12 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     expect(data.groups[0].tutor).toBe('Mr. Smith');
     expect(data.groups[0].students.length).toBe(2);
     expect(data.groups[0].students[0].name).toBe('Lisa Simpson');
-    expect(data.groups[0].students[0].grades.math[0].grade).toBe(9.5);
-    expect(data.groups[0].students[0].grades.math[1].grade).toBe(8.0);
-    expect(data.groups[0].students[0].grades.literature[0].grade).toBe(7.3);
-    expect(data.groups[0].students[0].grades.science[0].grade).toBe(8.8);
+    expect(data.groups[0].students[0].grades.math[0]).toBe(9.5);
+    expect(data.groups[0].students[0].grades.math[1]).toBe(8.0);
+    expect(data.groups[0].students[0].grades.literature[0]).toBe(7.3);
+    expect(data.groups[0].students[0].grades.science[0]).toBe(8.8);
     expect(data.groups[0].students[1].name).toBe('Bart Simpson');
-    expect(data.groups[0].students[1].grades.science[0].grade).toBe(3.0);
+    expect(data.groups[0].students[1].grades.science[0]).toBe(3.0);
     expect(data.groups[1].students[0].name).toBe('Milhouse Van Houten');
 
     // Cross-list move: drag Bart Simpson from Class A to Class B
@@ -460,7 +454,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         'Class B should have 2 students after receiving Bart');
     expect(data.groups[1].students[1].name).toBe('Bart Simpson',
         'Bart should be at the end of Class B');
-    expect(data.groups[1].students[1].grades.math[0].grade).toBe(4.0,
+    expect(data.groups[1].students[1].grades.math[0]).toBe(4.0,
         'Bart\'s grades should travel with him');
 };
 {%- endcapture %}
