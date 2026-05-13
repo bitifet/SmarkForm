@@ -158,10 +158,14 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 ### Three-Level Nesting
 
-A school hierarchy — groups, students, and grades — built from three levels of
-nested forms and lists.  Students can be dragged between groups, each subject's
-grade list grows on demand, and add/remove buttons disable themselves at their
-limits — all from pure HTML with no custom JavaScript.
+This single HTML example packs a surprising range of SmarkForm features:
+three-level nesting of forms and lists, sortable groups, cross-list
+drag-and-drop for students, nested collapsible sections, auto-disabling
+triggers that respect `min_items`/`max_items` boundaries, per-subject grade
+lists that grow on demand, empty-list placeholders, and automatic position
+numbering — all from the declarative HTML you see in the source tab with
+no custom JavaScript.  Each capability is introduced step by step in the
+pages that follow.
 
 {% raw %} <!-- notes_school_groups {{{ --> {% endraw %}
 {% capture notes_school_groups -%}
