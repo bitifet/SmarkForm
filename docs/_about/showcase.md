@@ -39,7 +39,7 @@ featured ones.
 
 * [Basics](#basics)
     * [Just a Form](#just-a-form)
-    * [Smart Contacts](#smart-contacts)
+    * [School Groups](#school-groups)
     * [Deeply nested forms](#deeply-nested-forms)
     * [More on lists](#more-on-lists)
     * [Mixins](#mixins)
@@ -156,170 +156,322 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 %}
 
 
-### Smart Contacts
+### School Groups
 
-Nest a sortable phones list inside each contact.  Contacts are foldable
-(`<details>`/`<summary>`), phones can be dragged between contacts
-(`movingDepth`), and all `min_items`/`max_items` limits auto-disable their
-triggers.
+Manage classes, students, and grades through three nesting levels.  Groups
+are styled as cards with scrollable student lists.  Students can be dragged
+between groups (`movingDepth`), and `min_items`/`max_items` limits
+auto-disable their triggers.
 
-{% raw %} <!-- notes_smart_contacts {{{ --> {% endraw %}
-{% capture notes_smart_contacts -%}
-👉 **Nesting.** Lists inside list items produce deep JSON automatically. Each
-contact is a form with `name` and `phones` sub-fields.
+{% raw %} <!-- notes_school_groups {{{ --> {% endraw %}
+{% capture notes_school_groups -%}
+👉 **Nested hierarchy.** Three levels of nesting: groups → students → grades
+produce deeply structured JSON automatically.
 
-👉 **Singleton pattern.** `<ul data-smark='{"of":"input"}'>` treats each `<li>`
-as a scalar field wrapper, letting you add triggers inside list items even
-being scalar fields.
+👉 **Card layout.** Each group is a card with a scrollable student list
+(max-height, `overflow-y: auto`) — keeps the page tidy even with many students.
+
+👉 **Cross-list drag.** `movingDepth: 2` on the students list lets users drag
+students between groups (sibling distance = 2: student → group → sibling's
+students).
+
+👉 **Collapsible sections.** Both groups and students use `<details>`/`<summary>`
+to keep the view compact.  A group shows its name in the summary; opening it
+reveals the tutor and student list.  Likewise for each student.
+
+👉 **Nested `<details>`.** SmarkForm handles keyboard navigation correctly even
+with nested collapsible sections — Shift+Space toggles, Enter navigates, and
+auto-open works as expected.
 
 👉 **Auto-disable.** Triggers disable themselves at their list's
 `min_items`/`max_items` boundary — no code needed.
 
-👉 **`movingDepth`.** A phones list with `movingDepth: 2` lets users drag
-phones between contacts (sibling distance = 2: contact → phones → phone).
-
 👉 **`position` action.** Span with `data-smark='{"action":"position"}'`
-auto-numbers each item.
+auto-numbers each group.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- smart_contacts_example {{{ --> {% endraw %}
-{% capture smart_contacts_example -%}
+{% raw %} <!-- school_groups_example {{{ --> {% endraw %}
+{% capture school_groups_example -%}
 <div id="myForm$$">
-  <div class="sc">
-    <ul data-smark='{"type":"list","name":"contacts","sortable":true,"min_items":0}'>
-      <li data-smark='{"role":"empty_list"}' class="sc-empty">No contacts yet</li>
+  <div class="sg">
+    <div class="sg-header">
+      <input name="name" placeholder="School name" type="text" data-smark>
+      <input name="level" placeholder="Level (e.g. Primary)" type="text" data-smark>
+      <input name="year" placeholder="Academic year" type="text" data-smark>
+    </div>
+
+    <ul data-smark='{"type":"list","name":"groups","sortable":true,"min_items":0}'>
+      <li data-smark='{"role":"empty_list"}' class="sg-empty">No groups yet</li>
       <li>
-        <details>
-          <summary>
-            <span data-smark='{"type":"label"}' class="sc-handle">⠿</span>
-            <span data-smark='{"action":"position"}'>#</span>
-            <input name="name" placeholder="Contact name" type="text" data-smark>
-            <button data-smark='{"action":"removeItem"}' title="Remove contact">➖</button>
-          </summary>
-          <div class="sc-phones">
-            <ul data-smark='{"type":"list","name":"phones","of":"input","sortable":true,"movingDepth":2,"min_items":1,"max_items":3}'>
-              <li>
-                <label data-smark class="sc-handle">⠿</label>
-                <input type="tel" placeholder="Phone" data-smark>
-                <button data-smark='{"action":"removeItem"}' title="Remove phone">➖</button>
-              </li>
-            </ul>
-            <button data-smark='{"action":"addItem","context":"phones"}' title="Add phone">➕</button>
-          </div>
-        </details>
+        <div class="sg-card">
+          <details>
+            <summary>
+              <span data-smark='{"type":"label"}' class="sg-handle">⠿</span>
+              <span data-smark='{"action":"position"}'>#</span>
+              <input name="name" placeholder="Group name" type="text" data-smark>
+              <button data-smark='{"action":"removeItem"}' title="Remove group">➖</button>
+            </summary>
+            <div class="sg-body">
+              <label class="sg-tutor">Tutor: <input name="tutor" placeholder="Tutor name" type="text" data-smark></label>
+              <div class="sg-students">
+                <strong>Students</strong>
+                <ul data-smark='{"type":"list","name":"students","sortable":true,"movingDepth":2,"min_items":0}'>
+                  <li data-smark='{"role":"empty_list"}' class="sg-empty">No students yet</li>
+                  <li>
+                    <details>
+                      <summary>
+                        <span data-smark='label' title="Drag to reorder or move between groups" class="sg-handle">⠿</span>
+                        <input name="name" placeholder="Student name" type="text" data-smark>
+                        <button data-smark='{"action":"removeItem"}' title="Remove student">➖</button>
+                      </summary>
+                      <div data-smark='{"type":"form","name":"grades"}' class="sg-grades">
+                        <div class="sg-grade-col">
+                          <div class="sg-grade-label">Math</div>
+                          <div data-smark='{"type":"list","name":"math","min_items":0}'>
+                            <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
+                            <div>
+                              <input name="grade" type="number" step="0.1" min="0" max="10" data-smark>
+                            </div>
+                          </div>
+                          <div class="sg-grade-btns">
+                            <button data-smark='{"action":"removeItem","context":"math"}' title="Remove grade">➖</button>
+                            <button data-smark='{"action":"addItem","context":"math"}' title="Add grade">➕</button>
+                          </div>
+                        </div>
+                        <div class="sg-grade-col">
+                          <div class="sg-grade-label">Literature</div>
+                          <div data-smark='{"type":"list","name":"literature","min_items":0}'>
+                            <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
+                            <div>
+                              <input name="grade" type="number" step="0.1" min="0" max="10" data-smark>
+                            </div>
+                          </div>
+                          <div class="sg-grade-btns">
+                            <button data-smark='{"action":"removeItem","context":"literature"}' title="Remove grade">➖</button>
+                            <button data-smark='{"action":"addItem","context":"literature"}' title="Add grade">➕</button>
+                          </div>
+                        </div>
+                        <div class="sg-grade-col">
+                          <div class="sg-grade-label">Science</div>
+                          <div data-smark='{"type":"list","name":"science","min_items":0}'>
+                            <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
+                            <div>
+                              <input name="grade" type="number" step="0.1" min="0" max="10" data-smark>
+                            </div>
+                          </div>
+                          <div class="sg-grade-btns">
+                            <button data-smark='{"action":"removeItem","context":"science"}' title="Remove grade">➖</button>
+                            <button data-smark='{"action":"addItem","context":"science"}' title="Add grade">➕</button>
+                          </div>
+                        </div>
+                      </div>
+                    </details>
+                  </li>
+                </ul>
+                <button data-smark='{"action":"addItem","context":"students"}' title="Add student">➕ Add Student</button>
+              </div>
+            </div>
+          </details>
+        </div>
       </li>
     </ul>
-    <button data-smark='{"action":"addItem","context":"contacts"}' title="Add contact">➕ Add Contact</button>
+    <button data-smark='{"action":"addItem","context":"groups"}' title="Add group">➕ Add Group</button>
   </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- smart_contacts_css {{{ --> {% endraw %}
-{% capture smart_contacts_css -%}
-{{""}}#myForm$$ .sc { max-width: 480px; font-size: 0.95em; }
-{{""}}#myForm$$ .sc ul { list-style: none; padding: 0; margin: 0; }
-{{""}}#myForm$$ .sc details {
-    border: 1px solid #ddd; border-radius: 6px;
-    margin: 0.3em 0; background: #fafafa;
+{% raw %} <!-- school_groups_css {{{ --> {% endraw %}
+{% capture school_groups_css -%}
+{{""}}#myForm$$ .sg { max-width: 520px; font-size: 0.95em; font-family: sans-serif; }
+{{""}}#myForm$$ .sg ul { list-style: none; padding: 0; margin: 0; }
+{{""}}#myForm$$ .sg-header {
+    display: flex; gap: 0.5em; margin-bottom: 0.6em; flex-wrap: wrap;
 }
-{{""}}#myForm$$ .sc details[open] { border-color: #ccc; padding-bottom: 0.3em; }
-{{""}}#myForm$$ .sc summary {
+{{""}}#myForm$$ .sg-header input {
+    flex: 1; min-width: 120px; padding: 0.35em 0.5em;
+    border: 1px solid #ccc; border-radius: 4px;
+}
+{{""}}#myForm$$ .sg-card {
+    border: 1px solid #ddd; border-radius: 8px;
+    margin: 0.4em 0; background: #fafafa;
+    overflow: hidden;
+}
+{{""}}#myForm$$ .sg-card details[open] { padding-bottom: 0.4em; }
+{{""}}#myForm$$ .sg-card summary {
     display: flex; align-items: center; gap: 0.4em;
-    padding: 0.3em 0.4em; user-select: none;
+    padding: 0.35em 0.5em; user-select: none;
+    background: #fff; border-radius: 8px;
 }
-{{""}}#myForm$$ .sc-handle { cursor: grab; color: #aaa; }
-{{""}}#myForm$$ .sc summary input[type="text"] {
-    flex: 1; padding: 0.2em 0.4em; border: 1px solid #ccc; border-radius: 4px;
+{{""}}#myForm$$ .sg-card details[open] summary { border-radius: 8px 8px 0 0; border-bottom: 1px solid #eee; }
+{{""}}#myForm$$ .sg-handle { cursor: grab; color: #aaa; user-select: none; }
+{{""}}#myForm$$ .sg-card summary input[type="text"] {
+    flex: 1; padding: 0.25em 0.4em;
+    border: 1px solid #ccc; border-radius: 4px;
 }
-{{""}}#myForm$$ .sc-phones {
-    padding: 0.3em 0.4em 0.1em 1.5em;
-    display: flex; flex-direction: column; gap: 0.25em;
+{{""}}#myForm$$ .sg-body { padding: 0.4em 0.5em 0.2em 1.8em; }
+{{""}}#myForm$$ .sg-tutor { display: flex; align-items: center; gap: 0.4em; margin-bottom: 0.3em; font-size: 0.9em; }
+{{""}}#myForm$$ .sg-tutor input { flex: 1; padding: 0.2em 0.4em; border: 1px solid #ccc; border-radius: 4px; }
+{{""}}#myForm$$ .sg-students { margin-top: 0.3em; }
+{{""}}#myForm$$ .sg-students > strong { font-size: 0.85em; color: #555; display: block; margin-bottom: 0.2em; }
+{{""}}#myForm$$ .sg-students ul {
+    max-height: 240px; overflow-y: auto;
+    border: 1px solid #eee; border-radius: 4px; padding: 0.2em 0.3em;
+    background: #fff;
 }
-{{""}}#myForm$$ .sc-phones ul li {
-    display: flex; align-items: center; gap: 0.4em; padding: 0.1em 0;
+{{""}}#myForm$$ .sg-students ul li { margin: 0.15em 0; }
+{{""}}#myForm$$ .sg-students ul details summary {
+    display: flex; align-items: center; gap: 0.3em; padding: 0.2em 0.3em;
+    border-radius: 4px; background: #fafafa; border: 1px solid #eee;
 }
-{{""}}#myForm$$ .sc-phones ul li input[type="tel"] {
-    flex: 1; padding: 0.2em 0.4em; border: 1px solid #ccc; border-radius: 4px;
+{{""}}#myForm$$ .sg-students ul details[open] summary { border-radius: 4px 4px 0 0; border-bottom: 0; }
+{{""}}#myForm$$ .sg-students ul details[open] { background: #fafafa; }
+{{""}}#myForm$$ .sg-students ul li input[type="text"] {
+    flex: 1; padding: 0.2em 0.4em;
+    border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;
 }
-{{""}}#myForm$$ .sc-empty { font-style: italic; color: #aaa; padding: 0.5em; }
-{{""}}#myForm$$ .sc button {
-    padding: 0.15em 0.5em; border: 1px solid #ccc; border-radius: 4px;
-    background: #fff; cursor: pointer;
+{{""}}#myForm$$ .sg-grades {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    padding: 0.3em 0.3em 0.2em 0.3em;
 }
-{{""}}#myForm$$ .sc button:disabled { opacity: 0.4; }{%
+{{""}}#myForm$$ .sg-grade-col {
+    display: flex; flex-direction: column; gap: 2px;
+}
+{{""}}#myForm$$ .sg-grade-label {
+    font-weight: bold; text-align: center; font-size: 0.85em;
+    padding: 0.15em 0; border-bottom: 1px solid #ddd;
+}
+{{""}}#myForm$$ .sg-grade-col input[type="number"] {
+    width: 100%; box-sizing: border-box;
+    padding: 0.15em 0.3em;
+    border: 1px solid #ccc; border-radius: 4px;
+}
+{{""}}#myForm$$ .sg-grade-btns {
+    display: flex; gap: 2px; justify-content: center; margin-top: 2px;
+}
+{{""}}#myForm$$ .sg-grade-btns button {
+    padding: 0.1em 0.4em; border: 1px solid #ccc; border-radius: 4px;
+    background: #fff; cursor: pointer; font-size: 0.85em; line-height: 1.4;
+}
+{{""}}#myForm$$ .sg-empty { font-style: italic; color: #aaa; padding: 0.5em; font-size: 0.9em; }
+{{""}}#myForm$$ .sg button {
+    padding: 0.2em 0.6em; border: 1px solid #ccc; border-radius: 4px;
+    background: #fff; cursor: pointer; line-height: 1.5;
+}
+{{""}}#myForm$$ .sg button:disabled { opacity: 0.4; }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- smart_contacts_demoValue {{{ --> {% endraw %}
-{% capture smart_contacts_demoValue -%}
+{% raw %} <!-- school_groups_demoValue {{{ --> {% endraw %}
+{% capture school_groups_demoValue -%}
 {
-    "contacts": [
-        {"name": "Alice Johnson", "phones": ["+1 555 100 2000", "+1 555 100 2001"]},
-        {"name": "Bob Smith",     "phones": ["+1 555 200 3000"]}
+    "name": "Springfield Elementary",
+    "level": "Primary",
+    "year": "2025/2026",
+    "groups": [
+        {
+            "name": "Class A",
+            "tutor": "Mr. Smith",
+            "students": [
+                {"name": "Lisa Simpson",  "grades": {"math": [{"grade": 9.5}, {"grade": 8.0}], "literature": [{"grade": 7.3}], "science": [{"grade": 8.8}]}},
+                {"name": "Bart Simpson",  "grades": {"math": [{"grade": 4.0}], "literature": [{"grade": 5.5}], "science": [{"grade": 3.0}]}}
+            ]
+        },
+        {
+            "name": "Class B",
+            "tutor": "Ms. Johnson",
+            "students": [
+                {"name": "Milhouse Van Houten", "grades": {"math": [{"grade": 6.0}], "literature": [{"grade": 7.0}], "science": [{"grade": 6.5}]}}
+            ]
+        }
     ]
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- smart_contacts_tests {{{ --> {% endraw %}
-{% capture smart_contacts_tests -%}
+{% raw %} <!-- school_groups_tests {{{ --> {% endraw %}
+{% capture school_groups_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
     await expect(root).toBeVisible();
 
     // Import demo data for a known starting state
     await page.evaluate(async () => {
         await myForm.import({
-            contacts: [
-                {name: "Alice Johnson", phones: ["+1 555 100 2000", "+1 555 100 2001"]},
-                {name: "Bob Smith",     phones: ["+1 555 200 3000"]},
+            name: "Springfield Elementary",
+            level: "Primary",
+            year: "2025/2026",
+            groups: [
+                {
+                    name: "Class A",
+                    tutor: "Mr. Smith",
+                    students: [
+                        {name: "Lisa Simpson", grades: {math: [{grade: 9.5}, {grade: 8.0}], literature: [{grade: 7.3}], science: [{grade: 8.8}]}},
+                        {name: "Bart Simpson", grades: {math: [{grade: 4.0}], literature: [{grade: 5.5}], science: [{grade: 3.0}]}},
+                    ],
+                },
+                {
+                    name: "Class B",
+                    tutor: "Ms. Johnson",
+                    students: [
+                        {name: "Milhouse Van Houten", grades: {math: [{grade: 6.0}], literature: [{grade: 7.0}], science: [{grade: 6.5}]}},
+                    ],
+                },
             ],
         });
     });
 
-    let contacts = await readField('contacts');
-    expect(contacts.length).toBe(2);
-    expect(contacts[0].name).toBe('Alice Johnson');
-    expect(contacts[0].phones).toEqual(['+1 555 100 2000', '+1 555 100 2001']);
-    expect(contacts[1].name).toBe('Bob Smith');
-    expect(contacts[1].phones).toEqual(['+1 555 200 3000']);
+    // Verify initial structure
+    let data = await readField('/');
+    expect(data.name).toBe('Springfield Elementary');
+    expect(data.level).toBe('Primary');
+    expect(data.groups.length).toBe(2);
+    expect(data.groups[0].name).toBe('Class A');
+    expect(data.groups[0].tutor).toBe('Mr. Smith');
+    expect(data.groups[0].students.length).toBe(2);
+    expect(data.groups[0].students[0].name).toBe('Lisa Simpson');
+    expect(data.groups[0].students[0].grades.math[0].grade).toBe(9.5);
+    expect(data.groups[0].students[0].grades.math[1].grade).toBe(8.0);
+    expect(data.groups[0].students[0].grades.literature[0].grade).toBe(7.3);
+    expect(data.groups[0].students[0].grades.science[0].grade).toBe(8.8);
+    expect(data.groups[0].students[1].name).toBe('Bart Simpson');
+    expect(data.groups[0].students[1].grades.science[0].grade).toBe(3.0);
+    expect(data.groups[1].students[0].name).toBe('Milhouse Van Houten');
 
-    // Add a phone to Bob via API
+    // Cross-list move: drag Bart Simpson from Class A to Class B
     await page.evaluate(async () => {
-        const bobPhones = myForm.find('/contacts/1/phones');
-        await bobPhones.addItem(null, {silent: true});
-        await bobPhones.children[1].import('+1 555 200 3001', {silent: true});
-    });
-    contacts = await readField('contacts');
-    expect(contacts[1].phones.length).toBe(2);
-
-    // Cross-list move: move Alice's second phone to Bob
-    await page.evaluate(async () => {
-        const alicePhones = myForm.find('/contacts/0/phones');
-        const bobPhones = myForm.find('/contacts/1/phones');
-        await alicePhones.move({
-            from: alicePhones.children[1],
-            targetList: bobPhones,
+        const classAStudents = myForm.find('/groups/0/students');
+        const classBStudents = myForm.find('/groups/1/students');
+        await classAStudents.move({
+            from: classAStudents.children[1],  // Bart Simpson
+            targetList: classBStudents,
             position: 'after',
         });
     });
-    contacts = await readField('contacts');
-    expect(contacts[0].phones.length).toBe(1);
-    expect(contacts[1].phones.length).toBe(3);
+
+    data = await readField('/');
+    expect(data.groups[0].students.length).toBe(1,
+        'Class A should have 1 student after moving Bart out');
+    expect(data.groups[0].students[0].name).toBe('Lisa Simpson');
+    expect(data.groups[1].students.length).toBe(2,
+        'Class B should have 2 students after receiving Bart');
+    expect(data.groups[1].students[1].name).toBe('Bart Simpson',
+        'Bart should be at the end of Class B');
+    expect(data.groups[1].students[1].grades.math[0].grade).toBe(4.0,
+        'Bart\'s grades should travel with him');
 };
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
-    formId="smart_contacts"
-    htmlSource=smart_contacts_example
-    height=30
-    cssSource=smart_contacts_css
-    notes=notes_smart_contacts
-    demoValue=smart_contacts_demoValue
+    formId="school_groups"
+    htmlSource=school_groups_example
+    height=45
+    cssSource=school_groups_css
+    notes=notes_school_groups
+    demoValue=school_groups_demoValue
     selected="preview"
     showEditor=true
-    tests=smart_contacts_tests
+    tests=school_groups_tests
 %}
 
 

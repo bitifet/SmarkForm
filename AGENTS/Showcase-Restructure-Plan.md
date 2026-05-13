@@ -12,6 +12,7 @@ and converts removed ones to prose sections.
 |--------|--------|
 | Example 1 "Just a Form" replaces `basic_form` | `379f79f` |
 | Example 2 "Smart Contacts" replaces `nested_forms` + `simple_list` + `simple_list_singleton` | `06cc45f` |
+| Example 2 "School Groups" replaces "Smart Contacts" | *(current release)* |
 | `schedule_mixin` removed; notes redistributed to Mixins section body | uncommitted |
 | `nested_schedule_table_duplicable` removed; features folded into `nested_schedule_table` | uncommitted |
 | `period_mixin_duplicable` removed → recovered as `nested_schedule_table` (with `#periodItem` mixin) | uncommitted |
