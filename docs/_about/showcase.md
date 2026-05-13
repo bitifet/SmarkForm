@@ -213,7 +213,7 @@ auto-numbers each group.
               <span data-smark='{"type":"label"}' class="sg-handle">⠿</span>
               <span data-smark='{"action":"position"}'>#</span>
               <input name="name" placeholder="Group name" type="text" data-smark>
-              <button data-smark='{"action":"removeItem"}' title="Remove group">➖</button>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove group">➖</button>
             </summary>
             <div class="sg-body">
               <label class="sg-tutor">Tutor: <input name="tutor" placeholder="Tutor name" type="text" data-smark></label>
@@ -226,7 +226,7 @@ auto-numbers each group.
                       <summary>
                         <span data-smark='label' title="Drag to reorder or move between groups" class="sg-handle">⠿</span>
                         <input name="name" placeholder="Student name" type="text" data-smark>
-                        <button data-smark='{"action":"removeItem"}' title="Remove student">➖</button>
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove student">➖</button>
                       </summary>
                       <div data-smark='{"type":"form","name":"grades"}' class="sg-grades">
                         <div class="sg-grade-col">
@@ -236,8 +236,8 @@ auto-numbers each group.
                             <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
-                            <button data-smark='{"action":"addItem","context":"math"}' title="Add grade">➕</button>
-                            <button data-smark='{"action":"removeItem","context":"math"}' title="Remove grade">➖</button>
+                            <button data-smark='{"action":"addItem","hotkey":"+","context":"math"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","hotkey":"-","context":"math"}' title="Remove grade">➖</button>
                           </div>
                         </div>
                         <div class="sg-grade-col">
@@ -247,8 +247,8 @@ auto-numbers each group.
                             <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
-                            <button data-smark='{"action":"addItem","context":"literature"}' title="Add grade">➕</button>
-                            <button data-smark='{"action":"removeItem","context":"literature"}' title="Remove grade">➖</button>
+                            <button data-smark='{"action":"addItem","hotkey":"+","context":"literature"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","hotkey":"-","context":"literature"}' title="Remove grade">➖</button>
                           </div>
                         </div>
                         <div class="sg-grade-col">
@@ -258,22 +258,22 @@ auto-numbers each group.
                             <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
-                            <button data-smark='{"action":"addItem","context":"science"}' title="Add grade">➕</button>
-                            <button data-smark='{"action":"removeItem","context":"science"}' title="Remove grade">➖</button>
+                            <button data-smark='{"action":"addItem","hotkey":"+","context":"science"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","hotkey":"-","context":"science"}' title="Remove grade">➖</button>
                           </div>
                         </div>
                       </div>
                     </details>
                   </li>
                 </ul>
-                <button data-smark='{"action":"addItem","context":"students"}' title="Add student">➕ Add Student</button>
+                <button data-smark='{"action":"addItem","hotkey":"+","context":"students"}' title="Add student">➕ Add Student</button>
               </div>
             </div>
           </details>
         </div>
       </li>
     </ul>
-    <button data-smark='{"action":"addItem","context":"groups"}' title="Add group">➕ Add Group</button>
+    <button data-smark='{"action":"addItem","hotkey":"+","context":"groups"}' title="Add group">➕ Add Group</button>
   </div>
 </div>{%
 endcapture %}
@@ -356,7 +356,14 @@ endcapture %}
     padding: 0.2em 0.6em; border: 1px solid #ccc; border-radius: 4px;
     background: #fff; cursor: pointer; line-height: 1.5;
 }
-{{""}}#myForm$$ .sg button:disabled { opacity: 0.4; }{%
+{{""}}#myForm$$ .sg button:disabled { opacity: 0.4; }
+{{""}}#myForm$$ .sg [data-hotkey] { position: relative; }
+{{""}}#myForm$$ .sg [data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute; top: -1.6em; left: 0;
+    font-size: 0.7em; background: #333; color: #fff;
+    padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
