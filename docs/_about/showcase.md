@@ -39,7 +39,7 @@ featured ones.
 
 * [Basics](#basics)
     * [Just a Form](#just-a-form)
-    * [School Groups](#school-groups)
+    * [Three-Level Nesting](#three-level-nesting)
     * [Deeply nested forms](#deeply-nested-forms)
     * [More on lists](#more-on-lists)
     * [Mixins](#mixins)
@@ -156,12 +156,12 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 %}
 
 
-### School Groups
+### Three-Level Nesting
 
-Manage classes, students, and grades through three nesting levels.  Groups
-are styled as cards with scrollable student lists.  Students can be dragged
-between groups (`movingDepth`), and `min_items`/`max_items` limits
-auto-disable their triggers.
+A school hierarchy — groups, students, and grades — built from three levels of
+nested forms and lists.  Students can be dragged between groups, each subject's
+grade list grows on demand, and add/remove buttons disable themselves at their
+limits — all from pure HTML with no custom JavaScript.
 
 {% raw %} <!-- notes_school_groups {{{ --> {% endraw %}
 {% capture notes_school_groups -%}
