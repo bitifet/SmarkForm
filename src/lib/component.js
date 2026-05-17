@@ -154,16 +154,26 @@ export class SmarkComponent {
         me.targetNode[sym_smart] = me;
 
         (async ()=>{
-            await me.render();
-            for (
-                const task of me.onRenderedTasks
-            ) await task();
-            me.onRenderedTasks = null;
-            setRendered(true);
-            setTimeout(()=>me.renderedSync = true, 1);
-            await me.emit("afterRender", {
-                context: me
-            }, false);
+            try {
+                await me.render();
+                for (
+                    const task of me.onRenderedTasks
+                ) await task();
+                me.onRenderedTasks = null;
+                setRendered(true);
+                setTimeout(()=>me.renderedSync = true, 1);
+                await me.emit("afterRender", {
+                    context: me
+                }, false);
+            } catch (error) {
+                if (me.handleRenderError(error)) {
+                    me.onRenderedTasks = null;
+                    setRendered(true);
+                    setTimeout(()=>me.renderedSync = true, 1);
+                    return;
+                }
+                throw error;
+            }
         })();
         if (me.options.onRendered) me.onRendered(me.options.onRendered);
 
@@ -202,6 +212,7 @@ export class SmarkComponent {
                 throw me.renderError(
                     "INVALID_OPTIONS_OBJECT"
                     , `data-${me.property_name}: must be a valid JSON object.`
+                    , node
                 );
             };
         };
@@ -225,6 +236,7 @@ export class SmarkComponent {
                     throw me.renderError(
                         'SINGLETON_OPTION_CONFLICT',
                         `Singleton field option defined both in parent and schild for key: ${key}.`
+                        , node
                     );
                 };
                 if (key !== "type") {
@@ -239,6 +251,15 @@ export class SmarkComponent {
     setNodeOptions(node, options) {//{{{
         const me = this;
         node.dataset[me.property_name] = JSON.stringify(options);
+    };//}}}
+    async safeEnhance(node, defaultOptions) {//{{{
+        const me = this;
+        try {
+            return await me.enhance(node, defaultOptions);
+        } catch (error) {
+            if (me.handleRenderError(error)) return null;
+            throw error;
+        }
     };//}}}
     async enhance(node, defaultOptions) {//{{{
         const me = this;
@@ -271,11 +292,13 @@ export class SmarkComponent {
             if (options.type != "trigger") throw me.renderError(
                 "ACTION_IN_NON_TRIGGER"
                 , `"action" property is only allowed for "trigger" components but "${options.type}" type specified.`
+                , node
             );
         } else if (typeof options.type != "string") {
             throw me.renderError(
                 "NO_TYPE_PROVIDED"
                 , `Invalid SmarkForm item: type is mandatory for non trigger components.`
+                , node
             );
         };
         //}}}
@@ -285,6 +308,7 @@ export class SmarkComponent {
         if (! ctrl) throw me.renderError(
             "UNKNOWN_TYPE"
             , `Unimplemented SmarkForm component controller: ${options.type}`,
+            node
         );
 
         // Pass the mixin chain via constructor options so it is available
@@ -491,9 +515,14 @@ export class SmarkComponent {
     };//}}}
     getTriggerArgs() {}; // Let's easily filter out non trigger compoenents.
     // Error types:
-    renderError(code, message) {//{{{
+    handleRenderError(error) {//{{{
+        if (! (error instanceof errors.renderError)) return false;
+        console.error(error);
+        return true;
+    };//}}}
+    renderError(code, message, targetNodeOverride) {//{{{
         const me = this;
-        const targetNode = (
+        const targetNode = targetNodeOverride ?? (
             me.parent?.isSingleton ? me.parent.targetNode
             : me.targetNode
         );
@@ -512,4 +541,3 @@ export function createType(name, controller) {//{{{
     );
     componentTypes[name] = controller;
 };//}}}
-

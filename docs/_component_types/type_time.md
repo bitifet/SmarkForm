@@ -113,7 +113,14 @@ throwing an error.
 {% raw %} <!-- time_error {{{ --> {% endraw %}
 {% capture time_error -%}
 <div id="myForm$$">
-  <input type="text" name="meetingTime" data-smark='{"type":"time"}'>
+  <p>
+    <label>Correct:</label>
+    <input type="time" name="meetingTime1" data-smark='{"type":"time"}' />
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <input type="text" name="meetingTime2" data-smark='{"type":"time"}' />
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -123,7 +130,8 @@ endcapture %}
     htmlSource=time_error
     showEditor=true
     tests=false
-    expectedPageErrors=1
+    expectedPageErrors=0
+    expectedConsoleErrors=1
 %}
 
 

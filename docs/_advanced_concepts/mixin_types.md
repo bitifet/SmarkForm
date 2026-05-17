@@ -30,7 +30,7 @@ nav_order: 6
 * [Attribute Merge Semantics](#attribute-merge-semantics)
 * [Snippet Parameters](#snippet-parameters)
     * [How snippet parameters work](#how-snippet-parameters-work)
-    * [id → data-id conversion](#id--data-id-conversion)
+    * [id to data-id conversion](#id-to-data-id-conversion)
     * [Security: no nested scripts](#security-no-nested-scripts)
 * [External Loading and Caching](#external-loading-and-caching)
     * [URL resolution](#url-resolution)
@@ -40,11 +40,14 @@ nav_order: 6
 * [Scripts and Styles](#scripts-and-styles)
     * [Styles](#styles)
     * [Scripts](#scripts)
-    * [Cross-Origin Script Security Policy](#cross-origin-script-security-policy)
+    * [Mixin Security Options](#mixin-security-options)
+        * [External template fetch policy: `allowExternalMixins`](#external-template-fetch-policy-allowexternalmixins)
+        * [Script execution policy: `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`](#script-execution-policy-allowlocalmixinscripts-allowsameoriginmixinscripts-allowcrossoriginmixinscripts)
 * [Examples](#examples)
     * [Reusable contact block](#reusable-contact-block)
     * [Option override per usage site](#option-override-per-usage-site)
-    * [Snippet parameters — custom labels](#snippet-parameters--custom-labels)
+    * [Snippet parameters: custom labels](#snippet-parameters-custom-labels)
+    * [Labelled list of inputs: inputlist](#labelled-list-of-inputs-inputlist)
 * [Error Codes](#error-codes)
 
 <!-- vim-markdown-toc -->
@@ -79,6 +82,15 @@ Whenever SmarkForm sees a `type` value that is a mixin reference it:
 4. Replaces the placeholder node with the clone in the DOM.
 5. Continues enhancement as if the clone had been there from the start.
 
+{: .hint }
+> **TL;DR:** Mixin types are like macros or partials in a template engine, but
+> they work at the DOM level and are processed by SmarkForm during enhancement.
+> They let you define reusable component blueprints in HTML and use them with
+> different options and content across your form.
+> 
+> 👉 Go straight to the [Examples](#examples) section for concrete use cases
+> and code samples.
+
 
 ## Defining a Mixin Template
 
@@ -95,7 +107,7 @@ A mixin is declared with a plain HTML `<template>` element that has an `id`:
 The `<template>` element itself requires **no** `data-smark` attribute; its
 purpose is solely to hold the blueprint markup.
 
-{: .hint }
+{: .info }
 > Place `<template>` elements at document level (e.g., directly inside
 > `<body>`, or in `<head>` when the browser allows it) — **not** as direct
 > children of a SmarkForm `list` container.  See the
@@ -349,7 +361,7 @@ for every expansion.
 > If the `data-for` value does not match any element `id` in the template, the
 > parameter is silently ignored and the template default remains in place.
 
-### id → data-id conversion
+### id to data-id conversion
 
 After snippet substitutions have been applied, SmarkForm converts **every**
 remaining `id` attribute in the cloned subtree to a `data-id` attribute.  This
@@ -386,7 +398,7 @@ After expansion the rendered subtree looks like:
 -->
 ```
 
-{: .hint }
+{: .info }
 > Because ids inside mixin templates are always removed before rendering,
 > mixin styles should use **CSS classes** to target elements — never ids.
 > SmarkForm automatically handles label/field association internally.
@@ -577,7 +589,7 @@ mixin templates.
 Three separate concerns are controlled by root-level options on the SmarkForm
 instance (or any ancestor component via `inheritedOption`):
 
-#### 1. External template fetch policy — `allowExternalMixins`
+#### External template fetch policy: `allowExternalMixins`
 
 Controls whether SmarkForm is permitted to fetch templates from external URLs
 (any mixin type that contains a URL part before the `#` fragment).
@@ -613,7 +625,7 @@ new SmarkForm(el, {
 new SmarkForm(el, { allowExternalMixins: { '*': 'allow' } });
 ```
 
-#### 2. Script execution policy — `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`
+#### Script execution policy: `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, `allowCrossOriginMixinScripts`
 
 Controls whether `<script>` elements found at the top level of a `<template>`
 are executed after the component renders.  The applicable option is determined
@@ -757,7 +769,6 @@ export default async ({ page, expect, root, writeField, readField }) => {
     htmlSource=mixin_contact_block_html
     demoValue=demoValue
     showEditor=true
-    selected="preview"
     tests=mixin_contact_block_tests
 %}
 
@@ -826,7 +837,6 @@ export default async ({ page, expect, root }) => {
     formId="mixin_option_override"
     htmlSource=mixin_option_override_html
     showEditor=true
-    selected="preview"
     demoValue='{"labels":{"priority":[{"tag":"critical"},{"tag":"needs-review"},{"tag":"assigned"}],"optional":[{"tag":"nice-to-have"}]}}'
     tests=mixin_option_override_tests
 %}
@@ -837,7 +847,7 @@ option — set by the placeholder for `optional` and falling through to the
 template default for `priority`.
 
 
-### Snippet parameters — custom labels
+### Snippet parameters: custom labels
 
 The following example shows a `#personEntry` mixin where each usage site
 customises the label of the name field via a snippet parameter.  The template
@@ -902,7 +912,6 @@ export default async ({ page, expect, root }) => {
     formId="mixin_snippet_params"
     htmlSource=mixin_snippet_params_html
     showEditor=true
-    selected="preview"
     demoValue='{"people":{"author":{"name":"Alice Smith"},"reviewer":{"name":"Bob Jones"}}}'
     tests=mixin_snippet_params_tests
 %}
@@ -911,6 +920,110 @@ Each placeholder supplies its own label text; the template default (`"Name"`)
 would appear on any instance that does not provide a `data-for="nameLabel"`
 child.  After expansion there are no `id` attributes in the rendered DOM — the
 slot is self-documented via `data-id="nameLabel"` on surviving nodes.
+
+
+### Labelled list of inputs: inputlist
+
+The following pattern appears throughout the SmarkForm documentation examples:
+a labelled, variable-length list where each item is a single `<input>` field
+with ➕ / ➖ hotkey-enabled buttons.  Rather than copy-pasting the list markup
+every time, you can define it once as a reusable `#inputlist` mixin and stamp
+it out anywhere in your form.
+
+The template's `id="listInput"` slot accepts a `data-for` snippet parameter so
+each usage site supplies a custom `<input>` (different `type`, `placeholder`,
+etc.).  List options such as `max_items`, `min_items`, and `sortable` are
+overridden per usage site directly on the placeholder's `data-smark` attribute.
+
+{% raw %} <!-- capture mixin_inputlist_html {{{ --> {% endraw %}
+{% capture mixin_inputlist_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"contacts"}'>
+    <div>
+      <strong data-smark="label">Phone numbers</strong>
+      <div data-smark='{"type":"#inputlist","name":"phones","max_items":4}'>
+        <input data-smark data-for="listInput" type="tel" placeholder="Phone number">
+      </div>
+    </div>
+    <div>
+      <strong data-smark="label">Email addresses</strong>
+      <div data-smark='{"type":"#inputlist","name":"emails","max_items":4}'>
+        <input data-smark data-for="listInput" type="email" placeholder="Email address">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SmarkForm native mixin template — defined once, reused anywhere -->
+<template id="inputlist">
+    <div data-smark='{"type":"list","of":"input"}'>
+        <div class="singleton">
+            <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this item">
+                <span role='img' aria-label='Remove this item'>➖</span>
+            </button>
+            <input data-smark id="listInput">
+            <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add new item below">
+                <span role='img' aria-label='Add new item'>➕</span>
+            </button>
+        </div>
+    </div>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_inputlist_tests {{{ --> {% endraw %}
+{% capture mixin_inputlist_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // Import two phones and one email address.
+    await page.evaluate(async () => myForm.import({
+        contacts: {
+            phones: ['+1 555 123 4567', '+1 555 987 6543'],
+            emails: ['alice@example.com'],
+        }
+    }));
+
+    const data = await page.evaluate(async () => myForm.export());
+
+    // Both lists export as arrays under their respective names.
+    expect(data.contacts.phones).toHaveLength(2);
+    expect(data.contacts.phones[0]).toBe('+1 555 123 4567');
+    expect(data.contacts.phones[1]).toBe('+1 555 987 6543');
+    expect(data.contacts.emails).toHaveLength(1);
+    expect(data.contacts.emails[0]).toBe('alice@example.com');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture demoValue {{{ --> {% endraw %}
+{% capture demoValue -%}
+{
+    "contacts": {
+        "phones": ["+1 555 123 4567", "+1 555 987 6543"],
+        "emails": ["alice@example.com"]
+    }
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_inputlist"
+    htmlSource=mixin_inputlist_html
+    showEditor=true
+    demoValue=demoValue
+    tests=mixin_inputlist_tests
+%}
+
+The same `#inputlist` template is reused for both lists — only `name`, input
+`type`, and `placeholder` differ between usages.  The exported value is a
+simple flat array for each field, not a nested object.
+
+{: .hint }
+> This `#inputlist` pattern is the mixin used throughout the SmarkForm
+> documentation examples wherever a labelled, expandable list of single-input
+> items appears — phones, emails, tags, goals, and similar fields.  See the
+> [List component type]({{ "/component_types/type_list" | relative_url }})
+> page for a full reference of available list options.
 
 
 ## Error Codes

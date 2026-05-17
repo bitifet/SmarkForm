@@ -39,7 +39,7 @@ function convertIds(root) { //{{{
     }
 }; //}}}
 
-function enforceNoNestedScripts(root, component) { //{{{
+function enforceNoNestedScripts(root, component, placeholder) { //{{{
     // Throw if any <script> element exists anywhere inside the clone root.
     if (root.querySelector('script')) {
         throw component.renderError(
@@ -47,6 +47,7 @@ function enforceNoNestedScripts(root, component) { //{{{
             , 'Mixin template root subtree must not contain <script> elements.'
             + ' Scripts are only supported as direct siblings of the template'
             + ' root element (top-level <script> inside <template>).'
+            , placeholder
         );
     }
 }; //}}}
@@ -217,6 +218,7 @@ export async function expandMixin(node, options, component) { //{{{
             'MIXIN_TYPE_MISSING_FRAGMENT'
             , `Mixin type reference "${typeRef}" must include a non-empty`
             + ' #templateId fragment.'
+            , node
         );
     }
 
@@ -249,6 +251,7 @@ export async function expandMixin(node, options, component) { //{{{
                 + ' Set allowExternalMixins to "same-origin", "allow", or a'
                 + ' per-origin policy object on the root SmarkForm instance'
                 + ' to permit external mixin loading.'
+                , node
             );
         } else if (extPolicy === 'same-origin' && isCrossOrigin(absoluteUrl)) {
             throw component.renderError(
@@ -258,6 +261,7 @@ export async function expandMixin(node, options, component) { //{{{
                 + ' is "same-origin". Set allowExternalMixins to "allow" or'
                 + ' add the origin to the per-origin policy object to'
                 + ' permit cross-origin mixin loading.'
+                , node
             );
         }
         // extPolicy === 'allow', or 'same-origin' with a same-origin URL,
@@ -299,6 +303,7 @@ export async function expandMixin(node, options, component) { //{{{
             'MIXIN_CIRCULAR_DEPENDENCY'
             , `Circular mixin dependency detected: "${mixinKey}"`
             + ' is already being expanded in this rendering chain.'
+            , node
         );
     }
 
@@ -309,6 +314,7 @@ export async function expandMixin(node, options, component) { //{{{
             'MIXIN_TEMPLATE_NOT_FOUND'
             , `Mixin template #${templateId} not found`
             + ` in ${urlPart || 'the current document'}.`
+            , node
         );
     }
 
@@ -338,6 +344,7 @@ export async function expandMixin(node, options, component) { //{{{
             'MIXIN_TEMPLATE_INVALID_ROOT'
             , `Mixin template #${templateId} must contain exactly one root`
             + ` element (found ${rootElements.length}).`
+            , node
         );
     }
 
@@ -353,6 +360,7 @@ export async function expandMixin(node, options, component) { //{{{
             , `Mixin template #${templateId} root element must not specify`
             + ' a "name" in its data-smark options.'
             + ' The name must be set on the placeholder (usage site).'
+            , node
         );
     }
 
@@ -373,7 +381,7 @@ export async function expandMixin(node, options, component) { //{{{
     // This check runs after snippet substitutions so it also catches any
     // <script> elements that might have been injected via data-for params.
     // Scripts are only supported as top-level siblings of the root element.
-    enforceNoNestedScripts(clone, component);
+    enforceNoNestedScripts(clone, component, node);
 
     // Convert any surviving id attributes inside the clone to data-id.
     // This prevents id collisions when the mixin is used multiple times and
@@ -422,6 +430,7 @@ export async function expandMixin(node, options, component) { //{{{
                 + ` Set ${policyOptionName} to "noscript", "allow", or a`
                 + ' per-origin policy object on the root SmarkForm instance'
                 + ' to change this behaviour.'
+                , node
             );
         } else if (policy === 'noscript') {
             scripts = []; // Silently discard.

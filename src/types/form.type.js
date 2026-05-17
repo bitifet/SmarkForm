@@ -207,7 +207,7 @@ export class form extends SmarkField {
             const node
             of getRoots(me.targetNode, me.selector)
         ) {
-            const newItem = await me.enhance(node);
+            const newItem = await me.safeEnhance(node);
             me.mountField(newItem);
         };
         // Wait for all mounted child fields to complete their own renders

@@ -1,9 +1,10 @@
-
 const sym_mux = Symbol("smart_mutex");
+export const sym_mutex_key = Symbol("mutex_ongoing_key");
 
 class Mutex {
     constructor() {
         this.mtx = Promise.resolve();
+        this.ongoingKey = null;
     };
     lock() {
         // Sync operation:
@@ -27,14 +28,30 @@ export const mutex = function method_mutex_decorator(muxName) {
                 const me = this;
                 if (! me[sym_mux]) me[sym_mux] = {};
                 if (! me[sym_mux][muxName]) me[sym_mux][muxName] = new Mutex();
-                const unlock = await me[sym_mux][muxName].lock(); // Await previous muxed call (if any)
+                const mtx = me[sym_mux][muxName];
+
+                // Reentrant check: if options carry our ongoing key, skip lock
+                const options = args[args.length - 1];
+                if (options?.[sym_mutex_key] && mtx.ongoingKey === options[sym_mutex_key]) {
+                    return await target.call(me, ...args);
+                };
+
+                const unlock = await mtx.lock();
+                const key = Symbol(muxName);
+                mtx.ongoingKey = key;
+                if (options && typeof options === 'object') {
+                    options[sym_mutex_key] ??= key;
+                };
+
                 let err, retv;
                 try {
                     retv = await target.call(me, ...args);
                 } catch (error) {
                     err = error;
+                } finally {
+                    mtx.ongoingKey = null;
+                    unlock();
                 };
-                unlock();
                 if (err) throw err;
                 return retv;
             };

@@ -161,10 +161,20 @@ INPUT element or its type is explicitly defined and different to "color".
 {% raw %} <!-- singleton_color_error {{{ --> {% endraw %}
 {% capture singleton_color_error -%}
 <div id="myForm$$">
-  <span data-smark='{"type":"color", "name":"myColor"}'>
-    <input type="text" name="myColor" data-smark>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
-  </span>
+  <p>
+    <label>Correct:</label>
+    <span data-smark='{"type":"color", "name":"myColor1"}'>
+      <input type="color" name="myColor" data-smark>
+      <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    </span>
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <span data-smark='{"type":"color", "name":"myColor2"}'>
+      <input type="text" name="myColor" data-smark>
+      <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    </span>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -174,7 +184,8 @@ endcapture %}
     htmlSource=singleton_color_error
     showEditor=true
     tests=false
-    expectedPageErrors=1
+    expectedPageErrors=0
+    expectedConsoleErrors=1
 %}
 
 

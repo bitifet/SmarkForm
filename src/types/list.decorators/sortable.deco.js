@@ -1,13 +1,24 @@
 // types/list.decorators/sortable.deco.js
 // ======================================
 
-import {mutex} from "../../decorators/mutex.deco.js";
+import {mutex, sym_mutex_key} from "../../decorators/mutex.deco.js";
 
 // Selector for interactive fields where a drag should not start.
 const INTERACTIVE_FIELDS_SELECTOR = "input, textarea, select, button, a, [contenteditable='true']";
 
 // Selector for SmarkForm label components (marked during render).
 const SMARK_LABEL_SELECTOR = "[data-smark-label]";
+
+// Module-level cross-list drag state.  Set by the source list during
+// dragstart, extended by the target list during drop, consumed by the
+// source list during dragend.  Only one native drag can be active at a
+// time, so a single shared object is safe.
+let _crossListDrop = {
+    sourceList: null,   // list instance that initiated the drag
+    targetList: null,   // list instance where the drop landed (different from sourceList)
+    to: null,           // target component in the destination list (null = append)
+    position: "after",  // "before" or "after" relative to `to`
+};
 
 export const sortable = function list_sortable_decorator(target, {kind}) {
     if (kind == "class") {
@@ -16,18 +27,18 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 const retv = await super.render(...args);
                 const me = this;
 
-                me.sortable = !! me.options.sortable;
-                if (me.sortable) {
-                    // The item template (and all cloned items) are draggable.
-                    // _applyDraggable re-confirms this and applies cursor hints.
+                me.sortable = !!me.options.sortable;
+                // movingDepth: 0 / false = disabled, true = Infinity, N = max sibling distance
+                const raw = me.options.movingDepth;
+                me.movingDepth = raw === true ? Infinity : (Number(raw) || 0);
+                me._dragEnabled = me.sortable || me.movingDepth > 0;
+
+                if (me._dragEnabled) {
                     me.templates.item.setAttribute("draggable", "true");
 
                     let dragSource = null;
                     let dragDest = null;
 
-                    // Track the last mousedown target so we can validate the
-                    // drag origin in dragstart (e.target is always the item
-                    // root when the whole <li> is draggable).
                     let lastMousedownTarget = null;
                     me.targetNode.addEventListener("mousedown", e => {
                         lastMousedownTarget = e.target;
@@ -35,8 +46,6 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                     me.targetNode.addEventListener("dragstart", e => {
                         if (dragSource === null) {
-                            // Resolve dragSource to the item root (direct
-                            // child of the list container).
                             let itemRoot = e.target;
                             while (
                                 itemRoot.parentElement
@@ -47,24 +56,15 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                             const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
                             if (handles.length > 0) {
-                                // Label handles are present: only allow drag
-                                // when the pointer went down on a handle.
                                 if (!lastMousedownTarget?.closest(SMARK_LABEL_SELECTOR)) {
                                     e.preventDefault();
                                     return;
                                 };
-                                // Block drag when the pointer went down on an
-                                // interactive control even if it is nested inside
-                                // the label handle (e.g. an <input> or <button>
-                                // inside a <summary data-smark-label>).
                                 if (lastMousedownTarget?.closest(INTERACTIVE_FIELDS_SELECTOR)) {
                                     e.preventDefault();
                                     return;
                                 };
                             } else {
-                                // No handles: backward-compatible behaviour —
-                                // block drag originating from interactive
-                                // controls so text selection still works.
                                 if (lastMousedownTarget?.closest(INTERACTIVE_FIELDS_SELECTOR)) {
                                     e.preventDefault();
                                     return;
@@ -72,19 +72,11 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             };
 
                             dragSource = itemRoot;
+                            _crossListDrop.sourceList = me;
+                            _crossListDrop.targetList = null;
                             e.stopPropagation();
-                            // Focus the dragged item so it is clearly
-                            // selected and keyboard interaction remains
-                            // consistent after the drop.
                             me.getComponent(dragSource)?.focus();
 
-                            // Use the <summary> row (compact header) as the drag
-                            // ghost image when one is present.  This produces a
-                            // consistently-sized ghost regardless of whether the
-                            // item is currently folded or unfolded — avoiding the
-                            // browser quirk where a closed <details> inside the
-                            // draggable <li> can still inflate the ghost to the
-                            // open layout dimensions.
                             const _ghostEl = itemRoot.querySelector('summary') || itemRoot;
                             e.dataTransfer.setDragImage(
                                 _ghostEl,
@@ -92,27 +84,64 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                                 Math.round(_ghostEl.offsetHeight / 2),
                             );
                         } else {
-                            // Single dragging at a time.
                             e.preventDefault();
                         };
                     });
                     me.targetNode.addEventListener("dragover", e => e.preventDefault());
                     me.targetNode.addEventListener("drop", e => {
-                        if (! dragSource) return; // Already dropped
-                        let target = e.target;
-                        while (
-                            target.parentElement
-                            && target.parentElement != dragSource.parentElement
-                        ) target = target.parentElement;
-                        dragDest = target;
+                        if (dragSource) {
+                            let target = e.target;
+                            while (
+                                target.parentElement
+                                && target.parentElement != dragSource.parentElement
+                            ) target = target.parentElement;
+                            dragDest = target;
+                            e.stopPropagation();
+                        } else if (
+                            _crossListDrop.sourceList
+                            && _crossListDrop.sourceList !== me
+                        ) {
+                            let target = e.target;
+                            while (
+                                target.parentElement
+                                && target.parentElement !== me.targetNode
+                            ) target = target.parentElement;
+                            const targetComp = (
+                                target !== me.targetNode
+                                ? me.getComponent(target)
+                                : null
+                            );
+                            _crossListDrop.targetList = me;
+                            _crossListDrop.to = targetComp;
+                            _crossListDrop.position = targetComp ? "before" : "after";
+                            e.stopPropagation();
+                        };
                     });
-                    me.targetNode.addEventListener("dragend", async () => {
-                        if (dragDest)  await me.move({
-                            from: me.getComponent(dragSource),
-                            to: me.getComponent(dragDest),
-                        });
+                    me.targetNode.addEventListener("dragend", async e => {
+                        if (dragDest) {
+                            await me.move({
+                                from: me.getComponent(dragSource),
+                                to: me.getComponent(dragDest),
+                            });
+                            e.stopPropagation();
+                        } else if (
+                            _crossListDrop.targetList
+                            && _crossListDrop.targetList !== me
+                        ) {
+                            await me.move({
+                                from: me.getComponent(dragSource),
+                                to: _crossListDrop.to,
+                                targetList: _crossListDrop.targetList,
+                                position: _crossListDrop.position,
+                            });
+                            e.stopPropagation();
+                        };
                         dragSource = null;
                         dragDest = null;
+                        _crossListDrop.sourceList = null;
+                        _crossListDrop.targetList = null;
+                        _crossListDrop.to = null;
+                        _crossListDrop.position = "after";
                     });
                 } else {
                     me.templates.item.setAttribute("draggable", "false");
@@ -123,50 +152,68 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
             @mutex("list_mutating")
             async move(options = {}) {//{{{
                 const me = this;
-                let {
-                    from,
-                    to,
-                } = options;
+                let { from, to, targetList, position: explicitPosition } = options;
+                const ongoingKey = options[sym_mutex_key];
 
-                // // FIXME: Avoid nested sortables to interact.
-                // console.log({from, to}); // <--- See this!!!
+                if (from === null) return;
+                if (to === null && !targetList) return;
+                if (to && Number(from.name) === Number(to.name) && (!targetList || targetList === me)) return;
 
-                //
-                // TODO: Convert to action!!!
-                //
-                if (
-                    to === null // Dropped outside
-                    || from === null // (Shouldn't happen)
-                ) return;
-                const fromi = Number(from?.name);
-                const toi = Number(to?.name);
-                if (fromi == toi) {
-                    return;
-                } else if (fromi < toi) {
-                    const newChunk = [
-                        ...me.children.slice(fromi + 1, toi + 1),
-                        me.children[fromi],
-                    ];
-                    me.children.splice(fromi, toi - fromi + 1, ...newChunk);
-                } else if (fromi > toi) {
-                    const newChunk = [
-                        me.children[fromi],
-                        ...me.children.slice(toi, fromi),
-                    ];
-                    me.children.splice(toi, fromi - toi + 1, ...newChunk);
+                const destList = targetList || me;
+
+                // Same-list: only allowed when sortable is enabled
+                if (destList === me && !me.sortable) return;
+
+                const srcDepthNum = me.movingDepth === true ? Infinity : (me.movingDepth || 0);
+                const dstDepthNum = destList.movingDepth === true ? Infinity : (destList.movingDepth || 0);
+
+                // Cross-list: enforce sibling distance limits
+                if (destList !== me) {
+                    const dist = _siblingDistance(me, destList);
+                    if (dist > srcDepthNum || dist > dstDepthNum) return;
+                    // Force append when destination is not sortable
+                    if (!destList.sortable) {
+                        to = null;
+                        explicitPosition = "after";
+                    };
                 };
-                const inc = fromi < toi ? 1 : -1;
-                const moveMethod = inc > 0 ? "after" : "before";
-                to.targetNode[moveMethod](from.targetNode);
-                me.renum();
+
+                const fromi = Number(from.name);
+                const position = explicitPosition || (
+                    to !== undefined && fromi < Number(to.name) ? "after" : "before"
+                );
+
+                // 1. Export item data (preserve empties)
+                const data = await from.export(null, {silent: true, exportEmpties: true});
+
+                // 2. Remove from source
+                await me.removeItem(null, {
+                    target: from,
+                    silent: true,
+                    focus: false,
+                    failback: "none",
+                    [sym_mutex_key]: ongoingKey,
+                });
+
+                // 3. Insert into destination
+                const newItem = await destList.addItem(null, {
+                    target: to,
+                    position,
+                    silent: true,
+                    focus: false,
+                    ...(destList === me ? { [sym_mutex_key]: ongoingKey } : {}),
+                });
+
+                // 4. Restore data into the new item
+                await newItem.import(data, {silent: true, setDefault: false});
+
+                // 5. Restore focus to the moved item
+                if (me.renderedSync && !options.silent) newItem?.focus();
             };//}}}
             async renum() {//{{{
                 const me = this;
                 const result = await super.renum();
-                // Re-apply draggable/cursor hints after every structural
-                // change. renum() is always called after items are fully
-                // rendered so data-smark-label is guaranteed to be set.
-                if (me.sortable) {
+                if (me._dragEnabled) {
                     me.children.forEach(c => _applyDraggable(me, c.targetNode));
                 };
                 return result;
@@ -217,4 +264,45 @@ function _applyCursorGrab(handle) {
     } catch (_e) {
         // Not in a browser context (e.g. unit-test environment) — skip.
     };
+};
+
+/**
+ * Compute the sibling distance between two components in the component tree.
+ *
+ * Distance is the number of levels remaining from the first divergent ancestor
+ * pair that both have numeric names (i.e. are list items). Components in the
+ * same list have distance 0. Components whose ancestor paths have different
+ * lengths, or whose first divergent ancestors are not both list items, are
+ * considered incompatible (returns Infinity).
+ *
+ * This is used by the cross-list drag guard to enforce the `movingDepth`
+ * limit on both source and destination lists.
+ */
+function _siblingDistance(a, b) {
+    if (a === b) return 0;
+
+    function ancestors(comp) {
+        const path = [];
+        let c = comp;
+        while (c) {
+            path.unshift(c);
+            c = c.parent;
+        };
+        return path;
+    };
+
+    const aPath = ancestors(a);
+    const bPath = ancestors(b);
+
+    if (aPath.length !== bPath.length) return Infinity;
+
+    let i = 0;
+    while (i < aPath.length && aPath[i] === bPath[i]) i++;
+    if (i === aPath.length) return 0;
+
+    const aName = String(aPath[i].name ?? "");
+    const bName = String(bPath[i].name ?? "");
+    if (isNaN(Number(aName)) || isNaN(Number(bName))) return Infinity;
+
+    return aPath.length - i;
 };

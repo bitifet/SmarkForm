@@ -11,6 +11,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.17.0] — 2026-05-13
+
+↕️ Cross-list drag & drop · 🐛 renderError isolation · ⚡ getRoots performance
+
+SmarkForm 0.17.0 introduces cross-list drag & drop for sortable lists — items can now be moved between different lists with a depth-based guard that controls scope. renderError isolation ensures a failing component no longer blocks its siblings from rendering. The internal `getRoots` helper was optimized from quadratic to linear time.
+
+### Features
+
+- **Cross-list drag & drop**: Sortable items can be dragged between different lists. A `movingDepth` option controls which lists can exchange items based on their nesting distance. The move logic was refactored to use an export-remove-insert pattern supporting cross-list operations.
+
+### Bug Fixes
+
+- **renderError isolation**: A component that throws during rendering no longer blocks sibling components. The error is contained to the failing component.
+
+### Performance
+
+- **getRoots optimized**: Replaced `querySelectorAll` + `closest` (O(n·h)) with a single-pass iterative depth-first traversal (O(n)), eliminating per-candidate DOM ancestor climbing.
+
+### Documentation
+
+- **Showcase restructured**: Replaced basic_form with a simpler "Just a Form" example, added "Smart Contacts", restructured example flow.
+- **Cross-list drag docs**: New documentation section for cross-list drag with `movingDepth` option.
+- **User Guide updated**: Sortable drag handles and `<details>`/`<summary>` behavior documented.
+- **Doc fixes**: Outdated language in core_concepts and core_component_types updated; error codes page minor corrections.
+
+### Other
+
+- Dev-dependency updates (Playwright, Babel, Rollup, parse5).
+- Upgraded Playwright browsers for CI compatibility.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.17.0)
+
+---
+
 ## [0.16.0] — 2026-04-14
 
 🔒 Secure-by-default mixin & JSON options · 🖼️ Framework comparison page · 🎯 Drag-handle improvements · 🔑 Shift+Space in `<summary>` inputs · 📦 npm distribution fix.
@@ -487,7 +521,8 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.15.0...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.17.0...HEAD
+[0.17.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.17.0
 [0.13.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 [0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
 [0.12.9]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.9

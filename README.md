@@ -58,17 +58,16 @@ That's it. No schema, no bindings, no callbacks per field.
 
 **SmarkForm is:**
 - ✅ A **markup-driven** form controller: configuration lives in `data-smark`
-  attributes, not JavaScript objects.
-- ✅ **Markup-agnostic**: it imposes no HTML structure or CSS — you keep full
-  design freedom.
-- ✅ A tool for **JSON-based import/export** of complex, nested form data.
-- ✅ Ready for **subforms**, **variable-length lists**, **context-driven hotkeys**,
-  and smooth keyboard navigation.
+  attributes, keeping HTML and JavaScript cleanly separated.
+- ✅ **Markup-agnostic**: it imposes no HTML structure or CSS on your design —
+  designers keep full freedom, developers don't worry about layout changes.
+- ✅ A tool for **JSON-based import/export** of complex, nested form data
+  including subforms and variable-length lists.
+- ✅ Ready for **context-driven hotkeys** and smooth keyboard navigation.
 - ✅ Stable and in active use, but still pre-1.0 (API may evolve).
 
 **Not yet implemented (planned for a future release):**
 - ❌ Built-in validation (field-level error messages).
-- ❌ Native `<form>` tag POST submission — use `AfterAction_export` + `fetch` instead.
 - ❌ The "API interface" for dynamic dropdown/select options from a server.
 
 > ⚠️ SmarkForm is currently at **version 0.x**. The public API is stable for
@@ -105,7 +104,7 @@ start tinkering with immediately.
   * `{}` [JSON format](https://smarkform.bitifet.net/about/features#json-based):
     Data is imported / exported as JSON.
   * `🪶` [Lightweight](https://smarkform.bitifet.net/about/features#lightweight-yet-highly-compatible):
-    Only ~38KB minified.
+    Only ~70KB minified.
   * `♿` [Accessibility](https://smarkform.bitifet.net/about/features#a11y-friendly):
     Focus on UX and accessibility (a11y).
   * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):

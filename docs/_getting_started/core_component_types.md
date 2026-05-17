@@ -451,9 +451,8 @@ types:
 
 The 🕹️ [Trigger]({{ "component_types/type_trigger" | relative_url }})s are used
 for buttons (or any other elements) to receive interaction events (mouse
-"click" by default, but they will be capable to handle others such as keyboard
-events) and trigger predefined *actions* on propper components (i.e. adding or
-removing items to lists).
+`click` by default, plus keyboard hotkeys) and trigger predefined *actions* on
+the appropriate components (e.g. adding or removing items to lists).
 
   * The good thing about *triggers* is that **they usually don't need any extra
     wiring to interact with their targeted components**. They just target them
@@ -463,10 +462,9 @@ removing items to lists).
 
 ### type: label
 
-The 🏷️ [Label]({{ "component_types/type_label" | relative_url }})s **will** (🚧
-since it is not yet implemented 🚧) be used to enhance regular `<label>` to
-properly resolve their *for* attribute from a *SmarkForm* relative path
-ensuring it always matches the propper id no matter if it is a root-level field
-or in the bottom of several subform and/or list nesting levels.
+The 🏷️ [Label]({{ "component_types/type_label" | relative_url }})s enhance
+regular `<label>` elements to properly resolve their association target from a
+*SmarkForm* relative path, ensuring the label always matches the correct field
+no matter whether it is at the root level or deep inside subforms and lists.
 
 

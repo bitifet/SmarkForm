@@ -116,7 +116,7 @@ export class list extends SmarkField {
                 const node
                 of getRoots(tpl, me.selector)
             ) {
-                const newItem = await me.enhance(node);
+                const newItem = await me.safeEnhance(node);
                 if (!! newItem?._isField) {
                     throw me.renderError(
                         'FIELD_IN_WRONG_LIST_TEMPLATE'
