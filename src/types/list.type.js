@@ -127,7 +127,7 @@ export class list extends SmarkField {
         };
 
         // onRendered tweaks:
-        me.root.onRendered(async ()=>{
+        me.onRendered(async ()=>{
             // Only add items up to min_items, skipping any already added
             // by a parent default-value import that ran before this task.
             for(let i=me.children.length; i<me.min_items; i++) await me.addItem(null, {silent: true});
