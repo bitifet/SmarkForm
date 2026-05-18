@@ -11,6 +11,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.18.0] — 2026-05-18
+
+🔒 Per-origin mixin security policies · 🐛 Cross-list drag-and-drop insertion order · 🐛 Nested list onRendered lifecycle
+
+SmarkForm 0.18.0 extends the mixin security model with per-origin object policies — `allowCrossOriginMixinScripts` and friends now accept a `{ origin: policy }` map for fine-grained trust. Two bugs were also fixed: cross-list drag-and-drop now consistently inserts after the target item, and nested lists use instance `onRendered` instead of the root one, fixing initialization for dynamically-added parents.
+
+### Features
+
+- **Per-origin mixin security policies**: `allowExternalMixins`, `allowLocalMixinScripts`, `allowSameOriginMixinScripts`, and `allowCrossOriginMixinScripts` now accept a per-origin object map (e.g. `{ 'https://trusted.example.com': 'allow', '*': 'block' }`) in addition to string values. A `resolvePolicy` helper and `getUrlOrigin` utility support the new object form.
+
+### Bug Fixes
+
+- **Cross-list drag-and-drop always inserts after target**: Fixed drop event handler and move method failback to consistently use `"after"` position for cross-list moves, regardless of source/target index comparison.
+- **Nested list onRendered lifecycle**: Changed `me.root.onRendered` to `me.onRendered` in list type so that dynamically-added nested lists correctly initialize empty-list display, min_items population, and aria-live attributes.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.18.0)
+
+---
+
 ## [0.17.0] — 2026-05-13
 
 ↕️ Cross-list drag & drop · 🐛 renderError isolation · ⚡ getRoots performance
@@ -521,7 +540,8 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.17.0...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.18.0...HEAD
+[0.18.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.18.0
 [0.17.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.17.0
 [0.13.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 [0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
