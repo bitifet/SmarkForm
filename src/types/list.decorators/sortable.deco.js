@@ -113,7 +113,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             );
                             _crossListDrop.targetList = me;
                             _crossListDrop.to = targetComp;
-                            _crossListDrop.position = targetComp ? "before" : "after";
+                            _crossListDrop.position = "after";
                             e.stopPropagation();
                         };
                     });
@@ -180,7 +180,10 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                 const fromi = Number(from.name);
                 const position = explicitPosition || (
-                    to !== undefined && fromi < Number(to.name) ? "after" : "before"
+                    to === undefined ? "before"
+                    : destList !== me ? "after"
+                    : fromi < Number(to.name) ? "after"
+                    : "before"
                 );
 
                 // 1. Export item data (preserve empties)
