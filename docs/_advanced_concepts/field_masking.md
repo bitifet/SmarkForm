@@ -27,7 +27,7 @@ A credit card field demonstrates spaces between every 4 digits — a pattern fam
 
 {% raw %}<!-- mask_cc_html {{{ -->{% endraw %}
 {% capture mask_cc_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <div id="payment" data-smark='{"type":"form","name":"payment"}'>
   <p>
     <label>Card Number</label>
@@ -41,16 +41,13 @@ A credit card field demonstrates spaces between every 4 digits — a pattern fam
 
 {% raw %}<!-- mask_cc_js {{{ -->{% endraw %}
 {% capture mask_cc_js -%}
-const form = new SmarkForm("#payment");
-form.rendered.then(async () => {
-    const cardField = form.find("/cardNumber");
+const myForm = new SmarkForm("#payment");
+myForm.rendered.then(async () => {
+    const cardField = myForm.find("/cardNumber");
     cardField.mask(node => {
       // Using iMask.js (loaded via CDN): https://cdn.jsdelivr.net/npm/imask
       return new IMask(node, {
-        mask: "0000 0000 0000 0000",
-        blocks: {
-          "0000": {mask: IMask.Number}
-        }
+        mask: "0000 0000 0000 0000"
       });
     });
 });
@@ -67,6 +64,7 @@ form.rendered.then(async () => {
    jsHead=mask_cc_js
    notes=mask_cc_notes
    showEditor=true
+   tests=false
 %}
 
 ## Price Example (Non-Text Field Type)
@@ -75,7 +73,7 @@ This shows how to use a `number` field type — SmarkForm converts it to `text` 
 
 {% raw %}<!-- mask_price_html {{{ -->{% endraw %}
 {% capture mask_price_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <div id="product" data-smark='{"type":"form","name":"product"}'>
   <p>
     <label>Unit Price</label>
@@ -89,13 +87,13 @@ This shows how to use a `number` field type — SmarkForm converts it to `text` 
 
 {% raw %}<!-- mask_price_js {{{ -->{% endraw %}
 {% capture mask_price_js -%}
-const form = new SmarkForm("#product");
-form.rendered.then(async () => {
-    const priceField = form.find("/price");
+const myForm = new SmarkForm("#product");
+myForm.rendered.then(async () => {
+    const priceField = myForm.find("/price");
     priceField.mask(node => {
       const imask = new IMask(node, {
         mask: Number,
-        scale: 100,          // 2 decimal places
+        scale: 2,            // 2 decimal places
         thousandsSeparator: " " // Add space separator every 3 digits
       });
       // Export returns a proper JavaScript number, not a formatted string
@@ -115,37 +113,36 @@ form.rendered.then(async () => {
    jsHead=mask_price_js
    notes=mask_price_notes
    showEditor=true
+   tests=false
 %}
 
-## Singleton Masking
+## Singleton (Single Field) Masking
 
-When masking is applied to a singleton component (e.g., a number field wrapped in a type converter), the method delegates to the inner field. The `_maskInstance` lives on the inner field while the outer component remains chainable.
+Masking works on any field within a form, including single-field forms. Apply the mask to the child field just like any other.
 
 {% raw %}<!-- mask_singleton_html {{{ -->{% endraw %}
 {% capture mask_singleton_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask"></script>
-<div id="singleton" data-smark='{"type":"number","name":"quantity","value":0}'>
-  <input data-smark type="number">
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+<div id="singleton" data-smark='{"type":"form","name":"quantity"}'>
+  <p>
+    <label>Quantity</label>
+    <input data-smark type="number" name="quantity" value="0">
+  </p>
 </div>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mask_singleton_js {{{ -->{% endraw %}
 {% capture mask_singleton_js -%}
-const form = new SmarkForm("#singleton");
-form.rendered.then(async () => {
-    // Mask on the singleton — returns the outer component for chaining
-    const quantityField = form.find("/quantity");
+const myForm = new SmarkForm("#singleton");
+myForm.rendered.then(async () => {
+    const quantityField = myForm.find("/quantity");
     quantityField.mask(node => new IMask(node, { mask: "0[.]00" }));
-    // The inner field has the _maskInstance
-    const innerField = quantityField.children[""];
-    console.log("Inner field has mask:", innerField._maskInstance !== undefined);
-    console.log("Outer field has mask:", quantityField._maskInstance === undefined);
 });
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mask_singleton_notes {{{ -->{% endraw %}
 {% capture mask_singleton_notes -%}
-**Try it!** This playground demonstrates singleton masking: edit the JS to check the instance locations and try different masks.
+**Try it!** Try different masks and see the quantity field format change.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -154,6 +151,7 @@ form.rendered.then(async () => {
    jsHead=mask_singleton_js
    notes=mask_singleton_notes
    showEditor=true
+   tests=false
 %}
 
 ## Validation
@@ -162,7 +160,7 @@ Many masking libraries include built-in validation. You can integrate it by chec
 
 {% raw %}<!-- mask_validation_html {{{ -->{% endraw %}
 {% capture mask_validation_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <div id="pricevalidation" data-smark='{"type":"form","name":"validateprice"}' style="max-width:350px">
   <p>
     <label>Price</label>
@@ -176,12 +174,12 @@ Many masking libraries include built-in validation. You can integrate it by chec
 
 {% raw %}<!-- mask_validation_js {{{ -->{% endraw %}
 {% capture mask_validation_js -%}
-const form = new SmarkForm("#pricevalidation");
-form.rendered.then(async () => {
-    const priceField = form.find("/price");
+const myForm = new SmarkForm("#pricevalidation");
+myForm.rendered.then(async () => {
+    const priceField = myForm.find("/price");
     const imask = new IMask(priceField.targetFieldNode, {
         mask: Number,
-        scale: 100,
+        scale: 2,
         thousandsSeparator: " "
     });
     priceField._maskInstance = imask;
@@ -203,6 +201,7 @@ form.rendered.then(async () => {
    jsHead=mask_validation_js
    notes=mask_validation_notes
    showEditor=true
+   tests=false
 %}
 
 ## Masking is Permanent
@@ -214,7 +213,7 @@ When a mask converts an input to `text`, that change is permanent for the lifeti
 > <b>Try the playgrounds above to see the key features. For production usage with your own CDN, use:</b>
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/imask"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <script src="https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.umd.js"></script>
 <!-- Basic HTML from examples above -->
 ```
