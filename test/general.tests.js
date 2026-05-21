@@ -312,3 +312,62 @@ block mainForm
 
 });
 
+test.describe('options validation', () => {
+    test('throws renderError for unserializable options (cyclic)', async ({ page }) => {
+        const pug = `div#cyclic-form(data-smark='{"type":"form","name":"c"}')\nscript(src=\"../../dist/SmarkForm.umd.js\")`;
+        const { url, onClosed } = await renderPug({ title: 'cyclic options', src: pug });
+        try {
+            await page.goto(url);
+            const result = await page.evaluate(() => {
+                const SmarkForm = window.SmarkForm;
+                const node = document.getElementById('cyclic-form');
+                const comp = new SmarkForm(node);
+                comp.options.badCyclic = comp.options; // introduce cyclic reference
+                try {
+                    comp.setNodeOptions(node, comp.options);
+                    return {error: false};
+                } catch (e) {
+                    return {
+                        error: true,
+                        name: e.name,
+                        message: e.message,
+                        code: e.code,
+                    };
+                }
+            });
+            expect(result.error).toBe(true);
+            expect(result.code === "INVALID_OPTIONS_OBJECT" || result.name === "renderError").toBe(true);
+        } finally {
+            await onClosed();
+        }
+    });
+
+    test('throws renderError for unserializable options (function property)', async ({ page }) => {
+        const pug = `div#func-form(data-smark='{"type":"form","name":"f"}')\nscript(src=\"../../dist/SmarkForm.umd.js\")`;
+        const { url, onClosed } = await renderPug({ title: 'function option', src: pug });
+        try {
+            await page.goto(url);
+            const result = await page.evaluate(() => {
+                const SmarkForm = window.SmarkForm;
+                const node = document.getElementById('func-form');
+                const comp = new SmarkForm(node);
+                comp.options.badFn = () => 42;
+                try {
+                    comp.setNodeOptions(node, comp.options);
+                    return {error: false};
+                } catch (e) {
+                    return {
+                        error: true,
+                        name: e.name,
+                        message: e.message,
+                        code: e.code,
+                    };
+                }
+            });
+            expect(result.error).toBe(true);
+            expect(result.code === "INVALID_OPTIONS_OBJECT" || result.name === "renderError").toBe(true);
+        } finally {
+            await onClosed();
+        }
+    });
+});
