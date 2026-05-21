@@ -42,6 +42,14 @@ class SmarkForm extends form {
             ...formOptions
         } = {}
     ) {
+        // Resolve string selectors to DOM nodes:
+        if (typeof targetNode === "string") {
+            const resolved = document.querySelector(targetNode);
+            if (!resolved) throw new Error(
+                `SmarkForm: selector "${targetNode}" did not match any element`
+            );
+            targetNode = resolved;
+        }
         const options = {
             ...formOptions,
             name: "",

@@ -252,9 +252,7 @@ export class SmarkComponent {
     };//}}}
     setNodeOptions(node, options) {//{{{
         const me = this;
-        // Check for non-serializable values before attempting JSON.stringify
         function isSerializable(value, path = "", visited = new WeakSet()) {
-            // Primitive types
             if (value === null || typeof value !== "object") {
                 if (typeof value === "function") {
                     throw new Error(`Function found at ${path}`);
@@ -267,9 +265,8 @@ export class SmarkComponent {
                 }
                 return;
             }
-            // Objects: detect circular references
             if (visited.has(value)) {
-                return; // already visited, skip to avoid infinite recursion
+                return;
             }
             visited.add(value);
             if (Array.isArray(value)) {
@@ -277,23 +274,13 @@ export class SmarkComponent {
                     isSerializable(item, `${path}[${i}]`, visited);
                 });
             } else {
-                // plain object
                 for (const key of Object.keys(value)) {
                     isSerializable(value[key], path ? `${path}.${key}` : key, visited);
                 }
             }
         }
-        try {
-            isSerializable(options);
-            node.dataset[me.property_name] = JSON.stringify(options);
-        } catch (err) {
-            console.log("Error stringifying options for node", node, "with options", options);
-            console.log({ me });
-            throw me.renderError(
-                "INVALID_OPTIONS_OBJECT",
-                `Cannot serialize options for data-${me.property_name} on node: encountered unserializable properties. Original error: ${err && err.message ? err.message : err}`
-            );
-        }
+        isSerializable(options);
+        node.dataset[me.property_name] = JSON.stringify(options);
     };//}}}
     async safeEnhance(node, defaultOptions) {//{{{
         const me = this;
