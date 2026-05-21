@@ -262,9 +262,6 @@ export class SmarkComponent {
                 if (typeof value === "symbol") {
                     throw new Error(`Symbol found at ${path}`);
                 }
-                if (typeof value === "undefined") {
-                    throw new Error(`Undefined found at ${path}`);
-                }
                 if (typeof value === "number" && (!Number.isFinite(value))) {
                     throw new Error(`Non-finite number found at ${path}`);
                 }
@@ -399,7 +396,7 @@ export class SmarkComponent {
     };//}}}
     getPath() {//{{{
         const me = this;
-        const ancestors = [...me.parents].map(p=>p.name).reverse();
+        const ancestors = me.parents ? [...me.parents].map(p=>p.name).reverse() : [];
         if (me.name) ancestors.push(me.name); // Compute parent path inside labels (or singletons?).
         return ancestors.join("/") || "/";
     };//}}}

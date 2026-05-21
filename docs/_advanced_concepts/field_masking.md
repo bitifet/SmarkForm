@@ -18,8 +18,8 @@ When you apply a mask, SmarkForm:
 1. Converts the input type to `text` (so masking libraries can operate on it)
 2. Stores the mask library instance in `_maskInstance`
 3. Exports the **unmasked value** (raw data) instead of the formatted display
-4. Restores the original input type when the field is destroyed
-5. Dispatches `input` events when values are set programmatically so masks stay synchronized
+4. Dispatches `input` events when values are set programmatically so masks stay synchronized
+5. Masking is permanent: once applied, the input type stays `text` for the lifecycle of the component
 
 ## Credit Card Example (Primary)
 
