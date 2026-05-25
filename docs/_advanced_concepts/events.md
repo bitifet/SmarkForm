@@ -277,7 +277,7 @@ The recommended pattern is to use an `export` trigger and intercept the
   <input data-smark type="text" name="firstName" placeholder="First name">
   <input data-smark type="text" name="lastName" placeholder="Last name">
   <button data-smark='{"action":"export"}'>Submit</button>
-  <pre id="output" style="background:transparent;padding:0.5em;margin-top:0.5em;min-height:2em;border:1px solid #ccc"></pre>
+  <pre id="output" style="background:rgba(165,165,165,.25);padding:0.5em;margin-top:0.5em;min-height:2em;border:1px solid #ccc"></pre>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
