@@ -292,14 +292,14 @@ endcapture %}
 }
 {{""}}#myForm$$ .sg-card {
     border: 1px solid #ddd; border-radius: 8px;
-    margin: 0.4em 0; background: #fafafa;
+    margin: 0.4em 0; background: transparent;
     overflow: hidden;
 }
 {{""}}#myForm$$ .sg-card details[open] { padding-bottom: 0.4em; }
 {{""}}#myForm$$ .sg-card summary {
     display: flex; align-items: center; gap: 0.4em;
     padding: 0.35em 0.5em; user-select: none;
-    background: #fff; border-radius: 8px;
+    background: transparent; border-radius: 8px;
 }
 {{""}}#myForm$$ .sg-card details[open] summary { border-radius: 8px 8px 0 0; border-bottom: 1px solid #eee; }
 {{""}}#myForm$$ .sg-handle { cursor: grab; color: #aaa; user-select: none; }
@@ -315,15 +315,15 @@ endcapture %}
 {{""}}#myForm$$ .sg-students ul {
     max-height: 240px; overflow-y: auto;
     border: 1px solid #eee; border-radius: 4px; padding: 0.2em 0.3em;
-    background: #fff;
+    background: transparent;
 }
 {{""}}#myForm$$ .sg-students ul li { margin: 0.15em 0; }
 {{""}}#myForm$$ .sg-students ul details summary {
     display: flex; align-items: center; gap: 0.3em; padding: 0.2em 0.3em;
-    border-radius: 4px; background: #fafafa; border: 1px solid #eee;
+    border-radius: 4px; background: transparent; border: 1px solid #eee;
 }
 {{""}}#myForm$$ .sg-students ul details[open] summary { border-radius: 4px 4px 0 0; border-bottom: 0; }
-{{""}}#myForm$$ .sg-students ul details[open] { background: #fafafa; }
+{{""}}#myForm$$ .sg-students ul details[open] { background: transparent; }
 {{""}}#myForm$$ .sg-students ul li input[type="text"] {
     flex: 1; padding: 0.2em 0.4em;
     border: 1px solid #ccc; border-radius: 4px; font-size: 0.9em;
@@ -349,12 +349,12 @@ endcapture %}
 }
 {{""}}#myForm$$ .sg-grade-btns button {
     padding: 0.1em 0.4em; border: 1px solid #ccc; border-radius: 4px;
-    background: #fff; cursor: pointer; font-size: 0.85em; line-height: 1.4;
+    background: transparent; cursor: pointer; font-size: 0.85em; line-height: 1.4;
 }
 {{""}}#myForm$$ .sg-empty { font-style: italic; color: #aaa; padding: 0.5em; font-size: 0.9em; }
 {{""}}#myForm$$ .sg button {
     padding: 0.2em 0.6em; border: 1px solid #ccc; border-radius: 4px;
-    background: #fff; cursor: pointer; line-height: 1.5;
+    background: transparent; cursor: pointer; line-height: 1.5;
 }
 {{""}}#myForm$$ .sg button:disabled { opacity: 0.4; }
 {{""}}#myForm$$ .sg [data-hotkey] { position: relative; }
@@ -3680,7 +3680,7 @@ endcapture %}
     margin: 0.15em 0 0;
 }
 {{""}}#myForm$$ .ep-hint kbd {
-    background: #f4f4f4;
+    background: transparent;
     border: 1px solid #ccc;
     border-radius: 3px;
     padding: 1px 4px;

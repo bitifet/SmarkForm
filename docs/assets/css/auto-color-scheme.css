@@ -167,11 +167,105 @@
     color: #e9e9e9 !important;
   }
   
+  /* Source code tabs (HTML/CSS/JS) — lighter background for readability */
+  .tab-content.tab-code {
+    background-color: #31343f !important;
+  }
+  
   /* Code block containers - fix white background underneath */
   .highlight,
   figure.highlight,
   div.highlight {
     background-color: #2e2e2e !important;
+    color: #dee2f7 !important;
+  }
+  
+  /* Syntax highlighting overrides for dark background */
+  .highlight .c,
+  .highlight .cm,
+  .highlight .cp,
+  .highlight .c1,
+  .highlight .cs {
+    color: #63677e !important;
+    font-style: italic !important;
+  }
+  .highlight .k,
+  .highlight .kc,
+  .highlight .kd,
+  .highlight .kn,
+  .highlight .kp,
+  .highlight .kr,
+  .highlight .kt {
+    color: #e19ef5 !important;
+  }
+  .highlight .l,
+  .highlight .ld,
+  .highlight .s,
+  .highlight .sb,
+  .highlight .sc,
+  .highlight .sd,
+  .highlight .s2,
+  .highlight .se,
+  .highlight .sh,
+  .highlight .si,
+  .highlight .sx,
+  .highlight .s1 {
+    color: #a3eea0 !important;
+  }
+  .highlight .n,
+  .highlight .nf,
+  .highlight .nn,
+  .highlight .nx,
+  .highlight .p,
+  .highlight .o {
+    color: #dee2f7 !important;
+  }
+  .highlight .m,
+  .highlight .mf,
+  .highlight .mh,
+  .highlight .mi,
+  .highlight .mo,
+  .highlight .il {
+    color: #eddc96 !important;
+  }
+  .highlight .na {
+    color: #eddc96 !important;
+  }
+  .highlight .nb,
+  .highlight .nc,
+  .highlight .no,
+  .highlight .nd,
+  .highlight .ni,
+  .highlight .ne,
+  .highlight .nl,
+  .highlight .py,
+  .highlight .bp,
+  .highlight .vc,
+  .highlight .vg,
+  .highlight .nv {
+    color: #fdce68 !important;
+  }
+  .highlight .nt {
+    color: #f9867b !important;
+  }
+  .highlight .vi {
+    color: #f9867b !important;
+  }
+  .highlight .sr {
+    color: #7be2f9 !important;
+  }
+  .highlight .ss {
+    color: #7be2f9 !important;
+  }
+  .highlight .err {
+    color: #960050 !important;
+    background-color: #1e0010 !important;
+  }
+  .highlight .gd {
+    color: #f92672 !important;
+  }
+  .highlight .gi {
+    color: #a6e22e !important;
   }
   
   /* Headings in dark mode */
@@ -322,5 +416,44 @@
   .smarkform-preview-spinner::after {
     border-color: #44434d;
     border-top-color: #8c7aff;
+  }
+  
+  /* Table of Contents (chaptertoc) */
+  .main-content .chaptertoc {
+    background: #2a2a2a !important;
+  }
+  
+  .main-content details.chaptertoc {
+    box-shadow: 6px 6px 3px rgba(0, 0, 0, 0.3) !important;
+  }
+  
+  .main-content .chaptertoc a {
+    color: #c4b7ff !important;
+  }
+  
+  .main-content .chaptertoc a:visited {
+    color: #d4c5ff !important;
+  }
+  
+  .main-content .chaptertoc .toc-num {
+    color: #bbb !important;
+  }
+  
+  .main-content .chaptertoc li li .toc-num {
+    color: #999 !important;
+  }
+  
+  /* Details / Summary elements */
+  details {
+    background-color: #2a2a2a;
+  }
+  
+  summary {
+    color: #e9e9e9;
+  }
+  
+  /* ACE editor — dark border in dark mode */
+  .smarkform-ace-editor {
+    border-color: #44434d !important;
   }
 }

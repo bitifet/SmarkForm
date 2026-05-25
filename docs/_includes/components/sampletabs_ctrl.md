@@ -290,7 +290,11 @@ function smarkformMakeAceEditor(tab, mode, content) {
         div.className = 'smarkform-ace-editor';
         tab.appendChild(div);
         var ed = ace.edit(div);
-        ed.setTheme('ace/theme/textmate');
+        ed.setTheme(
+            (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches)
+                ? 'ace/theme/monokai'
+                : 'ace/theme/textmate'
+        );
         ed.session.setMode(mode);
         ed.setValue(content, -1);
         ed.setOptions({minLines: SMARKFORM_ACE_MIN_LINES, maxLines: SMARKFORM_ACE_MAX_LINES, wrap: false, showPrintMargin: false, tabSize: 2, useSoftTabs: true});

@@ -79,6 +79,10 @@ Uses JustTheDocs default light theme colors.
 | Tables (header) | `#2e2e2e` | Table header background |
 | Tables (striped) | `#252525` | Alternating table row background |
 | Aux Nav Links | `#2a2a2a` | Auxiliary navigation button background |
+| Code Tab Content | `#31343f` | Source code tab (HTML/CSS/JS) background |
+| TOC Background | `#2a2a2a` | Table of Contents background |
+| Details/Summary | `#2a2a2a` | Collapsible section background |
+| ACE Editor Border | `#44434d` | ACE code editor border color |
 
 ## Testing
 

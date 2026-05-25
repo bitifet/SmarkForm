@@ -544,13 +544,13 @@ endcapture %}
 {{""}}#myForm$$ .cdd-dept {
     border: 1px solid #ddd; border-radius: 6px;
     margin: 0.4em 0; padding: 0;
-    background: #fafafa;
+    background: transparent;
 }
 {{""}}#myForm$$ .cdd-dept-head {
     display: flex; align-items: center; gap: 0.4em;
     padding: 0.35em 0.5em;
     border-bottom: 1px solid #eee;
-    background: #fff; border-radius: 6px 6px 0 0;
+    background: transparent; border-radius: 6px 6px 0 0;
 }
 {{""}}#myForm$$ .cdd-handle { cursor: grab; color: #aaa; font-size: 1.1em; user-select: none; }
 {{""}}#myForm$$ .cdd-dept-head input[type="text"] {
