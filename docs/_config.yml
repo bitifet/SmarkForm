@@ -123,6 +123,9 @@ nav_external_links:
   - title: "<span role='img' aria-label=''>💻</span> Examples"
     url: /resources/examples
     hide_icon: true
+  - title: "<span role='img' aria-label=''>📋</span> Cheatsheet"
+    url: /resources/cheatsheet
+    hide_icon: true
   - title: 🤔 FAQ
     url: /about/faq
     hide_icon: true
