@@ -115,6 +115,11 @@
   .site-logo {
     background-image: url('/assets/logo/smarkform_dark.svg') !important;
   }
+
+  /* On hover, switch to light-mode logo for visual feedback */
+  .site-logo:hover {
+    background-image: url('/assets/logo/smarkform.svg') !important;
+  }
   
   /* Buttons */
   .btn,
@@ -352,18 +357,30 @@
   .nav-list-link {
     color: #b8b8b8 !important;
   }
-  
-  .nav-list-link:hover {
-    color: #e9e9e9 !important;
+
+  .nav-list-link.active {
+    color: #000 !important;
+    font-weight: normal !important;
   }
-  
+
+  .nav-list-link:hover {
+    color: #000 !important;
+    font-weight: bold !important;
+  }
+
   /* Child nav links under sections */
   .nav-list .nav-list-item .nav-list-link {
     color: #a8a8a8 !important;
   }
-  
+
+  .nav-list .nav-list-item .nav-list-link.active {
+    color: #000 !important;
+    font-weight: normal !important;
+  }
+
   .nav-list .nav-list-item .nav-list-link:hover {
-    color: #e9e9e9 !important;
+    color: #000 !important;
+    font-weight: bold !important;
   }
   
   /* Inline code tags - make them less bright */
@@ -388,8 +405,14 @@
   
   .aux-nav .aux-nav-list-item a:hover {
     background-color: #353535 !important;
+    color: #000 !important;
   }
-  
+
+  /* GitHub icon — invert to white on dark background */
+  .aux-nav img[src*="github"] {
+    filter: invert(1);
+  }
+
   /* HTML label elements on the page (edit toolbar, etc.) */
   label {
     color: #e9e9e9 !important;
