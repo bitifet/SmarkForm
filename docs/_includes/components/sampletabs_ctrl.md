@@ -135,6 +135,10 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
     var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
+    var darkModeCss = 'body{background:#202020!important;color:#e9e9e9!important}'
+        + 'label{color:#e9e9e9!important}'
+        + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
+        + 'a{color:#8c7aff!important}';
     var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:12em;}' : '';
     var S = 'script';
     var jsSrc = srcs.js || '';
@@ -152,6 +156,17 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     iframe.onload = function() {
         if (spinner) spinner.style.display = 'none';
         this.style.display = 'block';
+        /* Inject dark mode CSS into the iframe's document when system prefers dark */
+        try {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                var doc = this.contentDocument || this.contentWindow.document;
+                if (doc && doc.head) {
+                    var ds = doc.createElement('style');
+                    ds.textContent = darkModeCss;
+                    doc.head.appendChild(ds);
+                }
+            }
+        } catch(e) {}
         try {
             var doc = this.contentDocument;
             var naturalH, maxH;

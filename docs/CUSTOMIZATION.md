@@ -21,6 +21,8 @@ Custom CSS that uses `@media (prefers-color-scheme: dark)` and `@media (prefers-
 - Proper contrast ratios for accessibility
 - Styles for all common elements (code blocks, tables, links, buttons, etc.)
 - Tab components (code examples) adapt to color scheme
+- Edit toolbar and form labels styled for dark mode
+- **Iframe preview support**: dark mode CSS injected into example iframes via sampletabs base CSS, so live form previews also respect `prefers-color-scheme: dark`
 
 ### `/assets/js/auto-logo-switcher.js`
 JavaScript that dynamically switches the site logo between light and dark versions based on the user's color scheme preference.
@@ -43,6 +45,8 @@ Jekyll include file that loads the custom CSS and JavaScript files. This file is
    - `/assets/logo/smarkform_dark.svg` (dark mode)
 
 3. **Automatic Updates**: When the user changes their system color scheme preference, both the CSS and JavaScript automatically update to match.
+
+4. **Iframe Dark Mode**: Live form previews in sampletabs-based examples are rendered inside sandboxed iframes. Since `@media (prefers-color-scheme)` may not reliably apply inside `srcdoc` iframes, the `smarkformRenderIframe` function (in `_includes/components/sampletabs_ctrl.md`) injects dark mode CSS via JavaScript on the `load` event: it checks `window.matchMedia('(prefers-color-scheme: dark)')` and, when true, appends a `<style>` element with `!important` rules to the iframe's document head. This ensures labels, inputs, and buttons are properly colored regardless of the rendering environment.
 
 ## Color Scheme Variables
 
@@ -67,6 +71,10 @@ Uses JustTheDocs default light theme colors.
 | Tab Content | `#202020` | Tab content background |
 | Form Inputs | `#3a3a3a` | Input/textarea background (middle gray) |
 | Placeholder | `#999` | Input placeholder text color |
+| Labels | `#e9e9e9` | HTML label elements on the page |
+| Edit Toolbar | `#2a2a2a` | SmarkForm edit toolbar background |
+| Ace Editor Fallback | `#2a2a2a` | Fallback code editor background |
+| Spinner | `#44434d` / `#8c7aff` | Preview spinner border colors |
 | Buttons | `#2a2a2a` | Regular button background (less bright) |
 | Tables (header) | `#2e2e2e` | Table header background |
 | Tables (striped) | `#252525` | Alternating table row background |
