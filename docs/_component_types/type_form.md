@@ -21,7 +21,9 @@ nav_order: 1
 * [Introduction](#introduction)
 * [API Reference](#api-reference)
     * [Options](#options)
+        * [value](#value)
         * [focus_on_click](#focus_on_click)
+        * [autoId](#autoid)
     * [Actions](#actions)
         * [(Async) export (Action)](#async-export-action)
             * [Options (export)](#options-export)
@@ -260,12 +262,35 @@ API Reference
 
 ### Options
 
+#### value
+
+Sets the initial default data for the form. These defaults are restored when `reset()` is called and are updated by `import()` (unless `setDefault: false` is passed).
+
+  * **Type:** Object
+  * **Default value:** `{}`
+
+> See: [Setting defaults via `value`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work, `clear` vs `reset`, and the `VALUE_CONFLICT` error.
+
 #### focus_on_click
 
 Make forms get focused when clicked anywhere inside them.
 
   * **Type:** Boolean
   * **Default value:** true
+
+
+#### autoId
+
+Automatically generate `id` attributes for all components in the form. When enabled, each component receives an `id` derived from its path (e.g. `"address_street"`).
+
+  * **Type:** Boolean, String, or Function
+  * **Default value:** `false`
+  * **`false`** — No `id` attributes are generated.
+  * **`true`** — IDs are generated from the component's path.
+  * **`"prefix-"`** — Same as `true`, but prepends the string (e.g. `"prefix-address_street"`).
+  * **`function(path, component) { … }`** — Custom generator. Receives the component's path and the component instance.
+
+The [`updateId()`](#api-reference) method can be called later to regenerate IDs (e.g. after adding list items).
 
 
 ### Actions

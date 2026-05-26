@@ -178,6 +178,13 @@ Ok: Nothing exciting happended by now.
 👉 **But keep reading...** 🚀
 
 
+{: .hint :}
+> SmarkForm constructor accepts a second parameter with an options object that
+> can be used to configure the form. We will get back to this in the [options
+> object](#the-options-object) section later.
+
+
+
 ## Do the magic
 
 By default, *SmarkForm* ignores all DOM elements in its container unless they

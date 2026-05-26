@@ -34,6 +34,7 @@ endcapture %}
     * [Nesting lists](#nesting-lists)
 * [API Reference](#api-reference)
     * [Options](#options)
+        * [value](#value)
         * [min_items](#min_items)
         * [max_items](#max_items)
         * [sortable](#sortable)
@@ -364,6 +365,15 @@ API Reference
 -------------
 
 ### Options
+
+#### value
+
+Sets the initial default items for the list. These defaults are restored when `reset()` is called and are updated by `import()` (unless `setDefault: false` is passed).
+
+  * **Type:** Array
+  * **Default value:** `[]`
+
+> See: [Setting defaults via `value`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
 
 #### min_items
 
