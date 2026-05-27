@@ -228,7 +228,7 @@ lists). They bubble under `.on()` and `.onAll()`, and are available via
 ```javascript
 const schedule = myForm.find("schedule");
 schedule.onLocal("focusleave", async () => {
-    await schedule.actions.sort();
+    await schedule.sort();
 });
 ```
 
@@ -307,7 +307,7 @@ myForm.on("AfterAction_export", async (ev) => {
 {: .hint }
 > The `onAfterAction_export` handler is called **every time** an export action
 > runs — whether triggered by a button click or called programmatically via
-> `myForm.actions.export()`.  If you only want to submit on user-initiated
+ > `myForm.export()`.  If you only want to submit on user-initiated
 > exports, check `ev.origin` (the trigger component) and skip when it is `null`
 > (programmatic call).
 
@@ -328,7 +328,7 @@ myForm.on("BeforeAction_import", async (ev) => {
     ev.preventDefault(); // Cancel the default (no-op) import
     const response = await fetch("/api/load");
     const data = await response.json();
-    await myForm.actions.import(data); // Trigger a new import with the fetched data
+    await myForm.import(data); // Trigger a new import with the fetched data
 });
 ```
 
@@ -385,16 +385,7 @@ a wrapper in `this.actions[name]` that:
 
 ### Calling actions programmatically
 
-There are two ways to invoke an action in JavaScript:
-
-- **`component.actions.reset(data, options)`** — goes through the `@action`
-  wrapper: fires events, defaults `focus`, honours `silent`, etc.
-- **`component.reset(data, options)`** — calls the **prototype method
-  directly**, bypassing the wrapper entirely (no events, no automatic `focus`
-  defaulting, no `BeforeAction` cancellation).
-
-Most internal calls (e.g. from `import()` or `removeItem()`) use the prototype
-method directly to avoid overhead and event noise.
+Actions can be called directly via `component.actionName(data, options)`. These are the raw prototype methods — they do not fire lifecycle events or auto-focus. Use triggers (HTML buttons with `data-smark='{"action":"..."}'`) when you need the full action lifecycle (`BeforeAction_*` / `AfterAction_*` events, focus defaulting).
 
 ### Event bubbling: local, on, and all
 

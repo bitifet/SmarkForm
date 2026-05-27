@@ -36,7 +36,7 @@ nav_order: 4
     * [Using `target` with `import`](#using-target-with-import)
     * [Chaining export and import](#chaining-export-and-import)
 * [Programmatic API](#programmatic-api)
-    * [Using `component.actions.export()` and `component.actions.import()`](#using-componentactionsexport-and-componentactionsimport)
+    * [Using `component.export()` and `component.import()`](#using-componentactionsexport-and-componentactionsimport)
     * [Calling prototype methods directly](#calling-prototype-methods-directly)
 * [Common Patterns](#common-patterns)
     * [Loading initial data from a server](#loading-initial-data-from-a-server)
@@ -307,7 +307,7 @@ focuses the form after import. When called programmatically, focus is off by
 default. Pass `focus: true` to move keyboard focus after a programmatic import:
 
 ```javascript
-await myForm.actions.import(data, { focus: true });
+await myForm.import(data, { focus: true });
 ```
 
 
@@ -347,7 +347,7 @@ result as the new `defaultValue`:
 
 ```javascript
 // After this call, reset() will restore {name:"Alice",role:"admin"}
-await myForm.actions.import({ name: "Alice", role: "admin" });
+await myForm.import({ name: "Alice", role: "admin" });
 ```
 
 Using `exportEmpties: true` when capturing the new default ensures that
@@ -561,53 +561,34 @@ data to the shipping address with no JavaScript required.
 
 ## Programmatic API
 
-### Using `component.actions.export()` and `component.actions.import()`
-
-To export or import data from JavaScript you call the action through the
-component's `.actions` map. This goes through the full `@action` wrapper, which
-fires `BeforeAction_*` and `AfterAction_*` events and applies all the standard
-focus/silent/data flow logic:
+Actions can be called directly on any component. These are the raw prototype
+methods — they do not fire lifecycle events or auto-focus. Use triggers (HTML
+buttons with `data-smark='{"action":"..."}'`) when you need the full action
+lifecycle (`BeforeAction_*` / `AfterAction_*` events, focus defaulting).
 
 ```javascript
 // Wait for the form to finish rendering before using it
 await myForm.rendered;
 
 // Export the whole form
-const data = await myForm.actions.export();
+const data = await myForm.export();
 console.log(data); // { name: "Alice", … }
 
 // Import data into the form
-await myForm.actions.import({ name: "Bob", email: "bob@example.com" });
+await myForm.import({ name: "Bob", email: "bob@example.com" });
 
 // Import without updating the default (preview mode)
-await myForm.actions.import(data, { setDefault: false });
+await myForm.import(data, { setDefault: false });
 
 // Import a specific sub-form
 const addressForm = myForm.find("/address");
-await addressForm.actions.import({ street: "123 Main St", city: "Springfield" });
+await addressForm.import({ street: "123 Main St", city: "Springfield" });
 ```
 
 {: .warning }
 > Always `await myForm.rendered` before calling `find()` or accessing
 > components programmatically. SmarkForm builds its internal component map
 > asynchronously — calls made before rendering is complete will return `null`.
-
-### Calling prototype methods directly
-
-For internal use — such as inside event handlers or other action
-implementations — you can call the prototype method directly, bypassing the
-`@action` wrapper:
-
-```javascript
-// Bypasses events, focus defaults, and BeforeAction cancellation:
-const data = await myForm.export();
-await myForm.import({ name: "Alice" }, { silent: true });
-```
-
-Direct prototype calls are lower overhead and are the right choice when
-you are already inside an action handler and do not want to re-fire lifecycle
-events. However, you must then manage `options.silent` and `options.focus`
-explicitly.
 
 See the [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) chapter
 for a deeper explanation of the `@action` wrapper and event lifecycle.
@@ -631,7 +612,7 @@ await myForm.rendered;
 
 const response = await fetch("/api/record/42");
 const data = await response.json();
-await myForm.actions.import(data); // data becomes the new default
+await myForm.import(data); // data becomes the new default
 ```
 
 Because `import` defaults to `setDefault: true`, the user can later click
@@ -679,7 +660,7 @@ await myForm.rendered;
 // Restore draft (without making it the reset default)
 const draft = localStorage.getItem("myForm.draft");
 if (draft) {
-    await myForm.actions.import(JSON.parse(draft), { setDefault: false });
+    await myForm.import(JSON.parse(draft), { setDefault: false });
 }
 
 // Auto-save on every export

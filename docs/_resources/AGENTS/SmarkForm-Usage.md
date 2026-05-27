@@ -311,10 +311,13 @@ component.onLocal("BeforeAction_import", (ev) => {
 });
 ```
 
-#### Programmatic calls — prototype vs. `actions[name]`
+#### Programmatic calls — prototype method
 
-- **`component.actions.reset(data, options)`** — goes through the `@action` wrapper: fires events, defaults `focus`, etc.
-- **`component.reset(data, options)`** — calls the **prototype method directly**, bypassing the `@action` wrapper entirely.
+Actions are called directly via `component.actionName(data, options)`. These
+are the raw prototype methods — they do not fire lifecycle events or
+auto-focus. Use triggers (HTML buttons with
+`data-smark='{"action":"..."}'`) when you need the full action lifecycle
+(`BeforeAction_*` / `AfterAction_*` events, focus defaulting).
 
 Most internal calls use the prototype method directly to avoid overhead and event noise.
 

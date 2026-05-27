@@ -54,6 +54,7 @@ class SmarkForm extends form {
         );
         const me = this;
         me.setNodeOptions(me.targetNode, options);
+        // TODO: use private Symbol (see PROMPTS.md "Private actions")
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(

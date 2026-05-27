@@ -101,6 +101,8 @@ export class SmarkComponent {
             };
         })();//}}}
 
+        // TODO: Make this a private Symbol (#xx) — actions is an internal
+        // wiring detail, not a public API. See PROMPTS.md "Private actions".
         me.actions = {};
         me.property_name = property_name;
         me.selector = `[data-${me.property_name}]`;

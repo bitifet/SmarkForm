@@ -16,6 +16,75 @@
 
 
 
+### Private actions
+
+> Status: Draft
+
+Refactor `component.actions` to use a private Symbol so it is no longer
+enumerable or directly accessible as a public property.
+
+**Rationale:**
+
+The `actions` object exists as an internal implementation artifact of the
+`@action` decorator (`src/types/trigger.type.js`). The decorator needs
+somewhere to stash the event-emitting wrapper function — `this.actions[name]`
+is convenient — but it was never designed as a user-facing API.
+
+The intended public contract is:
+
+| Need | Mechanism |
+|------|-----------|
+| User-initiated action with events | HTML trigger (`data-smark='{"action":"..."}'`) |
+| Programmatic action without events | `component.reset(data, opts)` (prototype method) |
+
+Documenting `component.actions` creates confusion because there are now **two
+ways** to call every action (`component.actions.reset()` vs `component.reset()`)
+with subtle behavioural differences (events, focus defaulting, `silent` option
+handling). The `actions` wrapper was also removed from the published docs in
+PR #xx for this reason.
+
+**Internal consumers that will need updating:**
+
+1. `src/lib/component.js:104` — `me.actions = {}` initialisation.
+2. `src/types/trigger.type.js:8` — decorator stores the wrapper.
+3. `src/types/trigger.type.js:83` — `getTriggerArgs()` walks parents looking
+   for `p.actions[action]`.
+4. `src/types/trigger.type.js:114` — `onTriggerClick()` resolves
+   `context?.actions[action]`.
+5. `src/main.js:57` — `SmarkForm` constructor merges user-provided custom
+   actions via `me.actions = { ...me.actions, ...customActions }`.
+
+**Implementation sketch (Symbol approach):**
+
+```javascript
+// In component.js or a shared module:
+const sym_actions = Symbol("actions");
+
+// Initialisation (component.js):
+me[sym_actions] = {};
+
+// Decorator (trigger.type.js):
+me[sym_actions][name] = async function (...) { ... };
+
+// Access in trigger resolution (trigger.type.js):
+const mtd = context?.[sym_actions][action];
+const ctx = parents.find(p => typeof p[sym_actions][action] == "function");
+
+// Merging custom actions (main.js):
+me[sym_actions] = {
+    ...me[sym_actions],
+    ...Object.fromEntries(
+        Object.entries(customActions).map(([n, c]) => [n, c.bind(me)])
+    ),
+};
+```
+
+Alternatively, if a public programmatic API for triggering actions with events
+is ever needed, provide a focused helper like `component.runAction(name, data,
+opts)` rather than exposing the entire map. Do not add this preemptively —
+wait for a concrete use case.
+
+
 ### Disabled action
 
 > Status: Draft

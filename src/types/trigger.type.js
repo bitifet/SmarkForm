@@ -5,6 +5,7 @@ import {SmarkComponent} from "../lib/component.js";
 export const action = function action_decorator(targetMtd, {kind, name, addInitializer}) {
     if (kind == "method") addInitializer(function registerAction() {
         const me = this;
+        // TODO: use private Symbol (see PROMPTS.md "Private actions")
         this.actions[name] = async function (data, options = {}) {
             // Actions are async functions that can be triggered by trigger
             // components.

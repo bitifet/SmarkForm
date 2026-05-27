@@ -27,6 +27,8 @@ nav_order: 5
 * [Event System](#event-system)
 * [Data Import / Export](#data-import-export)
 * [API Methods](#api-methods)
+    * [Actions](#action-methods)
+    * [Utilities & Introspection](#utilities-introspection)
 * [Hotkeys](#hotkeys)
 * [Form Submission](#form-submission)
 * [Quick Templates](#quick-templates)
@@ -80,7 +82,7 @@ const form = new SmarkForm(element, options);
 | Bare attribute | `data-smark` | Type/name inferred from HTML |
 | `data-smark="data-smark"` | `data-smark="data-smark"` | Treated as empty options |
 
-**No `data-smark` required on:** root element (passed to constructor), list item template (sole direct child before render).
+**`data-smark` is optional on:** root element (implicit form type, also gets options from constructor), list item template (implicit for the item role, type inferred or set in the "of" option of the list).
 
 > See: [`data-smark` syntax]({{ "getting_started/core_concepts" | relative_url }}#the-data-smark-attribute) · [Shorthand forms]({{ "getting_started/core_concepts" | relative_url }}#shorthand-syntaxes)
 
@@ -151,9 +153,6 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | custom | any | Via [`customActions`]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}#customactions) |
 
 **Signature:** `async actionName(data, options = {})`
-
-- `component.actions.reset(data, options)` — fires events, auto-focus
-- `component.reset(data, options)` — no events, no auto-focus
 
 ---
 
@@ -254,7 +253,8 @@ await form.import({ name: "Alice" });   // Import data
 
 **Copy pattern:**
 ```javascript
-await form.find("/billing").actions.export(null, { target: "../shipping" });
+const data = await form.find("/billing").export();
+await form.find("../shipping").import(data);
 ```
 
 ---
@@ -265,7 +265,7 @@ Every field component:
 
 > See: [Import/export]({{ "advanced_concepts/api_import_and_export" | relative_url }}#overview) · [Path traversal]({{ "advanced_concepts/form_traversing" | relative_url }}) · [Events]({{ "advanced_concepts/events" | relative_url }})
 
-### Actions (also via `component.actions.<name>()`)
+### Action methods
 
 | Method | Description |
 |--------|-------------|
