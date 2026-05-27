@@ -65,8 +65,8 @@ Alternatively, you can also use the shorthand notation inferring the type from t
 
 **Example:**
 
-{% raw %} <!-- simple_color {{{ --> {% endraw %}
-{% capture simple_color -%}
+{% raw %} <!-- simple_date {{{ --> {% endraw %}
+{% capture simple_date -%}
 <div id="myForm$$">
   <input type="date" name="birthdate" data-smark>
 </div>{%
@@ -79,8 +79,8 @@ endcapture %}
 }
 {%- endcapture %}
 
-{% raw %} <!-- simple_color_tests {{{ --> {% endraw %}
-{% capture simple_color_tests -%}
+{% raw %} <!-- simple_date_tests {{{ --> {% endraw %}
+{% capture simple_date_tests -%}
 export default async ({ expect, readField, writeField }) => {
     await writeField('birthdate', new Date("2023-11-30"));
     expect(await readField('birthdate')).toBe("2023-11-30");
@@ -107,11 +107,11 @@ export default async ({ expect, readField, writeField }) => {
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
-    formId="simple_color"
-    htmlSource=simple_color
+    formId="simple_date"
+    htmlSource=simple_date
     demoValue=demoValue
     showEditor=true
-    tests=simple_color_tests
+    tests=simple_date_tests
 %}
 
 
