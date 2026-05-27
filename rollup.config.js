@@ -64,25 +64,16 @@ const computed_plugin = ()=>({
 
 
 export default [
+    // ESM build — modern browsers only (esmodules target)
     {
         input: 'src/main.js',
-        output: [
-            {   // ES module
-                file: pkg.browser,
-                format: 'es',
-                compact: true,
-                sourcemap: true,
-            },
-            {   // UMD module
-                name: 'SmarkForm',
-                file: pkg.umd,
-                format: 'umd',
-                compact: true,
-                sourcemap: true,
-            },
-        ],
+        output: {
+            file: pkg.browser,
+            format: 'es',
+            compact: true,
+            sourcemap: true,
+        },
         plugins: [
-            watch_package_json(),
             del({
                 targets: delTargets,
                 runSync: true,
@@ -91,10 +82,8 @@ export default [
                 babelHelpers: 'bundled',
                 presets: [
                     ['@babel/preset-env', {
-                        //useBuiltIns: "usage",
-                        // targets: {
-                        //     esmodules: true,
-                        // },
+                        targets: { esmodules: true },
+                        bugfixes: true,
                     }],
                 ],
                 plugins: [
@@ -103,6 +92,38 @@ export default [
             }),
             cleanup(),
             terser(),
+            watch_package_json(),
+            copy({
+                targets: copyTargets,
+                copySync: true,
+            }),
+        ]
+    },
+    // UMD build — broad browser support (uses browserslist from package.json)
+    {
+        input: 'src/main.js',
+        output: {
+            name: 'SmarkForm',
+            file: pkg.umd,
+            format: 'umd',
+            compact: true,
+            sourcemap: true,
+        },
+        plugins: [
+            babel({
+                babelHelpers: 'bundled',
+                presets: [
+                    ['@babel/preset-env', {
+                        // uses browserslist from package.json: "> 0.25%, not dead"
+                    }],
+                ],
+                plugins: [
+                    ["@babel/plugin-proposal-decorators", { "version": "2023-01" }]
+                ]
+            }),
+            cleanup(),
+            terser(),
+            watch_package_json(),
             copy({
                 targets: copyTargets,
                 copySync: true,
