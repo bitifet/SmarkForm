@@ -96,6 +96,29 @@ node scripts/collect-docs-examples.js
 - If tests can't find examples, re-run the collector
 - Check that example files exist in docs/ structure
 
+### Cheatsheet Validation Script
+
+**What it does**: Validates the Developer Cheatsheet (`docs/_resources/cheatsheet.md`) for structural integrity — ensures TOC anchors match actual section headings and all internal cross-reference links resolve to existing doc pages.
+
+**Location**: `scripts/validate-cheatsheet.js`
+
+**How to run locally**:
+```bash
+node scripts/validate-cheatsheet.js
+```
+
+**Key details**:
+- Runs automatically as part of `npm run pretest` (before the collector)
+- Checks TOC anchor IDs against generated heading anchors
+- Validates all `{{ "..." | relative_url }}` references against the real docs/ file tree
+- Accounts for Jekyll collection directory naming (`_advanced_concepts` → `advanced_concepts`)
+- Exit code 0 = pass, 1 = fail
+
+**Troubleshooting**:
+- If validation fails with "TOC anchor has no matching heading", the heading was renamed without updating the TOC
+- If validation fails with "does not match any doc page", a `relative_url` link points to a non-existent file
+- After adding new sections to the cheatsheet, update both the TOC and (if needed) the `REQUIRED_SECTIONS` list in the script
+
 ### Build & Bundle Agents
 
 **What they do**: Bundle the source code using Rollup to produce ESM and UMD distributions in `dist/`.
@@ -311,6 +334,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Dependabot | `.github/dependabot.yml` |
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` |
+| Cheatsheet validation | `scripts/validate-cheatsheet.js` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
 | Example Pug layout | `src/examples/include/layout.pug` |
 | Example Pug mixins | `src/examples/include/mixins.pug` |
@@ -323,7 +347,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 npm test                    # Run full matrix: chromium + firefox + webkit + chromium-mobile
 npm run test:quick          # Run on one randomly-chosen browser (fast sanity check)
 npm run test:pick          # Run specific test file(s) interactively
-npm run pretest            # Build and collect examples (runs before test / test:quick)
+npm run pretest            # Validate cheatsheet, build, and collect examples (runs before test / test:quick)
 
 # Building
 npm run build              # Build production library
@@ -337,6 +361,7 @@ npm run dev                # Watch library + serve docs
 
 # Utility
 node scripts/collect-docs-examples.js  # Collect docs examples
+node scripts/validate-cheatsheet.js    # Validate cheatsheet integrity
 ```
 
 ## Agent Knowledge Directory (`AGENTS/`)
@@ -348,6 +373,7 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 | `AGENTS/SmarkForm-Usage.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Usage.md` — component types, list template roles, button context patterns, CSS grid layout, `exportEmpties` behaviour. Full content kept here for agents that need it without following a link. |
 | `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
 | `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
+| `AGENTS/Cheatsheet.md` | Developer Cheatsheet reference — what each section covers, how agents should use it when generating SmarkForm code, and validation details |
 
 **Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
 

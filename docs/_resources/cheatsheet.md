@@ -140,10 +140,10 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 
 | Action | Target Type | Description |
 |--------|-------------|-------------|
-| `export` | Any | [Return current value]({{ "advanced_concepts/api_import_and_export" | relative_url }}#the-export-action) as JSON |
-| `import` | Any | [Set value]({{ "advanced_concepts/api_import_and_export" | relative_url }}#the-import-action) from JSON data |
-| `reset` | Any | [Restore `defaultValue`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#default-values-clear-and-reset) |
-| `clear` | Any | [Reset to type-level `emptyValue`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `export` | Any | [Return current value]({{ "advanced_concepts/data_import_and_export" | relative_url }}#the-export-action) as JSON |
+| `import` | Any | [Set value]({{ "advanced_concepts/data_import_and_export" | relative_url }}#the-import-action) from JSON data |
+| `reset` | Any | [Restore `defaultValue`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `clear` | Any | [Reset to type-level `emptyValue`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
 | `addItem` | list | [Add new item]({{ "component_types/type_list" | relative_url }}#async-additem-action) |
 | `removeItem` | list | [Remove target item(s)]({{ "component_types/type_list" | relative_url }}#async-removeitem-action) |
 | `submit` | form | [Submit form data]({{ "component_types/type_form" | relative_url }}#async-submit-action) via HTTP |
@@ -233,7 +233,7 @@ await form.find("/username").export();  // Single field
 await form.import({ name: "Alice" });   // Import data
 ```
 
-> See: [Full import/export docs]({{ "advanced_concepts/api_import_and_export" | relative_url }}#overview)
+> See: [Full import/export docs]({{ "advanced_concepts/data_import_and_export" | relative_url }}#overview)
 
 | Call | Updates default? | `reset()` restores |
 |------|-----------------|-------------------|
@@ -263,16 +263,16 @@ await form.find("../shipping").import(data);
 
 Every field component:
 
-> See: [Import/export]({{ "advanced_concepts/api_import_and_export" | relative_url }}#overview) · [Path traversal]({{ "advanced_concepts/form_traversing" | relative_url }}) · [Events]({{ "advanced_concepts/events" | relative_url }})
+> See: [Import/export]({{ "advanced_concepts/data_import_and_export" | relative_url }}#overview) · [Path traversal]({{ "advanced_concepts/form_traversing" | relative_url }}) · [Events]({{ "advanced_concepts/events" | relative_url }})
 
 ### Action methods
 
 | Method | Description |
 |--------|-------------|
-| `export(data, options)` | [Return current value]({{ "advanced_concepts/api_import_and_export" | relative_url }}) |
-| `import(data, options)` | [Set value from data]({{ "advanced_concepts/api_import_and_export" | relative_url }}) |
-| `clear(options)` | [Reset to type-level empty]({{ "advanced_concepts/api_import_and_export" | relative_url }}#default-values-clear-and-reset) |
-| `reset(options)` | [Restore `defaultValue`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `export(data, options)` | [Return current value]({{ "advanced_concepts/data_import_and_export" | relative_url }}) |
+| `import(data, options)` | [Set value from data]({{ "advanced_concepts/data_import_and_export" | relative_url }}) |
+| `clear(options)` | [Reset to type-level empty]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `reset(options)` | [Restore `defaultValue`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
 
 ### Utilities & Introspection
 

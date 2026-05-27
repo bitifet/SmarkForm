@@ -25,6 +25,8 @@ and versatile tool for building HTML form applications.
 \[[More...](https://smarkform.bitifet.net/about/introduction)\]
 
 
+📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
+
 ## 30-second Example
 
 A contact form with a dynamic phone-number list — no manual wiring, just markup:
