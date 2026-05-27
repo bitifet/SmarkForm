@@ -480,3 +480,24 @@
     border-color: #44434d !important;
   }
 }
+
+/* Print media overrides — ensure tables render without horizontal scrollbars on paper */
+@media print {
+  .table-wrapper {
+    overflow: visible !important;
+  }
+  table {
+    min-width: 0;
+    width: 100%;
+    table-layout: fixed;
+  }
+  th, td {
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  /* Override any narrower context-specific rules */
+  .main-content .table-wrapper {
+    overflow: visible !important;
+  }
+}
