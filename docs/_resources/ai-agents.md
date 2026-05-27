@@ -74,7 +74,8 @@ SmarkForm-specific implementation rules.
 
 ### Core Skill (recommended)
 
-- `skills/SmarkForm-Form-Builder.skill.md`
+- Canonical: `skills/SmarkForm-Form-Builder.skill.md`
+- OpenCode: `skills/smarkform-form-builder/SKILL.md`
 
 Use this for general SmarkForm form implementation. It enforces:
 - source-priority lookups (deployed docs first)
@@ -87,7 +88,8 @@ Use this for general SmarkForm form implementation. It enforces:
 
 ### Optional Advanced Skill
 
-- `skills/SmarkForm-Advanced-Internals.skill.md`
+- Canonical: `skills/SmarkForm-Advanced-Internals.skill.md`
+- OpenCode: `skills/smarkform-advanced-internals/SKILL.md`
 
 Use this when handling advanced internals and edge cases. It includes
 substantive rules for:
@@ -99,11 +101,20 @@ substantive rules for:
 
 ### Import into opencode or similar tools
 
-The skill files include opencode-compatible YAML front matter.
+The repository provides two formats for each skill:
+
+- **Canonical format** (`.skill.md`) — the single-file source of truth.
+- **OpenCode format** (`<name>/SKILL.md`) — a directory matching the skill
+  name, containing a `SKILL.md` file with `name` and `description` in the
+  YAML front matter.
+
 To install in opencode:
 
-1. Open `~/.config/opencode/skills/` (or your tool's equivalent).
-2. Copy or symlink the desired `.skill.md` file(s).
+1. Locate your opencode skills directory (often `~/.config/opencode/skills/`
+   or a project-local `.opencode/skills/`).
+2. Copy or symlink the desired skill's complete directory tree:
+   - `skills/smarkform-form-builder/` → `SKILL.md`
+   - `skills/smarkform-advanced-internals/` → `SKILL.md`
 3. Restart opencode — the skill is available automatically.
 
 For other tools:
@@ -121,13 +132,17 @@ For other tools:
 
 ## Maintenance Rules for Skill Files
 
-- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both `skills/SmarkForm-Form-Builder.skill.md` and `skills/SmarkForm-Advanced-Internals.skill.md` if affected; when in doubt, update both in the same PR.
+- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both skill specs if affected; when in doubt, update both in the same PR.
 - Apply the same update rule when their deployed equivalents change:
   `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms` and
   `https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage`.
+- **Update both formats**: when editing a canonical `.skill.md` file, also
+  update the corresponding `skills/<name>/SKILL.md` so OpenCode exports stay
+  in sync.
 - Keep the source-priority order intact so deployed docs remain the primary
   knowledge source for agents.
-- If behavioral rules change, update both the skill file(s) and this page.
+- If behavioral rules change, update the skill file(s), this page, and the
+  AGENTS.md skills table.
 
 ---
 

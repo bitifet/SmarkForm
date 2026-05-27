@@ -340,6 +340,8 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Example Pug layout | `src/examples/include/layout.pug` |
 | Example Pug mixins | `src/examples/include/mixins.pug` |
 | Example SmarkForm mixin templates | `src/examples/include/templates.pug` |
+| Core AI skill spec | `skills/SmarkForm-Form-Builder.skill.md`, `skills/smarkform-form-builder/SKILL.md` |
+| Advanced AI skill spec | `skills/SmarkForm-Advanced-Internals.skill.md`, `skills/smarkform-advanced-internals/SKILL.md` |
 
 ## Common Commands Reference
 
@@ -393,13 +395,16 @@ The `skills/` directory contains installable skill specifications that can be
 copied into AI tools (opencode and similar) to enforce SmarkForm-specific
 implementation behavior.
 
-| File | Purpose |
-|------|---------|
-| `skills/SmarkForm-Form-Builder.skill.md` | Core skill for implementing SmarkForm forms with required rules and a mandatory compliance checklist |
-| `skills/SmarkForm-Advanced-Internals.skill.md` | Optional advanced skill for internals-heavy work (action semantics, list/context edge cases, security-sensitive patterns) |
+| File/Directory | Purpose |
+|----------------|---------|
+| `skills/SmarkForm-Form-Builder.skill.md` | Canonical core skill spec (single-file format) |
+| `skills/smarkform-form-builder/SKILL.md` | OpenCode-format export of the core skill |
+| `skills/SmarkForm-Advanced-Internals.skill.md` | Canonical advanced skill spec (single-file format) |
+| `skills/smarkform-advanced-internals/SKILL.md` | OpenCode-format export of the advanced skill |
 
 Maintenance rule:
-- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both skill files in `skills/` if affected; when in doubt, update both in the same PR so installable skills stay aligned with canonical docs.
+- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both skill specs in `skills/` if affected; when in doubt, update both in the same PR so installable skills stay aligned with canonical docs.
+- **Update both formats**: when editing a canonical `.skill.md` file, also update the corresponding `skills/<name>/SKILL.md` so both formats stay in sync.
 
 
 - **Contributing**: See `CONTRIBUTING.md`
