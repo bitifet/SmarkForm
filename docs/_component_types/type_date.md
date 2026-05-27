@@ -79,12 +79,39 @@ endcapture %}
 }
 {%- endcapture %}
 
+{% raw %} <!-- simple_color_tests {{{ --> {% endraw %}
+{% capture simple_color_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('birthdate', new Date("2023-11-30"));
+    expect(await readField('birthdate')).toBe("2023-11-30");
+
+    await writeField('birthdate', new Date("2023-11-30").getTime());
+    expect(await readField('birthdate')).toBe("2023-11-30");
+
+    await writeField('birthdate', "2023-12-25");
+    expect(await readField('birthdate')).toBe("2023-12-25");
+
+    await writeField('birthdate', "20231225");
+    expect(await readField('birthdate')).toBe("2023-12-25");
+
+    await writeField('birthdate', "invalid-date");
+    expect(await readField('birthdate')).toBe(null);
+
+    await writeField('birthdate', null);
+    expect(await readField('birthdate')).toBe(null);
+
+    await writeField('birthdate', "");
+    expect(await readField('birthdate')).toBe(null);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_color"
     htmlSource=simple_color
     demoValue=demoValue
     showEditor=true
-    tests=false
+    tests=simple_color_tests
 %}
 
 
@@ -123,11 +150,23 @@ throwing an error.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- date_error_tests {{{ --> {% endraw %}
+{% capture date_error_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('birthdate1', "2023-06-15");
+
+    const exported = await readField('birthdate1');
+    expect(exported).toBe("2023-06-15");
+    expect(/^\d{4}-\d{2}-\d{2}$/.test(exported)).toBe(true);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="date_error"
     htmlSource=date_error
     showEditor=true
-    tests=false
+    tests=date_error_tests
     expectedPageErrors=0
     expectedConsoleErrors=1
 %}
@@ -200,4 +239,3 @@ Reverts the date field to its configured default value. If no default was config
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-

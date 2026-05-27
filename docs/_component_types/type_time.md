@@ -79,12 +79,45 @@ endcapture %}
 }
 {%- endcapture %}
 
+{% raw %} <!-- simple_time_tests {{{ --> {% endraw %}
+{% capture simple_time_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('meetingTime', new Date("2023-11-30T14:30:45.789Z"));
+    expect(await readField('meetingTime')).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('meetingTime', new Date("2023-12-25T09:15:30.000Z").getTime());
+    expect(await readField('meetingTime')).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('meetingTime', "12:34");
+    expect(await readField('meetingTime')).toBe("12:34:00");
+
+    await writeField('meetingTime', "18:45:30");
+    expect(await readField('meetingTime')).toBe("18:45:30");
+
+    await writeField('meetingTime', "154530");
+    expect(await readField('meetingTime')).toBe("15:45:30");
+
+    await writeField('meetingTime', "1545");
+    expect(await readField('meetingTime')).toBe("15:45:00");
+
+    await writeField('meetingTime', "invalid-time");
+    expect(await readField('meetingTime')).toBe(null);
+
+    await writeField('meetingTime', null);
+    expect(await readField('meetingTime')).toBe(null);
+
+    await writeField('meetingTime', "");
+    expect(await readField('meetingTime')).toBe(null);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_time"
     htmlSource=simple_time
     demoValue=demoValue
     showEditor=true
-    tests=false
+    tests=simple_time_tests
 %}
 
 
@@ -125,11 +158,23 @@ throwing an error.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- time_error_tests {{{ --> {% endraw %}
+{% capture time_error_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('meetingTime1', "14:25:37");
+
+    const exported = await readField('meetingTime1');
+    expect(exported).toBe("14:25:37");
+    expect(/^\d{2}:\d{2}:\d{2}$/.test(exported)).toBe(true);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="time_error"
     htmlSource=time_error
     showEditor=true
-    tests=false
+    tests=time_error_tests
     expectedPageErrors=0
     expectedConsoleErrors=1
 %}
@@ -202,4 +247,3 @@ Reverts the time field to its configured default value. If no default was config
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-
