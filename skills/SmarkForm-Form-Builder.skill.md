@@ -1,8 +1,14 @@
+---
+name: smarkform-form-builder
+description: Core skill for implementing SmarkForm forms — required rules, source priority, and a mandatory compliance checklist.
+---
+
 # SmarkForm Form Builder — Installable Skill Spec
 
 ## Goal
 
-Generate production-ready SmarkForm forms that follow current SmarkForm patterns and avoid common implementation mistakes.
+Generate production-ready SmarkForm forms that follow current SmarkForm patterns
+and avoid common implementation mistakes.
 
 ## Source Priority (mandatory)
 
@@ -23,19 +29,29 @@ If sources disagree, prefer the highest-priority source.
 ## Required Rules (hard requirements)
 
 1. **Event/action integration**
-   - Use SmarkForm actions and SmarkForm events (`BeforeAction_*` / `AfterAction_*`) for form workflows.
-   - Do not replace SmarkForm action flows with arbitrary ad-hoc DOM listeners on managed form controls.
+   - Use SmarkForm actions and SmarkForm events (`BeforeAction_*` /
+     `AfterAction_*`) for form workflows.
+   - Do not replace SmarkForm action flows with arbitrary ad-hoc DOM listeners
+     on managed form controls.
 2. **Render timing**
-   - Always wait for `await myForm.rendered` before any `find()` usage or component-tree-dependent logic.
+   - Always wait for `await myForm.rendered` before any `find()` usage or
+     component-tree-dependent logic.
 3. **List/template/context semantics**
-   - Follow list template role rules (`item`, `empty_list`, `header`, `footer`, etc.).
+   - Follow list template role rules (`item`, `empty_list`, `header`, `footer`,
+     etc.).
    - Respect context/target resolution semantics for triggers.
-   - For controls inside cloned item templates that target sub-lists, use safe placement patterns documented in SmarkForm Usage.
+   - For controls inside cloned item templates that target sub-lists, use safe
+     placement patterns documented in SmarkForm Usage.
 4. **Security/root options**
-   - Security-sensitive options must be configured on the root SmarkForm constructor options (not via nested `data-smark` inheritance tricks).
+   - Security-sensitive options must be configured on the root SmarkForm
+     constructor options (not via nested `data-smark` inheritance tricks).
    - Keep secure defaults unless explicit requirement justifies opt-in.
-5. **Naming convention in examples**
-   - Use `myForm` as the SmarkForm instance variable in generated JS examples.
+
+## Conventions (strongly recommended)
+
+- Use `myForm` as the SmarkForm instance variable in generated JS examples.
+  This keeps generated code consistent with the docs and makes it easier for
+  users to follow. The code works identically with any variable name.
 
 ## Standard Implementation Workflow
 
@@ -67,20 +83,28 @@ When generating output, evaluate each item and report explicit pass/fail status.
 Replace template markers with:
 - `[x]` for pass
 - `[ ]` for fail
+
 Do not leave this section as an untouched unchecked template.
 
 - [ ] Managed fields include `data-smark`.
 - [ ] Root element is passed to `new SmarkForm(...)` correctly.
-- [ ] Uses `myForm` variable naming convention.
+- [ ] Instance variable follows `myForm` convention (strongly recommended).
 - [ ] `await myForm.rendered` before `find()` and component-dependent logic.
-- [ ] Uses SmarkForm actions/events for form workflows (`BeforeAction_*` / `AfterAction_*`) where applicable.
+- [ ] Uses SmarkForm actions/events for form workflows (`BeforeAction_*` /
+      `AfterAction_*`) where applicable.
 - [ ] List template roles and placement rules are respected.
 - [ ] `context` / `target` paths follow SmarkForm rules.
-- [ ] No conflicting dual defaults (`value=""` plus JSON `"value"` on same element).
-- [ ] Security-sensitive options are set at root constructor options when needed.
-- [ ] Production CDN examples use explicit version numbers (for example `@0.16.0`) and do not use `@latest`.
+- [ ] No conflicting dual defaults (`value=""` plus JSON `"value"` on same
+      element).
+- [ ] Security-sensitive options are set at root constructor options when
+      needed.
+- [ ] Production CDN examples use explicit version numbers (for example
+      `@0.16.0`) and do not use `@latest`.
 
 ## Distribution Notes
 
-- This file is the canonical core skill artifact in-repo.
-- For external tools (opencode, similar), adapt this spec to tool-specific front matter/format without changing behavioral rules.
+- This file is the canonical core skill artifact in-repo.  The YAML front
+  matter uses opencode-compatible fields; other tools may need minor format
+  adaptation.
+- For external tools (opencode, similar), the body is tool-agnostic — only
+  the front matter may require adjustment to match the tool's metadata format.

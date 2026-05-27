@@ -82,15 +82,31 @@ Use this for general SmarkForm form implementation. It enforces:
 - required `await myForm.rendered` timing
 - list/context/template rules
 - root-level security option rules
+- `myForm` naming convention (strongly recommended, not a hard requirement)
 - mandatory “SmarkForm compliance checklist” in outputs
 
 ### Optional Advanced Skill
 
 - `skills/SmarkForm-Advanced-Internals.skill.md`
 
-Use this when handling advanced internals and edge cases.
+Use this when handling advanced internals and edge cases. It includes
+substantive rules for:
+- `@action` decorator calling conventions and argument positions
+- context/target resolution in nested list structures
+- list template role lifecycle and cloning behavior
+- mixin security option interactions and progressive allowlist semantics
+- data flattening edge cases (`exportEmpties`, `keyStyle`, `arrayStyle`)
 
 ### Import into opencode or similar tools
+
+The skill files include opencode-compatible YAML front matter.
+To install in opencode:
+
+1. Open `~/.config/opencode/skills/` (or your tool's equivalent).
+2. Copy or symlink the desired `.skill.md` file(s).
+3. Restart opencode — the skill is available automatically.
+
+For other tools:
 
 1. Open the desired skill file from `skills/`.
 2. Copy its full content into your tool's skill/instruction definition.
