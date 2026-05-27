@@ -79,12 +79,51 @@ endcapture %}
 }
 {%- endcapture %}
 
+{% raw %} <!-- simple_datetime_local_tests {{{ --> {% endraw %}
+{% capture simple_datetime_local_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('appointmentTime', new Date("2023-11-30T14:30:45"));
+    expect(await readField('appointmentTime')).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('appointmentTime', new Date("2023-11-30T14:30:45").getTime());
+    expect(await readField('appointmentTime')).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('appointmentTime', "2023-12-25T18:45:30");
+    expect(await readField('appointmentTime')).toBe("2023-12-25T18:45:30");
+
+    await writeField('appointmentTime', "2023-12-25T18:45");
+    expect(await readField('appointmentTime')).toBe("2023-12-25T18:45:00");
+
+    await writeField('appointmentTime', "20231225T184530");
+    expect(await readField('appointmentTime')).toBe("2023-12-25T18:45:30");
+
+    await writeField('appointmentTime', "20231225T1845");
+    expect(await readField('appointmentTime')).toBe("2023-12-25T18:45:00");
+
+    await writeField('appointmentTime', "2023-12-25T18:45:30.000Z");
+    expect(await readField('appointmentTime')).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('appointmentTime', "invalid-datetime");
+    expect(await readField('appointmentTime')).toBe(null);
+
+    await writeField('appointmentTime', null);
+    expect(await readField('appointmentTime')).toBe(null);
+
+    await writeField('appointmentTime', "");
+    expect(await readField('appointmentTime')).toBe(null);
+
+    await writeField('appointmentTime', "2023-12-25T14:30:45");
+    expect(await readField('appointmentTime')).toBe("2023-12-25T14:30:45");
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_datetime_local"
     htmlSource=simple_datetime_local
     demoValue=demoValue
     showEditor=true
-    tests=false
+    tests=simple_datetime_local_tests
 %}
 
 
@@ -127,11 +166,22 @@ throwing an error.
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- datetime_local_error_tests {{{ --> {% endraw %}
+{% capture datetime_local_error_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('appointmentTime1', "2023-06-15T12:34:56");
+
+    const exported = await readField('appointmentTime1');
+    expect(exported).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}$/);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="datetime_local_error"
     htmlSource=datetime_local_error
     showEditor=true
-    tests=false
+    tests=datetime_local_error_tests
     expectedPageErrors=0
     expectedConsoleErrors=1
 %}
@@ -204,4 +254,3 @@ Reverts the datetime-local field to its configured default value. If no default 
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-
