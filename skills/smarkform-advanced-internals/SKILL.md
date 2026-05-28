@@ -8,7 +8,7 @@ description: Optional advanced skill for SmarkForm internals-heavy work — acti
 ## Goal
 
 Handle advanced SmarkForm internals safely: complex list semantics, action
-decorator nuances, context/target path edge-cases, data-flattening pitfalls,
+method signatures, context/target path edge-cases, data-flattening pitfalls,
 and security-sensitive option interactions.
 
 ## Scope
@@ -16,9 +16,9 @@ and security-sensitive option interactions.
 Use this optional skill for tasks involving any of the following:
 
 - Nested list/template edge cases (lists inside list items, shared sub-templates)
-- Programmatic action invocation (`form.do("action", ...)`) nuances
+- Action method signatures and direct programmatic invocation
+- Action method argument semantics (data vs options)
 - Complex `context` / `target` path resolution (cross-list, parent-relative)
-- `@action` decorator argument position semantics
 - Mixin/security-option-sensitive implementations
 - Data export flattening (`keyStyle`, `arrayStyle`, `exportEmpties`) edge cases
 
@@ -35,17 +35,32 @@ tasks, start by reading:
 
 ## Non-negotiable Internals Rules
 
-### `@action` Calling Conventions
+### Action Method Signatures
 
-- The **first argument** to a decorated action method is always the event
-  target element (or `null` for programmatic calls).
-- The **last argument** is the action payload (an object passed by the caller).
-- Intermediate arguments are positional extras from the trigger (e.g. a
-  `SmarkFormEvent` instance for internal invocations).
-- When calling actions programmatically via `form.do("actionName", payload)`,
-  the target is set to the form root and the payload is the second argument.
-- Never bypass the action system by calling decorated methods directly —
-  always go through `form.do()` or a trigger element with `action` attribute.
+All action methods follow the same pattern:
+
+- **First argument:** the data payload (e.g., data to import, or `null` /
+  `undefined` for data-less actions like `export`).  Ignored by actions that
+  derive their input from the form state.
+- **Second argument:** an optional options object.  When the action is invoked
+  through a trigger (e.g., a button click), `options.origin` holds the trigger
+  element and other options are populated by `getTriggerArgs()`.
+
+There are no positional arguments beyond `(data, options)`.
+
+To invoke an action programmatically, call the method directly by name on the
+component instance:
+
+```js
+const data = await form.export();
+await form.import({ name: "John", email: "john@example.com" });
+await list.addItem();
+await list.removeItem(list.children[0]);
+```
+
+Each method documents which arguments it accepts in the source or the
+type-specific doc pages.  When called via a trigger, the trigger system
+merges `data-smark` options and resolves context/target automatically.
 
 ### Action Context and Target Resolution
 
@@ -62,17 +77,18 @@ tasks, start by reading:
 - Cross-list targets in sortable lists resolve relative to the **source**
   trigger's context, not the drop target.
 
-### List Template Role Lifecycle
+### List Template Rendering
 
-- Only `item` role templates are **cloned** (`header`, `footer`, `empty_list`
-  are singletons).
-- `placeholder` templates appear when `max_items` is set and the list is
-  not full — they are cloned but carry no data binding.
-- `separator` and `last_separator` are cloned and inserted between items.
-  `last_separator` replaces `separator` for the gap between the second-last
-  and last item.
-- Roles are assigned at registration time. Dynamically changing a template's
-  role after registration has no effect.
+- `header` renders once before any items.
+- `footer` renders once after all items.
+- `empty_list` renders when the list has zero items (hidden otherwise).
+- `placeholder` renders in empty slots when `max_items` is finite and the
+  list is not full.  Placeholders carry no data.
+- `separator` renders between consecutive items.
+- `last_separator` renders between the second-last and last item (falls back
+  to `separator` if not defined).
+- Template roles are assigned at registration time (via `data-role` or the
+  `role` property in `data-smark`).  Changing them afterwards has no effect.
 
 ### Mixin Security Options
 
@@ -80,8 +96,9 @@ tasks, start by reading:
   `allowSameOriginMixinScripts`, and `allowCrossOriginMixinScripts` are
   **root-level only** — they cannot be overridden per-component via
   `data-smark`.
-- These options form a progressive allowlist: setting a broader option
-  implicitly permits narrower ones only if the narrower isn't explicitly set.
+- Each option is independent: `allowExternalMixins` controls fetching the
+  external template, and the script policy options control script execution
+  after a successful fetch.  Setting one does not implicitly permit another.
 - Default is `"block"` for all.  Only opt-in when a specific mixin source
   is required and its provenance is verified.
 
