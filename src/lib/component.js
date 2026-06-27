@@ -73,6 +73,7 @@ export class SmarkComponent {
         , {
             property_name = "smark",
             _mixinChain,
+            _scopedMasks,
             ...options
         } = {}
         , parent
@@ -83,6 +84,11 @@ export class SmarkComponent {
         // Passed via constructor options so it is available immediately
         // (before the async IIFE runs its first render/enhance cycle).
         me._mixinChain = _mixinChain || null;
+
+        // Store mixin-scoped masks (from <script type="smark-mask"> inside
+        // an enclosing mixin template).  Available to this component and
+        // its descendants for declarative mask resolution.
+        me._scopedMasks = _scopedMasks || null;
 
         me.validName = (function nameGenerator() {//{{{
             let counter = 0;
@@ -341,15 +347,18 @@ export class SmarkComponent {
             node
         );
 
-        // Pass the mixin chain via constructor options so it is available
-        // immediately when the component's async IIFE starts its render cycle
-        // (before `new ctrl()` returns).
+        // Pass the mixin chain and scoped masks via constructor options so
+        // they are available immediately when the component's async IIFE
+        // starts its render cycle (before `new ctrl()` returns).
         const inheritedChain = mixinExpansion
             ? mixinExpansion.childChain
             : (me._mixinChain || null);
+        const inheritedMasks = mixinExpansion
+            ? mixinExpansion.scopedMasks
+            : (me._scopedMasks || null);
         const component = new ctrl(
             node
-            , { ...options, _mixinChain: inheritedChain }
+            , { ...options, _mixinChain: inheritedChain, _scopedMasks: inheritedMasks }
             , me
         );
 

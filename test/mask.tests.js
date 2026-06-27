@@ -1,5 +1,25 @@
+// test/mask.tests.js
+// ==================
+// Playwright tests for SmarkForm masking — declarative API.
+// Masks are applied via the `mask` property in data-smark, referencing
+// a factory registered with SmarkForm.registerMask() or a
+// <script type="smark-mask"> element.
+
 import { test, expect } from '@playwright/test';
 import {renderPug} from '../src/lib/test/helpers.js';
+
+// Shared mock mask factory used across tests.
+// Tracks both display and unmasked values independently.
+const testMaskPreScript = `
+SmarkForm.registerMask("testMask", function(node) {
+    let _unmasked = "";
+    var inst = {
+        get unmaskedValue() { return _unmasked; },
+        set unmaskedValue(v) { _unmasked = v; }
+    };
+    return inst;
+});
+`;
 
 const pugSrc = (// {{{
 `extends layout.pug
@@ -9,8 +29,10 @@ block mainForm
         p
             label Text Field
             input(
-                data-smark
-                name="textField"
+                data-smark={
+                    name: "textField",
+                    mask: "testMask"
+                }
                 type="text"
             )
 
@@ -20,7 +42,8 @@ block mainForm
             input(
                 data-smark={
                     type: "number",
-                    name: "numberField"
+                    name: "numberField",
+                    mask: "testMask"
                 }
                 type="number"
             )
@@ -31,349 +54,364 @@ block mainForm
             input(
                 data-smark={
                     type: "date",
-                    name: "dateField"
+                    name: "dateField",
+                    mask: "testMask"
                 }
                 type="date"
             )
 
-        // Singleton number (mask called on outer singleton component)
+        // Singleton number (mask inherited from singleton parent)
         div(data-smark={
             type: "number",
-            name: "singletonNumber"
+            name: "singletonNumber",
+            mask: "testMask"
         })
             p
                 label Singleton Number
                 input(data-smark type="number")
 `);// }}}
 
-test.describe('mask() method', () => {
-    const test_title = 'mask() method';
+test.describe('Declarative masking', () => {
+    const test_title = 'Declarative masking';
 
-    test('changes input type to "text" for number fields', async ({ page }) => {//{{{
+    // ──────────────────────────────────────────────────────────────────────────
+    // Type conversion
+    // ──────────────────────────────────────────────────────────────────────────
+    test('changes input type to "text" for number fields', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const field = form.find("/numberField");
-                await field.import(42); // ensure rendered
-                const typeBefore = field.targetFieldNode.getAttribute("type");
-                field.mask(() => null);
-                const typeAfter = field.targetFieldNode.getAttribute("type");
-                return { typeBefore, typeAfter /* masking is now permanent; _originalType removed */ };
+                return field.targetFieldNode.getAttribute("type");
             });
-
-            expect(result.typeBefore).toBe("number");
-            expect(result.typeAfter).toBe("text");
+            expect(result).toBe("text");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('changes input type to "text" for date fields', async ({ page }) => {//{{{
+    test('changes input type to "text" for date fields', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const field = form.find("/dateField");
-                await field.import("2024-01-15");
-                const typeBefore = field.targetFieldNode.getAttribute("type");
-                field.mask(() => null);
-                const typeAfter = field.targetFieldNode.getAttribute("type");
-                return { typeBefore, typeAfter /* masking is now permanent; _originalType removed */ };
+                return field.targetFieldNode.getAttribute("type");
             });
-
-            expect(result.typeBefore).toBe("date");
-            expect(result.typeAfter).toBe("text");
+            expect(result).toBe("text");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('does not change type for plain text fields', async ({ page }) => {//{{{
+    test('does not change type for plain text fields', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const field = form.find("/textField");
-                await field.import("hello");
-                const typeBefore = field.targetFieldNode.getAttribute("type");
-                field.mask(() => null);
-                const typeAfter = field.targetFieldNode.getAttribute("type");
-                return { typeBefore, typeAfter /* masking is now permanent; _originalType removed */ };
+                return field.targetFieldNode.getAttribute("type");
             });
-
-            expect(result.typeBefore).toBe("text");
-            expect(result.typeAfter).toBe("text");
+            expect(result).toBe("text");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('calls callback with the targetFieldNode', async ({ page }) => {//{{{
+    // ──────────────────────────────────────────────────────────────────────────
+    // Factory receives targetFieldNode
+    // ──────────────────────────────────────────────────────────────────────────
+    test('mask factory receives the targetFieldNode', async ({ page }) => {
+        const fnPreScript = `
+SmarkForm.registerMask("nodeTest", function(node) {
+    window._receivedNode = node;
+    window._tagName = node.tagName;
+    return { get unmaskedValue() { return ""; }, set unmaskedValue(v) {} };
+});
+`;
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: `extends layout.pug
+block mainForm
+    input(data-smark={name:"nodeTest",mask:"nodeTest"} type="number")`,
+                preScript: fnPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
-                const field = form.find("/numberField");
-                await field.import(99);
-                let receivedNode = null;
-                field.mask(node => {
-                    receivedNode = node;
-                    return null;
-                });
+                await form.rendered;
+                const field = form.find("/nodeTest");
                 return {
-                    isSameNode: receivedNode === field.targetFieldNode,
-                    tagName: receivedNode?.tagName,
+                    isSameNode: window._receivedNode === field.targetFieldNode,
+                    tagName: window._tagName,
                 };
             });
-
             expect(result.isSameNode).toBe(true);
             expect(result.tagName).toBe("INPUT");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('returns the component itself for chaining', async ({ page }) => {//{{{
+    // ──────────────────────────────────────────────────────────────────────────
+    // export() uses _maskInstance.unmaskedValue
+    // ──────────────────────────────────────────────────────────────────────────
+    test('export() uses _maskInstance.unmaskedValue when provided', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
-            onClosed = rendered.onClosed;
-            await page.goto(rendered.url);
-
-            const result = await page.evaluate(async () => {
-                const field = form.find("/textField");
-                await field.import("hi");
-                const returned = field.mask(() => null);
-                return returned === field;
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
             });
-
-            expect(result).toBe(true);
-        } finally {
-            if (onClosed) await onClosed();
-        }
-    });//}}}
-
-    test('export() uses _maskInstance.unmaskedValue when provided', async ({ page }) => {//{{{
-        let onClosed;
-        try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const field = form.find("/textField");
-                await field.import("original");
-                // Apply mock mask: displays formatted value but tracks unmasked separately
-                const mockMask = { unmaskedValue: "raw_value" };
-                field.mask(node => {
-                    node.value = "formatted_value"; // mask changes display
-                    return mockMask;
-                });
-                // export() should return unmaskedValue, not the formatted display value
+                // Simulate mask having applied a formatted value
+                field.targetFieldNode.value = "formatted_value";
+                field._maskInstance.unmaskedValue = "raw_value";
                 const exported = await field.export();
                 return { exported, displayValue: field.targetFieldNode.value };
             });
-
             expect(result.exported).toBe("raw_value");
             expect(result.displayValue).toBe("formatted_value");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('number field export() still returns a JS number when mask provides unmaskedValue', async ({ page }) => {//{{{
+    test('number field export() still returns a JS number when mask provides unmaskedValue', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const field = form.find("/numberField");
                 await field.import(1234.56);
-                // Mock a number mask: display "1,234.56", unmasked "1234.56"
-                const mockMask = { unmaskedValue: "1234.56" };
-                field.mask(node => {
-                    node.value = "1,234.56"; // formatted display
-                    return mockMask;
-                });
+                field._maskInstance.unmaskedValue = "1234.56";
                 const exported = await field.export();
                 return { exported, type: typeof exported };
             });
-
             expect(result.exported).toBe(1234.56);
             expect(result.type).toBe("number");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('export() falls back to nodeFld.value when no unmaskedValue', async ({ page }) => {//{{{
+    // ──────────────────────────────────────────────────────────────────────────
+    // export() fallback behavior
+    // ──────────────────────────────────────────────────────────────────────────
+    test('export() falls back to nodeFld.value when mask instance has no unmaskedValue', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: `extends layout.pug
+block mainForm
+    input(data-smark={name:"txt",mask:"noUnmasked"} type="text")`,
+                preScript: `
+SmarkForm.registerMask("noUnmasked", function(node) {
+    return { someOtherProp: true }; // no unmaskedValue property
+});
+`,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
-                const field = form.find("/textField");
+                await form.rendered;
+                const field = form.find("/txt");
                 await field.import("hello");
-                // mask returns an object WITHOUT unmaskedValue
-                field.mask(() => ({ someOtherProp: true }));
-                const exported = await field.export();
-                return exported;
+                return await field.export();
             });
-
             expect(result).toBe("hello");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('export() falls back to nodeFld.value when callback returns null', async ({ page }) => {//{{{
+    test('export() falls back to nodeFld.value when factory returns null', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: `extends layout.pug
+block mainForm
+    input(data-smark={name:"txt",mask:"nullReturn"} type="text")`,
+                preScript: `
+SmarkForm.registerMask("nullReturn", function(node) {
+    return null; // factory returns null
+});
+`,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
-                const field = form.find("/textField");
+                await form.rendered;
+                const field = form.find("/txt");
                 await field.import("world");
-                field.mask(() => null);
-                const exported = await field.export();
-                return exported;
+                return await field.export();
             });
-
             expect(result).toBe("world");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('singleton: mask() delegates to inner field', async ({ page }) => {//{{{
+    // ──────────────────────────────────────────────────────────────────────────
+    // Singleton mask behavior
+    // ──────────────────────────────────────────────────────────────────────────
+    test('singleton: mask instance lives on inner field, type converted on input', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const singleton = form.find("/singletonNumber");
-                await singleton.import(100);
-                const returned = singleton.mask(() => null);
                 return {
-                    // mask() returns the outer singleton component
-                    returnedIsSingleton: returned === singleton,
-                    // _maskInstance is on the inner field, not the singleton itself
                     innerHasMask: singleton.children[""]._maskInstance !== undefined,
                     outerHasNoMask: singleton._maskInstance === undefined,
-                    // type is changed on the actual input element
                     inputType: singleton.targetFieldNode.getAttribute("type"),
                 };
             });
-
-            expect(result.returnedIsSingleton).toBe(true);
             expect(result.innerHasMask).toBe(true);
             expect(result.outerHasNoMask).toBe(true);
             expect(result.inputType).toBe("text");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('singleton: export() still returns correct number type after masking', async ({ page }) => {//{{{
+    test('singleton: export() still returns correct number type after masking', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
+            });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const singleton = form.find("/singletonNumber");
                 await singleton.import(42);
-                const mockMask = { unmaskedValue: "42" };
-                singleton.mask(node => {
-                    node.value = "42.00"; // formatted display
-                    return mockMask;
-                });
+                const inner = singleton.children[""];
+                inner._maskInstance.unmaskedValue = "42";
                 const exported = await singleton.export();
                 return { exported, type: typeof exported };
             });
-
             expect(result.exported).toBe(42);
             expect(result.type).toBe("number");
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
+    });
 
-    test('import() dispatches input event on masked field', async ({ page }) => {//{{{
+    // ──────────────────────────────────────────────────────────────────────────
+    // import() dispatches input event on masked fields
+    // ──────────────────────────────────────────────────────────────────────────
+    test('import() dispatches input event when mask is applied', async ({ page }) => {
         let onClosed;
         try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
-            onClosed = rendered.onClosed;
-            await page.goto(rendered.url);
-
-            const result = await page.evaluate(async () => {
-                const field = form.find("/textField");
-                await field.import("initial");
-                let inputEventCount = 0;
-                const mockMask = { unmaskedValue: "" };
-                field.mask(node => {
-                    node.addEventListener("input", () => {
-                        inputEventCount++;
-                        mockMask.unmaskedValue = node.value;
-                    });
-                    return mockMask;
-                });
-                await field.import("updated");
-                return { inputEventCount, unmaskedValue: mockMask.unmaskedValue };
+            const rendered = await renderPug({
+                title: test_title,
+                src: pugSrc,
+                preScript: testMaskPreScript,
             });
-
-            expect(result.inputEventCount).toBeGreaterThanOrEqual(1);
-            expect(result.unmaskedValue).toBe("updated");
-        } finally {
-            if (onClosed) await onClosed();
-        }
-    });//}}}
-
-    test('import() does NOT dispatch extra input event on unmasked field', async ({ page }) => {//{{{
-        let onClosed;
-        try {
-            const rendered = await renderPug({ title: test_title, src: pugSrc });
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
 
             const result = await page.evaluate(async () => {
+                await form.rendered;
                 const field = form.find("/textField");
-                await field.import("initial");
                 let inputEventCount = 0;
                 field.targetFieldNode.addEventListener("input", () => {
                     inputEventCount++;
                 });
-                // No mask applied
+                await field.import("updated");
+                return { inputEventCount };
+            });
+            expect(result.inputEventCount).toBeGreaterThanOrEqual(1);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });
+
+    test('import() does NOT dispatch input event on unmasked field', async ({ page }) => {
+        const title = 'import_no_event_unmasked';
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title,
+                src: `extends layout.pug
+block mainForm
+    input(data-smark={name:"plain"} type="text")`,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+
+            const result = await page.evaluate(async () => {
+                await form.rendered;
+                const field = form.find("/plain");
+                let inputEventCount = 0;
+                field.targetFieldNode.addEventListener("input", () => {
+                    inputEventCount++;
+                });
                 await field.import("no mask");
                 return { inputEventCount };
             });
-
             expect(result.inputEventCount).toBe(0);
         } finally {
             if (onClosed) await onClosed();
         }
-    });//}}}
-
+    });
 });

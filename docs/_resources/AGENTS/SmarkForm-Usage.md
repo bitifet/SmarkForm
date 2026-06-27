@@ -369,6 +369,24 @@ await component.import(data, {setDefault: false});
 <button data-smark='{"action":"import"}'>Load Data</button>
 ```
 
+## `find()` Prefer Relative Paths
+
+Always use **relative paths** (no leading `/`) in `find()` calls. Relative paths resolve from the nearest named ancestor, making code more portable when forms are restructured.
+
+An absolute path like `find("/cardNumber")` searches from the root form's **direct children** only. If the form structure changes (e.g., nested under a wrapper subform), the absolute path breaks.
+
+A relative multi-segment path like `find("demo/cardNumber")` navigates through child components step by step: `children["demo"]` → `children["cardNumber"]`. This is both more portable and equally explicit.
+
+```javascript
+// ❌ Absolute path — breaks if structure changes
+const field = myForm.find("/cardNumber");
+
+// ✅ Relative path — portable, explicit
+const field = myForm.find("demo/cardNumber");
+```
+
+> **Note**: `find()` does **not** search recursively. Each path segment is a direct child lookup via `children[name]`. Single-segment relative paths like `find("cardNumber")` only find direct children of the nearest named ancestor, not descendants at arbitrary depth.
+
 ## `find()` Timing — Must Await `rendered`
 
 The `find()` method looks up components in an internal map that is built **asynchronously during `render()`**. Before rendering is complete, **all `find()` calls return `null`** (or `undefined`).
