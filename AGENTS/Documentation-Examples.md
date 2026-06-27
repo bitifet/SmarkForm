@@ -81,6 +81,8 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 - `new SmarkForm("#customId")` — always use `document.getElementById("myForm$$")`.
 - `data-smark` on the `id="myForm$$"` wrapper itself — the wrapper should be a plain DOM container. The `data-smark` belongs on the inner form element(s).
 
+**CDN `<script>` tags** for external libraries (e.g. IMask) should be placed **before** the `id="myForm$$"` wrapper, not inside it. The test runner's `isFormRoot()` function now skips leading `<script>` tags when detecting the root wrapper, so `htmlSource` starting with `<script>` followed by `<div id="myForm$$">` is correctly recognised as having a root — no extra wrapper is added.
+
 **Why this matters:** When `showEditor=true`, the playground wraps the example in a "demo" subform. The `smarkformBuildEditorHtml()` function in the controller extracts the wrapper (found by `id="myForm$$"`) and inserts the demo subform inside it. A custom ID breaks this extraction, causing incorrect export nesting (e.g. `{cardNumber: null}` instead of `{payment: {cardNumber: null}}`).
 
 ## Include Parameters

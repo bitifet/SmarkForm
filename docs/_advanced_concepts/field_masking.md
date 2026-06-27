@@ -120,8 +120,8 @@ number with spaces every 4 digits.
 
 {% raw %}<!-- mask_cc_html {{{ -->{% endraw %}
 {% capture mask_cc_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <div id="myForm$$">
-  <script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
   <div data-smark='{"type":"form","name":"payment"}'>
     <p>
       <label>Card Number</label>
@@ -171,8 +171,8 @@ for masking but exports a proper JavaScript number.
 
 {% raw %}<!-- mask_price_html {{{ -->{% endraw %}
 {% capture mask_price_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <div id="myForm$$">
-  <script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
   <div data-smark='{"type":"form","name":"product"}'>
     <p>
       <label>Unit Price</label>
@@ -220,7 +220,7 @@ The example also demonstrates how masks work inside list items wrapped in a
 singleton. Each phone `<input>` sits inside a `<span data-smark='{"type":"input"…}'>`
 that SmarkForm treats as a standalone singleton field. The `mask` property
 placed on the singleton wrapper is automatically inherited by the inner
-`<input>`, and the list template lets you add or remove phones dynamically.
+`<input>`, and the list's add button lets you add or remove phones dynamically.
 
 {% raw %}<!-- mask_custom_html {{{ -->{% endraw %}
 {% capture mask_custom_html -%}
@@ -228,21 +228,18 @@ placed on the singleton wrapper is automatically inherited by the inner
   <div data-smark='{"type":"form","name":"contacts"}'>
     <p>
       <label>Contact Phones</label>
-      <div data-smark='{"type":"list","name":"phones","template":"phoneTmpl"}'>
-        <button data-smark='{"type":"addbutton"}'>Add Phone</button>
+      <div data-smark='{"type":"list","name":"phones","min_items":0}'>
+        <p style="display:flex;gap:8px;margin:4px 0;align-items:center">
+          <span data-smark='{"type":"input","name":"phone","mask":"digits"}'>
+            <input data-smark type="tel" placeholder="Phone number">
+          </span>
+          <button data-smark='{"action":"removeItem"}' title="Remove">✕</button>
+        </p>
       </div>
+      <button data-smark='{"action":"addItem","context":"phones"}'>Add Phone</button>
     </p>
   </div>
 </div>
-
-<template id="phoneTmpl">
-  <p style="display:flex;gap:8px;margin:4px 0;align-items:center">
-    <span data-smark='{"type":"input","name":"phone","mask":"digits"}'>
-      <input data-smark type="tel" placeholder="Phone number">
-    </span>
-    <button data-smark='{"type":"removebutton"}' title="Remove">✕</button>
-  </p>
-</template>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mask_custom_js {{{ -->{% endraw %}
@@ -263,7 +260,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_custom_notes {{{ -->{% endraw %}
 {% capture mask_custom_notes -%}
-Each phone input is wrapped in a singleton (`type:"input"`) with `mask:"digits"` on the wrapper. The mask is inherited by the inner `<input>` automatically, and `export()` returns only the digits. Add new phones with the button — each new item gets the mask applied on render.
+Each phone input is wrapped in a singleton (`type:"input"`) with `mask:"digits"` on the wrapper. The mask is inherited by the inner `<input>` automatically, and `export()` returns only the digits. Add new phones with the button — each new item inherits the mask from its singleton wrapper.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mask_custom_tests {{{ -->{% endraw %}
@@ -278,11 +275,11 @@ export default async ({ expect, readField, root, page }) => {
 
 {% include components/sampletabs_tpl.md
    formId="mask-custom"
-   htmlSource=mask_price_html
-   jsHead=mask_price_js
-   notes=mask_price_notes
+   htmlSource=mask_custom_html
+   jsHead=mask_custom_js
+   notes=mask_custom_notes
    showEditor=true
-   tests=false
+   tests=mask_custom_tests
 %}
 
 ## Mixin-Scoped Masks
