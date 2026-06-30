@@ -135,16 +135,7 @@ number with spaces every 4 digits.
 {% capture mask_cc_js -%}
 SmarkForm.registerMask("card", (node) => {
   // Using iMask.js (loaded via CDN): https://cdn.jsdelivr.net/npm/imask
-  const imask = new IMask(node, { mask: "0000 0000 0000 0000" });
-  // Override unmaskedValue to return null when the value is incomplete / invalid.
-  // SmarkForm's export() skips null values, so unparseable data is never submitted.
-  Object.defineProperty(imask, "unmaskedValue", {
-    get() {
-      return this.masked.isValid ? imask.masked.unmaskedValue : null;
-    },
-    set(v) { imask.masked.unmaskedValue = v; },
-  });
-  return imask;
+  return new IMask(node, { mask: "0000 0000 0000 0000" });
 });
 
 const myForm = new SmarkForm(document.getElementById("myForm$$"));
@@ -152,7 +143,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The factory overrides `unmaskedValue` to return `null` when the mask's `isValid` is false. SmarkForm's `export()` skips `null` values, so incomplete credit card numbers are never included in exported data — no extra validation step needed.
+The factory returns the IMask instance directly. SmarkForm reads its `unmaskedValue` for `export()` — so the formatted display shows `"1234 5678 9012 3456"` but the exported value is the clean digit string. For a number field, that string gets converted to a `Number` automatically.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
