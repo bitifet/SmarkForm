@@ -137,10 +137,28 @@ SmarkForm.registerMask("card", (node) => {
   node.placeholder = "0000 0000 0000 0000";
   node.inputMode = "numeric";
 
+  let showLazy = true;
   const imask = new IMask(node, {
     mask: "0000 0000 0000 0000",
-    lazy: false,
-    placeholderChar: "_",
+    lazy: true,
+  });
+
+  node.addEventListener("input", () => {
+    const hasContent = imask.masked.unmaskedValue.length > 0;
+    if (hasContent && showLazy) {
+      showLazy = false;
+      imask.updateOptions({
+        mask: "0000 0000 0000 0000",
+        lazy: false,
+        placeholderChar: "_",
+      });
+    } else if (!hasContent && !showLazy) {
+      showLazy = true;
+      imask.updateOptions({
+        mask: "0000 0000 0000 0000",
+        lazy: true,
+      });
+    }
   });
 
   return {
@@ -156,7 +174,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The factory sets `placeholder` and `inputMode: "numeric"` on the input (mobile numeric keyboard), and creates IMask with `lazy: false` + `placeholderChar: "_"` so unfilled positions show underscores. The wrapper's `unmaskedValue` getter returns `null` when `isComplete` is falsy — incomplete cards are never exported.
+The factory sets `placeholder` and `inputMode: "numeric"` on the input. IMask starts in `lazy: true` so the native placeholder shows while the field is empty. After the first digit, `updateOptions` switches to `lazy: false` + `placeholderChar: "_"` — unfilled positions show underscores. The wrapper returns `null` for `unmaskedValue` until `isComplete` is true.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
@@ -189,11 +207,29 @@ for masking but exports a proper JavaScript number.
 {% raw %}<!-- mask_price_js {{{ -->{% endraw %}
 {% capture mask_price_js -%}
 SmarkForm.registerMask("price", (node) => {
+  node.placeholder = "0.00";
+  node.inputMode = "decimal";
+
   const imask = new IMask(node, {
     mask: Number,
     scale: 2,
-    thousandsSeparator: " "
+    thousandsSeparator: " ",
+    lazy: false,
+    placeholderChar: "_",
+    padFractionalZeros: false,
   });
+
+  node.addEventListener("blur", () => {
+    if (imask.masked.isComplete) return;
+    let val = imask.masked.unmaskedValue;
+    if (val == null || val === "") return;
+    val = String(val);
+    if (!val.includes(".")) val += ".";
+    const [intPart, fracPart = ""] = val.split(".");
+    val = (intPart || "0") + "." + fracPart.padEnd(2, "0");
+    imask.masked.unmaskedValue = val;
+  });
+
   return imask;
 });
 
@@ -202,7 +238,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_price_notes {{{ -->{% endraw %}
 {% capture mask_price_notes -%}
-SmarkForm converts `type="number"` inputs to `type="text"` for masking, but `export()` still returns a proper JavaScript `Number` — the masked display format is purely cosmetic.
+SmarkForm converts `type="number"` inputs to `type="text"` for masking, but `export()` still returns a proper `Number`. The factory sets `placeholder: "0.00"` and `inputMode: "decimal"` (mobile numeric keyboard). IMask uses `lazy: false` + `placeholderChar: "_"` so unfilled decimal positions show underscores while typing. On blur, missing decimals are auto-completed with zeros.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
