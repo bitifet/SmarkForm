@@ -135,7 +135,15 @@ number with spaces every 4 digits.
 {% capture mask_cc_js -%}
 SmarkForm.registerMask("card", (node) => {
   // Using iMask.js (loaded via CDN): https://cdn.jsdelivr.net/npm/imask
-  return new IMask(node, { mask: "0000 0000 0000 0000" });
+  const imask = new IMask(node, { mask: "0000 0000 0000 0000" });
+  // Wrap IMask in a plain object so we can override unmaskedValue
+  // to return null when the card number is incomplete.
+  return {
+    get unmaskedValue() {
+      return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
+    },
+    set unmaskedValue(v) { imask.masked.unmaskedValue = v; },
+  };
 });
 
 const myForm = new SmarkForm(document.getElementById("myForm$$"));
@@ -143,7 +151,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The factory returns the IMask instance directly. SmarkForm reads its `unmaskedValue` for `export()` — so the formatted display shows `"1234 5678 9012 3456"` but the exported value is the clean digit string. For a number field, that string gets converted to a `Number` automatically.
+The factory wraps IMask in a plain object so it can override `unmaskedValue`. When `imask.masked.isComplete` is falsy (incomplete card number), the getter returns `null` — so SmarkForm's `export()` never includes partially-typed card numbers.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
@@ -238,7 +246,10 @@ placed on the singleton wrapper is automatically inherited by the inner
 SmarkForm.registerMask("digits", (node) => {
   let _raw = '';
   node.addEventListener('input', () => {
-    _raw = node.value.replace(/\D/g, '');
+    const digits = node.value.replace(/\D/g, '');
+    const formatted = digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim();
+    if (formatted !== node.value) node.value = formatted;
+    _raw = digits;
   });
   return {
     get unmaskedValue() { return _raw; },
