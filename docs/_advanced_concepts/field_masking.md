@@ -125,7 +125,7 @@ number with spaces every 4 digits.
   <div data-smark='{"type":"form","name":"payment"}'>
     <p>
       <label>Card Number</label>
-      <input data-smark='{"type":"number","name":"cardNumber","mask":"card"}' placeholder="0000 0000 0000 0000">
+      <input data-smark='{"type":"number","name":"cardNumber","mask":"card"}'>
     </p>
   </div>
 </div>
@@ -134,10 +134,15 @@ number with spaces every 4 digits.
 {% raw %}<!-- mask_cc_js {{{ -->{% endraw %}
 {% capture mask_cc_js -%}
 SmarkForm.registerMask("card", (node) => {
-  // Using iMask.js (loaded via CDN): https://cdn.jsdelivr.net/npm/imask
-  const imask = new IMask(node, { mask: "0000 0000 0000 0000" });
-  // Wrap IMask in a plain object so we can override unmaskedValue
-  // to return null when the card number is incomplete.
+  node.placeholder = "0000 0000 0000 0000";
+  node.inputMode = "numeric";
+
+  const imask = new IMask(node, {
+    mask: "0000 0000 0000 0000",
+    lazy: false,
+    placeholderChar: "_",
+  });
+
   return {
     get unmaskedValue() {
       return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
@@ -151,7 +156,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The factory wraps IMask in a plain object so it can override `unmaskedValue`. When `imask.masked.isComplete` is falsy (incomplete card number), the getter returns `null` — so SmarkForm's `export()` never includes partially-typed card numbers.
+The factory sets `placeholder` and `inputMode: "numeric"` on the input (mobile numeric keyboard), and creates IMask with `lazy: false` + `placeholderChar: "_"` so unfilled positions show underscores. The wrapper's `unmaskedValue` getter returns `null` when `isComplete` is falsy — incomplete cards are never exported.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
