@@ -23,7 +23,6 @@ nav_order: 7
 * [Registering a Mask](#registering-a-mask)
     * [Via JavaScript](#via-javascript)
     * [Via Declarative HTML](#via-declarative-html)
-* [Applying a Mask to a Field](#applying-a-mask-to-a-field)
 * [Credit Card Example (IMask)](#credit-card-example-imask)
 * [Price Example (Non-Text Field Type)](#price-example-non-text-field-type)
 * [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library--singleton--list)
@@ -70,14 +69,7 @@ When a field has a `mask` property in its `data-smark`, SmarkForm:
 
 ### Via JavaScript
 
-Call `SmarkForm.registerMask()` before constructing any form that uses the mask:
-
-```javascript
-SmarkForm.registerMask("cardNumber", (node) => {
-  return new IMask(node, { mask: "0000 0000 0000 0000" });
-});
-```
-
+Call `SmarkForm.registerMask()` before constructing any form that uses the mask.
 The factory receives the field's target DOM node and must return an object with
 an `unmaskedValue` property (getter/setter pair) so SmarkForm can read and
 write the clean value independently of the formatted display.
@@ -85,38 +77,94 @@ write the clean value independently of the formatted display.
 **Returning `null` or `undefined`** from the factory is allowed: the field
 operates unmasked. This is useful for conditional masking.
 
+{% raw %}<!-- via_js_form {{{ -->{% endraw %}
+{% capture via_js_form -%}
+<div id="myForm$$">
+  <input data-smark='{"type":"number","name":"card","mask":"cardNumber"}'>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- via_js_js {{{ -->{% endraw %}
+{% capture via_js_js -%}
+SmarkForm.registerMask("cardNumber", (node) => {
+  return new IMask(node, { mask: "0000 0000 0000 0000" });
+});
+
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- via_js_html {{{ -->{% endraw %}
+{% capture via_js_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+{{ via_js_form }}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- via_js_notes {{{ -->{% endraw %}
+{% capture via_js_notes -%}
+The `registerMask()` call must happen **before** any form that uses it is constructed. The factory receives the input's DOM node and returns any object with an `unmaskedValue` property — here, an IMask instance. SmarkForm reads `unmaskedValue` for `export()` so the clean digit string is returned, not the formatted display with spaces.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="via-js"
+   htmlSource=via_js_html
+   jsHead=via_js_js
+   notes=via_js_notes
+   selected="javascript"
+   tests=false
+%}
+
 ### Via Declarative HTML
 
 Place a `<script type="smark-mask" data-name="...">` element anywhere in the
-page:
+page. SmarkForm scans for these on construction and registers each factory
+automatically. The field's `mask` property in `data-smark` tells it which
+factory to use — no JavaScript needed beyond the constructor.
 
-```html
+{% raw %}<!-- via_script_mask {{{ -->{% endraw %}
+{% capture via_script_mask -%}
 <script type="smark-mask" data-name="cardNumber">
-    (node) => {
-        return new IMask(node, { mask: "0000 0000 0000 0000" });
-    }
+  (node) => {
+    return new IMask(node, { mask: "0000 0000 0000 0000" });
+  }
 </script>
-```
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-SmarkForm scans for these elements on construction and registers each factory
-automatically. Script elements inside a `<template>` are treated as
-**mixin-scoped** masks (see [Mixin-Scoped Masks](#mixin-scoped-masks)).
+{% raw %}<!-- via_script_html {{{ -->{% endraw %}
+{% capture via_script_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+{{ via_script_mask }}
+{{ via_js_form }}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-## Applying a Mask to a Field
+{% raw %}<!-- via_script_notes {{{ -->{% endraw %}
+{% capture via_script_notes -%}
+Everything is defined in the HTML: the `smark-mask` script element registers the factory (SmarkForm scans the document for these during construction), and the input's `data-smark` references it by name via the `mask` property. No `registerMask()` call is needed.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-Add the `mask` property to the field's `data-smark`:
+{% include components/sampletabs_tpl.md
+   formId="via-script"
+   htmlSource=via_script_html
+   notes=via_script_notes
+   selected="html"
+   tests=false
+%}
 
-```html
-<input data-smark='{"name":"card","mask":"cardNumber"}' type="number">
-```
-
-The mask is applied automatically when the field renders — no post-construction
-setup needed.
+Script elements inside a `<template>` are treated as **mixin-scoped** masks (see
+[Mixin-Scoped Masks](#mixin-scoped-masks)).
 
 ## Credit Card Example (IMask)
 
-This example uses [IMask.js](https://imask.js.org/) to format a credit card
-number with spaces every 4 digits.
+Building on the basic examples above, this fully-worked credit card field adds
+several production-quality refinements:
+
+- The **placeholder** and **mobile keyboard hint** are set inside the factory
+  so the HTML stays clean (DRY).
+- IMask **starts lazy** so the native placeholder shows when the field is empty.
+  After the first digit, it switches to a **non-lazy** mode with underscore
+  padding for unfilled positions, keeping the cursor in the right place.
+- The factory returns a **wrapper object** whose `unmaskedValue` getter returns
+  `null` when `isComplete` is false — incomplete card numbers are never included
+  in `export()`.
 
 {% raw %}<!-- mask_cc_html {{{ -->{% endraw %}
 {% capture mask_cc_html -%}
@@ -134,9 +182,11 @@ number with spaces every 4 digits.
 {% raw %}<!-- mask_cc_js {{{ -->{% endraw %}
 {% capture mask_cc_js -%}
 SmarkForm.registerMask("card", (node) => {
+  // DRY: set placeholder and keyboard hint inside the factory
   node.placeholder = "0000 0000 0000 0000";
   node.inputMode = "numeric";
 
+  // Start lazy so the native placeholder shows while empty
   let showLazy = true;
   const imask = new IMask(node, {
     mask: "0000 0000 0000 0000",
@@ -146,6 +196,7 @@ SmarkForm.registerMask("card", (node) => {
   node.addEventListener("input", () => {
     const hasContent = imask.masked.unmaskedValue.length > 0;
     if (hasContent && showLazy) {
+      // First digit: switch to non-lazy + underscore placeholders
       showLazy = false;
       imask.updateOptions({
         mask: "0000 0000 0000 0000",
@@ -153,6 +204,7 @@ SmarkForm.registerMask("card", (node) => {
         placeholderChar: "_",
       });
     } else if (!hasContent && !showLazy) {
+      // Last digit deleted: switch back to lazy (. .restore placeholder)
       showLazy = true;
       imask.updateOptions({
         mask: "0000 0000 0000 0000",
@@ -161,6 +213,7 @@ SmarkForm.registerMask("card", (node) => {
     }
   });
 
+  // Wrap IMask so unmaskedValue returns null for incomplete cards
   return {
     get unmaskedValue() {
       return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
@@ -174,7 +227,12 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The factory sets `placeholder` and `inputMode: "numeric"` on the input. IMask starts in `lazy: true` so the native placeholder shows while the field is empty. After the first digit, `updateOptions` switches to `lazy: false` + `placeholderChar: "_"` — unfilled positions show underscores. The wrapper returns `null` for `unmaskedValue` until `isComplete` is true.
+Unlike the basic examples that return the IMask instance directly, this factory wraps it to override `unmaskedValue` — the getter returns `null` when `isComplete` is false, so incomplete card numbers are never included in `export()`.
+
+**Other enhancements over the basics:**
+- `placeholder` and `inputMode: "numeric"` set inside the factory — the HTML stays clean, and SmarkForm's type-conversion (`number` → `text`) doesn't affect the mobile keyboard.
+- IMask starts `lazy: true` so the native placeholder `"0000 0000 0000 0000"` is visible while empty. After the first digit, `updateOptions` switches to `lazy: false` + `placeholderChar: "_"` — unfilled positions become underscores and IMask handles cursor positioning.
+- Deleting the last digit switches back to `lazy: true`, restoring the native placeholder.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
@@ -183,6 +241,7 @@ The factory sets `placeholder` and `inputMode: "numeric"` on the input. IMask st
    jsHead=mask_cc_js
    notes=mask_cc_notes
    showEditor=true
+   selected="javascript"
    tests=false
 %}
 
@@ -247,6 +306,7 @@ SmarkForm converts `type="number"` inputs to `type="text"` for masking, but `exp
    jsHead=mask_price_js
    notes=mask_price_notes
    showEditor=true
+   selected="javascript"
    tests=false
 %}
 
