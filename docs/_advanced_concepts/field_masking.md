@@ -26,7 +26,7 @@ nav_order: 7
     * [Via Declarative HTML](#via-declarative-html)
 * [Credit Card Example (IMask)](#credit-card-example-imask)
 * [Price Example (Non-Text Field Type)](#price-example-non-text-field-type)
-* [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library--singleton--list)
+* [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library-singleton-list)
 * [Mixin-Scoped Masks](#mixin-scoped-masks)
 * [Error Handling](#error-handling)
     * [`throwOnMaskError: true` (default)](#throwonmaskerror-true-default)
@@ -74,39 +74,57 @@ automatically when the field renders — no post-construction setup needed.
 {% raw %}<!-- apply_mask_form {{{ -->{% endraw %}
 {% capture apply_mask_form -%}
 <div id="myForm$$">
-  <input data-smark='{"type":"number","name":"card","mask":"cardNumber"}'>
+  <label data-smark>Card Number:</label>
+  <input
+    data-smark='{"type":"number","name":"card","mask":"cardNumber"}'
+    placeholder="0000 0000 0000 0000"
+  >
 </div>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-{% raw %}<!-- apply_mask_html {{{ -->{% endraw %}
-{% capture apply_mask_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
-{{ apply_mask_form }}
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+{% raw %}<!-- apply_mask_async_js {{{ -->{% endraw %}
+{% capture apply_mask_async_js -%}
+let myForm;
 
-{% raw %}<!-- apply_mask_js {{{ -->{% endraw %}
-{% capture apply_mask_js -%}
-SmarkForm.registerMask("cardNumber", (node) => {
-  return new IMask(node, { mask: "0000 0000 0000 0000" });
-});
+(async () => {
+  // Dynamically load IMask from CDN
+  await new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/imask@6.6.3";
+    script.onload = resolve;
+    document.head.appendChild(script);
+  });
 
-const myForm = new SmarkForm(document.getElementById("myForm$$"));
+  SmarkForm.registerMask("cardNumber", (node) => {
+    return new IMask(node, { mask: "0000 0000 0000 0000" });
+  });
+
+  myForm = new SmarkForm(document.getElementById("myForm$$"));
+})();
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- apply_mask_notes {{{ -->{% endraw %}
 {% capture apply_mask_notes -%}
-The HTML declares a `number`-type field with `mask: "cardNumber"`. SmarkForm converts it to `type="text"` so IMask can operate, then exports the clean digit string. The JS registers the mask factory and constructs the form — both are standard and will be explained next.
+The HTML declares a `number`-type field with `mask: "cardNumber"`. SmarkForm converts it to `type="text"` so IMask can operate, then exports the clean digit string. The JS wraps everything in an async IIFE that dynamically loads IMask from CDN — keeping the HTML snippet clean and focused on the form structure.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
    formId="apply-mask"
-   htmlSource=apply_mask_html
-   jsHead=apply_mask_js
+   htmlSource=apply_mask_form
+   jsHead=apply_mask_async_js
    notes=apply_mask_notes
    selected="html"
    showEditor=true
    tests=false
 %}
+
+{: .info :}
+> The *mask* property should point to a previously registered mask factory.
+> 
+> - Mask factories can rely on external libraries (e.g. IMask) or be custom JavaScript implementations.
+> - The only requirement is that they return an object with an `unmaskedValue` property (getter/setter pair).
+> - The former example uses IMask for basic credit card formatting.
+> - Since the field type is converted to `text`, native enhancements, default inputMode, etc... are lost. The factory is responsible for restoring any desired behavior (e.g. `inputMode: "numeric"` for mobile keyboards).
 
 ## Registering a Mask
 
@@ -120,6 +138,21 @@ write the clean value independently of the formatted display.
 **Returning `null` or `undefined`** from the factory is allowed: the field
 operates unmasked. This is useful for conditional masking.
 
+{% raw %}<!-- apply_mask_cdn_html {{{ -->{% endraw %}
+{% capture apply_mask_cdn_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+{{ apply_mask_form }}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- apply_mask_js {{{ -->{% endraw %}
+{% capture apply_mask_js -%}
+SmarkForm.registerMask("cardNumber", (node) => {
+  return new IMask(node, { mask: "0000 0000 0000 0000" });
+});
+
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
 {% raw %}<!-- via_js_notes {{{ -->{% endraw %}
 {% capture via_js_notes -%}
 The `registerMask()` call must happen **before** any form that uses it is constructed. The factory receives the input's DOM node and returns an IMask instance — SmarkForm reads its `unmaskedValue` for `export()` so the clean digit string is returned, not the formatted display with spaces.
@@ -127,7 +160,7 @@ The `registerMask()` call must happen **before** any form that uses it is constr
 
 {% include components/sampletabs_tpl.md
    formId="via-js"
-   htmlSource=apply_mask_html
+   htmlSource=apply_mask_cdn_html
    jsHead=apply_mask_js
    notes=via_js_notes
    selected="js"
@@ -195,7 +228,7 @@ several production-quality refinements:
 <div id="myForm$$">
   <div data-smark='{"type":"form","name":"payment"}'>
     <p>
-      <label>Card Number</label>
+      <label data-smark>Card Number:</label>
       <input data-smark='{"type":"number","name":"cardNumber","mask":"card"}'>
     </p>
   </div>
@@ -402,6 +435,7 @@ export default async ({ expect, readField, root, page }) => {
 
 {% include components/sampletabs_tpl.md
    formId="mask-custom"
+   height=45
    htmlSource=mask_custom_html
    jsHead=mask_custom_js
    notes=mask_custom_notes
