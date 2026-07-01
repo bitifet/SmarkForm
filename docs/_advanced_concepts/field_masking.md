@@ -20,6 +20,7 @@ nav_order: 7
 <!-- vim-markdown-toc GitLab -->
 
 * [How It Works](#how-it-works)
+* [Applying a Mask to a Field](#applying-a-mask-to-a-field)
 * [Registering a Mask](#registering-a-mask)
     * [Via JavaScript](#via-javascript)
     * [Via Declarative HTML](#via-declarative-html)
@@ -65,6 +66,48 @@ When a field has a `mask` property in its `data-smark`, SmarkForm:
 8. If the mask fails (not found or factory throws), the original type is
    **restored** and the field operates unmasked.
 
+## Applying a Mask to a Field
+
+Add the `mask` property to the field's `data-smark`. The mask is applied
+automatically when the field renders — no post-construction setup needed.
+
+{% raw %}<!-- apply_mask_form {{{ -->{% endraw %}
+{% capture apply_mask_form -%}
+<div id="myForm$$">
+  <input data-smark='{"type":"number","name":"card","mask":"cardNumber"}'>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- apply_mask_html {{{ -->{% endraw %}
+{% capture apply_mask_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+{{ apply_mask_form }}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- apply_mask_js {{{ -->{% endraw %}
+{% capture apply_mask_js -%}
+SmarkForm.registerMask("cardNumber", (node) => {
+  return new IMask(node, { mask: "0000 0000 0000 0000" });
+});
+
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- apply_mask_notes {{{ -->{% endraw %}
+{% capture apply_mask_notes -%}
+The HTML declares a `number`-type field with `mask: "cardNumber"`. SmarkForm converts it to `type="text"` so IMask can operate, then exports the clean digit string. The JS registers the mask factory and constructs the form — both are standard and will be explained next.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="apply-mask"
+   htmlSource=apply_mask_html
+   jsHead=apply_mask_js
+   notes=apply_mask_notes
+   selected="html"
+   showEditor=true
+   tests=false
+%}
+
 ## Registering a Mask
 
 ### Via JavaScript
@@ -77,39 +120,18 @@ write the clean value independently of the formatted display.
 **Returning `null` or `undefined`** from the factory is allowed: the field
 operates unmasked. This is useful for conditional masking.
 
-{% raw %}<!-- via_js_form {{{ -->{% endraw %}
-{% capture via_js_form -%}
-<div id="myForm$$">
-  <input data-smark='{"type":"number","name":"card","mask":"cardNumber"}'>
-</div>
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %}<!-- via_js_js {{{ -->{% endraw %}
-{% capture via_js_js -%}
-SmarkForm.registerMask("cardNumber", (node) => {
-  return new IMask(node, { mask: "0000 0000 0000 0000" });
-});
-
-const myForm = new SmarkForm(document.getElementById("myForm$$"));
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %}<!-- via_js_html {{{ -->{% endraw %}
-{% capture via_js_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
-{{ via_js_form }}
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
 {% raw %}<!-- via_js_notes {{{ -->{% endraw %}
 {% capture via_js_notes -%}
-The `registerMask()` call must happen **before** any form that uses it is constructed. The factory receives the input's DOM node and returns any object with an `unmaskedValue` property — here, an IMask instance. SmarkForm reads `unmaskedValue` for `export()` so the clean digit string is returned, not the formatted display with spaces.
+The `registerMask()` call must happen **before** any form that uses it is constructed. The factory receives the input's DOM node and returns an IMask instance — SmarkForm reads its `unmaskedValue` for `export()` so the clean digit string is returned, not the formatted display with spaces.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
    formId="via-js"
-   htmlSource=via_js_html
-   jsHead=via_js_js
+   htmlSource=apply_mask_html
+   jsHead=apply_mask_js
    notes=via_js_notes
-   selected="javascript"
+   selected="js"
+   showEditor=true
    tests=false
 %}
 
@@ -133,7 +155,7 @@ factory to use — no JavaScript needed beyond the constructor.
 {% capture via_script_html -%}
 <script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 {{ via_script_mask }}
-{{ via_js_form }}
+{{ apply_mask_form }}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- via_script_notes {{{ -->{% endraw %}
@@ -146,6 +168,7 @@ Everything is defined in the HTML: the `smark-mask` script element registers the
    htmlSource=via_script_html
    notes=via_script_notes
    selected="html"
+   showEditor=true
    tests=false
 %}
 
@@ -241,7 +264,7 @@ Unlike the basic examples that return the IMask instance directly, this factory 
    jsHead=mask_cc_js
    notes=mask_cc_notes
    showEditor=true
-   selected="javascript"
+   selected="js"
    tests=false
 %}
 
@@ -306,7 +329,7 @@ SmarkForm converts `type="number"` inputs to `type="text"` for masking, but `exp
    jsHead=mask_price_js
    notes=mask_price_notes
    showEditor=true
-   selected="javascript"
+   selected="js"
    tests=false
 %}
 
@@ -345,6 +368,7 @@ placed on the singleton wrapper is automatically inherited by the inner
 {% raw %}<!-- mask_custom_js {{{ -->{% endraw %}
 {% capture mask_custom_js -%}
 SmarkForm.registerMask("digits", (node) => {
+  node.inputMode = "numeric";
   let _raw = '';
   node.addEventListener('input', () => {
     const digits = node.value.replace(/\D/g, '');
