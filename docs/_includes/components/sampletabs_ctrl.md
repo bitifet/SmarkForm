@@ -504,6 +504,25 @@ document.addEventListener('DOMContentLoaded', function() {
             activatePreview();
         });
     });
+    /* --- Drag-to-resize preview handle --- */
+    var resizeHandle = container.querySelector('.smarkform-resize-handle');
+    if (resizeHandle) {
+      var dragging = false, startY, startH;
+      resizeHandle.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+        dragging = true;
+        startY = e.clientY;
+        startH = iframe.offsetHeight;
+      });
+      document.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        var newH = Math.max(75, startH + (e.clientY - startY));
+        iframe.style.height = newH + 'px';
+        var editorKind = iframe.closest('.tab-content-preview').querySelector('.tab-content-js .smarkform-ace-editor');
+        if (editorKind && aceEditors.js && aceEditors.js.resize) aceEditors.js.resize();
+      });
+      document.addEventListener('mouseup', function() { dragging = false; });
+    }
     /* ── IntersectionObserver: boost render priority for near-viewport examples ──
        rootMargin "100% 0px" means: trigger when the container is within one full
        viewport height above or below the visible area, giving enough lead time to
@@ -642,6 +661,30 @@ button[data-smark] {
 
 .smarkform-preview-frame {
     min-height: 75px;
+}
+
+.smarkform-resize-handle {
+    height: 6px;
+    background: #dee2e6;
+    cursor: ns-resize;
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.smarkform_example:hover .smarkform-resize-handle,
+.smarkform_example:has(.smarkform-preview-frame:focus-within) .smarkform-resize-handle {
+    opacity: 1;
+}
+.smarkform-resize-handle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 2px;
+    background: #999;
+    border-radius: 1px;
 }
 
 .smarkform-preview-spinner {

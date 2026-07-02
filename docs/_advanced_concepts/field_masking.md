@@ -268,10 +268,14 @@ SmarkForm.registerMask("card", (node) => {
     }
     // Blink on rejected input (IMask reverted the value)
     if (node.value === prevValue && node === document.activeElement) {
-      node.style.boxShadow = "0 0 0 2px #e00";
+      node.style.boxShadow = "0 0 0 2px #f80";
       setTimeout(() => node.style.boxShadow = "", 250);
     }
     prevValue = node.value;
+    // Mark invalid when partially filled (triggers native :invalid CSS)
+    const raw = imask.masked.unmaskedValue;
+    const showError = raw.length > 0 && !imask.masked.isComplete;
+    node.setCustomValidity(showError ? "Please enter the full 16-digit card number" : "");
   });
 
   // Wrap IMask so unmaskedValue returns null for incomplete cards
@@ -288,7 +292,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The wrapper object overriding `unmaskedValue` to return `null` for incomplete numbers is the key refinement over the basic examples — it means `export()` never returns partially-typed card data. The dynamic lazy switching (native placeholder → underscore fill) keeps the input intuitive: empty fields look like regular inputs, and active fields show the full mask structure.
+The wrapper object overriding `unmaskedValue` to return `null` for incomplete numbers is the key refinement — `export()` never returns partially-typed card data. The field is marked `:invalid` when partially filled (not empty but not complete), and rejected keystrokes trigger a brief orange blink — visually distinct from the persistent invalid state.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
@@ -348,7 +352,7 @@ SmarkForm.registerMask("digits", (node) => {
     _raw = digits;
     // Blink if value was reverted (invalid character typed)
     if (node.value === before && node === document.activeElement) {
-      node.style.boxShadow = "0 0 0 2px #e00";
+      node.style.boxShadow = "0 0 0 2px #f80";
       setTimeout(() => node.style.boxShadow = "", 250);
     }
   });

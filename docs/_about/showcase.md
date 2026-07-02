@@ -3039,10 +3039,13 @@ SmarkForm.registerMask("card", (node) => {
       });
     }
     if (node.value === prevValue && node === document.activeElement) {
-      node.style.boxShadow = "0 0 0 2px #e00";
+      node.style.boxShadow = "0 0 0 2px #f80";
       setTimeout(() => node.style.boxShadow = "", 250);
     }
     prevValue = node.value;
+    const raw = imask.masked.unmaskedValue;
+    const showError = raw.length > 0 && !imask.masked.isComplete;
+    node.setCustomValidity(showError ? "Please enter the full 16-digit card number" : "");
   });
 
   return {

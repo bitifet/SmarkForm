@@ -279,6 +279,7 @@ endif %}{% if jsHidden != '-'
     <div class="smarkform_example" style="overflow: auto">
       <div class="smarkform-preview-spinner"></div>
       <iframe class="smarkform-preview-frame" style="width:100%;border:none;display:none;"></iframe>
+      <div class="smarkform-resize-handle" title="Drag to resize preview"></div>
     </div>
   </div>
   {% if notes != '-' %}
