@@ -25,7 +25,7 @@ export class number extends input {
         const data = await super.export(...args);
         if (me.isSingleton) return data; // Overload only inner field
         return (
-            data.length && ! isNaN(data) ? Number(data)
+            data && data.length && ! isNaN(data) ? Number(data)
             : null
         );
     };//}}}

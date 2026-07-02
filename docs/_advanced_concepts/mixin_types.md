@@ -2,7 +2,7 @@
 title: "Mixin Types"
 layout: chapter
 permalink: /advanced_concepts/mixin_types
-nav_order: 6
+nav_order: 7
 
 ---
 

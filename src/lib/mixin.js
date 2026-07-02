@@ -461,10 +461,38 @@ export async function expandMixin(node, options, component) { //{{{
     // Replace placeholder with clone in the DOM:
     node.replaceWith(clone);
 
+    // Filter mask scripts from regular scripts and build scopedMasks:
+    let scopedMasks = {};
+    if (scripts.length > 0) {
+        const maskScripts = scripts.filter(
+            n => n.getAttribute('type') === 'smark-mask'
+        );
+        const regularScripts = scripts.filter(
+            n => n.getAttribute('type') !== 'smark-mask'
+        );
+        scripts = regularScripts;
+        for (const script of maskScripts) {
+            const name = script.getAttribute('data-name');
+            if (!name) continue;
+            try {
+                        const factory = (new Function('return (' + script.textContent.trim() + ')'))();
+                if (typeof factory === 'function') {
+                    scopedMasks[name] = factory;
+                }
+            } catch (e) {
+                console.warn(
+                    'SmarkForm mixin: failed to evaluate mask script'
+                    + ` "${name}":`, e
+                );
+            }
+        }
+    }
+
     return {
         node: clone,
         options: mergedOptions,
         scripts,
         childChain,
+        scopedMasks,
     };
 }; //}}}

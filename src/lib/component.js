@@ -73,6 +73,7 @@ export class SmarkComponent {
         , {
             property_name = "smark",
             _mixinChain,
+            _scopedMasks,
             ...options
         } = {}
         , parent
@@ -83,6 +84,11 @@ export class SmarkComponent {
         // Passed via constructor options so it is available immediately
         // (before the async IIFE runs its first render/enhance cycle).
         me._mixinChain = _mixinChain || null;
+
+        // Store mixin-scoped masks (from <script type="smark-mask"> inside
+        // an enclosing mixin template).  Available to this component and
+        // its descendants for declarative mask resolution.
+        me._scopedMasks = _scopedMasks || null;
 
         me.validName = (function nameGenerator() {//{{{
             let counter = 0;
@@ -252,6 +258,34 @@ export class SmarkComponent {
     };//}}}
     setNodeOptions(node, options) {//{{{
         const me = this;
+        function isSerializable(value, path = "", visited = new WeakSet()) {
+            if (value === null || typeof value !== "object") {
+                if (typeof value === "function") {
+                    throw new Error(`Function found at ${path}`);
+                }
+                if (typeof value === "symbol") {
+                    throw new Error(`Symbol found at ${path}`);
+                }
+                if (typeof value === "number" && (!Number.isFinite(value))) {
+                    throw new Error(`Non-finite number found at ${path}`);
+                }
+                return;
+            }
+            if (visited.has(value)) {
+                return;
+            }
+            visited.add(value);
+            if (Array.isArray(value)) {
+                value.forEach((item, i) => {
+                    isSerializable(item, `${path}[${i}]`, visited);
+                });
+            } else {
+                for (const key of Object.keys(value)) {
+                    isSerializable(value[key], path ? `${path}.${key}` : key, visited);
+                }
+            }
+        }
+        isSerializable(options);
         node.dataset[me.property_name] = JSON.stringify(options);
     };//}}}
     async safeEnhance(node, defaultOptions) {//{{{
@@ -313,15 +347,18 @@ export class SmarkComponent {
             node
         );
 
-        // Pass the mixin chain via constructor options so it is available
-        // immediately when the component's async IIFE starts its render cycle
-        // (before `new ctrl()` returns).
+        // Pass the mixin chain and scoped masks via constructor options so
+        // they are available immediately when the component's async IIFE
+        // starts its render cycle (before `new ctrl()` returns).
         const inheritedChain = mixinExpansion
             ? mixinExpansion.childChain
             : (me._mixinChain || null);
+        const inheritedMasks = mixinExpansion
+            ? mixinExpansion.scopedMasks
+            : (me._scopedMasks || null);
         const component = new ctrl(
             node
-            , { ...options, _mixinChain: inheritedChain }
+            , { ...options, _mixinChain: inheritedChain, _scopedMasks: inheritedMasks }
             , me
         );
 
@@ -355,7 +392,7 @@ export class SmarkComponent {
     };//}}}
     getPath() {//{{{
         const me = this;
-        const ancestors = [...me.parents].map(p=>p.name).reverse();
+        const ancestors = me.parents ? [...me.parents].map(p=>p.name).reverse() : [];
         if (me.name) ancestors.push(me.name); // Compute parent path inside labels (or singletons?).
         return ancestors.join("/") || "/";
     };//}}}

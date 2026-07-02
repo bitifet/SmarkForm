@@ -112,11 +112,59 @@ export class input extends form {
                 };
             },
         );
+
+        // Schedule mask application after type-specific render completes.
+        // This runs after all render phases (including subtype validation
+        // like number.type's validateInputType), so conversions are safe.
+        if (me.options.mask && !me.isSingleton) {
+            me.onRendered(() => { me._applyMask(); });
+        }
     }; // }}}
+    _applyMask() {//{{{
+        const me = this;
+        const maskName = me.options.mask;
+        const scopedMasks = me._scopedMasks || {};
+        const RootClass = me.root.constructor;
+        const globalMasks = RootClass._maskRegistry || {};
+        const maskFactory = scopedMasks[maskName] || globalMasks[maskName];
+
+        if (typeof maskFactory !== 'function') {
+            const cfg = me.inheritedOption('maskConfig', {});
+            if (cfg.throwOnMissing !== false) {
+                throw me.renderError(
+                    'MASK_NOT_FOUND'
+                    , `Mask "${maskName}" not found for field`
+                    + ` "${me.getPath()}". Register it via`
+                    + ` SmarkForm.registerMask() or a`
+                    + ` <script type="smark-mask" data-name="${maskName}">`
+                    + ` element.`
+                );
+            } else {
+                console.warn(
+                    'SmarkForm: mask "' + maskName + '" not found'
+                    + ' for field "' + me.getPath() + '".'
+                    + ' Falls back to unmasked input.'
+                );
+                return;
+            };
+        };
+
+        const fld = me.targetFieldNode;
+        if (fld && fld.tagName === "INPUT") {
+            const currentType = (fld.getAttribute("type") || "text").toLowerCase();
+            if (currentType !== "text") {
+                fld.setAttribute("type", "text");
+            };
+        };
+        me._maskInstance = maskFactory(me.targetFieldNode) ?? null;
+    };//}}}
     _setTargetFieldValue(value) {//{{{
         const me = this;
         if (me.isSingleton) return; // (Only for real field)
         me.targetFieldNode.value = value;
+        if (me._maskInstance != null) {
+            me.targetFieldNode.dispatchEvent(new Event("input", {bubbles: true}));
+        };
     };//}}}
     async render() {//{{{
         const me = this;
@@ -200,6 +248,11 @@ export class input extends form {
             // Keep fallback working when encoding is json and value attribute is not set.
             // (and don't expetct <opton> inner text to be JSON)
             retv = JSON.stringify(nodeFld.options[nodeFld.selectedIndex].text);
+        } else if (
+            me._maskInstance != null
+            && me._maskInstance.unmaskedValue !== undefined
+        ) {
+            retv = me._maskInstance.unmaskedValue;
         } else {
             retv = nodeFld.value;
         };

@@ -312,3 +312,53 @@ block mainForm
 
 });
 
+test.describe('options validation', () => {
+    test('throws on cyclic options', async ({ page }) => {
+        const pug = `div#cyclic-form(data-smark='{"type":"form","name":"c"}')\nscript(src=\"../../dist/SmarkForm.umd.js\")`;
+        const { url, onClosed } = await renderPug({ title: 'cyclic options', src: pug });
+        try {
+            await page.goto(url);
+            const result = await page.evaluate(() => {
+                const SmarkForm = window.SmarkForm;
+                const node = document.getElementById('cyclic-form');
+                const comp = new SmarkForm(node);
+                comp.options.badCyclic = comp.options;
+                try {
+                    comp.setNodeOptions(node, comp.options);
+                    return {error: false};
+                } catch (e) {
+                    return {error: true, name: e.name, message: e.message};
+                }
+            });
+            expect(result.error).toBe(true);
+            expect(result.name).toBe("TypeError");
+            expect(result.message).toContain("circular");
+        } finally {
+            await onClosed();
+        }
+    });
+
+    test('throws on options with function property', async ({ page }) => {
+        const pug = `div#func-form(data-smark='{"type":"form","name":"f"}')\nscript(src=\"../../dist/SmarkForm.umd.js\")`;
+        const { url, onClosed } = await renderPug({ title: 'function option', src: pug });
+        try {
+            await page.goto(url);
+            const result = await page.evaluate(() => {
+                const SmarkForm = window.SmarkForm;
+                const node = document.getElementById('func-form');
+                const comp = new SmarkForm(node);
+                comp.options.badFn = () => 42;
+                try {
+                    comp.setNodeOptions(node, comp.options);
+                    return {error: false};
+                } catch (e) {
+                    return {error: true, name: e.name, message: e.message};
+                }
+            });
+            expect(result.error).toBe(true);
+            expect(result.message).toContain("Function found at");
+        } finally {
+            await onClosed();
+        }
+    });
+});

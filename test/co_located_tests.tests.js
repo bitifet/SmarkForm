@@ -170,7 +170,12 @@ function validateHtmlSource(html) {
  * meaning it must not be wrapped in an extra container.
  */
 function isFormRoot(htmlSource) {
-  return /^\s*<[\w]+[^>]*\bid="myForm[^"]*"/i.test(htmlSource);
+  // Skip leading <script> tags (e.g. CDN imports before the form wrapper)
+  // so that <script src="..."><div id="myForm..."> is recognised as having a root.
+  const cleaned = htmlSource.replace(
+    /^\s*(?:<script\b[^>]*>[\s\S]*?<\/script>\s*)*/i, ''
+  );
+  return /^\s*<[\w]+[^>]*\bid="myForm[^"]*"/i.test(cleaned);
 }
 
 function generateTestHTML(example) {

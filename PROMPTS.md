@@ -107,3 +107,193 @@ Unlike most actions that usually enhance buttons, the "null" action will enhance
 
 If the checkbox is checked (default), every field in the form gets disabled.
 
+
+### Declarative Masking API
+
+> Status: Draft
+
+Implement a declarative masking system that lets users apply external masking
+libraries to fields without writing `find()` + `.mask()` boilerplate after
+`await rendered`.
+
+#### Motivation
+
+The current `mask(callback)` method works but requires:
+- `await myForm.rendered`
+- `myForm.find("path/to/field")`
+- calling `.mask(callback)` on the result
+
+This fails for list items added after initial render, because their mask is
+never applied. A declarative approach ensures masks are applied at render time,
+whether initial render or when a list item is cloned.
+
+#### Proposed API — Two Approaches
+
+**Approach 1 — `SmarkForm.registerMask()` (JavaScript API)**
+
+```javascript
+// Register before creating any SmarkForm instance
+SmarkForm.registerMask("creditCard", (node) => {
+    return new IMask(node, { mask: "0000 0000 0000 0000" });
+});
+
+SmarkForm.registerMask("price", (node) => {
+    return new IMask(node, {
+        mask: Number,
+        scale: 2,
+        thousandsSeparator: " "
+    });
+});
+```
+
+Then reference by name in `data-smark`:
+
+```html
+<input data-smark='{"name":"cardNumber","mask":"creditCard"}'>
+```
+
+**Approach 2 — `<script type="smark-mask">` (Declarative, HTML-centric)**
+
+```html
+<script type="smark-mask" data-name="creditCard">
+    (node) => new IMask(node, { mask: "0000 0000 0000 0000" });
+</script>
+```
+
+The `script[type="smark-mask"]` tag is inert — browsers don't execute it.
+SmarkForm scans for these during initialization, evaluates the content, and
+registers each named mask function internally.
+
+This works naturally inside **mixin templates** — a mixin that uses a masked
+field can carry its own `<script type="smark-mask">` in its `<template>`
+element.
+
+**Mixin scope**: Masks defined inside a mixin template are scoped to that
+mixin's expansion — they don't pollute the global registry. When the mixin is
+loaded, its masks are registered; when the mixin template is expanded for a
+specific field, the mixin's masks take precedence over global ones. This lets
+different mixins define a mask named "price" without conflict.
+
+Implementation sketch: the mixin system already has its own options merging
+pipeline (`getNodeOptions` in `component.js`). Mixin-scoped masks would be
+stored alongside the mixin template and passed through the same merge logic,
+so mixin-local masks override global masks during expansion but don't affect
+other mixins or the global registry.
+
+#### How Registration Works
+
+Both approaches feed into the same internal registry:
+
+```javascript
+// Internal (component.js or a static registry)
+SmarkForm._maskRegistry = {};
+
+SmarkForm.registerMask = function(name, fn) {
+    SmarkForm._maskRegistry[name] = fn;
+};
+```
+
+The `<script type="smark-mask">` scanner can be implemented inline in the
+constructor or as a utility:
+
+```javascript
+for (const el of document.querySelectorAll('script[type="smark-mask"]')) {
+    const name = el.getAttribute("data-name");
+    const fn = new Function("return " + el.textContent)();
+    SmarkForm.registerMask(name, fn);
+}
+```
+
+#### Integration with `render()` — Timing
+
+When a component is rendered (including list items being cloned), the mask
+is applied at the **end of `render()`**, after `targetFieldNode` has been
+assigned. The `data-smark` options (including `mask`) are already available
+in `me.options` from the constructor — no timing conflict.
+
+```javascript
+// At the end of input.type.js render(), after targetFieldNode is set
+if (me.options.mask && typeof me.options.mask === "string") {
+    const factory = SmarkForm._maskRegistry[me.options.mask];
+    if (factory) {
+        const input = me.targetFieldNode;
+        if (input) {
+            const type = input.getAttribute("type");
+            if (type && type !== "text" && type !== "textarea") {
+                input.setAttribute("type", "text");
+            }
+            me._maskInstance = factory(input);
+        }
+    } else if (SmarkForm._maskConfig.throwOnMissing) {
+        throw new Error(`Mask "${me.options.mask}" not found in registry`);
+    } else {
+        console.warn(`Mask "${me.options.mask}" not found in registry`);
+    }
+}
+```
+
+The constructor flow: `me.options = options` (has `mask` from `data-smark`).
+Then `render()` runs → assigns `targetFieldNode` → applies mask.
+
+#### The `.mask()` Method Is Removed
+
+Since this is a feature branch (not yet public API), the old `.mask()` method
+is **removed**. All masking is done declaratively via `data-smark` or the
+registry API. This avoids user confusion — the old method didn't work for list
+items added after render, and keeping it would create two inconsistent ways to
+mask a field.
+
+Only the declarative approach (`{"mask":"name"}` in `data-smark`) and the
+`registerMask()` API remain.
+
+For edge cases that need custom programmatic logic, users can register a named
+mask via `SmarkForm.registerMask()` and reference it in `data-smark`.
+
+#### `export()` / `import()` Behavior
+
+The existing integration with `export()` (returning `_maskInstance.unmaskedValue`
+when available) and `import()` (dispatching `input` event) remains unchanged.
+
+#### List Item Masking — Automatic
+
+When a list clones a new item, the item's `data-smark` is processed as part of
+`render()`. If any field in the cloned item has `{"mask":"creditCard"}`, the
+mask function is looked up from the registry and applied — no manual
+intervention needed.
+
+This is the key advantage over the current `.mask()` approach.
+
+#### Singleton Handling
+
+Same as current: singleton components delegate mask to their inner field. The
+`mask` property on a singleton is treated identically — the inner field's
+render applies the mask.
+
+#### HTML Input Type
+
+When a mask is applied, the input's `type` is changed to `"text"` (if not
+already). Original type is not restored — masking is permanent.
+
+#### Error Handling
+
+Configurable via `SmarkForm.maskConfig` (or similar global option):
+
+```javascript
+SmarkForm.maskConfig = {
+    throwOnMissing: true  // default: throw; set to false to only warn
+};
+```
+
+When `throwOnMissing` is `true` (default), referencing an unregistered mask
+name throws an error — catching it during development. When `false`, a
+console warning is emitted and the field is left unmasked.
+
+#### Implementation Steps (Draft)
+
+1. Add `SmarkForm._maskRegistry = {}` and `SmarkForm.maskConfig` in `main.js`
+2. Add `SmarkForm.registerMask(name, fn)` static method
+3. In the constructor or init phase, scan for `<script type="smark-mask">` tags and register them
+4. In `input.type.js` at the end of `render()`, check `me.options.mask` and apply
+5. Modify `export()` (already checks `_maskInstance`) and `import()` (dispatch `input` event) — reuse existing logic
+6. Mixin system: when expanding a mixin template, its local `<script type="smark-mask">` definitions are merged into the expansion's mask scope, taking precedence over the global registry during that mixin's lifetime
+7. Remove the old `.mask()` method from `input.type.js`

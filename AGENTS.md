@@ -49,6 +49,26 @@ For convenience, include this exact sentence in the PR description when you want
 
 ## Detailed Component Documentation
 
+### Field Masking
+
+SmarkForm's declarative masking API allows integrating external masking libraries via `SmarkForm.registerMask(name, factory)` and `<script type="smark-mask">` elements. Masks are applied to fields using the `mask` property in `data-smark`. The mask instance is stored in `_maskInstance` and provides `unmaskedValue` for clean exports.
+
+**Key API**:
+- `SmarkForm.registerMask(name, factory)`: Registers a mask factory globally before form construction
+- `<script type="smark-mask" data-name="...">`: Declarative mask registration — scanned by `_scanGlobalMasks()` in the constructor
+- `data-smark mask` property: e.g., `<input data-smark='{"name":"card","mask":"digits"}'>`
+- `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
+- `import()`: Dispatches `input` event when `_maskInstance` exists, so masks stay synchronized
+- `maskConfig: { throwOnMaskError: false }`: Suppresses error for unregistered or broken masks, falls back to unmasked input
+- Singleton handling: delegates to inner field, `_maskInstance` lives on inner field
+- Mixin-scoped masks: `<script type="smark-mask">` inside `<template>` is scoped, not global; requires `allowLocalMixinScripts: 'allow'`
+- On error (mask not found or factory throws), original input type is restored; if `throwOnMaskError` is `true` an error is thrown, otherwise a `console.warn` is emitted
+- `MASK_APPLY_ERROR`: thrown when a mask factory throws; the original exception is available via `error.cause`
+
+**Configuration file locations**:
+- Tests: `test/declarative_mask.tests.js`, `test/mask.tests.js`
+- Implementation: `src/main.js` (registry), `src/lib/mixin.js` (scoped mask filtering), `src/lib/component.js` (propagation), `src/types/input.type.js` (`_applyMask`, export/import integration)
+
 ### Playwright Test Runner
 
 **What it does**: Runs end-to-end tests against the built distribution files and validates documentation examples.
@@ -388,6 +408,54 @@ When you discover a new pattern, fix a bug caused by an undocumented constraint,
 2. **Add new entries** for anything you had to learn the hard way — gotchas, non-obvious constraints, error messages and their root causes.
 3. **Correct inaccurate entries** whenever you verify that something documented is wrong.
 4. You do not need a special PR description sentence to update `AGENTS/` files — just do it as part of your normal work.
+
+## Documentation Guidelines
+
+When writing or editing documentation pages in `docs/`, follow these conventions
+to maintain consistency across the site:
+
+### Page Structure
+
+- **Front matter**: Always include `title`, `layout: chapter`, `permalink`, and
+  `nav_order`. The `title` should be a quoted string for multi-word titles
+  (e.g. `title: "Mixin Types"`).
+- **`{% include links.md %}`**: Place immediately after the front matter, before
+  the chapter heading.
+- **`{% include components/sampletabs_ctrl.md %}`**: Include after `links.md`
+  on pages that contain playable (sampletabs) examples.
+- **Chapter heading**: Use `# {{ page.title }}` to render the title from front
+  matter. Do **not** hardcode the heading text.
+- **Table of Contents**: Use a `<details class="chaptertoc">` block with a
+  `<!-- vim-markdown-toc GitLab -->` markup list inside a `{{ "..." |
+  markdownify }}` block. The TOC must list every second-level (`##`) heading
+  and its nested third-level (`###`) headings.
+
+### Playable Examples (Sampletabs)
+
+- Prefer sampletabs (`{% include components/sampletabs_tpl.md %}`) over static
+  code blocks wherever possible — they let readers edit and run examples live.
+- Each example needs three captures: `html`, `js`, and `notes`.
+- Use `{% raw %}<!-- mask_foo_html {{{ -->{% endraw %}` / `{% raw %}<!-- }}} -->{% endraw %}` markers around each capture to delimit them in the source.
+- Set `showEditor=true` and `tests=false` for documentation examples (tests are
+  defined in standalone test files under `test/`).
+- Provide a meaningful `notes` capture with a "Try it!" call to action.
+
+### Style & Vocabulary
+
+- Use the active voice and present tense.
+- Keep paragraphs short and focused. One idea per paragraph.
+- Use descriptive link text (not "click here").
+- Sidebar nav hierarchy follows `nav_order`.
+- Cross-reference related chapters with `>` callout blocks and `See also:`
+  links.
+
+### Liquid Variables
+
+- Use `{{ page.title }}` for the chapter heading.
+- Use `{{ "..." | relative_url }}` for relative links to other pages.
+- Use `{{ "..." | markdownify }}` for the TOC block.
+- Always include `{% include links.md %}` on every page to make link references
+  available.
 
 ## Agent Skills Directory (`skills/`)
 

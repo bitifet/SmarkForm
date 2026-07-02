@@ -57,6 +57,34 @@ Example usage in a `.md` doc file:
 %}
 ```
 
+### Required: `id="myForm$$"` Root Wrapper
+
+**Every sampletabs example MUST use `id="myForm$$"` as the root wrapper element ID.** The template strips `$$` at render time (both in Liquid and JavaScript), so the runtime ID becomes `id="myForm"`.
+
+The auto-generated `jsHead` calls `new SmarkForm(document.getElementById("myForm$$"))`. If the example provides a custom `jsHead`, it must use `document.getElementById("myForm$$")` — never a literal `#id` selector — as the SmarkForm constructor argument.
+
+**Correct pattern (playable example inside a capture):**
+```html
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"myFormName"}'>
+    <input data-smark='{"name":"fieldName","mask":"someMask"}'>
+  </div>
+</div>
+```
+```javascript
+SmarkForm.registerMask("someMask", (node) => { ... });
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+```
+
+**Do NOT use:**
+- Custom IDs like `id="payment"`, `id="product"` as the root — these break the playground editor's "demo" subform wrapping mechanism.
+- `new SmarkForm("#customId")` — always use `document.getElementById("myForm$$")`.
+- `data-smark` on the `id="myForm$$"` wrapper itself — the wrapper should be a plain DOM container. The `data-smark` belongs on the inner form element(s).
+
+**CDN `<script>` tags** for external libraries (e.g. IMask) should be placed **before** the `id="myForm$$"` wrapper, not inside it. The test runner's `isFormRoot()` function now skips leading `<script>` tags when detecting the root wrapper, so `htmlSource` starting with `<script>` followed by `<div id="myForm$$">` is correctly recognised as having a root — no extra wrapper is added.
+
+**Why this matters:** When `showEditor=true`, the playground wraps the example in a "demo" subform. The `smarkformBuildEditorHtml()` function in the controller extracts the wrapper (found by `id="myForm$$"`) and inserts the demo subform inside it. A custom ID breaks this extraction, causing incorrect export nesting (e.g. `{cardNumber: null}` instead of `{payment: {cardNumber: null}}`).
+
 ## Include Parameters
 
 | Parameter | Default | Description |
@@ -319,3 +347,40 @@ button[data-smark*='"action":"reset"'] {
   display: none !important;
 }
 ```
+
+## Critical Constraint: Preserve the SmarkForm-Based Playground Editor
+
+**DO NOT** replace the playground editor's SmarkForm components (`demo` subform, `data-smark` buttons, `data-smark` editor textarea) with plain HTML elements + JS helpers. The SmarkForm-based editor is a deliberate design that demonstrates SmarkForm's power — the editor itself is a SmarkForm form.
+
+The `demo` subform isolates the example's fields from the editor textarea:
+- Export/Import buttons operate on `context:"demo"` (target the demo subform)
+- The editor is a sibling `<textarea data-smark='{"name":"editor","type":"input"}'>`
+- Reset targets the root form (no context), restoring demo values AND clearing editor
+
+**Lesson learned**: Before making deep changes to the playground editor architecture, always ask the user. The old implementation is intentionally built this way.
+
+### The `find()` Path Problem
+
+Because the example's HTML is nested under a `demo` subform, example JS code using absolute paths like `find("/cardNumber")` will fail — the actual path is `/demo/cardNumber`. This is a known trade-off. Solutions should preserve the SmarkForm-based editor approach.
+
+## Singleton + List Pattern in Co-located Examples
+
+The `field_masking.md` Custom Mask example demonstrates a phone list with singleton-wrapped fields inside a list template:
+
+```html
+<template id="phoneTmpl">
+  <p style="display:flex;gap:8px;margin:4px 0;align-items:center">
+    <span data-smark='{"type":"input","name":"phone","mask":"digits"}'>
+      <input data-smark type="tel" placeholder="Phone number">
+    </span>
+    <button data-smark='{"type":"removebutton"}' title="Remove">✕</button>
+  </p>
+</template>
+```
+
+Key details:
+- **Singleton wrapper**: `<span data-smark='{"type":"input"…}'>` is not an INPUT tag, so SmarkForm treats it as a singleton — a form containing exactly one field. The inner `<input data-smark>` inherits options (including `mask`) from the singleton.
+- **Mask on wrapper**: The `mask` property is set on the singleton wrapper, not on the inner `<input>`. It is inherited automatically.
+- **`type:"input"` is safe for singletons**: Unlike `type:"number"`, the `input` type has no `validateInputType()` call, so there is no timing issue with mask application (the mask schedules `_applyMask()` via `onRendered`, which fires after render completes).
+- **List with singleton items**: The `<template>` creates list items where each phone is a singleton field. The list's add/remove buttons work normally alongside masking.
+- **Test with empty list**: The co-located test checks the list starts empty (`readField('/contacts/phones')` returns `[]`). Tests that interact with list items must use paths like `/contacts/phones/0/phone`.

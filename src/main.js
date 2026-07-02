@@ -42,6 +42,17 @@ class SmarkForm extends form {
             ...formOptions
         } = {}
     ) {
+        // Auto-scan global mask scripts from the document:
+        SmarkForm._scanGlobalMasks();
+
+        // Resolve string selectors to DOM nodes:
+        if (typeof targetNode === "string") {
+            const resolved = document.querySelector(targetNode);
+            if (!resolved) throw new Error(
+                `SmarkForm: selector "${targetNode}" did not match any element`
+            );
+            targetNode = resolved;
+        }
         const options = {
             ...formOptions,
             name: "",
@@ -75,6 +86,43 @@ class SmarkForm extends form {
         await super.render();
         me.targetNode.setAttribute("aria-busy", "false");
     };
+};
+
+// --- Declarative Masking API ---
+SmarkForm._maskRegistry = {};
+SmarkForm.maskConfig = { throwOnMissing: true };
+SmarkForm._scanned = false;
+
+SmarkForm.registerMask = function(name, factory) {
+    if (typeof name !== 'string' || !name) {
+        throw new Error('SmarkForm.registerMask: name must be a non-empty string.');
+    }
+    if (typeof factory !== 'function') {
+        throw new Error('SmarkForm.registerMask: factory must be a function.');
+    }
+    SmarkForm._maskRegistry[name] = factory;
+};
+
+SmarkForm._scanGlobalMasks = function() {
+    if (SmarkForm._scanned) return;
+    SmarkForm._scanned = true;
+    const scripts = document.querySelectorAll('script[type="smark-mask"]');
+    for (const script of scripts) {
+        if (script.closest('template')) continue;
+        const name = script.getAttribute('data-name');
+        if (!name) continue;
+        if (SmarkForm._maskRegistry[name]) continue;
+            try {
+                const factory = (new Function('return (' + script.textContent.trim() + ')'))();
+                if (typeof factory === 'function') {
+                SmarkForm._maskRegistry[name] = factory;
+            }
+        } catch (e) {
+            console.warn(
+                `SmarkForm: failed to evaluate mask script "${name}":`, e
+            );
+        }
+    }
 };
 
 SmarkForm.createType = createType;
