@@ -63,6 +63,7 @@ featured ones.
     * [Smart value coercion](#smart-value-coercion)
         * [Scalar-to-array list coercion](#scalar-to-array-list-coercion)
         * [Type coercion for scalar fields](#type-coercion-for-scalar-fields)
+    * [Field Masking](#field-masking)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Random Examples](#random-examples)
     * [Simple Calculator](#simple-calculator)
@@ -2981,6 +2982,81 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     demoValue=demoValue
     tests=type_coercion_tests
 %}
+
+
+### Field Masking
+
+SmarkForm's declarative masking API lets you integrate any external input-masking
+library. Define a mask factory once and reference it by name in `data-smark` —
+no post-construction setup needed.
+
+This example uses [IMask.js](https://imask.js.org/) to format a credit card
+number with spaces every 4 digits. The factory returns a wrapper whose
+`unmaskedValue` getter returns `null` when the card is incomplete, so
+`export()` never includes partially-typed data.
+
+{% raw %} <!-- showcase_mask_html {{{ --> {% endraw %}
+{% capture showcase_mask_html -%}
+<div id="myForm$$">
+  <script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+  <div data-smark='{"type":"form","name":"payment"}'>
+    <p>
+      <label data-smark>Card Number:</label>
+      <input
+        data-smark='{"type":"number","name":"cardNumber","mask":"card"}'
+        placeholder="0000 0000 0000 0000"
+      >
+    </p>
+  </div>
+</div>
+{%- endcapture %}
+{% raw %}<!-- }}} --> {% endraw %}
+
+{% raw %} <!-- showcase_mask_js {{{ --> {% endraw %}
+{% capture showcase_mask_js -%}
+SmarkForm.registerMask("card", (node) => {
+  const imask = new IMask(node, { mask: "0000 0000 0000 0000" });
+  return {
+    get unmaskedValue() {
+      return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
+    },
+    set unmaskedValue(v) { imask.masked.unmaskedValue = v; },
+  };
+});
+
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+{%- endcapture %}
+{% raw %}<!-- }}} --> {% endraw %}
+
+{% raw %} <!-- showcase_mask_notes {{{ --> {% endraw %}
+{% capture showcase_mask_notes -%}
+The mask is registered once via `SmarkForm.registerMask()` and applied to the
+field via the `mask` property in `data-smark`. SmarkForm converts `type="number"`
+to `text` so IMask can operate, but `export()` returns a proper `Number` from
+the clean digit string.
+
+The wrapper checks `imask.masked.isComplete` — when falsy `unmaskedValue`
+returns `null`, so incomplete credit card numbers are never exported.
+{%- endcapture %}
+{% raw %}<!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{"payment": {"cardNumber": 4111111111111111}}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="field_masking"
+    htmlSource=showcase_mask_html
+    jsHead=showcase_mask_js
+    notes=showcase_mask_notes
+    selected="preview"
+    showEditor=true
+    demoValue=demoValue
+    tests=false
+%}
+
+> **Want to learn more about masking?** See the full reference in
+> [Field Masking]({{ "/advanced_concepts/field_masking" | relative_url }}).
 
 
 
