@@ -147,7 +147,7 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
+    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}input:invalid{outline:2px solid #e00;outline-offset:-1px;}';
     var darkModeCss = 'body{background:#202020!important;color:#e9e9e9!important}'
         + 'label{color:#e9e9e9!important}'
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
@@ -439,17 +439,20 @@ document.addEventListener('DOMContentLoaded', function() {
         var resizeHandle = container.querySelector('.smarkform-resize-handle');
         if (resizeHandle) {
           var rsDrag = false, rsStartY, rsStartH;
-          resizeHandle.addEventListener('mousedown', function(e) {
-            e.preventDefault();
+          resizeHandle.addEventListener('pointerdown', function(e) {
+            this.setPointerCapture(e.pointerId);
             rsDrag = true;
             rsStartY = e.clientY;
             rsStartH = iframe.offsetHeight;
           });
-          document.addEventListener('mousemove', function(e) {
+          resizeHandle.addEventListener('pointermove', function(e) {
             if (!rsDrag) return;
             iframe.style.height = Math.max(75, rsStartH + (e.clientY - rsStartY)) + 'px';
           });
-          document.addEventListener('mouseup', function() { rsDrag = false; });
+          resizeHandle.addEventListener('pointerup', function(e) {
+            rsDrag = false;
+            this.releasePointerCapture(e.pointerId);
+          });
         }
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
