@@ -25,7 +25,6 @@ nav_order: 7
     * [Via JavaScript](#via-javascript)
     * [Via Declarative HTML](#via-declarative-html)
 * [Credit Card Example (IMask)](#credit-card-example-imask)
-* [Price Example (Non-Text Field Type)](#price-example-non-text-field-type)
 * [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library-singleton-list)
 * [Mixin-Scoped Masks](#mixin-scoped-masks)
 * [Error Handling](#error-handling)
@@ -155,7 +154,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- via_js_notes {{{ -->{% endraw %}
 {% capture via_js_notes -%}
-The `registerMask()` call must happen **before** any form that uses it is constructed. The factory receives the input's DOM node and returns an IMask instance — SmarkForm reads its `unmaskedValue` for `export()` so the clean digit string is returned, not the formatted display with spaces.
+The factory receives the DOM node after SmarkForm has already converted its `type` from `number` to `text`. Any library or custom code that operates on the node will work — SmarkForm only cares about the returned object's `unmaskedValue` property.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -283,12 +282,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-Unlike the basic examples that return the IMask instance directly, this factory wraps it to override `unmaskedValue` — the getter returns `null` when `isComplete` is false, so incomplete card numbers are never included in `export()`.
-
-**Other enhancements over the basics:**
-- `placeholder` and `inputMode: "numeric"` set inside the factory — the HTML stays clean, and SmarkForm's type-conversion (`number` → `text`) doesn't affect the mobile keyboard.
-- IMask starts `lazy: true` so the native placeholder `"0000 0000 0000 0000"` is visible while empty. After the first digit, `updateOptions` switches to `lazy: false` + `placeholderChar: "_"` — unfilled positions become underscores and IMask handles cursor positioning.
-- Deleting the last digit switches back to `lazy: true`, restoring the native placeholder.
+The wrapper object overriding `unmaskedValue` to return `null` for incomplete numbers is the key refinement over the basic examples — it means `export()` never returns partially-typed card data. The dynamic lazy switching (native placeholder → underscore fill) keeps the input intuitive: empty fields look like regular inputs, and active fields show the full mask structure.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md 
@@ -296,71 +290,6 @@ Unlike the basic examples that return the IMask instance directly, this factory 
    htmlSource=mask_cc_html
    jsHead=mask_cc_js
    notes=mask_cc_notes
-   showEditor=true
-   selected="js"
-   tests=false
-%}
-
-## Price Example (Non-Text Field Type)
-
-This shows how to use a `number` field type — SmarkForm converts it to `text`
-for masking but exports a proper JavaScript number.
-
-{% raw %}<!-- mask_price_html {{{ -->{% endraw %}
-{% capture mask_price_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
-<div id="myForm$$">
-  <div data-smark='{"type":"form","name":"product"}'>
-    <p>
-      <label>Unit Price</label>
-      <input data-smark='{"type":"number","name":"price","mask":"price"}' step="0.01">
-    </p>
-  </div>
-</div>
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %}<!-- mask_price_js {{{ -->{% endraw %}
-{% capture mask_price_js -%}
-SmarkForm.registerMask("price", (node) => {
-  node.placeholder = "0.00";
-  node.inputMode = "decimal";
-
-  const imask = new IMask(node, {
-    mask: Number,
-    scale: 2,
-    thousandsSeparator: " ",
-    lazy: false,
-    placeholderChar: "_",
-    padFractionalZeros: false,
-  });
-
-  node.addEventListener("blur", () => {
-    if (imask.masked.isComplete) return;
-    let val = imask.masked.unmaskedValue;
-    if (val == null || val === "") return;
-    val = String(val);
-    if (!val.includes(".")) val += ".";
-    const [intPart, fracPart = ""] = val.split(".");
-    val = (intPart || "0") + "." + fracPart.padEnd(2, "0");
-    imask.masked.unmaskedValue = val;
-  });
-
-  return imask;
-});
-
-const myForm = new SmarkForm(document.getElementById("myForm$$"));
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %}<!-- mask_price_notes {{{ -->{% endraw %}
-{% capture mask_price_notes -%}
-SmarkForm converts `type="number"` inputs to `type="text"` for masking, but `export()` still returns a proper `Number`. The factory sets `placeholder: "0.00"` and `inputMode: "decimal"` (mobile numeric keyboard). IMask uses `lazy: false` + `placeholderChar: "_"` so unfilled decimal positions show underscores while typing. On blur, missing decimals are auto-completed with zeros.
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% include components/sampletabs_tpl.md 
-   formId="mask-price"
-   htmlSource=mask_price_html
-   jsHead=mask_price_js
-   notes=mask_price_notes
    showEditor=true
    selected="js"
    tests=false
@@ -384,7 +313,7 @@ placed on the singleton wrapper is automatically inherited by the inner
   <div data-smark='{"type":"form","name":"contacts"}'>
     <p>
       <label>Contact Phones</label>
-      <div data-smark='{"type":"list","name":"phones","min_items":0}'>
+      <div data-smark='{"type":"list","name":"phones"}'>
         <p style="display:flex;gap:8px;margin:4px 0;align-items:center">
           <span data-smark='{"type":"input","name":"phone","mask":"digits"}'>
             <input data-smark type="tel" placeholder="Phone number">
@@ -428,7 +357,7 @@ Each phone input is wrapped in a singleton (`type:"input"`) with `mask:"digits"`
 export default async ({ expect, readField, root, page }) => {
     await expect(root).toBeVisible();
     const val = await readField('/contacts/phones');
-    expect(val).toEqual([]);
+    expect(val).toEqual([{phone: ""}]);
 };
 {% endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
