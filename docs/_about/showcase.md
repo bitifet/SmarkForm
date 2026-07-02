@@ -3062,7 +3062,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %} <!-- showcase_mask_notes {{{ --> {% endraw %}
 {% capture showcase_mask_notes -%}
-A fully-worked credit card field: IMask with lazy switching (placeholder → underscore fill), `inputMode: "numeric"` for mobile keyboards, red blink on rejected keystrokes, and a wrapper that returns `null` for incomplete numbers so they are never exported.
+A fully-worked credit card field: IMask with lazy switching (placeholder → underscore fill), `inputMode: "numeric"` for mobile keyboards, orange blink on rejected keystrokes, and a wrapper that returns `null` for incomplete numbers so they are never exported.
 
 > **Want to learn more?** See
 > [Field Masking]({{ "/advanced_concepts/field_masking" | relative_url }}).
@@ -3073,10 +3073,20 @@ A fully-worked credit card field: IMask with lazy switching (placeholder → und
 {"payment": {"cardNumber": 4111111111111111}}
 {%- endcapture %}
 
+{% raw %} <!-- showcase_mask_css {{{ --> {% endraw %}
+{% capture showcase_mask_css -%}
+input:invalid {
+  outline: 1px solid #d4c070;
+  outline-offset: -1px;
+}
+{%- endcapture %}
+{% raw %}<!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="field_masking"
     htmlSource=showcase_mask_html
     jsHead=showcase_mask_js
+    cssSource=showcase_mask_css
     notes=showcase_mask_notes
     selected="preview"
     showEditor=true

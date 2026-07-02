@@ -147,7 +147,7 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}input:invalid{outline:2px solid #e00;outline-offset:-1px;}';
+    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
     var darkModeCss = 'body{background:#202020!important;color:#e9e9e9!important}'
         + 'label{color:#e9e9e9!important}'
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'

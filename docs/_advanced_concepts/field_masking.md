@@ -295,10 +295,19 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 The wrapper object overriding `unmaskedValue` to return `null` for incomplete numbers is the key refinement — `export()` never returns partially-typed card data. The field is marked `:invalid` when partially filled (not empty but not complete), and rejected keystrokes trigger a brief orange blink — visually distinct from the persistent invalid state.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
+{% raw %}<!-- mask_cc_css {{{ -->{% endraw %}
+{% capture mask_cc_css -%}
+input:invalid {
+  outline: 1px solid #d4c070;
+  outline-offset: -1px;
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
 {% include components/sampletabs_tpl.md 
    formId="mask-cc"
    htmlSource=mask_cc_html
    jsHead=mask_cc_js
+   cssSource=mask_cc_css
    notes=mask_cc_notes
    showEditor=true
    selected="js"
