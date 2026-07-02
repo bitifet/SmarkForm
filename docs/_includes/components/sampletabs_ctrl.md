@@ -435,6 +435,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
         smarkformRenderScheduler.enqueue(renderTask);
+        /* --- Drag-to-resize preview handle --- */
+        var resizeHandle = container.querySelector('.smarkform-resize-handle');
+        if (resizeHandle) {
+          var rsDrag = false, rsStartY, rsStartH;
+          resizeHandle.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            rsDrag = true;
+            rsStartY = e.clientY;
+            rsStartH = iframe.offsetHeight;
+          });
+          document.addEventListener('mousemove', function(e) {
+            if (!rsDrag) return;
+            iframe.style.height = Math.max(75, rsStartH + (e.clientY - rsStartY)) + 'px';
+          });
+          document.addEventListener('mouseup', function() { rsDrag = false; });
+        }
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
         var editorLabel  = container.querySelector('.smarkform-editor-label');
@@ -504,25 +520,6 @@ document.addEventListener('DOMContentLoaded', function() {
             activatePreview();
         });
     });
-    /* --- Drag-to-resize preview handle --- */
-    var resizeHandle = container.querySelector('.smarkform-resize-handle');
-    if (resizeHandle) {
-      var dragging = false, startY, startH;
-      resizeHandle.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-        dragging = true;
-        startY = e.clientY;
-        startH = iframe.offsetHeight;
-      });
-      document.addEventListener('mousemove', function(e) {
-        if (!dragging) return;
-        var newH = Math.max(75, startH + (e.clientY - startY));
-        iframe.style.height = newH + 'px';
-        var editorKind = iframe.closest('.tab-content-preview').querySelector('.tab-content-js .smarkform-ace-editor');
-        if (editorKind && aceEditors.js && aceEditors.js.resize) aceEditors.js.resize();
-      });
-      document.addEventListener('mouseup', function() { dragging = false; });
-    }
     /* ── IntersectionObserver: boost render priority for near-viewport examples ──
        rootMargin "100% 0px" means: trigger when the container is within one full
        viewport height above or below the visible area, giving enough lead time to
