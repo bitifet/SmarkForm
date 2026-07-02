@@ -3002,10 +3002,7 @@ number with spaces every 4 digits. The factory returns a wrapper whose
   <div data-smark='{"type":"form","name":"payment"}'>
     <p>
       <label data-smark>Card Number:</label>
-      <input
-        data-smark='{"type":"number","name":"cardNumber","mask":"card"}'
-        placeholder="0000 0000 0000 0000"
-      >
+      <input data-smark='{"type":"number","name":"cardNumber","mask":"card"}'>
     </p>
   </div>
 </div>
@@ -3015,7 +3012,39 @@ number with spaces every 4 digits. The factory returns a wrapper whose
 {% raw %} <!-- showcase_mask_js {{{ --> {% endraw %}
 {% capture showcase_mask_js -%}
 SmarkForm.registerMask("card", (node) => {
-  const imask = new IMask(node, { mask: "0000 0000 0000 0000" });
+  node.placeholder = "0000 0000 0000 0000";
+  node.inputMode = "numeric";
+
+  let showLazy = true;
+  const imask = new IMask(node, {
+    mask: "0000 0000 0000 0000",
+    lazy: true,
+  });
+
+  let prevValue = node.value;
+  node.addEventListener("input", () => {
+    const hasContent = imask.masked.unmaskedValue.length > 0;
+    if (hasContent && showLazy) {
+      showLazy = false;
+      imask.updateOptions({
+        mask: "0000 0000 0000 0000",
+        lazy: false,
+        placeholderChar: "_",
+      });
+    } else if (!hasContent && !showLazy) {
+      showLazy = true;
+      imask.updateOptions({
+        mask: "0000 0000 0000 0000",
+        lazy: true,
+      });
+    }
+    if (node.value === prevValue && node === document.activeElement) {
+      node.style.boxShadow = "0 0 0 2px #e00";
+      setTimeout(() => node.style.boxShadow = "", 250);
+    }
+    prevValue = node.value;
+  });
+
   return {
     get unmaskedValue() {
       return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
@@ -3030,13 +3059,10 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %} <!-- showcase_mask_notes {{{ --> {% endraw %}
 {% capture showcase_mask_notes -%}
-The mask is registered once via `SmarkForm.registerMask()` and applied to the
-field via the `mask` property in `data-smark`. SmarkForm converts `type="number"`
-to `text` so IMask can operate, but `export()` returns a proper `Number` from
-the clean digit string.
+A fully-worked credit card field: IMask with lazy switching (placeholder → underscore fill), `inputMode: "numeric"` for mobile keyboards, red blink on rejected keystrokes, and a wrapper that returns `null` for incomplete numbers so they are never exported.
 
-The wrapper checks `imask.masked.isComplete` — when falsy `unmaskedValue`
-returns `null`, so incomplete credit card numbers are never exported.
+> **Want to learn more?** See
+> [Field Masking]({{ "/advanced_concepts/field_masking" | relative_url }}).
 {%- endcapture %}
 {% raw %}<!-- }}} --> {% endraw %}
 

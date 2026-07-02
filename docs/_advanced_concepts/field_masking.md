@@ -32,7 +32,6 @@ nav_order: 7
     * [`throwOnMaskError: false`](#throwonmaskerror-false)
     * [Error Codes](#error-codes)
 * [Masks and External Libraries](#masks-and-external-libraries)
-* [Migration from the Old `mask()` Method](#migration-from-the-old-mask-method)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -248,6 +247,7 @@ SmarkForm.registerMask("card", (node) => {
     lazy: true,
   });
 
+  let prevValue = node.value;
   node.addEventListener("input", () => {
     const hasContent = imask.masked.unmaskedValue.length > 0;
     if (hasContent && showLazy) {
@@ -266,6 +266,12 @@ SmarkForm.registerMask("card", (node) => {
         lazy: true,
       });
     }
+    // Blink on rejected input (IMask reverted the value)
+    if (node.value === prevValue && node === document.activeElement) {
+      node.style.boxShadow = "0 0 0 2px #e00";
+      setTimeout(() => node.style.boxShadow = "", 250);
+    }
+    prevValue = node.value;
   });
 
   // Wrap IMask so unmaskedValue returns null for incomplete cards
@@ -332,11 +338,19 @@ placed on the singleton wrapper is automatically inherited by the inner
 SmarkForm.registerMask("digits", (node) => {
   node.inputMode = "numeric";
   let _raw = '';
+  let prevValue = node.value;
   node.addEventListener('input', () => {
+    const before = prevValue;
+    prevValue = node.value;
     const digits = node.value.replace(/\D/g, '');
     const formatted = digits.replace(/(\d{3})(?=\d)/g, '$1 ').trim();
     if (formatted !== node.value) node.value = formatted;
     _raw = digits;
+    // Blink if value was reverted (invalid character typed)
+    if (node.value === before && node === document.activeElement) {
+      node.style.boxShadow = "0 0 0 2px #e00";
+      setTimeout(() => node.style.boxShadow = "", 250);
+    }
   });
   return {
     get unmaskedValue() { return _raw; },
@@ -379,6 +393,7 @@ mixin types), the mask is scoped to that mixin's expansion — it does **not**
 register globally. This prevents name collisions between mixins that define
 masks with the same name.
 
+{: .hint :}
 > **See also:** [Mixin Types → Scripts and Styles](mixin_types#scripts-and-styles)
 > for the full mixin script policy, including the `allowLocalMixinScripts` option.
 
@@ -402,7 +417,8 @@ The script element must be a **sibling of the root element** inside the
 A mixin-local mask **overrides** a global mask with the same name, so mixins
 can safely define their own versions of shared mask names.
 
-> **Note:** Mixin-scoped masks require the `allowLocalMixinScripts: 'allow'`
+{: .warning :}
+> Keep in mind that mixin-scoped masks require the `allowLocalMixinScripts: 'allow'`
 > form option.
 
 ## Error Handling
@@ -453,21 +469,11 @@ to use:
 - **Plain DOM event handlers** — the factory can attach listeners and return
   a simple object.
 
-The only contract is:
 
+{: .info :}
+> The only contract is:
+>
 > The factory receives one argument (the target `<input>` element) and returns
 > an object with an `unmaskedValue` property (getter/setter pair), or
 > `null`/`undefined` to indicate "no masking".
 
-## Migration from the Old `mask()` Method
-
-The old `field.mask(factory)` method is removed. To migrate:
-
-1. Register the mask factory before constructing the form:
-   `SmarkForm.registerMask("name", factory)`
-2. Add `"mask":"name"` to the field's `data-smark` JSON.
-3. Remove any `field.mask(...)` calls from post-construction code.
-
-The factory signature is unchanged — it receives the target DOM node and must
-return an object with `unmaskedValue`. IMask instances are already compatible
-since they provide `unmaskedValue`.
