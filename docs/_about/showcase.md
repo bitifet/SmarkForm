@@ -484,7 +484,16 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 ### Deeply nested forms
 
-Despite of usability concerns, there is no limit in form nesting depth.
+SmarkForm fields can be nested to any depth — the only limit is your
+application's design.
+
+All the playground editor controls (Export, Import, Reset, Clear) are
+SmarkForm triggers themselves. Check the **✏️ Edit** tab to see how
+the editor scaffold is constructed.
+
+> See [Form Types]({{ "/component_types/type_form" | relative_url }}) for details on form nesting and the playground architecture.
+
+
 
 In fact, all examples in this chapter are entirely built with SmarkForm itself
 **with no additional JS code**.
@@ -1198,9 +1207,21 @@ usability concerns.
 
 ### Item duplication and closure state
 
-Adding similar items to a list of complex and configurable subforms —like the
-periods list in our example— can be tedious if users have to re-enter all
-fields each time.
+New list items copy data from the previous sibling when their `source` is set
+to `".-1"`. Combined with `min_items: 0` and the `empty_list` template role,
+you can build list items that start empty but inherit useful defaults.
+
+> See [List Types]({{ "/component_types/type_list" | relative_url }}) for `source`, `min_items`, and template roles.
+
+
+### A note on empty values
+
+The `exportEmpties` option (default `false`) omits blank items from exported
+data. This behaviour inherits down to nested lists — see
+[List Types]({{ "/component_types/type_list" | relative_url }}) for the full
+inheritance rules.
+
+
 
 The previous example already includes a **duplicate** (`✨`) button that uses
 `source:".-1"` to prefill a new item with data copied from the previous one.
@@ -1244,12 +1265,15 @@ where and how the *exportEntries* property is used in the lists:
 
 ### Nesting Mixins
 
-The [nested periods example](#nested-lists-and-forms) already combines **two
-mixins**: `#periodItem` (the outer one, wrapping the period fieldset)
-references `#scheduleRow` (the inner one, providing the time-interval grid).
-The `<style>` from `#scheduleRow` is injected **once** into `<head>`
-regardless of how many times either mixin is used — mixin styles are shared,
-not duplicated.
+Mixin templates can reference other mixins via `data-for` slots. The example
+above composes `#periodItem` (referencing `#scheduleRow` with a `data-for`
+attribute) to reuse the scheduling mixin inside the period mixin.
+
+Duplicate `<style>` elements are automatically de-duplicated by SmarkForm.
+
+> See [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}) for composition, scripts, and style handling.
+
+
 
 Looking at that example's HTML source you can see both templates defined side
 by side: `#scheduleRow` is the inner list template; `#periodItem` is the outer
@@ -1258,7 +1282,10 @@ template and reference it with `type: "#yourTemplateName"`.
 
 ## Import and Export Data
 
-Exporting and importing data in SmarkForm cannot be easier.
+SmarkForm's export/import buttons are triggers with `context` and `target`
+properties. See [Data Import and Export]({{ "/advanced_concepts/data_import_and_export" | relative_url }}) for details.
+
+
 
 The `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons used in all examples in
 this documentation are just *triggers* that call the *export* and *import*
@@ -1666,73 +1693,17 @@ fields in the list.
 
 ### Hotkeys and context
 
-In *SmarkForm*, hotkeys are context-aware, meaning that the same hotkey can
-trigger different actions depending on the context in which the focus is.
+A hotkey's effect is determined by the button it is attached to. The same
+hotkey (`Ctrl`+`-` in this example) can trigger different actions depending
+on which list item's button is in focus. SmarkForm resolves conflicts by
+preferring the innermost matching context.
 
-If you dug a bit into the HTML source of the previous example, you may have
-noticed that the outer `➕` and `➖` buttons have the *hotkey* property set as
-well but, unlike the `🧹` button, they are not announced when pressing the
-`Ctrl` key.
-
-The reason behind this is that the value of their *hotkey* property is the same
-of their inner counterparts and hotkeys are discovered from the inner focused
-field to the outside, **giving preference to the innermost ones in case of
-conflict**.
-
-Let's see the same example with a few additional fields outside the list:
-
-If you focus one of them and press the `Ctrl` key, you'll see that nothing
-happens. But if you navigate to any phone number in the list (for instance by
-repeatedly pressing the `Tab` key) and press the `Ctrl` key, you'll see that
-now the hotkeys we defined are available again.
-
-{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_with_context -%}
-█<p>
-█    <label data-smark='{"type": "label"}'>Name:</label>
-█    <input name='name' data-smark='{"type": "input"}' />
-█</p>
-█<p>
-█    <label data-smark='{"type": "label"}'>Surname:</label>
-█    <input name='surname' data-smark='{"type": "input"}' />
-█</p>
-{{ simple_list_hotkeys }}{%
-endcapture %}
-
-{% capture simple_list_hotkeys_with_context_html -%}
-<div id="myForm$$">
-{{ simple_list_hotkeys_with_context | replace: "█", "    " }}
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% capture demoValue -%}
-{
-    "name": "John",
-    "surname": "Doe",
-    "phones": [
-        "+1 555 867 5309",
-        "+1 555 234 5678"
-    ]
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="simple_list_hotkeys_with_context"
-    htmlSource=simple_list_hotkeys_with_context_html
-    height=50
-    cssSource=simple_list_hotkeys_css
-    selected="preview"
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
+> See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for context sensitivity and conflict resolution.
 
 
 ### Collapsible sections
 
-HTML's native `<details>` and `<summary>` elements provide a simple, accessible
+Native `<details>` and `<summary>` elements provide a simple, accessible
 way to create collapsible content — no JavaScript or special SmarkForm
 properties needed. SmarkForm fields placed inside a `<details>` element work
 exactly as they would anywhere else; the browser handles the show/hide toggle
@@ -2272,46 +2243,11 @@ regardless of the collapsed/expanded state.
 
 ### Smooth navigation
 
-As you may have already noticed in the preceding examples, *SmarkForm* provides
-an intuitive interface to facilitate users effortlessly discover how to
-fluently fill all the data in the form without bothering with the interface.
+Press `Enter` to move forward to the next field, `Shift`+`Enter` to go back.
+Buttons with hotkeys are automatically excluded from the `Tab` flow to keep
+navigation fluid.
 
-👉 Notice you can navigate smoothly between form fields by typing `Enter`
-(forward) and `Shift`+`Enter` (backward).
-
-So, when you finish filling a field, you can just press `Enter` to
-move to the next one.
-
-This is not only more convenient than `Tab` and `Shift`+`Tab`. More than that:
-**it skips controls providing a more fluid experience** when you are just
-filling data in.
-
-{: .info :}
-> In case of a textarea, use `Ctrl`+`Enter` instead, since `Enter` alone is
-> used to insert a new line in the text.
-
-Take a look to the `📝 Notes` tab of the previous example for more interesting
-insights and tips.
-
-👉 Last but not least, if you still prefer using `Tab` and `Shift`+`Tab`, in the
-previous example you may have noticed that you can navigate through the outer
-`🧹`, `➕` and `➖` buttons using the `Tab` key, but you cannot navigate to the
-inner `➖` and `➕` buttons in every list item.
-
-This is automatically handled by *SmarkForm* to improve User Experience:
-
-  * Passing through all `➖` and `➕` buttons in every list item would
-    have made it hard to navigate through the list.
-
-  * *SmarkForm* detects that they have a *hotkey* defined and take them out of
-    the navigation flow since the user only needs to press the `Ctrl` key to
-    discover a handy alternative to activate them from the keyboard.
-
-  * The outer ones, by contrast, are always kept in the navigation flow since
-    they are outside of their actual context and their functionality may be
-    required before having chance to bring the focus inside their context.
-    - Put in other words: otherwise, with *min_items* set to 0, it would be
-      impossible to create the first item without resorting to the mouse.
+> See [Keyboard Navigation]({{ "/advanced_concepts/keyboard_navigation" | relative_url }}) for the full reference.
 
 
 ### 2nd level hotkeys
@@ -2337,6 +2273,28 @@ their nearest level will be automatically inhibited allowing those in the next
 higher level to reveal.
 
 Try it in the following example:
+
+
+
+{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_with_context -%}
+█<p>
+█    <label data-smark='{"type": "label"}'>Name:</label>
+█    <input name='name' data-smark='{"type": "input"}' />
+█</p>
+█<p>
+█    <label data-smark='{"type": "label"}'>Surname:</label>
+█    <input name='surname' data-smark='{"type": "input"}' />
+█</p>
+{{ simple_list_hotkeys }}{%
+endcapture %}
+
+{% capture simple_list_hotkeys_with_context_html -%}
+<div id="myForm$$">
+{{ simple_list_hotkeys_with_context | replace: "█", "    " }}
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- 2nd_level_hotkeys_html {{{ --> {% endraw %}
 {% capture 2nd_level_hotkeys_html -%}
@@ -2602,25 +2560,9 @@ end of the list.
 
 ### Animations
 
-*SmarkForm* is markup-agnostic and deliberately provides no built-in animation
-engine — transitions are a design concern that belongs to your CSS.
-
-The technique is straightforward: use SmarkForm's lifecycle events to add and
-remove CSS classes on list items, and let CSS `transition` do the rest.
-
-* **`afterRender`** fires after a new item's DOM node has been inserted.
-  Add an initial CSS class that hides or offsets the element, then — after a
-  minimal delay to let the browser paint the initial state — add a second class
-  that transitions it to its final visible position.
-
-* **`beforeUnrender`** fires before an item is removed from the DOM.
-  Remove the "visible" class and return a `Promise` that resolves after the
-  transition duration. *SmarkForm* awaits that promise, so the element stays in
-  the document long enough for the exit animation to complete.
-
-🚀 Because both handlers filter by `ev.context.parent?.options.type`, a single
-pair of listeners covers every list in the form — including nested ones — with
-no per-list wiring required.
+SmarkForm's `afterRender` and `beforeUnrender` lifecycle events make it easy
+to add CSS entry/exit animations to list items. The technique uses class
+toggling with `onAll()` so every list in the form is animated automatically.
 
 {% raw %} <!-- capture animations_css {{{ --> {% endraw %}
 {% capture animations_css -%}
@@ -2717,29 +2659,19 @@ further wiring.
     tests=false
 %}
 
-The `afterRender` handler adds `animated_item` via JavaScript rather than
-embedding it directly in the HTML template. This ensures the animation class is
-only present when JavaScript is active, so the form degrades gracefully if JS is
-disabled.
-
-The `beforeUnrender` handler does the reverse: it removes `ongoing` and returns
-a `Promise` delayed by 150 ms — matching the CSS transition duration — so
-*SmarkForm* holds the element in the DOM while the exit animation plays out.
+> See [Animations]({{ "/advanced_concepts/animations" | relative_url }}) for the full guide including the 1ms delay rationale, global wiring, and graceful degradation details.
 
 
 ### Smart value coercion
 
-*SmarkForm* automatically normalises imported values to match the expected type
-and shape of each field. This keeps your forms resilient to data-model changes
-and ensures that what you save is always clean and well-typed.
+SmarkForm automatically normalises imported values to match the expected type
+and shape of each field. Lists coerce scalar values to single-item arrays;
+number, date and time fields normalise string inputs to their native types;
+JSON-encoded fields round-trip objects through textareas.
+
+> See [Value Coercion]({{ "/advanced_concepts/value_coercion" | relative_url }}) for the complete rules.
 
 #### Scalar-to-array list coercion
-
-When a *list* field receives a non-array value — a plain string, a number, or
-an object — it automatically wraps it in a single-item array. This is
-particularly useful for **model migrations**: if a field that used to hold a
-single `email` string is upgraded to accept a list of `emails`, old saved data
-continues to work without any transformation step.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes -%}
@@ -2842,20 +2774,8 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 #### Type coercion for scalar fields
 
-Fields with a specific HTML type automatically coerce values on both import and
-export:
-
-  * `<input type="number">` exports a JavaScript **number** (not a string),
-    and accepts string representations on import (e.g. `"28"` → `28`).
-  * `<input type="date">` exports an ISO 8601 string (`YYYY-MM-DD`), and
-    accepts compact strings (`YYYYMMDD`) and `Date` objects on import.
-  * `<input type="time">` exports `HH:MM:SS` and accepts `HH:MM` on import.
-  * Any field exports **`null`** when empty, to explicitly signal "unknown or
-    indifferent" rather than an empty string.
-
-Adding `{"encoding":"json"}` to any `<input>` or `<textarea>` enables JSON
-round-trips: the field stores the value internally as a JSON string but
-*exports* it as a parsed JavaScript value (object, array, number, or `null`).
+Fields with `type="number"`, `date`, `time`, and `encoding:"json"` automatically
+coerce values on import and export. See [Value Coercion]({{ "/advanced_concepts/value_coercion" | relative_url }}) for the complete rules.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes -%}
