@@ -7,6 +7,7 @@ nav_order: 14
 ---
 
 {% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
@@ -15,6 +16,71 @@ engine — transitions are a design concern that belongs to your CSS.
 
 The technique is straightforward: use SmarkForm's lifecycle events to add and
 remove CSS classes on list items, and let CSS `transition` do the rest.
+
+{% raw %}<!-- anim_example_html {{{ -->{% endraw %}
+{% capture anim_example_html -%}
+<div id="myForm$$">
+  <button data-smark='{"action":"addItem","context":"items"}' title="Add">➕ Add</button>
+  <button data-smark='{"action":"removeItem","context":"items"}' title="Remove">➖ Remove</button>
+  <ul data-smark='{"type":"list","name":"items","min_items":0}'>
+    <li>
+      <input data-smark type="text" placeholder="Type something...">
+    </li>
+  </ul>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- anim_example_css {{{ -->{% endraw %}
+{% capture anim_example_css -%}
+{{""}}#myForm$$ ul { list-style: none; padding: 0; }
+{{""}}#myForm$$ li.anim-in {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+{{""}}#myForm$$ li.anim-visible {
+  transform: translateX(0);
+  opacity: 1;
+}
+{{""}}#myForm$$ li.anim-out {
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 150ms ease, opacity 150ms ease;
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- anim_example_js {{{ -->{% endraw %}
+{% capture anim_example_js -%}
+const delay = ms => new Promise(r => setTimeout(r, ms));
+
+myForm.onAll("afterRender", async (ev) => {
+  if (ev.context.parent?.options.type !== "list") return;
+  ev.context.targetNode.classList.add("anim-in");
+  await delay(1);
+  ev.context.targetNode.classList.add("anim-visible");
+});
+
+myForm.onAll("beforeUnrender", async (ev) => {
+  if (ev.context.parent?.options.type !== "list") return;
+  ev.context.targetNode.classList.add("anim-out");
+  await delay(150);
+});
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- anim_example_notes {{{ -->{% endraw %}
+{% capture anim_example_notes -%}
+Add or remove items to see the slide-in/slide-out animation. The `afterRender` handler adds the CSS class that triggers the entry transition; the `beforeUnrender` handler keeps the element visible while the exit animation plays.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="anim-example"
+   htmlSource=anim_example_html
+   cssSource=anim_example_css
+   jsSource=anim_example_js
+   notes=anim_example_notes
+   selected="preview"
+   tests=false
+%}
 
 ## Lifecycle Events for Entry/Exit Animations
 

@@ -1222,47 +1222,6 @@ data. This behaviour inherits down to nested lists — see
 inheritance rules.
 
 
-
-The previous example already includes a **duplicate** (`✨`) button that uses
-`source:".-1"` to prefill a new item with data copied from the previous one.
-It also sets `min_items:0` with `value:[{}]` so the list starts with one empty
-item (good UX) yet can be emptied entirely, at which point the `🔒 Out of Service`
-message (the `empty_list` role) is shown.
-
-These techniques work together:
-
-  * **`source:".-1"`** on an `addItem` trigger — the new item receives the
-    previous item's data immediately after render.
-  * **`min_items:0`** — allows the list to be fully emptied.
-  * **`value:[{}]`** — ensures one empty item appears by default even with
-    `min_items:0`, so users are never greeted with a blank list.
-  * **`empty_list` role** — provides feedback when the list has no items.
-
-
-### A note on empty values
-
-Take a look to the HTML source of the previous example and pay attention to
-where and how the *exportEntries* property is used in the lists:
-
-  * **For the *periods* list** we set *exportEmpties* to true, overidding its
-    default value (false).
-    - This way, if a period is added (intentional), it gets exported even if
-      not filled.
-    - This is because the user may be saving his work to continue later or just
-      mean there is a period but we don't know its data yet.
-
-  * **For the schedules lists** we set *exportEmpties* to false (necessary to
-    prevent inheriting the true value we just set). This way:
-    - When a period is added, all schedules are layed out with their default
-      value (one empty time interval ready to be filled).
-    - If the user leaves any unfilled (because of being inappropriate) and
-      neglects removing it, it will be just swallowed when exporting the form
-      data.
-    - This way, when importing the exported data (or if item is duplicated with
-      the `✨` button), the unfilled intervals are correctly shown as
-      "(Closed)".
-
-
 ### Nesting Mixins
 
 Mixin templates can reference other mixins via `data-for` slots. The example
@@ -1699,6 +1658,28 @@ on which list item's button is in focus. SmarkForm resolves conflicts by
 preferring the innermost matching context.
 
 > See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for context sensitivity and conflict resolution.
+
+{% capture demoValue -%}
+{
+    "name": "John",
+    "surname": "Doe",
+    "phones": [
+        "+1 555 867 5309",
+        "+1 555 234 5678"
+    ]
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_list_hotkeys_with_context"
+    htmlSource=simple_list_hotkeys_with_context_html
+    height=50
+    cssSource=simple_list_hotkeys_css
+    selected="preview"
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
 
 
 ### Collapsible sections

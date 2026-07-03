@@ -7,6 +7,7 @@ nav_order: 13
 ---
 
 {% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
@@ -19,6 +20,41 @@ Press `Enter` to move forward to the next field, and `Shift`+`Enter` to move
 backward. This is more convenient than `Tab` and `Shift`+`Tab` — it skips
 controls that would otherwise interrupt the data-entry flow, providing a
 more fluid experience.
+
+{% raw %}<!-- nav_enter_html {{{ -->{% endraw %}
+{% capture nav_enter_html -%}
+<div id="myForm$$">
+  <p>
+    <label data-smark>First name:</label>
+    <input data-smark type="text" name="first">
+  </p>
+  <p>
+    <label data-smark>Last name:</label>
+    <input data-smark type="text" name="last">
+  </p>
+  <p>
+    <label data-smark>Email:</label>
+    <input data-smark type="email" name="email">
+  </p>
+  <p>
+    <label data-smark>Message:</label>
+    <textarea data-smark name="message"></textarea>
+  </p>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- nav_enter_notes {{{ -->{% endraw %}
+{% capture nav_enter_notes -%}
+Press `Enter` in any text field to move to the next one. Shift`+`Enter` goes backward. In the textarea, use `Ctrl`+`Enter` to advance (plain `Enter` inserts a new line).
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="nav-enter"
+   htmlSource=nav_enter_html
+   notes=nav_enter_notes
+   selected="preview"
+   tests=false
+%}
 
 {: .info :}
 > In textareas, use `Ctrl`+`Enter` instead. Plain `Enter` inserts a new line

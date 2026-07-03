@@ -7,12 +7,63 @@ nav_order: 15
 ---
 
 {% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
 SmarkForm automatically normalises imported values to match the expected type
 and shape of each field. This keeps your forms resilient to data-model changes
 and ensures that what you save is always clean and well-typed.
+
+{% raw %}<!-- coercion_html {{{ -->{% endraw %}
+{% capture coercion_html -%}
+<div id="myForm$$">
+  <p>
+    <label>Emails:</label>
+    <button data-smark='{"action":"removeItem","context":"email"}' title="Remove">➖</button>
+    <button data-smark='{"action":"addItem","context":"email"}' title="Add">➕</button>
+    <ul data-smark='{"type":"list","name":"email","of":"input","min_items":0}'>
+      <li><input type="email" data-smark placeholder="name@example.com"></li>
+    </ul>
+  </p>
+  <p>
+    <label>Age:</label>
+    <input type="number" name="age" data-smark>
+  </p>
+  <p>
+    <label>Date of Birth:</label>
+    <input type="date" name="dob" data-smark>
+  </p>
+  <p>
+    <label>Notes (JSON):</label>
+    <textarea name="meta" data-smark='{"encoding":"json"}' placeholder='{"key":"value"}'></textarea>
+  </p>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- coercion_notes {{{ -->{% endraw %}
+{% capture coercion_notes -%}
+Export first, then try importing a scalar string (e.g. `"alice@example.com"`) into the email list — SmarkForm auto-wraps it in an array. The number and date fields accept string representations on import; the JSON textarea round-trips objects.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% capture demoValue -%}
+{
+    "email": "alice@example.com",
+    "age": "28",
+    "dob": "19960315",
+    "meta": {"subscribed": true}
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+   formId="coercion"
+   htmlSource=coercion_html
+   notes=coercion_notes
+   selected="preview"
+   showEditor=true
+   demoValue=demoValue
+   tests=false
+%}
 
 ## Scalar-to-Array List Coercion
 
