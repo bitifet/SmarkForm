@@ -248,6 +248,8 @@ SmarkForm.registerMask("card", (node) => {
   });
 
   let prevValue = node.value;
+  let lastKey = "";
+  node.addEventListener("keydown", (e) => { lastKey = e.key; });
   node.addEventListener("input", () => {
     const hasContent = imask.masked.unmaskedValue.length > 0;
     if (hasContent && showLazy) {
@@ -266,10 +268,12 @@ SmarkForm.registerMask("card", (node) => {
         lazy: true,
       });
     }
-    // Blink on rejected input (IMask reverted the value)
+    // Blink on rejected input, but not for Backspace/Delete hitting a separator
     if (node.value === prevValue && node === document.activeElement) {
-      node.style.boxShadow = "0 0 0 2px #f80";
-      setTimeout(() => node.style.boxShadow = "", 250);
+      if (lastKey !== "Backspace" && lastKey !== "Delete") {
+        node.style.boxShadow = "0 0 0 2px #f80";
+        setTimeout(() => node.style.boxShadow = "", 250);
+      }
     }
     prevValue = node.value;
     // Mark invalid when partially filled (triggers native :invalid CSS)

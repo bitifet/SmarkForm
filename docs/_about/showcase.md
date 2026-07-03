@@ -3022,6 +3022,8 @@ SmarkForm.registerMask("card", (node) => {
   });
 
   let prevValue = node.value;
+  let lastKey = "";
+  node.addEventListener("keydown", (e) => { lastKey = e.key; });
   node.addEventListener("input", () => {
     const hasContent = imask.masked.unmaskedValue.length > 0;
     if (hasContent && showLazy) {
@@ -3039,8 +3041,10 @@ SmarkForm.registerMask("card", (node) => {
       });
     }
     if (node.value === prevValue && node === document.activeElement) {
-      node.style.boxShadow = "0 0 0 2px #f80";
-      setTimeout(() => node.style.boxShadow = "", 250);
+      if (lastKey !== "Backspace" && lastKey !== "Delete") {
+        node.style.boxShadow = "0 0 0 2px #f80";
+        setTimeout(() => node.style.boxShadow = "", 250);
+      }
     }
     prevValue = node.value;
     const raw = imask.masked.unmaskedValue;
