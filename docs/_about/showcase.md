@@ -160,13 +160,25 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 ### Three-Level Nesting
 
 This single HTML example packs a surprising range of SmarkForm features:
-three-level nesting of forms and lists, sortable groups, cross-list
-drag-and-drop for students, nested collapsible sections, auto-disabling
-triggers that respect `min_items`/`max_items` boundaries, per-subject grade
-lists that grow on demand, empty-list placeholders, and automatic position
-numbering — all from the declarative HTML you see in the source tab with
-no custom JavaScript.  Each capability is introduced step by step in the
+[three-level nesting]({{ "/component_types/type_form" | relative_url }})
+of forms and lists,
+[sortable groups]({{ "/component_types/type_list" | relative_url }}),
+cross-list drag-and-drop for students,
+[nested collapsible sections]({{ "/advanced_concepts/keyboard_navigation" | relative_url }}),
+[auto-disabling triggers]({{ "/component_types/type_list" | relative_url }})
+that respect `min_items`/`max_items` boundaries, per-subject grade
+lists that grow on demand,
+[empty-list placeholders]({{ "/component_types/type_list" | relative_url }}),
+and automatic
+[position numbering]({{ "/component_types/type_list" | relative_url }})
+— all from the declarative HTML you see in the source tab with
+no custom JavaScript. Each capability is introduced step by step in the
 pages that follow.
+
+{: .hint :}
+> The demo looks richer than raw HTML would suggest: it ships with pre-loaded
+> JSON data so the form starts populated, and a few lines of CSS to make the
+> layout appealing. Check the **CSS** and **JS** tabs to see both.
 
 {% raw %} <!-- notes_school_groups {{{ --> {% endraw %}
 {% capture notes_school_groups -%}
