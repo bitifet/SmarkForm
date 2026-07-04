@@ -1,8 +1,8 @@
 ---
 title: "Field Masking"
 layout: chapter
-permalink: /advanced_concepts/field_masking
-nav_order: 7
+permalink: /working_with_forms/field_masking
+nav_order: 5
 
 ---
 

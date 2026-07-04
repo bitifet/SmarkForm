@@ -1,8 +1,8 @@
 ---
 title: Hotkeys
 layout: chapter
-permalink: /advanced_concepts/hotkeys
-nav_order: 3
+permalink: /working_with_forms/hotkeys
+nav_order: 2
 
 ---
 

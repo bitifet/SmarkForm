@@ -140,10 +140,10 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 
 | Action | Target Type | Description |
 |--------|-------------|-------------|
-| `export` | Any | [Return current value]({{ "advanced_concepts/data_import_and_export" | relative_url }}#the-export-action) as JSON |
-| `import` | Any | [Set value]({{ "advanced_concepts/data_import_and_export" | relative_url }}#the-import-action) from JSON data |
-| `reset` | Any | [Restore `defaultValue`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
-| `clear` | Any | [Reset to type-level `emptyValue`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `export` | Any | [Return current value]({{ "working_with_forms/data_import_and_export" | relative_url }}#the-export-action) as JSON |
+| `import` | Any | [Set value]({{ "working_with_forms/data_import_and_export" | relative_url }}#the-import-action) from JSON data |
+| `reset` | Any | [Restore `defaultValue`]({{ "working_with_forms/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `clear` | Any | [Reset to type-level `emptyValue`]({{ "working_with_forms/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
 | `addItem` | list | [Add new item]({{ "component_types/type_list" | relative_url }}#async-additem-action) |
 | `removeItem` | list | [Remove target item(s)]({{ "component_types/type_list" | relative_url }}#async-removeitem-action) |
 | `submit` | form | [Submit form data]({{ "component_types/type_form" | relative_url }}#async-submit-action) via HTTP |
@@ -167,7 +167,7 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 <button data-smark='{"action":"export","context":"/shipping"}'>Export Shipping</button>
 ```
 
-> See: [Path syntax]({{ "advanced_concepts/form_traversing" | relative_url }}#path-syntax-overview) · [Context & target]({{ "advanced_concepts/form_traversing" | relative_url }}#context-and-target-in-actions)
+> See: [Path syntax]({{ "working_with_forms/form_traversing" | relative_url }}#path-syntax-overview) · [Context & target]({{ "working_with_forms/form_traversing" | relative_url }}#context-and-target-in-actions)
 
 | Path | Resolves to |
 |------|-------------|
@@ -233,7 +233,7 @@ await form.find("/username").export();  // Single field
 await form.import({ name: "Alice" });   // Import data
 ```
 
-> See: [Full import/export docs]({{ "advanced_concepts/data_import_and_export" | relative_url }}#overview)
+> See: [Full import/export docs]({{ "working_with_forms/data_import_and_export" | relative_url }}#overview)
 
 | Call | Updates default? | `reset()` restores |
 |------|-----------------|-------------------|
@@ -263,23 +263,23 @@ await form.find("../shipping").import(data);
 
 Every field component:
 
-> See: [Import/export]({{ "advanced_concepts/data_import_and_export" | relative_url }}#overview) · [Path traversal]({{ "advanced_concepts/form_traversing" | relative_url }}) · [Events]({{ "advanced_concepts/events" | relative_url }})
+> See: [Import/export]({{ "working_with_forms/data_import_and_export" | relative_url }}#overview) · [Path traversal]({{ "working_with_forms/form_traversing" | relative_url }}) · [Events]({{ "advanced_concepts/events" | relative_url }})
 
 ### Action methods
 
 | Method | Description |
 |--------|-------------|
-| `export(data, options)` | [Return current value]({{ "advanced_concepts/data_import_and_export" | relative_url }}) |
-| `import(data, options)` | [Set value from data]({{ "advanced_concepts/data_import_and_export" | relative_url }}) |
-| `clear(options)` | [Reset to type-level empty]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
-| `reset(options)` | [Restore `defaultValue`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `export(data, options)` | [Return current value]({{ "working_with_forms/data_import_and_export" | relative_url }}) |
+| `import(data, options)` | [Set value from data]({{ "working_with_forms/data_import_and_export" | relative_url }}) |
+| `clear(options)` | [Reset to type-level empty]({{ "working_with_forms/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `reset(options)` | [Restore `defaultValue`]({{ "working_with_forms/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
 
 ### Utilities & Introspection
 
 | Method | Description |
 |--------|-------------|
 | `isEmpty()` | `true` if no meaningful data |
-| `find(path)` | [Navigate by path string]({{ "advanced_concepts/form_traversing" | relative_url }}) |
+| `find(path)` | [Navigate by path string]({{ "working_with_forms/form_traversing" | relative_url }}) |
 | `getPath()` | Absolute path (e.g. `"/address/street"`) |
 | `focus(options)` | Focus the field |
 | `moveTo()` | Scroll to and highlight |
@@ -307,7 +307,7 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
 - Style with CSS: `[data-hotkey]::after { content: attr(data-hotkey); }`
 - Triggers with hotkey defined get `tabindex="-1"` which excludes them from `Tab` navigation.
 
-> See: [Hotkeys docs]({{ "advanced_concepts/hotkeys" | relative_url }})
+> See: [Hotkeys docs]({{ "working_with_forms/hotkeys" | relative_url }})
 
 ---
 

@@ -296,7 +296,7 @@ component explicitly with the `"context"` property and a relative path:
 
 See [Quick Start — Actions and Triggers](
 {{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
-and [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
+and [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }})
 for full details.
 
 
@@ -950,7 +950,7 @@ can remove a phone when focus is inside the phones list, and remove a whole
 user when focus is at the user level. SmarkForm picks the right trigger
 automatically based on where the keyboard focus is.
 
-See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full details and examples.
+See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}) for full details and examples.
 
 ### What if I want to reach an outer action with the same hotkey?
 

@@ -235,7 +235,7 @@ in GitHub.
     hoizontally and even wildcards (`*`) to address multiple fields at once.
 
 
-👉 See the [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
+👉 See the [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }})
 section for more details.
 
 

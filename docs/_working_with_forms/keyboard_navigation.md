@@ -1,8 +1,8 @@
 ---
 title: "Keyboard Navigation"
 layout: chapter
-permalink: /advanced_concepts/keyboard_navigation
-nav_order: 13
+permalink: /working_with_forms/keyboard_navigation
+nav_order: 1
 
 ---
 

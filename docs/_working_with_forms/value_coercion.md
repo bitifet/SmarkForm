@@ -1,8 +1,8 @@
 ---
 title: "Value Coercion"
 layout: chapter
-permalink: /advanced_concepts/value_coercion
-nav_order: 15
+permalink: /working_with_forms/value_coercion
+nav_order: 4
 
 ---
 
@@ -148,4 +148,4 @@ indifferent" rather than an empty string.
 > **See also:**
 > [Form Types]({{ "/component_types/type_form" | relative_url }}),
 > [List Types]({{ "/component_types/type_list" | relative_url }}),
-> [Data Import and Export]({{ "/advanced_concepts/data_import_and_export" | relative_url }})
+> [Data Import and Export]({{ "/working_with_forms/data_import_and_export" | relative_url }})

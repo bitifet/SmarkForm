@@ -32,10 +32,15 @@ collections:
     output: true
     nav_order: 3
     sort_by: nav_order
-  advanced_concepts:
+  working_with_forms:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 4
+    sort_by: nav_order
+  advanced_concepts:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 5
     sort_by: nav_order
   resources:
     permalink: "/:collection/:path/"
@@ -58,6 +63,9 @@ just_the_docs:
       nav_fold: true
     component_types:
       name: Component Types
+      nav_fold: true
+    working_with_forms:
+      name: Working with Forms
       nav_fold: true
     advanced_concepts:
       name: Advanced Concepts

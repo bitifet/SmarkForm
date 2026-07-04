@@ -2,7 +2,7 @@
 title: Security Considerations
 layout: chapter
 permalink: /advanced_concepts/security_considerations
-nav_order: 8
+nav_order: 3
 
 ---
 

@@ -1,8 +1,8 @@
 ---
 title: The API Interface
 layout: chapter
-permalink: /advanced_concepts/the_api_interface
-nav_order: 5
+permalink: /working_with_forms/the_api_interface
+nav_order: 6
 
 ---
 

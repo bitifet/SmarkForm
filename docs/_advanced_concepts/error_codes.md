@@ -2,7 +2,7 @@
 title: Error Codes Reference
 layout: chapter
 permalink: /advanced_concepts/error_codes
-nav_order: 9
+nav_order: 4
 
 ---
 

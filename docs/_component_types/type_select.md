@@ -35,7 +35,7 @@ Introduction
 
 Select component will be capable of loading its options from a remote API call
 by passing its *src* property to so called
-[API Interface]({{ "/advanced_concepts/the_api_interface" | relative_url }}).
+[API Interface]({{ "/working_with_forms/the_api_interface" | relative_url }}).
 
 
 **Example:**

@@ -38,7 +38,7 @@ SmarkForm features like relative paths, and intelligent defaults.
 
 Enhanced SmarkForm `label` elements work similarly to standard HTML labels but offer greater flexibility and automation:
 
-- **Explicit Association:** Use the `target` property (instead of `for`). Specify a [relative path]({{"advanced_concepts/form_traversing#relative-paths" | relative_url }}) to the field—typically its name.
+- **Explicit Association:** Use the `target` property (instead of `for`). Specify a [relative path]({{"working_with_forms/form_traversing#relative-paths" | relative_url }}) to the field—typically its name.
 - **Implicit Association:** No need to specify `target`. SmarkForm automatically associates the `<label>` with the nearest field.
 - **Nested Association:** You can nest the field inside the `<label>` itself, just like in standard HTML (do not use `target` in this case).
 
@@ -169,7 +169,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
   - Default behavior correctly resolves the target in most cases, reducing manual configuration.
 
 - **Custom Targeting:** Use the `target` property to explicitly specify which field to associate with when needed.
-  - Supports absolute and relative paths (see [From Traversing]({{"advanced_concepts/form_traversing" | relative_url }}).
+  - Supports absolute and relative paths (see [From Traversing]({{"working_with_forms/form_traversing" | relative_url }}).
 
 - **Implicit Pairing:** [Implicit
 pairing](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/label#associating_a_label_with_a_form_control)

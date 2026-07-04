@@ -164,7 +164,7 @@ This single HTML example packs a surprising range of SmarkForm features:
 of forms and lists,
 [sortable groups]({{ "/component_types/type_list" | relative_url }}),
 cross-list drag-and-drop for students,
-[nested collapsible sections]({{ "/advanced_concepts/keyboard_navigation" | relative_url }}),
+[nested collapsible sections]({{ "/working_with_forms/keyboard_navigation" | relative_url }}),
 [auto-disabling triggers]({{ "/component_types/type_list" | relative_url }})
 that respect `min_items`/`max_items` boundaries, per-subject grade
 lists that grow on demand,
@@ -1254,7 +1254,7 @@ template and reference it with `type: "#yourTemplateName"`.
 ## Import and Export Data
 
 SmarkForm's export/import buttons are triggers with `context` and `target`
-properties. See [Data Import and Export]({{ "/advanced_concepts/data_import_and_export" | relative_url }}) for details.
+properties. See [Data Import and Export]({{ "/working_with_forms/data_import_and_export" | relative_url }}) for details.
 
 
 
@@ -1669,7 +1669,7 @@ hotkey (`Ctrl`+`-` in this example) can trigger different actions depending
 on which list item's button is in focus. SmarkForm resolves conflicts by
 preferring the innermost matching context.
 
-> See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for context sensitivity and conflict resolution.
+> See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}) for context sensitivity and conflict resolution.
 
 {% capture demoValue -%}
 {
@@ -2240,7 +2240,7 @@ Press `Enter` to move forward to the next field, `Shift`+`Enter` to go back.
 Buttons with hotkeys are automatically excluded from the `Tab` flow to keep
 navigation fluid.
 
-> See [Keyboard Navigation]({{ "/advanced_concepts/keyboard_navigation" | relative_url }}) for the full reference.
+> See [Keyboard Navigation]({{ "/working_with_forms/keyboard_navigation" | relative_url }}) for the full reference.
 
 
 ### 2nd level hotkeys
@@ -2662,7 +2662,7 @@ and shape of each field. Lists coerce scalar values to single-item arrays;
 number, date and time fields normalise string inputs to their native types;
 JSON-encoded fields round-trip objects through textareas.
 
-> See [Value Coercion]({{ "/advanced_concepts/value_coercion" | relative_url }}) for the complete rules.
+> See [Value Coercion]({{ "/working_with_forms/value_coercion" | relative_url }}) for the complete rules.
 
 #### Scalar-to-array list coercion
 
@@ -2768,7 +2768,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 #### Type coercion for scalar fields
 
 Fields with `type="number"`, `date`, `time`, and `encoding:"json"` automatically
-coerce values on import and export. See [Value Coercion]({{ "/advanced_concepts/value_coercion" | relative_url }}) for the complete rules.
+coerce values on import and export. See [Value Coercion]({{ "/working_with_forms/value_coercion" | relative_url }}) for the complete rules.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes -%}
@@ -2982,7 +2982,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 A fully-worked credit card field: IMask with lazy switching (placeholder → underscore fill), `inputMode: "numeric"` for mobile keyboards, orange blink on rejected keystrokes, and a wrapper that returns `null` for incomplete numbers so they are never exported.
 
 > **Want to learn more?** See
-> [Field Masking]({{ "/advanced_concepts/field_masking" | relative_url }}).
+> [Field Masking]({{ "/working_with_forms/field_masking" | relative_url }}).
 {%- endcapture %}
 {% raw %}<!-- }}} --> {% endraw %}
 
@@ -3012,7 +3012,7 @@ input:invalid {
 %}
 
 > **Want to learn more about masking?** See the full reference in
-> [Field Masking]({{ "/advanced_concepts/field_masking" | relative_url }}).
+> [Field Masking]({{ "/working_with_forms/field_masking" | relative_url }}).
 
 
 

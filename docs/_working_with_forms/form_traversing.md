@@ -1,8 +1,8 @@
 ---
 title: Form Traversing
 layout: chapter
-permalink: /advanced_concepts/form_traversing
-nav_order: 1
+permalink: /working_with_forms/form_traversing
+nav_order: 0
 
 ---
 

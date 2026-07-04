@@ -269,7 +269,7 @@ Sets the initial default data for the form. These defaults are restored when `re
   * **Type:** Object
   * **Default value:** `{}`
 
-> See: [Setting defaults via `value`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work, `clear` vs `reset`, and the `VALUE_CONFLICT` error.
+> See: [Setting defaults via `value`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work, `clear` vs `reset`, and the `VALUE_CONFLICT` error.
 
 #### focus_on_click
 

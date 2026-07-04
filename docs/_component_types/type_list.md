@@ -373,7 +373,7 @@ Sets the initial default items for the list. These defaults are restored when `r
   * **Type:** Array
   * **Default value:** `[]`
 
-> See: [Setting defaults via `value`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
+> See: [Setting defaults via `value`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
 
 #### min_items
 

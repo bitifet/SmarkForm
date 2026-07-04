@@ -1,8 +1,8 @@
 ---
 title: Importing and Exporting Data
 layout: chapter
-permalink: /advanced_concepts/api_import_and_export
-nav_order: 4
+permalink: /working_with_forms/data_import_and_export
+nav_order: 3
 
 ---
 
@@ -539,7 +539,7 @@ data to the shipping address with no JavaScript required.
 > hierarchy, while `target` paths are resolved relative to the **effective context** of the
 > action.
 >
-> 👉 More info at [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }}) chapter.
+> 👉 More info at [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }}) chapter.
 
 
 {: .hint }

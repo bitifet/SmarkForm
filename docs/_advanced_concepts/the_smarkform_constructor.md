@@ -68,7 +68,7 @@ Pass-through options are fully documented on the component type page they belong
 | Option | Documented at |
 |--------|---------------|
 | `value` | [Form type → `value`]({{ "component_types/type_form" | relative_url }}#value) |
-| `exportEmpties` | [List type → `exportEmpties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `exportEmpties` option]({{ "advanced_concepts/api_import_and_export" | relative_url }}#the-exportempties-option) |
+| `exportEmpties` | [List type → `exportEmpties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `exportEmpties` option]({{ "advanced_concepts/data_import_and_export" | relative_url }}#the-exportempties-option) |
 | `focus_on_click` | [Form type → `focus_on_click`]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
 | `autoId` | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
 | `enableJsonEncoding` | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
@@ -213,4 +213,4 @@ await form.rendered;
 const field = form.find("/name"); // safe now
 ```
 
-Methods like [`find()`]({{ "advanced_concepts/form_traversing" | relative_url }}), [`export()`]({{ "advanced_concepts/api_import_and_export" | relative_url }}), and [`import()`]({{ "advanced_concepts/api_import_and_export" | relative_url }}) depend on the form being fully rendered.
+Methods like [`find()`]({{ "working_with_forms/form_traversing" | relative_url }}), [`export()`]({{ "advanced_concepts/data_import_and_export" | relative_url }}), and [`import()`]({{ "advanced_concepts/data_import_and_export" | relative_url }}) depend on the form being fully rendered.
