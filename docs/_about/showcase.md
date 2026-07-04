@@ -39,7 +39,7 @@ featured ones.
 
 * [Basics](#basics)
     * [Just a Form](#just-a-form)
-    * [Three-Level Nesting](#three-level-nesting)
+    * [Multiple-Level Nesting](#multiple-level-nesting)
     * [Deeply nested forms](#deeply-nested-forms)
     * [More on lists](#more-on-lists)
     * [Mixins](#mixins)
@@ -157,10 +157,10 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 %}
 
 
-### Three-Level Nesting
+### Multiple-Level Nesting
 
 This single HTML example packs a surprising range of SmarkForm features:
-[three-level nesting]({{ "/component_types/type_form" | relative_url }})
+[multiple-level nesting]({{ "/component_types/type_form" | relative_url }})
 of forms and lists,
 [sortable groups]({{ "/component_types/type_list" | relative_url }}),
 cross-list drag-and-drop for students,
