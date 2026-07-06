@@ -129,8 +129,8 @@ export class input extends form {
         const maskFactory = scopedMasks[maskName] || globalMasks[maskName];
 
         if (typeof maskFactory !== 'function') {
-            const cfg = me.inheritedOption('maskConfig', {});
-            if (cfg.throwOnMissing !== false) {
+            const cfg = me.root._ctorOptions || {};
+            if (cfg.smark_mask_throwOnMissing !== false) {
                 throw me.renderError(
                     'MASK_NOT_FOUND'
                     , `Mask "${maskName}" not found for field`

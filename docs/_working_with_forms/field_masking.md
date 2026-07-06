@@ -28,8 +28,8 @@ nav_order: 5
 * [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library-singleton-list)
 * [Mixin-Scoped Masks](#mixin-scoped-masks)
 * [Error Handling](#error-handling)
-    * [`throwOnMaskError: true` (default)](#throwonmaskerror-true-default)
-    * [`throwOnMaskError: false`](#throwonmaskerror-false)
+    * [`smark_mask_throwOnMissing: true` (default)](#smark_mask_throwonmissing-true-default)
+    * [`smark_mask_throwOnMissing: false`](#smark_mask_throwonmissing-false)
     * [Error Codes](#error-codes)
 * [Masks and External Libraries](#masks-and-external-libraries)
 
@@ -440,11 +440,10 @@ can safely define their own versions of shared mask names.
 
 ## Error Handling
 
-SmarkForm's masking error handling is controlled by the `maskConfig` option,
-which is inherited down the component tree. The key property is
-`throwOnMaskError`:
+SmarkForm's masking error handling is controlled by the
+`smark_mask_throwOnMissing` constructor option (default `true`):
 
-### `throwOnMaskError: true` (default)
+### `smark_mask_throwOnMissing: true` (default)
 
 - **Mask not found** → throws `MASK_NOT_FOUND` render error.
 - **Mask factory throws** → throws `MASK_APPLY_ERROR` render error (the
@@ -452,7 +451,7 @@ which is inherited down the component tree. The key property is
 - In both cases the input type is **restored** to its original value before
   the error is raised, so the error indicator is shown with the correct type.
 
-### `throwOnMaskError: false`
+### `smark_mask_throwOnMissing: false`
 
 - Mask errors are reported via `console.warn` instead of throwing.
 - The field's original input type is **restored** and the field operates
@@ -460,7 +459,7 @@ which is inherited down the component tree. The key property is
 
 ```javascript
 const myForm = new SmarkForm("#myForm", {
-  maskConfig: { throwOnMaskError: false }
+  smark_mask_throwOnMissing: false
 });
 ```
 

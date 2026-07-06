@@ -388,12 +388,12 @@ test.describe('Declarative Masking API', () => {
         }
     });
 
-    test('throwOnMissing: false warns instead of throwing', async ({ page }) => {
+    test('smark_mask_throwOnMissing: false warns instead of throwing', async ({ page }) => {
         const html = pageHtml(`
 <div id="myForm">
     <input data-smark='{"name":"x","mask":"nonexistent"}' type="text">
 </div>
-`, '', '', { maskConfig: { throwOnMissing: false } });
+`, '', '', { smark_mask_throwOnMissing: false });
 
         const errors = [];
         const warnings = [];

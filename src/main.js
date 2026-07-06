@@ -39,11 +39,22 @@ class SmarkForm extends form {
         targetNode
         , {
             customActions = {},
-            ...formOptions
+            ...restOptions
         } = {}
     ) {
         // Auto-scan global mask scripts from the document:
         SmarkForm._scanGlobalMasks();
+
+        // Split options: smark_* prefixed → constructor-only, rest → pass-through
+        const ctorOnly = {};
+        const formOptions = {};
+        for (const [k, v] of Object.entries(restOptions)) {
+            if (k.startsWith('smark_') || k.startsWith('on_')) {
+                ctorOnly[k] = v;
+            } else {
+                formOptions[k] = v;
+            }
+        }
 
         // Resolve string selectors to DOM nodes:
         if (typeof targetNode === "string") {
@@ -64,12 +75,14 @@ class SmarkForm extends form {
             , null // (Root has no parent)
         );
         const me = this;
+        me._ctorOptions = ctorOnly; // Expose constructor-only options for internal use
         me.setNodeOptions(me.targetNode, options);
         // TODO: use private Symbol (see PROMPTS.md "Private actions")
+        // Merge globally registered custom actions with per-instance ones
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(
-                Object.entries(customActions)
+                Object.entries({ ...SmarkForm._customActions, ...customActions })
                     .map(([name, ctrl])=>[name, ctrl.bind(me)])
             ),
         };
@@ -90,8 +103,11 @@ class SmarkForm extends form {
 
 // --- Declarative Masking API ---
 SmarkForm._maskRegistry = {};
-SmarkForm.maskConfig = { throwOnMissing: true };
 SmarkForm._scanned = false;
+// Constructor-only options and their defaults:
+SmarkForm._ctorDefaults = {
+    smark_mask_throwOnMissing: true,
+};
 
 SmarkForm.registerMask = function(name, factory) {
     if (typeof name !== 'string' || !name) {
@@ -101,6 +117,19 @@ SmarkForm.registerMask = function(name, factory) {
         throw new Error('SmarkForm.registerMask: factory must be a function.');
     }
     SmarkForm._maskRegistry[name] = factory;
+};
+
+// --- Custom Actions API ---
+SmarkForm._customActions = {};
+
+SmarkForm.registerCustomAction = function(name, handler) {
+    if (typeof name !== 'string' || !name) {
+        throw new Error('SmarkForm.registerCustomAction: name must be a non-empty string.');
+    }
+    if (typeof handler !== 'function') {
+        throw new Error('SmarkForm.registerCustomAction: handler must be a function.');
+    }
+    SmarkForm._customActions[name] = handler;
 };
 
 SmarkForm._scanGlobalMasks = function() {

@@ -59,10 +59,10 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - `data-smark mask` property: e.g., `<input data-smark='{"name":"card","mask":"digits"}'>`
 - `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
 - `import()`: Dispatches `input` event when `_maskInstance` exists, so masks stay synchronized
-- `maskConfig: { throwOnMaskError: false }`: Suppresses error for unregistered or broken masks, falls back to unmasked input
+- `smark_mask_throwOnMissing: false`: Suppresses error for unregistered or broken masks, falls back to unmasked input
 - Singleton handling: delegates to inner field, `_maskInstance` lives on inner field
 - Mixin-scoped masks: `<script type="smark-mask">` inside `<template>` is scoped, not global; requires `allowLocalMixinScripts: 'allow'`
-- On error (mask not found or factory throws), original input type is restored; if `throwOnMaskError` is `true` an error is thrown, otherwise a `console.warn` is emitted
+- On error (mask not found or factory throws), original input type is restored; if `smark_mask_throwOnMissing` is `true` an error is thrown, otherwise a `console.warn` is emitted
 - `MASK_APPLY_ERROR`: thrown when a mask factory throws; the original exception is available via `error.cause`
 
 **Configuration file locations**:
