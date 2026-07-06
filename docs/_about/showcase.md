@@ -1682,6 +1682,26 @@ preferring the innermost matching context.
 }
 {%- endcapture %}
 
+{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
+{% capture simple_list_hotkeys_with_context -%}
+█<p>
+█    <label data-smark='{"type": "label"}'>Name:</label>
+█    <input name='name' data-smark='{"type": "input"}' />
+█</p>
+█<p>
+█    <label data-smark='{"type": "label"}'>Surname:</label>
+█    <input name='surname' data-smark='{"type": "input"}' />
+█</p>
+{{ simple_list_hotkeys }}{%
+endcapture %}
+
+{% capture simple_list_hotkeys_with_context_html -%}
+<div id="myForm$$">
+{{ simple_list_hotkeys_with_context | replace: "█", "    " }}
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context_html
@@ -2268,26 +2288,6 @@ higher level to reveal.
 Try it in the following example:
 
 
-
-{% raw %} <!-- simple_list_hotkeys_with_context {{{ --> {% endraw %}
-{% capture simple_list_hotkeys_with_context -%}
-█<p>
-█    <label data-smark='{"type": "label"}'>Name:</label>
-█    <input name='name' data-smark='{"type": "input"}' />
-█</p>
-█<p>
-█    <label data-smark='{"type": "label"}'>Surname:</label>
-█    <input name='surname' data-smark='{"type": "input"}' />
-█</p>
-{{ simple_list_hotkeys }}{%
-endcapture %}
-
-{% capture simple_list_hotkeys_with_context_html -%}
-<div id="myForm$$">
-{{ simple_list_hotkeys_with_context | replace: "█", "    " }}
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- 2nd_level_hotkeys_html {{{ --> {% endraw %}
 {% capture 2nd_level_hotkeys_html -%}
