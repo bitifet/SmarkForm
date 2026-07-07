@@ -106,9 +106,9 @@ Options prefixed with `on_` (event handlers) or `smark_` (constructor-only flags
 
 The prefix makes the intent clear at a glance:
 
-- **`on_`** — attaches an event listener (e.g. `on_click`, `on_BeforeAction_export`)
-- **`smark_`** — sets a constructor-only flag (e.g. `smark_mask_throwOnMissing`)
-- **`customActions`** — registers per-instance custom actions (also available globally via `SmarkForm.registerCustomAction()`)
+- **`on_`** — attaches an event listener. These flow through the component system where the base component decorator automatically extracts and registers them.
+- **`smark_`** — sets a constructor-only flag extracted by the SmarkForm constructor itself (e.g. `smark_mask_throwOnMissing`).
+- **`customActions`** — registers per-instance custom actions (also available globally via `SmarkForm.registerCustomAction()`).
 
 ### `customActions`
 

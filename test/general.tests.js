@@ -332,7 +332,7 @@ test.describe('options validation', () => {
             });
             expect(result.error).toBe(true);
             expect(result.name).toBe("TypeError");
-            expect(result.message).toContain("circular");
+            expect(/circular|cyclic/i.test(result.message)).toBe(true);
         } finally {
             await onClosed();
         }

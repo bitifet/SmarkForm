@@ -45,11 +45,12 @@ class SmarkForm extends form {
         // Auto-scan global mask scripts from the document:
         SmarkForm._scanGlobalMasks();
 
-        // Split options: smark_* prefixed → constructor-only, rest → pass-through
+        // Split options: smark_* prefixed → constructor-only, everything else
+        // (including on_* event handlers) → pass-through to root form component.
         const ctorOnly = {};
         const formOptions = {};
         for (const [k, v] of Object.entries(restOptions)) {
-            if (k.startsWith('smark_') || k.startsWith('on_')) {
+            if (k.startsWith('smark_')) {
                 ctorOnly[k] = v;
             } else {
                 formOptions[k] = v;
@@ -76,7 +77,14 @@ class SmarkForm extends form {
         );
         const me = this;
         me._ctorOptions = ctorOnly; // Expose constructor-only options for internal use
-        me.setNodeOptions(me.targetNode, options);
+        // setNodeOptions must NOT receive on_* or smark_* keys — they contain
+        // functions and constructor-only flags that cannot be serialized to
+        // the data-smark attribute.
+        me.setNodeOptions(me.targetNode, Object.fromEntries(
+            Object.entries(options).filter(([k]) =>
+                !k.startsWith('on_') && !k.startsWith('smark_')
+            )
+        ));
         // TODO: use private Symbol (see PROMPTS.md "Private actions")
         // Merge globally registered custom actions with per-instance ones
         me.actions = {
