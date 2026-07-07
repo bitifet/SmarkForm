@@ -22,7 +22,7 @@ nav_order: 0
 * [Pass-Through Options](#pass-through-options)
     * [Merging rules](#merging-rules)
 * [Constructor-Only Options](#constructor-only-options)
-    * [`smark_mask_throwOnMissing`](#smark_mask_throwonmissing)
+    * [Field Masking](#field-masking)
     * [Mixin security policies](#mixin-security-policies)
 * [Static Members](#static-members)
     * [`SmarkForm.registerMask()`](#smarkformregistermask)
@@ -101,9 +101,9 @@ Options not specified in either source keep their documented defaults.
 These options are extracted by the SmarkForm constructor and **not forwarded**
 to the root form component. They all follow the `smark_` prefix convention.
 
-### `smark_mask_throwOnMissing`
+### Field Masking
 
-Controls whether a missing mask factory throws an error. Defaults to `true`.
+- **`smark_mask_throwOnMissing`** — Controls whether a missing mask factory throws an error. Defaults to `true`.
 
 ```javascript
 // Warn instead of throwing for unregistered masks:
