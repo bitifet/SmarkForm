@@ -24,6 +24,7 @@ nav_order: 0
 * [Constructor-Only Options](#constructor-only-options)
     * [`customActions`](#customactions)
     * [`smark_mask_throwOnMissing`](#smark_mask_throwonmissing)
+    * [Mixin security policies](#mixin-security-policies)
 * [Static Members](#static-members)
     * [`SmarkForm.registerMask()`](#smarkformregistermask)
     * [`SmarkForm.registerCustomAction()`](#smarkformregistercustomaction)
@@ -74,7 +75,6 @@ These options are documented on their respective component type pages:
 | `autoId` | All components | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
 | `enableJsonEncoding` | Form type | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
 | `keyStyle` / `arrayStyle` | Form type | [Form type → data flattening]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
-| `allowExternalMixins` / `allowLocalMixinScripts` / `allowSameOriginMixinScripts` / `allowCrossOriginMixinScripts` | Root form (security) | [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
 
 ### Merging rules
 
@@ -140,6 +140,17 @@ const form = new SmarkForm(element, {
 ```
 
 When `false`, the field's original input type is restored and the field operates unmasked. See [Field Masking — Error Handling]({{ "working_with_forms/field_masking" | relative_url }}#error-handling) for details.
+
+### Mixin security policies
+
+Control whether mixin templates can fetch external content or execute scripts:
+
+- `smark_mixin_allowExternal` — fetch templates from external URLs
+- `smark_mixin_allowLocalScripts` — execute `<script>` blocks in local templates
+- `smark_mixin_allowSameOriginScripts` — execute same-origin external scripts
+- `smark_mixin_allowCrossOriginScripts` — execute cross-origin external scripts
+
+Each accepts `"block"` (default), `"allow"`, or per-origin object maps. See [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) for full documentation.
 
 ---
 

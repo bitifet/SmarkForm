@@ -467,7 +467,7 @@ test.describe('Declarative Masking API', () => {
     test('<script type="smark-mask"> inside a <template> is NOT registered globally', async ({ page }) => {
         // The <script type="smark-mask"> is a sibling of the template's root
         // element, so it is classified as a top-level script for the mixin.
-        // With allowLocalMixinScripts: 'allow' it is processed into a scoped
+        // With smark_mixin_allowLocalScripts: 'allow' it is processed into a scoped
         // mask, NOT registered globally.
         // The "global" field outside the mixin should NOT see the scoped mask.
         const html = `<!DOCTYPE html>
@@ -493,7 +493,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'), { allowLocalMixinScripts: 'allow' });
+  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allowLocalScripts: 'allow' });
 </script>
 </body>
 </html>`;
@@ -547,7 +547,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'), { allowLocalMixinScripts: 'allow' });
+  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allowLocalScripts: 'allow' });
 </script>
 </body>
 </html>`;
@@ -603,7 +603,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'), { allowLocalMixinScripts: 'allow' });
+  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allowLocalScripts: 'allow' });
 </script>
 </body>
 </html>`;

@@ -167,12 +167,12 @@ function getUrlOrigin(absoluteUrl) { //{{{
 // the wildcard '*' key is used; if that is also absent, `fallback` is returned.
 // This enables fine-grained per-origin trust policies such as:
 //
-//   allowExternalMixins: {
+//   smark_mixin_allowExternal: {
 //     'https://trusted-cdn.example.com': 'allow',
 //     '*': 'block',
 //   }
 //
-//   allowCrossOriginMixinScripts: {
+//   smark_mixin_allowCrossOriginScripts: {
 //     'https://trusted.example.com': 'allow',
 //     'https://untrusted.example.com': 'noscript',
 //     '*': 'block',
@@ -238,17 +238,17 @@ export async function expandMixin(node, options, component) { //{{{
         // request.  The policy is read exclusively from the root SmarkForm
         // instance to prevent a malicious external template from escalating
         // its own privileges by setting the option in its data-smark.
-        // allowExternalMixins may be a string ('block'|'same-origin'|'allow')
+        // smark_mixin_allowExternal may be a string ('block'|'same-origin'|'allow')
         // or a per-origin object map — see resolvePolicy().
-        const extPolicyRaw = component.root.options['allowExternalMixins'] ?? 'block';
+        const extPolicyRaw = component.root._ctorOptions['smark_mixin_allowExternal'] ?? 'block';
         const fetchOrigin = getUrlOrigin(absoluteUrl);
         const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
         if (extPolicy === 'block') {
             throw component.renderError(
                 'MIXIN_EXTERNAL_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references an external URL but`
-                + ' allowExternalMixins is "block" (the default).'
-                + ' Set allowExternalMixins to "same-origin", "allow", or a'
+                + ' smark_mixin_allowExternal is "block" (the default).'
+                + ' Set smark_mixin_allowExternal to "same-origin", "allow", or a'
                 + ' per-origin policy object on the root SmarkForm instance'
                 + ' to permit external mixin loading.'
                 , node
@@ -257,8 +257,8 @@ export async function expandMixin(node, options, component) { //{{{
             throw component.renderError(
                 'MIXIN_CROSS_ORIGIN_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references a cross-origin URL`
-                + ` (${fetchOrigin}) but allowExternalMixins`
-                + ' is "same-origin". Set allowExternalMixins to "allow" or'
+                + ` (${fetchOrigin}) but smark_mixin_allowExternal`
+                + ' is "same-origin". Set smark_mixin_allowExternal to "allow" or'
                 + ' add the origin to the per-origin policy object to'
                 + ' permit cross-origin mixin loading.'
                 , node
@@ -400,7 +400,7 @@ export async function expandMixin(node, options, component) { //{{{
     // Scripts are blocked by default for all origin classes.
     // Each policy option may be a string ('block'|'noscript'|'allow') or a
     // per-origin object map — see resolvePolicy().  Per-origin maps are most
-    // useful for allowCrossOriginMixinScripts when templates from multiple
+    // useful for smark_mixin_allowCrossOriginScripts when templates from multiple
     // different third-party origins need different trust levels.
     if (scripts.length > 0) {
         const isLocal = ! urlPart;
@@ -408,18 +408,18 @@ export async function expandMixin(node, options, component) { //{{{
         let policyOptionName;
         let errorCode;
         if (isLocal) {
-            policyOptionName = 'allowLocalMixinScripts';
+            policyOptionName = 'smark_mixin_allowLocalScripts';
             errorCode = 'MIXIN_SCRIPT_LOCAL_BLOCKED';
         } else if (isCross) {
-            policyOptionName = 'allowCrossOriginMixinScripts';
+            policyOptionName = 'smark_mixin_allowCrossOriginScripts';
             errorCode = 'MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED';
         } else {
-            policyOptionName = 'allowSameOriginMixinScripts';
+            policyOptionName = 'smark_mixin_allowSameOriginScripts';
             errorCode = 'MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED';
         }
         // Read policy exclusively from the root to prevent privilege escalation
-        // from within mixin templates (see allowExternalMixins comment above).
-        const policyRaw = component.root.options[policyOptionName] ?? 'block';
+        // from within mixin templates (see smark_mixin_allowExternal comment above).
+        const policyRaw = component.root._ctorOptions[policyOptionName] ?? 'block';
         const scriptOrigin = getUrlOrigin(absoluteUrl);
         const policy = resolvePolicy(policyRaw, scriptOrigin, 'block');
         if (policy === 'block') {

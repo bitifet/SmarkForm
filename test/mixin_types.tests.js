@@ -312,7 +312,7 @@ test.describe('Mixin Types — local template expansion', () => {
 <form id="myForm">
   <div data-smark='{"type":"#scripted","name":"field"}'></div>
 </form>
-`, '', { allowLocalMixinScripts: 'allow' }));
+`, '', { smark_mixin_allowLocalScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered);
@@ -342,7 +342,7 @@ test.describe('Mixin Types — local template expansion', () => {
 <form id="myForm">
   <div data-smark='{"type":"#apiAccess","name":"myField"}'></div>
 </form>
-`, '', { allowLocalMixinScripts: 'allow' }));
+`, '', { smark_mixin_allowLocalScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered);
@@ -748,7 +748,7 @@ test.describe('Mixin Types — nested script security', () => {
 
     test('top-level sibling <script> in template still executes when allowed', async ({ page: pg }) => {//{{{
         // Regression: top-level scripts (siblings of root, not inside it) must
-        // still work when allowLocalMixinScripts is explicitly set to "allow".
+        // still work when smark_mixin_allowLocalScripts is explicitly set to "allow".
         let onClosed;
         try {
             const { url, onClosed: oc } = await renderHtml(page(`
@@ -762,7 +762,7 @@ test.describe('Mixin Types — nested script security', () => {
 <form id="myForm">
   <div data-smark='{"type":"#withScript","name":"field"}'></div>
 </form>
-`, '', { allowLocalMixinScripts: 'allow' }));
+`, '', { smark_mixin_allowLocalScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered);
@@ -837,7 +837,7 @@ test.describe('Mixin Types — script execution policy', () => {
         }
     });//}}}
 
-    test('allowLocalMixinScripts:"noscript" silently discards local <script>', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowLocalScripts:"noscript" silently discards local <script>', async ({ page: pg }) => {//{{{
         let onClosed;
         try {
             const { url, onClosed: oc } = await renderHtml(page(`
@@ -849,7 +849,7 @@ test.describe('Mixin Types — script execution policy', () => {
 <form id="myForm">
   <div data-smark='{"type":"#withScript","name":"field"}'></div>
 </form>
-`, '', { allowLocalMixinScripts: 'noscript' }));
+`, '', { smark_mixin_allowLocalScripts: 'noscript' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -900,7 +900,7 @@ test.describe('Mixin Types — external fetch policy', () => {
         }
     });//}}}
 
-    test('allowExternalMixins:"same-origin" allows same-origin external templates', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowExternal:"same-origin" allows same-origin external templates', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -918,7 +918,7 @@ test.describe('Mixin Types — external fetch policy', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: 'same-origin' }));
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -952,7 +952,7 @@ test.describe('Mixin Types — external fetch policy', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: 'same-origin' }));
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForTimeout(500);
@@ -963,7 +963,7 @@ test.describe('Mixin Types — external fetch policy', () => {
         }
     });//}}}
 
-    test('allowSameOriginMixinScripts:"allow" permits same-origin external <script>', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowSameOriginScripts:"allow" permits same-origin external <script>', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -984,7 +984,7 @@ test.describe('Mixin Types — external fetch policy', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: 'same-origin', allowSameOriginMixinScripts: 'allow' }));
+`, '', { smark_mixin_allowExternal: 'same-origin', smark_mixin_allowSameOriginScripts: 'allow' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -999,7 +999,7 @@ test.describe('Mixin Types — external fetch policy', () => {
         }
     });//}}}
 
-    test('allowSameOriginMixinScripts:"noscript" silently discards same-origin external <script>', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowSameOriginScripts:"noscript" silently discards same-origin external <script>', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1020,7 +1020,7 @@ test.describe('Mixin Types — external fetch policy', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: 'same-origin', allowSameOriginMixinScripts: 'noscript' }));
+`, '', { smark_mixin_allowExternal: 'same-origin', smark_mixin_allowSameOriginScripts: 'noscript' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -1040,11 +1040,11 @@ test.describe('Mixin Types — external fetch policy', () => {
 
 // ---------------------------------------------------------------------------
 // Test suite: per-origin policy objects
-// Tests for the object form of allowExternalMixins and script policy options.
+// Tests for the object form of smark_mixin_allowExternal and script policy options.
 // ---------------------------------------------------------------------------
 test.describe('Mixin Types — per-origin policy objects', () => {
 
-    test('allowExternalMixins as object with origin-specific "allow" permits fetch', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowExternal as object with origin-specific "allow" permits fetch', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1064,7 +1064,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: { [origin]: 'allow', '*': 'block' } }));
+`, '', { smark_mixin_allowExternal: { [origin]: 'allow', '*': 'block' } }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -1077,7 +1077,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
         }
     });//}}}
 
-    test('allowExternalMixins as object with "*": "block" blocks unlisted origins', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowExternal as object with "*": "block" blocks unlisted origins', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1096,7 +1096,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: { 'https://other-origin.example.com': 'allow', '*': 'block' } }));
+`, '', { smark_mixin_allowExternal: { 'https://other-origin.example.com': 'allow', '*': 'block' } }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForTimeout(500);
@@ -1107,7 +1107,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
         }
     });//}}}
 
-    test('allowExternalMixins as object with "*": "allow" permits any origin', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowExternal as object with "*": "allow" permits any origin', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1126,7 +1126,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: { '*': 'allow' } }));
+`, '', { smark_mixin_allowExternal: { '*': 'allow' } }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -1139,7 +1139,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
         }
     });//}}}
 
-    test('allowExternalMixins as object with no matching key defaults to "block"', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowExternal as object with no matching key defaults to "block"', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1158,7 +1158,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
-`, '', { allowExternalMixins: {} }));
+`, '', { smark_mixin_allowExternal: {} }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForTimeout(500);
@@ -1169,7 +1169,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
         }
     });//}}}
 
-    test('allowSameOriginMixinScripts as object with origin-specific "allow" permits scripts', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowSameOriginScripts as object with origin-specific "allow" permits scripts', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1193,8 +1193,8 @@ test.describe('Mixin Types — per-origin policy objects', () => {
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
 `, '', {
-                allowExternalMixins: 'same-origin',
-                allowSameOriginMixinScripts: { [origin]: 'allow', '*': 'block' },
+                smark_mixin_allowExternal: 'same-origin',
+                smark_mixin_allowSameOriginScripts: { [origin]: 'allow', '*': 'block' },
             }));
             onClosed = oc;
             await pg.goto(url);
@@ -1210,7 +1210,7 @@ test.describe('Mixin Types — per-origin policy objects', () => {
         }
     });//}}}
 
-    test('allowSameOriginMixinScripts as object with "*": "noscript" discards scripts for unlisted origin', async ({ page: pg }) => {//{{{
+    test('smark_mixin_allowSameOriginScripts as object with "*": "noscript" discards scripts for unlisted origin', async ({ page: pg }) => {//{{{
         let onClosed;
         let extOnClosed;
         try {
@@ -1233,8 +1233,8 @@ test.describe('Mixin Types — per-origin policy objects', () => {
   <div data-smark='{"type":"${extUrl}#t","name":"f"}'></div>
 </form>
 `, '', {
-                allowExternalMixins: 'same-origin',
-                allowSameOriginMixinScripts: { 'https://other.example.com': 'allow', '*': 'noscript' },
+                smark_mixin_allowExternal: 'same-origin',
+                smark_mixin_allowSameOriginScripts: { 'https://other.example.com': 'allow', '*': 'noscript' },
             }));
             onClosed = oc;
             await pg.goto(url);
@@ -1276,7 +1276,7 @@ test.describe('Mixin Types — external template loading', () => {
 <form id="myForm">
   <div data-smark='{"type":"${extUrl}#remoteField","name":"remote"}'></div>
 </form>
-`, '', { allowExternalMixins: 'same-origin' }));
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
@@ -1312,7 +1312,7 @@ test.describe('Mixin Types — external template loading', () => {
   <div data-smark='{"type":"${extUrl}#simpleInput","name":"first"}'></div>
   <div data-smark='{"type":"${extUrl}#simpleInput","name":"second"}'></div>
 </form>
-`, '', { allowExternalMixins: 'same-origin' }));
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
             onClosed = oc;
             await pg.goto(url);
             await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });

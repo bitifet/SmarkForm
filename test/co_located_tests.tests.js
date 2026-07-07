@@ -251,7 +251,7 @@ function generateDemoValueTestHTML(example) {
 
   // Use a simple constructor that passes demoValue as the value option.
   // Merge smarkformOptions (security/behaviour flags) with the value option so that
-  // examples requiring e.g. allowLocalMixinScripts:"allow" are initialised correctly.
+  // examples requiring e.g. smark_mixin_allowLocalScripts:"allow" are initialised correctly.
   // JSON.stringify(constructorOpts) re-serialises the whole object safely; demoValue
   // is already a parsed plain object from the manifest so no pre-sanitisation is needed.
   const constructorOpts = Object.assign({}, smarkformOptions || {}, { value: demoValue });

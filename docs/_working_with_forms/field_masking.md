@@ -412,7 +412,7 @@ masks with the same name.
 
 {: .hint :}
 > **See also:** [Mixin Types → Scripts and Styles](mixin_types#scripts-and-styles)
-> for the full mixin script policy, including the `allowLocalMixinScripts` option.
+> for the full mixin script policy, including the `smark_mixin_allowLocalScripts` option.
 
 The script element must be a **sibling of the root element** inside the
 `<template>`, not nested within it:
@@ -435,7 +435,7 @@ A mixin-local mask **overrides** a global mask with the same name, so mixins
 can safely define their own versions of shared mask names.
 
 {: .warning :}
-> Keep in mind that mixin-scoped masks require the `allowLocalMixinScripts: 'allow'`
+> Keep in mind that mixin-scoped masks require the `smark_mixin_allowLocalScripts: 'allow'`
 > form option.
 
 ## Error Handling

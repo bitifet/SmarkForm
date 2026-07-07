@@ -1165,7 +1165,7 @@ of the named component without requiring an extra wrapper:
     formId="faq_mixin_labeled_input"
     htmlSource=faq_mixin_labeled_input_html
     demoValue='{"person":{"firstName":"Alice","lastName":"Smith"}}'
-    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
     tests=false
 %}
 
@@ -1246,11 +1246,11 @@ for all subsequent references to the same URL on the same page.  `<style>` and
 for external and local templates.
 
 External template loading is **blocked by default**.  You must opt in via the
-`allowExternalMixins` option on the root SmarkForm instance:
+`smark_mixin_allowExternal` option on the root SmarkForm instance:
 
 ```js
 // Allow same-origin external templates only
-new SmarkForm(el, { allowExternalMixins: 'same-origin' });
+new SmarkForm(el, { smark_mixin_allowExternal: 'same-origin' });
 ```
 
 Script execution in external templates is also blocked by default; see the

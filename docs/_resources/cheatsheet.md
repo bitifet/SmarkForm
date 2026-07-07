@@ -60,10 +60,10 @@ const form = new SmarkForm(element, options);
 | `value` | Object | `{}` | [Initial data]({{ "component_types/type_form" | relative_url }}#value) |
 | `customActions` | Object | `{}` | [Custom action implementations]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}#customactions) |
 | `autoId` | Boolean/String/Function | `false` | [Auto-generate element IDs]({{ "component_types/type_form" | relative_url }}#autoid) |
-| `allowExternalMixins` | String | `"block"` | [External mixin fetching policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `allowLocalMixinScripts` | String | `"block"` | [Local mixin `<script>` policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `allowSameOriginMixinScripts` | String | `"block"` | [Same-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `allowCrossOriginMixinScripts` | String | `"block"` | [Cross-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allowExternal` | String | `"block"` | [External mixin fetching policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allowLocalScripts` | String | `"block"` | [Local mixin `<script>` policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allowSameOriginScripts` | String | `"block"` | [Same-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allowCrossOriginScripts` | String | `"block"` | [Cross-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
 | `enableJsonEncoding` | Boolean | `false` | [Enable `enctype`]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
 | `exportEmpties` | Boolean | `false` | [Export empty items]({{ "component_types/type_list" | relative_url }}#exportempties) |
 | `keyStyle` | `"bracket"` / `"dot"` | `"bracket"` | [Form encoding key style]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |

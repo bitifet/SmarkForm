@@ -6,7 +6,7 @@ Accepted arguments:
   * formId (mandatory): Id to insert as "-suffix" in all "$$" hooks;
   * formOptions: (Removed in v2 — embed SmarkForm options directly in the data-smark attribute on your form container)
   * smarkformOptions: Optional JSON object with root-level SmarkForm constructor options (security/behaviour flags
-                      that cannot be embedded in data-smark). Example: '{"allowLocalMixinScripts":"allow"}'.
+                      that cannot be embedded in data-smark). Example: '{"smark_mixin_allowLocalScripts":"allow"}'.
                       When provided, the generated default jsHead includes these options so that the interactive
                       preview, the regular smoke test and the demoValue round-trip test all see the same settings.
                       Collected by scripts/collect-docs-examples.js and used by test/co_located_tests.tests.js.
@@ -61,7 +61,7 @@ myForm.rendered.then(function() {
 {% assign default_htmlSource = '-' %}
 {% assign default_cssSource = '-' %}
 {% comment %} smarkformOptions: optional JSON object with extra SmarkForm constructor options
-  (e.g. '{"allowLocalMixinScripts":"allow"}').  These are root-level security/behaviour
+  (e.g. '{"smark_mixin_allowLocalScripts":"allow"}').  These are root-level security/behaviour
   flags that cannot be embedded in data-smark and must be passed to the constructor. {% endcomment %}
 {% assign sf_opts = include.smarkformOptions | default: '' | strip %}
 {% if sf_opts != '' %}

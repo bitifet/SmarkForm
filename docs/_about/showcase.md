@@ -1194,7 +1194,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     selected="preview"
     demoValue=demoValue
     showEditor=true
-    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
     tests=nested_schedule_tests
 %}
 
