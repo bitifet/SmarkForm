@@ -24,7 +24,6 @@ nav_order: 0
 * [Constructor-Only Options](#constructor-only-options)
     * [Naming convention](#naming-convention)
     * [`customActions`](#customactions)
-    * [`on*` event handlers](#on-event-handlers)
     * [`smark_mask_throwOnMissing`](#smark_mask_throwonmissing)
     * [Mixin security policies](#mixin-security-policies)
 * [Static Members](#static-members)
@@ -72,6 +71,7 @@ These options are documented on their respective component type pages:
 |--------|-------|---------------|
 | `value` | All field types | Sets the initial/default value for any component. See [Form type → `value`]({{ "component_types/type_form" | relative_url }}#value), [Data import → defaults]({{ "working_with_forms/data_import_and_export" | relative_url }}#setting-defaults-via-value) |
 | `exportEmpties` | List type | [List type → `exportEmpties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `exportEmpties` option]({{ "working_with_forms/data_import_and_export" | relative_url }}#the-exportempties-option) |
+| `on_<event>` / `onLocal_<event>` / `onAll_<event>` | All components | [Event handlers via options]({{ "advanced_concepts/events" | relative_url }}#via-options-declarative) |
 | `focus_on_click` | Form type | [Form type → `focus_on_click`]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
 | `autoId` | All components | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
 | `enableJsonEncoding` | Form type | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
@@ -106,7 +106,7 @@ Options prefixed with `on_` (event handlers) or `smark_` (constructor-only flags
 
 The prefix makes the intent clear at a glance:
 
-- **`on_`** — attaches an event listener. These flow through the component system where the base component decorator automatically extracts and registers them.
+- **`on_`** — attaches an event listener. These are pass-through options — they flow to the root form component where the base component decorator automatically extracts and registers them. See [`on*` event handlers](#on-event-handlers).
 - **`smark_`** — sets a constructor-only flag extracted by the SmarkForm constructor itself (e.g. `smark_mask_throwOnMissing`).
 - **`customActions`** — registers per-instance custom actions (also available globally via `SmarkForm.registerCustomAction()`).
 
@@ -135,40 +135,6 @@ const form = new SmarkForm(element, {
 Each custom action follows the [`async actionName(data, options)`]({{ "advanced_concepts/events" | relative_url }}#the-action-decorator) signature and participates in the standard [action lifecycle]({{ "advanced_concepts/events" | relative_url }}#action-lifecycle-events) (`BeforeAction_<name>`, `AfterAction_<name>`).
 
 > Custom actions can also be registered **globally** before construction — see [`SmarkForm.registerCustomAction()`](#smarkformregistercustomaction).
-
-### `on*` event handlers
-
-A declarative shorthand for attaching [event listeners]({{ "advanced_concepts/events" | relative_url }}) at construction time. The naming follows the [three listener levels]({{ "advanced_concepts/events" | relative_url }}#local-vs-all-handlers):
-
-| Pattern | Scope |
-|---------|-------|
-| `on_<event>` | Bubbles if event permits |
-| `onLocal_<event>` | Target phase only |
-| `onAll_<event>` | Always bubbles |
-| `onBeforeAction_<action>` | `BeforeAction` hook |
-
-```javascript
-const form = new SmarkForm(element, {
-    on_click(ev) { console.log("clicked", ev.target); },
-    onLocal_AfterAction_export(ev) { console.log("exported", ev.data); },
-    onBeforeAction_import(ev) { ev.preventDefault(); },
-});
-```
-
-See: [Event handlers via options]({{ "advanced_concepts/events" | relative_url }}#via-options-declarative) for more examples.
-
-### `smark_mask_throwOnMissing`
-
-Controls whether a missing mask factory throws an error. Defaults to `true`.
-
-```javascript
-// Warn instead of throwing for unregistered masks:
-const form = new SmarkForm(element, {
-    smark_mask_throwOnMissing: false,
-});
-```
-
-When `false`, the field's original input type is restored and the field operates unmasked. See [Field Masking — Error Handling]({{ "working_with_forms/field_masking" | relative_url }}#error-handling) for details.
 
 ### Mixin security policies
 
