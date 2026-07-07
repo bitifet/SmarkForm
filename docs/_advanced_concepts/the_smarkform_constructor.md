@@ -22,10 +22,8 @@ nav_order: 0
 * [Pass-Through Options](#pass-through-options)
     * [Merging rules](#merging-rules)
 * [Constructor-Only Options](#constructor-only-options)
-    * [Naming convention](#naming-convention)
     * [`customActions`](#customactions)
     * [`smark_mask_throwOnMissing`](#smark_mask_throwonmissing)
-    * [Mixin security policies](#mixin-security-policies)
 * [Static Members](#static-members)
     * [`SmarkForm.registerMask()`](#smarkformregistermask)
     * [`SmarkForm.registerCustomAction()`](#smarkformregistercustomaction)
@@ -76,6 +74,7 @@ These options are documented on their respective component type pages:
 | `autoId` | All components | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
 | `enableJsonEncoding` | Form type | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
 | `keyStyle` / `arrayStyle` | Form type | [Form type → data flattening]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
+| `allowExternalMixins` / `allowLocalMixinScripts` / `allowSameOriginMixinScripts` / `allowCrossOriginMixinScripts` | Root form (security) | [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
 
 ### Merging rules
 
@@ -100,15 +99,8 @@ Options not specified in either source keep their documented defaults.
 
 ## Constructor-Only Options
 
-Options prefixed with `on_` (event handlers) or `smark_` (constructor-only flags) are **not forwarded** to the root form component — they are processed by the constructor itself.
-
-### Naming convention
-
-The prefix makes the intent clear at a glance:
-
-- **`on_`** — attaches an event listener. These are pass-through options — they flow to the root form component where the base component decorator automatically extracts and registers them. See [`on*` event handlers](#on-event-handlers).
-- **`smark_`** — sets a constructor-only flag extracted by the SmarkForm constructor itself (e.g. `smark_mask_throwOnMissing`).
-- **`customActions`** — registers per-instance custom actions (also available globally via `SmarkForm.registerCustomAction()`).
+These options are extracted by the SmarkForm constructor and **not forwarded**
+to the root form component. They follow the `smark_` prefix convention.
 
 ### `customActions`
 
@@ -135,20 +127,6 @@ const form = new SmarkForm(element, {
 Each custom action follows the [`async actionName(data, options)`]({{ "advanced_concepts/events" | relative_url }}#the-action-decorator) signature and participates in the standard [action lifecycle]({{ "advanced_concepts/events" | relative_url }}#action-lifecycle-events) (`BeforeAction_<name>`, `AfterAction_<name>`).
 
 > Custom actions can also be registered **globally** before construction — see [`SmarkForm.registerCustomAction()`](#smarkformregistercustomaction).
-
-### Mixin security policies
-
-SmarkForm mixin types can load external templates and execute scripts. Four constructor options control the security policy:
-
-- `allowExternalMixins` — fetch templates from external URLs
-- `allowLocalMixinScripts` — execute `<script>` blocks in local templates
-- `allowSameOriginMixinScripts` — execute same-origin external scripts
-- `allowCrossOriginMixinScripts` — execute cross-origin external scripts
-
-Each accepts `"block"` (default, safer) or `"allow"`. See [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) for full documentation and examples.
-
-{: .note }
-> These are pass-through options (not constructor-only) — they flow into the root form component where the mixin system reads them via `inheritedOption`. The `smark_` prefix is reserved for truly constructor-only flags.
 
 ---
 
