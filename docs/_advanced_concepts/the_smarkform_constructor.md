@@ -128,6 +128,19 @@ Each custom action follows the [`async actionName(data, options)`]({{ "advanced_
 
 > Custom actions can also be registered **globally** before construction — see [`SmarkForm.registerCustomAction()`](#smarkformregistercustomaction).
 
+### `smark_mask_throwOnMissing`
+
+Controls whether a missing mask factory throws an error. Defaults to `true`.
+
+```javascript
+// Warn instead of throwing for unregistered masks:
+const form = new SmarkForm(element, {
+    smark_mask_throwOnMissing: false,
+});
+```
+
+When `false`, the field's original input type is restored and the field operates unmasked. See [Field Masking — Error Handling]({{ "working_with_forms/field_masking" | relative_url }}#error-handling) for details.
+
 ---
 
 ## Static Members
