@@ -38,7 +38,6 @@ class SmarkForm extends form {
     constructor(
         targetNode
         , {
-            customActions = {},
             ...restOptions
         } = {}
     ) {
@@ -86,11 +85,11 @@ class SmarkForm extends form {
             )
         ));
         // TODO: use private Symbol (see PROMPTS.md "Private actions")
-        // Merge globally registered custom actions with per-instance ones
+        // Merge globally registered custom actions
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(
-                Object.entries({ ...SmarkForm._customActions, ...customActions })
+                Object.entries(SmarkForm._customActions)
                     .map(([name, ctrl])=>[name, ctrl.bind(me)])
             ),
         };

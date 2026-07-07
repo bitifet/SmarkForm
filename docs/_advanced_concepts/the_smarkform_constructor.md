@@ -22,7 +22,6 @@ nav_order: 0
 * [Pass-Through Options](#pass-through-options)
     * [Merging rules](#merging-rules)
 * [Constructor-Only Options](#constructor-only-options)
-    * [`customActions`](#customactions)
     * [`smark_mask_throwOnMissing`](#smark_mask_throwonmissing)
     * [Mixin security policies](#mixin-security-policies)
 * [Static Members](#static-members)
@@ -100,33 +99,7 @@ Options not specified in either source keep their documented defaults.
 ## Constructor-Only Options
 
 These options are extracted by the SmarkForm constructor and **not forwarded**
-to the root form component. They follow the `smark_` prefix convention.
-
-### `customActions`
-
-Defines additional actions beyond SmarkForm's built-in ones. Triggers in the HTML can invoke them by name.
-
-```javascript
-const form = new SmarkForm(element, {
-    customActions: {
-        async sendEmail(data, options) {
-            const formData = await form.export();
-            await fetch("/api/send", {
-                method: "POST",
-                body: JSON.stringify(formData),
-            });
-        },
-    },
-});
-```
-
-```html
-<button data-smark='{"action":"sendEmail"}'>Send Email</button>
-```
-
-Each custom action follows the [`async actionName(data, options)`]({{ "advanced_concepts/events" | relative_url }}#the-action-decorator) signature and participates in the standard [action lifecycle]({{ "advanced_concepts/events" | relative_url }}#action-lifecycle-events) (`BeforeAction_<name>`, `AfterAction_<name>`).
-
-> Custom actions can also be registered **globally** before construction — see [`SmarkForm.registerCustomAction()`](#smarkformregistercustomaction).
+to the root form component. They all follow the `smark_` prefix convention.
 
 ### `smark_mask_throwOnMissing`
 
