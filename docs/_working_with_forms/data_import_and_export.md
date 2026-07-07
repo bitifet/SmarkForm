@@ -36,8 +36,6 @@ nav_order: 3
     * [Using `target` with `import`](#using-target-with-import)
     * [Chaining export and import](#chaining-export-and-import)
 * [Programmatic API](#programmatic-api)
-    * [Using `component.export()` and `component.import()`](#using-componentactionsexport-and-componentactionsimport)
-    * [Calling prototype methods directly](#calling-prototype-methods-directly)
 * [Common Patterns](#common-patterns)
     * [Loading initial data from a server](#loading-initial-data-from-a-server)
     * [Submitting form data to a backend](#submitting-form-data-to-a-backend)

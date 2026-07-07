@@ -27,7 +27,7 @@ nav_order: 5
 * [Event System](#event-system)
 * [Data Import / Export](#data-import-export)
 * [API Methods](#api-methods)
-    * [Actions](#action-methods)
+    * [Action methods](#action-methods)
     * [Utilities & Introspection](#utilities-introspection)
 * [Hotkeys](#hotkeys)
 * [Form Submission](#form-submission)

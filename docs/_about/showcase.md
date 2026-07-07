@@ -61,8 +61,6 @@ featured ones.
     * [Hidden actions](#hidden-actions)
     * [Animations](#animations)
     * [Smart value coercion](#smart-value-coercion)
-        * [Scalar-to-array list coercion](#scalar-to-array-list-coercion)
-        * [Type coercion for scalar fields](#type-coercion-for-scalar-fields)
     * [Field Masking](#field-masking)
     * [Dynamic Dropdown Options](#dynamic-dropdown-options)
 * [Random Examples](#random-examples)

@@ -20,10 +20,10 @@ nav_order: 3
 
 * [Secure-by-Default Philosophy](#secure-by-default-philosophy)
 * [Security Options are Root-Only](#security-options-are-root-only)
-* [Mixin External Template Loading — `smark_mixin_allowExternal`](#mixin-external-template-loading--allowexternalmixins)
-* [Mixin Script Execution — `smark_mixin_allowLocalScripts`, `smark_mixin_allowSameOriginScripts`, `smark_mixin_allowCrossOriginScripts`](#mixin-script-execution--allowlocalmixinscripts-allowsameoriginmixinscripts-allowcrossoriginmixinscripts)
-* [Nested Scripts — `MIXIN_NESTED_SCRIPT_DISALLOWED`](#nested-scripts--mixin_nested_script_disallowed)
-* [JSON Encoding — `enableJsonEncoding`](#json-encoding--enablejsonencoding)
+* [Mixin External Template Loading (smark_mixin_allowExternal)](#mixin-external-template-loading-smark_mixin_allowexternal)
+* [Mixin Script Execution (smark_mixin_allowLocalScripts, smark_mixin_allowSameOriginScripts, smark_mixin_allowCrossOriginScripts)](#mixin-script-execution-smark_mixin_allowlocalscripts-smark_mixin_allowsameoriginscripts-smark_mixin_allowcrossoriginscripts)
+* [Nested Scripts (MIXIN_NESTED_SCRIPT_DISALLOWED)](#nested-scripts-mixin_nested_script_disallowed)
+* [JSON Encoding (enableJsonEncoding)](#json-encoding-enablejsonencoding)
 * [Error Codes Quick Reference](#error-codes-quick-reference)
 
 <!-- vim-markdown-toc -->
@@ -91,7 +91,7 @@ with) always takes precedence over anything that arrives in HTML.
 
 ---
 
-## Mixin External Template Loading — `smark_mixin_allowExternal`
+## Mixin External Template Loading (smark_mixin_allowExternal)
 
 By default SmarkForm **blocks all attempts to fetch mixin templates from
 external URLs** (any mixin type reference that contains a URL path before the
@@ -119,7 +119,7 @@ const myForm = new SmarkForm(document.getElementById("myForm"), {
 
 ---
 
-## Mixin Script Execution — `smark_mixin_allowLocalScripts`, `smark_mixin_allowSameOriginScripts`, `smark_mixin_allowCrossOriginScripts`
+## Mixin Script Execution (smark_mixin_allowLocalScripts, smark_mixin_allowSameOriginScripts, smark_mixin_allowCrossOriginScripts)
 
 Mixin templates may include a `<script>` element as a **top-level sibling of
 the template root** (not nested inside it).  By default, all such scripts are
@@ -168,7 +168,7 @@ const myForm = new SmarkForm(document.getElementById("myForm"), {
 
 ---
 
-## Nested Scripts — `MIXIN_NESTED_SCRIPT_DISALLOWED`
+## Nested Scripts (MIXIN_NESTED_SCRIPT_DISALLOWED)
 
 Even when script execution is allowed, a `<script>` element may only appear
 as a **direct sibling of the template root** inside the `<template>`, never
@@ -198,7 +198,7 @@ visibility and control over them.
 
 ---
 
-## JSON Encoding — `enableJsonEncoding`
+## JSON Encoding (enableJsonEncoding)
 
 SmarkForm supports all standard HTML `enctype` values (`application/x-www-form-urlencoded`,
 `multipart/form-data`, and `text/plain`) by constructing and submitting a real
