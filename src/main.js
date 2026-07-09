@@ -49,10 +49,13 @@ class SmarkForm extends form {
         const ctorOnly = {};
         const formOptions = {};
         for (const [k, v] of Object.entries(restOptions)) {
+            // smark_* options must also flow through to root.options so the mixin
+            // system can read them during the render phase (which starts inside
+            // super()). They are filtered from setNodeOptions below to prevent
+            // data-smark serialization.
+            formOptions[k] = v;
             if (k.startsWith('smark_')) {
                 ctorOnly[k] = v;
-            } else {
-                formOptions[k] = v;
             }
         }
 
@@ -75,7 +78,6 @@ class SmarkForm extends form {
             , null // (Root has no parent)
         );
         const me = this;
-        me._ctorOptions = ctorOnly; // Expose constructor-only options for internal use
         // setNodeOptions must NOT receive on_* or smark_* keys — they contain
         // functions and constructor-only flags that cannot be serialized to
         // the data-smark attribute.

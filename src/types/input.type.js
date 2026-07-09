@@ -129,7 +129,7 @@ export class input extends form {
         const maskFactory = scopedMasks[maskName] || globalMasks[maskName];
 
         if (typeof maskFactory !== 'function') {
-            const cfg = me.root._ctorOptions || {};
+            const cfg = me.root.options;
             if (cfg.smark_mask_throwOnMissing !== false) {
                 throw me.renderError(
                     'MASK_NOT_FOUND'

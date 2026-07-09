@@ -240,8 +240,7 @@ export async function expandMixin(node, options, component) { //{{{
         // its own privileges by setting the option in its data-smark.
         // smark_mixin_allowExternal may be a string ('block'|'same-origin'|'allow')
         // or a per-origin object map — see resolvePolicy().
-        const ctorOpts = component.root._ctorOptions || {};
-        const extPolicyRaw = ctorOpts['smark_mixin_allowExternal'] ?? 'block';
+        const extPolicyRaw = component.root.options['smark_mixin_allowExternal'] ?? 'block';
         const fetchOrigin = getUrlOrigin(absoluteUrl);
         const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
         if (extPolicy === 'block') {
@@ -420,8 +419,7 @@ export async function expandMixin(node, options, component) { //{{{
         }
         // Read policy exclusively from the root to prevent privilege escalation
         // from within mixin templates (see smark_mixin_allowExternal comment above).
-        const ctorOpts = component.root._ctorOptions || {};
-        const policyRaw = ctorOpts[policyOptionName] ?? 'block';
+        const policyRaw = component.root.options[policyOptionName] ?? 'block';
         const scriptOrigin = getUrlOrigin(absoluteUrl);
         const policy = resolvePolicy(policyRaw, scriptOrigin, 'block');
         if (policy === 'block') {
