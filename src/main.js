@@ -78,14 +78,7 @@ class SmarkForm extends form {
             , null // (Root has no parent)
         );
         const me = this;
-        // setNodeOptions must NOT receive on_* or smark_* keys — they contain
-        // functions and constructor-only flags that cannot be serialized to
-        // the data-smark attribute.
-        me.setNodeOptions(me.targetNode, Object.fromEntries(
-            Object.entries(options).filter(([k]) =>
-                !k.startsWith('on_') && !k.startsWith('smark_')
-            )
-        ));
+        me.setNodeOptions(me.targetNode, options);
         // TODO: use private Symbol (see PROMPTS.md "Private actions")
         // Merge globally registered custom actions
         me.actions = {

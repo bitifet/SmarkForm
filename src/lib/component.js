@@ -258,7 +258,43 @@ export class SmarkComponent {
     };//}}}
     setNodeOptions(node, options) {//{{{
         const me = this;
-        node.dataset[me.property_name] = JSON.stringify(options);
+        function isSerializable(value, path = "", visited = new WeakSet()) {
+            if (value === null || typeof value !== "object") {
+                if (typeof value === "function") {
+                    throw new Error(`Function found at ${path}`);
+                }
+                if (typeof value === "symbol") {
+                    throw new Error(`Symbol found at ${path}`);
+                }
+                if (typeof value === "number" && (!Number.isFinite(value))) {
+                    throw new Error(`Non-finite number found at ${path}`);
+                }
+                return;
+            }
+            if (visited.has(value)) {
+                return;
+            }
+            visited.add(value);
+            if (Array.isArray(value)) {
+                value.forEach((item, i) => {
+                    isSerializable(item, `${path}[${i}]`, visited);
+                });
+            } else {
+                for (const key of Object.keys(value)) {
+                    isSerializable(value[key], path ? `${path}.${key}` : key, visited);
+                }
+            }
+        }
+        // Filter out on_* handler functions and smark_* flags before validation
+        // and serialization — they are constructor-time configurations, not
+        // serializable component options.
+        const filtered = Object.fromEntries(
+            Object.entries(options).filter(([k]) =>
+                !k.startsWith('on_') && !k.startsWith('smark_')
+            )
+        );
+        isSerializable(filtered);
+        node.dataset[me.property_name] = JSON.stringify(filtered);
     };//}}}
     async safeEnhance(node, defaultOptions) {//{{{
         const me = this;
