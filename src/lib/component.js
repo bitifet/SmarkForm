@@ -258,34 +258,6 @@ export class SmarkComponent {
     };//}}}
     setNodeOptions(node, options) {//{{{
         const me = this;
-        function isSerializable(value, path = "", visited = new WeakSet()) {
-            if (value === null || typeof value !== "object") {
-                if (typeof value === "function") {
-                    throw new Error(`Function found at ${path}`);
-                }
-                if (typeof value === "symbol") {
-                    throw new Error(`Symbol found at ${path}`);
-                }
-                if (typeof value === "number" && (!Number.isFinite(value))) {
-                    throw new Error(`Non-finite number found at ${path}`);
-                }
-                return;
-            }
-            if (visited.has(value)) {
-                return;
-            }
-            visited.add(value);
-            if (Array.isArray(value)) {
-                value.forEach((item, i) => {
-                    isSerializable(item, `${path}[${i}]`, visited);
-                });
-            } else {
-                for (const key of Object.keys(value)) {
-                    isSerializable(value[key], path ? `${path}.${key}` : key, visited);
-                }
-            }
-        }
-        isSerializable(options);
         node.dataset[me.property_name] = JSON.stringify(options);
     };//}}}
     async safeEnhance(node, defaultOptions) {//{{{
