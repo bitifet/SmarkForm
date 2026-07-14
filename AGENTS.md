@@ -370,6 +370,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 npm test                    # Run full matrix: chromium + firefox + webkit + chromium-mobile
 npm run test:quick          # Run on one randomly-chosen browser (fast sanity check)
 npm run test:pick          # Run specific test file(s) interactively
+npm run test:help          # Print test suite overview; npm run test:help <topic> for detail
 npm run pretest            # Validate cheatsheet, build, and collect examples (runs before test / test:quick)
 
 # Building
