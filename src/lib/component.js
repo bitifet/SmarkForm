@@ -285,12 +285,12 @@ export class SmarkComponent {
                 }
             }
         }
-        // Filter out on_* handler functions and smark_* flags before validation
-        // and serialization — they are constructor-time configurations, not
-        // serializable component options.
+        // Filter out on*/onLocal*/onAll*/onBeforeAction*/onAfterAction* handler
+        // functions and smark_* flags before validation and serialization —
+        // they are constructor-time configurations, not serializable options.
         const filtered = Object.fromEntries(
             Object.entries(options).filter(([k]) =>
-                !k.startsWith('on_') && !k.startsWith('smark_')
+                !k.startsWith('on') && !k.startsWith('smark_')
             )
         );
         isSerializable(filtered);
