@@ -378,9 +378,10 @@ test.describe('Declarative Masking API', () => {
             const rendered = await renderHtml(html, 'err_throw');
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
-            await page.waitForTimeout(1000);
+            await page.waitForFunction(() => typeof window.myForm !== 'undefined');
 
-            expect(errors.length).toBeGreaterThan(0);
+            // Render error fires asynchronously — poll until it appears
+            await expect.poll(() => errors.length, { timeout: 5000 }).toBeGreaterThan(0);
             const maskErr = errors.find(e => e.includes('not found'));
             expect(maskErr).toBeTruthy();
         } finally {
@@ -511,9 +512,9 @@ test.describe('Declarative Masking API', () => {
             onClosed = rendered.onClosed;
             await page.goto(rendered.url);
             await page.waitForFunction(() => typeof window.myForm !== 'undefined');
-            await page.waitForTimeout(1500);
 
-            // A MASK_NOT_FOUND error should fire for the "global" field.
+            // Render error fires asynchronously — poll until it appears
+            await expect.poll(() => errors.length, { timeout: 5000 }).toBeGreaterThan(0);
             const maskErr = errors.find(e => e.includes('not found'));
             expect(maskErr).toBeTruthy();
         } finally {
