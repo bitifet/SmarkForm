@@ -27,6 +27,7 @@ nav_order: 5
 * [Credit Card Example (IMask)](#credit-card-example-imask)
 * [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library-singleton-list)
 * [Mixin-Scoped Masks](#mixin-scoped-masks)
+* [Using Other Masking Libraries (Inputmask)](#using-other-masking-libraries-inputmask)
 * [Error Handling](#error-handling)
     * [`smark_mask_throwOnMissing: true` (default)](#smark_mask_throwonmissing-true-default)
     * [`smark_mask_throwOnMissing: false`](#smark_mask_throwonmissing-false)
@@ -410,33 +411,119 @@ mixin types), the mask is scoped to that mixin's expansion — it does **not**
 register globally. This prevents name collisions between mixins that define
 masks with the same name.
 
+A mixin-local mask **overrides** a global mask with the same name, so mixins
+can safely define their own versions of shared mask names.
+
 {: .hint :}
 > **See also:** [Mixin Types → Scripts and Styles](mixin_types#scripts-and-styles)
 > for the full mixin script policy, including the `smark_mixin_allowLocalScripts` option.
 
-The script element must be a **sibling of the root element** inside the
-`<template>`, not nested within it:
+{% raw %}<!-- mixin_mask_html {{{ -->{% endraw %}
+{% capture mixin_mask_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"#digitsMixin","name":"mixinField"}'></div>
+  <p>
+    <label>Global field (no access to mixin mask):</label>
+    <input data-smark='{"name":"global","mask":"digits"}' type="text" placeholder="Will fail — mask not found globally">
+  </p>
+</div>
 
-```html
-<template id="myMixin">
-    <!-- Scoped mask: sibling of the root <div> -->
-    <script type="smark-mask" data-name="secret">
-        (node) => {
-            return { get unmaskedValue() { ... }, set unmaskedValue(v) { ... } };
-        }
-    </script>
-    <div>
-        <input data-smark='{"name":"inner","mask":"secret"}'>
-    </div>
+<template id="digitsMixin">
+  <!-- Scoped mask: sibling of the root element inside the template -->
+  <script type="smark-mask" data-name="digits">
+    (node) => {
+      let _v = '';
+      node.addEventListener('input', () => { _v = node.value.replace(/\D/g, ''); });
+      return { get unmaskedValue() { return _v; }, set unmaskedValue(v) { _v = v; node.value = v; } };
+    }
+  </script>
+  <div>
+    <input data-smark='{"name":"inner","mask":"digits"}' type="text" placeholder="Digits only (mixin-scoped)">
+  </div>
 </template>
-```
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-A mixin-local mask **overrides** a global mask with the same name, so mixins
-can safely define their own versions of shared mask names.
+{% raw %}<!-- mixin_mask_notes {{{ -->{% endraw %}
+{% capture mixin_mask_notes -%}
+The `digits` mask is defined inside the `#digitsMixin` template and is scoped to it — only fields expanded from that mixin can use it. The global `"global"` field tries to use the same `"digits"` mask but fails (mask not found globally). This prevents naming conflicts between different mixins.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-{: .warning :}
-> Keep in mind that mixin-scoped masks require the `smark_mixin_allowLocalScripts: 'allow'`
-> form option.
+{% include components/sampletabs_tpl.md
+   formId="mixin-mask"
+   htmlSource=mixin_mask_html
+   notes=mixin_mask_notes
+   smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
+   selected="html"
+   expectedConsoleErrors=1
+   tests=false
+%}
+
+This example requires `smark_mixin_allowLocalScripts: "allow"` because the
+`<script>` inside the `<template>` must be executed by the mixin system.
+
+## Using Other Masking Libraries (Inputmask)
+
+SmarkForm works with **any** masking library — not just IMask. The only
+requirement is that the factory returns an object with an `unmaskedValue`
+getter/setter pair.
+
+This example uses [Inputmask](https://github.com/RobinHerbots/Inputmask) to
+format a price field. The factory wraps the library's API: `unmaskedvalue()`
+for the getter and `setValue()` for the setter.
+
+{% raw %}<!-- inputmask_html {{{ -->{% endraw %}
+{% capture inputmask_html -%}
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputmask.min.js"></script>
+<div id="myForm$$">
+  <p>
+    <label>Price:</label>
+    <input data-smark='{"type":"number","name":"price","mask":"price"}' placeholder="0.00">
+  </p>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- inputmask_js {{{ -->{% endraw %}
+{% capture inputmask_js -%}
+SmarkForm.registerMask("price", (node) => {
+  node.inputMode = "decimal";
+
+  Inputmask({
+    alias: "numeric",
+    groupSeparator: " ",
+    radixPoint: ".",
+    digits: 2,
+    digitsOptional: false,
+    placeholder: "0",
+    allowMinus: false,
+  }).mask(node);
+
+  return {
+    get unmaskedValue() {
+      return node.inputmask?.unmaskedvalue() ?? node.value;
+    },
+    set unmaskedValue(v) {
+      node.inputmask?.setValue(v);
+    },
+  };
+});
+
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- inputmask_notes {{{ -->{% endraw %}
+{% capture inputmask_notes -%}
+The factory uses Inputmask's `numeric` alias with `groupSeparator: " "` (space every 3 digits), `radixPoint: "."` (always display period), `digits: 2` (two decimal places), and `digitsOptional: false` (show `.00` until decimal digits are typed). The wrapper reads `unmaskedvalue()` for export and calls `setValue()` for import — SmarkForm only needs the `unmaskedValue` contract.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="inputmask-price"
+   htmlSource=inputmask_html
+   jsHead=inputmask_js
+   notes=inputmask_notes
+   showEditor=true
+   selected="js"
+   tests=false
+%}
 
 ## Error Handling
 
