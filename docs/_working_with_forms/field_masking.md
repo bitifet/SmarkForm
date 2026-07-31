@@ -422,10 +422,6 @@ can safely define their own versions of shared mask names.
 {% capture mixin_mask_html -%}
 <div id="myForm$$">
   <div data-smark='{"type":"#digitsMixin","name":"mixinField"}'></div>
-  <p>
-    <label>Global field (no access to mixin mask):</label>
-    <input data-smark='{"name":"global","mask":"digits"}' type="text" placeholder="Will fail — mask not found globally">
-  </p>
 </div>
 
 <template id="digitsMixin">
@@ -445,7 +441,7 @@ can safely define their own versions of shared mask names.
 
 {% raw %}<!-- mixin_mask_notes {{{ -->{% endraw %}
 {% capture mixin_mask_notes -%}
-The `digits` mask is defined inside the `#digitsMixin` template and is scoped to it — only fields expanded from that mixin can use it. The global `"global"` field tries to use the same `"digits"` mask but fails (mask not found globally). This prevents naming conflicts between different mixins.
+The `digits` mask is defined inside the `#digitsMixin` template via a `<script type="smark-mask">` element. SmarkForm scopes it to the mixin's expansion — the mask is available to fields inside the mixin but does NOT appear in the global registry. This prevents naming conflicts between different mixins that define masks with the same name.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -454,7 +450,6 @@ The `digits` mask is defined inside the `#digitsMixin` template and is scoped to
    notes=mixin_mask_notes
    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
    selected="html"
-   expectedConsoleErrors=1
    tests=false
 %}
 
