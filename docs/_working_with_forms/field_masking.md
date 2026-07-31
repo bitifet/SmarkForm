@@ -429,7 +429,10 @@ can safely define their own versions of shared mask names.
   <script type="smark-mask" data-name="digits">
     (node) => {
       let _v = '';
-      node.addEventListener('input', () => { _v = node.value.replace(/\D/g, ''); });
+      node.addEventListener('input', () => {
+        _v = node.value.replace(/\D/g, '');
+        if (_v !== node.value) node.value = _v;
+      });
       return { get unmaskedValue() { return _v; }, set unmaskedValue(v) { _v = v; node.value = v; } };
     }
   </script>
@@ -450,6 +453,7 @@ The `digits` mask is defined inside the `#digitsMixin` template via a `<script t
    notes=mixin_mask_notes
    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
    selected="html"
+   showEditor=true
    tests=false
 %}
 
