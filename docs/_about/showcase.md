@@ -1200,41 +1200,17 @@ template and reference it with `type: "#yourTemplateName"`.
 
 ## Import and Export Data
 
-SmarkForm's export/import buttons are triggers with `context` and `target`
-properties. See [Data Import and Export]({{ "/working_with_forms/data_import_and_export" | relative_url }}) for details.
+Export, import, and submit actions pipe data between form components or to
+external backends via `context` and `target`. The editor scaffold
+(Export/Import/Reset/Clear buttons) is injected externally — see
+[Playground]({{ "/resources/playground" | relative_url }}).
 
-
-
-The `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons used in all examples in
-this documentation are just *triggers* that call the *export* and *import*
-actions on the whole form **(their *context*)**:
-
-  * `⬇️ Export` exports the whole form to the "editor" textarea **(its target)**.
-  * `⬆️ Import` imports the JSON data from the "editor" textarea into the form **(its target)**.
-  * `❌ Clear` clears the whole form **(its context)**.
-
-{: .hint :}
-> The editor scaffold (Export/Import/Reset/Clear buttons + textarea) is
-> injected externally by the documentation framework — it is **not** part of
-> the example HTML source. You can see this by checking `📝 Edit` on any
-> example; the source tabs show only the real example code.
-
+> See [Data Import and Export]({{ "/working_with_forms/data_import_and_export" | relative_url }}) for the full reference including `mailto:`, `enctype="application/json"`, and event interception.
 
 ### Intercepting the *import* and *export* events
 
-Below these lines you can see **the exact same form** with additional `💾 Save`
-and `📂 Load` buttons.
-
-They are *export* and *import* triggers, but placed outside of any subform so
-that their natural context is the whole form.
-
-In the *JS* tab there is a simple JavaScript code that:
-
-  * Intercepts the *onAfterAction_export* and *onBeforeAction_import* events.
-  * Shows the JSON of the whole form in a `window.alert(...)` window in the
-    case of *export* (💾) action.
-  * Prompts with a `window.prompt(...)` dialog for JSON data to import into the
-    whole form.
+Listen to `BeforeAction_import` / `AfterAction_export` to inspect, modify, or
+cancel data as it flows in and out of the form.
 
 {% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
 {% capture nested_forms_with_load_save -%}
