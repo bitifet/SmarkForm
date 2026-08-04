@@ -392,6 +392,12 @@ Establishes the maximum number of items allowed.
   * **Default value:** Infinity
   * **Minimum value:** Infinity
 
+{: .info }
+> Trigger buttons targeting the list (e.g. `addItem` / `removeItem`) are
+> **automatically disabled** when the list reaches its `min_items` or
+> `max_items` boundary — the add button greys out at `max_items`, the
+> remove button greys out at `min_items`. This is handled by SmarkForm
+> with no additional code required.
 
 #### sortable
 
