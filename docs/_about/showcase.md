@@ -494,65 +494,14 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 ### Deeply nested forms
 
-SmarkForm fields can be nested to any depth — the only limit is your
-application's design.
+SmarkForm fields can be nested to any depth.
 
-All the playground editor controls (Export, Import, Reset, Clear) are
-SmarkForm triggers themselves. Check the **✏️ Edit** tab to see how
-the editor scaffold is constructed.
-
-> See [Form Types]({{ "/component_types/type_form" | relative_url }}) for details on form nesting and the playground architecture.
+> See [Playground]({{ "/resources/playground" | relative_url }}) for an
+> explanation of the JSON playground editor architecture and the calculator
+> example.
 
 
 
-In fact, all examples in this chapter are entirely built with SmarkForm itself
-**with no additional JS code**.
-
-🚀 Including the *JSON playground editor* and the `⬇️ Export`, `⬆️ Import`, `♻️
-Reset` and `❌ Clear` buttons are just *SmarkForm* trigger components that work
-out of the box.
-
-🤔 ...it's just that part is omitted in the shown HTML source to keep the
-examples simple and focused on the subject they are intended to illustrate.
-
-The editor scaffold (Export / Import / Reset / Clear buttons + the JSON
-textarea) is injected externally by the documentation framework. It is **not**
-part of the example HTML — so what you see in the HTML tab is exactly the code
-you would write yourself.
-
-🕵️ If you go to any of the interactive examples in this page (or in the rest of
-the documentation) and check the `📝 Edit` checkbox, you'll be editing the real
-example source code. Check the `📋 Include playground editor` checkbox to also
-show the editor scaffold in the preview (it is injected externally and is not
-part of the example HTML).
-
-
-  * If you look close to the HTML source, you will see that `⬆️ Import` and
-    `⬇️ Export` buttons import/export the whole form or individual fields
-     from/to a *textarea* field called *editor*.
-
-  * ...And if you look at its *JS* tab you'll see that in most of them **there
-    is no JavaScript code except for the SmarkForm instantiation** itself.
-
-{: .info :}
-> 👉 **The whole *SmarkForm* form is a field of the type *form***
-> that imports/exports JSON and 🚀  **they can be nested up to any depth**.
->
->   * The `⬇️ Export`, `⬆️ Import` and `❌ Clear` buttons are *trigger* components that perform
->     specialized actions (look at the *HTML* tab to see how...). 🚀 **No
->     JavaScript wiring is needed**.
-
-
-
-{: .hint :}
-> In the [Import and Export Data](#import-and-export-data) section we'll go
-> deeper into the *import* and *export* actions and how to get the most of
-> them.
-
-
-
-
-### More on lists
 
 *SmarkForm*'s lists are incredibly powerful and flexible. They can be used to
 create complex data structures, such as schedules, inventories, or any other
