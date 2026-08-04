@@ -246,8 +246,10 @@ li.row button[data-smark]::before {
 
 ## Further Examples
 
-Holding `Ctrl+Alt` reveals a **second level** of hotkeys — useful when the
-same key is bound to actions at different nesting levels.
+When inner and outer list items share the same hotkey (e.g. `Ctrl`+`-` for
+removing both a phone AND a contact entry), the innermost matching context
+wins by default. To reach the outer-level action, hold `Ctrl`+`Alt` instead —
+this **suppresses inner hotkeys** and reveals the next level out.
 
 {% raw %} <!-- hk_2ndlevel_html {{{ --> {% endraw %}
 {% capture hk_2ndlevel_html -%}

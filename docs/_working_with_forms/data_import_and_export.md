@@ -645,6 +645,24 @@ const myForm = new SmarkForm(document.getElementById("myForm"), {
 > [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) chapter for
 > more details.
 
+### Using `<form>` with `mailto:` and `enctype`
+
+SmarkForm also supports native HTML `<form>` submission:
+
+- **`mailto:`** — wrap your fields in `<form action="mailto:you@example.com" method="post">` and add a `{"action":"submit"}` trigger. SmarkForm submits all fields to the user's email client. Use the default encoding (`text/plain` or `application/x-www-form-urlencoded`) — `enctype="application/json"` is not compatible with `mailto:`.
+
+- **JSON APIs** — set `enctype="application/json"` on the `<form>`. SmarkForm serializes the data and sends it via `fetch()`. Requires `enableJsonEncoding: true` on the root form instance.
+
+```html
+<form action="mailto:you@example.com" method="post" enctype="text/plain">
+  <input data-smark name="email" type="email">
+  <button data-smark='{"action":"submit"}'>Send</button>
+</form>
+```
+
+{: .info :}
+> You can intercept submission via `BeforeAction_submit` (fire before submit — call `ev.preventDefault()` to cancel) and `AfterAction_submit` (fire after data has been sent).
+
 ### Save and restore draft data
 
 You can persist draft data in `localStorage` and restore it the next time the
