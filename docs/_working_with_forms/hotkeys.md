@@ -44,7 +44,9 @@ Hotkeys are:
 - **Context-sensitive** — the same key can mean different things depending on
   which component currently has keyboard focus.
 - **Discoverable** — pressing and holding `Ctrl` reveals all active hotkeys as
-  visual hints on their trigger buttons.
+  visual hints on their trigger buttons, so users can discover them on the fly
+  rather than needing to memorise a list.  A little CSS setup is needed — see
+  [Hotkey Reveal](#hotkey-reveal-ctrl-discovery).
 
 
 ## Defining a Hotkey

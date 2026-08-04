@@ -409,6 +409,16 @@ SmarkForm makes it easy to copy data from one component to another using the
 **`target`** option on `export` and `import` triggers. This avoids writing
 any JavaScript for common copy-data workflows.
 
+**How context is determined:** A trigger's *context* defaults to the
+**innermost ancestor component in the DOM tree** that implements the
+triggered action. Place an `export` button inside a form → that form is the
+context. Place it outside any subform → the root form is the context. You
+can override this with the explicit `context` property.
+
+Similarly, `target` sets the destination (for export) or source (for import).
+Without it, SmarkForm resolves context by DOM position alone — the same
+trigger button can control different fields just by being placed differently.
+
 ### Using `target` with `export`
 
 When an `export` trigger has a `target` property, SmarkForm automatically

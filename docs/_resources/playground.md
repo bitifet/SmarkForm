@@ -13,6 +13,30 @@ The interactive examples throughout this documentation are powered by the
 everything else in SmarkForm, the editor itself is built entirely with
 SmarkForm components, with **no additional JavaScript**.
 
+
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {{ "
+<!-- vim-markdown-toc GitLab -->
+
+* [Architecture](#architecture)
+* [Exploring the Editor](#exploring-the-editor)
+* [Random Examples](#random-examples)
+    * [Simple Calculator](#simple-calculator)
+
+<!-- vim-markdown-toc -->
+       " | markdownify }}
+
+</details>
+
+
+{% include components/sampletabs_ctrl.md %}
+
+
+
 ## Architecture
 
 Every sampletabs example with `showEditor=true` is wrapped in an editor

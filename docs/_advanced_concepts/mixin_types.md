@@ -579,6 +579,46 @@ instance** after the component has finished rendering.  The function receives
 > Ensure handlers are idempotent or clean up on `unrender` to avoid memory
 > leaks.
 
+#### Practical Example: Smart Date Prefill
+
+A common pattern: when a new list item is created (e.g. a new "period" in a
+scheduling form), automatically compute its `start_date` and `end_date` based
+on sibling items.  The `<script>` registers an `AfterAction_addItem` listener
+that fires **after** the `source:".-1"` import, so it always operates on the
+final data:
+
+```javascript
+// Inside the mixin template's <script>:
+const me = this;  // The new period component
+me.parent.on('AfterAction_addItem', async function(ev) {
+    // ev.context is the newly-added item (our "me")
+    const items = Object.values(me.parent.children);
+    const idx  = items.indexOf(me);
+    const prev = items[idx - 1] || null;
+    const next = items[idx + 1] || null;
+
+    if (!prev) {
+        // First period — default to today
+        me.find('start_date').import(new Date().toISOString().slice(0,10));
+    } else if (prev && next) {
+        // Inserted between two periods
+        me.find('start_date').import(/* prev.end + 1 day */);
+        me.find('end_date').import(/* next.start - 1 day */);
+    } else {
+        // Appended after last period
+        me.find('start_date').import(/* prev.end + 1 day */);
+    }
+});
+```
+
+| Situation | `start_date` | `end_date` |
+|---|---|---|
+| No previous period | today | blank |
+| Has previous (no `end_date`) | blank | blank |
+| Has previous, no next | prev.end + 1 day | same duration as prev |
+| Inserted — gap exists | prev.end + 1 day | next.start − 1 day |
+| Inserted — contiguous | prev.end + 1 day | blank (user decides) |
+
 ### Mixin Security Options
 
 SmarkForm uses a **secure-by-default** model: all mixin script execution and
