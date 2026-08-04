@@ -155,3 +155,16 @@ Press `Enter` from the Email field — navigation jumps over the collapsed Billi
    selected="preview"
    tests=false
 %}
+
+## Using `<details>` as List Items
+
+A powerful design pattern is to wrap each list item in a `<details>` element
+with the item's key identifying field placed inside the `<summary>`.  This
+way, even when collapsed, the key information remains visible so the user can
+quickly scan the list, while the full details expand on click.
+
+SmarkForm fields inside the `<details>` work exactly as they would anywhere
+else — the browser handles the show/hide toggle natively.  Combined with
+`Space`/`Shift`+`Space` toggling and `Alt`+`Enter` for navigation into
+collapsed sections, this creates an accessible, space-efficient list UI
+without any custom JavaScript.

@@ -64,6 +64,12 @@ nav_order: 2
 component "blueprints" that can be stamped out anywhere in a form tree —
 and even loaded from external files — without writing any JavaScript.
 
+{: .hint }
+> **When to use mixins:** Any piece of UI that repeats across your form with
+> the same structure but different data — schedules, contact blocks, option
+> groups — is a candidate for a mixin template.  Extract it once, reference
+> it with `type: "#yourTemplateName"` wherever needed.
+
 A mixin type is identified by a **mixin type reference**: a string that starts
 with `#` (local template) or contains `#` (external URL + template id):
 

@@ -56,7 +56,8 @@ form.
 
 👉 From fields can be created over any HTML tag except for actual HTML form
 elements (`<input>`, `<textarea>`, `<select>`, `<button>`...) and can contain
-any number of *SmarkForm* fields, **including nested forms**.
+any number of *SmarkForm* fields, **including nested forms** — there is no
+limit to the nesting depth beyond practical usability.
 
 **Example:**
 
