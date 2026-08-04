@@ -1375,6 +1375,32 @@ build step if you use the CDN.
 > to help you evaluate!
 
 
+### Why does `clear` restore my default value instead of emptying the field?
+
+The `clear` action resets a field to its **type-level empty state** (empty
+string for inputs, empty array for lists, empty object for forms), NOT its
+default value.  If the exported data still shows a value after clearing, it
+is because you are calling `clear` on a **parent component** (e.g. the whole
+form) rather than on the individual field.
+
+A parent's `clear` iterates over its children and calls `clear` on each of
+them — but a child's default value, if set, becomes the field's new state.
+To completely empty a specific field regardless of its default, call `clear`
+directly on that field (e.g. via `{"action":"clear","context":"fieldName"}`).
+
+This distinction applies to `reset` as well: `reset` restores the
+`defaultValue`, while `clear` goes all the way to the empty state.  Both are
+recursive when applied to a parent component.
+
+```html
+<!-- Clears the whole form → fields with defaults keep their defaults -->
+<button data-smark='{"action":"clear"}'>❌ Clear form</button>
+
+<!-- Clears only the "colour" field → becomes null regardless of default -->
+<button data-smark='{"action":"clear","context":"colour"}'>❌ Clear colour</button>
+```
+
+
 ## Have a question not covered here?
 
 You have a question that isn't answered here? You found a confusing edge case?
