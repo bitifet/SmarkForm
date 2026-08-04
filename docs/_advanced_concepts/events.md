@@ -194,6 +194,22 @@ addressForm.on("AfterAction_export", (ev) => {
 });
 ```
 
+**Scoping listeners to a specific field with `onRendered()` + `onLocal()`:**
+
+In a form with multiple fields, `.on()` intercepts events from ALL children —
+which might be too broad.  To limit a listener to a single field, wait for it
+to render, `find()` it by path, then use `onLocal()` (target-phase only):
+
+```javascript
+myForm.onRendered(() => {
+    const display = myForm.find("/display");
+    display.onLocal("BeforeAction_import", async (ev) => {
+        // Only fires for imports on /display, never on other fields
+    });
+});
+```
+
+This pattern is used in the [calculator example]({{ "/resources/playground" | relative_url }}#simple-calculator).
 
 ## DOM Field Events
 
