@@ -206,6 +206,29 @@ Lower-priority duplicates are silently ignored.
 > fire, even if it was revealed.  The `data-hotkey` attribute is also omitted
 > from disabled buttons so they do not appear in the visual hints.
 
+## Hiding Trigger Buttons (While Keeping Hotkeys)
+
+Some actions (like per-item add/remove buttons in long lists) are non-essential
+and their buttons clutter the form. You can hide them with CSS while keeping
+their hotkeys active — touch users still tap the visible outer buttons, while
+keyboard users activate the hidden ones via hotkeys.
+
+**Critical CSS rule:** Do NOT use `display: none` — it removes the element from
+the layout and kills `::before`/`::after` pseudo-elements, which means hotkey
+hints won't appear when the user holds `Ctrl`. Instead, use `visibility: hidden`
+combined with `width: 0` (or `height: 0`):
+
+```css
+/* Hide per-item buttons but preserve hotkey hints */
+li.row button[data-smark] {
+    visibility: hidden;
+    width: 0px;
+    pointer-events: none;
+}
+li.row button[data-smark]::before {
+    visibility: visible;
+}
+```
 
 ## Accessibility Considerations
 
