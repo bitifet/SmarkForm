@@ -53,7 +53,7 @@ initialization.  Try editing values in the preview or exporting to JSON.
   </p>
   <p>
     <label data-smark>Favourite colour:</label>
-    <input name='colour' type='color' data-smark value='#c0ffee'>
+    <input name='colour' type='color' data-smark>
   </p>
 </div>{%
 endcapture %}
@@ -110,6 +110,7 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
       <div data-smark='{"type":"list","name":"todo","sortable":true,"min_items":0}'>
         <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
         <div class="card">
+          <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
           <input data-smark type="text" name="title" placeholder="Task title...">
           <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
         </div>
@@ -121,6 +122,7 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
       <div data-smark='{"type":"list","name":"progress","sortable":true,"min_items":0}'>
         <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
         <div class="card">
+          <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
           <input data-smark type="text" name="title" placeholder="Task title...">
           <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
         </div>
@@ -132,13 +134,14 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
       <div data-smark='{"type":"list","name":"done","sortable":true,"min_items":0}'>
         <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
         <div class="card">
-          <input data-smark type="text" name="title" placeholder="Task title..." disabled>
+          <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
+          <input data-smark type="text" name="title" placeholder="Task title...">
           <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
         </div>
       </div>
     </div>
   </div>
-  <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag cards between columns</p>
+  <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
 </div>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -210,10 +213,15 @@ structured JSON with coercion built in.
           <label data-smark>Name:</label>
           <input data-smark name="name" type="text" placeholder="Full name">
         </p>
-        <p>
+        <div class="row">
           <label data-smark>Age:</label>
-          <input data-smark name="age" type="number" min="5" max="99">
-        </p>
+          <input data-smark name="age" type="number" min="5" max="99" style="width:6em">
+          <label data-smark style="margin-left:1em">Sex:</label>
+          <span class="radio-group">
+            <label><input type="radio" data-smark name="sex" value="M"> M</label>
+            <label><input type="radio" data-smark name="sex" value="F"> F</label>
+          </span>
+        </div>
         <details>
           <summary>Emergency Contact</summary>
           <p>
@@ -225,21 +233,28 @@ structured JSON with coercion built in.
             <input data-smark name="emergency_phone" type="tel">
           </p>
         </details>
-        <p>
-          <label data-smark>T-shirt:</label>
-          <select data-smark name="tshirt">
-            <option value="">— Select —</option>
-            <option>S</option><option>M</option><option>L</option><option>XL</option>
-          </select>
-        </p>
+        <div class="row">
+          <div style="flex:1">
+            <label data-smark>T-shirt:</label>
+            <select data-smark name="tshirt">
+              <option value="">— Select —</option>
+              <option>S</option><option>M</option><option>L</option><option>XL</option>
+            </select>
+          </div>
+          <div style="flex:1">
+            <label data-smark>Color:</label>
+            <input data-smark type="color" name="tshirt_color" value="#3498db">
+          </div>
+        </div>
         <p>
           <label data-smark>Meal:</label>
-          <select data-smark name="meal">
-            <option value="">— Select —</option>
-            <option>Regular</option><option>Vegetarian</option><option>Vegan</option>
-          </select>
+          <span class="radio-group">
+            <label><input type="radio" data-smark name="meal" value="Regular" checked> Regular</label>
+            <label><input type="radio" data-smark name="meal" value="Vegetarian"> Vegetarian</label>
+            <label><input type="radio" data-smark name="meal" value="Vegan"> Vegan</label>
+          </span>
         </p>
-        <button data-smark='{"action":"addItem","context":"members","source":".-1","hotkey":"*"}' title="Duplicate this member">✨ Duplicate</button>
+        <button data-smark='{"action":"addItem","source":".-1","hotkey":"*"}' title="Duplicate this member">✨ Duplicate</button>
         <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this member">➖</button>
       </div>
     </li>
@@ -257,15 +272,19 @@ structured JSON with coercion built in.
 {{""}}#myForm$$ li { border: 1px solid #ddd; border-radius: 6px; padding: 0.6em; }
 {{""}}#myForm$$ li p { display: flex; align-items: center; gap: 0.5em; margin: 0.3em 0; }
 {{""}}#myForm$$ li label { font-weight: 500; min-width: 6em; }
-{{""}}#myForm$$ li input, {{""}}#myForm$$ li select { flex: 1; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+{{""}}#myForm$$ li input[type="text"], {{""}}#myForm$$ li input[type="tel"], {{""}}#myForm$$ li input[type="number"] { flex: 1; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+{{""}}#myForm$$ li select { padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
 {{""}}#myForm$$ li details { margin-top: 0.3em; }
 {{""}}#myForm$$ li summary { cursor: default; user-select: none; font-weight: 500; }
 {{""}}#myForm$$ li details[open] { border: 1px solid #eee; border-radius: 4px; padding: 0.3em 0.5em; }
 {{""}}#myForm$$ .bib { font-weight: bold; min-width: 1.5em; text-align: center; background: #f0f0f0; border-radius: 4px; padding: 0.1em 0.4em; }
+{{""}}#myForm$$ .row { display: flex; gap: 0.5em; align-items: center; margin: 0.3em 0; flex-wrap: wrap; }
+{{""}}#myForm$$ .radio-group { display: flex; gap: 0.8em; }
+{{""}}#myForm$$ .radio-group label { min-width: auto; font-weight: 400; cursor: pointer; }
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
-{{""}}#myForm$$ button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
-{{""}}#myForm$$ button { position: relative; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- race_notes {{{ --> {% endraw %}
@@ -311,6 +330,8 @@ template includes option choices and a price calculator.
 
 {% raw %} <!-- configurator_html {{{ --> {% endraw %}
 {% capture configurator_html -%}
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputmask.min.js"></script>
+
 <div id="myForm$$">
   <button data-smark='{"action":"addItem","context":"cars","hotkey":"+"}' title="Add car">➕ Add Model</button>
   <button data-smark='{"action":"removeItem","context":"cars","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty">🧹</button>
