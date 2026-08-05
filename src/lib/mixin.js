@@ -5,6 +5,7 @@
 // normal SmarkForm enhancement begins.
 
 import {parseJSON} from "./helpers.js";
+import {stampSourceIds} from "./component.js";
 
 // Module-level caches (shared for the lifetime of the page):
 const docCache = new Map();           // absoluteUrl → Promise<Document>
@@ -283,7 +284,11 @@ export async function expandMixin(node, options, component) { //{{{
                     })
                     .then(html => {
                         const parser = new DOMParser();
-                        return parser.parseFromString(html, 'text/html');
+                        const doc = parser.parseFromString(html, 'text/html');
+                        // Stamp source IDs on this external document so
+                        // clones carry the same IDs for cross-list drag.
+                        stampSourceIds(doc);
+                        return doc;
                     })
             );
         }
@@ -387,6 +392,10 @@ export async function expandMixin(node, options, component) { //{{{
     // This prevents id collisions when the mixin is used multiple times and
     // makes default snippet slots self-documenting via data-id.
     convertIds(clone);
+
+    // Stamp cloned [data-smark] elements with source IDs so cross-list drag
+    // can identify lists that share the same mixin source.
+    stampSourceIds(clone);
 
     // Gather styles from the template top level (siblings of the root element)
     // and inject them into <head> once per unique content:

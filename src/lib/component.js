@@ -8,6 +8,23 @@ import {parseJSON, replaceWrongNode, isHiddenByClosedDetails} from "./helpers.js
 import {isMixinRef, expandMixin} from "./mixin.js";
 
 const sym_smart = Symbol("smart_component");
+
+// Unique source-ID stamping for [data-smark] elements.  When mixin templates
+// are cloned, data attributes survive cloneNode() so copies of the same source
+// carry the same ID.  This is used by cross-list drag-and-drop to allow
+// dragging between lists that originated from the same template/mixin.
+let _nextSourceId = 1;
+const _stampedDocs = new WeakSet();
+export function stampSourceIds(rootElement) {
+    const doc = rootElement.ownerDocument || rootElement;
+    if (_stampedDocs.has(doc)) return;
+    _stampedDocs.add(doc);
+    for (const el of doc.querySelectorAll('[data-smark]')) {
+        if (!el.dataset.smSrc) {
+            el.dataset.smSrc = String(_nextSourceId++);
+        }
+    }
+}
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 const re_has_wildcards = /[\*\?]/;
 const wild2regex = wname => new RegExp(//{{{
