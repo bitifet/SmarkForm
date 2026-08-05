@@ -105,19 +105,22 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 <div id="myForm$$">
   <div class="kanban">
     <div class="column">
-      <strong>To Do</strong>
+      <div data-smark='{"type":"#kanbanCol","name":"todo","sortable":true,"min_items":0,"movingDepth":1}'>
+        <span data-for="colLabel">To Do</span>
+      </div>
       <button data-smark='{"action":"addItem","context":"todo","hotkey":"+"}' title="Add task">➕</button>
-      <div data-smark='{"type":"#kanbanCol","name":"todo","sortable":true,"min_items":0,"movingDepth":1}'></div>
     </div>
     <div class="column">
-      <strong>In Progress</strong>
+      <div data-smark='{"type":"#kanbanCol","name":"progress","sortable":true,"min_items":0,"movingDepth":1}'>
+        <span data-for="colLabel">In Progress</span>
+      </div>
       <button data-smark='{"action":"addItem","context":"progress","hotkey":"+"}' title="Add task">➕</button>
-      <div data-smark='{"type":"#kanbanCol","name":"progress","sortable":true,"min_items":0,"movingDepth":1}'></div>
     </div>
     <div class="column">
-      <strong>Done</strong>
+      <div data-smark='{"type":"#kanbanCol","name":"done","sortable":true,"min_items":0,"movingDepth":1}'>
+        <span data-for="colLabel">Done</span>
+      </div>
       <button data-smark='{"action":"addItem","context":"done","hotkey":"+"}' title="Add task">➕</button>
-      <div data-smark='{"type":"#kanbanCol","name":"done","sortable":true,"min_items":0,"movingDepth":1}'></div>
     </div>
   </div>
   <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
@@ -125,6 +128,7 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 
 <template id="kanbanCol">
   <div>
+    <strong id="colLabel">Column</strong>
     <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
     <div class="card">
       <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
@@ -139,7 +143,7 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 {% capture kanban_css -%}
 {{""}}#myForm$$ .kanban { display: flex; gap: 1em; }
 {{""}}#myForm$$ .column { flex: 1; min-width: 200px; border: 1px solid #ddd; border-radius: 6px; padding: 0.5em; }
-{{""}}#myForm$$ .column strong { display: block; margin-bottom: 0.4em; }
+{{""}}#myForm$$ .column strong { display: block; margin-bottom: 0.4em; font-weight: 600; }
 {{""}}#myForm$$ .card { display: flex; gap: 0.3em; margin: 0.3em 0; padding: 0.4em; background: #f8f9fa; border-radius: 4px; }
 {{""}}#myForm$$ .card input { flex: 1; }
 {{""}}#myForm$$ .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
