@@ -469,7 +469,7 @@ original behaviour: the entire item root is draggable (backward compatible).
 Controls cross-list drag-and-drop by enforcing a maximum *sibling distance*
 between source and destination lists.
 
-  * **Type:** Number | true | false
+  * **Type:** Number \| true \| false
   * **Default value:** 0 (disabled)
 
 When `movingDepth` is set to a positive number or `true` on a list, its items

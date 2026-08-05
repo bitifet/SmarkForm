@@ -107,42 +107,32 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
     <div class="column">
       <strong>To Do</strong>
       <button data-smark='{"action":"addItem","context":"todo","hotkey":"+"}' title="Add task">➕</button>
-      <div data-smark='{"type":"list","name":"todo","sortable":true,"min_items":0}'>
-        <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
-        <div class="card">
-          <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
-          <input data-smark type="text" name="title" placeholder="Task title...">
-          <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
-        </div>
-      </div>
+      <div data-smark='{"type":"#kanbanCol","name":"todo","sortable":true,"min_items":0,"movingDepth":1}'></div>
     </div>
     <div class="column">
       <strong>In Progress</strong>
       <button data-smark='{"action":"addItem","context":"progress","hotkey":"+"}' title="Add task">➕</button>
-      <div data-smark='{"type":"list","name":"progress","sortable":true,"min_items":0}'>
-        <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
-        <div class="card">
-          <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
-          <input data-smark type="text" name="title" placeholder="Task title...">
-          <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
-        </div>
-      </div>
+      <div data-smark='{"type":"#kanbanCol","name":"progress","sortable":true,"min_items":0,"movingDepth":1}'></div>
     </div>
     <div class="column">
       <strong>Done</strong>
       <button data-smark='{"action":"addItem","context":"done","hotkey":"+"}' title="Add task">➕</button>
-      <div data-smark='{"type":"list","name":"done","sortable":true,"min_items":0}'>
-        <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
-        <div class="card">
-          <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
-          <input data-smark type="text" name="title" placeholder="Task title...">
-          <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
-        </div>
-      </div>
+      <div data-smark='{"type":"#kanbanCol","name":"done","sortable":true,"min_items":0,"movingDepth":1}'></div>
     </div>
   </div>
   <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
 </div>
+
+<template id="kanbanCol">
+  <div>
+    <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
+    <div class="card">
+      <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
+      <input data-smark type="text" name="title" placeholder="Task title...">
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+    </div>
+  </div>
+</template>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- kanban_css {{{ --> {% endraw %}
