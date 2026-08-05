@@ -16,10 +16,7 @@ const sym_smart = Symbol("smart_component");
 let _nextSourceId = 1;
 const _stampedDocs = new WeakSet();
 export function stampSourceIds(rootElement) {
-    const doc = rootElement.ownerDocument || rootElement;
-    if (_stampedDocs.has(doc)) return;
-    _stampedDocs.add(doc);
-    for (const el of doc.querySelectorAll('[data-smark]')) {
+    for (const el of rootElement.querySelectorAll('[data-smark]')) {
         if (!el.dataset.smSrc) {
             el.dataset.smSrc = String(_nextSourceId++);
         }

@@ -393,9 +393,7 @@ export async function expandMixin(node, options, component) { //{{{
     // makes default snippet slots self-documenting via data-id.
     convertIds(clone);
 
-    // Stamp cloned [data-smark] elements with source IDs so cross-list drag
-    // can identify lists that share the same mixin source.
-    stampSourceIds(clone);
+    // Gather styles from the template top level (siblings of the root element)
 
     // Gather styles from the template top level (siblings of the root element)
     // and inject them into <head> once per unique content:
@@ -461,6 +459,10 @@ export async function expandMixin(node, options, component) { //{{{
 
     // Merge HTML attributes from placeholder into clone:
     mergeAttributes(clone, node);
+
+    // Now that data-smark is set on the clone root, stamp source IDs
+    // so cross-list drag can identify lists from the same mixin source.
+    stampSourceIds(clone);
 
     // Build the child chain: parent chain + this key.
     // Stored on the newly-created component so that its nested renders
