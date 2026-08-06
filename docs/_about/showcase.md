@@ -121,6 +121,11 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
     </div>
   </div>
   <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
+  <button
+    data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true,"autoscroll":"elegant"}'
+    title="Clear empty tasks from all columns"
+    class="clear-empties"
+  >🧹</button>
 </div>
 
 <template id="kanbanCol">
@@ -139,7 +144,7 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
     <div class="card">
       <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
       <input data-smark type="text" name="title" placeholder="Task title...">
-      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+      <button data-smark='{"action":"removeItem","hotkey":"-","confirmRemove":true}' title="Remove">➖</button>
     </div>
   </div>
 </template>
@@ -152,6 +157,7 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 {{""}}#myForm$$ .column > [data-smark] { flex: 1; min-height: 0; }
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
+{{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
