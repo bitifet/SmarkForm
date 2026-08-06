@@ -124,7 +124,13 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 </div>
 
 <template id="kanbanCol">
-  <div data-smark='{"type":"list","sortable":true,"min_items":0,"movingDepth":1}'>
+  <style>
+    .kanban-mixin strong { display: block; margin-bottom: 0.4em; font-weight: 600; }
+    .kanban-mixin .card { display: flex; gap: 0.3em; margin: 0.3em 0; padding: 0.4em; background: #f8f9fa; border-radius: 4px; }
+    .kanban-mixin .card input { flex: 1; }
+    .kanban-mixin .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
+  </style>
+  <div data-smark='{"type":"list","sortable":true,"min_items":0,"movingDepth":1}' class="kanban-mixin">
     <div data-smark='{"role":"header"}'>
       <strong id="colLabel">Column</strong>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add task">➕</button>
@@ -141,12 +147,9 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 
 {% raw %} <!-- kanban_css {{{ --> {% endraw %}
 {% capture kanban_css -%}
-{{""}}#myForm$$ .kanban { display: flex; gap: 1em; }
-{{""}}#myForm$$ .column { flex: 1; min-width: 200px; border: 1px solid #ddd; border-radius: 6px; padding: 0.5em; }
-{{""}}#myForm$$ .column strong { display: block; margin-bottom: 0.4em; font-weight: 600; }
-{{""}}#myForm$$ .card { display: flex; gap: 0.3em; margin: 0.3em 0; padding: 0.4em; background: #f8f9fa; border-radius: 4px; }
-{{""}}#myForm$$ .card input { flex: 1; }
-{{""}}#myForm$$ .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
+{{""}}#myForm$$ .kanban { display: flex; gap: 1em; align-items: stretch; }
+{{""}}#myForm$$ .column { flex: 1; min-width: 200px; border: 1px solid #ddd; border-radius: 6px; padding: 0.5em; display: flex; flex-direction: column; }
+{{""}}#myForm$$ .column > [data-smark] { flex: 1; min-height: 0; }
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }

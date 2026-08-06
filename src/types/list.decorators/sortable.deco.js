@@ -134,14 +134,17 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             ? targetComp
                             : null
                         );
-                        // Insert before or after based on mouse vertical position
-                        const rect = target.getBoundingClientRect();
-                        _crossListDrop.position = (
-                            e.clientY < rect.top + rect.height / 2
-                            ? "before"
-                            : "after"
-                        );
-                        e.stopPropagation();
+                        // Insert before or after based on mouse vertical position.
+                        // When dropping on a non-item (to === null), always append.
+                        if (_crossListDrop.to) {
+                            const rect = target.getBoundingClientRect();
+                            _crossListDrop.position = (
+                                e.clientY < rect.top + rect.height / 2
+                                ? "before" : "after"
+                            );
+                        } else {
+                            _crossListDrop.position = "after";
+                        }
                         };
                     });
                     me.targetNode.addEventListener("dragend", async e => {
