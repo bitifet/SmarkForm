@@ -105,30 +105,30 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
 <div id="myForm$$">
   <div class="kanban">
     <div class="column">
-      <div data-smark='{"type":"#kanbanCol","name":"todo","sortable":true,"min_items":0,"movingDepth":1}'>
+      <div data-smark='{"type":"#kanbanCol","name":"todo"}'>
         <span data-for="colLabel">To Do</span>
       </div>
-      <button data-smark='{"action":"addItem","context":"todo","hotkey":"+"}' title="Add task">➕</button>
     </div>
     <div class="column">
-      <div data-smark='{"type":"#kanbanCol","name":"progress","sortable":true,"min_items":0,"movingDepth":1}'>
+      <div data-smark='{"type":"#kanbanCol","name":"progress"}'>
         <span data-for="colLabel">In Progress</span>
       </div>
-      <button data-smark='{"action":"addItem","context":"progress","hotkey":"+"}' title="Add task">➕</button>
     </div>
     <div class="column">
-      <div data-smark='{"type":"#kanbanCol","name":"done","sortable":true,"min_items":0,"movingDepth":1}'>
+      <div data-smark='{"type":"#kanbanCol","name":"done"}'>
         <span data-for="colLabel">Done</span>
       </div>
-      <button data-smark='{"action":"addItem","context":"done","hotkey":"+"}' title="Add task">➕</button>
     </div>
   </div>
   <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
 </div>
 
 <template id="kanbanCol">
-  <div>
-    <strong id="colLabel">Column</strong>
+  <div data-smark='{"type":"list","sortable":true,"min_items":0,"movingDepth":1}'>
+    <div data-smark='{"role":"header"}'>
+      <strong id="colLabel">Column</strong>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add task">➕</button>
+    </div>
     <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
     <div class="card">
       <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
