@@ -305,13 +305,11 @@ function _siblingDistance(a, b) {
 
     const aName = String(aPath[i].name ?? "");
     const bName = String(bPath[i].name ?? "");
-    // Allow cross-list drag when both lists share the same mixin source
-    // (identified by the data-sm-src attribute set by stampSourceIds).
-    // This enables Kanban-style boards where each column is a separate
-    // list expanded from the same mixin template.
-    const aSrc = a.targetNode?.dataset?.smSrc;
-    const bSrc = b.targetNode?.dataset?.smSrc;
-    if (aSrc && bSrc && aSrc === bSrc) return 0;
+    // Allow cross-list drag when both lists share the same mixin template
+    // (identified by data-sf-tpl set on the template root before cloning).
+    const aTpl = a.targetNode?.dataset?.sfTpl;
+    const bTpl = b.targetNode?.dataset?.sfTpl;
+    if (aTpl && bTpl && aTpl === bTpl) return 0;
     if (isNaN(Number(aName)) || isNaN(Number(bName))) return Infinity;
 
     return aPath.length - i;

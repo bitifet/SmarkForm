@@ -14,11 +14,12 @@ const sym_smart = Symbol("smart_component");
 // carry the same ID.  This is used by cross-list drag-and-drop to allow
 // dragging between lists that originated from the same template/mixin.
 let _nextSourceId = 1;
+export function nextSourceId() { return String(_nextSourceId++); }
 const _stampedDocs = new WeakSet();
 export function stampSourceIds(rootElement) {
     for (const el of rootElement.querySelectorAll('[data-smark]')) {
         if (!el.dataset.smSrc) {
-            el.dataset.smSrc = String(_nextSourceId++);
+            el.dataset.smSrc = nextSourceId();
         }
     }
 }

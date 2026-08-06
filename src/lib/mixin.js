@@ -5,7 +5,7 @@
 // normal SmarkForm enhancement begins.
 
 import {parseJSON} from "./helpers.js";
-import {stampSourceIds} from "./component.js";
+import {stampSourceIds, nextSourceId} from "./component.js";
 
 // Module-level caches (shared for the lifetime of the page):
 const docCache = new Map();           // absoluteUrl → Promise<Document>
@@ -369,7 +369,12 @@ export async function expandMixin(node, options, component) { //{{{
         );
     }
 
-    // Deep-clone the template root:
+    // Deep-clone the template root.
+    // Stamp with a unique template ID so clones from the same template
+    // share it — used by cross-list drag-and-drop.
+    if (! templateRoot.dataset.sfTpl) {
+        templateRoot.dataset.sfTpl = nextSourceId();
+    }
     const clone = templateRoot.cloneNode(true);
 
     // Collect snippet parameter nodes: direct children of the placeholder
