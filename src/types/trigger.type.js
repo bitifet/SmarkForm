@@ -83,8 +83,14 @@ export class trigger extends SmarkComponent {
             contextPath ? me.parent.find(contextPath)
             : parents.find(p=>(typeof p.actions[action] == "function"))
         );
+        // Multi-context: when a wildcard path matches more than one component.
+        const contexts = (
+            Array.isArray(context)
+                ? context.filter(c => c && typeof c.actions?.[action] === 'function')
+                : null
+        );
 
-        const target = (
+        const target = ( !contexts && (
             targetPath ? context?.find(targetPath) // Explicit target (context relative)
             : contextPath ? null // Explicit context path => don't mind component position
             : (
@@ -93,16 +99,26 @@ export class trigger extends SmarkComponent {
                     .find(p=>p.parent?.targetNode.isSameNode(context?.targetNode))
                 || null
             )
-        );
+        ));
 
-        return {
+        const opts = {
             action,
             origin: me,
-            context,
-            target,
             ...otherOptions,
         };
-
+        if (contexts) {
+            // Build per-context option blocks, resolving each context's target.
+            opts._triggerContexts = contexts.map(ctx => ({
+                ...opts,
+                context: ctx,
+                target: targetPath ? ctx.find(targetPath) : null,
+            }));
+            // Keep the first context for backward compatibility.
+            opts.context = contexts[0];
+            opts.target = opts._triggerContexts[0].target;
+            return opts;
+        }
+        return { ...opts, context, target };
     };//}}}
 };
 
@@ -111,6 +127,16 @@ export async function onTriggerClick(ev) {
     const triggerComponent = me.getComponent(ev.target);
     const options = triggerComponent.getTriggerArgs();
     if (! options) return; // Not a trigger.
+    const {_triggerContexts} = options;
+    if (_triggerContexts) {
+        for (const task of _triggerContexts) {
+            const {context, action} = task;
+            const mtd = context?.actions[action];
+            if (typeof mtd !== 'function') continue;
+            await mtd(task.data, task);
+        }
+        return;
+    }
     const {context, action, data} = options;
     const mtd = context?.actions[action]
     if (
