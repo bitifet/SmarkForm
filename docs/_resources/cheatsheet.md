@@ -177,6 +177,8 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `"..fieldname"` | Field in *parent* scope (no `/` after `..`) |
 | `".-1"` | Previous list item sibling |
 | `".+1"` | Next list item sibling |
+| `"*"` (in context) | All components implementing the action (multi-dispatch) |
+| `"*"` (in target) | All children of the context |
 | `"../sibling"` | Sibling of parent |
 | `"items/*"` | All children matching wildcard |
 
@@ -188,6 +190,7 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `import` + `target` | Export from target → import into context |
 | `removeItem` + `target:"*"` | Remove ALL items |
 | `removeItem` + `preserve_non_empty:true` | Remove only empty items |
+| `removeItem` + `confirmRemove:true` | Prompt before removing non-empty items |
 
 **Pitfall:** `target:"shipping"` looks for a child of context. Use `target:"../shipping"` for sibling.
 
