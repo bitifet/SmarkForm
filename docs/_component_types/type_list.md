@@ -798,6 +798,7 @@ Reverts the list to its default structure. The default is initially set by the `
   * **target:** Path★  (absolute or relative to its *context*) to the component to be removed. If not provided, the last item in the list will be used.
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **preserve_non_empty:** (boolean)
+  * **confirmRemove:** (= `true` / *string*)  Prompt `window.confirm()` before removing a non-empty item.  Set to `true` for a default message or provide a custom confirmation string.  Empty items are never confirmed.
   * **failback:** (= "none" / "clear" / "throw" )
 
 
