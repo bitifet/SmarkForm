@@ -144,10 +144,25 @@ and **Done**.  Hold `Ctrl` to discover hotkeys.
     <div class="card">
       <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
       <input data-smark type="text" name="title" placeholder="Task title...">
-      <button data-smark='{"action":"removeItem","hotkey":"-","confirmRemove":true}' title="Remove">➖</button>
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
     </div>
   </div>
 </template>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %} <!-- kanban_js {{{ --> {% endraw %}
+{% capture kanban_js -%}
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
+
+myForm.on("BeforeAction_removeItem", async (ev) => {
+  // Never confirm for bulk operations (target:*) or preserve_non_empty
+  if (
+    ev.target instanceof Array
+    || ev.preserve_non_empty
+  ) return;
+  if (await ev.target?.isEmpty()) return;
+  if (!window.confirm("Remove this task?")) ev.preventDefault();
+});
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- kanban_css {{{ --> {% endraw %}
@@ -182,6 +197,7 @@ button { position: relative; }
     formId="kanban"
     htmlSource=kanban_html
     cssSource=kanban_css
+    jsHead=kanban_js
     notes=kanban_notes
     selected="preview"
     showEditor=true

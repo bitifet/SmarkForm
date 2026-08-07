@@ -390,12 +390,6 @@ export class list extends SmarkField {
                         return;
                 };
             };
-            if (options.confirmRemove && ! await currentTarget.isEmpty()) {
-                const msg = typeof options.confirmRemove === 'string'
-                    ? options.confirmRemove
-                    : 'Remove this item?';
-                if (! window.confirm(msg)) continue;
-            }
             if (preserve_non_empty && ! await currentTarget.isEmpty()) continue;
             // Locate target child and rebuild children array without it:{{{
             let oldItem = null;
