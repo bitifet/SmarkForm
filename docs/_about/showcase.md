@@ -36,20 +36,29 @@ nav_order: 4
     margin: 1em 0;
   }
   .feature {
-    position: relative;
     break-inside: avoid;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.2em;
   }
   .feature-summary {
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+    font: inherit;
     font-weight: 600;
     cursor: pointer;
     padding: 0.2em 0;
-    border: none;
-    background: none;
-    font-size: inherit;
-    font-family: inherit;
     color: var(--link-color, #7253ed);
-    text-align: left;
+  }
+  .feature-summary::before {
+    content: "▸";
+    display: inline-block;
+    width: 1.2em;
+    font-size: 0.85em;
+  }
+  .feature.open .feature-summary::before {
+    content: "▾";
   }
   .feature-summary:hover {
     text-decoration: underline;
@@ -71,27 +80,8 @@ nav_order: 4
     line-height: 1.45;
   }
   .feature-desc p { margin: 0; }
-  .feature.open .feature-desc {
-    display: block;
-  }
+  .feature.open .feature-desc { display: block; }
 </style>
-
-<script>
-(function(){
-  document.querySelectorAll('.feature-index').forEach(function(grid){
-    grid.addEventListener('click', function(e){
-      var sum = e.target.closest('.feature-summary');
-      if (!sum) return;
-      var feat = sum.closest('.feature');
-      var wasOpen = feat.classList.contains('open');
-      grid.querySelectorAll('.feature.open').forEach(function(f){
-        f.classList.remove('open');
-      });
-      if (!wasOpen) feat.classList.add('open');
-    });
-  });
-})();
-</script>
 
 Welcome to the SmarkForm Showcase — a visual catalogue of what SmarkForm
 can do.  Each example is a fully working form; explore the tabs to see the
@@ -840,6 +830,34 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 </div>
 
 </div>
+
+<script>
+(function(){
+  document.querySelectorAll('.feature-index').forEach(function(grid){
+    grid.addEventListener('click', function(e){
+      var btn = e.target.closest('.feature-summary');
+      if (!btn) return;
+      var feat = btn.closest('.feature');
+      if (feat.classList.contains('open')) {
+        feat.classList.remove('open');
+      } else {
+        grid.querySelectorAll('.feature.open').forEach(function(f){
+          f.classList.remove('open');
+        });
+        feat.classList.add('open');
+      }
+    });
+  });
+  // Close popovers when clicking outside
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.feature')) {
+      document.querySelectorAll('.feature.open').forEach(function(f){
+        f.classList.remove('open');
+      });
+    }
+  });
+})();
+</script>
 
 ---
 
