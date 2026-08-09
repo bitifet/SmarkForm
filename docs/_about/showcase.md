@@ -49,19 +49,17 @@ nav_order: 4
     font-weight: 600;
     cursor: pointer;
     padding: 0.2em 0;
-    color: var(--link-color, #7253ed);
+    color: inherit;
   }
   .feature-summary::before {
     content: "▸";
     display: inline-block;
     width: 1.2em;
     font-size: 0.85em;
+    color: var(--link-color, #7253ed);
   }
   .feature.open .feature-summary::before {
     content: "▾";
-  }
-  .feature-summary:hover {
-    text-decoration: underline;
   }
   .feature-desc {
     display: none;
@@ -115,15 +113,15 @@ endcapture %}
 
 {% raw %} <!-- just_form_notes {{{ --> {% endraw %}
 {% capture just_form_notes -%}
-👉 Fields auto-register from `data-smark` attributes — no per-field JavaScript.
+👉 Fields auto-register from <code>data-smark</code> attributes — no per-field JavaScript.
 
-👉 **Null values.** Unlike native HTML, even `<input type='color'>` can be
-`null` via the ❌ Clear button or pressing `Delete` in the colour field.
+👉 **Null values.** Unlike native HTML, even <code><input type='color'></code> can be
+<code>null</code> via the ❌ Clear button or pressing <code>Delete</code> in the colour field.
 
-👉 **Triggers.** Buttons with `data-smark='{"action":"..."}'` invoke
-SmarkForm actions: `import`, `export`, `clear`, `addItem`, `removeItem`.
+👉 **Triggers.** Buttons with <code>data-smark='{"action":"..."}'</code> invoke
+SmarkForm actions: <code>import</code>, <code>export</code>, <code>clear</code>, <code>addItem</code>, <code>removeItem</code>.
 
-> See [Quick Start]({{ "/getting_started/quick_start" | relative_url }})
+> See <a href="{{ "/getting_started/quick_start" | relative_url }}">Quick Start</a>
 > to learn the basics, or check the **✏️ Edit** tab to see the full source.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -148,47 +146,47 @@ SmarkForm actions: `import`, `export`, `clear`, `addItem`, `removeItem`.
 
 ### Features demonstrated
 
-<div class="feature-index" markdown="1">
+<div class="feature-index">
 
 <div class="feature">
   <button class="feature-summary">Auto-registration</button>
-  <div class="feature-desc" markdown="1">
-  Fields are discovered automatically from HTML `data-smark` attributes — no
-  JavaScript wiring needed.  Any element with `data-smark` becomes a SmarkForm
-  field component whose name is taken from its `name` attribute.
+  <div class="feature-desc">
+  Fields are discovered automatically from HTML <code>data-smark</code> attributes — no
+  JavaScript wiring needed.  Any element with <code>data-smark</code> becomes a SmarkForm
+  field component whose name is taken from its <code>name</code> attribute.
 
-  See [Core Concepts]({{ "/getting_started/core_concepts" | relative_url }}).
+  See <a href="{{ "/getting_started/core_concepts" | relative_url }}">Core Concepts</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Null values</button>
-  <div class="feature-desc" markdown="1">
-  Empty inputs produce `null` in exported JSON.  The colour field (`type="color"`)
-  is a good example: clearing it exports `null` rather than an empty string.
+  <div class="feature-desc">
+  Empty inputs produce <code>null</code> in exported JSON.  The colour field (<code>type="color"</code>)
+  is a good example: clearing it exports <code>null</code> rather than an empty string.
 
-  See [Value Coercion]({{ "/working_with_forms/value_coercion" | relative_url }}).
+  See <a href="{{ "/working_with_forms/value_coercion" | relative_url }}">Value Coercion</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Trigger buttons</button>
-  <div class="feature-desc" markdown="1">
-  Buttons with `data-smark` attributes trigger `import`, `export`, and `clear`
+  <div class="feature-desc">
+  Buttons with <code>data-smark</code> attributes trigger <code>import</code>, <code>export</code>, and <code>clear</code>
   actions on the root form — no custom JavaScript required.
 
-  See [Triggers]({{ "/component_types/type_trigger" | relative_url }}),
-  [Data Import &amp; Export]({{ "/working_with_forms/data_import_and_export" | relative_url }}).
+  See <a href="{{ "/component_types/type_trigger" | relative_url }}">Triggers</a>,
+  <a href="{{ "/working_with_forms/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">JSON playground</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   The editor tab shows the form's current state as JSON.  Edit it and click
-  **_Import_** to see the form react — everything in sync without code.
+  <strong>Import</strong> to see the form react — everything in sync without code.
 
-  See [Playground]({{ "/working_with_forms/playground" | relative_url }}).
+  See <a href="{{ "/working_with_forms/playground" | relative_url }}">Playground</a>.
   </div>
 </div>
 
@@ -200,7 +198,7 @@ SmarkForm actions: `import`, `export`, `clear`, `addItem`, `removeItem`.
 
 A task management board with drag-and-drop columns, keyboard shortcuts,
 and entry / exit animations.  Drag tasks between **To Do**, **In Progress**,
-and **Done**.  Hold `Ctrl` to discover hotkeys.
+and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
 
 {% raw %} <!-- kanban_html {{{ --> {% endraw %}
 {% capture kanban_html -%}
@@ -281,14 +279,14 @@ button { position: relative; }
 
 {% raw %} <!-- kanban_notes {{{ --> {% endraw %}
 {% capture kanban_notes -%}
-👉 **Drag between columns.** All three lists have `sortable:true` — drag any task card to another column to move it.
+👉 **Drag between columns.** All three lists have <code>sortable:true</code> — drag any task card to another column to move it.
 
-👉 **Hotkeys.** Hold `Ctrl` to discover `+` (add task) and `-` (remove task) on each column. The same hotkeys adapt to the column you're working in (context sensitivity).
+👉 **Hotkeys.** Hold <code>Ctrl</code> to discover <code>+</code> (add task) and <code>-</code> (remove task) on each column. The same hotkeys adapt to the column you're working in (context sensitivity).
 
-👉 **Empty-list placeholders** show "No tasks" when a column is empty (`min_items:0`).
+👉 **Empty-list placeholders** show "No tasks" when a column is empty (<code>min_items:0</code>).
 
-> See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}),
-> [Keyboard Navigation]({{ "/working_with_forms/keyboard_navigation" | relative_url }}).
+> See <a href="{{ "/working_with_forms/hotkeys" | relative_url }}">Hotkeys</a>,
+> <a href="{{ "/working_with_forms/keyboard_navigation" | relative_url }}">Keyboard Navigation</a>.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
@@ -308,27 +306,27 @@ button { position: relative; }
 
 ### Features demonstrated
 
-<div class="feature-index" markdown="1">
+<div class="feature-index">
 
 <div class="feature">
   <button class="feature-summary">Mixin templates</button>
-  <div class="feature-desc" markdown="1">
-  The column layout is defined once in a `<template id="kanbanCol">` and
-  reused three times via `type:"#kanbanCol"`.  Each instance gets its own
-  identity (`name`), data, and options — identical structure, separate state.
+  <div class="feature-desc">
+  The column layout is defined once in a <code><template id="kanbanCol"></code> and
+  reused three times via <code>type:"#kanbanCol"</code>.  Each instance gets its own
+  identity (<code>name</code>), data, and options — identical structure, separate state.
 
-  `data-for` snippet slots inject per-instance content (the column headings)
+  <code>data-for</code> snippet slots inject per-instance content (the column headings)
   into the template.
 
-  See [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
+  See <a href="{{ "/advanced_concepts/mixin_types" | relative_url }}">Mixin Types</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Cross-list drag-and-drop</button>
-  <div class="feature-desc" markdown="1">
-  Task cards can be dragged between columns.  Each list has `sortable:true`
-  and `movingDepth:1` — SmarkForm recognises that all three columns share
+  <div class="feature-desc">
+  Task cards can be dragged between columns.  Each list has <code>sortable:true</code>
+  and <code>movingDepth:1</code> — SmarkForm recognises that all three columns share
   the same mixin template and allows unrestricted movement between them.
 
   See [List Type — sortable]({{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour).
@@ -337,9 +335,9 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Multi-component triggers (<code>context:"*"</code>)</button>
-  <div class="feature-desc" markdown="1">
-  The <strong>🧹</strong> button at the bottom uses `context:"*"` to dispatch
-  `removeItem` with `preserve_non_empty:true` to <em>all</em> list components
+  <div class="feature-desc">
+  The <strong>🧹</strong> button at the bottom uses <code>context:"*"</code> to dispatch
+  <code>removeItem</code> with <code>preserve_non_empty:true</code> to <em>all</em> list components
   in the form at once — clearing empty tasks from every column with a single
   click.
 
@@ -349,11 +347,11 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Event-driven confirmation</button>
-  <div class="feature-desc" markdown="1">
-  A `BeforeAction_removeItem` listener on the root form checks whether the
-  task is empty.  If it has content, `window.confirm()` is shown; if the user
-  cancels, `ev.preventDefault()` stops the removal.  Bulk operations
-  (`target:"*"` / `preserve_non_empty`) skip the prompt.
+  <div class="feature-desc">
+  A <code>BeforeAction_removeItem</code> listener on the root form checks whether the
+  task is empty.  If it has content, <code>window.confirm()</code> is shown; if the user
+  cancels, <code>ev.preventDefault()</code> stops the removal.  Bulk operations
+  (<code>target:"*"</code> / <code>preserve_non_empty</code>) skip the prompt.
 
   See [Events — BeforeAction]({{ "/advanced_concepts/events" | relative_url }}#beforeaction-events).
   </div>
@@ -361,19 +359,19 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Context-scoped hotkeys</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   Hold <kbd>Ctrl</kbd> to reveal <kbd>+</kbd> and <kbd>-</kbd> shortcuts.  The
   same hotkey triggers different Add/Remove buttons depending on which column
   you are focused in — context sensitivity built in.
 
-  See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}).
+  See <a href="{{ "/working_with_forms/hotkeys" | relative_url }}">Hotkeys</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Empty-list placeholders</button>
-  <div class="feature-desc" markdown="1">
-  Each column has `min_items:0` and a `role:"empty_list"` template slot.
+  <div class="feature-desc">
+  Each column has <code>min_items:0</code> and a <code>role:"empty_list"</code> template slot.
   When a column has no tasks the placeholder message is shown; it disappears
   as soon as the first task is added.
 
@@ -383,8 +381,8 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Header template role</button>
-  <div class="feature-desc" markdown="1">
-  The column heading and Add button live inside a `role:"header"` slot —
+  <div class="feature-desc">
+  The column heading and Add button live inside a <code>role:"header"</code> slot —
   rendered once at the top of each list component, not repeated per item.
 
   See [List Type — Template roles]({{ "/component_types/type_list" | relative_url }}#template-roles).
@@ -393,33 +391,33 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Sortable handles</button>
-  <div class="feature-desc" markdown="1">
-  The <strong>☰</strong> icon uses `type:"label"` — a lightweight component
+  <div class="feature-desc">
+  The <strong>☰</strong> icon uses <code>type:"label"</code> — a lightweight component
   that can act as a drag handle without being a data field.
 
-  See [Label Type]({{ "/component_types/type_label" | relative_url }}).
+  See <a href="{{ "/component_types/type_label" | relative_url }}">Label Type</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Scoped mixin CSS</button>
-  <div class="feature-desc" markdown="1">
-  The mixin template includes its own `<style>` block.  Styles are scoped with
-  a `.kanban-mixin` class on the template root so they only affect the mixin's
+  <div class="feature-desc">
+  The mixin template includes its own <code><style></code> block.  Styles are scoped with
+  a <code>.kanban-mixin</code> class on the template root so they only affect the mixin's
   content — demonstrating encapsulated component styling.
 
-  See [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
+  See <a href="{{ "/advanced_concepts/mixin_types" | relative_url }}">Mixin Types</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Flexible drop target</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   CSS flex layout makes each column's list root fill the available height,
   so dropping a task anywhere in the empty area below the last card works
   as an "append" — no need to precisely target the last item.
 
-  See [List Type]({{ "/component_types/type_list" | relative_url }}).
+  See <a href="{{ "/component_types/type_list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
@@ -529,21 +527,21 @@ button { position: relative; }
 
 {% raw %} <!-- race_notes {{{ --> {% endraw %}
 {% capture race_notes -%}
-👉 **List + form nesting.** Each family member is a nested form inside a list — JSON exports as `{"members":[{...},...]}`.
+👉 **List + form nesting.** Each family member is a nested form inside a list — JSON exports as <code>{"members":[{...},...]}</code>.
 
-👉 **✨ Duplicate.** The **_Duplicate_** button uses `source:".-1"` to copy the previous member's data, then you edit only what differs.
+👉 **✨ Duplicate.** The <em><strong>Duplicate</strong></em> button uses <code>source:".-1"</code> to copy the previous member's data, then you edit only what differs.
 
-👉 **Collapsible sections.** Emergency contact is in a `<details>` element, collapsed by default. `Alt`+`Enter` opens it and navigates into hidden fields.
+👉 **Collapsible sections.** Emergency contact is in a <code><details></code> element, collapsed by default. <code>Alt</code>+<code>Enter</code> opens it and navigates into hidden fields.
 
-👉 **Auto-numbered bibs.** `{"action":"position"}` numbers each member.
+👉 **Auto-numbered bibs.** <code>{"action":"position"}</code> numbers each member.
 
-👉 **Type coercion.** Age exports as a number; dates export as ISO strings; empty fields export `null`.
+👉 **Type coercion.** Age exports as a number; dates export as ISO strings; empty fields export <code>null</code>.
 
-👉 **Hotkeys.** Hold `Ctrl` — `+` adds a member, `-` removes, `*` duplicates, `Delete` clears empty slots.
+👉 **Hotkeys.** Hold <code>Ctrl</code> — <code>+</code> adds a member, <code>-</code> removes, <code>*</code> duplicates, <code>Delete</code> clears empty slots.
 
-> See [Form Nesting]({{ "/component_types/type_form" | relative_url }}),
-> [List Types]({{ "/component_types/type_list" | relative_url }}),
-> [Value Coercion]({{ "/working_with_forms/value_coercion" | relative_url }}).
+> See <a href="{{ "/component_types/type_form" | relative_url }}">Form Nesting</a>,
+> <a href="{{ "/component_types/type_list" | relative_url }}">List Types</a>,
+> <a href="{{ "/working_with_forms/value_coercion" | relative_url }}">Value Coercion</a>.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
@@ -562,25 +560,25 @@ button { position: relative; }
 
 ### Features demonstrated
 
-<div class="feature-index" markdown="1">
+<div class="feature-index">
 
 <div class="feature">
   <button class="feature-summary">List + nested form</button>
-  <div class="feature-desc" markdown="1">
-  Each family member is a nested form (`type:"form"`) inside a list item.
-  The JSON export produces `{"members": [{name:..., age:...}, ...]}` — the
+  <div class="feature-desc">
+  Each family member is a nested form (<code>type:"form"</code>) inside a list item.
+  The JSON export produces <code>{"members": [{name:..., age:...}, ...]}</code> — the
   list becomes a JSON array, each form becomes a nested object.
 
-  See [Form Type]({{ "/component_types/type_form" | relative_url }}),
-  [List Type]({{ "/component_types/type_list" | relative_url }}).
+  See <a href="{{ "/component_types/type_form" | relative_url }}">Form Type</a>,
+  <a href="{{ "/component_types/type_list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Item duplication (<code>source:".-1"</code>)</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   The ✨ <strong>Duplicate</strong> button copies the previous sibling's data
-  into a new member.  `source:".-1"` on `addItem` tells SmarkForm to export
+  into a new member.  <code>source:".-1"</code> on <code>addItem</code> tells SmarkForm to export
   the previous item and import it into the new one — edit only what differs.
 
   See [List Type — source]({{ "/component_types/type_list" | relative_url }}#async-additem-action),
@@ -590,30 +588,30 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Collapsible sections</button>
-  <div class="feature-desc" markdown="1">
-  Emergency Contact details live inside a native `<details>` / `<summary>`
+  <div class="feature-desc">
+  Emergency Contact details live inside a native <code><details></code> / <code><summary></code>
   element.  Press <kbd>Alt</kbd>+<kbd>Enter</kbd> to open a collapsed section
   and navigate into its hidden fields.
 
-  See [Keyboard Navigation]({{ "/working_with_forms/keyboard_navigation" | relative_url }}).
+  See <a href="{{ "/working_with_forms/keyboard_navigation" | relative_url }}">Keyboard Navigation</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Value coercion</button>
-  <div class="feature-desc" markdown="1">
-  The <strong>Age</strong> field (`type:"number"`) exports as a JavaScript
-  number, not a string.  Empty fields export `null`.  SmarkForm's coercion
+  <div class="feature-desc">
+  The <strong>Age</strong> field (<code>type:"number"</code>) exports as a JavaScript
+  number, not a string.  Empty fields export <code>null</code>.  SmarkForm's coercion
   layer ensures JSON round-trips with the correct types.
 
-  See [Value Coercion]({{ "/working_with_forms/value_coercion" | relative_url }}).
+  See <a href="{{ "/working_with_forms/value_coercion" | relative_url }}">Value Coercion</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary"><code>position</code> action</button>
-  <div class="feature-desc" markdown="1">
-  The <strong>#N</strong> badge uses `action:"position"` — automatically
+  <div class="feature-desc">
+  The <strong>#N</strong> badge uses <code>action:"position"</code> — automatically
   numbers each member in the list with no extra code.
 
   See [List Type — position]({{ "/component_types/type_list" | relative_url }}#position-action).
@@ -622,9 +620,9 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary">Bulk clean‑up (<code>preserve_non_empty</code> + <code>target:"*"</code>)</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   The <strong>🧹</strong> button removes every empty member at once.
-  `preserve_non_empty:true` skips members that have data; `target:"*"`
+  <code>preserve_non_empty:true</code> skips members that have data; <code>target:"*"</code>
   matches all children of the context list.
 
   See [List Type — removeItem]({{ "/component_types/type_list" | relative_url }}#async-removeitem-action).
@@ -633,21 +631,21 @@ button { position: relative; }
 
 <div class="feature">
   <button class="feature-summary"><code>min_items</code> / <code>exportEmpties</code></button>
-  <div class="feature-desc" markdown="1">
-  `min_items:1` ensures at least one member always exists.  `exportEmpties:false`
+  <div class="feature-desc">
+  <code>min_items:1</code> ensures at least one member always exists.  <code>exportEmpties:false</code>
   skips empty members from the JSON output — only members with data appear.
 
-  See [List Type]({{ "/component_types/type_list" | relative_url }}).
+  See <a href="{{ "/component_types/type_list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Mixed input types</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   The form demonstrates text, number, radio, select, color, and tel inputs —
   all auto-registered as SmarkForm fields with their own coercion rules.
 
-  See [Core Component Types]({{ "/getting_started/core_component_types" | relative_url }}).
+  See <a href="{{ "/getting_started/core_component_types" | relative_url }}">Core Component Types</a>.
   </div>
 </div>
 
@@ -731,16 +729,16 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %} <!-- configurator_notes {{{ --> {% endraw %}
 {% capture configurator_notes -%}
-👉 **Mixin templates.** `#carModel` is defined once via `<template>` and reused for every car entry. Each instance gets its own identity, data, and options.
+👉 **Mixin templates.** <code>#carModel</code> is defined once via <code><template></code> and reused for every car entry. Each instance gets its own identity, data, and options.
 
-👉 **Field masking.** The price field uses [Inputmask](https://github.com/RobinHerbots/Inputmask) (loaded via CDN) — `SmarkForm.registerMask()` wraps Inputmask's API into SmarkForm's `unmaskedValue` contract.  Type digits to see automatic space grouping and 2-decimal formatting.
+👉 **Field masking.** The price field uses [Inputmask](https://github.com/RobinHerbots/Inputmask) (loaded via CDN) — <code>SmarkForm.registerMask()</code> wraps Inputmask's API into SmarkForm's <code>unmaskedValue</code> contract.  Type digits to see automatic space grouping and 2-decimal formatting.
 
-👉 **Sortable list.** Drag car models to reorder them.  `exportEmpties:false` skips empty entries.
+👉 **Sortable list.** Drag car models to reorder them.  <code>exportEmpties:false</code> skips empty entries.
 
-👉 **Hotkeys.** `Ctrl`+`+` adds a model, `Ctrl`+`-` removes.
+👉 **Hotkeys.** <code>Ctrl</code>+<code>+</code> adds a model, <code>Ctrl</code>+<code>-</code> removes.
 
-> See [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}),
-> [Field Masking]({{ "/working_with_forms/field_masking" | relative_url }}).
+> See <a href="{{ "/advanced_concepts/mixin_types" | relative_url }}">Mixin Types</a>,
+> <a href="{{ "/working_with_forms/field_masking" | relative_url }}">Field Masking</a>.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
@@ -762,36 +760,36 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 ### Features demonstrated
 
-<div class="feature-index" markdown="1">
+<div class="feature-index">
 
 <div class="feature">
   <button class="feature-summary">Mixin template with scoped CSS</button>
-  <div class="feature-desc" markdown="1">
-  The car model card is defined in a `<template id="carModel">` with its own
-  `<style>` block.  The `.car-card` class scopes styles to the mixin's content
+  <div class="feature-desc">
+  The car model card is defined in a <code><template id="carModel"></code> with its own
+  <code><style></code> block.  The <code>.car-card</code> class scopes styles to the mixin's content
   so they don't leak to other parts of the page.
 
-  See [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
+  See <a href="{{ "/advanced_concepts/mixin_types" | relative_url }}">Mixin Types</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Field masking (<code>registerMask</code> + CDN)</button>
-  <div class="feature-desc" markdown="1">
+  <div class="feature-desc">
   The price field uses [Inputmask](https://github.com/RobinHerbots/Inputmask)
-  loaded from a CDN.  `SmarkForm.registerMask("price", …)` wraps Inputmask in
-  SmarkForm's mask factory API.  Typing `34900` produces `3 4900.00` on screen.
+  loaded from a CDN.  <code>SmarkForm.registerMask("price", …)</code> wraps Inputmask in
+  SmarkForm's mask factory API.  Typing <code>34900</code> produces <code>3 4900.00</code> on screen.
 
-  See [Field Masking]({{ "/working_with_forms/field_masking" | relative_url }}).
+  See <a href="{{ "/working_with_forms/field_masking" | relative_url }}">Field Masking</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary"><code>unmaskedValue</code> for clean export</button>
-  <div class="feature-desc" markdown="1">
-  The mask factory returns an `unmaskedValue` getter/setter.  When SmarkForm
-  exports the form, it reads `unmaskedValue` — the price `"3 4900.00"` becomes
-  `34900.00` in JSON, ready for server processing.
+  <div class="feature-desc">
+  The mask factory returns an <code>unmaskedValue</code> getter/setter.  When SmarkForm
+  exports the form, it reads <code>unmaskedValue</code> — the price <code>"3 4900.00"</code> becomes
+  <code>34900.00</code> in JSON, ready for server processing.
 
   See [Field Masking — unmaskedValue]({{ "/working_with_forms/field_masking" | relative_url }}#using-external-masking-libraries).
   </div>
@@ -799,9 +797,9 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 <div class="feature">
   <button class="feature-summary">Sortable list</button>
-  <div class="feature-desc" markdown="1">
-  Car models can be reordered by dragging.  `sortable:true` on the list
-  enables drag-and-drop within the list; combined with `position` action
+  <div class="feature-desc">
+  Car models can be reordered by dragging.  <code>sortable:true</code> on the list
+  enables drag-and-drop within the list; combined with <code>position</code> action
   for automatic numbering.
 
   See [List Type — sortable]({{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour).
@@ -810,54 +808,28 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 <div class="feature">
   <button class="feature-summary">Mobile‑friendly input hints</button>
-  <div class="feature-desc" markdown="1">
-  The price field sets `inputMode:"decimal"` via the mask factory — mobile
+  <div class="feature-desc">
+  The price field sets <code>inputMode:"decimal"</code> via the mask factory — mobile
   devices show a numeric keypad instead of the full keyboard.
 
-  See [Input Type]({{ "/component_types/type_input" | relative_url }}).
+  See <a href="{{ "/component_types/type_input" | relative_url }}">Input Type</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Bulk clean‑up + <code>exportEmpties</code></button>
-  <div class="feature-desc" markdown="1">
-  The <strong>🧹</strong> button with `preserve_non_empty:true` and
-  `target:"*"` removes all empty car models at once.  `exportEmpties:false`
+  <div class="feature-desc">
+  The <strong>🧹</strong> button with <code>preserve_non_empty:true</code> and
+  <code>target:"*"</code> removes all empty car models at once.  <code>exportEmpties:false</code>
   on the list skips empty entries when exporting the form.
 
-  See [List Type]({{ "/component_types/type_list" | relative_url }}).
+  See <a href="{{ "/component_types/type_list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 </div>
 
-<script>
-(function(){
-  document.querySelectorAll('.feature-index').forEach(function(grid){
-    grid.addEventListener('click', function(e){
-      var btn = e.target.closest('.feature-summary');
-      if (!btn) return;
-      var feat = btn.closest('.feature');
-      if (feat.classList.contains('open')) {
-        feat.classList.remove('open');
-      } else {
-        grid.querySelectorAll('.feature.open').forEach(function(f){
-          f.classList.remove('open');
-        });
-        feat.classList.add('open');
-      }
-    });
-  });
-  // Close popovers when clicking outside
-  document.addEventListener('click', function(e){
-    if (!e.target.closest('.feature')) {
-      document.querySelectorAll('.feature.open').forEach(function(f){
-        f.classList.remove('open');
-      });
-    }
-  });
-})();
-</script>
+<script src="{{ "/assets/js/showcase-features.js" | relative_url }}"></script>
 
 ---
 
