@@ -119,7 +119,7 @@ endcapture %}
 {% capture just_form_notes -%}
 👉 Fields auto-register from <code>data-smark</code> attributes — no per-field JavaScript.
 
-👉 **Null values.** Unlike native HTML, even <code><input type='color'></code> can be
+👉 **Null values.** Unlike native HTML, even <code>&lt;input type='color'&gt;</code> can be
 <code>null</code> via the ❌ Clear button or pressing <code>Delete</code> in the colour field.
 
 👉 **Triggers.** Buttons with <code>data-smark='{"action":"..."}'</code> invoke
@@ -315,7 +315,7 @@ button { position: relative; }
 <div class="feature">
   <button class="feature-summary">Mixin templates</button>
   <div class="feature-desc">
-  The column layout is defined once in a <code><template id="kanbanCol"></code> and
+  The column layout is defined once in a <code>&lt;template id="kanbanCol"&gt;</code> and
   reused three times via <code>type:"#kanbanCol"</code>.  Each instance gets its own
   identity (<code>name</code>), data, and options — identical structure, separate state.
 
@@ -406,7 +406,7 @@ button { position: relative; }
 <div class="feature">
   <button class="feature-summary">Scoped mixin CSS</button>
   <div class="feature-desc">
-  The mixin template includes its own <code><style></code> block.  Styles are scoped with
+  The mixin template includes its own <code>&lt;style&gt;</code> block.  Styles are scoped with
   a <code>.kanban-mixin</code> class on the template root so they only affect the mixin's
   content — demonstrating encapsulated component styling.
 
@@ -535,7 +535,7 @@ button { position: relative; }
 
 👉 **✨ Duplicate.** The <em><strong>Duplicate</strong></em> button uses <code>source:".-1"</code> to copy the previous member's data, then you edit only what differs.
 
-👉 **Collapsible sections.** Emergency contact is in a <code><details></code> element, collapsed by default. <code>Alt</code>+<code>Enter</code> opens it and navigates into hidden fields.
+👉 **Collapsible sections.** Emergency contact is in a <code>&lt;details&gt;</code> element, collapsed by default. <code>Alt</code>+<code>Enter</code> opens it and navigates into hidden fields.
 
 👉 **Auto-numbered bibs.** <code>{"action":"position"}</code> numbers each member.
 
@@ -593,7 +593,7 @@ button { position: relative; }
 <div class="feature">
   <button class="feature-summary">Collapsible sections</button>
   <div class="feature-desc">
-  Emergency Contact details live inside a native <code><details></code> / <code><summary></code>
+  Emergency Contact details live inside a native <code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code>
   element.  Press <kbd>Alt</kbd>+<kbd>Enter</kbd> to open a collapsed section
   and navigate into its hidden fields.
 
@@ -733,7 +733,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %} <!-- configurator_notes {{{ --> {% endraw %}
 {% capture configurator_notes -%}
-👉 **Mixin templates.** <code>#carModel</code> is defined once via <code><template></code> and reused for every car entry. Each instance gets its own identity, data, and options.
+👉 **Mixin templates.** <code>#carModel</code> is defined once via <code>&lt;template&gt;</code> and reused for every car entry. Each instance gets its own identity, data, and options.
 
 👉 **Field masking.** The price field uses [Inputmask](https://github.com/RobinHerbots/Inputmask) (loaded via CDN) — <code>SmarkForm.registerMask()</code> wraps Inputmask's API into SmarkForm's <code>unmaskedValue</code> contract.  Type digits to see automatic space grouping and 2-decimal formatting.
 
@@ -769,8 +769,8 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 <div class="feature">
   <button class="feature-summary">Mixin template with scoped CSS</button>
   <div class="feature-desc">
-  The car model card is defined in a <code><template id="carModel"></code> with its own
-  <code><style></code> block.  The <code>.car-card</code> class scopes styles to the mixin's content
+  The car model card is defined in a <code>&lt;template id="carModel"&gt;</code> with its own
+  <code>&lt;style&gt;</code> block.  The <code>.car-card</code> class scopes styles to the mixin's content
   so they don't leak to other parts of the page.
 
   See <a href="{{ "/advanced_concepts/mixin_types" | relative_url }}">Mixin Types</a>.
