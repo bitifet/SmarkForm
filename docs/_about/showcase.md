@@ -20,9 +20,13 @@ nav_order: 4
 <!-- vim-markdown-toc GitLab -->
 
 * [Just a Form](#just-a-form)
+    * [Features demonstrated](#features-demonstrated)
 * [Project Kanban Board](#project-kanban-board)
+    * [Features demonstrated](#features-demonstrated-1)
 * [Race Registration System](#race-registration-system)
+    * [Features demonstrated](#features-demonstrated-2)
 * [Product Configurator](#product-configurator)
+    * [Features demonstrated](#features-demonstrated-3)
 
 <!-- vim-markdown-toc -->
        " | markdownify }}
@@ -329,7 +333,7 @@ button { position: relative; }
   and <code>movingDepth:1</code> — SmarkForm recognises that all three columns share
   the same mixin template and allows unrestricted movement between them.
 
-  See [List Type — sortable]({{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour">List Type — sortable</a>.
   </div>
 </div>
 
@@ -341,7 +345,7 @@ button { position: relative; }
   in the form at once — clearing empty tasks from every column with a single
   click.
 
-  See [Form Traversing — Wildcard Context]({{ "/working_with_forms/form_traversing" | relative_url }}#wildcard-context-multi-dispatch).
+  See <a href="{{ "/working_with_forms/form_traversing" | relative_url }}#wildcard-context-multi-dispatch">Form Traversing — Wildcard Context</a>.
   </div>
 </div>
 
@@ -353,7 +357,7 @@ button { position: relative; }
   cancels, <code>ev.preventDefault()</code> stops the removal.  Bulk operations
   (<code>target:"*"</code> / <code>preserve_non_empty</code>) skip the prompt.
 
-  See [Events — BeforeAction]({{ "/advanced_concepts/events" | relative_url }}#beforeaction-events).
+  See <a href="{{ "/advanced_concepts/events" | relative_url }}#beforeaction-events">Events — BeforeAction</a>.
   </div>
 </div>
 
@@ -375,7 +379,7 @@ button { position: relative; }
   When a column has no tasks the placeholder message is shown; it disappears
   as soon as the first task is added.
 
-  See [List Type — Template roles]({{ "/component_types/type_list" | relative_url }}#template-roles).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#template-roles">List Type — Template roles</a>.
   </div>
 </div>
 
@@ -385,7 +389,7 @@ button { position: relative; }
   The column heading and Add button live inside a <code>role:"header"</code> slot —
   rendered once at the top of each list component, not repeated per item.
 
-  See [List Type — Template roles]({{ "/component_types/type_list" | relative_url }}#template-roles).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#template-roles">List Type — Template roles</a>.
   </div>
 </div>
 
@@ -581,8 +585,8 @@ button { position: relative; }
   into a new member.  <code>source:".-1"</code> on <code>addItem</code> tells SmarkForm to export
   the previous item and import it into the new one — edit only what differs.
 
-  See [List Type — source]({{ "/component_types/type_list" | relative_url }}#async-additem-action),
-  [Form Traversing — Path syntax]({{ "/working_with_forms/form_traversing" | relative_url }}#path-syntax-overview).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#async-additem-action">List Type — source</a>,
+  <a href="{{ "/working_with_forms/form_traversing" | relative_url }}#path-syntax-overview">Form Traversing — Path syntax</a>.
   </div>
 </div>
 
@@ -614,7 +618,7 @@ button { position: relative; }
   The <strong>#N</strong> badge uses <code>action:"position"</code> — automatically
   numbers each member in the list with no extra code.
 
-  See [List Type — position]({{ "/component_types/type_list" | relative_url }}#position-action).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#position-action">List Type — position</a>.
   </div>
 </div>
 
@@ -625,7 +629,7 @@ button { position: relative; }
   <code>preserve_non_empty:true</code> skips members that have data; <code>target:"*"</code>
   matches all children of the context list.
 
-  See [List Type — removeItem]({{ "/component_types/type_list" | relative_url }}#async-removeitem-action).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#async-removeitem-action">List Type — removeItem</a>.
   </div>
 </div>
 
@@ -791,7 +795,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
   exports the form, it reads <code>unmaskedValue</code> — the price <code>"3 4900.00"</code> becomes
   <code>34900.00</code> in JSON, ready for server processing.
 
-  See [Field Masking — unmaskedValue]({{ "/working_with_forms/field_masking" | relative_url }}#using-external-masking-libraries).
+  See <a href="{{ "/working_with_forms/field_masking" | relative_url }}#using-external-masking-libraries">Field Masking — unmaskedValue</a>.
   </div>
 </div>
 
@@ -802,7 +806,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
   enables drag-and-drop within the list; combined with <code>position</code> action
   for automatic numbering.
 
-  See [List Type — sortable]({{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour).
+  See <a href="{{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour">List Type — sortable</a>.
   </div>
 </div>
 
