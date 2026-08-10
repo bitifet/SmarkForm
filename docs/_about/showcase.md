@@ -40,6 +40,7 @@ nav_order: 4
     margin: 1em 0;
   }
   .feature {
+    position: relative;
     break-inside: avoid;
     margin-bottom: 0.2em;
   }
@@ -64,6 +65,19 @@ nav_order: 4
   }
   .feature.open .feature-summary::before {
     content: "▾";
+  }
+  @media (pointer: coarse) {
+    .feature-summary::before {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.55em;
+      height: 1.55em;
+      font-size: 0.85em;
+      border-radius: 50%;
+      background: rgba(114, 83, 237, 0.1);
+      margin-right: 0.25em;
+    }
   }
   .feature-desc {
     display: none;
@@ -110,6 +124,7 @@ initialization.  Try editing values in the preview or exporting to JSON.
   <p>
     <label data-smark>Favourite colour:</label>
     <input name='colour' type='color' data-smark>
+    <button data-smark='{"action":"clear","target":"colour"}'>❌</button>
   </p>
 </div>{%
 endcapture %}
@@ -120,10 +135,10 @@ endcapture %}
 👉 Fields auto-register from <code>data-smark</code> attributes — no per-field JavaScript.
 
 👉 **Null values.** Unlike native HTML, even <code>&lt;input type='color'&gt;</code> can be
-<code>null</code> via the ❌ Clear button or pressing <code>Delete</code> in the colour field.
+<code>null</code> when no colour is selected — the ❌ button next to it clears the value.
 
-👉 **Triggers.** Buttons with <code>data-smark='{"action":"..."}'</code> invoke
-SmarkForm actions: <code>import</code>, <code>export</code>, <code>clear</code>, <code>addItem</code>, <code>removeItem</code>.
+👉 **Triggers.** The ❌ button uses <code>data-smark='{"action":"clear","target":"colour"}'</code>
+to target the colour field specifically.
 
 > See <a href="{{ "/getting_started/quick_start" | relative_url }}">Quick Start</a>
 > to learn the basics, or check the **✏️ Edit** tab to see the full source.
@@ -131,11 +146,7 @@ SmarkForm actions: <code>import</code>, <code>export</code>, <code>clear</code>,
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
-{
-    "name": "Maria",
-    "surname": "Garc\u00eda",
-    "colour": "#c0ffee"
-}
+{}
 {%- endcapture %}
 
 {% include components/sampletabs_tpl.md
@@ -144,7 +155,6 @@ SmarkForm actions: <code>import</code>, <code>export</code>, <code>clear</code>,
     notes=just_form_notes
     selected="preview"
     showEditor=true
-    demoValue=demoValue
     tests=false
 %}
 
@@ -167,7 +177,7 @@ SmarkForm actions: <code>import</code>, <code>export</code>, <code>clear</code>,
   <button class="feature-summary">Null values</button>
   <div class="feature-desc">
   Empty inputs produce <code>null</code> in exported JSON.  The colour field (<code>type="color"</code>)
-  is a good example: clearing it exports <code>null</code> rather than an empty string.
+  is a good example: when no colour is selected, it exports <code>null</code> rather than an empty string.
 
   See <a href="{{ "/working_with_forms/value_coercion" | relative_url }}">Value Coercion</a>.
   </div>
@@ -176,8 +186,9 @@ SmarkForm actions: <code>import</code>, <code>export</code>, <code>clear</code>,
 <div class="feature">
   <button class="feature-summary">Trigger buttons</button>
   <div class="feature-desc">
-  Buttons with <code>data-smark</code> attributes trigger <code>import</code>, <code>export</code>, and <code>clear</code>
-  actions on the root form — no custom JavaScript required.
+  Buttons with <code>data-smark</code> attributes trigger SmarkForm actions —
+  the ❌ button next to the colour field demonstrates the <code>clear</code> action targeted
+  at a specific field, with no custom JavaScript required.
 
   See <a href="{{ "/component_types/type_trigger" | relative_url }}">Triggers</a>,
   <a href="{{ "/working_with_forms/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
