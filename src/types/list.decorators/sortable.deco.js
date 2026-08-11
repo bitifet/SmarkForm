@@ -38,6 +38,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                     let dragSource = null;
                     let dragDest = null;
+                    let _sameListPosition = "after";
 
                     let lastMousedownTarget = null;
                     me.targetNode.addEventListener("mousedown", e => {
@@ -95,26 +96,55 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                                 target.parentElement
                                 && target.parentElement != dragSource.parentElement
                             ) target = target.parentElement;
-                            dragDest = target;
+                            const targetComp = me.getComponent(target);
+                            // Fall back to the source item if drop target is not a
+                            // regular list item (e.g. header/footer/container).
+                            const fallback = (
+                                targetComp && !isNaN(Number(targetComp.name ?? ""))
+                                ? target
+                                : dragSource
+                            );
+                            const rect = fallback.getBoundingClientRect();
+                            dragDest = fallback;
+                            _sameListPosition = (
+                                e.clientY < rect.top + rect.height / 2
+                                ? "before" : "after"
+                            );
                             e.stopPropagation();
                         } else if (
                             _crossListDrop.sourceList
                             && _crossListDrop.sourceList !== me
                         ) {
-                            let target = e.target;
-                            while (
-                                target.parentElement
-                                && target.parentElement !== me.targetNode
-                            ) target = target.parentElement;
-                            const targetComp = (
-                                target !== me.targetNode
-                                ? me.getComponent(target)
-                                : null
+                        let target = e.target;
+                        while (
+                            target.parentElement
+                            && target.parentElement !== me.targetNode
+                        ) target = target.parentElement;
+                        const targetComp = (
+                            target !== me.targetNode
+                            ? me.getComponent(target)
+                            : null
+                        );
+                        // If the target is not a regular list item (e.g. header,
+                        // footer, or the list container itself), insert at the end.
+                        const targetName = String(targetComp?.name ?? "");
+                        _crossListDrop.targetList = me;
+                        _crossListDrop.to = (
+                            targetComp && !isNaN(Number(targetName))
+                            ? targetComp
+                            : null
+                        );
+                        // Insert before or after based on mouse vertical position.
+                        // When dropping on a non-item (to === null), always append.
+                        if (_crossListDrop.to) {
+                            const rect = target.getBoundingClientRect();
+                            _crossListDrop.position = (
+                                e.clientY < rect.top + rect.height / 2
+                                ? "before" : "after"
                             );
-                            _crossListDrop.targetList = me;
-                            _crossListDrop.to = targetComp;
+                        } else {
                             _crossListDrop.position = "after";
-                            e.stopPropagation();
+                        }
                         };
                     });
                     me.targetNode.addEventListener("dragend", async e => {
@@ -122,6 +152,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             await me.move({
                                 from: me.getComponent(dragSource),
                                 to: me.getComponent(dragDest),
+                                position: _sameListPosition,
                             });
                             e.stopPropagation();
                         } else if (
@@ -138,6 +169,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                         };
                         dragSource = null;
                         dragDest = null;
+                        _sameListPosition = "after";
                         _crossListDrop.sourceList = null;
                         _crossListDrop.targetList = null;
                         _crossListDrop.to = null;
@@ -305,6 +337,11 @@ function _siblingDistance(a, b) {
 
     const aName = String(aPath[i].name ?? "");
     const bName = String(bPath[i].name ?? "");
+    // Allow cross-list drag when both lists share the same mixin template
+    // (identified by data-sf-tpl set on the template root before cloning).
+    const aTpl = a.targetNode?.dataset?.sfTpl;
+    const bTpl = b.targetNode?.dataset?.sfTpl;
+    if (aTpl && bTpl && aTpl === bTpl) return 0;
     if (isNaN(Number(aName)) || isNaN(Number(bName))) return Infinity;
 
     return aPath.length - i;

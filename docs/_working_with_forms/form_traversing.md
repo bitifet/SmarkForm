@@ -1,8 +1,8 @@
 ---
 title: Form Traversing
 layout: chapter
-permalink: /advanced_concepts/form_traversing
-nav_order: 1
+permalink: /working_with_forms/form_traversing
+nav_order: 0
 
 ---
 
@@ -469,6 +469,28 @@ const allPhones = form.find("employees/*/phones");
 // Single character wildcard
 const specificItems = form.find("data/?/value");
 ```
+
+### Wildcard `context` Multi-Dispatch
+
+When a wildcard path (e.g. `"*"` or `"foo/*"`) is used as the `context` of a trigger button,
+SmarkForm automatically dispatches the action to **all** components that match the pattern and
+implement the requested action:
+
+```html
+<!-- Clears empty items from ALL lists in the form at once -->
+<button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹</button>
+```
+
+- `context:"*"` resolves to **every named component** that implements `removeItem`
+  (i.e., all list components in the form).
+- `target:"*"` then resolves to all children of each matching context.
+- The action fires sequentially on each matching context — skipping any that
+  don't implement the action, avoiding errors on non-list components.
+
+> Unlike `target:"*"` which always operates within a single context, a wildcard
+> `context` enables a **single button** to affect multiple independent components
+> across the form — each receiving its own action dispatch with its own resolved
+> target.
 
 ### Multi-Match Results
 

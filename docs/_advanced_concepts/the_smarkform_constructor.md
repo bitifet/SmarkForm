@@ -19,15 +19,17 @@ nav_order: 0
 <!-- vim-markdown-toc GitLab -->
 
 * [Constructor Syntax](#constructor-syntax)
-* [How Constructor Options Work](#how-constructor-options-work)
-    * [Pass-through options](#pass-through-options)
-    * [Constructor-only options](#constructor-only-options)
+* [Pass-Through Options](#pass-through-options)
     * [Merging rules](#merging-rules)
-* [Constructor-only Options](#constructor-only-options-1)
-    * [customActions](#customactions)
-    * [on* event handlers](#on-event-handlers)
+* [Constructor-Only Options](#constructor-only-options)
+    * [Field Masking](#field-masking)
     * [Mixin security policies](#mixin-security-policies)
+* [Static Members](#static-members)
+    * [`SmarkForm.registerMask(name, factory)`](#smarkformregistermaskname-factory)
+    * [`SmarkForm.registerCustomAction(name, handler)`](#smarkformregistercustomactionname-handler)
 * [How the Component Tree is Built](#how-the-component-tree-is-built)
+    * [Scope boundaries](#scope-boundaries)
+    * [Rendering order](#rendering-order)
 * [The `rendered` Promise](#the-rendered-promise)
 
 <!-- vim-markdown-toc -->
@@ -44,48 +46,34 @@ const form = new SmarkForm(element, options);
 ```
 
 - **`element`** — a DOM element (typically `<form>`, `<div>`, or any container) to enhance. The root element does not need a `data-smark` attribute — it is enhanced automatically. All descendants with `data-smark` are recursively processed.
-- **`options`** *(optional)* — a plain object that configures the form. See below for how these options work.
+- **`options`** *(optional)* — a plain object that configures the form. Options fall into two categories: **pass-through** (forwarded to the root form component) and **constructor-only** (handled by the constructor itself).
 
 ---
 
-## How Constructor Options Work
+## Pass-Through Options
 
-Most options you pass to the constructor are **passed through** to the root form component — they behave as if you had set them via `data-smark` on the root element. Only a few are truly **constructor-only** (no `data-smark` equivalent).
-
-### Pass-through options
+Most options you pass to the constructor are forwarded to the root form component — they behave as if you had set them via `data-smark` on the root element:
 
 ```javascript
-// These configure the root form component, not the constructor itself:
 const form = new SmarkForm(element, {
-  value: { name: "Alice" },
-  exportEmpties: false,
-  focus_on_click: false,
+    value: { name: "Alice" },     // initial value (all field types)
+    exportEmpties: false,         // list option
+    focus_on_click: false,        // form option
+    autoId: true,                 // component-level option
 });
 ```
 
-Pass-through options are fully documented on the component type page they belong to. See:
+These options are documented on their respective component type pages:
 
-| Option | Documented at |
-|--------|---------------|
-| `value` | [Form type → `value`]({{ "component_types/type_form" | relative_url }}#value) |
-| `exportEmpties` | [List type → `exportEmpties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `exportEmpties` option]({{ "advanced_concepts/api_import_and_export" | relative_url }}#the-exportempties-option) |
-| `focus_on_click` | [Form type → `focus_on_click`]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
-| `autoId` | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
-| `enableJsonEncoding` | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
-| `keyStyle` / `arrayStyle` | [Form type → data flattening]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
-
-### Constructor-only options
-
-```javascript
-// These are handled by the constructor and have no data-smark equivalent:
-const form2 = new SmarkForm(element, {
-  customActions: { /* … */ },
-  on_click(ev) { /* … */ },
-  allowExternalMixins: "allow",
-});
-```
-
-See [Constructor-only Options](#constructor-only-options-1) below.
+| Option | Scope | Documented at |
+|--------|-------|---------------|
+| `value` | All field types | Sets the initial/default value for any component. See [Form type → `value`]({{ "component_types/type_form" | relative_url }}#value), [Data import → defaults]({{ "working_with_forms/data_import_and_export" | relative_url }}#setting-defaults-via-value) |
+| `exportEmpties` | List type | [List type → `exportEmpties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `exportEmpties` option]({{ "working_with_forms/data_import_and_export" | relative_url }}#the-exportempties-option) |
+| `on_<event>` / `onLocal_<event>` / `onAll_<event>` | All components | [Event handlers via options]({{ "advanced_concepts/events" | relative_url }}#via-options-declarative) |
+| `focus_on_click` | Form type | [Form type → `focus_on_click`]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
+| `autoId` | All components | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
+| `enableJsonEncoding` | Form type | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
+| `keyStyle` / `arrayStyle` | Form type | [Form type → data flattening]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
 
 ### Merging rules
 
@@ -100,7 +88,7 @@ If the root element also carries a `data-smark` attribute, both sources are merg
 ```javascript
 // exportEmpties from data-smark is overridden:
 const form = new SmarkForm(document.querySelector("form"), {
-  exportEmpties: false, // wins
+    exportEmpties: false, // wins
 });
 ```
 
@@ -108,65 +96,69 @@ Options not specified in either source keep their documented defaults.
 
 ---
 
-## Constructor-only Options
+## Constructor-Only Options
 
-These options can only be set via the constructor.
+These options are extracted by the SmarkForm constructor and **not forwarded**
+to the root form component. They all follow the `smark_` prefix convention.
 
-### `customActions`
+### Field Masking
 
-Defines additional actions beyond SmarkForm's built-in ones. Triggers in the HTML can invoke them by name.
+- **`smark_mask_throwOnMissing`** — Controls whether a missing mask factory throws an error. Defaults to `true`.
 
 ```javascript
+// Warn instead of throwing for unregistered masks:
 const form = new SmarkForm(element, {
-  customActions: {
-    async sendEmail(data, options) {
-      const formData = await form.export();
-      await fetch("/api/send", {
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
-    },
-  },
+    smark_mask_throwOnMissing: false,
 });
 ```
 
-```html
-<button data-smark='{"action":"sendEmail"}'>Send Email</button>
-```
-
-Each custom action follows the [`async actionName(data, options)`]({{ "advanced_concepts/events" | relative_url }}#the-action-decorator) signature and participates in the standard [action lifecycle]({{ "advanced_concepts/events" | relative_url }}#action-lifecycle-events) (`BeforeAction_<name>`, `AfterAction_<name>`).
-
-### `on*` event handlers
-
-A declarative shorthand for attaching [event listeners]({{ "advanced_concepts/events" | relative_url }}) at construction time. The naming follows the [three listener levels]({{ "advanced_concepts/events" | relative_url }}#local-vs-all-handlers):
-
-| Pattern | Scope |
-|---------|-------|
-| `on_<event>` | Bubbles if event permits |
-| `onLocal_<event>` | Target phase only |
-| `onAll_<event>` | Always bubbles |
-| `onBeforeAction_<action>` | `BeforeAction` hook |
-
-```javascript
-const form = new SmarkForm(element, {
-  on_click(ev) { console.log("clicked", ev.target); },
-  onLocal_AfterAction_export(ev) { console.log("exported", ev.data); },
-  onBeforeAction_import(ev) { ev.preventDefault(); },
-});
-```
-
-See: [Event handlers via options]({{ "advanced_concepts/events" | relative_url }}#via-options-declarative) for more examples.
+When `false`, the field's original input type is restored and the field operates unmasked. See [Field Masking — Error Handling]({{ "working_with_forms/field_masking" | relative_url }}#error-handling) for details.
 
 ### Mixin security policies
 
-SmarkForm mixin types can load external templates and execute scripts. Four constructor options control the security policy:
+Control whether mixin templates can fetch external content or execute scripts:
 
-- `allowExternalMixins` — fetch templates from external URLs
-- `allowLocalMixinScripts` — execute `<script>` blocks in local templates
-- `allowSameOriginMixinScripts` — execute same-origin external scripts
-- `allowCrossOriginMixinScripts` — execute cross-origin external scripts
+- `smark_mixin_allowExternal` — fetch templates from external URLs
+- `smark_mixin_allowLocalScripts` — execute `<script>` blocks in local templates
+- `smark_mixin_allowSameOriginScripts` — execute same-origin external scripts
+- `smark_mixin_allowCrossOriginScripts` — execute cross-origin external scripts
 
-Each accepts `"block"` (default, safer) or `"allow"`. See [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) for full documentation and examples.
+Each accepts `"block"` (default), `"allow"`, or per-origin object maps. See [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) for full documentation.
+
+---
+
+## Static Members
+
+### `SmarkForm.registerMask(name, factory)`
+
+Registers a mask factory globally so it can be referenced by name in any form's `data-smark` `mask` property. Must be called **before** constructing any form that uses the mask.
+
+```javascript
+SmarkForm.registerMask("card", (node) => {
+    return new IMask(node, { mask: "0000 0000 0000 0000" });
+});
+
+const form = new SmarkForm(element);
+// <input data-smark='{"mask":"card"}' ...> now works
+```
+
+Masks can also be registered declaratively via `<script type="smark-mask">` elements. See [Field Masking]({{ "working_with_forms/field_masking" | relative_url }}) for the full reference.
+
+### `SmarkForm.registerCustomAction(name, handler)`
+
+Registers a custom action globally, available to all forms without needing `customActions` at construction time.
+
+```javascript
+SmarkForm.registerCustomAction("sendEmail", async (data, options) => {
+    const formData = await this.export();
+    await fetch("/api/send", { method: "POST", body: JSON.stringify(formData) });
+});
+
+const form = new SmarkForm(element);
+// <button data-smark='{"action":"sendEmail"}'> now works
+```
+
+Globally registered actions can be overridden per-instance via the [`customActions`](#customactions) constructor option.
 
 ---
 
@@ -213,4 +205,4 @@ await form.rendered;
 const field = form.find("/name"); // safe now
 ```
 
-Methods like [`find()`]({{ "advanced_concepts/form_traversing" | relative_url }}), [`export()`]({{ "advanced_concepts/api_import_and_export" | relative_url }}), and [`import()`]({{ "advanced_concepts/api_import_and_export" | relative_url }}) depend on the form being fully rendered.
+Methods like [`find()`]({{ "working_with_forms/form_traversing" | relative_url }}), [`export()`]({{ "working_with_forms/data_import_and_export" | relative_url }}), and [`import()`]({{ "working_with_forms/data_import_and_export" | relative_url }}) depend on the form being fully rendered.

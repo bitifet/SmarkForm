@@ -139,7 +139,7 @@ these options into the SmarkForm constructor so the example renders correctly:
     formId="my_mixin_example"
     htmlSource=my_mixin_example_html
     demoValue='{"foo":"bar"}'
-    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
     tests=false
 %}
 ```
@@ -148,10 +148,10 @@ Supported option keys (all optional):
 
 | Option | Allowed values | Default | Purpose |
 |---|---|---|---|
-| `allowLocalMixinScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
-| `allowSameOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in same-origin external mixin templates |
-| `allowCrossOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in cross-origin external mixin templates |
-| `allowExternalMixins` | `"block"` / `"same-origin"` / `"allow"` / per-origin object | `"block"` | Allow fetching mixin templates from external URLs |
+| `smark_mixin_allowLocalScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
+| `smark_mixin_allowSameOriginScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in same-origin external mixin templates |
+| `smark_mixin_allowCrossOriginScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in cross-origin external mixin templates |
+| `smark_mixin_allowExternal` | `"block"` / `"same-origin"` / `"allow"` / per-origin object | `"block"` | Allow fetching mixin templates from external URLs |
 
 **Per-origin object form** (supported by all four options): instead of a single
 string, any option may be a plain object whose keys are origin strings
@@ -162,11 +162,11 @@ When neither a matching origin key nor `"*"` is present the option defaults to
 
 ```json
 {
-  "allowExternalMixins": {
+  "smark_mixin_allowExternal": {
     "https://trusted-cdn.example.com": "allow",
     "*": "block"
   },
-  "allowCrossOriginMixinScripts": {
+  "smark_mixin_allowCrossOriginScripts": {
     "https://trusted-cdn.example.com": "allow",
     "*": "noscript"
   }

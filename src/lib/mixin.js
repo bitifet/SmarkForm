@@ -5,6 +5,7 @@
 // normal SmarkForm enhancement begins.
 
 import {parseJSON} from "./helpers.js";
+import {stampSourceIds, nextSourceId} from "./component.js";
 
 // Module-level caches (shared for the lifetime of the page):
 const docCache = new Map();           // absoluteUrl → Promise<Document>
@@ -167,12 +168,12 @@ function getUrlOrigin(absoluteUrl) { //{{{
 // the wildcard '*' key is used; if that is also absent, `fallback` is returned.
 // This enables fine-grained per-origin trust policies such as:
 //
-//   allowExternalMixins: {
+//   smark_mixin_allowExternal: {
 //     'https://trusted-cdn.example.com': 'allow',
 //     '*': 'block',
 //   }
 //
-//   allowCrossOriginMixinScripts: {
+//   smark_mixin_allowCrossOriginScripts: {
 //     'https://trusted.example.com': 'allow',
 //     'https://untrusted.example.com': 'noscript',
 //     '*': 'block',
@@ -238,17 +239,17 @@ export async function expandMixin(node, options, component) { //{{{
         // request.  The policy is read exclusively from the root SmarkForm
         // instance to prevent a malicious external template from escalating
         // its own privileges by setting the option in its data-smark.
-        // allowExternalMixins may be a string ('block'|'same-origin'|'allow')
+        // smark_mixin_allowExternal may be a string ('block'|'same-origin'|'allow')
         // or a per-origin object map — see resolvePolicy().
-        const extPolicyRaw = component.root.options['allowExternalMixins'] ?? 'block';
+        const extPolicyRaw = component.root.options['smark_mixin_allowExternal'] ?? 'block';
         const fetchOrigin = getUrlOrigin(absoluteUrl);
         const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
         if (extPolicy === 'block') {
             throw component.renderError(
                 'MIXIN_EXTERNAL_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references an external URL but`
-                + ' allowExternalMixins is "block" (the default).'
-                + ' Set allowExternalMixins to "same-origin", "allow", or a'
+                + ' smark_mixin_allowExternal is "block" (the default).'
+                + ' Set smark_mixin_allowExternal to "same-origin", "allow", or a'
                 + ' per-origin policy object on the root SmarkForm instance'
                 + ' to permit external mixin loading.'
                 , node
@@ -257,8 +258,8 @@ export async function expandMixin(node, options, component) { //{{{
             throw component.renderError(
                 'MIXIN_CROSS_ORIGIN_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references a cross-origin URL`
-                + ` (${fetchOrigin}) but allowExternalMixins`
-                + ' is "same-origin". Set allowExternalMixins to "allow" or'
+                + ` (${fetchOrigin}) but smark_mixin_allowExternal`
+                + ' is "same-origin". Set smark_mixin_allowExternal to "allow" or'
                 + ' add the origin to the per-origin policy object to'
                 + ' permit cross-origin mixin loading.'
                 , node
@@ -283,7 +284,11 @@ export async function expandMixin(node, options, component) { //{{{
                     })
                     .then(html => {
                         const parser = new DOMParser();
-                        return parser.parseFromString(html, 'text/html');
+                        const doc = parser.parseFromString(html, 'text/html');
+                        // Stamp source IDs on this external document so
+                        // clones carry the same IDs for cross-list drag.
+                        stampSourceIds(doc);
+                        return doc;
                     })
             );
         }
@@ -364,7 +369,12 @@ export async function expandMixin(node, options, component) { //{{{
         );
     }
 
-    // Deep-clone the template root:
+    // Deep-clone the template root.
+    // Stamp with a unique template ID so clones from the same template
+    // share it — used by cross-list drag-and-drop.
+    if (! templateRoot.dataset.sfTpl) {
+        templateRoot.dataset.sfTpl = nextSourceId();
+    }
     const clone = templateRoot.cloneNode(true);
 
     // Collect snippet parameter nodes: direct children of the placeholder
@@ -389,6 +399,8 @@ export async function expandMixin(node, options, component) { //{{{
     convertIds(clone);
 
     // Gather styles from the template top level (siblings of the root element)
+
+    // Gather styles from the template top level (siblings of the root element)
     // and inject them into <head> once per unique content:
     injectStyles(topLevelStyles);
 
@@ -400,7 +412,7 @@ export async function expandMixin(node, options, component) { //{{{
     // Scripts are blocked by default for all origin classes.
     // Each policy option may be a string ('block'|'noscript'|'allow') or a
     // per-origin object map — see resolvePolicy().  Per-origin maps are most
-    // useful for allowCrossOriginMixinScripts when templates from multiple
+    // useful for smark_mixin_allowCrossOriginScripts when templates from multiple
     // different third-party origins need different trust levels.
     if (scripts.length > 0) {
         const isLocal = ! urlPart;
@@ -408,17 +420,17 @@ export async function expandMixin(node, options, component) { //{{{
         let policyOptionName;
         let errorCode;
         if (isLocal) {
-            policyOptionName = 'allowLocalMixinScripts';
+            policyOptionName = 'smark_mixin_allowLocalScripts';
             errorCode = 'MIXIN_SCRIPT_LOCAL_BLOCKED';
         } else if (isCross) {
-            policyOptionName = 'allowCrossOriginMixinScripts';
+            policyOptionName = 'smark_mixin_allowCrossOriginScripts';
             errorCode = 'MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED';
         } else {
-            policyOptionName = 'allowSameOriginMixinScripts';
+            policyOptionName = 'smark_mixin_allowSameOriginScripts';
             errorCode = 'MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED';
         }
         // Read policy exclusively from the root to prevent privilege escalation
-        // from within mixin templates (see allowExternalMixins comment above).
+        // from within mixin templates (see smark_mixin_allowExternal comment above).
         const policyRaw = component.root.options[policyOptionName] ?? 'block';
         const scriptOrigin = getUrlOrigin(absoluteUrl);
         const policy = resolvePolicy(policyRaw, scriptOrigin, 'block');
@@ -453,6 +465,10 @@ export async function expandMixin(node, options, component) { //{{{
     // Merge HTML attributes from placeholder into clone:
     mergeAttributes(clone, node);
 
+    // Now that data-smark is set on the clone root, stamp source IDs
+    // so cross-list drag can identify lists from the same mixin source.
+    stampSourceIds(clone);
+
     // Build the child chain: parent chain + this key.
     // Stored on the newly-created component so that its nested renders
     // can detect back-references to this (and any ancestor) template.
@@ -461,10 +477,38 @@ export async function expandMixin(node, options, component) { //{{{
     // Replace placeholder with clone in the DOM:
     node.replaceWith(clone);
 
+    // Filter mask scripts from regular scripts and build scopedMasks:
+    let scopedMasks = {};
+    if (scripts.length > 0) {
+        const maskScripts = scripts.filter(
+            n => n.getAttribute('type') === 'smark-mask'
+        );
+        const regularScripts = scripts.filter(
+            n => n.getAttribute('type') !== 'smark-mask'
+        );
+        scripts = regularScripts;
+        for (const script of maskScripts) {
+            const name = script.getAttribute('data-name');
+            if (!name) continue;
+            try {
+                        const factory = (new Function('return (' + script.textContent.trim() + ')'))();
+                if (typeof factory === 'function') {
+                    scopedMasks[name] = factory;
+                }
+            } catch (e) {
+                console.warn(
+                    'SmarkForm mixin: failed to evaluate mask script'
+                    + ` "${name}":`, e
+                );
+            }
+        }
+    }
+
     return {
         node: clone,
         options: mergedOptions,
         scripts,
         childChain,
+        scopedMasks,
     };
 }; //}}}

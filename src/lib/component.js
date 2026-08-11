@@ -8,6 +8,21 @@ import {parseJSON, replaceWrongNode, isHiddenByClosedDetails} from "./helpers.js
 import {isMixinRef, expandMixin} from "./mixin.js";
 
 const sym_smart = Symbol("smart_component");
+
+// Unique source-ID stamping for [data-smark] elements.  When mixin templates
+// are cloned, data attributes survive cloneNode() so copies of the same source
+// carry the same ID.  This is used by cross-list drag-and-drop to allow
+// dragging between lists that originated from the same template/mixin.
+let _nextSourceId = 1;
+export function nextSourceId() { return String(_nextSourceId++); }
+const _stampedDocs = new WeakSet();
+export function stampSourceIds(rootElement) {
+    for (const el of rootElement.querySelectorAll('[data-smark]')) {
+        if (!el.dataset.smSrc) {
+            el.dataset.smSrc = nextSourceId();
+        }
+    }
+}
 const re_valid_typename_chars = /^[a-z0-9_]+$/i;
 const re_has_wildcards = /[\*\?]/;
 const wild2regex = wname => new RegExp(//{{{
@@ -73,6 +88,7 @@ export class SmarkComponent {
         , {
             property_name = "smark",
             _mixinChain,
+            _scopedMasks,
             ...options
         } = {}
         , parent
@@ -83,6 +99,11 @@ export class SmarkComponent {
         // Passed via constructor options so it is available immediately
         // (before the async IIFE runs its first render/enhance cycle).
         me._mixinChain = _mixinChain || null;
+
+        // Store mixin-scoped masks (from <script type="smark-mask"> inside
+        // an enclosing mixin template).  Available to this component and
+        // its descendants for declarative mask resolution.
+        me._scopedMasks = _scopedMasks || null;
 
         me.validName = (function nameGenerator() {//{{{
             let counter = 0;
@@ -252,7 +273,43 @@ export class SmarkComponent {
     };//}}}
     setNodeOptions(node, options) {//{{{
         const me = this;
-        node.dataset[me.property_name] = JSON.stringify(options);
+        function isSerializable(value, path = "", visited = new WeakSet()) {
+            if (value === null || typeof value !== "object") {
+                if (typeof value === "function") {
+                    throw new Error(`Function found at ${path}`);
+                }
+                if (typeof value === "symbol") {
+                    throw new Error(`Symbol found at ${path}`);
+                }
+                if (typeof value === "number" && (!Number.isFinite(value))) {
+                    throw new Error(`Non-finite number found at ${path}`);
+                }
+                return;
+            }
+            if (visited.has(value)) {
+                return;
+            }
+            visited.add(value);
+            if (Array.isArray(value)) {
+                value.forEach((item, i) => {
+                    isSerializable(item, `${path}[${i}]`, visited);
+                });
+            } else {
+                for (const key of Object.keys(value)) {
+                    isSerializable(value[key], path ? `${path}.${key}` : key, visited);
+                }
+            }
+        }
+        // Filter out on*/onLocal*/onAll*/onBeforeAction*/onAfterAction* handler
+        // functions and smark_* flags before validation and serialization —
+        // they are constructor-time configurations, not serializable options.
+        const filtered = Object.fromEntries(
+            Object.entries(options).filter(([k]) =>
+                !k.startsWith('on') && !k.startsWith('smark_')
+            )
+        );
+        isSerializable(filtered);
+        node.dataset[me.property_name] = JSON.stringify(filtered);
     };//}}}
     async safeEnhance(node, defaultOptions) {//{{{
         const me = this;
@@ -313,15 +370,18 @@ export class SmarkComponent {
             node
         );
 
-        // Pass the mixin chain via constructor options so it is available
-        // immediately when the component's async IIFE starts its render cycle
-        // (before `new ctrl()` returns).
+        // Pass the mixin chain and scoped masks via constructor options so
+        // they are available immediately when the component's async IIFE
+        // starts its render cycle (before `new ctrl()` returns).
         const inheritedChain = mixinExpansion
             ? mixinExpansion.childChain
             : (me._mixinChain || null);
+        const inheritedMasks = mixinExpansion
+            ? mixinExpansion.scopedMasks
+            : (me._scopedMasks || null);
         const component = new ctrl(
             node
-            , { ...options, _mixinChain: inheritedChain }
+            , { ...options, _mixinChain: inheritedChain, _scopedMasks: inheritedMasks }
             , me
         );
 
@@ -355,7 +415,7 @@ export class SmarkComponent {
     };//}}}
     getPath() {//{{{
         const me = this;
-        const ancestors = [...me.parents].map(p=>p.name).reverse();
+        const ancestors = me.parents ? [...me.parents].map(p=>p.name).reverse() : [];
         if (me.name) ancestors.push(me.name); // Compute parent path inside labels (or singletons?).
         return ancestors.join("/") || "/";
     };//}}}

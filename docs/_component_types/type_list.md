@@ -373,7 +373,7 @@ Sets the initial default items for the list. These defaults are restored when `r
   * **Type:** Array
   * **Default value:** `[]`
 
-> See: [Setting defaults via `value`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
+> See: [Setting defaults via `value`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
 
 #### min_items
 
@@ -392,6 +392,12 @@ Establishes the maximum number of items allowed.
   * **Default value:** Infinity
   * **Minimum value:** Infinity
 
+{: .info }
+> Trigger buttons targeting the list (e.g. `addItem` / `removeItem`) are
+> **automatically disabled** when the list reaches its `min_items` or
+> `max_items` boundary — the add button greys out at `max_items`, the
+> remove button greys out at `min_items`. This is handled by SmarkForm
+> with no additional code required.
 
 #### sortable
 
@@ -463,7 +469,7 @@ original behaviour: the entire item root is draggable (backward compatible).
 Controls cross-list drag-and-drop by enforcing a maximum *sibling distance*
 between source and destination lists.
 
-  * **Type:** Number | true | false
+  * **Type:** Number \| true \| false
   * **Default value:** 0 (disabled)
 
 When `movingDepth` is set to a positive number or `true` on a list, its items

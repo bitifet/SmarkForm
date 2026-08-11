@@ -10,6 +10,9 @@ html
             h2=self.title
         block mainForm
         script(src="../../dist/SmarkForm.umd.js")
+        if self.preScript
+            script.
+                !{self.preScript}
         script.
             window.form = new SmarkForm(
                 document.querySelector("body")

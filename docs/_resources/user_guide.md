@@ -32,6 +32,7 @@ nav_order: 1
     * [Reordering Items](#reordering-items)
     * [Understanding List Limits](#understanding-list-limits)
 * [Working with Collapsible Sections](#working-with-collapsible-sections)
+    * [Navigating Collapsible Sections with the Keyboard](#navigating-collapsible-sections-with-the-keyboard)
 * [Working with Nested Sections](#working-with-nested-sections)
 * [Accessibility Features](#accessibility-features)
 * [Tips for Efficient Form Filling](#tips-for-efficient-form-filling)

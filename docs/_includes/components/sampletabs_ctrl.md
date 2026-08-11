@@ -42,6 +42,18 @@ function smarkformComputeHeightPct(data) {
    The root element is expected to be a <div id="myForm..."> or <form id="myForm..."> */
 function smarkformExtractWrapperAndInner(htmlSrc) {
     var s = htmlSrc.trim();
+    var before = ''; /* leading non-root content (e.g. CDN <script> tags, HTML comments) */
+    /* Extract leading non-root elements that appear before the form container.
+       Some documentation examples include <script> tags (for CDN library loading)
+       before the actual form element. Skip those so the form element is correctly
+       identified as the root wrapper, while preserving them as siblings. */
+    while (s.length) {
+        var m = s.match(/^\s*<script[\s>][\s\S]*?<\/script>\s*/i);
+        if (m) { before += m[0]; s = s.slice(m[0].length); continue; }
+        m = s.match(/^\s*<!--[\s\S]*?-->\s*/);
+        if (m) { before += m[0]; s = s.slice(m[0].length); continue; }
+        break;
+    }
     /* Find the end of the first opening tag (handle quoted attribute values) */
     var i = 0, inQ = null;
     while (i < s.length) {
@@ -71,6 +83,7 @@ function smarkformExtractWrapperAndInner(htmlSrc) {
     if (closeStart < 0) closeStart = s.lastIndexOf('</');
     var closeEnd = s.indexOf('>', closeStart) + 1;
     return {
+        before: before, /* content to prepend before the root wrapper */
         openTag: s.slice(0, openTagEnd),
         inner: s.slice(openTagEnd, closeStart),
         closeTag: s.slice(closeStart, closeEnd),
@@ -93,7 +106,7 @@ function smarkformReindentHtml(content, spaces) {
 }
 function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
     var p = smarkformExtractWrapperAndInner(htmlSrc);
-    return p.openTag + '\n'
+    return (p.before || '') + p.openTag + '\n'
         + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em">\n'
         + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
         + smarkformReindentHtml(p.inner, 8)
@@ -422,6 +435,25 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         };
         smarkformRenderScheduler.enqueue(renderTask);
+        /* --- Drag-to-resize preview handle --- */
+        var resizeHandle = container.querySelector('.smarkform-resize-handle');
+        if (resizeHandle) {
+          var rsDrag = false, rsStartY, rsStartH;
+          resizeHandle.addEventListener('pointerdown', function(e) {
+            this.setPointerCapture(e.pointerId);
+            rsDrag = true;
+            rsStartY = e.clientY;
+            rsStartH = iframe.offsetHeight;
+          });
+          resizeHandle.addEventListener('pointermove', function(e) {
+            if (!rsDrag) return;
+            iframe.style.height = Math.max(75, rsStartH + (e.clientY - rsStartY)) + 'px';
+          });
+          resizeHandle.addEventListener('pointerup', function(e) {
+            rsDrag = false;
+            this.releasePointerCapture(e.pointerId);
+          });
+        }
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
         var editorLabel  = container.querySelector('.smarkform-editor-label');
@@ -629,6 +661,30 @@ button[data-smark] {
 
 .smarkform-preview-frame {
     min-height: 75px;
+}
+
+.smarkform-resize-handle {
+    height: 6px;
+    background: #dee2e6;
+    cursor: ns-resize;
+    position: relative;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+.smarkform_example:hover .smarkform-resize-handle,
+.smarkform_example:has(.smarkform-preview-frame:focus-within) .smarkform-resize-handle {
+    opacity: 1;
+}
+.smarkform-resize-handle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 2px;
+    background: #999;
+    border-radius: 1px;
 }
 
 .smarkform-preview-spinner {

@@ -84,7 +84,7 @@ and the keyboard focus is inside the trigger's context.
   * **Type:** string (`KeyboardEvent.key` value)
   * **Default:** none (hotkey disabled)
 
-See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full
+See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}) for full
 details on how hotkeys work, how they are revealed, and how to avoid conflicts.
 
 ---

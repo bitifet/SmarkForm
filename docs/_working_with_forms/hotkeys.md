@@ -1,8 +1,8 @@
 ---
 title: Hotkeys
 layout: chapter
-permalink: /advanced_concepts/hotkeys
-nav_order: 3
+permalink: /working_with_forms/hotkeys
+nav_order: 2
 
 ---
 
@@ -44,24 +44,40 @@ Hotkeys are:
 - **Context-sensitive** — the same key can mean different things depending on
   which component currently has keyboard focus.
 - **Discoverable** — pressing and holding `Ctrl` reveals all active hotkeys as
-  visual hints on their trigger buttons.
+  visual hints on their trigger buttons, so users can discover them on the fly
+  rather than needing to memorise a list.  A little CSS setup is needed — see
+  [Hotkey Reveal](#hotkey-reveal-ctrl-discovery).
 
 
 ## Defining a Hotkey
 
 Add the `hotkey` property to a trigger's `data-smark` object:
 
-```html
-<!-- Add a new list item with Ctrl+Plus -->
-<button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}'>
-    ➕ Add Phone
-</button>
+{% raw %} <!-- hk_define_html {{{ --> {% endraw %}
+{% capture hk_define_html -%}
+<div id="myForm$$">
+  <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' title="Add phone">➕ Add Phone</button>
+  <ul data-smark='{"type":"list","name":"phones"}'>
+    <li>
+      <input type="tel" data-smark placeholder="Phone number">
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+    </li>
+  </ul>
+</div>
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-<!-- Remove the current item with Ctrl+Minus -->
-<button data-smark='{"action":"removeItem","hotkey":"-"}'>
-    ➖ Remove
-</button>
-```
+{% raw %} <!-- hk_define_notes {{{ --> {% endraw %}
+{% capture hk_define_notes -%}
+Hold `Ctrl` to reveal the `+` and `-` hotkey hints on the buttons. Press `Ctrl`+`+` to add a phone, `Ctrl`+`-` to remove one. The `hotkey` value must match `KeyboardEvent.key` (e.g. `"+"`, `"-"`, `"Enter"`, single letters).
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="hk-define"
+   htmlSource=hk_define_html
+   notes=hk_define_notes
+   selected="html"
+   tests=false
+%}
 
 The value of `hotkey` must match the browser's `KeyboardEvent.key` string for
 the desired key (e.g. `"+"`, `"-"`, `"s"`, `"Enter"`, …).  Single printable
@@ -78,17 +94,34 @@ When the user **presses and holds `Ctrl`**, SmarkForm:
 2. Sets the `data-hotkey` attribute on each matching trigger button to the
    configured key character.
 
-Your CSS can use this attribute to show a visual hint.  SmarkForm's bundled
-sample CSS shows a small floating badge — you can style it any way you like:
+Your CSS can use this attribute to show a visual hint:
 
-```css
-/* Example: show hotkey badge on the button */
+{% raw %} <!-- hk_reveal_css {{{ --> {% endraw %}
+{% capture hk_reveal_css -%}
+/* Show hotkey badge on the button */
 [data-hotkey]::after {
     content: "Ctrl+" attr(data-hotkey);
-    position: absolute;
-    /* … your positioning and style … */
+    position: absolute; top: -1.6em; left: 0;
+    font-size: 0.7em;
+    background: #333; color: #fff;
+    padding: 1px 4px; border-radius: 3px;
+    white-space: nowrap;
 }
-```
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- hk_reveal_notes {{{ --> {% endraw %}
+{% capture hk_reveal_notes -%}
+The `data-hotkey` attribute is added to hotkey-equipped trigger buttons while `Ctrl` is held. Style its `::after` pseudo-element to create a floating tooltip. The button must have `position: relative` for the absolute-positioned badge.
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="hk-reveal"
+   htmlSource=hk_define_html
+   cssSource=hk_reveal_css
+   notes=hk_reveal_notes
+   selected="css"
+   tests=false
+%}
 
 When `Ctrl` is **released**, the `data-hotkey` attributes are removed and the
 hints disappear.
@@ -175,6 +208,29 @@ Lower-priority duplicates are silently ignored.
 > fire, even if it was revealed.  The `data-hotkey` attribute is also omitted
 > from disabled buttons so they do not appear in the visual hints.
 
+## Hiding Trigger Buttons (While Keeping Hotkeys)
+
+Some actions (like per-item add/remove buttons in long lists) are non-essential
+and their buttons clutter the form. You can hide them with CSS while keeping
+their hotkeys active — touch users still tap the visible outer buttons, while
+keyboard users activate the hidden ones via hotkeys.
+
+**Critical CSS rule:** Do NOT use `display: none` — it removes the element from
+the layout and kills `::before`/`::after` pseudo-elements, which means hotkey
+hints won't appear when the user holds `Ctrl`. Instead, use `visibility: hidden`
+combined with `width: 0` (or `height: 0`):
+
+```css
+/* Hide per-item buttons but preserve hotkey hints */
+li.row button[data-smark] {
+    visibility: hidden;
+    width: 0px;
+    pointer-events: none;
+}
+li.row button[data-smark]::before {
+    visibility: visible;
+}
+```
 
 ## Accessibility Considerations
 
@@ -191,6 +247,46 @@ Lower-priority duplicates are silently ignored.
 
 
 ## Further Examples
+
+When inner and outer list items share the same hotkey (e.g. `Ctrl`+`-` for
+removing both a phone AND a contact entry), the innermost matching context
+wins by default. To reach the outer-level action, hold `Ctrl`+`Alt` instead —
+this **suppresses inner hotkeys** and reveals the next level out.
+
+{% raw %} <!-- hk_2ndlevel_html {{{ --> {% endraw %}
+{% capture hk_2ndlevel_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"list","name":"phonelist"}'>
+    <fieldset>
+      <legend>
+        <input name="name" data-smark placeholder="Name">
+        <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+      </legend>
+      <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' title="Add phone">➕ Add phone</button>
+      <ul data-smark='{"type":"list","name":"phones"}'>
+        <li>
+          <input type="tel" data-smark placeholder="Phone">
+          <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+        </li>
+      </ul>
+    </fieldset>
+  </div>
+  <button data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}' title="Add entry">➕ Add entry</button>
+</div>
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- hk_2ndlevel_notes {{{ --> {% endraw %}
+{% capture hk_2ndlevel_notes -%}
+`Ctrl`+`-` removes a phone when focus is inside the `phones` list, but removes the whole entry when focus is outside it. Press `Ctrl`+`Alt` to reveal the 2nd-level `+` hotkey on the outer "Add entry" button.
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="hk-2ndlevel"
+   htmlSource=hk_2ndlevel_html
+   notes=hk_2ndlevel_notes
+   selected="preview"
+   tests=false
+%}
 
 The [Showcase]({{ "/about/showcase" | relative_url }}) contains exhaustive
 real-world examples that demonstrate hotkeys in context, including nested

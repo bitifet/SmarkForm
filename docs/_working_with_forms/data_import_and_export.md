@@ -1,8 +1,8 @@
 ---
 title: Importing and Exporting Data
 layout: chapter
-permalink: /advanced_concepts/api_import_and_export
-nav_order: 4
+permalink: /working_with_forms/data_import_and_export
+nav_order: 3
 
 ---
 
@@ -36,8 +36,6 @@ nav_order: 4
     * [Using `target` with `import`](#using-target-with-import)
     * [Chaining export and import](#chaining-export-and-import)
 * [Programmatic API](#programmatic-api)
-    * [Using `component.export()` and `component.import()`](#using-componentactionsexport-and-componentactionsimport)
-    * [Calling prototype methods directly](#calling-prototype-methods-directly)
 * [Common Patterns](#common-patterns)
     * [Loading initial data from a server](#loading-initial-data-from-a-server)
     * [Submitting form data to a backend](#submitting-form-data-to-a-backend)
@@ -411,6 +409,16 @@ SmarkForm makes it easy to copy data from one component to another using the
 **`target`** option on `export` and `import` triggers. This avoids writing
 any JavaScript for common copy-data workflows.
 
+**How context is determined:** A trigger's *context* defaults to the
+**innermost ancestor component in the DOM tree** that implements the
+triggered action. Place an `export` button inside a form → that form is the
+context. Place it outside any subform → the root form is the context. You
+can override this with the explicit `context` property.
+
+Similarly, `target` sets the destination (for export) or source (for import).
+Without it, SmarkForm resolves context by DOM position alone — the same
+trigger button can control different fields just by being placed differently.
+
 ### Using `target` with `export`
 
 When an `export` trigger has a `target` property, SmarkForm automatically
@@ -539,7 +547,7 @@ data to the shipping address with no JavaScript required.
 > hierarchy, while `target` paths are resolved relative to the **effective context** of the
 > action.
 >
-> 👉 More info at [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }}) chapter.
+> 👉 More info at [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }}) chapter.
 
 
 {: .hint }
@@ -646,6 +654,24 @@ const myForm = new SmarkForm(document.getElementById("myForm"), {
 > call `ev.preventDefault()` to cancel the action. See the
 > [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) chapter for
 > more details.
+
+### Using `<form>` with `mailto:` and `enctype`
+
+SmarkForm also supports native HTML `<form>` submission:
+
+- **`mailto:`** — wrap your fields in `<form action="mailto:you@example.com" method="post">` and add a `{"action":"submit"}` trigger. SmarkForm submits all fields to the user's email client. Use the default encoding (`text/plain` or `application/x-www-form-urlencoded`) — `enctype="application/json"` is not compatible with `mailto:`.
+
+- **JSON APIs** — set `enctype="application/json"` on the `<form>`. SmarkForm serializes the data and sends it via `fetch()`. Requires `enableJsonEncoding: true` on the root form instance.
+
+```html
+<form action="mailto:you@example.com" method="post" enctype="text/plain">
+  <input data-smark name="email" type="email">
+  <button data-smark='{"action":"submit"}'>Send</button>
+</form>
+```
+
+{: .info :}
+> You can intercept submission via `BeforeAction_submit` (fire before submit — call `ev.preventDefault()` to cancel) and `AfterAction_submit` (fire after data has been sent).
 
 ### Save and restore draft data
 

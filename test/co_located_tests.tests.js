@@ -170,7 +170,12 @@ function validateHtmlSource(html) {
  * meaning it must not be wrapped in an extra container.
  */
 function isFormRoot(htmlSource) {
-  return /^\s*<[\w]+[^>]*\bid="myForm[^"]*"/i.test(htmlSource);
+  // Skip leading <script> tags (e.g. CDN imports before the form wrapper)
+  // so that <script src="..."><div id="myForm..."> is recognised as having a root.
+  const cleaned = htmlSource.replace(
+    /^\s*(?:<script\b[^>]*>[\s\S]*?<\/script>\s*)*/i, ''
+  );
+  return /^\s*<[\w]+[^>]*\bid="myForm[^"]*"/i.test(cleaned);
 }
 
 function generateTestHTML(example) {
@@ -246,7 +251,7 @@ function generateDemoValueTestHTML(example) {
 
   // Use a simple constructor that passes demoValue as the value option.
   // Merge smarkformOptions (security/behaviour flags) with the value option so that
-  // examples requiring e.g. allowLocalMixinScripts:"allow" are initialised correctly.
+  // examples requiring e.g. smark_mixin_allowLocalScripts:"allow" are initialised correctly.
   // JSON.stringify(constructorOpts) re-serialises the whole object safely; demoValue
   // is already a parsed plain object from the manifest so no pre-sanitisation is needed.
   const constructorOpts = Object.assign({}, smarkformOptions || {}, { value: demoValue });

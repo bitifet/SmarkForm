@@ -1,7 +1,7 @@
 // SmarkForm.js
 // ============
 
-import {createType} from "./lib/component.js";
+import {createType, stampSourceIds} from "./lib/component.js";
 import {hotKeys_handler} from "./lib/hotkeys.js";
 
 // Import core component types and event handlers:
@@ -38,10 +38,40 @@ class SmarkForm extends form {
     constructor(
         targetNode
         , {
-            customActions = {},
-            ...formOptions
+            ...restOptions
         } = {}
     ) {
+        // Auto-scan global mask scripts from the document:
+        SmarkForm._scanGlobalMasks();
+
+        // Stamp unique source IDs on ALL [data-smark] elements (including those
+        // inside <template> elements) so that clones from the same template
+        // share the same ID — used by cross-list drag-and-drop.
+        stampSourceIds(document);
+
+        // Split options: smark_* prefixed → constructor-only, everything else
+        // (including on_* event handlers) → pass-through to root form component.
+        const ctorOnly = {};
+        const formOptions = {};
+        for (const [k, v] of Object.entries(restOptions)) {
+            // smark_* options must also flow through to root.options so the mixin
+            // system can read them during the render phase (which starts inside
+            // super()). They are filtered from setNodeOptions below to prevent
+            // data-smark serialization.
+            formOptions[k] = v;
+            if (k.startsWith('smark_')) {
+                ctorOnly[k] = v;
+            }
+        }
+
+        // Resolve string selectors to DOM nodes:
+        if (typeof targetNode === "string") {
+            const resolved = document.querySelector(targetNode);
+            if (!resolved) throw new Error(
+                `SmarkForm: selector "${targetNode}" did not match any element`
+            );
+            targetNode = resolved;
+        }
         const options = {
             ...formOptions,
             name: "",
@@ -55,10 +85,11 @@ class SmarkForm extends form {
         const me = this;
         me.setNodeOptions(me.targetNode, options);
         // TODO: use private Symbol (see PROMPTS.md "Private actions")
+        // Merge globally registered custom actions
         me.actions = {
             ...me.actions,
             ...Object.fromEntries(
-                Object.entries(customActions)
+                Object.entries(SmarkForm._customActions)
                     .map(([name, ctrl])=>[name, ctrl.bind(me)])
             ),
         };
@@ -75,6 +106,59 @@ class SmarkForm extends form {
         await super.render();
         me.targetNode.setAttribute("aria-busy", "false");
     };
+};
+
+// --- Declarative Masking API ---
+SmarkForm._maskRegistry = {};
+SmarkForm._scanned = false;
+// Constructor-only options and their defaults:
+SmarkForm._ctorDefaults = {
+    smark_mask_throwOnMissing: true,
+};
+
+SmarkForm.registerMask = function(name, factory) {
+    if (typeof name !== 'string' || !name) {
+        throw new Error('SmarkForm.registerMask: name must be a non-empty string.');
+    }
+    if (typeof factory !== 'function') {
+        throw new Error('SmarkForm.registerMask: factory must be a function.');
+    }
+    SmarkForm._maskRegistry[name] = factory;
+};
+
+// --- Custom Actions API ---
+SmarkForm._customActions = {};
+
+SmarkForm.registerCustomAction = function(name, handler) {
+    if (typeof name !== 'string' || !name) {
+        throw new Error('SmarkForm.registerCustomAction: name must be a non-empty string.');
+    }
+    if (typeof handler !== 'function') {
+        throw new Error('SmarkForm.registerCustomAction: handler must be a function.');
+    }
+    SmarkForm._customActions[name] = handler;
+};
+
+SmarkForm._scanGlobalMasks = function() {
+    if (SmarkForm._scanned) return;
+    SmarkForm._scanned = true;
+    const scripts = document.querySelectorAll('script[type="smark-mask"]');
+    for (const script of scripts) {
+        if (script.closest('template')) continue;
+        const name = script.getAttribute('data-name');
+        if (!name) continue;
+        if (SmarkForm._maskRegistry[name]) continue;
+            try {
+                const factory = (new Function('return (' + script.textContent.trim() + ')'))();
+                if (typeof factory === 'function') {
+                SmarkForm._maskRegistry[name] = factory;
+            }
+        } catch (e) {
+            console.warn(
+                `SmarkForm: failed to evaluate mask script "${name}":`, e
+            );
+        }
+    }
 };
 
 SmarkForm.createType = createType;

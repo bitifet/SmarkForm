@@ -56,7 +56,8 @@ form.
 
 👉 From fields can be created over any HTML tag except for actual HTML form
 elements (`<input>`, `<textarea>`, `<select>`, `<button>`...) and can contain
-any number of *SmarkForm* fields, **including nested forms**.
+any number of *SmarkForm* fields, **including nested forms** — there is no
+limit to the nesting depth beyond practical usability.
 
 **Example:**
 
@@ -269,7 +270,7 @@ Sets the initial default data for the form. These defaults are restored when `re
   * **Type:** Object
   * **Default value:** `{}`
 
-> See: [Setting defaults via `value`]({{ "advanced_concepts/api_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work, `clear` vs `reset`, and the `VALUE_CONFLICT` error.
+> See: [Setting defaults via `value`]({{ "advanced_concepts/data_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work, `clear` vs `reset`, and the `VALUE_CONFLICT` error.
 
 #### focus_on_click
 

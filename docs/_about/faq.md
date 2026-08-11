@@ -296,7 +296,7 @@ component explicitly with the `"context"` property and a relative path:
 
 See [Quick Start — Actions and Triggers](
 {{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
-and [Form Traversing]({{ "/advanced_concepts/form_traversing" | relative_url }})
+and [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }})
 for full details.
 
 
@@ -950,7 +950,7 @@ can remove a phone when focus is inside the phones list, and remove a whole
 user when focus is at the user level. SmarkForm picks the right trigger
 automatically based on where the keyboard focus is.
 
-See [Hotkeys]({{ "/advanced_concepts/hotkeys" | relative_url }}) for full details and examples.
+See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}) for full details and examples.
 
 ### What if I want to reach an outer action with the same hotkey?
 
@@ -1165,7 +1165,7 @@ of the named component without requiring an extra wrapper:
     formId="faq_mixin_labeled_input"
     htmlSource=faq_mixin_labeled_input_html
     demoValue='{"person":{"firstName":"Alice","lastName":"Smith"}}'
-    smarkformOptions='{"allowLocalMixinScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
     tests=false
 %}
 
@@ -1246,11 +1246,11 @@ for all subsequent references to the same URL on the same page.  `<style>` and
 for external and local templates.
 
 External template loading is **blocked by default**.  You must opt in via the
-`allowExternalMixins` option on the root SmarkForm instance:
+`smark_mixin_allowExternal` option on the root SmarkForm instance:
 
 ```js
 // Allow same-origin external templates only
-new SmarkForm(el, { allowExternalMixins: 'same-origin' });
+new SmarkForm(el, { smark_mixin_allowExternal: 'same-origin' });
 ```
 
 Script execution in external templates is also blocked by default; see the
@@ -1373,6 +1373,32 @@ build step if you use the CDN.
 > Not sure whether SmarkForm is the right fit for your project? Open a
 > [discussion](https://github.com/bitifet/SmarkForm/discussions) — we're happy
 > to help you evaluate!
+
+
+### Why does `clear` restore my default value instead of emptying the field?
+
+The `clear` action resets a field to its **type-level empty state** (empty
+string for inputs, empty array for lists, empty object for forms), NOT its
+default value.  If the exported data still shows a value after clearing, it
+is because you are calling `clear` on a **parent component** (e.g. the whole
+form) rather than on the individual field.
+
+A parent's `clear` iterates over its children and calls `clear` on each of
+them — but a child's default value, if set, becomes the field's new state.
+To completely empty a specific field regardless of its default, call `clear`
+directly on that field (e.g. via `{"action":"clear","context":"fieldName"}`).
+
+This distinction applies to `reset` as well: `reset` restores the
+`defaultValue`, while `clear` goes all the way to the empty state.  Both are
+recursive when applied to a parent component.
+
+```html
+<!-- Clears the whole form → fields with defaults keep their defaults -->
+<button data-smark='{"action":"clear"}'>❌ Clear form</button>
+
+<!-- Clears only the "colour" field → becomes null regardless of default -->
+<button data-smark='{"action":"clear","context":"colour"}'>❌ Clear colour</button>
+```
 
 
 ## Have a question not covered here?
