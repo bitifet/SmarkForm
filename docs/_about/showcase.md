@@ -68,7 +68,7 @@ nav_order: 4
   }
   @media (pointer: coarse) {
     .feature {
-      font-size: 1.15em;
+      font-size: 1.25em;
     }
     .feature-summary::before {
       display: inline-flex;
@@ -146,9 +146,9 @@ endcapture %}
 with the <code>name</code> option, while the inner input carries the bare <code>data-smark</code>
 attribute.  The ❌ button inside the singleton resolves its target implicitly.
 
-👉 **Label auto-linking.** The label uses <code>for="colour"</code> to link to the input's
-<code>id</code> — SmarkForm connects them automatically.  The label could have been
-placed inside the singleton wrapper but stays outside for consistency and readability.
+👉 **Label auto-linking.** The label uses <code>for="colour"</code> to link to the
+singleton's <code>name</code> — SmarkForm connects them automatically.  No <code>id</code>
+attribute is needed on the input.
 
 👉 **Null values.** Unlike native HTML, a colour field with no selection exports
 <code>null</code> — try the ❌ button to see it.
@@ -182,11 +182,30 @@ placed inside the singleton wrapper but stays outside for consistency and readab
   JavaScript wiring needed.  Any element with <code>data-smark</code> becomes a SmarkForm
   field component whose name is taken from its <code>name</code> attribute.
 
-  The colour field uses the <strong>singleton pattern</strong>: a wrapper <code>&lt;span data-smark&gt;</code>
-  holds the options, while the inner <code>&lt;input data-smark&gt;</code> is the actual field.
-  The label uses <code>for="colour"</code> and is <strong>auto-linked</strong> by SmarkForm.
-
   See <a href="{{ "/getting_started/core_concepts" | relative_url }}">Core Concepts</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Singleton pattern</button>
+  <div class="feature-desc">
+  The colour field wraps the actual input in a <code>&lt;span data-smark='{"name":"colour","type":"color"}'&gt;</code>
+  that holds the component options, while the inner <code>&lt;input data-smark&gt;</code> carries the
+  bare attribute.  This allows buttons and other elements to share the same
+  field context without repeating the options.
+
+  See <a href="{{ "/advanced_concepts/the_api_interface" | relative_url }}">The API Interface</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Label auto-linking</button>
+  <div class="feature-desc">
+  The label uses <code>for="colour"</code> to link to the singleton's <code>name</code> —
+  SmarkForm connects them automatically.  No <code>id</code> attribute is needed on the
+  input; the <code>for</code> resolves against component names.
+
+  See <a href="{{ "/getting_started/core_component_types" | relative_url }}">Core Component Types</a>.
   </div>
 </div>
 
