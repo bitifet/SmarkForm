@@ -458,6 +458,20 @@ to maintain consistency across the site:
 - Always include `{% include links.md %}` on every page to make link references
   available.
 
+### Cross-Referencing Documentation Pages
+
+When writing links to other documentation pages from within `.md` files:
+
+- Use `{{ "/path/to/page" | relative_url }}#anchor` syntax.
+- Fragment anchors are **kramdown-generated** from headings: `### Foo Bar`
+  becomes `#foo-bar` (lowercase, spaces → hyphens, punctuation stripped).
+- **Always derive anchors from the actual heading text** in the target page.
+  Do not guess fragment IDs.  Verify by reading the source `.md` file or the
+  rendered page.
+- Example: a heading `### The Singleton Pattern.` in
+  `_getting_started/core_component_types.md` produces
+  `{{ "/getting_started/core_component_types" | relative_url }}#the-singleton-pattern`.
+
 ## Agent Skills Directory (`skills/`)
 
 The `skills/` directory contains installable skill specifications that can be
