@@ -186,6 +186,41 @@ Updated programmatically via `import()`:
 await myForm.find('/total').import('$42.00');
 ```
 
+### Label auto-linking
+
+A `<label data-smark>` element is automatically associated with the adjacent
+field by DOM proximity.  No `for` or `id` attributes are needed — SmarkForm
+handles the connection internally:
+
+```html
+<label data-smark>Name:</label>     <!-- ✅ auto-linked -->
+<input data-smark type="text" name="name">
+```
+
+This is distinct from the programmatic display label above (`<span
+data-smark='{"type":"label",…}'>`).  On non-`<label>` elements, SmarkForm
+emulates label behaviour by injecting `aria-labelledby` where possible and
+focusing the associated field on click.
+
+### Singleton pattern
+
+A non-input wrapper element carrying `data-smark` options around a single
+inner field with bare `data-smark`:
+
+```html
+<span data-smark='{"name":"colour","type":"color"}'>
+  <input data-smark>
+</span>
+```
+
+The wrapper holds the component options (name, type, mask, etc.); the inner
+field has only the bare `data-smark` attribute.  This pattern is useful for
+scoping trigger buttons and mask options without repeating configuration.
+
+Documented at
+`_getting_started/core_component_types.md` →
+[The Singleton Pattern]({{ "/getting_started/core_component_types" | relative_url }}#the-singleton-pattern).
+
 ### Collapsible section
 
 Use the native `<details>` and `<summary>` HTML elements to create collapsible
@@ -505,6 +540,13 @@ Before submitting a SmarkForm implementation, verify:
       different behaviour.
 - [ ] No `value=""` HTML attribute AND `"value":...` in `data-smark` on the same element.
 - [ ] CDN URLs pin to a specific version for production code.
+- [ ] Labels use `<label data-smark>` — auto-linked to adjacent field by DOM
+      proximity; no `for` or `id` needed.  Non-`<label>` label components use
+      `type:"label"` in `data-smark` options.
+- [ ] Anchor links (`#fragment`) in doc pages are verified against actual
+      heading text in the target `.md` file.  Kramdown converts `### Foo Bar`
+      to `#foo-bar` (lowercase, spaces → hyphens, punctuation stripped).
+      Do not guess fragment IDs.
 - [ ] If using mixin templates with `<script>` tags, `smark_mixin_allowLocalScripts: "allow"` (or `smark_mixin_allowSameOriginScripts` / `smark_mixin_allowCrossOriginScripts` for external templates) is set on the root SmarkForm constructor — scripts are blocked by default.
 - [ ] If using mixin type references with an external URL, `smark_mixin_allowExternal: "same-origin"` or `"allow"` is set on the root constructor — external mixin fetches are blocked by default.
 - [ ] If using `enctype="application/json"` form submission, `enableJsonEncoding: true` is set on the root SmarkForm constructor — JSON encoding is disabled by default.
