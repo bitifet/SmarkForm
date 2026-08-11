@@ -128,7 +128,7 @@ initialization.  Try editing values in the preview or exporting to JSON.
     <input name='surname' data-smark>
   </p>
   <p>
-    <label for="colour">Favourite colour:</label>
+    <label data-smark>Favourite colour:</label>
     <span data-smark='{"name":"colour","type":"color"}'>
       <input data-smark>
       <button data-smark='{"action":"clear"}'>❌</button>
@@ -146,9 +146,8 @@ endcapture %}
 with the <code>name</code> option, while the inner input carries the bare <code>data-smark</code>
 attribute.  The ❌ button inside the singleton resolves its target implicitly.
 
-👉 **Label auto-linking.** The label uses <code>for="colour"</code> to link to the
-singleton's <code>name</code> — SmarkForm connects them automatically.  No <code>id</code>
-attribute is needed on the input.
+👉 **Label auto-linking.** A <code>&lt;label <strong>data-smark</strong>&gt;</code> is automatically
+associated with its adjacent field — no <code>for</code> or <code>id</code> attributes needed.
 
 👉 **Null values.** Unlike native HTML, a colour field with no selection exports
 <code>null</code> — try the ❌ button to see it.
@@ -194,18 +193,18 @@ attribute is needed on the input.
   bare attribute.  This allows buttons and other elements to share the same
   field context without repeating the options.
 
-  See <a href="{{ "/advanced_concepts/the_api_interface" | relative_url }}">The API Interface</a>.
+  See <a href="{{ "/getting_started/core_component_types" | relative_url }}#the-singleton-pattern">Core Component Types</a>.
   </div>
 </div>
 
 <div class="feature">
   <button class="feature-summary">Label auto-linking</button>
   <div class="feature-desc">
-  The label uses <code>for="colour"</code> to link to the singleton's <code>name</code> —
-  SmarkForm connects them automatically.  No <code>id</code> attribute is needed on the
-  input; the <code>for</code> resolves against component names.
+  A <code>&lt;label <strong>data-smark</strong>&gt;</code> is automatically associated by SmarkForm with
+  its adjacent field — no <code>for</code> or <code>id</code> attributes needed.  The label
+  next to the colour field is enhanced and linked without any explicit wiring.
 
-  See <a href="{{ "/getting_started/core_component_types" | relative_url }}">Core Component Types</a>.
+  See <a href="{{ "/component_types/type_label" | relative_url }}">Label Component Type</a>.
   </div>
 </div>
 
@@ -216,7 +215,7 @@ attribute is needed on the input.
   (<code>type="color"</code>) is a good example: when no colour is selected it exports
   <code>null</code>, and the ❌ button demonstrates explicit clearing.
 
-  See <a href="{{ "/working_with_forms/value_coercion" | relative_url }}">Value Coercion</a>.
+  See <a href="{{ "/working_with_forms/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
   </div>
 </div>
 
@@ -239,7 +238,7 @@ attribute is needed on the input.
   The editor tab shows the form's current state as JSON.  Edit it and click
   <strong>Import</strong> to see the form react — everything in sync without code.
 
-  See <a href="{{ "/working_with_forms/playground" | relative_url }}">Playground</a>.
+  See <a href="{{ "/resources/playground" | relative_url }}">Playground</a>.
   </div>
 </div>
 
@@ -382,7 +381,7 @@ button { position: relative; }
   and <code>movingDepth:1</code> — SmarkForm recognises that all three columns share
   the same mixin template and allows unrestricted movement between them.
 
-  See <a href="{{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour">List Type — sortable</a>.
+  See <a href="{{ "/component_types/type_list" | relative_url }}#sortable">List Type — sortable</a>.
   </div>
 </div>
 
@@ -428,7 +427,7 @@ button { position: relative; }
   When a column has no tasks the placeholder message is shown; it disappears
   as soon as the first task is added.
 
-  See <a href="{{ "/component_types/type_list" | relative_url }}#template-roles">List Type — Template roles</a>.
+  See <a href="{{ "/component_types/type_list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
@@ -438,7 +437,7 @@ button { position: relative; }
   The column heading and Add button live inside a <code>role:"header"</code> slot —
   rendered once at the top of each list component, not repeated per item.
 
-  See <a href="{{ "/component_types/type_list" | relative_url }}#template-roles">List Type — Template roles</a>.
+  See <a href="{{ "/component_types/type_list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
@@ -844,7 +843,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
   exports the form, it reads <code>unmaskedValue</code> — the price <code>"3 4900.00"</code> becomes
   <code>34900.00</code> in JSON, ready for server processing.
 
-  See <a href="{{ "/working_with_forms/field_masking" | relative_url }}#using-external-masking-libraries">Field Masking — unmaskedValue</a>.
+  See <a href="{{ "/working_with_forms/field_masking" | relative_url }}#masks-and-external-libraries">Field Masking — unmaskedValue</a>.
   </div>
 </div>
 
@@ -855,7 +854,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
   enables drag-and-drop within the list; combined with <code>position</code> action
   for automatic numbering.
 
-  See <a href="{{ "/component_types/type_list" | relative_url }}#sortable-list-behaviour">List Type — sortable</a>.
+  See <a href="{{ "/component_types/type_list" | relative_url }}#sortable">List Type — sortable</a>.
   </div>
 </div>
 
