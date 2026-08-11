@@ -38,9 +38,9 @@ nav_order: 4
     columns: 2 260px;
     column-gap: 1.5em;
     margin: 1em 0;
+    position: relative;
   }
   .feature {
-    position: relative;
     break-inside: avoid;
     margin-bottom: 0.2em;
   }
@@ -67,13 +67,16 @@ nav_order: 4
     content: "▾";
   }
   @media (pointer: coarse) {
+    .feature {
+      font-size: 1.15em;
+    }
     .feature-summary::before {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 1.55em;
-      height: 1.55em;
-      font-size: 0.85em;
+      width: 2.8em;
+      height: 2.8em;
+      font-size: 1.5em;
       border-radius: 50%;
       background: rgba(114, 83, 237, 0.1);
       margin-right: 0.25em;
@@ -82,7 +85,7 @@ nav_order: 4
   .feature-desc {
     display: none;
     position: absolute;
-    left: 0;
+    margin-top: 0.15em;
     z-index: 10;
     background: var(--body-background-color, #fff);
     border: 1px solid var(--border-color, #ddd);
@@ -91,12 +94,15 @@ nav_order: 4
     box-shadow: 0 2px 12px rgba(0,0,0,0.12);
     font-size: 0.92em;
     color: var(--body-text-color, #5c5962);
-    min-width: 240px;
+    width: auto;
     max-width: 320px;
     line-height: 1.45;
   }
   .feature-desc p { margin: 0; }
-  .feature.open .feature-desc { display: block; }
+  .feature.open .feature-desc {
+    display: block;
+    position: absolute;
+  }
 </style>
 
 Welcome to the SmarkForm Showcase — a visual catalogue of what SmarkForm
@@ -122,9 +128,11 @@ initialization.  Try editing values in the preview or exporting to JSON.
     <input name='surname' data-smark>
   </p>
   <p>
-    <label data-smark>Favourite colour:</label>
-    <input name='colour' type='color' data-smark>
-    <button data-smark='{"action":"clear","target":"colour"}'>❌</button>
+    <label for="colour">Favourite colour:</label>
+    <span data-smark='{"name":"colour","type":"color"}'>
+      <input data-smark>
+      <button data-smark='{"action":"clear"}'>❌</button>
+    </span>
   </p>
 </div>{%
 endcapture %}
@@ -134,11 +142,16 @@ endcapture %}
 {% capture just_form_notes -%}
 👉 Fields auto-register from <code>data-smark</code> attributes — no per-field JavaScript.
 
-👉 **Null values.** Unlike native HTML, even <code>&lt;input type='color'&gt;</code> can be
-<code>null</code> when no colour is selected — the ❌ button next to it clears the value.
+👉 **Singleton pattern.** The colour field uses a <code>&lt;span data-smark&gt;</code> wrapper
+with the <code>name</code> option, while the inner input carries the bare <code>data-smark</code>
+attribute.  The ❌ button inside the singleton resolves its target implicitly.
 
-👉 **Triggers.** The ❌ button uses <code>data-smark='{"action":"clear","target":"colour"}'</code>
-to target the colour field specifically.
+👉 **Label auto-linking.** The label uses <code>for="colour"</code> to link to the input's
+<code>id</code> — SmarkForm connects them automatically.  The label could have been
+placed inside the singleton wrapper but stays outside for consistency and readability.
+
+👉 **Null values.** Unlike native HTML, a colour field with no selection exports
+<code>null</code> — try the ❌ button to see it.
 
 > See <a href="{{ "/getting_started/quick_start" | relative_url }}">Quick Start</a>
 > to learn the basics, or check the **✏️ Edit** tab to see the full source.
@@ -169,6 +182,10 @@ to target the colour field specifically.
   JavaScript wiring needed.  Any element with <code>data-smark</code> becomes a SmarkForm
   field component whose name is taken from its <code>name</code> attribute.
 
+  The colour field uses the <strong>singleton pattern</strong>: a wrapper <code>&lt;span data-smark&gt;</code>
+  holds the options, while the inner <code>&lt;input data-smark&gt;</code> is the actual field.
+  The label uses <code>for="colour"</code> and is <strong>auto-linked</strong> by SmarkForm.
+
   See <a href="{{ "/getting_started/core_concepts" | relative_url }}">Core Concepts</a>.
   </div>
 </div>
@@ -176,8 +193,9 @@ to target the colour field specifically.
 <div class="feature">
   <button class="feature-summary">Null values</button>
   <div class="feature-desc">
-  Empty inputs produce <code>null</code> in exported JSON.  The colour field (<code>type="color"</code>)
-  is a good example: when no colour is selected, it exports <code>null</code> rather than an empty string.
+  Empty inputs produce <code>null</code> in exported JSON.  The colour field
+  (<code>type="color"</code>) is a good example: when no colour is selected it exports
+  <code>null</code>, and the ❌ button demonstrates explicit clearing.
 
   See <a href="{{ "/working_with_forms/value_coercion" | relative_url }}">Value Coercion</a>.
   </div>
@@ -187,8 +205,9 @@ to target the colour field specifically.
   <button class="feature-summary">Trigger buttons</button>
   <div class="feature-desc">
   Buttons with <code>data-smark</code> attributes trigger SmarkForm actions —
-  the ❌ button next to the colour field demonstrates the <code>clear</code> action targeted
-  at a specific field, with no custom JavaScript required.
+  the ❌ button inside the colour field's singleton wrapper demonstrates the
+  <code>clear</code> action.  Because the button is inside the singleton span,
+  its target resolves implicitly — no explicit <code>target</code> needed.
 
   See <a href="{{ "/component_types/type_trigger" | relative_url }}">Triggers</a>,
   <a href="{{ "/working_with_forms/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
