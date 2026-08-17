@@ -111,6 +111,10 @@ export class list extends SmarkField {
             me.templates.footer,
         ]) if (!! tpl) {
             me.targetNode.appendChild(tpl);
+            // The header/footer container itself is not a SmarkForm component —
+            // only its children should be enhanced.  Strip data-smark so that
+            // getRoots() matches only the descendants, not the container.
+            tpl.removeAttribute('data-smark');
             // Enhance childs:
             for (
                 const node

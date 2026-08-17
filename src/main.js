@@ -1,7 +1,7 @@
 // SmarkForm.js
 // ============
 
-import {createType} from "./lib/component.js";
+import {createType, stampSourceIds} from "./lib/component.js";
 import {hotKeys_handler} from "./lib/hotkeys.js";
 
 // Import core component types and event handlers:
@@ -43,6 +43,11 @@ class SmarkForm extends form {
     ) {
         // Auto-scan global mask scripts from the document:
         SmarkForm._scanGlobalMasks();
+
+        // Stamp unique source IDs on ALL [data-smark] elements (including those
+        // inside <template> elements) so that clones from the same template
+        // share the same ID — used by cross-list drag-and-drop.
+        stampSourceIds(document);
 
         // Split options: smark_* prefixed → constructor-only, everything else
         // (including on_* event handlers) → pass-through to root form component.

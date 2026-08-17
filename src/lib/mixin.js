@@ -5,6 +5,7 @@
 // normal SmarkForm enhancement begins.
 
 import {parseJSON} from "./helpers.js";
+import {stampSourceIds, nextSourceId} from "./component.js";
 
 // Module-level caches (shared for the lifetime of the page):
 const docCache = new Map();           // absoluteUrl → Promise<Document>
@@ -283,7 +284,11 @@ export async function expandMixin(node, options, component) { //{{{
                     })
                     .then(html => {
                         const parser = new DOMParser();
-                        return parser.parseFromString(html, 'text/html');
+                        const doc = parser.parseFromString(html, 'text/html');
+                        // Stamp source IDs on this external document so
+                        // clones carry the same IDs for cross-list drag.
+                        stampSourceIds(doc);
+                        return doc;
                     })
             );
         }
@@ -364,7 +369,12 @@ export async function expandMixin(node, options, component) { //{{{
         );
     }
 
-    // Deep-clone the template root:
+    // Deep-clone the template root.
+    // Stamp with a unique template ID so clones from the same template
+    // share it — used by cross-list drag-and-drop.
+    if (! templateRoot.dataset.sfTpl) {
+        templateRoot.dataset.sfTpl = nextSourceId();
+    }
     const clone = templateRoot.cloneNode(true);
 
     // Collect snippet parameter nodes: direct children of the placeholder
@@ -387,6 +397,8 @@ export async function expandMixin(node, options, component) { //{{{
     // This prevents id collisions when the mixin is used multiple times and
     // makes default snippet slots self-documenting via data-id.
     convertIds(clone);
+
+    // Gather styles from the template top level (siblings of the root element)
 
     // Gather styles from the template top level (siblings of the root element)
     // and inject them into <head> once per unique content:
@@ -452,6 +464,10 @@ export async function expandMixin(node, options, component) { //{{{
 
     // Merge HTML attributes from placeholder into clone:
     mergeAttributes(clone, node);
+
+    // Now that data-smark is set on the clone root, stamp source IDs
+    // so cross-list drag can identify lists from the same mixin source.
+    stampSourceIds(clone);
 
     // Build the child chain: parent chain + this key.
     // Stored on the newly-created component so that its nested renders
