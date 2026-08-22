@@ -117,10 +117,10 @@ export class input extends form {
         // This runs after all render phases (including subtype validation
         // like number.type's validateInputType), so conversions are safe.
         if (me.options.mask && !me.isSingleton) {
-            me.onRendered(() => { me._applyMask(); });
+            me.onRendered(() => me._applyMask());
         }
     }; // }}}
-    _applyMask() {//{{{
+    async _applyMask() {//{{{
         const me = this;
         const maskName = me.options.mask;
         const scopedMasks = me._scopedMasks || {};
@@ -157,26 +157,19 @@ export class input extends form {
             };
         };
         const prevFocus = document.activeElement;
-        me._maskInstance = maskFactory(me.targetFieldNode) ?? null;
+        me._maskInstance = await maskFactory(me.targetFieldNode) ?? null;
+        // Restore focus stolen by the mask factory (some third-party mask
+        // libraries focus the field as a side effect of initialization).
         if (document.activeElement !== prevFocus) {
             if (prevFocus && prevFocus !== document.body) {
                 prevFocus.focus();
+            } else if (
+                document.activeElement
+                && document.activeElement !== document.body
+                && document.activeElement !== document.documentElement
+            ) {
+                document.activeElement.blur();
             };
-        };
-        // Third-party mask libraries (e.g. Inputmask) may focus the field
-        // asynchronously after the factory returns.  Poll briefly to catch
-        // any delayed focus theft and restore the original active element.
-        if (!prevFocus || prevFocus === document.body) {
-            const restore = () => {
-                if (
-                    document.activeElement
-                    && document.activeElement !== document.body
-                    && document.activeElement !== document.documentElement
-                ) document.activeElement.blur();
-            };
-            setTimeout(restore, 0);
-            setTimeout(restore, 50);
-            setTimeout(restore, 100);
         };
     };//}}}
     _setTargetFieldValue(value) {//{{{

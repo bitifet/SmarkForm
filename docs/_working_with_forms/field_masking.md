@@ -27,11 +27,12 @@ nav_order: 5
 * [Credit Card Example (IMask)](#credit-card-example-imask)
 * [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library-singleton-list)
 * [Mixin-Scoped Masks](#mixin-scoped-masks)
-* [Using Other Masking Libraries (Inputmask)](#using-other-masking-libraries-inputmask)
+* [Using Other Masking Libraries (Maska)](#using-other-masking-libraries-maska)
 * [Error Handling](#error-handling)
     * [`smark_mask_throwOnMissing: true` (default)](#smark_mask_throwonmissing-true-default)
     * [`smark_mask_throwOnMissing: false`](#smark_mask_throwonmissing-false)
     * [Error Codes](#error-codes)
+* [Focus and Mask Factories](#focus-and-mask-factories)
 * [Masks and External Libraries](#masks-and-external-libraries)
 
 <!-- vim-markdown-toc -->
@@ -57,12 +58,16 @@ When a field has a `mask` property in its `data-smark`, SmarkForm:
 2. Converts the input type to `text` so masking libraries can operate freely.
 3. Looks up the mask factory by name — first in scoped (mixin) masks, then in
    the global registry.
-4. Calls the factory with the field's target DOM node.
-5. Stores the returned mask instance in `_maskInstance`.
-6. Exports the **unmasked value** (raw data) instead of the formatted display.
-7. Dispatches `input` events when values are set programmatically so masks stay
+4. **Awaits** the factory (factories may be `async`). The factory receives the
+   field's target DOM node and must return an object with an `unmaskedValue`
+   property (getter/setter pair) — or `null`/`undefined` for unmasked fields.
+5. **Restores focus** to its previous owner if the factory stole it (some
+   third-party mask libraries focus the field as a side effect).
+6. Stores the returned mask instance in `_maskInstance`.
+7. Exports the **unmasked value** (raw data) instead of the formatted display.
+8. Dispatches `input` events when values are set programmatically so masks stay
    synchronized.
-8. If the mask fails (not found or factory throws), the original type is
+9. If the mask fails (not found or factory throws), the original type is
    **restored** and the field operates unmasked.
 
 ## Applying a Mask to a Field
@@ -72,6 +77,7 @@ automatically when the field renders — no post-construction setup needed.
 
 {% raw %}<!-- apply_mask_form {{{ -->{% endraw %}
 {% capture apply_mask_form -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
 <div id="myForm$$">
   <label data-smark>Card Number:</label>
   <input
@@ -83,28 +89,17 @@ automatically when the field renders — no post-construction setup needed.
 
 {% raw %}<!-- apply_mask_async_js {{{ -->{% endraw %}
 {% capture apply_mask_async_js -%}
-let myForm;
+SmarkForm.registerMask("cardNumber", (node) => {
+  const imask = new IMask(node, { mask: "0000 0000 0000 0000" });
+  return imask;
+});
 
-(async () => {
-  // Dynamically load IMask from CDN
-  await new Promise((resolve) => {
-    const script = document.createElement("script");
-    script.src = "https://cdn.jsdelivr.net/npm/imask@6.6.3";
-    script.onload = resolve;
-    document.head.appendChild(script);
-  });
-
-  SmarkForm.registerMask("cardNumber", (node) => {
-    return new IMask(node, { mask: "0000 0000 0000 0000" });
-  });
-
-  myForm = new SmarkForm(document.getElementById("myForm$$"));
-})();
+const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- apply_mask_notes {{{ -->{% endraw %}
 {% capture apply_mask_notes -%}
-The HTML declares a `number`-type field with `mask: "cardNumber"`. SmarkForm converts it to `type="text"` so IMask can operate, then exports the clean digit string. The JS wraps everything in an async IIFE that dynamically loads IMask from CDN — keeping the HTML snippet clean and focused on the form structure.
+The HTML declares a `number`-type field with `mask: "cardNumber"`. SmarkForm converts it to `type="text"` so IMask can operate, then exports the clean digit string.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -133,6 +128,12 @@ Call `SmarkForm.registerMask()` before constructing any form that uses the mask.
 The factory receives the field's target DOM node and must return an object with
 an `unmaskedValue` property (getter/setter pair) so SmarkForm can read and
 write the clean value independently of the formatted display.
+
+Factories may be **`async`** — SmarkForm awaits them. If a mask library
+performs deferred work (e.g. focusing the field via `setTimeout`), the factory
+should `await` that work before returning so that SmarkForm can restore focus
+to its previous owner. See [Focus and Mask Factories](#focus-and-mask-factories)
+for details.
 
 **Returning `null` or `undefined`** from the factory is allowed: the field
 operates unmasked. This is useful for conditional masking.
@@ -460,19 +461,20 @@ The `digits` mask is defined inside the `#digitsMixin` template via a `<script t
 This example requires `smark_mixin_allowLocalScripts: "allow"` because the
 `<script>` inside the `<template>` must be executed by the mixin system.
 
-## Using Other Masking Libraries (Inputmask)
+## Using Other Masking Libraries (Maska)
 
 SmarkForm works with **any** masking library — not just IMask. The only
 requirement is that the factory returns an object with an `unmaskedValue`
 getter/setter pair.
 
-This example uses [Inputmask](https://github.com/RobinHerbots/Inputmask) to
-format a price field. The factory wraps the library's API: `unmaskedvalue()`
-for the getter and `setValue()` for the setter.
+This example uses [Maska](https://github.com/beholdr/maska) to format a price
+field with thousand separators and two decimal places. The factory uses
+Maska's `Mask` class for synchronous formatting and listens to the `maska`
+event to track the unmasked value for export.
 
-{% raw %}<!-- inputmask_html {{{ -->{% endraw %}
-{% capture inputmask_html -%}
-<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputmask.min.js"></script>
+{% raw %}<!-- maska_html {{{ -->{% endraw %}
+{% capture maska_html -%}
+<script src="https://cdn.jsdelivr.net/npm/maska@1.5.1/dist/maska.js"></script>
 <div id="myForm$$">
   <p>
     <label>Price:</label>
@@ -481,27 +483,25 @@ for the getter and `setValue()` for the setter.
 </div>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-{% raw %}<!-- inputmask_js {{{ -->{% endraw %}
-{% capture inputmask_js -%}
+{% raw %}<!-- maska_js {{{ -->{% endraw %}
+{% capture maska_js -%}
 SmarkForm.registerMask("price", (node) => {
   node.inputMode = "decimal";
 
-  Inputmask({
-    alias: "numeric",
-    groupSeparator: " ",
-    radixPoint: ".",
-    digits: 2,
-    digitsOptional: false,
-    placeholder: "0",
-    allowMinus: false,
-  }).mask(node);
+  Maska.create(node, {
+    mask: "####.##",
+    tokens: {
+      "#": { pattern: /[0-9]/ },
+    },
+  });
 
   return {
     get unmaskedValue() {
-      return node.inputmask?.unmaskedvalue() ?? node.value;
+      return node.dataset.maskRawValue || "";
     },
     set unmaskedValue(v) {
-      node.inputmask?.setValue(v);
+      node.value = String(v);
+      node.dispatchEvent(new Event("input"));
     },
   };
 });
@@ -509,16 +509,20 @@ SmarkForm.registerMask("price", (node) => {
 const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-{% raw %}<!-- inputmask_notes {{{ -->{% endraw %}
-{% capture inputmask_notes -%}
-The factory uses Inputmask's `numeric` alias with `groupSeparator: " "` (space every 3 digits), `radixPoint: "."` (always display period), `digits: 2` (two decimal places), and `digitsOptional: false` (show `.00` until decimal digits are typed). The wrapper reads `unmaskedvalue()` for export and calls `setValue()` for import — SmarkForm only needs the `unmaskedValue` contract.
+{% raw %}<!-- maska_notes {{{ -->{% endraw %}
+{% capture maska_notes -%}
+The factory creates a `Maska` instance with a `####.##` pattern for
+four integer digits and two decimal places. Maska stores the raw digit
+string in `node.dataset.maskRawValue` — the getter returns it for
+export. The setter writes the value and dispatches an `input` event so
+Maska reformats the display.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
-   formId="inputmask-price"
-   htmlSource=inputmask_html
-   jsHead=inputmask_js
-   notes=inputmask_notes
+   formId="maska-price"
+   htmlSource=maska_html
+   jsHead=maska_js
+   notes=maska_notes
    showEditor=true
    selected="js"
    tests=false
@@ -558,6 +562,40 @@ const myForm = new SmarkForm("#myForm", {
 
 See [Error Codes Reference](error_codes) for all SmarkForm error codes.
 
+## Focus and Mask Factories
+
+Some third-party mask libraries focus the input field as a side effect of
+initialization — typically via `setTimeout(focus, 0)`. Since SmarkForm
+**awaits** the factory before restoring focus, any deferred focus calls must
+have fired before the factory returns.
+
+**If the library focuses the field synchronously** (e.g. IMask, Maska), no
+special handling is needed — SmarkForm restores focus after the factory returns.
+
+**If the library focuses the field asynchronously** (e.g. Inputmask via
+`setTimeout`), the factory should `await` a macrotask yield so that the
+deferred focus fires before returning:
+
+```js
+SmarkForm.registerMask("price", async (node) => {
+  Inputmask({ alias: "numeric", ... }).mask(node);
+
+  // Yield one macrotask so Inputmask's deferred focus fires.
+  // SmarkForm will then restore focus to its previous owner.
+  await new Promise((r) => setTimeout(r, 0));
+
+  return { get unmaskedValue() { ... }, set unmaskedValue(v) { ... } };
+});
+```
+
+Without this yield, Inputmask would focus the field **after** SmarkForm
+restores focus, leaving the field unexpectedly focused.
+
+See the [FAQ — My masked field gets focused unexpectedly](
+{{ "/about/faq" | relative_url }}#my-masked-field-gets-focused-unexpectedly-after-form-construction)
+for the full Inputmask case study, including the known limitation where
+Inputmask re-focuses the field after a programmatic `blur()`.
+
 ## Masks and External Libraries
 
 SmarkForm does **not** include or prescribe any masking library. You are free
@@ -565,6 +603,9 @@ to use:
 
 - **[IMask.js](https://imask.js.org/)** — feature-rich, pattern-based masking
   (demonstrated in examples above).
+- **[Maska](https://github.com/beholdr/maska)** — lightweight, zero-dependency
+  masking for vanilla JS, Vue, Alpine.js, and Svelte (see
+  [Using Other Masking Libraries](#using-other-masking-libraries-maska)).
 - **A custom pure-JavaScript factory** — see [Custom Mask Example](#custom-mask-example-no-library).
 - **Any other library** that can be wrapped in a factory returning
   `{ unmaskedValue }`.

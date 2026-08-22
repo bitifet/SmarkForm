@@ -54,7 +54,7 @@ For convenience, include this exact sentence in the PR description when you want
 SmarkForm's declarative masking API allows integrating external masking libraries via `SmarkForm.registerMask(name, factory)` and `<script type="smark-mask">` elements. Masks are applied to fields using the `mask` property in `data-smark`. The mask instance is stored in `_maskInstance` and provides `unmaskedValue` for clean exports.
 
 **Key API**:
-- `SmarkForm.registerMask(name, factory)`: Registers a mask factory globally before form construction
+- `SmarkForm.registerMask(name, factory)`: Registers a mask factory globally before form construction. Factories may be `async` — SmarkForm awaits them via `_applyMask()`.
 - `<script type="smark-mask" data-name="...">`: Declarative mask registration — scanned by `_scanGlobalMasks()` in the constructor
 - `data-smark mask` property: e.g., `<input data-smark='{"name":"card","mask":"digits"}'>`
 - `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
@@ -64,6 +64,7 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - Mixin-scoped masks: `<script type="smark-mask">` inside `<template>` is scoped, not global; requires `allowLocalMixinScripts: 'allow'`
 - On error (mask not found or factory throws), original input type is restored; if `smark_mask_throwOnMissing` is `true` an error is thrown, otherwise a `console.warn` is emitted
 - `MASK_APPLY_ERROR`: thrown when a mask factory throws; the original exception is available via `error.cause`
+- **Focus restoration**: `_applyMask()` saves `document.activeElement` before calling the factory and restores it afterward. If a mask library focuses the field asynchronously (e.g. Inputmask via `setTimeout`), the factory must `await` a macrotask yield before returning so the deferred focus fires before SmarkForm restores focus. See the "Focus and Mask Factories" section in `docs/_working_with_forms/field_masking.md`.
 
 **Configuration file locations**:
 - Tests: `test/declarative_mask.tests.js`, `test/mask.tests.js`

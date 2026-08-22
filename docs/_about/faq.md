@@ -59,6 +59,7 @@ around edge cases or features that might catch you off guard at first.
     * [Where's the error message when something goes wrong?](#wheres-the-error-message-when-something-goes-wrong)
     * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
     * [What does `await myForm.rendered` do?](#what-does-await-myformrendered-do)
+    * [My masked field gets focused unexpectedly after form construction](#my-masked-field-gets-focused-unexpectedly-after-form-construction)
 * [API & JavaScript](#api-javascript)
     * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
     * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
@@ -1024,6 +1025,53 @@ await myForm.import({ address: { city: "Paris" } });
 
 Event handlers registered via `myForm.on(…)` are always called after rendering
 is complete, so you do not need to `await myForm.rendered` inside them.
+
+### My masked field gets focused unexpectedly after form construction
+
+Some third-party mask libraries (most notably
+[Inputmask](https://github.com/RobinHerbots/Inputmask)) focus the input field as
+a side effect of their initialization — typically via `setTimeout(focus, 0)`.
+After SmarkForm constructs the form, you may find that a masked field has
+keyboard focus even though nothing in your code requested it.
+
+**How SmarkForm handles this:**
+
+SmarkForm's `_applyMask()` saves `document.activeElement` before calling the
+factory and restores it afterward. If the library focuses the field
+**synchronously** (e.g. [IMask.js](https://imask.js.org/)), the restore works
+out of the box.
+
+If the library focuses the field **asynchronously** (e.g. Inputmask via
+`setTimeout`), the factory must `await` a macrotask yield so that the deferred
+focus fires **before** the factory returns:
+
+```javascript
+SmarkForm.registerMask("price", async (node) => {
+  Inputmask({ alias: "numeric", ... }).mask(node);
+
+  // Yield one macrotask so Inputmask's deferred focus fires.
+  // SmarkForm will then restore focus to its previous owner.
+  await new Promise((r) => setTimeout(r, 0));
+
+  return {
+    get unmaskedValue() { return node.inputmask?.unmaskedvalue(); },
+    set unmaskedValue(v) { node.inputmask?.setValue(v); },
+  };
+});
+```
+
+Without this yield, Inputmask would focus the field **after** SmarkForm
+restores focus, leaving the field unexpectedly focused.
+
+**Known limitation:** if the library re-focuses the field in its `blur` event
+handler (as Inputmask does), the programmatic `blur()` in SmarkForm's focus
+restore may be undone. In that case, the only reliable fix is to prevent the
+library from focusing the field in the first place — or to accept the focus as
+a library-specific side effect.
+
+See [Field Masking — Focus and Mask Factories](
+{{ "/working_with_forms/field_masking" | relative_url }}#focus-and-mask-factories)
+for the full documentation.
 
 
 ## API & JavaScript
