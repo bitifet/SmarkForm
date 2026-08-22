@@ -579,7 +579,7 @@ export class SmarkComponent {
     // Error types:
     handleRenderError(error) {//{{{
         if (! (error instanceof errors.renderError)) return false;
-        console.error(error);
+        console.error(String(error));
         return true;
     };//}}}
     renderError(code, message, targetNodeOverride) {//{{{

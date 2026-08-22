@@ -156,7 +156,28 @@ export class input extends form {
                 fld.setAttribute("type", "text");
             };
         };
+        const prevFocus = document.activeElement;
         me._maskInstance = maskFactory(me.targetFieldNode) ?? null;
+        if (document.activeElement !== prevFocus) {
+            if (prevFocus && prevFocus !== document.body) {
+                prevFocus.focus();
+            };
+        };
+        // Third-party mask libraries (e.g. Inputmask) may focus the field
+        // asynchronously after the factory returns.  Poll briefly to catch
+        // any delayed focus theft and restore the original active element.
+        if (!prevFocus || prevFocus === document.body) {
+            const restore = () => {
+                if (
+                    document.activeElement
+                    && document.activeElement !== document.body
+                    && document.activeElement !== document.documentElement
+                ) document.activeElement.blur();
+            };
+            setTimeout(restore, 0);
+            setTimeout(restore, 50);
+            setTimeout(restore, 100);
+        };
     };//}}}
     _setTargetFieldValue(value) {//{{{
         const me = this;
