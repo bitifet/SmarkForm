@@ -497,10 +497,27 @@ SmarkForm.registerMask("price", (node) => {
 
   return {
     get unmaskedValue() {
-      return node.dataset.maskRawValue || "";
+      const raw = node.dataset.maskRawValue || "";
+      if (!raw) return "";
+      // maskRawValue is just digits. For "####.##", last 2 are decimal:
+      return Number(raw.slice(0, -2) + "." + raw.slice(-2));
     },
     set unmaskedValue(v) {
-      node.value = String(v);
+      if (v === "" || v === null || v === undefined) {
+        node.value = "";
+        node.dispatchEvent(new Event("input"));
+        return;
+      }
+      const num = Number(v);
+      if (isNaN(num)) {
+        node.value = String(v);
+        node.dispatchEvent(new Event("input"));
+        return;
+      }
+      // Pre-format to exactly 4+2 raw digits matching "####.##":
+      const raw = Math.round(Math.abs(num) * 100);
+      node.value = String(Math.floor(raw / 100)).padStart(4, "0").slice(-4)
+                + String(raw % 100).padStart(2, "0");
       node.dispatchEvent(new Event("input"));
     },
   };
@@ -513,9 +530,14 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {% capture maska_notes -%}
 The factory creates a `Maska` instance with a `####.##` pattern for
 four integer digits and two decimal places. Maska stores the raw digit
-string in `node.dataset.maskRawValue` — the getter returns it for
-export. The setter writes the value and dispatches an `input` event so
-Maska reformats the display.
+string (without separators) in `node.dataset.maskRawValue`.
+
+The **getter** parses that string, inserts a decimal point two positions
+from the right and returns a proper number (e.g. `"123456"` → `1234.56`).
+
+The **setter** pre-formats the incoming number to the exact 4+2 raw
+digits the mask expects (e.g. `1234.56` → `"123456"`), writes it to the
+field and dispatches an `input` event so Maska reformats the display.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
