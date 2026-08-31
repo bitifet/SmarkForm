@@ -503,14 +503,13 @@ SmarkForm.registerMask("price", (node) => {
       return Number(raw.slice(0, -2) + "." + raw.slice(-2));
     },
     set unmaskedValue(v) {
-      if (v === "" || v === null || v === undefined) {
-        node.value = "";
-        node.dispatchEvent(new Event("input", {bubbles: true}));
-        return;
-      }
       const num = Number(v);
-      if (isNaN(num)) {
-        node.value = String(v);
+      if (
+        v === "" || v === null || v === undefined
+        || isNaN(num)
+        || num < 0 || num > 9999.99
+      ) {
+        node.value = "";
         node.dispatchEvent(new Event("input", {bubbles: true}));
         return;
       }
@@ -538,6 +537,8 @@ from the right and returns a proper number (e.g. `"123456"` → `1234.56`).
 The **setter** pre-formats the incoming number to the exact 4+2 raw
 digits the mask expects (e.g. `1234.56` → `"123456"`), writes it to the
 field and dispatches an `input` event so Maska reformats the display.
+Values outside the `0..9999.99` range the pattern can represent are
+rejected and the field is cleared instead.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -641,4 +642,11 @@ to use:
 > The factory receives one argument (the target `<input>` element) and returns
 > an object with an `unmaskedValue` property (getter/setter pair), or
 > `null`/`undefined` to indicate "no masking".
+>
+> The `unmaskedValue` **getter** may return any scalar type (string, number,
+> boolean, `null`). SmarkForm stringifies the getter's return value when
+> exporting to non-null fields, so a getter that returns a number is fine —
+> e.g. `return 1234.56;`. A returned `null` is preserved as-is to signal "no
+> value" (useful for partially-filled fields). The **setter** receives the raw
+> unformatted value and is responsible for writing the formatted display.
 

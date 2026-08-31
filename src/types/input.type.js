@@ -274,7 +274,12 @@ export class input extends form {
             me._maskInstance != null
             && me._maskInstance.unmaskedValue !== undefined
         ) {
-            retv = me._maskInstance.unmaskedValue;
+            // Stringify the mask's unmasked value to match the string contract
+            // of a native field (like nodeFld.value). Some mask types (e.g.
+            // number) rely on string semantics (length/isNaN), and consumers
+            // expect strings. Preserve null for masks that signal "no value".
+            const unmaskedValue = me._maskInstance.unmaskedValue;
+            retv = unmaskedValue === null ? null : String(unmaskedValue);
         } else {
             retv = nodeFld.value;
         };
