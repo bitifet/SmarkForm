@@ -175,7 +175,15 @@ export class input extends form {
     _setTargetFieldValue(value) {//{{{
         const me = this;
         if (me.isSingleton) return; // (Only for real field)
-        me.targetFieldNode.value = value;
+        const masked = me._maskInstance != null && 'unmaskedValue' in me._maskInstance;
+        if (masked && value != null) {
+            // Delegate to the mask setter so it can format and sync its internal
+            // state. Only for real values: some mask libraries (e.g. IMask) throw
+            // on null/undefined.
+            me._maskInstance.unmaskedValue = value;
+        } else {
+            me.targetFieldNode.value = value;
+        };
         if (me._maskInstance != null) {
             me.targetFieldNode.dispatchEvent(new Event("input", {bubbles: true}));
         };

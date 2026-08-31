@@ -130,7 +130,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 `, `SmarkForm.registerMask("digits", (node) => {
     let _u = '';
-    const inst = { get unmaskedValue() { return _u; }, set unmaskedValue(v) { _u = v; } };
+    const inst = { get unmaskedValue() { return _u; }, set unmaskedValue(v) { _u = v; node.value = String(v); } };
     node.addEventListener('input', () => { _u = node.value.replace(/[^0-9]/g, ''); });
     return inst;
 });`);

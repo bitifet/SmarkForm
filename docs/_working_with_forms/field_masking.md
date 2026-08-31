@@ -505,20 +505,20 @@ SmarkForm.registerMask("price", (node) => {
     set unmaskedValue(v) {
       if (v === "" || v === null || v === undefined) {
         node.value = "";
-        node.dispatchEvent(new Event("input"));
+        node.dispatchEvent(new Event("input", {bubbles: true}));
         return;
       }
       const num = Number(v);
       if (isNaN(num)) {
         node.value = String(v);
-        node.dispatchEvent(new Event("input"));
+        node.dispatchEvent(new Event("input", {bubbles: true}));
         return;
       }
       // Pre-format to exactly 4+2 raw digits matching "####.##":
       const raw = Math.round(Math.abs(num) * 100);
       node.value = String(Math.floor(raw / 100)).padStart(4, "0").slice(-4)
                 + String(raw % 100).padStart(2, "0");
-      node.dispatchEvent(new Event("input"));
+      node.dispatchEvent(new Event("input", {bubbles: true}));
     },
   };
 });
