@@ -11,6 +11,54 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+<!-- Add new entries here when preparing the next release. -->
+
+---
+
+## [0.19.0] — 2026-09-01
+
+🛡️ Field masking · 🔧 Constructor-only `smark_*` options · 🛡️ Options serialization validation
+
+SmarkForm 0.19.0 introduces declarative field masking — a new `mask` option on input fields plus `SmarkForm.registerMask()` and `<script type="smark-mask" data-name="…">` registration, letting you plug in libraries like IMask or Maska with `unmaskedValue` export/import integration. It also clarifies the constructor-only option boundary via the new `smark_*` naming convention (with `registerCustomAction()` replacing the deprecated `customActions` option), adds descriptive validation errors for `data-smark` serialization, and improves masked-field feedback with invalid styling and a resizable showcase preview.
+
+### Features
+
+- **Field masking**: Input fields accept a `mask` option (`data-smark='{"name":"…","mask":"card"}'`). Masks are registered either programmatically via `SmarkForm.registerMask(name, factory)` or declaratively with `<script type="smark-mask" data-name="…">` elements, and may be scoped to mixin templates. `export()` returns the mask's `unmaskedValue` (falling back to the raw value) and `import()` writes through the mask setter so formatted values stay synchronized. Factory functions may be `async` and are awaited internally.
+- **`smark_*` constructor-only options**: Mixin security policies were renamed to the `smark_mixin_*` family (e.g. `allowExternalMixins` → `smark_mixin_allowExternal`) and the mask-fallback toggle became `smark_mask_throwOnMissing`, marking a clear namespace for options that can only be set at construction time — and preventing privilege escalation via `data-smark` on nested components.
+- **`registerCustomAction()`**: New programmatic API for defining root-level custom actions, replacing the deprecated `customActions` constructor option (`component.actions` is slated for privatization).
+- **Options serialization validation**: Invalid/unsafe `data-smark` options now produce descriptive error messages instead of crashing or silently misbehaving.
+- **Invalid-field feedback**: Masked fields show a soft amber outline for the incomplete intermediate state, plus an orange blink for errors, applied via CSS on the documented examples.
+- **Test tooling**: New `npm run test:help` summarizes the test suite types, locations, and tips.
+- **AI assistant skills**: Installable SmarkForm skill specs (Form Builder + Advanced Internals) for opencode and similar tools, plus a maintained Developer Cheatsheet with a validation script.
+
+> **⚠️ Breaking changes (0.x.y):** The mixin security option names changed to the `smark_mixin_*` family, the mask-fallback toggle renamed to `smark_mask_throwOnMissing`, and the `customActions` constructor option was removed in favor of `SmarkForm.registerCustomAction()`. These follow the early-development policy for `0.x.0` minor releases; patch releases are always safe.
+
+### Bug Fixes
+
+- **Mask import/export round-trip**: String values are passed through mask setters on import and `unmaskedValue` is stringified on export for consistent field semantics regardless of the field type's coercion; mask instances receive the new value even when the boundary type would otherwise convert it (e.g. `number` fields).
+- **Focus preservation**: SmarkForm saves and restores `document.activeElement` around async mask factory calls, so lazy-loaded mask libraries no longer steal focus.
+- **IMask example correctness**: The credit-card example imports via IMask's top-level setter and syncs its internal selection so the post-import `input` event is a no-op instead of doubling the value; incomplete cards export `null` and mark the field invalid.
+- **Options handling**: Fixed `on*`/`smark_*` filtering in `setNodeOptions` so event and constructor-only options flow through correctly without leaking into serialized options.
+- **Miscellaneous**: Mask-format blink/refresh suppressed on Backspace/Delete hitting separators; string selector resolution in the SmarkForm constructor; drag-stop now uses Pointer Events; resize handle works outside edit mode.
+
+### Documentation
+
+- **Field masking guide**: New `docs/_working_with_forms/field_masking.md` with registering/applying masks, IMask and Maska examples, Credit Card and phone-mask demos, singleton forms, and a FAQ section.
+- **Docs restructure**: "Advanced Concepts" split into the new `docs/_working_with_forms/` collection (keyboard navigation with Tab-flow + Alt+Enter demos, value coercion playable demos, hotkeys pages, animations) with TOC review.
+- **Showcase**: Field Masking demo added with a full credit-card example, invalid-state styling, and a resizable preview handle.
+- **Directional options**: The `on_*` options clarified as pass-through (not constructor-only) in the constructor page.
+- **Skills & cheatsheet**: Added `skills/` installable specs and `docs/_resources/cheatsheet.md` with a structural validation script.
+
+### Other
+
+- The Babel 8 upgrade was reverted (incompatible with `@rollup/plugin-babel`); dev-dependency updates and an `npm audit` fix (zero vulnerabilities).
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.19.0)
+
+---
+
 ## [0.18.0] — 2026-05-18
 
 🔒 Per-origin mixin security policies · 🐛 Cross-list drag-and-drop insertion order · 🐛 Nested list onRendered lifecycle
