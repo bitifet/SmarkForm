@@ -303,7 +303,7 @@ endif %}{% if jsHidden != '-'
     <ul>
       <li><code>⬇️ Export</code> to export the form data to the <em>JSON playground editor</em>.</li>
       <li><code>⬆️ Import</code> to import data from the <em>JSON playground editor</em> into the form.</li>
-      <li><code>♻️ Reset</code> to reset the form to its default values.</li>
+      <li><code>♻️ Reset</code> in forms prefilled with sample data, resets the form to its default values.</li>
       <li><code>❌ Clear</code> to clear the whole form.</li>
     </ul>
     <p>💡 The <em>JSON playground editor</em> is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused on what matters.</p>

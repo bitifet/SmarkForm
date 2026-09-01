@@ -215,7 +215,7 @@ endcapture %}
   </picture>
 </h1>
 
-🚀 **Powerful while effortless Markup-driven and Extendable form controller.**
+🚀 **Add subforms, dynamic lists, hotkeys and more to any HTML form in one line of JavaScript.**
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]

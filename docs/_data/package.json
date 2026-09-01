@@ -12,6 +12,7 @@
     "pretest:quick": "npm run pretest",
     "test:quick": "scripts/test_quick.sh",
     "test:pick": "npm run pretest && scripts/test_pick.sh",
+    "test:help": "scripts/test_help.sh",
     "build": "scripts/build_production_smarkform.sh",
     "doc": "scripts/build_documentation_site.sh",
     "bundle": "scripts/build_all.sh",
