@@ -179,8 +179,10 @@ export class input extends form {
         if (masked && value != null) {
             // Delegate to the mask setter so it can format and sync its internal
             // state. Only for real values: some mask libraries (e.g. IMask) throw
-            // on null/undefined.
-            me._maskInstance.unmaskedValue = value;
+            // on null/undefined. Pass a string: the mask boundary uses the same
+            // string contract as native inputs (nodeFld.value), regardless of
+            // the field type's coercion (e.g. number converts to Number first).
+            me._maskInstance.unmaskedValue = String(value);
         } else {
             me.targetFieldNode.value = value;
         };
