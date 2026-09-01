@@ -2735,7 +2735,18 @@ SmarkForm.registerMask("card", (node) => {
     get unmaskedValue() {
       return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
     },
-    set unmaskedValue(v) { imask.masked.unmaskedValue = v; },
+    set unmaskedValue(v) {
+      // Use IMask's top-level setter (syncs the DOM via updateControl).
+      imask.unmaskedValue = v;
+      // IMask diffs an `input` event against its last saved selection, which
+      // is only refreshed on focus/keydown. Since SmarkForm dispatches an
+      // `input` event after every import, a stale selection would make IMask
+      // read the imported value as a duplicate insertion (e.g. "4111" →
+      // "4111 4111"). Sync caret and selection to the end instead.
+      const len = node.value.length;
+      node.setSelectionRange(len, len);
+      imask._selection = { start: len, end: len };
+    },
   };
 });
 
