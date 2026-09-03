@@ -179,6 +179,12 @@ Key highlights:
 
 ## Social Media Texts
 
+> **ALSO IMPORTANT:** In addition to the docs and changelog links, include a
+> link to the **Telegram channel** (https://t.me/s/smarkform) in every other
+> announcement (Twitter/X, LinkedIn, etc.) where space permits, to drive
+> cross-platform following. Prefer it alongside the docs link, e.g.
+> `📢 Telegram: https://t.me/s/smarkform`.
+
 > All variants below are fully written and ready to copy. Adjust emoji or tone to taste.
 
 ### Twitter / X
