@@ -55,6 +55,7 @@ around edge cases or features that might catch you off guard at first.
     * [How do I add custom actions?](#how-do-i-add-custom-actions)
     * [How do I add keyboard shortcuts (hotkeys)?](#how-do-i-add-keyboard-shortcuts-hotkeys)
     * [What if I want to reach an outer action with the same hotkey?](#what-if-i-want-to-reach-an-outer-action-with-the-same-hotkey)
+    * [Can one trigger act on several components at once?](#can-one-trigger-act-on-several-components-at-once)
 * [Behaviour & Troubleshooting](#behaviour-troubleshooting)
     * [Where's the error message when something goes wrong?](#wheres-the-error-message-when-something-goes-wrong)
     * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
@@ -966,6 +967,34 @@ This is [well explained]({{ "/resources/user_guide" | relative_url
 }}#second-level-hotkeys-reaching-outer-contexts) of the end-user guide — 🚀
 feel free to link it in your UI or documentation to [help your users discover this
 kind of features]({{ "/community/branding" | relative_url }}).
+
+
+### Can one trigger act on several components at once?
+
+Yes — when the `context` (and optionally `target`) of a trigger is a **wildcard**
+path (e.g. `"*"` or `"foo/*"`), SmarkForm resolves it to **every matching
+component** and dispatches the action to each one in sequence. This is the
+multi-context edge case of a trigger.
+
+A single `context:"*"` button can therefore affect many independent components
+across the form in one click:
+
+```html
+<!-- Removes empty items from EVERY list in the form at once -->
+<button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹 Clean all lists</button>
+```
+
+A few things to keep in mind:
+
+- Only components that **implement the requested action** receive the call;
+  others are skipped silently (no error).
+- Each matched context gets its own dispatch with its own resolved `target` —
+  so `target:"*"` operates on the children of *each* context individually.
+- Actions run **sequentially** and are awaited one by one.
+- For a normal (non-wildcard) `context`, behaviour is unchanged: the action
+  fires on a single component as always.
+
+See [Wildcard `context` Multi-Dispatch]({{ "/working_with_forms/form_traversing#wildcard-context-multi-dispatch" | relative_url }}) for full details.
 
 ## Behaviour & Troubleshooting
 

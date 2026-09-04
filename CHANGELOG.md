@@ -15,6 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 <!-- Add new entries here when preparing the next release. -->
 
+### Features
+
+- **Multi-context triggers**: A trigger whose `context` (and optionally
+  `target`) is a wildcard path (e.g. `"*"` or `"foo/*"`) now dispatches its
+  action to **all** matching components in sequence, each with its own resolved
+  target. Components that don't implement the action are skipped silently.
+  Useful for a single "clean up everything" button (e.g.
+  `context:"*"`, `target:"*"`, `preserve_non_empty:true`). Behaviour for
+  non-wildcard contexts is unchanged.
+
 ---
 
 ## [0.19.0] — 2026-09-01
