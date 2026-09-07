@@ -251,6 +251,17 @@ await form.import({ name: "Alice" });   // Import data
 </div>
 ```
 
+**Field-level JSON round-trips:** add `{"encoding":"json"}` to any `<input>`,
+`<textarea>` or `<select>` to export a parsed JS value and import by serializing
+to JSON text:
+
+```html
+<textarea name="metadata" data-smark='{"encoding":"json"}'></textarea>
+```
+
+Applies to the field's own import/export; other fields keep their raw values.
+> See: [JSON encoding]({{ "working_with_forms/value_coercion" | relative_url }}#json-encoding)
+
 **Copy pattern:**
 ```javascript
 const data = await form.find("/billing").export();

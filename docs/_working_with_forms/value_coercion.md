@@ -143,6 +143,8 @@ export:
 - Any field exports **`null`** when empty, to explicitly signal "unknown or
   indifferent" rather than an empty string.
 
+### JSON encoding
+
 Adding `{"encoding":"json"}` to any `<input>` or `<textarea>` enables JSON
 round-trips: the field stores the value internally as a JSON string but
 **exports** it as a parsed JavaScript value (object, array, number, or `null`).

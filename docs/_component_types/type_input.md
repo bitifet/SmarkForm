@@ -67,6 +67,35 @@ To use the `input` component type, simply add the `data-smark` attribute to your
 
 
 
+## JSON encoding (`encoding` option)
+
+Adding `{"encoding":"json"}` to any `<input>`, `<textarea>` or `<select>` makes
+the field round-trip **real JavaScript values** instead of raw text:
+
+- **On import**, an object, array, number, boolean or `null` is serialized to a
+  JSON string in the field (pretty-printed in `<textarea>` for readability).
+- **On export**, the field's text is parsed back into a JavaScript value;
+  unparsable or empty input exports `null`.
+
+In other words, the field's DOM value is always a *JSON string*, but the
+imported/exported data is a *structured value* — the string never leaks into
+your exported JSON.
+
+```html
+<textarea name="metadata" data-smark='{"encoding":"json"}'></textarea>
+```
+
+```javascript
+await myForm.import({ metadata: { subscribed: true, tier: "premium" } });
+await myForm.export();
+// → { "metadata": { "subscribed": true, "tier": "premium" } }
+```
+
+Without the option the field simply exports its raw string value (the default
+`input` behaviour).
+
+> See: [JSON encoding]({{ "working_with_forms/value_coercion" | relative_url }}#json-encoding) for a full playable example.
+
 ## API Reference
 
 ### Actions
