@@ -11,6 +11,13 @@ import {parseJSON, isHiddenByClosedDetails} from "../lib/helpers.js";
 // hook more than once.
 const sym_enter_handled = Symbol('smarkform_enter_handled');
 
+// Field-level JSON toggle: `format:"json"` is the canonical option with
+// `encoding:"json"` kept as a silent legacy alias.
+const isJsonFormatted = me => (
+    me.options.encoding === "json"
+    || me.options.format === "json"
+);
+
 // Find the adjacent field (next or prev) from `context`, walking up through
 // ancestor lists when the current level has no more siblings.  This replaces
 // the old 2-level `find(".+1") || find("../.+1")` pattern so that Enter
@@ -265,7 +272,7 @@ export class input extends form {
         if (me.isCheckbox) {
             retv = !! nodeFld.checked;
         } else if (
-            me.options.encoding === "json"
+            isJsonFormatted(me)
             && nodeFld.tagName.toUpperCase() === "SELECT"
             && nodeFld.options[nodeFld.selectedIndex]?.getAttribute("value") === null
         ) {
@@ -286,7 +293,7 @@ export class input extends form {
             retv = nodeFld.value;
         };
         return (
-            me.options.encoding === "json" ? parseJSON(retv) || null
+            isJsonFormatted(me) ? parseJSON(retv) || null
             : retv
         );
     };//}}}
@@ -303,7 +310,7 @@ export class input extends form {
         if (
             typeof data === "object"
             && me.options.type === "input"    // Not in a derivated field types
-            || me.options.encoding === "json" // JSON encoding specified
+            || isJsonFormatted(me) // JSON encoding specified
         ) {
             data ||= null;
             const isTextarea = nodeFld.tagName.toUpperCase() === "TEXTAREA";
@@ -315,7 +322,7 @@ export class input extends form {
         if (me.isCheckbox) {
             me.targetNode.checked = !! data;
         } else if (
-            me.options.encoding === "json"
+            isJsonFormatted(me)
             && nodeFld.tagName.toUpperCase() === "SELECT"
         ) {
             me._setTargetFieldValue(data || "null"); // Faster, but won't work if value attribute is not set.
