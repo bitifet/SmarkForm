@@ -32,8 +32,8 @@ native `<input type="file">` only as the file-picker trigger.
 1. Lossless round-trip: `export()` of an imported value returns an equivalent
    file object.
 2. Inclusive import: accept object / partial object / bare string.
-3. Configurable representation (`encoding`: atomic vs object) and payload
-   encoding (`dataEncoding`) with sane defaults and auto-detection.
+3. Configurable representation (`format`: raw vs json) and payload encoding
+   (`encoding`: base64/base64url/hex) with sane defaults and auto-detection.
 4. Robust acquisition of files: click-to-browse, drag & drop, paste.
 5. Never relies on programmatically populating a native file input's `value`
    (browser security forbids it).
@@ -74,42 +74,82 @@ uploads and is not part of the standard file contract.
 
 ---
 
-## 3. UI model: custom container + hidden input
+## 3. UI model: a real, native, focusable field
 
-The `file` type binds to a container element (`data-smark='{"type":"file", ...}'`)
-and renders its own markup (a titled drop zone with "browse" affordance). A
-hidden native `<input type="file">` is created internally **only** to trigger
-the OS file picker.
+The `file` type binds to an **actual `<input>` element** written by the author
+(`type="file"`, `type="text"` or unspecified) — `me.targetNode === the input` —
+and SmarkForm machinery (focus, tab order, Enter navigation, labels,
+`required`, action hooks) works on it **for free**, exactly like any other
+field type.
 
-### Why a hidden input is needed (and when it is not)
+The field is **tuned in place** to the bare-minimum UX:
 
-| Acquisition path | Requires native input? |
+- **The authored input is repurposed as the visible value field.** Its native
+  `type` is rewritten to `text` (same approach the mask system already uses:
+  input.type.js rewrites non-`text` inputs before applying a mask). It shows
+  the file **name** and holds keyboard focus. Its text is **editable**: the
+  user can manually tweak the file name (see §4 — the edited `name` is what
+  exports).
+- A **hidden native `<input type="file">` is created internally** as the **only
+  picker trigger**. It is never populated; it is transient and is reset
+  (`input.value = ""`) after every pick so re-selecting the same file re-fires
+  `change`. The `accept` filter from options is applied here.
+- Nothing else in the markup is touched (see *Singleton pattern* below).
+
+### Keyboard contract (consistent with the rest of SmarkForm)
+
+Because the field is a real native input, the shared `input`-type behaviors
+apply unchanged:
+
+| Key | Behavior |
 |---|---|
-| Click to browse | Yes — `input.click()` opens the picker (within a user gesture) |
-| Drag & drop from OS file manager | **No** — `drop.dataTransfer.files` provides `File[]` directly |
-| Paste from clipboard | **No** — `paste.clipboardData.files` provides `File[]` directly |
+| `Tab` | Natural tab order (the field is a real input) |
+| `Enter` | Navigate to the next field (`Shift+Enter` → previous) — inherited from `input.type.js` |
+| `Space` | Type a literal space normally (the name field stays fully editable) |
+| `Shift+Space` | **Open the file picker** — new keydown hook (à la `color.type.js`'s Delete hook), `preventDefault()` to stop the space, then soft-click the hidden picker **synchronously** (transient activation) |
 
-So the native input is strictly a *pick trigger*; the actual `File` object is
-captured from whatever source produced it and stored in the component's
-**internal state**.
+This mirrors the existing `Shift+Space` / plain-`Space` convention already used
+for `<details>` folding: the **modified** key carries the special action, the
+plain key keeps its text-editing meaning. Both handlers share the same rule,
+so a file field nested inside a `<details>` behaves consistently — the hook
+honours `ev.defaultPrevented`, letting the existing folding logic win when it
+fires first.
 
-### Caveats
+### Acquisition paths
 
-- Open the picker via `input.click()` **synchronously** inside the click
-  handler (transient activation required).
-- Style the hidden input as `position:absolute; width:0; height:0; opacity:0`
-  — not `display:none` — for robust picker-opening across browsers.
-- When the user picks a file through the dialog, consume `input.files[0]` then
-  **reset** the input's value (`input.value = ""`) so re-selecting the same file
-  re-fires `change`.
+| Path | Mechanism | Needs the picker input? |
+|---|---|---|
+| Click / `Shift+Space` | `picker.click()` (synchronous, in-gesture) | Yes |
+| Drag & drop from OS | `drop.dataTransfer.files` — field, or whole container in singleton | **No** |
+| Paste | `paste.clipboardData.files` | **No** |
+
+In every case the resulting `File` goes **straight into internal state**; the
+picker input itself never holds the value.
+
+### Singleton pattern
+
+When the type resolves to a **singleton** (the `data-smark` element is a
+container, e.g. a list item wrapper `{ "type": "file" }` around the inner
+field):
+
+- The **same tuning/replacement is applied to the singleton's provided (inner)
+  field**; the **rest of the container's markup is respected untouched** (only
+  the inner field's `type` is rewritten, and the hidden picker is attached to
+  the container).
+- **Drop and paste are detected over the whole singleton container** — dropping
+  anywhere inside it (not just on the field) acquires the file.
+- `export`/`import`/navigation delegate through the singleton to the inner
+  field, mirroring `color`/`date`/`input` singleton handling
+  (`me.isSingleton → children[""]`).
 
 ### The "can't populate the native input" problem — resolved
 
 A native file input cannot have its `value` set, and assigning `files` is
-fragile. **We never rely on it.** The field's value lives entirely in the
-component's internal state; the native input is transient. Import does not need
-to "put" the file into the input — it places the normalized object into state,
-and the custom UI displays name/size and a "value set (imported)" indicator.
+fragile. **We never rely on it.** The value lives entirely in the component's
+internal state; the visible field merely *displays* the file name (and its text
+is the editable `name` metadata). Import places the normalized object into
+state; for an imported file the visible field shows the name plus a
+"value set (imported)" affordance.
 
 ---
 
@@ -123,7 +163,7 @@ The component stores the current value as a **normalized file object**:
   type: "image/png",
   size: 123456,
   lastModified: 1690000000000,
-  data: "iVBORw0KGgo...==" // payload; byte-encoding per `dataEncoding` (§7-8)
+  data: "iVBORw0KGgo...==" // payload; byte-encoding per `encoding` (§7-8)
 }
 ```
 
@@ -135,10 +175,11 @@ The component stores the current value as a **normalized file object**:
 
 ## 5. Export
 
-`export()` returns the representation configured by the field's `encoding`
-option (default `"dataURL"`):
+`export()` returns the representation configured by the field's `format`
+option (default `"raw"`):
 
-**Default — atomic data URL string** (single, flat, JSON-serializable):
+**Default — raw: metadata-carrying data-URL string** (single, flat,
+JSON-serializable):
 
 ```json
 "data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,iVBORw0KGgo..."
@@ -148,7 +189,7 @@ Self-describing: the MIME type lives in the `data:` header, and the metadata
 parameters keep the export **lossless** (`name` / `size` / `lastModified` are
 URL-encoded values).
 
-**With `{"encoding":"json"}` — complete object:**
+**With `{"format":"json"}` — complete object:**
 
 ```json
 {
@@ -163,7 +204,7 @@ URL-encoded values).
 - If empty, returns `null`.
 - `size` is **always recomputed** from the decoded payload (integer byte
   length), never trusted from stored metadata.
-- The byte payload is encoded according to the field's `dataEncoding` option
+- The byte payload is encoded according to the field's `encoding` option
   (default `base64`, see §8).
 - Both representations are flat and JSON-serializable (no `Blob`/`File` leaks).
 
@@ -172,7 +213,7 @@ URL-encoded values).
 ## 6. Import
 
 Being "as inclusive as possible", import accepts **both representations**
-regardless of the field's `encoding` setting (the option only chooses the
+regardless of the field's `format` setting (the option only chooses the
 *export* shape):
 
 ### 6.1 Full object
@@ -225,7 +266,7 @@ Treated as the file payload. Auto-detection:
 - String starts with `data:` → **data URL**: MIME + metadata params + payload
   are parsed out.
 - String parses as JSON and is an **object** → handled per §6.1/6.2.
-- Otherwise → **raw payload bytes**, decoded with the configured `dataEncoding`
+- Otherwise → **raw payload bytes**, decoded with the configured `encoding`
   (default `base64`); the remaining metadata is auto-completed per §6.2.
 
 ### 6.4 `import(undefined)` / reset
@@ -240,18 +281,23 @@ File import/export has two independent, orthogonal axes:
 
 | Axis | Option | Values (default first) | What it selects |
 |---|---|---|---|
-| **Representation** (container) | `encoding` | `"dataURL"` \| `"json"` | Atomic string vs structured object |
-| **Byte encoding** (payload) | `dataEncoding` | `"base64"` \| `"base64url"` \| `"hex"` | How `data` bytes are written |
+| **Representation** (shape) | `format` | `"raw"` \| `"json"` | Data-URL string vs structured object |
+| **Byte encoding** (payload) | `encoding` | `"base64"` \| `"base64url"` \| `"hex"` | How the `data` bytes are written |
 
-**Why `encoding`?** This mirrors the existing field-level `encoding`
-option on the `input` type exactly: *input* defaults to a raw string and opts
-into a structured value with `{"encoding":"json"}`; *file* defaults to an
-atomic data-URL string and opts into a structured object with
-`{"encoding":"json"}`. Same muscle memory, same docs section, symmetric
-behaviour — and a *list of files* exports a list of strings, just like a list
-of inputs exports a list of strings.
+**Why `format` and `raw`?** `format` names the *representation shape*; `raw`
+vs `json` is the same pairing the `input` type already documents —
+`{"encoding":"json"}` turns a raw-string field into a structured-value field.
+Croewise, the file field ships `"raw"` (a self-describing data-URL string) as
+its default and opts into the `"json"` object. A *list of files* exports a list
+of strings, just like a list of inputs exports a list of strings.
 
-**Byte-encoding comparison** (the `dataEncoding` axis):
+> **Cross-type consistency (input/textarea/select):** the existing
+> `encoding:"json"` option means *exactly* "structured instead of raw". For one
+> shared vocabulary, migrate these types to `format:"json"` with
+> `encoding:"json"` kept as a silent alias for one release. File keeps `encoding`
+> for its natural job — byte encoding.
+
+**Byte-encoding comparison** (the `encoding` axis):
 
 | Encoding | Size overhead | Notes |
 |---|---|---|
@@ -260,18 +306,13 @@ of inputs exports a list of strings.
 | `hex` | +100% | Only worthwhile for tiny payloads or where hex is the convention |
 
 - A `data:` URL always carries `base64` bytes (per spec), regardless of
-  `dataEncoding`.
+  `encoding`.
 - **String-import auto-detection:**
   - `data:` prefix → data URL (MIME + params + payload parsed out).
   - JSON-parsable object → object form (§6.1/6.2).
-  - Otherwise → raw payload under `dataEncoding` (default `base64`).
+  - Otherwise → raw payload under `encoding` (default `base64`).
   - Detection is **best-effort**; a configured option always takes precedence
     on import when ambiguous.
-
-> **Open consideration:** `encoding` mirrors `input`'s naming but not its value
-> set (`"dataURL"` vs `"json"`). If the cleaner crosstype name `format`
-> (`"atomic"`/`"object"`) is preferred over inventing type-specific `encoding`
-> values, it can be renamed before implementation — the semantics stay the same.
 
 ---
 
@@ -281,13 +322,12 @@ of inputs exports a list of strings.
 |---|---|---|---|---|
 | `type` | string | — | `"file"` |
 | `name` | string | — | Field name (JSON key) |
-| `encoding` | `"dataURL"` \| `"json"` | `"dataURL"` | Export representation: atomic data-URL string vs complete object (§7). Import accepts both regardless |
-| `dataEncoding` | `"base64"` \| `"base64url"` \| `"hex"` | `"base64"` | Byte encoding of the payload (`data`) for the object form, and of bare-string payload imports |
+| `format` | `"raw"` \| `"json"` | `"raw"` | Export representation: raw data-URL string vs complete object (§7). Import accepts both regardless |
+| `encoding` | `"base64"` \| `"base64url"` \| `"hex"` | `"base64"` | Byte encoding of the payload (`data`) for the object form, and of bare-string payload imports |
 | `accept` | string | `""` | Native input `accept` filter (e.g. `"image/*"`), also used to filter drops/pastes |
 | `smark_file_open` | boolean | `true` | Enable click-to-browse |
 | `smark_file_drop` | boolean | `true` | Enable drag & drop |
 | `smark_file_paste` | boolean | `true` | Enable paste |
-| `smark_file_require_gesture` | boolean | `true` | Only accept files acquired from real user gestures (drop/paste/pick). When `false`, `import()` from JS may proceed without user interaction (see §11) |
 
 There is **no `multiple` option on the `file` type itself**: a standalone file
 field always represents exactly one file (its register models a single value).
@@ -392,8 +432,9 @@ drop:
 - `dragover` already calls `preventDefault()` for both paths — required for
   OS file drops to be accepted.
 - Dragging an existing **file item** (by its container root) still reorders —
-  the picker/drop-zone surface stays out of the `INTERACTIVE_FIELDS_SELECTOR`
-  dragstart guard's way.
+  the visible field is an `input`, so it is excluded from the
+  `INTERACTIVE_FIELDS_SELECTOR` dragstart guard (drag-initiation from the
+  field itself is disabled, exactly like any other text-like field).
 
 Auto-wired by default (no config required when the list is file-capable), with
 a list-level **`fileDrop`** option (default `true`) as the escape hatch to
@@ -403,14 +444,20 @@ route external file drops back to the browser default.
 
 ## 11. Security & user-gesture considerations
 
-- Reading a file's bytes requires either a user gesture or a stored handle
-  (drops, pastes, and picker selections are all user-gesture sources).
-- `import()` from script is **not** a gesture. Because we normalize the payload
-  into a plain JSON object (not into a live `File`), it can be imported without
-  a gesture — the bytes are already strings in memory. There is no FileSystem
-  read involved. This is the shipped behavior for the base object model.
-- The `smark_file_require_gesture` option (default `true`) guards the **native
-  picker** path only (open/close), and is irrelevant to JSON import.
+- **JS `import()` never needs a user gesture.** The payload lands in internal
+  state as a plain JSON object — bytes are already strings in memory, no
+  FileSystem read is involved. There is nothing to "guard": a script may import
+  a file value exactly like any other field value.
+- **Opening the OS picker always requires a real user gesture** (transient
+  activation). This is browser-imposed and **cannot be lifted by any option** —
+  a script-level `picker.click()` outside a gesture simply does nothing.
+- Therefore **no `require_gesture`-style option exists** (an earlier draft's
+  `smark_file_require_gesture` was removed as vestigial). The only requirement
+  is to soft-click the hidden picker **synchronously inside** the triggering
+  gesture handler (click or `Shift+Space` keydown — confirmed sufficient for
+  `.click()`).
+- **Drop and paste are intrinsic gestures** — `dataTransfer.files` /
+  `clipboardData.files` need no extra permission.
 
 ---
 
@@ -418,18 +465,19 @@ route external file drops back to the browser default.
 
 - **`multiple` — RESOLVED** (see §10): list-level `addItem.multiple` + static
   `acquire()`; no `multiple` option on the `file` type itself.
+- **`format` naming — RESOLVED** (§7): `format: "raw" | "json"` adopted for the
+  file type; `encoding` stays for byte encoding. Open follow-up: migrate
+  `input`/`textarea`/`select`'s `encoding:"json"` → `format:"json"` with an
+  internal alias for a release (cross-type vocabulary consistency).
+- **Space keys — RESOLVED** (§3): plain `Space` types normally; `Shift+Space`
+  opens the picker, mirroring the `<details>` folding convention. No further
+  keys reserved.
 - Directory upload (`webkitdirectory`): out of scope initially.
-- Whether the custom UI markup is author-provided (decorated children à la
-  `form`) or auto-generated by the type. **Decision:** author-provided children
-  inside the container, styled by CSS, following the `list`/`form` pattern.
 - `image`/`audio`/`video` types will extend this base: they display the media
   (preview/player) and allow replacing in place. `drawing` is more speculative
   (canvas + ink capture); deferred.
 - Future developer hook replacing `window.confirm()` for `max_items` overflow
   (announced; pick a confirm/custom-callback API when implementing).
-- Naming check before implementation: `encoding:"dataURL"` mirrors `input`'s
-  option but with type-specific values; if crosstype `format`
-  (`"atomic"`/`"object"`) reads better, rename then (see §7).
 
 ---
 
