@@ -33,6 +33,34 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 me.movingDepth = raw === true ? Infinity : (Number(raw) || 0);
                 me._dragEnabled = me.sortable || me.movingDepth > 0;
 
+                // Whether the item template resolves to a file-capable type
+                // (one providing the `acquire` batch acquisition contract).
+                const tplController = me.tplType ? me.types[me.tplType] : null;
+                const fileCapable = !! (
+                    tplController
+                    && typeof tplController.acquire === "function"
+                );
+
+                // OS file-drop interception for file-capable lists.  Wired
+                // OUTSIDE the _dragEnabled gate so it works automatically even
+                // when the list isn't sortable (spec §10).  OS file drops never
+                // collide with internal drag handling: they arrive with
+                // dataTransfer.files present, while SmarkForm internal
+                // reordering never populates files.  The list-level `fileDrop`
+                // option (default true) is the escape hatch.
+                if (fileCapable) {
+                    me.targetNode.addEventListener("dragover", e => e.preventDefault());
+                    me.targetNode.addEventListener("drop", e => {
+                        if (
+                            e.dataTransfer?.files?.length > 0
+                            && me.options.fileDrop !== false
+                        ) {
+                            e.preventDefault();
+                            void me._addFiles(Array.from(e.dataTransfer.files));
+                        };
+                    });
+                };
+
                 if (me._dragEnabled) {
                     me.templates.item.setAttribute("draggable", "true");
 
