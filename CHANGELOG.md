@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - **`file` field type**: Binds to a real native input (repurposed as an editable name field) with click / `Shift+Space` to browse, drag & drop and paste acquisition. Exports a self-describing data-URL string by default or a structured object with `format: "json"`; payload byte encoding (`encoding`: base64/base64url/hex) defaults to base64. Import is inclusive — full/partial objects, data-URL strings and bare payloads are all normalized.
 - **`format` option on input types**: `input`/`textarea`/`select` now accept the canonical `format: "json"` option with the legacy `encoding: "json"` kept as a silent alias.
+- **Lists of files**: wrapping a list whose item template is the `file` type makes `addItem` (and `addItem.multiple`) batch-pick several files at once through the `file` type's static `acquire()`, with over-capacity confirmation and a single held lock for the whole batch.
 
 <!-- Add new entries here when preparing the next release. -->
 

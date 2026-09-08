@@ -105,6 +105,9 @@ export class list extends SmarkField {
             'LIST_ITEM_TYPE_MISMATCH'
             , `List item type mismatch`
         );
+        // Effective component type of the item template — used to resolve
+        // file-capable item types for batch acquisition (spec §10).
+        me.tplType = tplOptions.type;
 
         for (const tpl of [
             me.templates.header,
@@ -235,6 +238,54 @@ export class list extends SmarkField {
     @smartdisabling
     async addItem(_data, options = {}) {//{{{
         const me = this;
+        // Batch file acquisition (spec §10): when the item template resolves to
+        // a file-capable type and `multiple` is not disabled, open the picker
+        // ONCE before creating any item so a cancelled dialog leaves the list
+        // untouched.  Only non-silent adds trigger it — internal machinery
+        // (min_items auto-fill, list import room-making) must never pop the OS
+        // picker.  Each acquired file is then added as a normal single add.
+        const tplController = me.tplType ? me.types[me.tplType] : null;
+        const itemAcquire = (
+            tplController && typeof tplController.acquire == "function"
+            ? tplController.acquire
+            : null
+        );
+        if (
+            itemAcquire
+            && options.multiple !== false
+            && ! options.silent
+            && me.children.length < me.max_items
+        ) {
+            const slots = me.max_items - me.children.length;
+            let files = await itemAcquire({
+                accept: me.options.accept,
+                multiple: true,
+                currentCount: me.children.length,
+                maxItems: me.max_items,
+            });
+            if (! files?.length) return; // Cancelled — list untouched
+            if (files.length > slots) {
+                const confirmed = window.confirm(
+                    `Only ${slots} of ${files.length} files fit; add the first ${slots}?`
+                );
+                if (! confirmed) return;
+                files = files.slice(0, slots);
+            };
+            // Items are created through the non-reentrant helper so the whole
+            // batch runs under the single list_mutating lock we already hold.
+            let lastChild = null;
+            for (const fileObj of files) {
+                lastChild = await me.#addChild(
+                    fileObj
+                    , {...options, multiple: false, silent: true}
+                );
+            };
+            return lastChild;
+        };
+        return await me.#addChild(_data, options);
+    };//}}}
+    async #addChild(_data, options = {}) {//{{{
+        const me = this;
         // Parameters checking and resolution:{{{
         options.action = "addItem";
         options.origin ||= null; // (Internal call)
@@ -309,6 +360,11 @@ export class list extends SmarkField {
                 const data = await sourceComponent.export();
                 await newItem.import(data, {silent: true});
             };
+        };
+        //}}}
+        // Import initial data if provided:{{{
+        if (_data != null) {
+            await newItem.import(_data, {silent: true});
         };
         //}}}
         // Auto-open <details> elements so the new item is visible and ready:{{{
@@ -438,6 +494,42 @@ export class list extends SmarkField {
             };
             // }}}
         };
+    };//}}}
+    async _addFiles(filesList, options = {}) {//{{{
+        const me = this;
+        // OS file drops / pastes (spec §10): normalize the incoming File objects
+        // through the item type's `toObjects` helper and add them one by one.
+        const tplController = me.tplType ? me.types[me.tplType] : null;
+        if (
+            ! tplController
+            || typeof tplController.toObjects != "function"
+        ) return;
+        const files = await tplController.toObjects(
+            Array.from(filesList || [])
+            , {accept: me.options.accept}
+        );
+        if (! files.length) return;
+        if (me.children.length >= me.max_items) {
+            await me.emit("error", {
+                code: 'LIST_MAX_ITEMS_REACHED',
+                message: `Cannot add items over max_items boundary`,
+                options,
+            });
+            return;
+        };
+        let toAdd = files;
+        const slots = me.max_items - me.children.length;
+        if (toAdd.length > slots) {
+            const confirmed = window.confirm(
+                `Only ${slots} of ${toAdd.length} files fit; add the first ${slots}?`
+            );
+            if (! confirmed) return;
+            toAdd = toAdd.slice(0, slots);
+        };
+        for (const fileObj of toAdd) {
+            await me.addItem(fileObj, {...options, multiple: false, silent: true});
+        };
+        return me.children[me.children.length - 1];
     };//}}}
     async isEmpty() {//{{{
         const me = this;
