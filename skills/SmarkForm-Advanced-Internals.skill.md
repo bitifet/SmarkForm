@@ -142,7 +142,8 @@ merges `data-smark` options and resolves context/target automatically.
 - The `download` action triggers a real browser download from the field's
   current file (empty → no-op returning `null`); it is only meaningful with a
   real user gesture, and works from a trigger via `context` pointing at the
-  file field.
+  file field. Name precedence: `filename` trigger option > edited visible name
+  > stored name.
 - Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy
   alias of `{"format":"json"}` (`isJsonFormatted` accepts either) — prefer
   `format`.

@@ -66,7 +66,8 @@ When a form needs whole-file uploads, use the `file` field type:
 - For a file **list**, use `{"type":"list","of":"file"}` — `addItem` opens a
   multi-file picker and OS drops append items anywhere in the list.
 - Trigger a real browser download with `data-smark='{"action":"download",
-  "context":"<field>"}'`; only works when a file is set.
+  "context":"<field>"}'`; only works when a file is set. Name precedence:
+  `filename` trigger option > edited visible name > stored name.
 - Do not add custom drop/paste DOM listeners on file fields — SmarkForm already
   wires picker/drop/paste (`smark_file_open` / `smark_file_drop` /
   `smark_file_paste` toggles, default `true`).

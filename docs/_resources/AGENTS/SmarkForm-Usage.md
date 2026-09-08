@@ -45,6 +45,7 @@ Type is often auto-inferred from the element tag or presence of the `action` pro
 | `size` | Always recomputed from the decoded payload — an imported `size` is never trusted |
 | Keyboard | Plain `Space` types normally; `Shift+Space` opens the OS picker (needs a real user gesture — cannot be driven by JS). `click` also opens the picker |
 | Singleton | Drop/paste detected over the whole container; drops originating inside the inner field are left to the inner field |
+| Download (action) | `{"action":"download","context":"/cv"}` triggers a **real browser download** of the stored bytes (Blob + object URL + `<a download>`); works on real fields and singletons (container delegates to the inner field). Empty field → no-op. Name precedence: `filename` trigger option (any extra trigger option) > edited visible name > stored name |
 | Lists | `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a **multi-file** picker (`multiple:false` forces single); OS drops **append** items anywhere in the list; `accept` on the list filters; list-level `fileDrop:false` disables drop-add |
 | Drop on an existing list item | **Appends** a new item — it never replaces that item. Inside a `of:"file"` list the item singleton's container-level drop is suppressed (paste stays item-scoped) |
 | `format` vs legacy `encoding` | Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy alias of `{"format":"json"}` — prefer `format` |

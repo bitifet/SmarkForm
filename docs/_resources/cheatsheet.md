@@ -292,7 +292,8 @@ await form.find("../shipping").import(data);
 
 - **Export:** raw → `data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…`; json → structured object; empty → `null`.
 - **Import:** data-URL string, (partial) object, bare payload string, or JSON string — all accepted; `size` is recomputed from the payload.
-- **Singleton:** drop/paste detected over the whole container.
+- **Download (action):** `{"action":"download","context":"/cv"}` triggers a real browser download of the stored bytes; empty field → no-op. Name precedence: `filename` trigger option > edited visible name > stored name.
+- **Singleton:** drop/paste detected over the whole container; download delegates to the inner field.
 - **Lists:** `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a multi-file picker (`multiple:false` forces single); OS drops **append** items (list-level `fileDrop:false` disables).
 
 > See: [File field type]({{ "component_types/type_file" | relative_url }}#overview)

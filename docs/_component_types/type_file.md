@@ -40,6 +40,7 @@ nav_order: 26
     * [Adding Files in Bulk](#adding-files-in-bulk)
     * [Dropping Files onto a List](#dropping-files-onto-a-list)
     * [Limits and Confirmation](#limits-and-confirmation)
+* [Downloading a File](#downloading-a-file)
 * [Limitations](#limitations)
 
 <!-- vim-markdown-toc -->
@@ -103,6 +104,9 @@ handlers over the *entire container*:
     <div class="drop-zone" data-smark='{"type":"file","name":"doc","format":"json","encoding":"hex"}'>
         <input type="file" data-smark placeholder="Click, paste or drop a file here…">
     </div>
+    <p class="singleton-dl">
+        <button data-smark='{"action":"download","context":"/doc"}'>Download</button>
+    </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -112,6 +116,10 @@ handlers over the *entire container*:
     border: 2px dashed #999;
     border-radius: .5rem;
     padding: 3rem 2rem;
+    text-align: center;
+}
+{{""}}#myForm$$ .singleton-dl {
+    margin-top: 1rem;
     text-align: center;
 }
 {%
@@ -210,6 +218,18 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         () => page.evaluate(async () => (await myForm.find('/doc').export()).data),
         { timeout: 3000 }
     ).toBe('4869'); // "Hi" in hex
+
+    // Download is delegated from the singleton container to its inner field:
+    // the stored bytes arrive as a real browser download.
+    const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.click(`#myForm-${id} .singleton-dl button`),
+    ]);
+    expect(download.suggestedFilename()).toBe('hi.txt');
+    const stream = await download.createReadStream();
+    const chunks = [];
+    for await (const c of stream) chunks.push(c);
+    expect(Buffer.concat(chunks).toString('utf8')).toBe('Hi');
 };
 
 {%- endcapture %}
@@ -545,6 +565,139 @@ When more files arrive than the remaining `max_items` slots, you are asked to
 confirm before adding only the first fitting files. On a full list an
 `LIST_MAX_ITEMS_REACHED` error is emitted. The same confirm-guarded truncation
 applies to bulk import through `list.import()` (`LIST_IMPORT_OVERFLOW`).
+
+## Downloading a File
+
+A file field's stored bytes can be handed back to the user as a **real
+browser download** with the `download` action:
+
+```html
+<button data-smark='{"action":"download","context":"/cv"}'>Download</button>
+```
+
+On an empty field the action is a no-op that returns `null`. The name used
+for the downloaded file follows this precedence:
+
+1. An explicit `filename` trigger option (any extra trigger `data-smark`
+   property is passed through as an action option);
+2. The current visible name of the field if it was manually edited;
+3. The original stored file name.
+
+Because the download needs a transient user gesture to be reliable, it is
+normally wired to a trigger button; calling `download()` programmatically
+takes effect as long as a user gesture is still active.
+
+{% raw %} <!-- file_download_html {{{ --> {% endraw %}
+{% capture file_download_html -%}
+<div id="myForm$$">
+    <div class="dl-row">
+        <input data-smark='{"type":"file","name":"report"}' placeholder="Drop a file here or click to browse…">
+        <button class="dl-btn" data-smark='{"action":"download","context":"/report"}'>Download</button>
+    </div>
+    <p>
+        <button class="dl-renamed" data-smark='{"action":"download","context":"/report","filename":"report-copy.pdf"}'>Download as report-copy.pdf</button>
+    </p>
+</div>{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- file_download_css {{{ --> {% endraw %}
+{% capture file_download_css -%}
+{{""}}#myForm$$ .dl-row {
+    display: flex;
+    gap: .75rem;
+}
+{{""}}#myForm$$ .dl-row input {
+    flex: 1;
+    padding: .5em .75em;
+    border: 1px dashed #aaa;
+    border-radius: .5rem;
+}
+{{""}}#myForm$$ .dl-row button {
+    padding: .5em 1em;
+    border-radius: .5rem;
+}
+{{""}}#myForm$$ .dl-renamed {
+    margin-top: 1rem;
+}
+{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- file_download_notes {{{ --> {% endraw %}
+{% capture file_download_notes -%}
+👉 **Download:** click **Download** and your browser starts a real download
+   of the stored bytes with the original name.
+
+👉 **Empty field:** with no file set the action is a no-op — nothing happens.
+
+👉 **Rename after the fact:** the **Download as report-copy.pdf** button
+   passes `filename` as a trigger option, overriding the stored name. Edit the
+   visible name field first and the *edited* name wins over the stored one
+   too.
+
+**Try it!** Load the demo value, then rename the field to `annual.pdf` and
+click **Download** — the file arrives with that name. Then try the
+report-copy button.
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- file_download_demoValue {{{ --> {% endraw %}
+{% capture file_download_demoValue -%}
+{
+    "report": "data:text/plain;name=report.txt;size=5;lastModified=0;base64,SGVsbG8="
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- file_download_tests {{{ --> {% endraw %}
+{% capture file_download_tests -%}
+export default async ({ page, expect, id, root }) => {
+    await expect(root).toBeVisible();
+
+    // An empty field triggers no download.
+    const seen = [];
+    page.on('download', (d) => seen.push(d));
+    await page.click(`#myForm-${id} .dl-btn`);
+    await page.waitForTimeout(250);
+    expect(seen).toHaveLength(0);
+
+    // Load the demo file, then downloading yields the stored bytes back.
+    await page.evaluate(async () => {
+        await myForm.find('/report').import(
+            'data:text/plain;name=report.txt;size=5;lastModified=0;base64,SGVsbG8='
+        );
+    });
+    const [download] = await Promise.all([
+        page.waitForEvent('download'),
+        page.click(`#myForm-${id} .dl-btn`),
+    ]);
+    expect(download.suggestedFilename()).toBe('report.txt');
+    const stream = await download.createReadStream();
+    const chunks = [];
+    for await (const c of stream) chunks.push(c);
+    expect(Buffer.concat(chunks).toString('utf8')).toBe('Hello');
+
+    // An explicit filename option overrides the stored name.
+    const [renamed] = await Promise.all([
+        page.waitForEvent('download'),
+        page.click(`#myForm-${id} .dl-renamed`),
+    ]);
+    expect(renamed.suggestedFilename()).toBe('report-copy.pdf');
+};
+
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="file_download"
+    htmlSource=file_download_html
+    cssSource=file_download_css
+    notes=file_download_notes
+    selected="preview"
+    showEditor=true
+    demoValue=file_download_demoValue
+    tests=file_download_tests
+%}
 
 ## Limitations
 
