@@ -296,7 +296,7 @@ await form.find("../shipping").import(data);
 - **Singleton:** drop/paste detected over the whole container; download delegates to the inner field.
 - **Lists:** `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a multi-file picker (`multiple:false` forces single); OS drops **append** items (list-level `fileDrop:false` disables).
 
-> See: [File field type]({{ "component_types/type_file" | relative_url }}#overview)
+> See: [File field type]({{ "component_types/type_file" | relative_url }}#introduction)
 
 ---
 

@@ -465,6 +465,11 @@ to maintain consistency across the site:
 - Set `showEditor=true` and `tests=false` for documentation examples (tests are
   defined in standalone test files under `test/`).
 - Provide a meaningful `notes` capture with a "Try it!" call to action.
+- Example-local trigger buttons must use **relative `context` paths** (e.g.
+  `"context":"report"`), never absolute (`"/report"`) — the editor wraps the
+  example in a `demo` subform, so absolute paths break with `UNKNOWN_ACTION`
+  in the preview even though co-located tests pass. See
+  `AGENTS/Documentation-Examples.md`.
 
 ### Style & Vocabulary
 

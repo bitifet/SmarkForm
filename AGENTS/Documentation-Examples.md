@@ -85,6 +85,8 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 **Why this matters:** When `showEditor=true`, the playground wraps the example in a "demo" subform. The `smarkformBuildEditorHtml()` function in the controller extracts the wrapper (found by `id="myForm$$"`) and inserts the demo subform inside it. A custom ID breaks this extraction, causing incorrect export nesting (e.g. `{cardNumber: null}` instead of `{payment: {cardNumber: null}}`).
 
+**The `demo` wrapper also shifts *inline trigger buttons* one level deeper**, so any example-local trigger (`data-smark` with `action`) that targets a sibling field must use a **relative `context`** (e.g. `"context":"report"`), NOT an absolute path (`"/report"`). Absolute paths resolve from the whole form root and fail with `UNKNOWN_ACTION` in the editor preview even though the co-located tests (which do not use the editor wrapper) pass. This bit the `file` chapter's `download` buttons. Example-local buttons that precede/contain the field are unaffected. The sampletab's own `export`/`import`/`clear` controls already use relative `context:"demo"` for the same reason.
+
 ## Include Parameters
 
 | Parameter | Default | Description |

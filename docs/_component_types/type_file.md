@@ -11,10 +11,6 @@ nav_order: 26
 
 # {{ page.title }}
 
-> **⚠️ Draft:** This chapter is a work in progress. The `file` component type
-> is implemented but this documentation has not yet passed the final review
-> pass (structure, wording and test coverage may still change).
-
 <details class="chaptertoc">
 <summary>
 <strong>📖 Table of Contents</strong>
@@ -105,7 +101,7 @@ handlers over the *entire container*:
         <input type="file" data-smark placeholder="Click, paste or drop a file here…">
     </div>
     <p class="singleton-dl">
-        <button data-smark='{"action":"download","context":"/doc"}'>Download</button>
+        <button data-smark='{"action":"download","context":"doc"}'>Download</button>
     </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -151,6 +147,9 @@ endcapture %}
 👉 **Partial imports are fine:** import just `{ "name": "x.bin",
    "type": "…", "data": "…" }` — `size` and `lastModified` are recomputed /
    auto-completed for you.
+
+👉 **Download:** the **Download** button gets the stored bytes back as a real
+   browser download — the singleton container delegates to its inner field.
 
 **Try it!** Load the demo value, then import the same object with only
 `{ "name": "renamed.bin", "data": "00ff0a" }`.
@@ -305,8 +304,7 @@ endcapture %}
 👉 **Import anything:** paste one of the following into the JSON editor and
    press **⬆️ Import**:
 
-  * a data-URL string (any encoding, `name`/`size`/`lastModified` come from
-    the header),
+  * a data-URL string (`name`/`size`/`lastModified` come from the header),
   * a JSON object (or a JSON *string* of one) — partial objects are fine,
   * a bare base64 payload string,
   * `null` (clears the field).
@@ -379,8 +377,8 @@ clears the field back to its empty state.
 
 ### accept
 
-Space/comma-separated MIME filters or extensions (`.pdf`, `.jpg`). They are
-applied to the hidden native picker **and** to every drop/paste, so files
+Comma-separated MIME types and/or extension suffixes (`.pdf`, `.jpg`). They
+are applied to the hidden native picker **and** to every drop/paste, so files
 that do not match are silently ignored.
 
 ### format and encoding
@@ -572,7 +570,7 @@ A file field's stored bytes can be handed back to the user as a **real
 browser download** with the `download` action:
 
 ```html
-<button data-smark='{"action":"download","context":"/cv"}'>Download</button>
+<button data-smark='{"action":"download","context":"cv"}'>Download</button>
 ```
 
 On an empty field the action is a no-op that returns `null`. The name used
@@ -592,10 +590,10 @@ takes effect as long as a user gesture is still active.
 <div id="myForm$$">
     <div class="dl-row">
         <input data-smark='{"type":"file","name":"report"}' placeholder="Drop a file here or click to browse…">
-        <button class="dl-btn" data-smark='{"action":"download","context":"/report"}'>Download</button>
+        <button class="dl-btn" data-smark='{"action":"download","context":"report"}'>Download</button>
     </div>
     <p>
-        <button class="dl-renamed" data-smark='{"action":"download","context":"/report","filename":"report-copy.pdf"}'>Download as report-copy.pdf</button>
+        <button class="dl-renamed" data-smark='{"action":"download","context":"report","filename":"report-copy.pdf"}'>Download as report-copy.pdf</button>
     </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -705,8 +703,11 @@ export default async ({ page, expect, id, root }) => {
   always requires a real user gesture (click / **Shift+Space**, drop, or
   paste). Consequently a cancelled picker is indistinguishable from "no
   selection".
-- A zero-byte file imports as an *empty* file object rather than `null`
-  (payload length 0); an *empty field* (no file set) is the `null` state.
+- A zero-byte payload is only representable through a **data-URL string
+  import** (it exports as a `size:0` object). The *object* form requires a
+  non-empty `data` — an empty or missing `data` **clears** the field to the
+  `null` empty state, so picking/dropping a genuinely empty (0-byte) file is
+  indistinguishable from picking none.
 - The picker itself is always multiple-capable; the list decides how many
   files are consumed (`multiple: false` on `addItem` limits the choice to a
   single file).
