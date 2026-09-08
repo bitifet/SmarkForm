@@ -429,6 +429,13 @@ drop:
   **append** the new file item(s) at the end (position resolution identical to
   the existing non-item-drop "always append" branch); dropping *between* items
   is out of scope for v1.
+- Consequently, when the item template is a **file singleton** (its generic
+  container-level drop would otherwise import the file into that item), the
+  singleton's container drop is **suppressed** while it lives inside a
+  file-capable list (`parent` is a `list` with `tplType == "file"` and
+  `fileDrop != false`), so a drop on an existing item never replaces it —
+  it appends.  Item-level **paste is kept**: there is no list-level paste
+  handler, so pasting onto an item still replaces that item's file.
 - `dragover` already calls `preventDefault()` for both paths — required for
   OS file drops to be accepted.
 - Dragging an existing **file item** (by its container root) still reorders —

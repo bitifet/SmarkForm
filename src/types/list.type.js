@@ -259,6 +259,7 @@ export class list extends SmarkField {
             const slots = me.max_items - me.children.length;
             let files = await itemAcquire({
                 accept: me.options.accept,
+                encoding: me.options.encoding,
                 multiple: true,
                 currentCount: me.children.length,
                 maxItems: me.max_items,
@@ -506,7 +507,7 @@ export class list extends SmarkField {
         ) return;
         const files = await tplController.toObjects(
             Array.from(filesList || [])
-            , {accept: me.options.accept}
+            , {accept: me.options.accept, encoding: me.options.encoding}
         );
         if (! files.length) return;
         if (me.children.length >= me.max_items) {

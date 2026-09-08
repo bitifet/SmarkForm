@@ -79,7 +79,7 @@ function acceptFile(file, accept) {//{{{
             || (p.startsWith(".") && String(file?.name || "").toLowerCase().endsWith(p));
     });
 };//}}}
-function readFileToObject(file) {//{{{
+function readFileToObject(file, {encoding} = {}) {//{{{
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -89,13 +89,20 @@ function readFileToObject(file) {//{{{
             if (comma !== -1) {
                 mime = dataUrl.slice(5, comma).split(";")[0] || "";
             };
-            resolve({
+            const obj = {
                 name: String(file.name ?? ""),
                 type: String(file.type || mime || ""),
                 size: typeof file.size === "number" ? file.size : 0,
                 lastModified: typeof file.lastModified === "number" ? file.lastModified : 0,
                 data: comma === -1 ? "" : dataUrl.slice(comma + 1), // (internal base64)
-            });
+            };
+            // Acquired files are imported through the same normalization as any
+            // other data, whose object form expects the payload in the field's
+            // `encoding` (§6.1).  Re-encode the base64 payload accordingly.
+            if (encoding && encoding !== "base64") {
+                obj.data = bytesToEncoding(b64ToBytes(obj.data), encoding);
+            };
+            resolve(obj);
         };
         reader.onerror = () => reject(reader.error || new Error("FILE_READ_ERROR"));
         reader.readAsDataURL(file);
@@ -239,12 +246,29 @@ export class file extends input {
                 );
                 if (! fileItem) return;
                 await me.children[""].import(
-                    await readFileToObject(fileItem)
+                    await readFileToObject(
+                        fileItem
+                        , {encoding: me.options.encoding}
+                    )
                     , {silent: true}
                 );
                 me.targetNode.dispatchEvent(new Event("change", {bubbles: true}));
             };
-            if (me.options.smark_file_drop !== false) {
+            // Inside a file-capable list (`of:"file"`), OS file drops are
+            // handled at the list level with append semantics (spec §10): a
+            // drop on an existing item appends a new item instead of replacing
+            // that item's file.  Suppress the container-level drop here so
+            // only the list's `_addFiles` handles it.  Paste stays item-scoped —
+            // there is no list-level paste handler, so a paste on an item
+            // still replaces that item's file.
+            const parentList = me.parent;
+            const underFileList = !! (
+                parentList
+                && parentList.options.type === "list"
+                && parentList.tplType === "file"
+                && parentList.options.fileDrop !== false
+            );
+            if (me.options.smark_file_drop !== false && ! underFileList) {
                 me.targetNode.addEventListener("drop", e => {
                     if (e.dataTransfer?.files?.length) {
                         e.preventDefault();
@@ -380,7 +404,7 @@ export class file extends input {
     // Batch file acquisition used by the list type (spec §10).  Opens a single
     // hidden multi-file picker; resolves to an array of normalized file objects
     // or [] when cancelled.  Only meaningful when called within a user gesture.
-    static async acquire({accept, multiple, currentCount, maxItems} = {}) {//{{{
+    static async acquire({accept, multiple, currentCount, maxItems, encoding} = {}) {//{{{
         return new Promise(resolve => {
             const input = document.createElement("input");
             input.type = "file";
@@ -397,7 +421,9 @@ export class file extends input {
                 const files = Array.from(input.files || []);
                 if (! files.length) return resolve([]);
                 try {
-                    resolve(await Promise.all(files.map(readFileToObject)));
+                    resolve(await Promise.all(
+                        files.map(file => readFileToObject(file, {encoding}))
+                    ));
                 } catch (error) {
                     resolve([]);
                 };
@@ -411,11 +437,13 @@ export class file extends input {
     };//}}}
     // Convert externally obtained files (e.g. OS drops) into a normalized array
     // that list.addItem() can import directly.
-    static async toObjects(files, {accept} = {}) {//{{{
+    static async toObjects(files, {accept, encoding} = {}) {//{{{
         const items = (files || []).filter(f => acceptFile(f, accept));
         if (! items.length) return [];
         try {
-            return await Promise.all(items.map(readFileToObject));
+            return await Promise.all(
+                items.map(file => readFileToObject(file, {encoding}))
+            );
         } catch (error) {
             return [];
         };
