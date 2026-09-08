@@ -21,6 +21,7 @@ coding agents avoid common mistakes.
 | `form` | Container for named fields | Default type for root and nested containers |
 | `list` | Ordered collection of items | Items are cloned from a template |
 | `input` | Scalar value input (`<input>`, `<textarea>`) | Auto-detected by element tag |
+| `file` | Whole-file uploader (picker/drop/paste) | `<input type="file">` or singleton container; exports data-URL string or `{...,data}` object |
 | `color` | Color picker | Wrapper around `<input type="color">` with null support |
 | `date` | Date field | Wrapper with null support |
 | `time` | Time field | Wrapper with null support |
@@ -31,6 +32,22 @@ coding agents avoid common mistakes.
 | `label` | Read-only display | Uses `data-smark` on element with inner content |
 
 Type is often auto-inferred from the element tag or presence of the `action` property. The `type` key in `data-smark` can override.
+
+## File Fields — Key Rules
+
+| Item | Fact |
+|------|------|
+| Declaration | `{"type":"file","name":"cv"}` on a real `<input>` (tuned to a text field showing the **editable file name**) or on a **singleton container** wrapping exactly one inner field |
+| Export (default `format:"raw"`) | Self-describing data-URL string: `data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…`. Empty → `null` |
+| Export (`format:"json"`) | Structured object `{name, type, size, lastModified, data}` — `data` bytes in the field's `encoding` |
+| `encoding` | `"base64"` (default) / `"base64url"` / `"hex"`: byte encoding of `data` for the object form and of bare-string payload imports. A `data:` URL is **always** base64 |
+| **Object `data` is in the field's `encoding` form** | The object shape `export()` produces is what `import()` must receive — with `encoding:"hex"` the object payload is hex, and a base64 payload would be misdecoded as hex. Acquisition (pick/drop/paste and list `acquire`/`toObjects`) re-encodes internally, so this only bites when building object data by hand in JS |
+| `size` | Always recomputed from the decoded payload — an imported `size` is never trusted |
+| Keyboard | Plain `Space` types normally; `Shift+Space` opens the OS picker (needs a real user gesture — cannot be driven by JS). `click` also opens the picker |
+| Singleton | Drop/paste detected over the whole container; drops originating inside the inner field are left to the inner field |
+| Lists | `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a **multi-file** picker (`multiple:false` forces single); OS drops **append** items anywhere in the list; `accept` on the list filters; list-level `fileDrop:false` disables drop-add |
+| Drop on an existing list item | **Appends** a new item — it never replaces that item. Inside a `of:"file"` list the item singleton's container-level drop is suppressed (paste stays item-scoped) |
+| `format` vs legacy `encoding` | Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy alias of `{"format":"json"}` — prefer `format` |
 
 ## How SmarkForm Enhances HTML
 

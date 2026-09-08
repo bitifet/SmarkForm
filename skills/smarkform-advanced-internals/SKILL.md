@@ -114,6 +114,39 @@ merges `data-smark` options and resolves context/target automatically.
   (default) produces repeated `"items[]"` keys.  Index style preserves
   position but breaks if items are removed mid-list.
 
+### File Field Internals
+
+- The `file` type stores its interior state as `data` in **base64** always;
+  `encoding` (`"base64"`/`"base64url"`/`"hex"`) only selects how bytes are
+  written for the object export form and decoded for bare-string imports.  A
+  `data:` URL always carries base64 regardless of `encoding`.
+- The object form `export()` produces must be what `import()` receives: with
+  `encoding:"hex"` the object payload is hex, and handing it base64 would be
+  misdecoded as hex.  Acquisition (pick/drop/paste and the list
+  `acquire`/`toObjects` helpers) re-encodes to the field `encoding` via
+  `readFileToObject(file, {encoding})` before import — keep that threading when
+  changing acquisition code.
+- `size` is always recomputed from the decoded payload; an imported `size` is
+  never trusted.
+- On a **real field** the authored input is rewritten to `type="text"` (editable
+  file name — a non-empty edited name wins on export) and a hidden native picker
+  is attached; `Shift+Space` opens the OS picker (it yields to the `<details>`
+  folding convention when that fires first), plain `Space` types normally.
+- **Singleton** file fields delegate export/import/download to the inner
+  (`children[""]`) field; drop/paste are detected over the whole container,
+  except drops originating inside the inner field.
+- Inside a **file-capable list** (`of:"file"`), the item singleton's container
+  drop is suppressed (`underFileList` check in `file.type.js`) so an OS drop on
+  an existing item **appends** a new item rather than replacing that item's
+  file; paste stays item-scoped; list-level `fileDrop:false` disables drop-add.
+- The `download` action triggers a real browser download from the field's
+  current file (empty → no-op returning `null`); it is only meaningful with a
+  real user gesture, and works from a trigger via `context` pointing at the
+  file field.
+- Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy
+  alias of `{"format":"json"}` (`isJsonFormatted` accepts either) — prefer
+  `format`.
+
 ## Output Requirement
 
 After delivering advanced-internals code, provide a short "advanced compliance

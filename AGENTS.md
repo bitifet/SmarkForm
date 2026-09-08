@@ -70,6 +70,29 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - Tests: `test/declarative_mask.tests.js`, `test/mask.tests.js`
 - Implementation: `src/main.js` (registry), `src/lib/mixin.js` (scoped mask filtering), `src/lib/component.js` (propagation), `src/types/input.type.js` (`_applyMask`, export/import integration)
 
+### File Field Type
+
+SmarkForm's `file` field type turns a field into a whole-file uploader with a
+native picker, drag & drop, and paste — exporting the file plus its metadata as
+a self-describing data-URL string by default, or as a structured object with
+`format:"json"`.
+
+**Key API**:
+- Declaration: `<input data-smark='{"type":"file","name":"cv"}'>` (real field, tuned to a text field showing the editable file name) or a **singleton container** `<div data-smark='{"type":"file","name":"cv"}'>` wrapping exactly one inner field.
+- Options: `accept` (native filter, also filters drops/pastes), `format` (`"raw"` default → data-URL string | `"json"` → object), `encoding` (`"base64"` | `"base64url"` | `"hex"` — payload byte encoding for the object form and bare-string imports; a `data:` URL is always base64), and `smark_file_open` / `smark_file_drop` / `smark_file_paste` (boolean toggles, default `true`).
+- `export()` shapes: raw → `"data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…"`; json → `{name, type, size, lastModified, data}` with `data` per `encoding`; empty → `null`.
+- `import()` is inclusive: a raw data-URL string, a (partial) object, a bare payload string, or a JSON string of an object — all normalized. `size` is always recomputed from the decoded payload bytes.
+- **Encoding invariant**: the interior state always stores `data` as *base64*; `encoding` only selects how bytes are written on export (json form) and decoded on bare-string imports. An **acquired** file's object is therefore re-encoded to the field's `encoding` before import (`readFileToObject(file, {encoding})`, threaded through the singleton drop/paste, list `toObjects`, and list `acquire`).
+- Real field: the authored input is rewritten to `type="text"` and a hidden native picker is attached; `click` and `Shift+Space` open the OS picker (Shift+Space yields to the `<details>` folding convention). Plain `Space` types normally.
+- Singleton: drop/paste are detected over the whole container; drops originating inside the inner field are left to the inner field.
+- Lists: `{"type":"list","name":"photos","of":"file"}` → `addItem` opens a multi-file picker unless `multiple:false`; OS file drops auto-**append** items anywhere in the list (list-level `fileDrop:false` disables). Inside a file-capable list the item singleton's container drop is suppressed so a drop on an existing item appends instead of replacing that item's file; paste stays item-scoped. `max_items` overflow is confirmed via `window.confirm`.
+- The visible name field is fully editable; a non-empty edited name wins on export over the stored one.
+- `format`/`encoding` naming: field-level `{"encoding":"json"}` is the **legacy alias** of `{"format":"json"}` on `input` types (`isJsonFormatted` helper in `src/types/input.type.js` accepts either).
+
+**Configuration file locations**:
+- Tests: `test/co_located_tests.tests.js` (docs examples incl. `docs/_component_types/type_file.md`), list integration covered by the co-located examples in `docs/_component_types/type_file.md`
+- Implementation: `src/types/file.type.js` (field, `readFileToObject`, `acquire`, `toObjects`), `src/types/list.type.js` (`_addFiles`, encoding threading), `src/types/list.decorators/sortable.deco.js` (list-level file drop), `src/types/input.type.js` (format alias)
+
 ### Playwright Test Runner
 
 **What it does**: Runs end-to-end tests against the built distribution files and validates documentation examples.

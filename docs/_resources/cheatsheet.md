@@ -26,6 +26,7 @@ nav_order: 5
 * [Context & Target Resolution](#context-target-resolution)
 * [Event System](#event-system)
 * [Data Import / Export](#data-import-export)
+* [File Fields](#file-fields)
 * [API Methods](#api-methods)
     * [Action methods](#action-methods)
     * [Utilities & Introspection](#utilities-introspection)
@@ -95,6 +96,7 @@ const form = new SmarkForm(element, options);
 | `form` | JSON object | `{}` | `<form>`, `<div>`, any container |
 | `list` | JSON array | `[]` | `<ul>`, `<ol>`, `<table>`, `<thead>`, `<tbody>`, `<tfoot>` |
 | `input` | String | `""` | `<input>`, `<textarea>`, `<select>` |
+| `file` | Data-URL string or object / `null` | `null` | `<input type="file">` or singleton container |
 | `number` | Number / `null` | `null` | `<input type="number">` |
 | `date` | ISO date / `null` | `null` | `<input type="date">` |
 | `time` | HH:mm:ss / `null` | `null` | `<input type="time">` |
@@ -267,6 +269,33 @@ Applies to the field's own import/export; other fields keep their raw values.
 const data = await form.find("/billing").export();
 await form.find("../shipping").import(data);
 ```
+
+---
+
+## File Fields
+
+`{"type":"file"}` on a real `<input>` (tuned to a text field showing the editable file name) or on a **singleton container** wrapping exactly one inner field:
+
+```html
+<input data-smark='{"type":"file","name":"cv","format":"json","encoding":"hex"}'>
+<div class="drop-zone" data-smark='{"type":"file","name":"cv"}'>… one inner field …</div>
+```
+
+| Option | Default | Effect |
+|--------|---------|--------|
+| `accept` | `""` | Native filter — also applied to drops/pastes |
+| `format` | `"raw"` | `"raw"` → data-URL string · `"json"` → `{name,type,size,lastModified,data}` |
+| `encoding` | `"base64"` | Payload byte encoding (`"base64"` / `"base64url"` / `"hex"`) for object data and bare-string imports; data-URLs are always base64 |
+| `smark_file_open` | `true` | `click` / `Shift+Space` open the OS picker |
+| `smark_file_drop` | `true` | Drag & drop |
+| `smark_file_paste` | `true` | Paste |
+
+- **Export:** raw → `data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…`; json → structured object; empty → `null`.
+- **Import:** data-URL string, (partial) object, bare payload string, or JSON string — all accepted; `size` is recomputed from the payload.
+- **Singleton:** drop/paste detected over the whole container.
+- **Lists:** `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a multi-file picker (`multiple:false` forces single); OS drops **append** items (list-level `fileDrop:false` disables).
+
+> See: [File field type]({{ "component_types/type_file" | relative_url }}#overview)
 
 ---
 

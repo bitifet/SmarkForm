@@ -53,6 +53,27 @@ If sources disagree, prefer the highest-priority source.
   This keeps generated code consistent with the docs and makes it easier for
   users to follow. The code works identically with any variable name.
 
+## File Fields (component-specific guidance)
+
+When a form needs whole-file uploads, use the `file` field type:
+
+- Declare on a real `<input>` or a singleton container wrapping exactly one
+  inner field: `data-smark='{"type":"file","name":"cv"}'`.
+- Filter with `accept` (also filters drops/pastes); choose the export shape with
+  `format` (default `"raw"` → self-describing data-URL string, or `"json"` →
+  `{name,type,size,lastModified,data}`) and the payload byte encoding with
+  `encoding` (`"base64"` default / `"base64url"` / `"hex"`).
+- For a file **list**, use `{"type":"list","of":"file"}` — `addItem` opens a
+  multi-file picker and OS drops append items anywhere in the list.
+- Trigger a real browser download with `data-smark='{"action":"download",
+  "context":"<field>"}'`; only works when a file is set.
+- Do not add custom drop/paste DOM listeners on file fields — SmarkForm already
+  wires picker/drop/paste (`smark_file_open` / `smark_file_drop` /
+  `smark_file_paste` toggles, default `true`).
+
+Full reference: the File field chapter
+(`https://smarkform.bitifet.net/component_types/type_file`) and the cheatsheet.
+
 ## Standard Implementation Workflow
 
 1. Read primary source pages.
