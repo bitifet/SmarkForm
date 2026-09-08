@@ -16,6 +16,7 @@ import {time} from "./types/time.type.js";
 import {datetimeLocal} from "./types/datetime-local.type.js";
 import {radio} from "./types/radio.type.js";
 import {color} from "./types/color.type.js";
+import {file} from "./types/file.type.js";
 
 
 // Load core component types:
@@ -31,6 +32,7 @@ for (const [name, controller] of Object.entries({
     "datetime-local": datetimeLocal,
     radio,
     color,
+    file,
 })) createType(name,controller);
 
 
