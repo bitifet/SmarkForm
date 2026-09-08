@@ -449,7 +449,56 @@ route external file drops back to the browser default.
 
 ---
 
-## 11. Security & user-gesture considerations
+## 11. Download
+
+A **`download`** action pulls the current file out of the form as a real
+browser download (Blob + object URL + `a[download]`), using the **stored
+bytes** — never a re-serialized string.
+
+> Scope: single-file only. Packing multiple files (e.g. a trigger targeting
+> `"somelist/*"`) into ZIP/TAR is deferred — see §13 and PROMPTS.md "Batch file
+> download: packing multiple files into an archive".
+
+### Semantics
+
+- Signature: `download(_data, options)`. `data` is unused (the file already
+  lives in field state); `options.filename` overrides the download name.
+- Works identically on a **real field** and a **singleton** (the singleton
+  delegates to the inner field, mirroring `export`/`import`).
+- With a file set, triggers a browser download of the exact stored bytes with:
+  - **name**: `options.filename` || edited visible name (when non-empty) ||
+    stored name; falls back to `"file"` if none;
+  - **MIME**: the stored `type` (default `application/octet-stream`);
+  - **payload**: internal bytes decoded from base64 via the existing byte
+    helpers — no string round-trip (arbitrary binary stays intact).
+- Empty field → no-op, resolves `null` (mirrors `export` on empty).
+- Returns the component's `export()` representation (data-URL string or json
+  object, per `format`) so it composes like other actions; the download is the
+  side effect, the return value informational (`options.data` feeds
+  `AfterAction_download`).
+
+### Trigger usage
+
+```html
+<button data-smark='{"action":"download","context":"/cv"}'>Download CV</button>
+```
+
+- Inside a list item: `{"action":"download","context":"."}`.
+- A download is most reliable inside a (transient) user gesture — like the
+  picker, it is intended to be triggered interactively. Non-gesture invocations
+  (e.g. programmatic) still trigger the anchor click but may be blocked by some
+  browsers.
+
+### Implementation notes
+
+- Build `URL.createObjectURL(new Blob([bytes], {type}))`, click a temporarily
+  appended `<a download="…">`, then cleanup (`remove()` + `revokeObjectURL`
+  — deferred to a macrotask for safety).
+- Reuse `b64ToBytes`/byte helpers; never pipe bytes through strings.
+
+---
+
+## 12. Security & user-gesture considerations
 
 - **JS `import()` never needs a user gesture.** The payload lands in internal
   state as a plain JSON object — bytes are already strings in memory, no
@@ -468,7 +517,7 @@ route external file drops back to the browser default.
 
 ---
 
-## 12. Open questions / future decisions
+## 13. Open questions / future decisions
 
 - **`multiple` — RESOLVED** (see §10): list-level `addItem.multiple` + static
   `acquire()`; no `multiple` option on the `file` type itself.
@@ -485,10 +534,13 @@ route external file drops back to the browser default.
   (canvas + ink capture); deferred.
 - Future developer hook replacing `window.confirm()` for `max_items` overflow
   (announced; pick a confirm/custom-callback API when implementing).
+- **Multi-file download — deferred**: packing a trigger's resolved file set
+  (`"somelist/*"`) into ZIP/TAR via a packer registry has a brainstorm draft in
+  PROMPTS.md; the single-file `download` action (§11) is the v1.
 
 ---
 
-## 13. Relation to PROMPTS.md
+## 14. Relation to PROMPTS.md
 
 This spec should eventually be mirrored into `PROMPTS.md` as a prompt draft so
 future implementation tasks reference it. Keeping `spc/` as the working
