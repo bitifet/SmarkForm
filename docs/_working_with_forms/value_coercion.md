@@ -143,9 +143,9 @@ export:
 - Any field exports **`null`** when empty, to explicitly signal "unknown or
   indifferent" rather than an empty string.
 
-### JSON encoding
+### JSON format
 
-Adding `{"encoding":"json"}` to any `<input>` or `<textarea>` enables JSON
+Adding `{"format":"json"}` (or the legacy alias `encoding:"json"`) to any `<input>` or `<textarea>` enables JSON
 round-trips: the field stores the value internally as a JSON string but
 **exports** it as a parsed JavaScript value (object, array, number, or `null`).
 
@@ -168,7 +168,7 @@ round-trips: the field stores the value internally as a JSON string but
     `"dob": "19960315"` in the JSON playground editor, and clicking **⬆️
     Import** — it will be normalised to `"1996-03-15"` on the next export.
 
-👉 **JSON encoding**: The *Metadata* textarea has `{"encoding":"json"}`.
+👉 **JSON format**: The *Metadata* textarea has `{"format":"json"}`.
 
   * On import, an object or array is serialised to JSON text (pretty-printed
     in textareas for readability).
@@ -195,7 +195,7 @@ round-trips: the field stores the value internally as a JSON string but
 █</p>
 █<p>
 █    <label data-smark>Metadata (JSON):</label>
-█    <textarea name="metadata" data-smark='{"encoding":"json"}'></textarea>
+█    <textarea name="metadata" data-smark='{"format":"json"}'></textarea>
 █</p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}

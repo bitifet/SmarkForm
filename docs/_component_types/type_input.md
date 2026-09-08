@@ -67,9 +67,9 @@ To use the `input` component type, simply add the `data-smark` attribute to your
 
 
 
-## JSON encoding (`encoding` option)
+## JSON format (`format` option)
 
-Adding `{"encoding":"json"}` to any `<input>`, `<textarea>` or `<select>` makes
+Adding `{"format":"json"}` (or the legacy alias `encoding:"json"`) to any `<input>`, `<textarea>` or `<select>` makes
 the field round-trip **real JavaScript values** instead of raw text:
 
 - **On import**, an object, array, number, boolean or `null` is serialized to a
@@ -82,7 +82,7 @@ imported/exported data is a *structured value* — the string never leaks into
 your exported JSON.
 
 ```html
-<textarea name="metadata" data-smark='{"encoding":"json"}'></textarea>
+<textarea name="metadata" data-smark='{"format":"json"}'></textarea>
 ```
 
 ```javascript
@@ -94,7 +94,7 @@ await myForm.export();
 Without the option the field simply exports its raw string value (the default
 `input` behaviour).
 
-> See: [JSON encoding]({{ "working_with_forms/value_coercion" | relative_url }}#json-encoding) for a full playable example.
+> See: [JSON format]({{ "working_with_forms/value_coercion" | relative_url }}#json-format) for a full playable example.
 
 ## API Reference
 
