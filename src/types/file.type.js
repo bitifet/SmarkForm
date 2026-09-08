@@ -396,6 +396,35 @@ export class file extends input {
         if (focus && ! silent) me.focus();
         return await me.export(null, {silent: true});
     };//}}}
+    @action
+    async download(_data, options = {}) {//{{{
+        const me = this;
+        if (me.isSingleton) return await me.children[""].download(_data, options);
+        const fileObj = me._file;
+        if (! fileObj) return null;
+        const fieldName = me.targetFieldNode.value;
+        const storedName = fileObj.name;
+        const filename = (
+            options.filename
+            || (
+                fieldName != null && String(fieldName) !== ""
+                ? fieldName : storedName
+            )
+            || "file"
+        );
+        const type = fileObj.type || "application/octet-stream";
+        const bytes = b64ToBytes(fileObj.data);
+        const blob = new Blob([bytes], {type});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+        return await me.export(null, {silent: true});
+    };//}}}
     async isEmpty() {//{{{
         const me = this;
         if (me.isSingleton) return await me.children[""].isEmpty();
