@@ -110,6 +110,7 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
+- `test/co_located_tests_validation.tests.js` guards the sampletab editor wrapper: examples with `showEditor=true` must not use absolute trigger `context`/`target` paths (nor absolute `myForm.find('/…')` calls in example JS) — the editor wraps content in a `demo` subform and those break with `UNKNOWN_ACTION` in the preview while co-located tests still pass.
 - `npm test` runs the full matrix: chromium, firefox, webkit, and chromium-mobile (Pixel 5 emulation)
 - `npm run test:quick` picks one project at random (see `scripts/test_quick.sh`) — useful for a fast sanity check without committing to a specific browser
 - Generates HTML reports
