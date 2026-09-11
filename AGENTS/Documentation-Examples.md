@@ -87,6 +87,8 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 **The `demo` wrapper also shifts *inline trigger buttons* one level deeper**, so any example-local trigger (`data-smark` with `action`) that targets a sibling field must use a **relative `context`** (e.g. `"context":"report"`), NOT an absolute path (`"/report"`). Absolute paths resolve from the whole form root and fail with `UNKNOWN_ACTION` in the editor preview even though the co-located tests (which do not use the editor wrapper) pass. This bit the `file` chapter's `download` buttons. Example-local buttons that precede/contain the field are unaffected. The sampletab's own `export`/`import`/`clear` controls already use relative `context:"demo"` for the same reason.
 
+**Malformed sibling HTML silently breaks the playground buttons.** A stray or missing closing tag inside the example body (e.g. a leftover `</p>` after an edit) changes how the browser recovers the DOM, so the sampletab's own `Export`/`Import`/`Clear` buttons can end up **nested inside a component** (typically a singleton container) instead of staying siblings of the `demo` subform. Their `context:"demo"` then resolves against that component and every click throws `RenderError: Unknown action export/import/clear`, replacing the whole form. `Reset` keeps working because it has no `context` and walks up to the `demo` form. Co-located tests still pass (no editor wrapper), so rely on the real preview, not just the tests. Check that every `data-smark` container is properly closed when symptoms like this appear.
+
 ## Include Parameters
 
 | Parameter | Default | Description |
