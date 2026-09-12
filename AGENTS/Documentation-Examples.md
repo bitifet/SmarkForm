@@ -233,6 +233,10 @@ await page.getByRole('button', { name: 'Clear' }).click();      // ✓
 
 This bit the singleton chapter's `reset`/`addItem` buttons in `the_singleton_pattern.md` (`singleton_color_reset` and `singleton_phones`). Always reach for `getByRole('button', { name: ... })`, text, or class selectors over exact `data-smark` JSON strings when writing co-located tests.
 
+### Bare-Emoji Buttons: `getByRole` Name = the Emoji, Not the `title`
+
+Buttons rendered as **bare emoji** (`<button title='Reset'>❌</button>`, `➕`, `➖`) expose the emoji glyph itself as the accessible name — Playwright sees `button "❌"`. The `title` attribute only provides the tooltip and is **not** used for the accessible name (visible text content wins), so `getByRole('button', { name: 'Reset' })` fails even though the `title` exists. Use `page.getByTitle('Reset')` (or match the glyph: `{ name: '❌' }`) instead. This combination — bare emoji + `title` for a11y/Tooltip and `getByTitle` in tests — is the canonical pattern used in the singleton chapter.
+
 ### Important: Tests See Empty Forms (co-located tests)
 
 The regular co-located test still starts with an **empty form**, regardless of `demoValue`. Tests should NOT assume data is pre-loaded.

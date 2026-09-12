@@ -264,7 +264,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     // Reset clears the color back to null (no absolute context needed).
     await writeField('bgcolor', '#ff0000');
     expect(await readField('bgcolor')).toBe('#ff0000');
-    await page.getByRole('button', { name: 'Reset' }).click();
+    await page.getByTitle('Reset').click();
     expect(await readField('bgcolor')).toBeNull();
 };
 {%- endcapture %}
@@ -359,7 +359,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
     // Rename the single item and add a second one via the button.
     await page.fill(`#myForm-${id} li:first-child input`, '999');
-    await page.getByRole('button', { name: 'Add Phone' }).click();
+    await page.getByTitle('Add Phone').click();
     await expect.poll(() => page.locator(`#myForm-${id} li`).count()).toBe(2);
 };
 {%- endcapture %}
