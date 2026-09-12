@@ -283,7 +283,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 ## Phone List Example (Singleton)
 
 A *list* of *scalar* items, where each phone input is wrapped in a singleton
-so the item template can host its own **❌ Remove** button:
+so the item template can host its own **➖ Remove** button:
 
 {% raw %} <!-- singleton_pattern_phones_html {{{ --> {% endraw %}
 {% capture singleton_pattern_phones_html -%}
@@ -317,7 +317,7 @@ endcapture %}
 {% raw %} <!-- singleton_pattern_phones_notes {{{ --> {% endraw %}
 {% capture singleton_pattern_phones_notes -%}
 👉 Each `li` is a *singleton* of type *input*: it contains one phone field plus
-   its **❌ Remove** trigger.
+   its **➖ Remove** trigger.
 
 👉 Because the item template root carries the type, we don't need
    `data-smark` on the `<input>` child — but it's kept implicit via
