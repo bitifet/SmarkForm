@@ -60,6 +60,7 @@ around edge cases or features that might catch you off guard at first.
     * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
     * [What does `await myForm.rendered` do?](#what-does-await-myformrendered-do)
     * [My masked field gets focused unexpectedly after form construction](#my-masked-field-gets-focused-unexpectedly-after-form-construction)
+    * [Why does my singleton wrapper raise `NOT_A_SINGLETON` or `SINGLETON_TYPE_MISMATCH`?](#why-does-my-singleton-wrapper-raise-not_a_singleton-or-singleton_type_mismatch)
 * [API & JavaScript](#api-javascript)
     * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
     * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
@@ -1083,9 +1084,10 @@ field. If the wrapper contains more than one field (or none), SmarkForm raises
 scalar type declared on the wrapper, it raises `SINGLETON_TYPE_MISMATCH`
 instead.
 
-Both errors usually point to a malformed template, for example a scalar-list
-`"of":"…"` item or a drag-and-drop block that declares one type on the wrapper
-but embeds an inner field of another type.
+{: .hint :}
+> Both errors usually point to a malformed template. A missing closing tag,
+> swapped open/close tags, etc... may cause differences from what the HTML
+> looks like and the actual DOM structure SmarkForm sees.
 
 See [Restrictions and Errors](
 {{ "/advanced_concepts/the_singleton_pattern" | relative_url }}#restrictions-and-errors)
