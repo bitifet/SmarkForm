@@ -2,7 +2,7 @@
 title: "Animations"
 layout: chapter
 permalink: /advanced_concepts/animations
-nav_order: 5
+nav_order: 6
 
 ---
 

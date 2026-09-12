@@ -2,7 +2,7 @@
 title: "The Singleton Pattern"
 layout: chapter
 permalink: /advanced_concepts/the_singleton_pattern
-nav_order: 6
+nav_order: 1
 
 ---
 

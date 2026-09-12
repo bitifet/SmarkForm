@@ -2,7 +2,7 @@
 title: Event Handling
 layout: chapter
 permalink: /advanced_concepts/events
-nav_order: 1
+nav_order: 2
 
 ---
 
