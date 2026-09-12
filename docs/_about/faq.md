@@ -1074,6 +1074,24 @@ See [Field Masking — Focus and Mask Factories](
 for the full documentation.
 
 
+### Why does my singleton wrapper raise `NOT_A_SINGLETON` or `SINGLETON_TYPE_MISMATCH`?
+
+This is intentional, not a bug. A *singleton* — a scalar component wrapped in a
+non-form tag such as a `<span>` or `<div>` — must contain **exactly one** inner
+field. If the wrapper contains more than one field (or none), SmarkForm raises
+`NOT_A_SINGLETON` at render time. If the inner field's type does not match the
+scalar type declared on the wrapper, it raises `SINGLETON_TYPE_MISMATCH`
+instead.
+
+Both errors usually point to a malformed template, for example a scalar-list
+`"of":"…"` item or a drag-and-drop block that declares one type on the wrapper
+but embeds an inner field of another type.
+
+See [Restrictions and Errors](
+{{ "/advanced_concepts/the_singleton_pattern" | relative_url }}#restrictions-and-errors)
+in the Singleton Pattern chapter for the full details.
+
+
 ## API & JavaScript
 
 ### Can I have multiple independent SmarkForm forms on a page?
