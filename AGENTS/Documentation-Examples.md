@@ -220,6 +220,19 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 | `page.getByRole('button', { name: '...' })` | Locate button by text |
 | `root` | Playwright locator for the form's root element |
 
+### Avoid Exact `data-smark` String Locators
+
+SmarkForm **transposes allowed HTML attributes into the `data-smark` options object at render**, so the rendered `data-smark` value can differ from the authored string — it only happens when the tag actually carries a transposable HTML attribute, which is why the resulting test failure is intermittent ("passes sometimes, not always"). An exact-string attribute locator like `[data-smark='{"action":"clear"}']` is therefore fragile.
+
+Prefer role/text/class/structural locators:
+
+```javascript
+await page.getByRole('button', { name: 'Clear' }).click();      // ✓
+// await page.click(`[data-smark='{"action":"clear"}']`);       // ✗ fragile
+```
+
+This bit the singleton chapter's `reset`/`addItem` buttons in `the_singleton_pattern.md` (`singleton_color_reset` and `singleton_phones`). Always reach for `getByRole('button', { name: ... })`, text, or class selectors over exact `data-smark` JSON strings when writing co-located tests.
+
 ### Important: Tests See Empty Forms (co-located tests)
 
 The regular co-located test still starts with an **empty form**, regardless of `demoValue`. Tests should NOT assume data is pre-loaded.
