@@ -72,13 +72,14 @@ form field itself, but a wrapper tag surrounding it:
 The wrapper adopts the following rules:
 
   * **Exactly one field:** the wrapper may contain only **one** non-trigger
-    component (an `<input>`, `<textarea>` or `<select>` — or another scalar,
-    like a nested color or file field). This is what makes it a *singleton*.
-    Violating this raises a `NOT_A_SINGLETON` error (see
-    [Restrictions](#restrictions-and-errors)).
-  * **No name needed on the wrapper:** since the wrapper exports a single
-    scalar, it is not advisable to give it a name; the inner field's `name` is
-    what matters.
+    component — an `<input>`, `<textarea>` or `<select>`, or any other *scalar*
+    field (e.g. `color` or `file`, which are themselves `<input>`-derived).
+    This is what makes it a *singleton*. Violating this raises a
+    `NOT_A_SINGLETON` error (see [Restrictions](#restrictions-and-errors)).
+  * **Naming:** the `name` can be declared on the wrapper (via its `data-smark`
+    property) or on the inner field (via the `name` attribute or a `data-smark`
+    property). Declaring it on the wrapper is recommended — it is more
+    structural, and it is what the examples below do.
   * **Scalar import/export:** the component imports and exports **only** the
     value of the inner field.
   * **Inheritance:** scalar options (e.g. `accept`, `format`, `encoding`,
@@ -174,6 +175,11 @@ Lists whose items are scalars (e.g. `"of":"file"` or `"of":"input"`) use
 triggers like `removeItem`, and it is also the recommended way to build lists
 of files with per-item drop zones (see
 [Files in Lists]({{ "component_types/type_file#files-in-lists-of-file" | relative_url }})).
+
+The `"of"` option itself is just *syntax sugar*: it declares the item's scalar
+type so the item template doesn't need its own `data-smark` attribute just to
+specify it (see [`of` in the List reference](
+{{ "component_types/type_list#of" | relative_url }})).
 
 ## Restrictions and Errors
 
