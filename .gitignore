@@ -22,6 +22,9 @@ tmp
 test/tmp
 test/.cache
 
+# Agent documentation-change tracking
+UPDATED_DOCS.md
+
 # Playwright
 playwright-report/
 test-results/

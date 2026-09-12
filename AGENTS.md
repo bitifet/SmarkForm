@@ -424,6 +424,8 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 | `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
 | `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
 | `AGENTS/Cheatsheet.md` | Developer Cheatsheet reference — what each section covers, how agents should use it when generating SmarkForm code, and validation details |
+| `AGENTS/Documentation-Tracking.md` | Docs-change tracking — whenever an agent creates or modifies a documentation file, add a brief entry to the gitignored `UPDATED_DOCS.md` so reviewers and fork-maintainers can see which pages changed |
+| `AGENTS/File-Access-Errors.md` | File-access error handling — before reporting a missing file or asking for permission, verify the path: check for typos, correct worktree, tilde expansion, case sensitivity, and symlinks |
 
 **Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
 
