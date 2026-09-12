@@ -19,6 +19,10 @@ else
     echo "All gems are already installed."
 fi
 
+# Generate chapter table-of-contents include files
+echo "Generating chapter TOCs..."
+node ../scripts/generate-chaptertocs.js
+
 # Build the Jekyll site
 echo "Building the Jekyll site..."
 bundle exec jekyll build --trace

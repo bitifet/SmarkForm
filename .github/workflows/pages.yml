@@ -55,6 +55,8 @@ jobs:
           cp -r ../package.json ./_data/
           cp -r ../dist ./
           cp -r dist/examples ./_resources/
+      - name: Generate chapter TOCs
+        run: node ../scripts/generate-chaptertocs.js
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"

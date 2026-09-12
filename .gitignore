@@ -17,6 +17,9 @@ docs/dist/
 docs/vendor/
 docs/.bundle/
 
+# Generated chapter TOCs (created by scripts/generate-chaptertocs.js)
+docs/_includes/chaptertoc/
+
 # Temporary files
 tmp
 test/tmp
