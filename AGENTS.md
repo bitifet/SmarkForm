@@ -8,6 +8,7 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 
 - **Playwright test runner**: end-to-end and co-located docs example tests.
 - **Collector**: script that extracts docs examples into a manifest used by tests.
+- **Chapter TOC generator**: build-time script that generates the per-page chapter TOC include files with real kramdown-GFM anchors.
 - **Build & bundle agents**: rollup-based bundling and scripts to produce dist/.
 - **Documentation build and deploy**: Jekyll site, built locally or via GitHub Pages workflow.
 - **Local live-serve helpers**: scripts to run dev servers and watchers.
@@ -145,7 +146,7 @@ node scripts/collect-docs-examples.js
 
 ### Cheatsheet Validation Script
 
-**What it does**: Validates the Developer Cheatsheet (`docs/_resources/cheatsheet.md`) for structural integrity — ensures TOC anchors match actual section headings and all internal cross-reference links resolve to existing doc pages.
+**What it does**: Validates the Developer Cheatsheet (`docs/_resources/cheatsheet.md`) for structural integrity — verifies the generated TOC include matches the page's real kramdown-GFM heading anchors and all internal cross-reference links resolve to existing doc pages.
 
 **Location**: `scripts/validate-cheatsheet.js`
 
@@ -155,16 +156,43 @@ node scripts/validate-cheatsheet.js
 ```
 
 **Key details**:
-- Runs automatically as part of `npm run pretest` (before the collector)
-- Checks TOC anchor IDs against generated heading anchors
+- Runs automatically as part of `npm run pretest` (after the TOC generator, before the collector)
+- Requires the cheatsheet to use the generated `{% include chaptertoc/cheatsheet.html depth=3 %}` tag (no hand-written TOCs)
+- When `docs/_includes/chaptertoc/cheatsheet.html` exists (i.e. the generator has run), cross-checks every TOC link against the computed GFM heading ids and every in-depth heading against the TOC links
+- Uses the same `gfmId`/`reduceRawText`/`extractHeadings` functions as `scripts/generate-chaptertocs.js` (imported, so both can never drift)
 - Validates all `{{ "..." | relative_url }}` references against the real docs/ file tree
 - Accounts for Jekyll collection directory naming (`_advanced_concepts` → `advanced_concepts`)
 - Exit code 0 = pass, 1 = fail
 
 **Troubleshooting**:
-- If validation fails with "TOC anchor has no matching heading", the heading was renamed without updating the TOC
+- If validation fails with "Generated TOC link has no matching heading" or "missing from the generated TOC", the cheatsheet headings changed but the generated TOC is stale — rerun `node scripts/generate-chaptertocs.js`
 - If validation fails with "does not match any doc page", a `relative_url` link points to a non-existent file
-- After adding new sections to the cheatsheet, update both the TOC and (if needed) the `REQUIRED_SECTIONS` list in the script
+- If a "generated cheatsheet TOC not found" warning appears, the generator hasn't run yet (expected on a fresh checkout before the first docs build)
+
+### Chapter TOC Generator
+
+**What it does**: Replaces hand-maintained `vim-markdown-toc` tables of contents with build-time generated Jekyll include files, so every `href="#…"` anchor exactly matches the id kramdown actually renders for the heading.
+
+**Location**: `scripts/generate-chaptertocs.js`
+
+**How to run locally**:
+```bash
+node scripts/generate-chaptertocs.js
+```
+
+**Key details**:
+- Runs automatically as part of `npm run doc`, `npm run servedoc`, the docs `pretest` step, and the GitHub Pages workflow (before `jekyll build`)
+- For every docs page carrying `{% include chaptertoc/<slug>.html %}` (with optional `depth=N`), writes `docs/_includes/chaptertoc/<slug>.html` containing the nested `<ul>` TOC
+- Replicates the exact id algorithm of **kramdown-parser-gfm 1.1.0** (Jekyll's default `input: GFM`): `downcase` → drop `[^\p{Word}\- \t]` (this keeps underscores, leading digits and accented letters) → each space/tab to `-` → `-N` suffix on duplicates. It is **not** the old kramdown `basic_generate_id` — that one would wrongly strip `_`/leading digits
+- Heading text is reduced to kramdown's `raw_text` (codespans, `*`/`**` emphasis, links, HTML entities) before id generation; labels are delegated to Liquid's `markdownify` in the generated include so they always match the rendered headings
+- `depth=N` truncates the tree (default 4); pages that only list h2 (or h2+h3) declare `depth=2` (or `depth=3`) on their include tag
+- Scans skip fenced code, `{% raw %}`/`{% capture %}`/`{% comment %}` regions, the `chaptertoc` wrapper, raw `<pre>/<script>/<style>` blocks, and `_includes`/`_layouts`/`_data`/`_sass`/`assets`/`node_modules` dirs
+- Generated files are git-ignored (`docs/_includes/chaptertoc/`) — never commit them; stale files for removed includes are pruned automatically
+
+**Troubleshooting**:
+- Anchors in the generated TOC that don't match the page: rerun the generator after editing headings (ids come from the *rendered* heading text, e.g. a `{#custom-id}` IAL overwrite is respected)
+- Content appears inside a sampletab capture: headings inside `{% capture %}`/`{% raw %}` are skipped by design
+- The `toplevel` wrapper class on a page has no relation to depth — set `depth=2` on the include tag for flat h2-only TOCs
 
 ### Build & Bundle Agents
 
@@ -236,6 +264,7 @@ scripts/liveserve_all.sh
 
 **Key details**:
 - Jekyll site in `docs/` directory
+- Generates chapter TOCs first (`node ../scripts/generate-chaptertocs.js` fills the git-ignored `docs/_includes/chaptertoc/` directory from the pages' include tags)
 - Built package and examples copied into docs for deployment
 - `package.json` copied to `docs/_data/` for Jekyll data files
 - Built examples copied to `docs/_resources/`
@@ -381,6 +410,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Dependabot | `.github/dependabot.yml` |
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` |
+| Chapter TOC generator | `scripts/generate-chaptertocs.js` (output: git-ignored `docs/_includes/chaptertoc/`) |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
 | Example Pug layout | `src/examples/include/layout.pug` |
@@ -412,6 +442,7 @@ npm run dev                # Watch library + serve docs
 # Utility
 node scripts/collect-docs-examples.js  # Collect docs examples
 node scripts/validate-cheatsheet.js    # Validate cheatsheet integrity
+node scripts/generate-chaptertocs.js   # Generate chapter TOC include files
 ```
 
 ## Agent Knowledge Directory (`AGENTS/`)
@@ -454,10 +485,10 @@ to maintain consistency across the site:
   on pages that contain playable (sampletabs) examples.
 - **Chapter heading**: Use `# {{ page.title }}` to render the title from front
   matter. Do **not** hardcode the heading text.
-- **Table of Contents**: Use a `<details class="chaptertoc">` block with a
-  `<!-- vim-markdown-toc GitLab -->` markup list inside a `{{ "..." |
-  markdownify }}` block. The TOC must list every second-level (`##`) heading
-  and its nested third-level (`###`) headings.
+- **Table of Contents**: Use a `<details class="chaptertoc">` (or `<div class="chaptertoc toplevel">`) wrapper around the generated include for the page:
+  `{% include chaptertoc/<page-basename>.html %}`. The include file is generated at build time by `scripts/generate-chaptertocs.js`
+  from the page's real headings (kramdown-GFM anchors) and lives in the git-ignored `docs/_includes/chaptertoc/` directory — never hand-edit it.
+  To limit depth (e.g. h2+h3 only) add the parameter: `{% include chaptertoc/faq.html depth=3 %}` (default lists h2–h4).
 
 ### Playable Examples (Sampletabs)
 

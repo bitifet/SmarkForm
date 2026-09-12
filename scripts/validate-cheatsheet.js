@@ -2,17 +2,26 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import { extractHeadings, reduceRawText, gfmId, applyUsedIds } from "./generate-chaptertocs.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
 const CHEATSHEET_PATH = path.resolve(REPO_ROOT, "docs/_resources/cheatsheet.md");
+const CHEATSHEET_INCLUDE = path.resolve(REPO_ROOT, "docs/_includes/chaptertoc/cheatsheet.html");
 const DOCS_DIR = path.resolve(REPO_ROOT, "docs");
+
+// The cheatsheet page declares its depth limit on the include tag.
+const CHEATSHEET_DEPTH = 3;
 
 let exitCode = 0;
 
 function fail(msg) {
     console.error(`FAIL: ${msg}`);
     exitCode = 1;
+}
+
+function warn(msg) {
+    console.warn(`WARNING: ${msg}`);
 }
 
 if (!fs.existsSync(CHEATSHEET_PATH)) {
@@ -23,30 +32,41 @@ if (!fs.existsSync(CHEATSHEET_PATH)) {
 const content = fs.readFileSync(CHEATSHEET_PATH, "utf-8");
 const lines = content.split("\n");
 
-// Extract all markdown headings (## or ###)
-const headings = [];
-for (const line of lines) {
-    const m = line.match(/^(#{2,4})\s+(.+)/);
-    if (m) {
-        headings.push({ level: m[1].length, text: m[2].replace(/`/g, "") });
-    }
+// The cheatsheet TOC itself must be generated (no hand-written lists anymore).
+if (!/{%-?\s*include\s+chaptertoc\/cheatsheet\.html\s+(?:[^%]*depth=\d+)?[^%]*%}/.test(content)) {
+    fail("Cheatsheet TOC must be the generated {% include chaptertoc/cheatsheet.html %} tag");
+} else if (!/depth=3/.test(content)) {
+    fail("Cheatsheet include tag must declare depth=3");
 }
 
-// Validate TOC anchors match actual headings
-for (const line of lines) {
-    const m = line.match(/\]\((#[\w-]+)\)/);
-    if (!m) continue;
-    const anchor = m[1];
-    const matching = headings.some(h => {
-        const generated = h.text
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "");
-        return `#${generated}` === anchor;
-    });
-    if (!matching) {
-        fail(`TOC anchor "${anchor}" has no matching heading`);
+// Compute the real kramdown-GFM ids for every heading, mirroring the generator.
+const flat = applyUsedIds(
+    extractHeadings(content).map((e) => ({ ...e, id: gfmId(reduceRawText(e.text)) }))
+);
+const headingIds = new Set(flat.map((e) => e.id));
+const expectedIds = new Set(flat.filter((e) => e.level <= CHEATSHEET_DEPTH).map((e) => e.id));
+
+// Cross-check against the generated include when present (after a docs build).
+if (fs.existsSync(CHEATSHEET_INCLUDE)) {
+    const toc = fs.readFileSync(CHEATSHEET_INCLUDE, "utf-8");
+    const tocHrefs = new Set(
+        [...toc.matchAll(/href="#([^"]+)"/g)].map((m) => m[1])
+    );
+    for (const id of tocHrefs) {
+        if (!headingIds.has(id)) {
+            fail(`Generated TOC link "#${id}" has no matching heading on the cheatsheet`);
+        }
     }
+    for (const id of expectedIds) {
+        if (!tocHrefs.has(id)) {
+            fail(`Heading "#${id}" is within depth ${CHEATSHEET_DEPTH} but missing from the generated TOC`);
+        }
+    }
+} else {
+    warn(
+        "Generated cheatsheet TOC not found; run scripts/generate-chaptertocs.js " +
+        "before building the docs to enable the anchor cross-check"
+    );
 }
 
 // Build set of all existing docs pages (relative to docs/ without extension).
