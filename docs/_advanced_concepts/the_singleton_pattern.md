@@ -17,25 +17,7 @@ nav_order: 1
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [What Makes a Singleton](#what-makes-a-singleton)
-* [Advantages](#advantages)
-* [Common Use Cases](#common-use-cases)
-    * [Complex HTML as a Single Field](#complex-html-as-a-single-field)
-    * [Avoiding Absolute Context Paths](#avoiding-absolute-context-paths)
-    * [Wrappers and Triggers Inside List Items](#wrappers-and-triggers-inside-list-items)
-    * [File Fields and Whole-Container Drop & Paste](#file-fields-and-whole-container-drop--paste)
-    * [Scalar Lists](#scalar-lists)
-* [Restrictions and Errors](#restrictions-and-errors)
-    * [NOT_A_SINGLETON](#not_a_singleton)
-    * [SINGLETON_TYPE_MISMATCH](#singleton_type_mismatch)
-    * [Relative vs Absolute Context](#relative-vs-absolute-context)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+{% include chaptertoc/the_singleton_pattern.html %}
 
 </details>
 

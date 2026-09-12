@@ -17,55 +17,7 @@ nav_order: 0
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Introduction](#introduction)
-* [Path Syntax Overview](#path-syntax-overview)
-    * [Absolute Paths](#absolute-paths)
-    * [Relative Paths](#relative-paths)
-    * [Special Path Segments](#special-path-segments)
-* [Basic Navigation Patterns](#basic-navigation-patterns)
-    * [Child Navigation](#child-navigation)
-    * [Parent Navigation](#parent-navigation)
-    * [Root Access](#root-access)
-* [Context and Target in Actions](#context-and-target-in-actions)
-    * [Context Terminology](#context-terminology)
-    * [Triggers and Labels Are Not Field Components](#triggers-and-labels-are-not-field-components)
-    * [Understanding Context](#understanding-context)
-    * [Understanding Target](#understanding-target)
-    * [Natural Context Resolution](#natural-context-resolution)
-    * [Explicit Context and Target Specification](#explicit-context-and-target-specification)
-* [List Item Sibling Navigation](#list-item-sibling-navigation)
-    * [Syntax](#syntax)
-    * [Navigation Direction](#navigation-direction)
-    * [Use Cases](#use-cases)
-        * [Data Duplication and Synchronization](#data-duplication-and-synchronization)
-        * [Comparative Operations](#comparative-operations)
-        * [Sequential Data Processing](#sequential-data-processing)
-    * [Examples](#examples)
-        * [Copy Data Between Adjacent List Items](#copy-data-between-adjacent-list-items)
-        * [Sequential Form Validation](#sequential-form-validation)
-        * [Dynamic List Navigation UI](#dynamic-list-navigation-ui)
-* [Advanced Path Features](#advanced-path-features)
-    * [Wildcard Patterns](#wildcard-patterns)
-    * [Multi-Match Results](#multi-match-results)
-* [Practical Examples](#practical-examples)
-    * [Data Copying Between List Items](#data-copying-between-list-items)
-    * [Complex Form Navigation](#complex-form-navigation)
-    * [Dynamic Context Resolution](#dynamic-context-resolution)
-* [Best Practices](#best-practices)
-    * [Path Construction](#path-construction)
-    * [Sibling Navigation Guidelines](#sibling-navigation-guidelines)
-    * [Performance Considerations](#performance-considerations)
-* [Common Patterns and Idioms](#common-patterns-and-idioms)
-    * [Sequential Processing Pattern](#sequential-processing-pattern)
-    * [Bidirectional Data Sync Pattern](#bidirectional-data-sync-pattern)
-    * [Conditional Navigation Pattern](#conditional-navigation-pattern)
-    * [Form Section Coordination Pattern](#form-section-coordination-pattern)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/form_traversing.html %}
 
 </details>
 

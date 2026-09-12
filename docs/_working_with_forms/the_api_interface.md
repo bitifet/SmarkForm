@@ -13,11 +13,7 @@ nav_order: 6
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/the_api_interface.html depth=2 %}
 
 </details>
 

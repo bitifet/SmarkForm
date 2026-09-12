@@ -15,19 +15,7 @@ nav_order: 4
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Secure-by-Default Philosophy](#secure-by-default-philosophy)
-* [Security Options are Root-Only](#security-options-are-root-only)
-* [Mixin External Template Loading (smark_mixin_allowExternal)](#mixin-external-template-loading-smark_mixin_allowexternal)
-* [Mixin Script Execution (smark_mixin_allowLocalScripts, smark_mixin_allowSameOriginScripts, smark_mixin_allowCrossOriginScripts)](#mixin-script-execution-smark_mixin_allowlocalscripts-smark_mixin_allowsameoriginscripts-smark_mixin_allowcrossoriginscripts)
-* [Nested Scripts (MIXIN_NESTED_SCRIPT_DISALLOWED)](#nested-scripts-mixin_nested_script_disallowed)
-* [JSON Encoding (enableJsonEncoding)](#json-encoding-enablejsonencoding)
-* [Error Codes Quick Reference](#error-codes-quick-reference)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/security_considerations.html depth=2 %}
 
 </details>
 

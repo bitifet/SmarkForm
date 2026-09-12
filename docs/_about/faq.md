@@ -18,74 +18,7 @@ around edge cases or features that might catch you off guard at first.
 
 <div class="chaptertoc toplevel">
 
-  {{ "
-<!-- NOTE: Use `:let g:vmt_max_level = 3` with vim's markdown-toc for this file -->
-<!-- vim-markdown-toc GitLab -->
-
-* [SmarkForm Essentials](#smarkform-essentials)
-    * [What is SmarkForm?](#what-is-smarkform)
-    * [Do I need a `<form>` tag?](#do-i-need-a-form-tag)
-    * [How do I get and include SmarkForm?](#how-do-i-get-and-include-smarkform)
-    * [What is the `data-smark` attribute?](#what-is-the-data-smark-attribute)
-    * [What are the different SmarkForm component types?](#what-are-the-different-smarkform-component-types)
-    * [What are triggers and actions?](#what-are-triggers-and-actions)
-    * [What is «context» in SmarkForm?](#what-is-context-in-smarkform)
-    * [What is the Singleton Pattern?](#what-is-the-singleton-pattern)
-    * [How do I add a 'clear' button to a `color` or `number` field?](#how-do-i-add-a-clear-button-to-a-color-or-number-field)
-* [Lists](#lists)
-    * [Why can't I remove items from my list sometimes?](#why-cant-i-remove-items-from-my-list-sometimes)
-    * [Why does my «add» button stop working?](#why-does-my-add-button-stop-working)
-    * [My list won't let me add items until I fill the current ones—is that intended?](#my-list-wont-let-me-add-items-until-i-fill-the-current-onesis-that-intended)
-    * [How do I add animations to list items?](#how-do-i-add-animations-to-list-items)
-    * [I try to select text in a field inside a sortable list, but it starts dragging instead](#i-try-to-select-text-in-a-field-inside-a-sortable-list-but-it-starts-dragging-instead)
-* [Data: Import, Export & Reset](#data-import-export-reset)
-    * [My exported JSON is missing some fields—what's up?](#my-exported-json-is-missing-some-fieldswhats-up)
-    * [Why are my nested form fields named weirdly in the JSON?](#why-are-my-nested-form-fields-named-weirdly-in-the-json)
-    * [Why does my form export null values? How do I map them to HTML fields?](#why-does-my-form-export-null-values-how-do-i-map-them-to-html-fields)
-    * [Is there a `notNull` attribute (or `required` option)?](#is-there-a-notnull-attribute-or-required-option)
-    * [How do I submit form data to a backend?](#how-do-i-submit-form-data-to-a-backend)
-    * [Can I use a classic HTML form submission instead of JSON export?](#can-i-use-a-classic-html-form-submission-instead-of-json-export)
-    * [Does pressing Enter in a text field submit the form?](#does-pressing-enter-in-a-text-field-submit-the-form)
-    * [Do I need to enhance submit buttons as SmarkForm triggers?](#do-i-need-to-enhance-submit-buttons-as-smarkform-triggers)
-    * [What happens to the submit button's `name` and `value` when the form submits?](#what-happens-to-the-submit-buttons-name-and-value-when-the-form-submits)
-    * [Can I use `action='mailto:…'` to send form data by email?](#can-i-use-actionmailto-to-send-form-data-by-email)
-    * [How do default values and reset work?](#how-do-default-values-and-reset-work)
-* [Events & Actions](#events-actions)
-    * [I added an event listener, but it's not firing—why?](#i-added-an-event-listener-but-its-not-firingwhy)
-    * [How do I add custom actions?](#how-do-i-add-custom-actions)
-    * [How do I add keyboard shortcuts (hotkeys)?](#how-do-i-add-keyboard-shortcuts-hotkeys)
-    * [What if I want to reach an outer action with the same hotkey?](#what-if-i-want-to-reach-an-outer-action-with-the-same-hotkey)
-* [Behaviour & Troubleshooting](#behaviour-troubleshooting)
-    * [Where's the error message when something goes wrong?](#wheres-the-error-message-when-something-goes-wrong)
-    * [`myForm.find('/foo/bar')` returns `null` but the field exists](#myformfindfoobar-returns-null-but-the-field-exists)
-    * [What does `await myForm.rendered` do?](#what-does-await-myformrendered-do)
-    * [My masked field gets focused unexpectedly after form construction](#my-masked-field-gets-focused-unexpectedly-after-form-construction)
-    * [Why does my singleton wrapper raise `NOT_A_SINGLETON` or `SINGLETON_TYPE_MISMATCH`?](#why-does-my-singleton-wrapper-raise-not_a_singleton-or-singleton_type_mismatch)
-* [API & JavaScript](#api-javascript)
-    * [Can I have multiple independent SmarkForm forms on a page?](#can-i-have-multiple-independent-smarkform-forms-on-a-page)
-    * [What's this «API interface» I keep hearing about?](#whats-this-api-interface-i-keep-hearing-about)
-    * [Is SmarkForm's API stable? Will upgrading break my code?](#is-smarkforms-api-stable-will-upgrading-break-my-code)
-* [Mixin Types](#mixin-types)
-    * [Can I implement my own component types?](#can-i-implement-my-own-component-types)
-    * [Are mixin styles isolated / scoped?](#are-mixin-styles-isolated-scoped)
-    * [Can I pass parameters to a mixin?](#can-i-pass-parameters-to-a-mixin)
-    * [Can a mixin template reference another mixin?](#can-a-mixin-template-reference-another-mixin)
-    * [Can mixins load from external files?](#can-mixins-load-from-external-files)
-* [Integration & Deployment](#integration-deployment)
-    * [Which browsers has SmarkForm been tested on?](#which-browsers-has-smarkform-been-tested-on)
-    * [Can I use SmarkForm in React (or Vue, Angular, etc.) projects?](#can-i-use-smarkform-in-react-or-vue-angular-etc-projects)
-    * [Where does SmarkForm really shine?](#where-does-smarkform-really-shine)
-        * [Server-rendered HTML stacks](#server-rendered-html-stacks)
-        * [Static-site generators and JAMstack](#static-site-generators-and-jamstack)
-        * [Progressive enhancement of existing pages](#progressive-enhancement-of-existing-pages)
-        * [Alpine.js and 'HTML-over-the-wire' stacks](#alpinejs-and-html-over-the-wire-stacks)
-        * [Vanilla JavaScript projects and micro-frontends](#vanilla-javascript-projects-and-micro-frontends)
-        * [Back-office tools and internal dashboards](#back-office-tools-and-internal-dashboards)
-        * [In short](#in-short)
-* [Have a question not covered here?](#have-a-question-not-covered-here)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/faq.html %}
 
 </div>
 

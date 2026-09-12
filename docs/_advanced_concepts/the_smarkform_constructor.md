@@ -15,25 +15,7 @@ nav_order: 0
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Constructor Syntax](#constructor-syntax)
-* [Pass-Through Options](#pass-through-options)
-    * [Merging rules](#merging-rules)
-* [Constructor-Only Options](#constructor-only-options)
-    * [Field Masking](#field-masking)
-    * [Mixin security policies](#mixin-security-policies)
-* [Static Members](#static-members)
-    * [`SmarkForm.registerMask(name, factory)`](#smarkformregistermaskname-factory)
-    * [`SmarkForm.registerCustomAction(name, handler)`](#smarkformregistercustomactionname-handler)
-* [How the Component Tree is Built](#how-the-component-tree-is-built)
-    * [Scope boundaries](#scope-boundaries)
-    * [Rendering order](#rendering-order)
-* [The `rendered` Promise](#the-rendered-promise)
-
-<!-- vim-markdown-toc -->
-   " | markdownify }}
+  {% include chaptertoc/the_smarkform_constructor.html depth=3 %}
 
 </details>
 

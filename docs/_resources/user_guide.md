@@ -14,31 +14,7 @@ nav_order: 1
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Welcome to SmarkForm-Powered Forms](#welcome-to-smarkform-powered-forms)
-* [Keyboard Navigation](#keyboard-navigation)
-    * [Navigating Between Fields](#navigating-between-fields)
-    * [Navigating All Elements](#navigating-all-elements)
-    * [Working with Multiline Text](#working-with-multiline-text)
-* [Discovering and Using Hotkeys](#discovering-and-using-hotkeys)
-    * [How to Discover Available Shortcuts](#how-to-discover-available-shortcuts)
-    * [SmarkForm's Unique Hotkey Approach](#smarkforms-unique-hotkey-approach)
-    * [Second-Level Hotkeys: Reaching Outer Contexts](#second-level-hotkeys-reaching-outer-contexts)
-    * [Common Hotkey Patterns](#common-hotkey-patterns)
-* [Working with Lists](#working-with-lists)
-    * [Adding and Removing Items](#adding-and-removing-items)
-    * [Reordering Items](#reordering-items)
-    * [Understanding List Limits](#understanding-list-limits)
-* [Working with Collapsible Sections](#working-with-collapsible-sections)
-    * [Navigating Collapsible Sections with the Keyboard](#navigating-collapsible-sections-with-the-keyboard)
-* [Working with Nested Sections](#working-with-nested-sections)
-* [Accessibility Features](#accessibility-features)
-* [Tips for Efficient Form Filling](#tips-for-efficient-form-filling)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/user_guide.html depth=3 %}
 
 </details>
 

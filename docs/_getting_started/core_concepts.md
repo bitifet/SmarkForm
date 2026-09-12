@@ -15,35 +15,7 @@ nav_order: 3
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Forms, Lists and (other) Fields](#forms-lists-and-other-fields)
-    * [Fields](#fields)
-    * [Form nesting](#form-nesting)
-    * [Lists](#lists)
-    * [Component Types](#component-types)
-    * [Labels](#labels)
-    * [Triggers](#triggers)
-    * [Actions](#actions)
-    * [Triggers target](#triggers-target)
-    * [Behaviour tunning](#behaviour-tunning)
-    * [Constraining lists](#constraining-lists)
-    * [Singletons](#singletons)
-    * [Addressability](#addressability)
-    * [More...](#more)
-* [The `data-smark` Attribute](#the-data-smark-attribute)
-    * [Syntax](#syntax)
-    * [Shorthand Syntaxes](#shorthand-syntaxes)
-* [Mandatory properties](#mandatory-properties)
-* [Components and Actions](#components-and-actions)
-    * [Components](#components)
-    * [Actions](#actions-1)
-    * [Trigger Components](#trigger-components)
-* [Accessing Components](#accessing-components)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/core_concepts.html depth=3 %}
 
 </details>
 

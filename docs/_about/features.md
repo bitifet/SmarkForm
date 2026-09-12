@@ -13,25 +13,7 @@ nav_order: 3
 <div class="chaptertoc toplevel">
 <p>The following are the most remarkable features of <strong>SmarkForm</strong>:</p>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Markup agnostic](#markup-agnostic)
-* [Easy to use (low-code)](#easy-to-use-low-code)
-* [Nestable forms](#nestable-forms)
-* [Variable-length lists](#variable-length-lists)
-* [Context driven hotkeys](#context-driven-hotkeys)
-* [Consistent User Experience](#consistent-user-experience)
-* [A11Y friendly](#a11y-friendly)
-* [JSON based](#json-based)
-* [Lightweight yet highly compatible](#lightweight-yet-highly-compatible)
-* [Flexible and extendable](#flexible-and-extendable)
-* [Directory-like addressability](#directory-like-addressability)
-* [Reliability-oriented](#reliability-oriented)
-* [AI-agent ready](#ai-agent-ready)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/features.html depth=2 %}
 
 </div>
 

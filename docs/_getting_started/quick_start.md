@@ -23,34 +23,7 @@ A SmarkForm form can be created by following a few simple steps:
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Basic setup](#basic-setup)
-    * [Create an HTML document](#create-an-html-document)
-    * [Include SmarkForm Library](#include-smarkform-library)
-    * [Create a simple HTML form](#create-a-simple-html-form)
-    * [Initialize the Form](#initialize-the-form)
-* [Do the magic](#do-the-magic)
-    * [Actions and Triggers](#actions-and-triggers)
-    * [Exporting data](#exporting-data)
-    * [Importing data](#importing-data)
-    * [Form traversing](#form-traversing)
-    * [Context and Target](#context-and-target)
-* [Go further...](#go-further)
-    * [Event handling](#event-handling)
-    * [Hot Keys](#hot-keys)
-    * [Animated and sortable lists](#animated-and-sortable-lists)
-* [Customize your form](#customize-your-form)
-* [Final notes](#final-notes)
-    * [Boilerplate file](#boilerplate-file)
-    * [You don't need a form tag](#you-dont-need-a-form-tag)
-    * [Using your own copy of SmarkForm library](#using-your-own-copy-of-smarkform-library)
-    * [Alternative forms to get/include Smarkform](#alternative-forms-to-getinclude-smarkform)
-    * [The option's object](#the-options-object)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/quick_start.html depth=3 %}
 
 </details>
 

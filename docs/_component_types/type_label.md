@@ -20,17 +20,7 @@ SmarkForm features like relative paths, and intelligent defaults.
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [Details](#details)
-* [Targetting non scalar fields](#targetting-non-scalar-fields)
-* [Options](#options)
-* [API Reference](#api-reference)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/type_label.html depth=2 %}
 
 </details>
 

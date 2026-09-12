@@ -16,33 +16,7 @@ nav_order: 3
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [The `export` Action](#the-export-action)
-    * [Return value structure](#return-value-structure)
-    * [The `exportEmpties` option](#the-exportempties-option)
-* [The `import` Action](#the-import-action)
-    * [Accepted data formats](#accepted-data-formats)
-    * [The `setDefault` option](#the-setdefault-option)
-    * [The `focus` option](#the-focus-option)
-* [Default Values, `clear`, and `reset`](#default-values-clear-and-reset)
-    * [Setting defaults via `value`](#setting-defaults-via-value)
-    * [How `import` updates the default](#how-import-updates-the-default)
-    * [Comparing `clear` and `reset`](#comparing-clear-and-reset)
-* [Piping Data Between Components](#piping-data-between-components)
-    * [Using `target` with `export`](#using-target-with-export)
-    * [Using `target` with `import`](#using-target-with-import)
-    * [Chaining export and import](#chaining-export-and-import)
-* [Programmatic API](#programmatic-api)
-* [Common Patterns](#common-patterns)
-    * [Loading initial data from a server](#loading-initial-data-from-a-server)
-    * [Submitting form data to a backend](#submitting-form-data-to-a-backend)
-    * [Save and restore draft data](#save-and-restore-draft-data)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/data_import_and_export.html depth=3 %}
 
 </details>
 

@@ -15,20 +15,7 @@ built, what was learned, and where it's going.
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Articles](#articles)
-    * [How We Gave Every Documentation Example Its Own Test — and Why It Caught Real Bugs](#how-we-gave-every-documentation-example-its-own-test-and-why-it-caught-real-bugs)
-    * [Generating a Parametric SVG Logo with Pug](#generating-a-parametric-svg-logo-with-pug)
-    * [Simplify Web Form Development with SmarkForm](#simplify-web-form-development-with-smarkform)
-* [Presentations](#presentations)
-    * [Documents](#documents)
-    * [Past Events](#past-events)
-        * [December 12th, 2024 — Prueba una librería JavaScript para revolucionar tus formularios](#december-12th-2024-prueba-una-librería-javascript-para-revolucionar-tus-formularios)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/build-in-public.html %}
 
 </details>
 

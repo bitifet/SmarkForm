@@ -15,55 +15,7 @@ nav_order: 5
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [Component (Core)](#component-core)
-    * [`INVALID_PARENT`](#invalid_parent)
-    * [`INVALID_OPTIONS_OBJECT`](#invalid_options_object)
-    * [`SINGLETON_OPTION_CONFLICT`](#singleton_option_conflict)
-    * [`ACTION_IN_NON_TRIGGER`](#action_in_non_trigger)
-    * [`NO_TYPE_PROVIDED`](#no_type_provided)
-    * [`UNKNOWN_TYPE`](#unknown_type)
-    * [`UNKNOWN_ACTION`](#unknown_action)
-* [Form](#form)
-    * [`REPEATED_FIELD_NAME`](#repeated_field_name)
-* [List](#list)
-    * [`LIST_DUPLICATE_TEMPLATE`](#list_duplicate_template)
-    * [`LIST_UNKNOWN_TEMPLATE_ROLE`](#list_unknown_template_role)
-    * [`LIST_CONTAINS_ID`](#list_contains_id)
-    * [`LIST_ITEM_TYPE_MISMATCH`](#list_item_type_mismatch)
-    * [`FIELD_IN_WRONG_LIST_TEMPLATE`](#field_in_wrong_list_template)
-    * [`LIST_IMPORT_OVERFLOW` *(event, not exception)*](#list_import_overflow-event-not-exception)
-    * [`LIST_MAX_ITEMS_REACHED` *(event, not exception)*](#list_max_items_reached-event-not-exception)
-    * [`LIST_MIN_ITEMS_REACHED` *(event, not exception)*](#list_min_items_reached-event-not-exception)
-    * [`LIST_WRONG_ADDITEM_POSITION`](#list_wrong_additem_position)
-* [Scalar Fields](#scalar-fields)
-    * [`VALUE_CONFLICT`](#value_conflict)
-    * [`NOT_A_SINGLETON`](#not_a_singleton)
-    * [`SINGLETON_TYPE_MISMATCH`](#singleton_type_mismatch)
-* [Label](#label)
-    * [`EXTRA_FIELD_IN_LABEL`](#extra_field_in_label)
-    * [`LABEL_EXPLICIT_TARGET`](#label_explicit_target)
-    * [`LABEL_FOR_NONFIELD`](#label_for_nonfield)
-* [Mixin Types](#mixin-types)
-    * [`MIXIN_TYPE_MISSING_FRAGMENT`](#mixin_type_missing_fragment)
-    * [`MIXIN_EXTERNAL_FETCH_BLOCKED`](#mixin_external_fetch_blocked)
-    * [`MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`](#mixin_cross_origin_fetch_blocked)
-    * [`MIXIN_FETCH_ERROR`](#mixin_fetch_error)
-    * [`MIXIN_CIRCULAR_DEPENDENCY`](#mixin_circular_dependency)
-    * [`MIXIN_TEMPLATE_NOT_FOUND`](#mixin_template_not_found)
-    * [`MIXIN_TEMPLATE_INVALID_ROOT`](#mixin_template_invalid_root)
-    * [`MIXIN_TEMPLATE_ROOT_HAS_NAME`](#mixin_template_root_has_name)
-    * [`MIXIN_SCRIPT_LOCAL_BLOCKED`](#mixin_script_local_blocked)
-    * [`MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED`](#mixin_script_same_origin_blocked)
-    * [`MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED`](#mixin_script_cross_origin_blocked)
-    * [`MIXIN_NESTED_SCRIPT_DISALLOWED`](#mixin_nested_script_disallowed)
-* [Native Type Parsing Errors](#native-type-parsing-errors)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/error_codes.html depth=3 %}
 
 </details>
 

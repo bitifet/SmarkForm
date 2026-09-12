@@ -15,19 +15,7 @@ nav_order: 2
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [Defining a Hotkey](#defining-a-hotkey)
-* [Hotkey Reveal (Ctrl Discovery)](#hotkey-reveal-ctrl-discovery)
-* [Context Sensitivity](#context-sensitivity)
-* [Conflict Resolution](#conflict-resolution)
-* [Accessibility Considerations](#accessibility-considerations)
-* [Further Examples](#further-examples)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/hotkeys.html depth=2 %}
 
 </details>
 

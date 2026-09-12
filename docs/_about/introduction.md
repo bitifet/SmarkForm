@@ -19,24 +19,7 @@ nav_order: 1
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [What SmarkForm Is (and Isn't Yet)](#what-smarkform-is-and-isnt-yet)
-* [About SmarkForm](#about-smarkform)
-* [Motivation](#motivation)
-* [A Picture is Worth a Thousand Words](#a-picture-is-worth-a-thousand-words)
-    * [The Example: Event Planner](#the-example-event-planner)
-    * [SmarkForm](#smarkform)
-    * [React](#react)
-    * [Vue](#vue)
-    * [Gotchas](#gotchas)
-    * [What the numbers say](#what-the-numbers-say)
-        * [Metrics](#metrics)
-        * [Implementation time](#implementation-time)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/introduction.html %}
 
 </details>
 

@@ -15,33 +15,7 @@ nav_order: 5
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Constructor Options](#constructor-options)
-* [The `data-smark` Attribute](#the-data-smark-attribute)
-* [Component Types](#component-types)
-* [List Template Roles](#list-template-roles)
-* [Actions](#actions)
-* [Context & Target Resolution](#context-target-resolution)
-* [Event System](#event-system)
-* [Data Import / Export](#data-import-export)
-* [File Fields](#file-fields)
-* [API Methods](#api-methods)
-    * [Action methods](#action-methods)
-    * [Utilities & Introspection](#utilities-introspection)
-* [Hotkeys](#hotkeys)
-* [Form Submission](#form-submission)
-* [Quick Templates](#quick-templates)
-    * [Simple form](#simple-form)
-    * [Nested form](#nested-form)
-    * [List with all template roles](#list-with-all-template-roles)
-    * [Trigger with context and target](#trigger-with-context-and-target)
-    * [Sortable list](#sortable-list)
-    * [Tooltip mixin with CSS](#tooltip-mixin-with-css)
-
-<!-- vim-markdown-toc -->
-   " | markdownify }}
+  {% include chaptertoc/cheatsheet.html depth=3 %}
 
 </details>
 

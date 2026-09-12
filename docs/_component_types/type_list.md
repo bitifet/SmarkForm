@@ -24,43 +24,7 @@ endcapture %}
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Introduction](#introduction)
-    * [List items](#list-items)
-    * [Scalar item types](#scalar-item-types)
-    * [Applying the singleton pattern](#applying-the-singleton-pattern)
-    * [Nesting lists](#nesting-lists)
-* [API Reference](#api-reference)
-    * [Options](#options)
-        * [value](#value)
-        * [min_items](#min_items)
-        * [max_items](#max_items)
-        * [sortable](#sortable)
-        * [movingDepth (Cross-List Drag scope)](#movingdepth-cross-list-drag-scope)
-        * [exportEmpties](#exportempties)
-        * [of](#of)
-    * [Actions](#actions)
-        * [(Async) export (Action)](#async-export-action)
-            * [Options (export)](#options-export)
-        * [(Async) import (Action)](#async-import-action)
-            * [Options (import)](#options-import)
-        * [(Async) clear (Action)](#async-clear-action)
-            * [Options (clear)](#options-clear)
-        * [(Async) reset (Action)](#async-reset-action)
-            * [Options (reset)](#options-reset)
-        * [(Async) addItem (Action)](#async-additem-action)
-            * [Options (addItem)](#options-additem)
-        * [(Async) removeItem (Action)](#async-removeitem-action)
-            * [Options (removeItem)](#options-removeitem)
-        * [count (Action)](#count-action)
-            * [Options (count)](#options-count)
-        * [position (Action)](#position-action)
-            * [Options (position)](#options-position)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/type_list.html %}
 
 </details>
 

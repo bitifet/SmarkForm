@@ -16,31 +16,7 @@ nav_order: 26
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Introduction](#introduction)
-* [Declaring a File Field](#declaring-a-file-field)
-    * [Real Field](#real-field)
-    * [The Singleton Pattern](#the-singleton-pattern)
-* [Importing and Exporting Data](#importing-and-exporting-data)
-    * [Raw Format (data URL)](#raw-format-data-url)
-    * [Structured Format (format: "json")](#structured-format-format-json)
-    * [Encodings](#encodings)
-    * [Empty Fields](#empty-fields)
-* [Options](#options)
-    * [accept](#accept)
-    * [format and encoding](#format-and-encoding)
-    * [Disabling acquisition](#disabling-acquisition)
-* [Files in Lists (of: "file")](#files-in-lists-of-file)
-    * [Adding Files in Bulk](#adding-files-in-bulk)
-    * [Dropping Files onto a List](#dropping-files-onto-a-list)
-    * [Limits and Confirmation](#limits-and-confirmation)
-* [Downloading a File](#downloading-a-file)
-* [Limitations](#limitations)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/type_file.html depth=3 %}
 
 </details>
 

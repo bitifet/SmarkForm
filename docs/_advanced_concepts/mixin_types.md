@@ -16,42 +16,7 @@ nav_order: 3
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [Defining a Mixin Template](#defining-a-mixin-template)
-* [Using a Mixin Type](#using-a-mixin-type)
-    * [Local mixin reference](#local-mixin-reference)
-    * [External mixin reference](#external-mixin-reference)
-* [Template Constraints](#template-constraints)
-* [Expansion Semantics](#expansion-semantics)
-* [Option Merge Semantics](#option-merge-semantics)
-* [Attribute Merge Semantics](#attribute-merge-semantics)
-* [Snippet Parameters](#snippet-parameters)
-    * [How snippet parameters work](#how-snippet-parameters-work)
-    * [id to data-id conversion](#id-to-data-id-conversion)
-    * [Security: no nested scripts](#security-no-nested-scripts)
-* [External Loading and Caching](#external-loading-and-caching)
-    * [URL resolution](#url-resolution)
-    * [Fetch and cache strategy](#fetch-and-cache-strategy)
-    * [Nested mixins and circular dependency detection](#nested-mixins-and-circular-dependency-detection)
-* [List Placement Warning](#list-placement-warning)
-* [Scripts and Styles](#scripts-and-styles)
-    * [Styles](#styles)
-    * [Scripts](#scripts)
-    * [Mixin Security Options](#mixin-security-options)
-        * [External template fetch policy: `smark_mixin_allowExternal`](#external-template-fetch-policy-smark_mixin_allowexternal)
-        * [Script execution policy: `smark_mixin_allowLocalScripts`, `smark_mixin_allowSameOriginScripts`, `smark_mixin_allowCrossOriginScripts`](#script-execution-policy-smark_mixin_allowlocalscripts-smark_mixin_allowsameoriginscripts-smark_mixin_allowcrossoriginscripts)
-* [Examples](#examples)
-    * [Reusable contact block](#reusable-contact-block)
-    * [Option override per usage site](#option-override-per-usage-site)
-    * [Snippet parameters: custom labels](#snippet-parameters-custom-labels)
-    * [Labelled list of inputs: inputlist](#labelled-list-of-inputs-inputlist)
-* [Error Codes](#error-codes)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/mixin_types.html %}
 
 </details>
 

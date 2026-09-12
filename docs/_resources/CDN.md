@@ -15,17 +15,7 @@ nav_order: 3
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [SmarkForm](#smarkform)
-    * [Latest Version](#latest-version)
-* [Other Resources](#other-resources)
-    * [CSS](#css)
-    * [Latest sample CSS:](#latest-sample-css)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/CDN.html depth=3 %}
 
 </details>
 

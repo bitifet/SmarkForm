@@ -13,22 +13,7 @@ nav_order: 10000
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Introduction](#introduction)
-* [Options](#options)
-    * [action](#action)
-    * [context](#context)
-    * [target](#target)
-    * [hotkey](#hotkey)
-* [Interactions](#interactions)
-    * [Hot Keys](#hot-keys)
-* [Origin](#origin)
-* [Trigger Components](#trigger-components)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/type_trigger.html depth=3 %}
 
 </details>
 

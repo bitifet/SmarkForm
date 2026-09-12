@@ -34,43 +34,7 @@ featured ones.
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Basics](#basics)
-    * [Just a Form](#just-a-form)
-    * [Multiple-Level Nesting](#multiple-level-nesting)
-    * [Deeply nested forms](#deeply-nested-forms)
-    * [More on lists](#more-on-lists)
-    * [Mixins](#mixins)
-    * [Nested lists and forms](#nested-lists-and-forms)
-    * [Item duplication and closure state](#item-duplication-and-closure-state)
-    * [A note on empty values](#a-note-on-empty-values)
-    * [Nesting Mixins](#nesting-mixins)
-* [Import and Export Data](#import-and-export-data)
-    * [Intercepting the *import* and *export* events](#intercepting-the-import-and-export-events)
-    * [A note on context of the triggers](#a-note-on-context-of-the-triggers)
-* [Advanced UX Improvements](#advanced-ux-improvements)
-    * [Auto enabling or disabling of actions](#auto-enabling-or-disabling-of-actions)
-    * [Context-Driven Keyboard Shortcuts (Hot Keys)](#context-driven-keyboard-shortcuts-hot-keys)
-    * [Reveal of hot keys](#reveal-of-hot-keys)
-    * [Hotkeys and context](#hotkeys-and-context)
-    * [Collapsible sections](#collapsible-sections)
-    * [Smooth navigation](#smooth-navigation)
-    * [2nd level hotkeys](#2nd-level-hotkeys)
-    * [Hidden actions](#hidden-actions)
-    * [Animations](#animations)
-    * [Smart value coercion](#smart-value-coercion)
-    * [Field Masking](#field-masking)
-    * [Dynamic Dropdown Options](#dynamic-dropdown-options)
-* [Random Examples](#random-examples)
-    * [Simple Calculator](#simple-calculator)
-    * [Calculator (UX improved)](#calculator-ux-improved)
-    * [Team Event Planner](#team-event-planner)
-* [Conclusion](#conclusion)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/showcase.html depth=3 %}
 
 </details>
 

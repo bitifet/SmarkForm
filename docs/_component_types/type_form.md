@@ -15,32 +15,7 @@ nav_order: 1
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Introduction](#introduction)
-* [API Reference](#api-reference)
-    * [Options](#options)
-        * [value](#value)
-        * [focus_on_click](#focus_on_click)
-        * [autoId](#autoid)
-    * [Actions](#actions)
-        * [(Async) export (Action)](#async-export-action)
-            * [Options (export)](#options-export)
-        * [(Async) import (Action)](#async-import-action)
-            * [Options (import)](#options-import)
-        * [(Async) clear (Action)](#async-clear-action)
-            * [Options (clear)](#options-clear)
-        * [(Async) reset (Action)](#async-reset-action)
-            * [Options (reset)](#options-reset)
-        * [(Async) submit (Action)](#async-submit-action)
-            * [Options (submit)](#options-submit)
-            * [Encoding and transport](#encoding-and-transport)
-            * [Data flattening options](#data-flattening-options)
-        * [Future: null (Action)](#future-null-action)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/type_form.html %}
 
 </details>
 

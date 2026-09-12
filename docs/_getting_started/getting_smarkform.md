@@ -15,19 +15,7 @@ nav_order: 2
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Available formats](#available-formats)
-* [Using a CDN (Esiest approach)](#using-a-cdn-esiest-approach)
-    * [ES module](#es-module)
-    * [UMD Module](#umd-module)
-* [Download minified](#download-minified)
-* [Installing it from NPM](#installing-it-from-npm)
-* [Clone from GitHub](#clone-from-github)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/getting_smarkform.html depth=3 %}
 
 </details>
 

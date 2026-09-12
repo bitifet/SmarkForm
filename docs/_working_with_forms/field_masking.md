@@ -16,27 +16,7 @@ nav_order: 5
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [How It Works](#how-it-works)
-* [Applying a Mask to a Field](#applying-a-mask-to-a-field)
-* [Registering a Mask](#registering-a-mask)
-    * [Via JavaScript](#via-javascript)
-    * [Via Declarative HTML](#via-declarative-html)
-* [Credit Card Example (IMask)](#credit-card-example-imask)
-* [Custom Mask Example (No Library + Singleton + List)](#custom-mask-example-no-library-singleton-list)
-* [Mixin-Scoped Masks](#mixin-scoped-masks)
-* [Using Other Masking Libraries (Maska)](#using-other-masking-libraries-maska)
-* [Error Handling](#error-handling)
-    * [`smark_mask_throwOnMissing: true` (default)](#smark_mask_throwonmissing-true-default)
-    * [`smark_mask_throwOnMissing: false`](#smark_mask_throwonmissing-false)
-    * [Error Codes](#error-codes)
-* [Focus and Mask Factories](#focus-and-mask-factories)
-* [Masks and External Libraries](#masks-and-external-libraries)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/field_masking.html depth=3 %}
 
 </details>
 

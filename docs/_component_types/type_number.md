@@ -13,25 +13,7 @@ nav_order: 4
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Introduction](#introduction)
-* [Usage](#usage)
-* [Requirements](#requirements)
-* [API Reference](#api-reference)
-    * [Actions](#actions)
-        * [(Async) export (Action)](#async-export-action)
-            * [Options (export)](#options-export)
-        * [(Async) import (Action)](#async-import-action)
-            * [Options (import)](#options-import)
-        * [(Async) clear (Action)](#async-clear-action)
-            * [Options (clear)](#options-clear)
-        * [(Async) reset (Action)](#async-reset-action)
-            * [Options (reset)](#options-reset)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/type_number.html %}
 
 </details>
 

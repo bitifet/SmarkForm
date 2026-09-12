@@ -17,32 +17,7 @@ nav_order: 2
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Overview](#overview)
-* [Action Lifecycle Events](#action-lifecycle-events)
-    * [BeforeAction events](#beforeaction-events)
-    * [AfterAction events](#afteraction-events)
-    * [Preventing an action](#preventing-an-action)
-* [Registering Event Handlers](#registering-event-handlers)
-    * [Via options (declarative)](#via-options-declarative)
-    * [Via the API (programmatic)](#via-the-api-programmatic)
-    * [Local vs. All handlers](#local-vs-all-handlers)
-* [DOM Field Events](#dom-field-events)
-    * [Supported event types](#supported-event-types)
-    * [Event data payload](#event-data-payload)
-* [Common Patterns](#common-patterns)
-    * [Submitting form data to a backend](#submitting-form-data-to-a-backend)
-    * [Intercepting an import to fetch data asynchronously](#intercepting-an-import-to-fetch-data-asynchronously)
-    * [Modifying exported data before it leaves](#modifying-exported-data-before-it-leaves)
-* [Implementation Details](#implementation-details)
-    * [The `@action` decorator](#the-action-decorator)
-    * [Calling actions programmatically](#calling-actions-programmatically)
-    * [Event bubbling: local, on, and all](#event-bubbling-local-on-and-all)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/events.html depth=3 %}
 
 </details>
 

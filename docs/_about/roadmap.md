@@ -14,25 +14,7 @@ nav_order: 5
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Current Status](#current-status)
-* [Planned](#planned)
-    * [The «API interface»](#the-api-interface)
-    * [The «select» component type](#the-select-component-type)
-    * [Conditional forms](#conditional-forms)
-* [Later](#later)
-    * [The «UNDO» component](#the-undo-component)
-    * [Infinite lists](#infinite-lists)
-    * [Recursive lists](#recursive-lists)
-* [Brainstorm](#brainstorm)
-    * [«hint» component type](#hint-component-type)
-    * [Table Of Contents component](#table-of-contents-component)
-    * [Download action](#download-action)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/roadmap.html depth=3 %}
 
 </details>
 

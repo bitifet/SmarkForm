@@ -15,18 +15,7 @@ nav_order: 2
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [SmarkForm](#smarkform)
-    * [Latest version](#latest-version)
-    * [Older versions](#older-versions)
-* [Other Resources](#other-resources)
-    * [CSS](#css)
-    * [Boilerplate Template](#boilerplate-template)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/download.html depth=3 %}
 
 </details>
 

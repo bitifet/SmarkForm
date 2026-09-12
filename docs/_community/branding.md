@@ -14,29 +14,7 @@ nav_order: 5
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Why Link to the User Guide](#why-link-to-the-user-guide)
-* [Logo Assets](#logo-assets)
-    * [Available Variations](#available-variations)
-    * [When to Use Which Variant](#when-to-use-which-variant)
-* [Badge Implementation Examples](#badge-implementation-examples)
-    * [Compact Badge (Recommended for Forms)](#compact-badge-recommended-for-forms)
-    * [Full Logo (For Documentation/About Pages)](#full-logo-for-documentationabout-pages)
-    * [Responsive Implementation](#responsive-implementation)
-    * [Dark Mode Support](#dark-mode-support)
-* [Best Practices](#best-practices)
-    * [Where to Place Badges](#where-to-place-badges)
-    * [Accessibility Considerations](#accessibility-considerations)
-    * [Mobile-Friendly Implementation](#mobile-friendly-implementation)
-* [Branding Guidelines](#branding-guidelines)
-    * [Respecting the Brand](#respecting-the-brand)
-    * [Required Attribution Format](#required-attribution-format)
-* [Logo Philosophy](#logo-philosophy)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/branding.html depth=3 %}
 
 </details>
 

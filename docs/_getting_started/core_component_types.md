@@ -17,23 +17,7 @@ Core component types are the backbone of *SmarkForm*:
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Complex field types](#complex-field-types)
-    * [type: form and type: list](#type-form-and-type-list)
-* [Scalar field types](#scalar-field-types)
-    * [type: input](#type-input)
-        * [The Singleton Pattern.](#the-singleton-pattern)
-    * [type: number and type: date](#type-number-and-type-date)
-    * [type: color](#type-color)
-    * [type: select](#type-select)
-* [Non field component types](#non-field-component-types)
-    * [type: trigger](#type-trigger)
-    * [type: label](#type-label)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/core_component_types.html %}
 
 </details>
 
