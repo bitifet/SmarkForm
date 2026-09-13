@@ -445,7 +445,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="school_groups"
     htmlSource=school_groups_example
-    height=45
+    minHeight=45
     cssSource=school_groups_css
     notes=notes_school_groups
     demoValue=school_groups_demoValue
@@ -606,7 +606,7 @@ list like the following example:
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
     htmlSource=schedule_list
-    height=10
+    minHeight=10
     cssSource=schedule_list_css
     notes=include.notes
     selected="preview"
@@ -894,7 +894,7 @@ needing DOM filler elements.
 {% include components/sampletabs_tpl.md
     formId="schedule_table"
     htmlSource=schedule_mixin_html
-    height=40
+    minHeight=40
     cssSource=schedule_table_css
     notes=notes
     selected="preview"
@@ -1150,7 +1150,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="nested_schedule_table"
     htmlSource=nested_schedule_table
-    height=50
+    minHeight=50
     cssSource=schedule_table_css
     notes=nested_schedule_notes
     selected="preview"
@@ -1520,7 +1520,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="simple_list_autodisable"
     htmlSource=simple_list_autodisable
-    height=30
+    minHeight=30
     cssSource=simple_list_autodisable_css
     selected="preview"
     demoValue=demoValue
@@ -1589,7 +1589,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys"
     htmlSource=simple_list_hotkeys_html
-    height=30
+    minHeight=30
     cssSource=simple_list_hotkeys_css
     selected="preview"
     demoValue=demoValue
@@ -1667,7 +1667,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context_html
-    height=50
+    minHeight=50
     cssSource=simple_list_hotkeys_css
     selected="preview"
     demoValue=demoValue
@@ -2196,7 +2196,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="collapsible_sections"
     htmlSource=collapsible_sections
-    height=65
+    minHeight=65
     cssSource=collapsible_sections_css
     selected="preview"
     demoValue=demoValue

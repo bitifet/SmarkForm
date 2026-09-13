@@ -303,7 +303,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="nesting_list"
     htmlSource=nesting_list_example
-    height=45
+    minHeight=45
     cssSource=generic_sample_css
     demoValue=demoValue
     showEditor=true
@@ -642,7 +642,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="cross_list_drag"
     htmlSource=cross_list_drag_example
-    height=60
+    minHeight=60
     cssSource=cross_list_drag_css
     demoValue=cross_list_drag_demoValue
     showEditor=true

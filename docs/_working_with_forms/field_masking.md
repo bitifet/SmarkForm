@@ -388,7 +388,7 @@ export default async ({ expect, readField, root, page }) => {
 
 {% include components/sampletabs_tpl.md
    formId="mask-custom"
-   height=45
+   minHeight=45
    htmlSource=mask_custom_html
    jsHead=mask_custom_js
    notes=mask_custom_notes
