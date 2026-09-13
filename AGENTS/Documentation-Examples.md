@@ -100,24 +100,21 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 | `notes` | `'-'` | Markdown/HTML notes shown below the example |
 | `showEditor` | `false` | Whether to show the JSON editor textarea for import/export |
 | `selected` | `'preview'` | Which tab is initially active |
-| `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport (0–100). The iframe auto-sizes to its content on the **first render only**, never below this floor and never above 90% of the viewport. If omitted, the floor is derived from the HTML line count (`lines*1+15`, clamped 25–90). |
-| `tests` | `false` | Co-located test code (JavaScript string) |
-| `expectedPageErrors` | `0` | Number of JS errors expected during render |
-| `demoValue` | `'-'` | JSON string for pre-populating the demo form (docs-only, filtered by collector) |
-| `smarkformOptions` | `'-'` | JSON object string with root-level SmarkForm constructor options (e.g. `'{"allowLocalMixinScripts":"allow"}'`). Merged into the generated `default_jsHead` constructor call and stored in the test manifest so the test harness also uses them. Required for examples that use mixin `<script>` tags or other features that are disabled by default as a security measure. |
+| `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport (0–100). The iframe auto-sizes to its **measured** content on the **first render only**, never below this floor and never above 90% of the viewport. If omitted, a small absolute floor (75px) is used — the height is never guessed from the HTML source. |
 
 ### `minHeight` and iframe Auto-sizing
 
-`minHeight` replaces the old `height` parameter (which was a **maximum** cap). The preview iframe now grows/shrinks to fit its content on the first render:
+`minHeight` replaces the old `height` parameter (which was a **maximum** cap). The preview iframe now grows/shrinks to fit its **measured, rendered content** on the first render:
 
 ```
-finalHeight = max(minHeight, min(contentHeight + 20, 90% of viewport))
+finalHeight = max(minHeight, min(measuredContentHeight + 20, 90% of viewport))
 ```
 
-- **Floor**: `minHeight`% of the viewport (clamped to 25–90). If omitted, a default is derived from the HTML line count (`lines*1+15`, clamped 25–90, default 50) so small/prefilled examples never collapse to near-zero during async initialisation.
+- **Floor**: `minHeight`% of the viewport (clamped to 25–90); it only binds when the measured content is shorter than it. If omitted, a fixed 75px absolute floor (matching the `.smarkform-preview-frame` CSS `min-height`) is used — there is **no default derived from the HTML line count**, so a small/empty example is never inflated by a guessed percentage.
+- **Measurement**: the iframe is temporarily collapsed to 0px so `scrollHeight` reflects the real content instead of the iframe's own height (which would otherwise stretch `html`/`body` to it). Editor mode additionally overrides the `editorCss` flex rules (`height:auto`/`overflow:visible` on `html`/`body`/`#myForm`/its flex child) before reading `scrollHeight`.
+- **Async growth**: after the first measurement the content is re-sampled briefly (3 retries, 150ms apart) and the **largest** measurement wins, so async-initializing examples (mixins, masks, lists) are sized to their final content rather than a premature small height.
 - **Ceiling**: a hard `SMARKFORM_AUTOSIZE_MAX_PCT = 90` (% of viewport) — an example can never render so tall that it pushes the page's tabs or controls out of view.
-- **First render only**: auto-sizing runs once per iframe (guarded by an `smarkformAutosized` dataset flag). Re-renders from user edits (Run button, editor toggle) keep the established height stable, so a manual drag-resize of the preview is never clobbered.
-- Editor mode measures the true content height by temporarily overriding the `editorCss` flex rules (`height:auto`/`overflow:visible` on `html`/`body`/`#myForm`/its flex child) before reading `scrollHeight`.
+- **First render only**: auto-sizing runs once per iframe (guarded by an `smarkformAutosized` dataset flag plus an in-flight `__smarkformSizing` lock). Re-renders from user edits (Run button, editor toggle) keep the established height stable, so a manual drag-resize of the preview is never clobbered.
 
 Call sites use `minHeight=NN` (e.g. `minHeight=45`); doctabs keep their own `height` parameter.
 

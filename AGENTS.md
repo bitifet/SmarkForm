@@ -508,8 +508,10 @@ to maintain consistency across the site:
   in the preview even though co-located tests pass. See
   `AGENTS/Documentation-Examples.md`.
 - Use `minHeight=NN` (percentage of the viewport) to set a **minimum** iframe
-  height; the preview auto-sizes to its content on the first render, never
-  above 90% of the viewport, and keeps its size on re-renders. The old
+  height; the preview auto-sizes to its **measured** content on the first render
+  (re-sampling briefly after load so async examples settle), never above 90% of
+  the viewport, and keeps its size on re-renders. When omitted a small absolute
+  floor is used — the height is never guessed from the HTML line count. The old
   `height=` parameter (a maximum cap) no longer exists. Doctabs keep their own
   `height` parameter.
 
