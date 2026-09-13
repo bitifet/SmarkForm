@@ -11,7 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
+## [0.20.0] — 2026-09-13
+
+📁 `file` field type · 📄 `format: "json"` option · 🗂️ Lists of files
+
+SmarkForm 0.20.0 introduces a full `file` field type that turns any input into a whole-file uploader — click / `Shift+Space` to browse, drag & drop and paste acquisition, and an editable name field — exporting a self-describing data-URL string by default or a structured object with the `format: "json"` option on input types. File fields are also first-class list citizens: batch multi-file picking, OS drop auto-append, and per-item replace/download.
 
 ### Features
 
@@ -19,7 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`format` option on input types**: `input`/`textarea`/`select` now accept the canonical `format: "json"` option with the legacy `encoding: "json"` kept as a silent alias.
 - **Lists of files**: wrapping a list whose item template is the `file` type makes `addItem` (and `addItem.multiple`) batch-pick several files at once through the `file` type's static `acquire()`, with over-capacity confirmation and a single held lock for the whole batch. OS file drops are handled automatically via the list-level `fileDrop` option (default `true`).
 
-<!-- Add new entries here when preparing the next release. -->
+### Documentation
+
+- **File field guide**: New `docs/_component_types/type_file.md` with single-file and list-of-files playable examples and co-located tests.
+- **Sampletabs preview auto-sizing**: Documentation examples now size their preview iframe from the actually measured content on first render (re-sampling briefly so async examples settle), capped at 90% of the viewport, with optional `minHeight` percentage floors replacing the old fixed `height` cap.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.20.0)
 
 ---
 
@@ -594,7 +603,9 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.18.0...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.19.0...HEAD
+[0.20.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.20.0
+[0.19.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.19.0
 [0.18.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.18.0
 [0.17.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.17.0
 [0.13.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
