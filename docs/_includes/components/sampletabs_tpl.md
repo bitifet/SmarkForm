@@ -12,8 +12,11 @@ Accepted arguments:
                       Collected by scripts/collect-docs-examples.js and used by test/co_located_tests.tests.js.
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
-  * height: Optional iframe height factor (0–100). If omitted, a default is computed from the
-            HTML source line count. Larger values allow a taller iframe relative to the viewport.
+  * minHeight: Optional minimum iframe height as a percentage of the viewport (0–100).
+               The iframe auto-sizes to its content height on the first render, never below
+               this minimum, so examples that grow through user interaction (e.g. list items)
+               keep enough room. If omitted, a default minimum is computed from the HTML
+               source line count.
 
 Additional arguments
 --------------------
@@ -150,7 +153,7 @@ myForm.rendered.then(function() {
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% comment %}
-    Pass the raw include.height value (0 when omitted) to the JSON blob so the
+    Pass the raw include.minHeight value (0 when omitted) to the JSON blob so the
     JavaScript controller can apply the formula, defaults and clamping there.
 {% endcomment %}
 
@@ -328,7 +331,7 @@ endif %}{% if jsHidden != '-'
     "jsSource": {{ jsSource | jsonify | replace: "  ", "\u0020\u0020" | replace: "<", "\u003c" }},
     "demoValue": {{ demoValue | jsonify }},
     "showEditor": {{ showEditor | jsonify }},
-    "height": {{ include.height | plus: 0 }},
+    "minHeight": {{ include.minHeight | plus: 0 }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
   }
   </script>
