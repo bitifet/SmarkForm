@@ -186,6 +186,8 @@ node scripts/generate-chaptertocs.js
 - Replicates the exact id algorithm of **kramdown-parser-gfm 1.1.0** (Jekyll's default `input: GFM`): `downcase` → drop `[^\p{Word}\- \t]` (this keeps underscores, leading digits and accented letters) → each space/tab to `-` → `-N` suffix on duplicates. It is **not** the old kramdown `basic_generate_id` — that one would wrongly strip `_`/leading digits
 - Heading text is reduced to kramdown's `raw_text` (codespans, `*`/`**` emphasis, links, HTML entities) before id generation; labels are delegated to Liquid's `markdownify` in the generated include so they always match the rendered headings
 - `depth=N` truncates the tree (default 4); pages that only list h2 (or h2+h3) declare `depth=2` (or `depth=3`) on their include tag
+- Only rewrites a generated file when its content actually changed, so watchers and `jekyll serve --watch` are not forced into spurious rebuilds
+- **Dev watch mode**: `scripts/watch-chaptertocs.js` (started by `npm run servedoc` and `npm run dev` alongside Jekyll) reruns the generator whenever any docs `.md` changes; Jekyll then rebuilds the page, so TOCs update live without restarting the dev server. It debounces (250 ms) and serializes runs, ignores anything outside `.md` (generated `.html` includes never trigger it), and filters `.jekyll-cache`/dotfiles
 - Scans skip fenced code, `{% raw %}`/`{% capture %}`/`{% comment %}` regions, the `chaptertoc` wrapper, raw `<pre>/<script>/<style>` blocks, and `_includes`/`_layouts`/`_data`/`_sass`/`assets`/`node_modules` dirs
 - Generated files are git-ignored (`docs/_includes/chaptertoc/`) — never commit them; stale files for removed includes are pruned automatically
 
@@ -335,6 +337,7 @@ npm run dev
 - Uses `concurrently` to run multiple processes
 - Library changes trigger automatic rebuilds
 - Documentation server provides live reload
+- `npm run servedoc` / `npm run dev` also start the chapter-TOC watcher (`scripts/watch-chaptertocs.js`), so editing markdown headings updates the generated TOC includes and Jekyll rebuilds the page live — no dev-server restart needed
 - **Automatically stops any previously running instance** on startup — running `npm run dev` in a different branch or worktree always cleanly terminates the previous server first, so you never accidentally test against the wrong build
 - Stop with **Ctrl+C** in the terminal where it was started
 
@@ -410,7 +413,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Dependabot | `.github/dependabot.yml` |
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` |
-| Chapter TOC generator | `scripts/generate-chaptertocs.js` (output: git-ignored `docs/_includes/chaptertoc/`) |
+| Chapter TOC generator | `scripts/generate-chaptertocs.js`, `scripts/watch-chaptertocs.js` (dev live-regen) — output: git-ignored `docs/_includes/chaptertoc/` |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
 | Example Pug layout | `src/examples/include/layout.pug` |

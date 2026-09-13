@@ -306,11 +306,15 @@ function main() {
       }
     }
     const tree = buildTree(flat, maxDepth);
-    const content = renderInclude(rel, tree);
+    const content = renderInclude(rel, tree) + '\n';
     const outFile = path.join(OUTPUT_DIR, slug);
     seenFiles.add(slug);
-    fs.writeFileSync(outFile, content + '\n');
-    written++;
+    // Skip rewriting when unchanged so dev watchers / Jekyll are not forced
+    // into spurious rebuilds (e.g. pure prose edits that leave the TOC intact).
+    if (!fs.existsSync(outFile) || fs.readFileSync(outFile, 'utf8') !== content) {
+      fs.writeFileSync(outFile, content);
+      written++;
+    }
     console.log(`[generate-chaptertocs] ${slug} <- ${rel} (${tree.children.length} top-level entries)`);
   }
 
