@@ -1667,7 +1667,7 @@ endcapture %}
 {% include components/sampletabs_tpl.md
     formId="simple_list_hotkeys_with_context"
     htmlSource=simple_list_hotkeys_with_context_html
-    minHeight=50
+    minHeight=35
     cssSource=simple_list_hotkeys_css
     selected="preview"
     demoValue=demoValue
@@ -2196,7 +2196,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="collapsible_sections"
     htmlSource=collapsible_sections
-    minHeight=65
+    minHeight=40
     cssSource=collapsible_sections_css
     selected="preview"
     demoValue=demoValue
