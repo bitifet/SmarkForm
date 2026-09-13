@@ -10,6 +10,7 @@ docs/_data/computed.json
 
 # Jekyll
 docs/_site
+docs/.jekyll-cache/
 # NO (to trigger GitHub action every new version): docs/_data/package.json
 docs/_resources/dist/
 docs/_resources/examples/
