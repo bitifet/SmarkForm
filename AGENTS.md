@@ -507,6 +507,11 @@ to maintain consistency across the site:
   example in a `demo` subform, so absolute paths break with `UNKNOWN_ACTION`
   in the preview even though co-located tests pass. See
   `AGENTS/Documentation-Examples.md`.
+- Use `minHeight=NN` (percentage of the viewport) to set a **minimum** iframe
+  height; the preview auto-sizes to its content on the first render, never
+  above 90% of the viewport, and keeps its size on re-renders. The old
+  `height=` parameter (a maximum cap) no longer exists. Doctabs keep their own
+  `height` parameter.
 
 ### Style & Vocabulary
 
