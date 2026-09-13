@@ -13,10 +13,11 @@ Accepted arguments:
   * showEditor: Whether to show the editor textarea or not (defaults to false)
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * minHeight: Optional minimum iframe height as a percentage of the viewport (0–100).
-               The iframe auto-sizes to its content height on the first render, never below
-               this minimum, so examples that grow through user interaction (e.g. list items)
-               keep enough room. If omitted, a default minimum is computed from the HTML
-               source line count.
+               The iframe auto-sizes to its measured content height on the first render, never
+               below this minimum, so examples that grow through user interaction (e.g. list
+               items) keep enough room. If omitted, a small absolute minimum is used — the
+               height is always derived from the truly rendered content, never guessed from
+               the HTML source.
 
 Additional arguments
 --------------------

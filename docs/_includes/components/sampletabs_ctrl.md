@@ -14,7 +14,14 @@ if (typeof ace !== 'undefined') {
 var SMARKFORM_EDITOR_KINDS = ['html', 'css', 'js'];
 var SMARKFORM_ACE_MIN_LINES = 5;
 var SMARKFORM_ACE_MAX_LINES = 35;
-var SMARKFORM_HEIGHT_PCT_DEFAULT = 50;
+/* Minimum iframe height applied when no explicit minHeight is given. Matches the
+   .smarkform-preview-frame CSS min-height so short content never collapses the
+   preview into nothing. This is the only default floor — it is never derived
+   from the HTML source, so the auto-sized height always reflects the truly
+   rendered content rather than a guess based on the amount of markup. */
+var SMARKFORM_MIN_HEIGHT_PX = 75;
+/* Explicit minHeight values are expressed as a % of the viewport and clamped to
+   this range. */
 var SMARKFORM_HEIGHT_PCT_MIN = 25;
 var SMARKFORM_HEIGHT_PCT_MAX = 90;
 /* Upper bound for the auto-sized iframe height (percentage of the viewport).
@@ -22,77 +29,108 @@ var SMARKFORM_HEIGHT_PCT_MAX = 90;
    this value, so a very tall example cannot push the page's tabs or controls
    out of view. */
 var SMARKFORM_AUTOSIZE_MAX_PCT = 90;
+/* Breathing room added to the measured content height. */
+var SMARKFORM_AUTOSIZE_SLACK = 20;
+/* After the first measurement the content is re-sampled a few times within a
+   short window and the largest value wins. Async-initializing examples (mixins,
+   masks, lists...) render additional content shortly after the iframe has
+   finished loading; re-sampling sizes them to that final content instead of
+   locking in a premature (too small) height. */
+var SMARKFORM_AUTOSIZE_RETRIES = 3;
+var SMARKFORM_AUTOSIZE_RETRY_DELAY = 150;
 /* Maximum number of iframes that may be initializing concurrently.
    High-priority tasks (visible or user-activated) bypass this limit; once the
    active count exceeds it due to those bursts, lower-priority tasks are held
    back until active renders return to at/below this number. */
 var SMARKFORM_MAX_CONCURRENT_RENDERS = 3;
-/* Compute the minimum iframe height (as a % of the viewport) for a given data object.
-   Uses data.minHeight (explicit override from the template) when > 0; otherwise derives
-   a default from the htmlSource line count using the formula lines*1+15, so prefilled or
-   async-initializing examples never collapse below a sane floor.
-   Result is always clamped to [SMARKFORM_HEIGHT_PCT_MIN, SMARKFORM_HEIGHT_PCT_MAX].
-   Falls back to SMARKFORM_HEIGHT_PCT_DEFAULT when no usable source is available. */
-function smarkformComputeMinHeightPct(data) {
+/* Minimum iframe height for a given data object, in pixels:
+   - data.minHeight (explicit override from the template) → that % of the
+     viewport, clamped to [25, 90];
+   - otherwise → SMARKFORM_MIN_HEIGHT_PX.
+   The explicit value is a genuine floor: the iframe never goes below it, but it
+   only binds when the measured content is shorter than it. */
+function smarkformMinHeightPx(data) {
     if (typeof data.minHeight === 'number' && data.minHeight > 0) {
-        return Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, data.minHeight));
+        var pct = Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, data.minHeight));
+        return Math.round(window.innerHeight * pct / 100);
     }
-    if (data.htmlSource) {
-        var lines = data.htmlSource.split('\n').length;
-        return Math.max(SMARKFORM_HEIGHT_PCT_MIN, Math.min(SMARKFORM_HEIGHT_PCT_MAX, lines * 1 + 15));
-    }
-    return SMARKFORM_HEIGHT_PCT_DEFAULT;
+    return SMARKFORM_MIN_HEIGHT_PX;
 }
-/* Auto-size the iframe to its content height, at most once per iframe.
+/* Measure the true rendered content height of the example document.
+   The iframe is temporarily collapsed to 0px so scrollHeight reflects the content
+   itself and not the iframe's own height (html/body would otherwise stretch to
+   it). When the example runs with the editor, editorCss forces
+   height:100%/overflow:hidden on html, body, #myForm and its flex child, which
+   makes scrollHeight circular; those rules are temporarily overridden with
+   inline styles (higher specificity), then restored so the flex layout re-applies
+   on the final sized iframe. Returns -1 when the document is not ready. */
+function smarkformMeasureContent(iframe) {
+    var doc = iframe.contentDocument;
+    if (!doc || !doc.documentElement) return -1;
+    var prevH = iframe.style.height;
+    iframe.style.height = '0';
+    var h = -1;
+    try {
+        if (iframe.dataset.hasEditor === '1') {
+            var html = doc.documentElement, body = doc.body;
+            var myForm = doc.querySelector('#myForm');
+            var myFormDiv = myForm ? myForm.firstElementChild : null;
+            var demoDiv = myFormDiv ? myFormDiv.firstElementChild : null;
+            var saved = [
+                [html, 'height', html.style.height], [html, 'overflow', html.style.overflow],
+                [body, 'height', body.style.height], [body, 'overflow', body.style.overflow]
+            ];
+            if (myForm) saved.push([myForm, 'height', myForm.style.height]);
+            if (myFormDiv) { saved.push([myFormDiv, 'height', myFormDiv.style.height]); saved.push([myFormDiv, 'overflow', myFormDiv.style.overflow]); }
+            if (demoDiv) { saved.push([demoDiv, 'flexGrow', demoDiv.style.flexGrow], [demoDiv, 'flexShrink', demoDiv.style.flexShrink], [demoDiv, 'flexBasis', demoDiv.style.flexBasis], [demoDiv, 'minHeight', demoDiv.style.minHeight]); }
+            html.style.height = 'auto'; html.style.overflow = 'visible';
+            body.style.height = 'auto'; body.style.overflow = 'visible';
+            if (myForm) myForm.style.height = 'auto';
+            if (myFormDiv) { myFormDiv.style.height = 'auto'; myFormDiv.style.overflow = 'visible'; }
+            if (demoDiv) { demoDiv.style.flexGrow = '0'; demoDiv.style.flexShrink = '0'; demoDiv.style.flexBasis = 'auto'; demoDiv.style.minHeight = ''; }
+            h = html.scrollHeight;
+            saved.forEach(function(s) { s[0].style[s[1]] = s[2]; });
+        } else {
+            h = doc.documentElement.scrollHeight;
+        }
+    } catch (e) { h = -1; }
+    iframe.style.height = prevH;
+    return h;
+}
+/* Apply a measured natural height to the iframe:
+   finalHeight = max(minHeight, min(naturalH + slack, ceiling)) where minHeight is
+   the explicit floor (see smarkformMinHeightPx) and the ceiling is
+   SMARKFORM_AUTOSIZE_MAX_PCT of the viewport. */
+function smarkformApplySize(iframe, data, naturalH) {
+    var minH = smarkformMinHeightPx(data);
+    var maxH = Math.round(window.innerHeight * SMARKFORM_AUTOSIZE_MAX_PCT / 100);
+    iframe.style.height = Math.max(minH, Math.min(naturalH + SMARKFORM_AUTOSIZE_SLACK, maxH)) + 'px';
+}
+/* Auto-size the iframe to its measured content height, at most once per iframe.
    Runs on the first render (and on the initial preview-tab activation) but never
    again afterwards, so re-renders from user edits keep the established height
    stable and never clobber manual drag-resizes.
-   finalHeight = max(minHeight, min(naturalH + 20, autosizeCeiling)):
-     - minHeight comes from data.minHeight (or the line-count default);
-     - naturalH is the true content height (editor mode temporarily overrides the
-       editorCss flex rules that would otherwise make scrollHeight circular);
-     - the ceiling (SMARKFORM_AUTOSIZE_MAX_PCT of the viewport) guarantees the
-       iframe can never push the page's tabs or controls out of reach. */
+   The height is committed immediately from the first measurement, then re-sampled
+   a few times (async examples grow right after load) keeping the largest value,
+   and finally locked in by setting smarkformAutosized. */
 function smarkformAutosize(iframe, data) {
-    if (iframe.dataset.smarkformAutosized === '1') return;
-    var doc = iframe.contentDocument;
-    if (!doc || !doc.documentElement) return;
-    /* Not rendered yet (e.g. iframe still blank when the Preview tab was toggled) —
-       the iframe's onload will size it once the document actually loads. */
-    if (doc.documentElement.scrollHeight <= 0) return;
-    var hasEditor = iframe.dataset.hasEditor === '1';
-    var naturalH = doc.documentElement.scrollHeight;
-    if (hasEditor) {
-        /* editorCss sets height:100%/overflow:hidden on html, body, #myForm and
-           its flex child, which makes scrollHeight circular (equals the iframe
-           height rather than the natural content height). To measure the true
-           content height—so that toggling the editor adjusts the iframe by
-           exactly the editor element's height—temporarily override those rules
-           with inline styles (higher specificity), read scrollHeight, then restore
-           so the flex layout CSS takes effect on the final sized iframe. */
-        var html = doc.documentElement, body = doc.body;
-        var myForm = doc.querySelector('#myForm');
-        var myFormDiv = myForm ? myForm.firstElementChild : null;
-        var demoDiv = myFormDiv ? myFormDiv.firstElementChild : null;
-        var saved = [
-            [html, 'height', html.style.height], [html, 'overflow', html.style.overflow],
-            [body, 'height', body.style.height], [body, 'overflow', body.style.overflow]
-        ];
-        if (myForm) saved.push([myForm, 'height', myForm.style.height]);
-        if (myFormDiv) { saved.push([myFormDiv, 'height', myFormDiv.style.height]); saved.push([myFormDiv, 'overflow', myFormDiv.style.overflow]); }
-        if (demoDiv) { saved.push([demoDiv, 'flexGrow', demoDiv.style.flexGrow], [demoDiv, 'flexShrink', demoDiv.style.flexShrink], [demoDiv, 'flexBasis', demoDiv.style.flexBasis], [demoDiv, 'minHeight', demoDiv.style.minHeight]); }
-        html.style.height = 'auto'; html.style.overflow = 'visible';
-        body.style.height = 'auto'; body.style.overflow = 'visible';
-        if (myForm) myForm.style.height = 'auto';
-        if (myFormDiv) { myFormDiv.style.height = 'auto'; myFormDiv.style.overflow = 'visible'; }
-        if (demoDiv) { demoDiv.style.flexGrow = '0'; demoDiv.style.flexShrink = '0'; demoDiv.style.flexBasis = 'auto'; demoDiv.style.minHeight = ''; }
-        naturalH = html.scrollHeight;
-        saved.forEach(function(s) { s[0].style[s[1]] = s[2]; });
-    }
-    var minH = Math.round(window.innerHeight * smarkformComputeMinHeightPct(data) / 100);
-    var maxH = Math.round(window.innerHeight * SMARKFORM_AUTOSIZE_MAX_PCT / 100);
-    iframe.style.height = Math.max(minH, Math.min(naturalH + 20, maxH)) + 'px';
-    iframe.dataset.smarkformAutosized = '1';
+    if (iframe.dataset.smarkformAutosized === '1' || iframe.__smarkformSizing) return;
+    var naturalH = smarkformMeasureContent(iframe);
+    if (naturalH <= 0) return; /* document not rendered yet — onload or the Preview tab will retry */
+    iframe.__smarkformSizing = true;
+    smarkformApplySize(iframe, data, naturalH);
+    var remaining = SMARKFORM_AUTOSIZE_RETRIES;
+    (function settle() {
+        setTimeout(function() {
+            var nh = smarkformMeasureContent(iframe);
+            if (nh > naturalH) { naturalH = nh; smarkformApplySize(iframe, data, naturalH); }
+            if (--remaining > 0) { settle(); }
+            else {
+                iframe.dataset.smarkformAutosized = '1';
+                iframe.__smarkformSizing = false;
+            }
+        }, SMARKFORM_AUTOSIZE_RETRY_DELAY);
+    })();
 }
 /* Extract the opening tag, inner content, closing tag, and any sibling elements
    that follow the root element (e.g. <template> nodes for mixin examples).
