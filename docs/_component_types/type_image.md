@@ -119,11 +119,35 @@ file from your disk.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_basic_demoValue {{{ --> {% endraw %}
-{% capture image_basic_demoValue -%}
-{
-    "photo": "data:image/png;name=photo.png;size=68;lastModified=0;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+{% raw %} <!-- image_basic_jsHead {{{ --> {% endraw %}
+{% capture image_basic_jsHead -%}
+// Fetch the SmarkForm logo from the docs site and return it as an embedded
+// data URL: image fields store bytes only, never external URLs. The asset
+// lives at /assets/logo/ on the built site (docs/assets/logo/ in the repo,
+// served there by the co-located test harness).
+async function loadSmarkFormLogo(asset, name) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
 }
+
+var myForm;
+(async () => {
+    const photo = await loadSmarkFormLogo(
+        "smarkform_compact.svg", "SmarkForm Compact.svg");
+    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+        value: {
+            // The playground editor wraps the example fields in a "demo"
+            // subform, so the initial value must be nested accordingly:
+            demo: { photo },
+        },
+    });
+})().catch(function(err) {
+    console.error("Loading the SmarkForm logo failed:", err);
+});
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -132,9 +156,9 @@ file from your disk.
     htmlSource=image_basic_html
     cssSource=image_basic_css
     notes=image_basic_notes
+    jsHead=image_basic_jsHead
     selected="preview"
     showEditor=true
-    demoValue=image_basic_demoValue
     tests=false
 %}
 
@@ -215,11 +239,33 @@ arrives with the caption's name.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_singleton_demoValue {{{ --> {% endraw %}
-{% capture image_singleton_demoValue -%}
-{
-    "photo": "data:image/png;name=photo.png;size=68;lastModified=0;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+{% raw %} <!-- image_singleton_jsHead {{{ --> {% endraw %}
+{% capture image_singleton_jsHead -%}
+// Same logo-fetching helper as the previous example: fetch the SmarkForm
+// logo, embed it as a data URL and pass it as the initial value.
+async function loadSmarkFormLogo(asset, name) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
 }
+
+var myForm;
+(async () => {
+    const photo = await loadSmarkFormLogo(
+        "smarkform_dark.svg", "SmarkForm Dark.svg");
+    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+        value: {
+            // The playground editor wraps the example fields in a "demo"
+            // subform, so the initial value must be nested accordingly:
+            demo: { photo },
+        },
+    });
+})().catch(function(err) {
+    console.error("Loading the SmarkForm logo failed:", err);
+});
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -228,9 +274,9 @@ arrives with the caption's name.
     htmlSource=image_singleton_html
     cssSource=image_singleton_css
     notes=image_singleton_notes
+    jsHead=image_singleton_jsHead
     selected="preview"
     showEditor=true
-    demoValue=image_singleton_demoValue
     tests=false
 %}
 
@@ -333,11 +379,33 @@ become a 200×200 square.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_resize_format_demoValue {{{ --> {% endraw %}
-{% capture image_resize_format_demoValue -%}
-{
-    "avatar": "data:image/png;name=avatar.png;size=68;lastModified=0;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+{% raw %} <!-- image_resize_format_jsHead {{{ --> {% endraw %}
+{% capture image_resize_format_jsHead -%}
+// Same logo-fetching helper as the previous examples: fetch the SmarkForm
+// logo, embed it as a data URL and pass it as the initial value.
+async function loadSmarkFormLogo(asset, name) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
 }
+
+var myForm;
+(async () => {
+    const avatar = await loadSmarkFormLogo(
+        "smarkform_compact.svg", "SmarkForm Compact.svg");
+    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+        value: {
+            // The playground editor wraps the example fields in a "demo"
+            // subform, so the initial value must be nested accordingly:
+            demo: { avatar },
+        },
+    });
+})().catch(function(err) {
+    console.error("Loading the SmarkForm logo failed:", err);
+});
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -346,9 +414,9 @@ become a 200×200 square.
     htmlSource=image_resize_format_html
     cssSource=image_resize_format_css
     notes=image_resize_format_notes
+    jsHead=image_resize_format_jsHead
     selected="preview"
     showEditor=true
-    demoValue=image_resize_format_demoValue
     tests=false
 %}
 
@@ -483,14 +551,35 @@ them.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_list_demoValue {{{ --> {% endraw %}
-{% capture image_list_demoValue -%}
-{
-    "gallery": [
-        "data:image/png;name=a.png;size=68;lastModified=0;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=",
-        "data:image/png;name=b.png;size=68;lastModified=0;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
-    ]
+{% raw %} <!-- image_list_jsHead {{{ --> {% endraw %}
+{% capture image_list_jsHead -%}
+// Same logo-fetching helper as the previous examples: fetch the SmarkForm
+// logos, embed them as data URLs and pass them as the initial gallery.
+async function loadSmarkFormLogo(asset, name) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
 }
+
+var myForm;
+(async () => {
+    const [compact, dark] = await Promise.all([
+        loadSmarkFormLogo("smarkform_compact.svg", "SmarkForm Compact.svg"),
+        loadSmarkFormLogo("smarkform_dark.svg", "SmarkForm Dark.svg"),
+    ]);
+    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+        value: {
+            // The playground editor wraps the example fields in a "demo"
+            // subform, so the initial value must be nested accordingly:
+            demo: { gallery: [compact, dark] },
+        },
+    });
+})().catch(function(err) {
+    console.error("Loading the SmarkForm logo failed:", err);
+});
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -499,9 +588,9 @@ them.
     htmlSource=image_list_html
     cssSource=image_list_css
     notes=image_list_notes
+    jsHead=image_list_jsHead
     selected="preview"
     showEditor=true
-    demoValue=image_list_demoValue
     tests=false
 %}
 
