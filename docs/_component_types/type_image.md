@@ -121,23 +121,10 @@ file from your disk.
 
 {% raw %} <!-- image_basic_jsHead {{{ --> {% endraw %}
 {% capture image_basic_jsHead -%}
-// Fetch the SmarkForm logo from the docs site and return it as an embedded
-// data URL: image fields store bytes only, never external URLs. The asset
-// lives at /assets/logo/ on the built site (docs/assets/logo/ in the repo,
-// served there by the co-located test harness).
-async function loadSmarkFormLogo(asset, name) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
-}
-
 var myForm;
 (async () => {
     const photo = await loadSmarkFormLogo(
-        "smarkform_compact.svg", "SmarkForm Compact.svg");
+        "smarkform_compact.svg");
     myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
         value: {
             // The playground editor wraps the example fields in a "demo"
@@ -148,6 +135,19 @@ var myForm;
 })().catch(function(err) {
     console.error("Loading the SmarkForm logo failed:", err);
 });
+
+// Fetch the SmarkForm logo from the docs site and return it as an embedded
+// data URL: image fields store bytes only, never external URLs. The asset
+// lives at /assets/logo/ on the built site (docs/assets/logo/ in the repo,
+// served there by the co-located test harness).
+async function loadSmarkFormLogo(asset) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -241,21 +241,10 @@ arrives with the caption's name.
 
 {% raw %} <!-- image_singleton_jsHead {{{ --> {% endraw %}
 {% capture image_singleton_jsHead -%}
-// Same logo-fetching helper as the previous example: fetch the SmarkForm
-// logo, embed it as a data URL and pass it as the initial value.
-async function loadSmarkFormLogo(asset, name) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
-}
-
 var myForm;
 (async () => {
     const photo = await loadSmarkFormLogo(
-        "smarkform_dark.svg", "SmarkForm Dark.svg");
+        "smarkform_dark.svg");
     myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
         value: {
             // The playground editor wraps the example fields in a "demo"
@@ -266,6 +255,17 @@ var myForm;
 })().catch(function(err) {
     console.error("Loading the SmarkForm logo failed:", err);
 });
+
+// Same logo-fetching helper as the previous example: fetch the SmarkForm
+// logo, embed it as a data URL and pass it as the initial value.
+async function loadSmarkFormLogo(asset) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -381,21 +381,10 @@ become a 200×200 square.
 
 {% raw %} <!-- image_resize_format_jsHead {{{ --> {% endraw %}
 {% capture image_resize_format_jsHead -%}
-// Same logo-fetching helper as the previous examples: fetch the SmarkForm
-// logo, embed it as a data URL and pass it as the initial value.
-async function loadSmarkFormLogo(asset, name) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
-}
-
 var myForm;
 (async () => {
     const avatar = await loadSmarkFormLogo(
-        "smarkform_compact.svg", "SmarkForm Compact.svg");
+        "smarkform_compact.svg");
     myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
         value: {
             // The playground editor wraps the example fields in a "demo"
@@ -406,6 +395,17 @@ var myForm;
 })().catch(function(err) {
     console.error("Loading the SmarkForm logo failed:", err);
 });
+
+// Same logo-fetching helper as the previous examples: fetch the SmarkForm
+// logo, embed it as a data URL and pass it as the initial value.
+async function loadSmarkFormLogo(asset) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -553,22 +553,11 @@ them.
 
 {% raw %} <!-- image_list_jsHead {{{ --> {% endraw %}
 {% capture image_list_jsHead -%}
-// Same logo-fetching helper as the previous examples: fetch the SmarkForm
-// logos, embed them as data URLs and pass them as the initial gallery.
-async function loadSmarkFormLogo(asset, name) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(name || asset) + ";base64," + btoa(binary);
-}
-
 var myForm;
 (async () => {
     const [compact, dark] = await Promise.all([
-        loadSmarkFormLogo("smarkform_compact.svg", "SmarkForm Compact.svg"),
-        loadSmarkFormLogo("smarkform_dark.svg", "SmarkForm Dark.svg"),
+        loadSmarkFormLogo("smarkform_compact.svg"),
+        loadSmarkFormLogo("smarkform_dark_compact.svg"),
     ]);
     myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
         value: {
@@ -580,6 +569,17 @@ var myForm;
 })().catch(function(err) {
     console.error("Loading the SmarkForm logo failed:", err);
 });
+
+// Same logo-fetching helper as the previous examples: fetch the SmarkForm
+// logos, embed them as data URLs and pass them as the initial gallery.
+async function loadSmarkFormLogo(asset) {
+    const res = await fetch("/assets/logo/" + asset);
+    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    let binary = "";
+    for (const byte of bytes) binary += String.fromCharCode(byte);
+    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
