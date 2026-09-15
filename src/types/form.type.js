@@ -140,6 +140,13 @@ export class form extends SmarkField {
                 ev.defaultPrevented
                 // Unless focus_on_click explicitly set to false
                 || ! me.inheritedOption('focus_on_click', true)
+                // Never yank focus away from an interactive/editable descendant
+                // (buttons, links, fields, the image caption…): clicking those
+                // keeps their own focus.  Mirrors the click guard used by the
+                // image singleton container.
+                || ev.originalEvent?.target?.closest?.(
+                    "button, a, input, select, textarea, [contenteditable]"
+                )
             ) return;
             this.focus();
         });
