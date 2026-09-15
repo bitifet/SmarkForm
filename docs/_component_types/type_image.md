@@ -237,8 +237,8 @@ arrives with the caption's name.
 ## The Placeholder
 
 While the field is empty its `src` shows the default placeholder: a generated
-black-and-white **chessboard** (an inline SVG data URL — deterministic and
-offline, no network or asset needed).
+neutral gray-and-white **chessboard** (an inline SVG data URL — deterministic
+and offline, no network or asset needed).
 
 * `"placeholder":"…"` — any URL or data URL replaces the chessboard.
 * `"placeholder":false` — leave `src` empty (the browser shows its own broken/

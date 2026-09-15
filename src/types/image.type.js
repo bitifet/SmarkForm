@@ -75,15 +75,15 @@ const optEnforce = me => (
 );
 
 
-// Default empty-state placeholder: a generated black-and-white chessboard as an
-// inline SVG data URL. Deterministic and offline — no network, no external
+// Default empty-state placeholder: a generated neutral gray-and-white chessboard
+// as an inline SVG data URL. Deterministic and offline — no network, no external
 // asset (§3.2).//}}}
 const CHESSBOARD = (() => {
     const sq = 8, size = 64, cells = [];
     for (let y = 0; y < size; y += sq) {
         for (let x = 0; x < size; x += sq) {
             if (((x + y) / sq) % 2) {
-                cells.push(`<rect x="${x}" y="${y}" width="${sq}" height="${sq}" fill="#000"/>`);
+                cells.push(`<rect x="${x}" y="${y}" width="${sq}" height="${sq}" fill="#d0d0d0"/>`);
             };
         };
     };

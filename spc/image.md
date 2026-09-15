@@ -18,7 +18,7 @@ same list integration — and specializes it for images:
 
 - **Display**: the loaded image is shown in place via `src` (built from the
   embedded value). When empty (`null`), a **placeholder image** is shown
-  instead (a generated black-and-white chessboard by default, overridable with
+  instead (a generated neutral gray-and-white chessboard by default, overridable with
   the `placeholder` option).
 - **Validation**: on interactive acquisition, bytes must actually **decode as
   an image** — not just match an `image/*` MIME filter — and may optionally be
@@ -151,9 +151,9 @@ src = "data:" + type + ";base64," + data
 
 When there is no value, the field displays a **placeholder image**:
 
-- **Default**: a generated black-and-white chessboard, produced as an inline
-  SVG data URL (deterministic, lazily built once and cached at module level —
-  no network fetch, no external asset, works offline):
+- **Default**: a generated neutral gray-and-white chessboard, produced as an
+  inline SVG data URL (deterministic, lazily built once and cached at module
+  level — no network fetch, no external asset, works offline):
 
   ```javascript
   const CHESSBOARD = (() => {
@@ -161,7 +161,7 @@ When there is no value, the field displays a **placeholder image**:
       for (let y = 0; y < size; y += sq) {
           for (let x = 0; x < size; x += sq) {
               if (((x + y) / sq) % 2) {
-                  cells.push(`<rect x="${x}" y="${y}" width="${sq}" height="${sq}" fill="#000"/>`);
+                  cells.push(`<rect x="${x}" y="${y}" width="${sq}" height="${sq}" fill="#d0d0d0"/>`);
               };
           };
       };
