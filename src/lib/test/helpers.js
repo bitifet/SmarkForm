@@ -44,6 +44,22 @@ async function ensureServer() {
 
             Fs.readFile(filePath, (err, data) => {
                 if (err) {
+                    // Repository root has no "assets/" — docs assets live under
+                    // docs/assets/ (which the built site serves at /assets/).
+                    // Accept that same canonical URL in tests too.
+                    if (urlPath.startsWith('/assets/')) {
+                        const docsPath = path.join(process.cwd(), 'docs', urlPath.slice(1));
+                        Fs.readFile(docsPath, (err2, data2) => {
+                            if (err2) {
+                                res.writeHead(404, { 'Content-Type': 'text/plain' });
+                                res.end('Not Found');
+                                return;
+                            }
+                            res.writeHead(200, { 'Content-Type': getContentType(docsPath) });
+                            res.end(data2);
+                        });
+                        return;
+                    }
                     res.writeHead(404, { 'Content-Type': 'text/plain' });
                     res.end('Not Found');
                     return;
