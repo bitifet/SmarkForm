@@ -263,6 +263,10 @@ export class list extends SmarkField {
                 multiple: true,
                 currentCount: me.children.length,
                 maxItems: me.max_items,
+                // Thread the list's context so type-specific acquisition
+                // pipelines (e.g. `image` size/format + notices) work list-wide.
+                options: me.options,
+                targetNode: me.targetNode,
             });
             if (! files?.length) return; // Cancelled — list untouched
             if (files.length > slots) {
@@ -507,7 +511,14 @@ export class list extends SmarkField {
         ) return;
         const files = await tplController.toObjects(
             Array.from(filesList || [])
-            , {accept: me.options.accept, encoding: me.options.encoding}
+            , {
+                accept: me.options.accept,
+                encoding: me.options.encoding,
+                // Thread the list's context so type-specific acquisition
+                // pipelines (e.g. `image` size/format + notices) work list-wide.
+                options: me.options,
+                targetNode: me.targetNode,
+            }
         );
         if (! files.length) return;
         if (me.children.length >= me.max_items) {

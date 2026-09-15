@@ -57,6 +57,8 @@ function inferType(node, parentComponent) {//{{{
         case "tbody":
         case "tfoot":
             return "list";
+        case "img":
+            return "image";
         case "input":
             const type = String(node.getAttribute("type")||"").toLowerCase();
             if (parentComponent.isSingleton) return parentComponent.options.type;
