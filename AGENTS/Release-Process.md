@@ -2,7 +2,7 @@
 
 This document is a reusable step-by-step guide for preparing a SmarkForm release. In a future chat, point the assistant here and it will follow these steps with minimal extra instructions needed.
 
-All the work whould be done in a new PR branch on top of `main`. The final release commit will be a single squashed commit with the message "Version <target-version>". The PR should not be merged until the user has reviewed all the release notes and is ready to proceed.
+All the work is done directly on the `main` branch — the user performs releases manually from `main`, so no separate release branch is created. The user reviews the release notes (in `RELEASE_PREP.md`) and, once ready, squashes the release-prep commits into a single final commit with the message "Version <target-version>".
 
 ---
 
@@ -131,7 +131,7 @@ Brief one-line description of the release theme.
 
 Create (or overwrite) `RELEASE_PREP.md` **at the repository root**. Its purpose is to store all release-related texts in one place for the user to review and copy from.
 
-After gathering the information, the user will remove it and squash all commits into main updating the commit message to "Version <target-version>". Leave exact instructions to the user for the manual steps (squash, tag, GitHub Release, npm publish, stable rebase) at the end of the document.
+After gathering the information, the user will remove it and squash the release-prep commits (on `main`) into a single squashed commit updating the commit message to "Version <target-version>". Leave exact instructions to the user for the manual steps (squash, tag, GitHub Release, npm publish, stable rebase) at the end of the document.
 
 ### Contents of `RELEASE_PREP.md`
 
@@ -301,7 +301,7 @@ The linkedIn communities are the following:
 
 The following steps are intentionally left to the user. **Do not perform them automatically** unless the user explicitly asks:
 
-- **Git squash and commit**: `git merge --squash <branch> && git commit`
+- **Git squash and commit**: squash the release-prep commits on `main` into a single commit, e.g. `git reset --soft <tip-of-main-before-release-prep> && git commit -m "Version <target-version>"`
 - **Git tag**: `git tag <target-version> && git push origin <target-version>`
 - **GitHub Release**: Create via the GitHub web UI using the release notes from §8.
 - **npm publish**: `npm publish`

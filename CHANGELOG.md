@@ -11,6 +11,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.21.0] — 2026-09-15
+
+🖼️ `image` field type · ✅ Decode-validated acquisition 🖼️ Gallery lists
+
+SmarkForm 0.21.0 introduces the `image` field type: the field renders its value **in place on a native `<img>`** and supports click / `Space` / `Shift+Space` browsing plus drag & drop and paste acquisition, with **decoded-image validation** (broken or non-image files are rejected silently). Optional `image_resize` / `image_maxSize` / `image_format` conversion runs on acquisition through the canvas, and the `image_enforce` option decides how unmet or unverifiable requirements are handled — warning or rejecting via a cancellable `smark:imageNotice` event and an in-page toast. File names are editable through `figcaption contenteditable` on `<figure>` wrappers and gallery items, and `of:"image"` lists behave like galleries: batch multi-pick, decode-filter, and drop-to-append.
+
+### Features
+
+- **`image` field type**: a native `<img>` (or any singleton container wrapping exactly one inner `<img>`) becomes an image-upload field that shows its value on screen. Bare `<img data-smark>` is auto-inferred as `image`; using `<input type="image">` raises `IMAGE_TYPE_ON_INPUT`. An empty field shows a generated chessboard placeholder (`"placeholder"` overrides it, `false` leaves `src` empty). Has the same value contract, acquisition routes, lists integration and `download` action as `file`.
+- **Decoded-image validation**: acquired files are actually decoded (`smark_image_validate`, on by default); candidates that cannot be decoded are rejected silently.
+- **Resize & format conversion**: `image_resize` (exact `[w,h]`/`{width,height}`/square box), `image_maxSize` (downscale-only cap, aspect preserved) and `image_format` (`jpeg`/`jpg`/`png`/`webp`/`avif`) are best-effort processed on acquisition; `image_enforce` (`strict`/`hard`/`warn`/`ignore`) governs how unmet (B) or unverifiable (C) outcomes are handled, notifying through a bubbling cancellable `smark:imageNotice` event plus an in-page toast (suppressed by `preventDefault()`).
+- **Editable file name**: `<figure>` wrappers and gallery items get a `figcaption contenteditable` that mirrors and edits the stored `name` — a non-empty edited caption wins on export and download. `Delete`/`Backspace` clear the value but never while editing a caption.
+- **Gallery lists**: a list whose item template is the `image` type renders per-item thumbnails; `addItem` batch-picks and decode-filters the whole selection, and OS drops **append** items (also when dropped on an existing item).
+
+### Documentation
+
+- **Image field guide**: New `docs/_component_types/type_image.md` with playable real-field, singleton/caption, resize+format and gallery examples.
+- **Developer cheatsheet**: New "Image Fields" section following "File Fields".
+- **Agent docs & future work**: New "Image Field Type" section in `AGENTS.md`, a `PROMPTS.md` mirror entry, and a `See also: image` cross-reference on the file field page.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.21.0)
+
+---
+
 ## [0.20.0] — 2026-09-13
 
 📁 `file` field type · 📄 `format: "json"` option · 🗂️ Lists of files
