@@ -14,30 +14,30 @@ import {parseJSON} from "../lib/helpers.js";
 // bare-string imports); `format` selects between the data-URL string and the
 // structured object.  A `data:` URL always carries base64 bytes (per spec,
 // regardless of `encoding`).//}}}
-function b64ToBytes(b64) {//{{{
+export function b64ToBytes(b64) {//{{{
     const bin = atob(String(b64).replace(/-/g, "+").replace(/_/g, "/"));
     const bytes = new Uint8Array(bin.length);
     for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
     return bytes;
 };//}}}
-function bytesToB64(bytes) {//{{{
+export function bytesToB64(bytes) {//{{{
     let bin = "";
     for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
     return btoa(bin);
 };//}}}
-function bytesToHex(bytes) {//{{{
+export function bytesToHex(bytes) {//{{{
     let out = "";
     for (let i = 0; i < bytes.length; i++) out += bytes[i].toString(16).padStart(2, "0");
     return out;
 };//}}}
-function hexToBytes(hex) {//{{{
+export function hexToBytes(hex) {//{{{
     const h = String(hex).replace(/\s+/g, "");
     const bytes = new Uint8Array(h.length >> 1);
     for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(h.substr(i * 2, 2), 16);
     return bytes;
 };//}}}
-const b64url = s => s.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");//}}}
-function payloadToBytes(payload, encoding) {//{{{
+export const b64url = s => s.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");//}}}
+export function payloadToBytes(payload, encoding) {//{{{
     switch (encoding) {
         case "hex":
             return hexToBytes(payload);
@@ -47,7 +47,7 @@ function payloadToBytes(payload, encoding) {//{{{
             return b64ToBytes(payload);
     };
 };//}}}
-function bytesToEncoding(bytes, encoding) {//{{{
+export function bytesToEncoding(bytes, encoding) {//{{{
     switch (encoding) {
         case "hex":
             return bytesToHex(bytes);
@@ -58,13 +58,13 @@ function bytesToEncoding(bytes, encoding) {//{{{
             return bytesToB64(bytes);
     };
 };//}}}
-function typeToName(type) {//{{{
+export function typeToName(type) {//{{{
     // Best-effort filename from a MIME type, e.g. image/png → "image.png".
     const parts = String(type || "").split("/");
     if (parts.length !== 2 || ! parts[0] || ! parts[1]) return "file";
     return parts[0] + "." + parts[1];
 };//}}}
-function acceptFile(file, accept) {//{{{
+export function acceptFile(file, accept) {//{{{
     if (! accept) return true;
     const patterns = String(accept)
         .split(",")
@@ -79,7 +79,7 @@ function acceptFile(file, accept) {//{{{
             || (p.startsWith(".") && String(file?.name || "").toLowerCase().endsWith(p));
     });
 };//}}}
-function readFileToObject(file, {encoding} = {}) {//{{{
+export function readFileToObject(file, {encoding} = {}) {//{{{
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => {
@@ -116,7 +116,7 @@ function readFileToObject(file, {encoding} = {}) {//{{{
 // bare payload string, or a JSON string describing an object.  Always
 // produces a complete, normalized file object whose `data` is internal
 // base64 and whose `size` is derived from the decoded payload bytes.//}}}
-function normalizeDataUrl(str) {//{{{
+export function normalizeDataUrl(str) {//{{{
     const comma = str.indexOf(",");
     if (comma === -1) return null;
     const header = str.slice(5, comma);
@@ -143,7 +143,7 @@ function normalizeDataUrl(str) {//{{{
         data: bytesToB64(bytes),
     };
 };//}}}
-function normalizePayload(obj, encoding) {//{{{
+export function normalizePayload(obj, encoding) {//{{{
     const bytes = payloadToBytes(obj.data, encoding);
     return {
         name: String(obj.name !== undefined ? obj.name : typeToName(obj.type || "")),
@@ -153,7 +153,7 @@ function normalizePayload(obj, encoding) {//{{{
         data: bytesToB64(bytes),
     };
 };//}}}
-function normalizeImport(value, {encoding = "base64"} = {}) {//{{{
+export function normalizeImport(value, {encoding = "base64"} = {}) {//{{{
     if (value === undefined || value === null) return null;
     if (typeof value === "string") {
         const trimmed = value.trim();
@@ -176,7 +176,7 @@ function normalizeImport(value, {encoding = "base64"} = {}) {//{{{
 
 
 // Compute the exported representation (object or data-URL string):{{{
-function computeExport(file, {format = "raw", encoding = "base64"} = {}) {
+export function computeExport(file, {format = "raw", encoding = "base64"} = {}) {
     if (! file) return null;
     const bytes = b64ToBytes(file.data);
     const name = String(file.name ?? "");
@@ -204,6 +204,9 @@ function computeExport(file, {format = "raw", encoding = "base64"} = {}) {
 
 
 export class file extends input {
+    // Capability flag: types inheriting this (e.g. `image`) are file-like, so
+    // list-level file handling (drop append, multi-file pickers) applies to them.
+    static isFileLike = true;
     constructor(...args) {//{{{
         super(...args);
         const me = this;
@@ -265,7 +268,7 @@ export class file extends input {
             const underFileList = !! (
                 parentList
                 && parentList.options.type === "list"
-                && parentList.tplType === "file"
+                && me.types[parentList.tplType]?.isFileLike
                 && parentList.options.fileDrop !== false
             );
             if (me.options.smark_file_drop !== false && ! underFileList) {
