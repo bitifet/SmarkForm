@@ -95,6 +95,79 @@ a self-describing data-URL string by default, or as a structured object with
 - Tests: `test/co_located_tests.tests.js` (docs examples incl. `docs/_component_types/type_file.md`), list integration covered by the co-located examples in `docs/_component_types/type_file.md`
 - Implementation: `src/types/file.type.js` (field, `readFileToObject`, `acquire`, `toObjects`), `src/types/list.type.js` (`_addFiles`, encoding threading), `src/types/list.decorators/sortable.deco.js` (list-level file drop), `src/types/input.type.js` (format alias)
 
+### Image Field Type
+
+SmarkForm's `image` field type extends `file` and renders the field **in place
+on a native `<img>`** (the picture *is* the field), adding decoded-image
+validation, optional resize/format conversion with `image_enforce` modes, and
+an editable file name via `figcaption contenteditable`.
+
+**Key API**:
+- Declaration: `<img data-smark='{"name":"photo"}'>` (bare `<img data-smark>`
+  is **inferred** as `image` by `inferType()`) or a **singleton container**
+  (any tag, e.g. `<figure>`, wrapping exactly one **unnamed** inner `<img>` —
+  a *named* child is form-mounted as a sibling → `NOT_A_SINGLETON`).
+- `<input type="image">` raises `IMAGE_TYPE_ON_INPUT` (it is a form submit-
+  piece, not an image field).
+- Options: `accept` (default `"image/*"`), `image_resize` (exact `[w,h]`/
+  `{width,height}`/number = stretch), `image_maxSize` (downscale-only cap,
+  aspect preserved), `image_format` (`"jpeg"`·`"jpg"`·`"png"`·`"webp"`·
+  `"avif"`), `image_enforce` (`"strict"`·`"hard"`·`"warn"`(default)·`"ignore"`),
+  `smark_image_validate` (decode gate, default `true`), `smark_image_clearOnDelete`
+  (default `true`), `smark_image_open`/`drop`/`paste` (default `true`;
+  `smark_file_*` honored as fallbacks), `placeholder` (default: generated
+  chessboard SVG data URL; `false` = leave `src` empty).
+- **Value contract identical to `file`**: raw data-URL string default,
+  `{name,type,size,lastModified,data}` with `"format":"json"`, embedded-only,
+  **no width/height metadata**.
+- **Acquisition pipeline**: ① decode gate (silent reject), ② resize/maxSize/
+  format processing (canvas, ~92% JPEG quality; name re-extended on format
+  change; default `image.<ext>` for nameless), ③ `image_enforce` verdict for
+  unmet (B) / unverifiable (C) outcomes, ④ `change` event. `import()` skips the
+  pipeline and does **not** decode-validate.
+- **Notices**: unmet/unverifiable requirements dispatch a bubbling cancellable
+  `smark:imageNotice` CustomEvent on `targetNode` (`detail: {kind, code,
+  message, mode, name, requirement}`) plus an in-page toast (suppressed by
+  `preventDefault()`). `window.alert/confirm` are avoided — blocked in
+  sandboxed iframes.
+- **Caption = editable name**: on `<figure>` wrappers and per-item in
+  galleries, `figcaption contenteditable` mirrors/edits the stored `name`
+  (edited caption > stored name on export/download). Delete/Backspace never
+  clears while focus is inside a caption.
+- **Lists**: `{"type":"list","of":"image"}` → flat array of data URLs; `addItem`
+  multi-picks and decode-filters the batch; OS drops **append** items (a drop
+  on an existing item appends — the item container's drop is suppressed inside
+  image-capable lists via `static isFileLike`); paste stays item-scoped.
+- **Download (action)**: inherited from `file`; name precedence `filename`
+  trigger option > edited caption > stored name.
+- **Layout (CLS)**: the field only manages `src`/`title` — it never touches
+  `width`/`height`/`alt`/`class`/`style`. Docs must always tell authors to
+  reserve layout space (`width`/`height` attributes, `sizes`, or CSS).
+
+**Gotchas**:
+- `image.render()` must start with `await Promise.resolve()` — `me.eventHooks`
+  is created by the events mixin *after* the base constructors return, and
+  render() is kicked off synchronously inside them (mirrors `file.render()`'s
+  initial `await super.render()`). Without the deferral: `Cannot read
+  properties of undefined (reading 'keydown')`.
+- Singleton detection: `validName` returns `""` when `me.parent.isSingleton`;
+  the container's inner field must be the unnamed `<img>` (`IMAGE_MISSING_IMG`
+  otherwise).
+- One error-node format to assert in tests: `textContent` is `CODE↧`
+  (`replaceWrongNode`, `helpers.js:93-111`), and `console.error` prints
+  `RenderError(/path): message` (not the code).
+
+**Configuration file locations**:
+- Tests: `test/type_image.tests.js` (13 tests: render, round-trip, capture
+  pipeline, resize/format, enforce matrix, keyboard, singleton, render errors,
+  gallery lists, drop-append); `test/co_located_tests.tests.js` (demoValue
+  round-trip smoke tests for the sampletabs in `docs/_component_types/type_image.md`)
+- Implementation: `src/types/image.type.js` (extends `file`), `src/lib/component.js`
+  (`inferType` `case "img"`), `src/types/list.type.js` / `list.decorators/
+  sortable.deco.js` (capability-based file drop), `src/lib/file.type.js`
+  (value contract, `readFileToObject`, `acquire`, `toObjects`)
+- Spec: `spc/image.md` (authoritative design)
+
 ### Playwright Test Runner
 
 **What it does**: Runs end-to-end tests against the built distribution files and validates documentation examples.

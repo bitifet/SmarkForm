@@ -687,3 +687,8 @@ export default async ({ page, expect, id, root }) => {
   single file).
 - `accept` filtering is best-effort on drop/paste: it matches MIME types and
   extension suffixes, and non-matching files are silently ignored.
+
+> **See also:** [`image`]({{ "component_types/type_image" | relative_url }}) —
+> a field built on `file` that renders the value in place on an `<img>` and
+> adds decoded-image validation, resize/format conversion and editable
+> captions.

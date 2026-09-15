@@ -298,6 +298,43 @@ console warning is emitted and the field is left unmasked.
 6. Mixin system: when expanding a mixin template, its local `<script type="smark-mask">` definitions are merged into the expansion's mask scope, taking precedence over the global registry during that mixin's lifetime
 7. Remove the old `.mask()` method from `input.type.js`
 
+### Image field type
+
+> Status: Implemented on the `fileField` branch (spec: `spc/image.md`)
+
+The `image` field type turns a native `<img>` element into an image-upload
+field that displays its value in place. It extends `file` (same value
+contract, acquisition, list integration and download action) and adds:
+
+- **Decoded-image validation** (`smark_image_validate`, default `true`) — a
+  candidate that cannot be decoded is rejected silently.
+- **Best-effort processing** on acquisition — `image_resize` (exact box),
+  `image_maxSize` (downscale-only cap) and `image_format`
+  (`jpeg`/`jpg`/`png`/`webp`/`avif`), through a canvas at ~92% quality.
+- **`image_enforce`** (`"strict"` · `"hard"` · `"warn"` (default) · `"ignore"`)
+  — verdict policy for unmet (B) / unverifiable (C) outcomes; notices are
+  dispatched as a bubbling `smark:imageNotice` event plus an in-page toast
+  (suppressed by `preventDefault()`).
+- **Editable file name** via `<figcaption contenteditable>` on `<figure>`
+  wrappers and per-item in galleries.
+- **Lists:** `{"type":"list","of":"image"}` → flat array of data URLs; OS
+  drops append items (item-level drop suppressed inside image lists).
+
+**Notes since acceptance:**
+- `image.render()` must defer its body by a microtask (`await Promise.resolve()`)
+  — the events mixin creates `me.eventHooks` after the base constructors
+  return, and render is kicked off synchronously inside them.
+- Singleton inner field must be the unnamed `<img>`; a named child is form-
+  mounted as a sibling and produces `NOT_A_SINGLETON`.
+- `<input type="image">` raises `IMAGE_TYPE_ON_INPUT`.
+
+**Future work (§13 of `spc/image.md`):** a `<picture>` responsive/multi-source
+value model; external (non-embedded) URL references; a `smark_image_click`
+mode (`"pick"` | `"preview"`); a fixed `smark_image_exportName`; opt-in
+button-like a11y (`role="button"` + dynamic `aria-label`); decode-validation
+on `import()`. Related future types (`audio`, `video`, `drawing`) build on the
+same `file` foundation.
+
 ### Batch file download: packing multiple files into an archive
 
 > Status: Brainstorm (deferred to a later iteration — related to the single-file

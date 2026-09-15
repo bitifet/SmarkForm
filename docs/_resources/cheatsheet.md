@@ -274,6 +274,38 @@ await form.find("../shipping").import(data);
 
 ---
 
+## Image Fields
+
+`{"type":"image"}` on a native `<img>` (the picture *is* the field), or on a **singleton container** (any tag wrapping exactly one inner `<img>`). Extends `file` — same value contract, acquisition and download action.
+
+```html
+<img data-smark='{"type":"image","name":"photo"}'>
+<figure data-smark='{"type":"image","name":"photo"}'>…<img data-smark>…<figcaption contenteditable>…</figcaption>…</figure>
+```
+
+| Option | Default | Effect |
+|--------|---------|--------|
+| `accept` | `"image/*"` | Native filter — also applied to drops/pastes |
+| `placeholder` | chessboard SVG | Empty-state image (URL/data URL); `false` = leave `src` empty |
+| `image_resize` | — | Acquired images stretched to exact `[w,h]` / `{width,height}` / square number |
+| `image_maxSize` | — | Downscale-only cap (fit *within* the box, aspect preserved) |
+| `image_format` | — | Convert on acquire: `"jpeg"` / `"jpg"` / `"png"` / `"webp"` / `"avif"` |
+| `image_enforce` | `"warn"` | `"strict"`·`"hard"`·`"warn"`·`"ignore"` — verdict for unmet/unverifiable requirements |
+| `smark_image_validate` | `true` | Decode-test acquired files (broken/non-image → silently rejected) |
+| `smark_image_clearOnDelete` | `true` | `Delete`/`Backspace` clear the value (never while editing a caption) |
+| `smark_image_open` / `smark_image_drop` / `smark_image_paste` | `true` | Acquisition toggles (`smark_file_*` honored as fallbacks) |
+
+- **Inference:** bare `<img data-smark>` is inferred as `image`; `<input type="image">` raises `IMAGE_TYPE_ON_INPUT`.
+- **Display:** `src` = stored bytes while set, placeholder when empty; the field never touches `width`/`height`/`alt`/`class` — reserve layout space in the markup.
+- **Export/import:** identical to `file` (data-URL string default / `{name,type,size,lastModified,data}` with `"format":"json"`; embedded-only, no width/height metadata).
+- **Name:** on `<figure>` wrappers and gallery items a `figcaption contenteditable` mirrors/edits the stored `name` (edited caption > stored name). Without one, the stored name governs.
+- **Notices:** unmet/unverifiable requirements dispatch a bubbling `smark:imageNotice` event (+ toast unless `preventDefault()`d).
+- **Lists:** `{"type":"list","name":"gallery","of":"image"}` → flat array of data URLs; `addItem` multi-picks and decode-filters the batch; OS drops **append** items (also on an existing item).
+
+> See: [Image field type]({{ "component_types/type_image" | relative_url }}#introduction)
+
+---
+
 ## API Methods
 
 Every field component:
