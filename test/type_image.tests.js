@@ -530,6 +530,49 @@ test.describe('Image Component Type Test', () => {
         }
     });//}}}
 
+    test('Singleton: clicking the caption keeps editable focus (focus-on-click must not steal it)', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            onClosed = await openPage(page, title, pugBase);
+
+            await page.evaluate(async () => {
+                const fig = window.form.find("/fig");
+                const cap = fig._getCaption();
+                const c = document.createElement("canvas");
+                c.width = 8; c.height = 8;
+                c.getContext("2d").fillRect(0, 0, 8, 8);
+                await fig.import(c.toDataURL("image/png"));
+                cap.textContent = "";
+            });
+
+            const cap = page.locator('figure figcaption');
+            await cap.click();
+
+            // The caption — not the inner img — must be the active element:
+            const active = await page.evaluate(() => ({
+                tag: document.activeElement.tagName,
+                editable: !! document.activeElement.isContentEditable,
+            }));
+            expect(active.tag).toBe("FIGCAPTION");
+            expect(active.editable).toBe(true);
+
+            // And typing must land in the caption (drives the stored name):
+            await page.keyboard.type("renamed.png");
+            const res = await page.evaluate(async () => {
+                const fig = window.form.find("/fig");
+                const out = await fig.export();
+                return {
+                    caption: fig._getCaption().textContent,
+                    name: out ? decodeURIComponent(out.split("name=")[1].split(";")[0]) : null,
+                };
+            });
+            expect(res.caption).toBe("renamed.png");
+            expect(res.name).toBe("renamed.png");
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
     test('render errors: IMAGE_TYPE_ON_INPUT and IMAGE_MISSING_IMG replace the node and log', async ({ page }) => {//{{{
         let onClosed;
         const consoleErrors = [];
