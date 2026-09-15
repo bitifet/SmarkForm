@@ -476,6 +476,11 @@ export class image extends file {
     };//}}}
     async render() {//{{{
         const me = this;
+        // Defer the render body until the constructor chain completes: the
+        // events mixin creates `me.eventHooks` after the base constructors
+        // return, and render() is kicked off synchronously inside them.  This
+        // mirrors file.render()'s initial `await super.render()`.
+        await Promise.resolve();
         // An <input type="image"> is a submit-piece, not a field: using it as
         // the image target is almost surely a mistake (§2 of spc/image.md).
         if (
