@@ -153,12 +153,80 @@ export function normalizePayload(obj, encoding) {//{{{
         data: bytesToB64(bytes),
     };
 };//}}}
-export function normalizeImport(value, {encoding = "base64"} = {}) {//{{{
+
+
+// URL-import sugar:
+// =================
+// import() also accepts an URL string — http(s):, blob:, protocol-relative
+// (//host), or a root/parent-relative path (/assets/…, ./…, ../…).  The bytes
+// are fetched and read into a normalized file object (interior stays base64,
+// exactly like a data: URL).  This is a *sugar for the input value only*:
+// exports always carry the embedded bytes, never the URL.  Cross-origin URLs
+// need the remote host to send permissive CORS headers; same-origin and
+// relative URLs always work.  A failed fetch warns and yields null.//}}}
+export const URL_IMPORT_RE = /^(?:[a-z][a-z0-9+.-]*:|\/|\.{1,2}\/)/i;//}}}
+export function urlName(url, type) {//{{{
+    // Best-effort file name from an URL: the decoded last path segment when it
+    // carries a file extension, else derived from the MIME type (image.jpeg).
+    // A URL with no real path (e.g. "https://host/") falls back too.
+    const clean = String(url).split(/[?#]/)[0];
+    const scheme = clean.match(/^[a-z][a-z0-9+.-]*:/i);
+    const schemeRest = scheme ? clean.slice(scheme[0].length) : clean;
+    let path = clean;
+    if (schemeRest.startsWith("//")) {
+        const slash = schemeRest.indexOf("/", 2);
+        path = slash === -1 ? "" : schemeRest.slice(slash);
+    };
+    let segment = "";
+    const raw = path.split("/").filter(Boolean).pop() || "";
+    try { segment = decodeURIComponent(raw); } catch (_) { segment = raw; };
+    if (segment && /\.\w+$/.test(segment)) return segment;
+    return typeToName(type);
+};//}}}
+export async function fetchUrlToFileObject(url) {//{{{
+    const response = await fetch(url);
+    if (! response.ok) throw new Error("HTTP " + response.status);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const dataUrl = String(reader.result || "");
+            const comma = dataUrl.indexOf(",");
+            const mime = (
+                comma === -1 ? "" : dataUrl.slice(5, comma).split(";")[0] || ""
+            );
+            resolve({
+                name: urlName(url, blob.type || mime),
+                type: String(blob.type || mime || ""),
+                size: typeof blob.size === "number" ? blob.size : 0,
+                lastModified: Date.now(),
+                data: comma === -1 ? "" : dataUrl.slice(comma + 1), // (internal base64)
+            });
+        };
+        reader.onerror = () => reject(reader.error || new Error("URL_FETCH_READ_ERROR"));
+        reader.readAsDataURL(blob);
+    });
+};//}}}
+
+
+export async function normalizeImport(value, {encoding = "base64"} = {}) {//{{{
     if (value === undefined || value === null) return null;
     if (typeof value === "string") {
         const trimmed = value.trim();
         if (! trimmed) return null;
         if (trimmed.startsWith("data:")) return normalizeDataUrl(trimmed);
+        if (URL_IMPORT_RE.test(trimmed)) {
+            try {
+                return await fetchUrlToFileObject(trimmed);
+            } catch (error) {
+                console.warn(
+                    "SmarkForm: could not import URL value "
+                    + JSON.stringify(trimmed) + ": "
+                    + (error?.message || error)
+                );
+                return null;
+            };
+        };
         const parsed = parseJSON(trimmed);
         if (parsed && typeof parsed === "object" && ! (parsed instanceof Array)) {
             return normalizeImport(parsed, {encoding});
