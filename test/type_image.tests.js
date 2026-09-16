@@ -637,6 +637,29 @@ test.describe('Image Component Type Test', () => {
         }
     });//}}}
 
+    test('URL value: the constructor `value` option prefills via a URL', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            onClosed = await openPage(page, title, pugBase);
+
+            const res = await page.evaluate(async () => {
+                const wrap = document.createElement("div");
+                wrap.id = "urlprefill-wrap";
+                wrap.innerHTML = '<img data-smark=\'{"name":"pic"}\' width="40" height="40" alt="x">';
+                document.body.appendChild(wrap);
+                const f = new (window.SmarkForm)(wrap, {
+                    value: { pic: "/assets/avatar_alex.jpg" },
+                });
+                await f.rendered;
+                return await f.find("/pic").export();
+            });
+
+            expect(res.startsWith("data:image/jpeg;name=avatar_alex.jpg;")).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
     test('render errors: IMAGE_TYPE_ON_INPUT and IMAGE_MISSING_IMG replace the node and log', async ({ page }) => {//{{{
         let onClosed;
         const consoleErrors = [];
