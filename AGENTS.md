@@ -574,6 +574,11 @@ to maintain consistency across the site:
 - Use `{% raw %}<!-- mask_foo_html {{{ -->{% endraw %}` / `{% raw %}<!-- }}} -->{% endraw %}` markers around each capture to delimit them in the source.
 - Set `showEditor=true` and `tests=false` for documentation examples (tests are
   defined in standalone test files under `test/`).
+- **Always use `demoValue`** to preload data — never hardcode initial values in
+  a custom `jsHead`. The `demoValue` parameter automatically handles the editor
+  `demo` subform wrapping and the display/execution JS variants, keeps co-located
+  tests value-independent, and enables the auto-generated round-trip smoke test.
+  See `AGENTS/Documentation-Examples.md` for details.
 - Provide a meaningful `notes` capture with a "Try it!" call to action.
 - Example-local trigger buttons must use **relative `context` paths** (e.g.
   `"context":"report"`), never absolute (`"/report"`) — the editor wraps the

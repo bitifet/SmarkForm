@@ -142,7 +142,7 @@ When `demoValue` is provided:
 
 3. **Reset behavior**: The Reset button has no `context` — it resets the **root** form. The root was initialized with `value: {"demo": demoValue}`, so `root.defaultValue = {"demo": demoValue, "editor": ""}`. Reset restores the demo values and clears the editor textarea. Note: `setDefault` propagation does NOT flow to children, so `demo.defaultValue` itself stays `{}`; only the root knows the correct default.
 
-4. **Test isolation**: The collector (`scripts/collect-docs-examples.js`) explicitly filters out `demoValue` via `DOCS_ONLY_PARAMS`. Tests always see an empty form.
+4. **Test isolation**: The regular co-located smoke test starts with an **empty form** — it uses `jsHead` (the raw include arg), never `demoValue`. A separate `demoValue round-trip` test (auto-generated) does initialise with `demoValue` and verifies the export matches.
 
 ### Example
 
@@ -159,7 +159,11 @@ When `demoValue` is provided:
 
 ### When to Skip `demoValue`
 
-`demoValue` is safe to use alongside co-located tests — the collector filters it out so the test form always starts empty regardless of the parameter. There are only a few situations where `demoValue` should be skipped:
+`demoValue` is the **default way to preload data** in every sampletabs-based
+documentation example. It keeps co-located tests value-independent (they always
+see an empty form), avoids the playground-editor `demo`-subform wrapping bug
+that a hardcoded `jsHead` value introduces, and enables the auto-generated
+`demoValue round-trip` smoke test. Only skip it in the following cases:
 
 - **Error demonstration examples** (`expectedPageErrors=1`): Adding a `demoValue` is pointless unless the error itself could be triggered by the default value.
 - **Undefined `htmlSource` (placeholder examples)**: When `htmlSource` is an undefined variable, the template renders a "Missing Example" placeholder; there's nothing to pre-populate.
