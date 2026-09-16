@@ -65,12 +65,6 @@ fields, and realistic demo data loaded straight from the docs site:
 {% capture image_basic_html -%}
 <div id="myForm$$">
     <div class="profile-card">
-        <img
-            data-smark='{"name":"profile_image"}'
-            class="avatar"
-            width="160" height="160"
-            alt="Profile picture"
-        >
         <div class="fields">
             <p>
                 <label data-smark="label">Name</label>
@@ -85,6 +79,12 @@ fields, and realistic demo data loaded straight from the docs site:
                 <textarea data-smark='{"name":"bio"}' rows="3" placeholder="A few lines about you"></textarea>
             </p>
         </div>
+        <img
+            data-smark='{"name":"profile_image"}'
+            class="avatar"
+            width="160" height="160"
+            alt="Profile picture"
+        >
     </div>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -294,7 +294,7 @@ and offline, no network or asset needed).
     <img
         data-smark='{"name":"brand","placeholder":"/assets/logo/smarkform_mono_compact.svg"}'
         class="brand"
-        width="300" height="75"
+        width="120" height="120"
         alt="Empty brand field showing the mono compact SmarkForm logo as placeholder"
     >
     <p>
