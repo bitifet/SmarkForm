@@ -369,6 +369,16 @@ Each of the three acquisition paths can be disabled independently with
 `smark_image_open` / `smark_image_drop` / `smark_image_paste` (all default to
 `true`; the `smark_file_*` names are honored as fallbacks).
 
+> ⚠️ **Mobile camera capture (Android).** SmarkForm opens the OS file picker;
+> the browser decides whether a camera option is offered. On Android,
+> Chromium-based browsers (Chrome, Brave…) have a known regression where
+> `accept="image/*"` shows **only the gallery** — and on some devices taking a
+> photo through **Firefox for Android** can reload or blank the whole tab.
+> Both are browser bugs, not SmarkForm ones. **Picking existing images from
+> the gallery works reliably** on every browser; live camera capture is only
+> available where the browser/OS provides it and should be avoided on Android
+> for now. The same applies to `file` fields.
+
 Whatever the route, an acquired file must **decode as an image**
 (`smark_image_validate`, on by default); a candidate that does not is rejected
 silently. Only after that gate are `image_resize`/`image_maxSize`/
@@ -679,6 +689,8 @@ logged and the value is left empty (`null`), rather than breaking the import.
 
 - The **OS picker cannot be opened programmatically** — acquisition always
   requires a real user gesture (click / Space / drop / paste).
+- **Live camera capture** depends on the browser/OS picker and is unreliable
+  on Android — see the note in "Acquiring Images".
 - Resize/format conversion handles only the **first frame** of animated images;
   full-frame animation is out of scope.
 - `<picture>` wrappers act only as a generic singleton container; responsive
