@@ -214,7 +214,12 @@ URL-encoded values).
 
 Being "as inclusive as possible", import accepts **both representations**
 regardless of the field's `format` setting (the option only chooses the
-*export* shape):
+*export* shape), plus, as a sugar, an **URL string** — same-origin or
+relative (`http(s)://…`, `//host/…`, `blob:…`, `/path`, `./…`, `../…`),
+fetched at import time and embedded (`fetch` + base64); cross-origin URLs
+need CORS. The stored `name` is derived from the URL's last path segment
+(falling back to the MIME-derived name) and `size` is the actual byte count.
+`import()` is `async` and a failed fetch warns and yields `null`.
 
 ### 6.1 Full object
 

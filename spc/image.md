@@ -474,7 +474,9 @@ Identical to `file`, fully inclusive:
 - a data-URL string,
 - a full or partial object,
 - a bare payload string (decoded per `encoding`),
-- a JSON string of any of the above.
+- a JSON string of any of the above,
+- an URL string (file spec §6: same-origin/relative fetch-and-embed sugar,
+  cross-origin needs CORS; failed fetch warns and yields `null`).
 
 Imported values are normalized into state and **displayed immediately** via the
 §3.1 `src` build. `import()` does **not** decode-validate (§4).
