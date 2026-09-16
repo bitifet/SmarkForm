@@ -41,7 +41,11 @@ action, and adds:
   `figcaption contenteditable` mirrors and edits the stored `name`.
 
 Images are **embedded-only**, exactly like `file`: the value always holds the
-bytes (as base64 internally), never an external URL.
+bytes (as base64 internally), never an external URL. An URL is only accepted as
+an **input sugar** — `import()` (and the constructor `value` option) may take an
+URL string that is fetched and *embedded* on load; from then on the value holds
+the bytes, never the link. See [Importing and Exporting
+Data](#importing-and-exporting-data).
 
 > **Inference:** bare `<img data-smark>` elements are automatically inferred as
 > `image` by `inferType()` — no `"type"` declaration is needed. An explicit
@@ -51,103 +55,121 @@ bytes (as base64 internally), never an external URL.
 
 ## Declaring an Image Field
 
-### Real Field
+### Real Field — a Profile Form
 
-The simplest, most direct form turns any `<img>` element into the field:
-
-```html
-<img
-    data-smark='{"name":"photo"}'
-    width="320" height="200"
-    alt="Profile photo"
->
-```
-
-**Specify the size.** The field only manages `src` (and the `title` tooltip);
-it never touches `width`, `height`, `class` or `style`. Reserve the layout
-space in the markup (`width`/`height` attributes shown above, `sizes`, or CSS
-sizing like `max-width:100%; height:auto`) so the page does not shift when a
-different-sized image is picked or imported.
+The simplest, most direct form turns any `<img>` element into the field. Here
+is a complete little prefilled profile form — a circular avatar, its editable
+fields, and realistic demo data loaded straight from the docs site:
 
 {% raw %} <!-- image_basic_html {{{ --> {% endraw %}
 {% capture image_basic_html -%}
 <div id="myForm$$">
-    <p>
-        <label data-smark="label">Profile photo:</label>
-    </p>
-    <img
-        data-smark='{"name":"photo"}'
-        width="320" height="200"
-        class="photo"
-        alt="Profile photo"
-    >
+    <div class="profile-card">
+        <img
+            data-smark='{"name":"profile_image"}'
+            class="avatar"
+            width="160" height="160"
+            alt="Profile picture"
+        >
+        <div class="fields">
+            <p>
+                <label data-smark="label">Name</label>
+                <input data-smark='{"name":"name"}' placeholder="Your name">
+            </p>
+            <p>
+                <label data-smark="label">Email</label>
+                <input data-smark='{"name":"email"}' type="email" placeholder="you@example.com">
+            </p>
+            <p>
+                <label data-smark="label">Bio</label>
+                <textarea data-smark='{"name":"bio"}' rows="3" placeholder="A few lines about you"></textarea>
+            </p>
+        </div>
+    </div>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- image_basic_css {{{ --> {% endraw %}
 {% capture image_basic_css -%}
-{{""}}#myForm$$ .photo {
+{{""}}#myForm$$ .profile-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    max-width: 620px;
+    background: #f5f5f5;
+    border-radius: .75rem;
+}
+{{""}}#myForm$$ .avatar {
     display: block;
-    max-width: 100%;
-    border: 1px dashed #aaa;
-    border-radius: .5rem;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
     object-fit: cover;
+    border: 2px dashed #999;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+{{""}}#myForm$$ .fields {
+    flex: 1;
+    min-width: 0;
+}
+{{""}}#myForm$$ .fields label {
+    display: block;
+    font: 600 .8em/1 system-ui, sans-serif;
+    margin: .7rem 0 .25rem;
+    color: #555;
+}
+{{""}}#myForm$$ .fields label:first-child {
+    margin-top: 0;
+}
+{{""}}#myForm$$ .fields input,
+{{""}}#myForm$$ .fields textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: .4em .55em;
+    border: 1px solid #bbb;
+    border-radius: .35rem;
+    font: inherit;
+    background: #fff;
 }
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- image_basic_notes {{{ --> {% endraw %}
 {% capture image_basic_notes -%}
-👉 **Inferred type:** the field is a bare `<img data-smark>` — the `image`
-   type is inferred from the tag name, no explicit `"type"` needed.
+👉 **It is still a real field:** the avatar is a bare `<img data-smark>` — the
+   `image` type is inferred from the tag name, no `"type"` needed. The field
+   only manages `src` (and the hover `title`); the round crop is plain CSS
+   (`object-fit: cover` on the authored `width`/`height` box).
 
-👉 **Click to pick:** click the image (or press **Space** / **Shift+Space**)
-   to open the OS file picker. **Delete** / **Backspace** clears the value.
+👉 **Prefilled from an URL:** the picture's initial `value` is an **URL string**
+   — `/assets/avatar_alex.jpg` — fetched and *embedded* on import. Exports
+   always carry the bytes, never the URL (see [Importing and Exporting
+   Data](#importing-and-exporting-data)).
 
-👉 **Drag & paste:** drop an image file onto the field or paste a screenshot —
-   both set the value.
+👉 **Click to pick, drag & drop or paste** a photo to replace it; **Delete** /
+   **Backspace** clears it back to the placeholder.
 
-👉 **Placeholder:** while empty, the field shows a generated chessboard
-   placeholder. Set `"placeholder":"…"` to a URL/data-URL of your own, or
-   `"placeholder":false` to leave `src` empty.
-
-👉 **Broken images never land:** an acquired file that cannot be decoded is
-   rejected silently — the value stays as it was.
-
-**Try it!** Load the demo value, then click the image and pick a different
-file from your disk.
+**Try it!** Replace the avatar with your own photo, then export the form from
+the console: `myForm.export()`.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- image_basic_jsHead {{{ --> {% endraw %}
 {% capture image_basic_jsHead -%}
-var myForm;
-(async () => {
-    const photo = await loadSmarkFormLogo(
-        "smarkform_compact.svg");
-    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-        value: {
-            // The playground editor wraps the example fields in a "demo"
-            // subform, so the initial value must be nested accordingly:
-            demo: { photo },
+var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    value: {
+        // The playground editor wraps the example fields in a "demo" subform,
+        // so the initial value must be nested accordingly:
+        demo: {
+            profile_image: "/assets/avatar_alex.jpg",
+            name: "Alex Morgan",
+            email: "alex@example.com",
+            bio: "Front-end developer and photography hobbyist.",
         },
-    });
-})().catch(function(err) {
-    console.error("Loading the SmarkForm logo failed:", err);
+    },
 });
-
-// Fetch the SmarkForm logo from the docs site and return it as an embedded
-// data URL: image fields store bytes only, never external URLs. The asset
-// lives at /assets/logo/ on the built site (docs/assets/logo/ in the repo,
-// served there by the co-located test harness).
-async function loadSmarkFormLogo(asset) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
-}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -241,31 +263,16 @@ arrives with the caption's name.
 
 {% raw %} <!-- image_singleton_jsHead {{{ --> {% endraw %}
 {% capture image_singleton_jsHead -%}
-var myForm;
-(async () => {
-    const photo = await loadSmarkFormLogo(
-        "smarkform_dark.svg");
-    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-        value: {
-            // The playground editor wraps the example fields in a "demo"
-            // subform, so the initial value must be nested accordingly:
-            demo: { photo },
+var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    value: {
+        // The playground editor wraps the example fields in a "demo" subform,
+        // so the initial value must be nested accordingly:
+        demo: {
+            // An URL string is fine here: it is fetched and embedded on import.
+            photo: "/assets/logo/smarkform_dark.svg",
         },
-    });
-})().catch(function(err) {
-    console.error("Loading the SmarkForm logo failed:", err);
+    },
 });
-
-// Same logo-fetching helper as the previous example: fetch the SmarkForm
-// logo, embed it as a data URL and pass it as the initial value.
-async function loadSmarkFormLogo(asset) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
-}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -381,31 +388,15 @@ become a 200×200 square.
 
 {% raw %} <!-- image_resize_format_jsHead {{{ --> {% endraw %}
 {% capture image_resize_format_jsHead -%}
-var myForm;
-(async () => {
-    const avatar = await loadSmarkFormLogo(
-        "smarkform_compact.svg");
-    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-        value: {
-            // The playground editor wraps the example fields in a "demo"
-            // subform, so the initial value must be nested accordingly:
-            demo: { avatar },
+var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    value: {
+        // The playground editor wraps the example fields in a "demo" subform,
+        // so the initial value must be nested accordingly:
+        demo: {
+            avatar: "/assets/logo/smarkform_compact.svg",
         },
-    });
-})().catch(function(err) {
-    console.error("Loading the SmarkForm logo failed:", err);
+    },
 });
-
-// Same logo-fetching helper as the previous examples: fetch the SmarkForm
-// logo, embed it as a data URL and pass it as the initial value.
-async function loadSmarkFormLogo(asset) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
-}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -553,33 +544,20 @@ them.
 
 {% raw %} <!-- image_list_jsHead {{{ --> {% endraw %}
 {% capture image_list_jsHead -%}
-var myForm;
-(async () => {
-    const [compact, dark] = await Promise.all([
-        loadSmarkFormLogo("smarkform_compact.svg"),
-        loadSmarkFormLogo("smarkform_dark_compact.svg"),
-    ]);
-    myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-        value: {
-            // The playground editor wraps the example fields in a "demo"
-            // subform, so the initial value must be nested accordingly:
-            demo: { gallery: [compact, dark] },
+var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
+    value: {
+        // The playground editor wraps the example fields in a "demo" subform,
+        // so the initial value must be nested accordingly:
+        // URL strings are fine here too: each gallery entry is fetched and
+        // embedded when the list imports its initial value.
+        demo: {
+            gallery: [
+                "/assets/logo/smarkform_compact.svg",
+                "/assets/logo/smarkform_dark_compact.svg",
+            ],
         },
-    });
-})().catch(function(err) {
-    console.error("Loading the SmarkForm logo failed:", err);
+    },
 });
-
-// Same logo-fetching helper as the previous examples: fetch the SmarkForm
-// logos, embed them as data URLs and pass them as the initial gallery.
-async function loadSmarkFormLogo(asset) {
-    const res = await fetch("/assets/logo/" + asset);
-    if (!res.ok) throw new Error('SmarkForm logo not found: "/assets/logo/' + asset + '"');
-    const bytes = new Uint8Array(await res.arrayBuffer());
-    let binary = "";
-    for (const byte of bytes) binary += String.fromCharCode(byte);
-    return "data:image/svg+xml;name=" + encodeURIComponent(asset) + ";base64," + btoa(binary);
-}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -619,7 +597,8 @@ The value contract is identical to [`file`]({{ "component_types/type_file"
 * `"format":"json"` → `{name, type, size, lastModified, data}` object with the
   payload per `encoding` (`"base64"` / `"base64url"` / `"hex"`).
 * **Import** accepts a data-URL string, a (partial) object, a bare payload
-  string or a JSON string of any of those; `size` is always recomputed.
+  string, a JSON string of any of those, or an **URL string** (see below);
+  `size` is always recomputed.
 * Imported values are normalized and **displayed immediately**; `import()` does
   *not* decode-validate (that stays on the acquisition path).
 * **No `width`/`height` metadata** is stored or exported — the image is a
@@ -628,6 +607,35 @@ The value contract is identical to [`file`]({{ "component_types/type_file"
 The interior state is a normalized file object (`{name, type, size,
 lastModified, data}` with `data` always base64) and carries **no
 image-specific fields**.
+
+### URLs as Input Values (Sugar)
+
+`import()` — and therefore the constructor **`value`** option — also accepts an
+**URL string**. This is a convenience for the *input* side only:
+
+* `http(s)://…` and protocol-relative `//host/…` (cross-origin URLs require
+  the remote host to allow CORS — see below);
+* `blob:…`;
+* root-relative (`/assets/…`) or relative (`./…`, `../…`) paths.
+
+The bytes are fetched at import time and embedded exactly like a data-URL
+value, so `export()` always returns the *embedded* image data — never the URL.
+The stored file **name** is derived from the URL's last path segment
+(`/assets/avatar_alex.jpg` → `avatar_alex.jpg`), falling back to `image.<ext>`
+from the MIME type when the URL has no usable filename.
+
+```js
+// Seed a field from a same-origin relative URL (e.g. a repo asset):
+await field.import("/assets/avatar_alex.jpg");
+
+// The same URL string works as the initial value option:
+new SmarkForm(formNode, {
+    value: { profile_image: "/assets/avatar_alex.jpg" },
+});
+```
+
+If the fetch fails (HTTP error, CORS block, offline), a `console.warn` is
+logged and the value is left empty (`null`), rather than breaking the import.
 
 ## Limitations
 
