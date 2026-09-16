@@ -143,33 +143,28 @@ fields, and realistic demo data loaded straight from the docs site:
    only manages `src` (and the hover `title`); the round crop is plain CSS
    (`object-fit: cover` on the authored `width`/`height` box).
 
-👉 **Prefilled from an URL:** the picture's initial `value` is an **URL string**
-   — `/assets/avatar_alex.jpg` — fetched and *embedded* on import. Exports
-   always carry the bytes, never the URL (see [Importing and Exporting
+👉 **Prefilled through `demoValue`:** the picture's initial value is an
+   **URL string** — `/assets/avatar_alex.jpg` — fetched and *embedded* on load.
+   Exports always carry the bytes, never the URL (see [Importing and Exporting
    Data](#importing-and-exporting-data)).
 
 👉 **Click to pick, drag & drop or paste** a photo to replace it; **Delete** /
    **Backspace** clears it back to the placeholder.
 
-**Try it!** Replace the avatar with your own photo, then export the form from
-the console: `myForm.export()`.
+**Try it!** Replace the avatar with your own photo, then press **⬇️ Export** to
+see the whole form as JSON (the avatar travels as an embedded data URL). A tap
+on **♻️ Reset** brings the URL-seeded demo value back.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_basic_jsHead {{{ --> {% endraw %}
-{% capture image_basic_jsHead -%}
-var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {
-        // The playground editor wraps the example fields in a "demo" subform,
-        // so the initial value must be nested accordingly:
-        demo: {
-            profile_image: "/assets/avatar_alex.jpg",
-            name: "Alex Morgan",
-            email: "alex@example.com",
-            bio: "Front-end developer and photography hobbyist.",
-        },
-    },
-});
+{% raw %} <!-- image_basic_demoValue {{{ --> {% endraw %}
+{% capture image_basic_demoValue -%}
+{
+    "profile_image": "/assets/avatar_alex.jpg",
+    "name": "Alex Morgan",
+    "email": "alex@example.com",
+    "bio": "Front-end developer and photography hobbyist."
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -178,7 +173,7 @@ var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), 
     htmlSource=image_basic_html
     cssSource=image_basic_css
     notes=image_basic_notes
-    jsHead=image_basic_jsHead
+    demoValue=image_basic_demoValue
     selected="preview"
     showEditor=true
     tests=false
@@ -256,23 +251,16 @@ editable file **name**:
    (`IMAGE_MISSING_IMG` otherwise). Options declared on the container
    (e.g. `image_maxSize`, `accept`, `format`) are inherited by the inner field.
 
-**Try it!** Load the demo value, then edit the caption and download — the file
-arrives with the caption's name.
+**Try it!** The demo value is already seeded (a URL string fetched on load);
+edit the caption and download — the file arrives with the caption's name.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_singleton_jsHead {{{ --> {% endraw %}
-{% capture image_singleton_jsHead -%}
-var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {
-        // The playground editor wraps the example fields in a "demo" subform,
-        // so the initial value must be nested accordingly:
-        demo: {
-            // An URL string is fine here: it is fetched and embedded on import.
-            photo: "/assets/logo/smarkform_dark.svg",
-        },
-    },
-});
+{% raw %} <!-- image_singleton_demoValue {{{ --> {% endraw %}
+{% capture image_singleton_demoValue -%}
+{
+    "photo": "/assets/logo/smarkform_dark.svg"
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -281,7 +269,7 @@ var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), 
     htmlSource=image_singleton_html
     cssSource=image_singleton_css
     notes=image_singleton_notes
-    jsHead=image_singleton_jsHead
+    demoValue=image_singleton_demoValue
     selected="preview"
     showEditor=true
     tests=false
@@ -381,22 +369,16 @@ reported through `image_enforce` below.
    as-is; the resize/format pipeline only applies to newly picked/dropped/
    pasted files.
 
-**Try it!** Load the demo value, then pick a photo from your disk and watch it
-become a 200×200 square.
+**Try it!** The demo value (a URL-seeded image) is already loaded; pick a photo
+from your disk and watch it become a 200×200 square.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_resize_format_jsHead {{{ --> {% endraw %}
-{% capture image_resize_format_jsHead -%}
-var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {
-        // The playground editor wraps the example fields in a "demo" subform,
-        // so the initial value must be nested accordingly:
-        demo: {
-            avatar: "/assets/logo/smarkform_compact.svg",
-        },
-    },
-});
+{% raw %} <!-- image_resize_format_demoValue {{{ --> {% endraw %}
+{% capture image_resize_format_demoValue -%}
+{
+    "avatar": "/assets/logo/smarkform_compact.svg"
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -405,7 +387,7 @@ var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), 
     htmlSource=image_resize_format_html
     cssSource=image_resize_format_css
     notes=image_resize_format_notes
-    jsHead=image_resize_format_jsHead
+    demoValue=image_resize_format_demoValue
     selected="preview"
     showEditor=true
     tests=false
@@ -537,27 +519,19 @@ The list imports/exports a **flat array of data URLs** (or JSON objects with
 👉 **Limit (5):** when more images arrive than `max_items` allows you are asked
    to confirm before adding only the first fitting files.
 
-**Try it!** Load the demo value (two images) and then drop another onto any of
-them.
+**Try it!** The demo value (two URL-seeded images) is already loaded — drop a
+third image onto any thumbnail and watch it append.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %} <!-- image_list_jsHead {{{ --> {% endraw %}
-{% capture image_list_jsHead -%}
-var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), {
-    value: {
-        // The playground editor wraps the example fields in a "demo" subform,
-        // so the initial value must be nested accordingly:
-        // URL strings are fine here too: each gallery entry is fetched and
-        // embedded when the list imports its initial value.
-        demo: {
-            gallery: [
-                "/assets/logo/smarkform_compact.svg",
-                "/assets/logo/smarkform_dark_compact.svg",
-            ],
-        },
-    },
-});
+{% raw %} <!-- image_list_demoValue {{{ --> {% endraw %}
+{% capture image_list_demoValue -%}
+{
+    "gallery": [
+        "/assets/logo/smarkform_compact.svg",
+        "/assets/logo/smarkform_dark_compact.svg"
+    ]
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -566,7 +540,7 @@ var myForm = window.myForm = new SmarkForm(document.getElementById("myForm$$"), 
     htmlSource=image_list_html
     cssSource=image_list_css
     notes=image_list_notes
-    jsHead=image_list_jsHead
+    demoValue=image_list_demoValue
     selected="preview"
     showEditor=true
     tests=false
