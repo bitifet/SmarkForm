@@ -87,6 +87,23 @@ function normalizeForLooseComparison(value) {
 
   // Leaf values: try to coerce strings that look numeric or date-like
   if (typeof value === 'string' && value.trim() !== '') {
+    // File/image fields export embedded data-URL strings even when the demoValue
+    // seeded them from a plain URL (the file/image URL-import sugar). Equate both
+    // sides by the file name they carry so round-trips of URL-seeded values can
+    // be asserted loosely: a URL string reduces to its last path segment, and a
+    // data-URL string reduces to the name recorded in its self-describing header
+    // (e.g. "/assets/avatar_alex.jpg" ⇄ "data:image/jpeg;name=avatar_alex.jpg;…").
+    if (/^data:[a-z0-9.+-]+\//i.test(value)) {
+      const encoded = value.match(/;name=([^;]*)/);
+      return encoded ? decodeURIComponent(encoded[1]) : value;
+    }
+    const URL_VALUE_RE = /^(?:[a-z][a-z0-9+.-]*:|\/\/|\/|\.{1,2}\/)/i;
+    if (URL_VALUE_RE.test(value)) {
+      const bare = value.split(/[?#]/)[0];
+      const base = bare.split('/').pop();
+      return base ? decodeURIComponent(base) : value;
+    }
+
     // Pure number
     if (!isNaN(value)) {
       return Number(value);
