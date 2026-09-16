@@ -573,6 +573,70 @@ test.describe('Image Component Type Test', () => {
         }
     });//}}}
 
+    test('URL value: import() fetches a same-origin URL and embeds the bytes', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            onClosed = await openPage(page, title, pugBase);
+
+            const out = await page.evaluate(async () => {
+                return await window.form.find("/photo").import("/assets/avatar_alex.jpg");
+            });
+            expect(out.startsWith("data:image/jpeg;name=avatar_alex.jpg;")).toBe(true);
+
+            // Imported bytes are displayed immediately, like any other value:
+            const src = await page.evaluate(
+                () => window.form.find("/photo").targetFieldNode.getAttribute("src")
+            );
+            expect(src.startsWith("data:image/jpeg;base64,")).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('URL value: a failed fetch warns, returns null and keeps the placeholder', async ({ page }) => {//{{{
+        const warns = [];
+        page.on('console', msg => { if (msg.type() === 'warning') warns.push(msg.text()); });
+        let onClosed;
+        try {
+            onClosed = await openPage(page, title, pugBase);
+
+            const res = await page.evaluate(async () => {
+                return await window.form.find("/photo").import("/assets/definitely-not-here.jpg");
+            });
+            expect(res).toBe(null);
+
+            const src = await page.evaluate(
+                () => window.form.find("/photo").targetFieldNode.getAttribute("src")
+            );
+            // Back to the empty-state placeholder:
+            expect(src.startsWith("data:image/svg+xml;base64,")).toBe(true);
+            expect(warns.some(w => w.includes("could not import URL value"))).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
+    test('URL value: singleton caption mirrors the URL-derived name', async ({ page }) => {//{{{
+        let onClosed;
+        try {
+            onClosed = await openPage(page, title, pugBase);
+
+            const res = await page.evaluate(async () => {
+                const fig = window.form.find("/fig");
+                const out = await fig.import("/assets/avatar_alex.jpg");
+                return {
+                    out,
+                    caption: fig._getCaption().textContent,
+                };
+            });
+
+            expect(res.out.startsWith("data:image/jpeg;name=avatar_alex.jpg;")).toBe(true);
+            expect(res.caption).toBe("avatar_alex.jpg");
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
     test('render errors: IMAGE_TYPE_ON_INPUT and IMAGE_MISSING_IMG replace the node and log', async ({ page }) => {//{{{
         let onClosed;
         const consoleErrors = [];
