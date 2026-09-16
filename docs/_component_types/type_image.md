@@ -285,6 +285,70 @@ and offline, no network or asset needed).
 * `"placeholder":false` — leave `src` empty (the browser shows its own broken/
   empty-image glyph).
 
+{% raw %} <!-- image_placeholder_html {{{ --> {% endraw %}
+{% capture image_placeholder_html -%}
+<div id="myForm$$">
+    <p>
+        <label data-smark="label">Brand (custom placeholder):</label>
+    </p>
+    <img
+        data-smark='{"name":"brand","placeholder":"/assets/logo/smarkform_mono_compact.svg"}'
+        class="brand"
+        width="300" height="75"
+        alt="Empty brand field showing the mono compact SmarkForm logo as placeholder"
+    >
+    <p>
+        <label data-smark="label">Photo (default placeholder):</label>
+    </p>
+    <img
+        data-smark='{"name":"photo"}'
+        class="blank"
+        width="120" height="120"
+        alt="Empty photo field showing the default chessboard placeholder"
+    >
+</div>{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- image_placeholder_css {{{ --> {% endraw %}
+{% capture image_placeholder_css -%}
+{{""}}#myForm$$ .brand {
+    display: block;
+    max-width: 100%;
+    border: 1px dashed #aaa;
+    border-radius: .5rem;
+}
+{{""}}#myForm$$ .blank {
+    display: block;
+    border: 1px dashed #aaa;
+    border-radius: .5rem;
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- image_placeholder_notes {{{ --> {% endraw %}
+{% capture image_placeholder_notes -%}
+👉 **Custom placeholder:** the first field is empty, so its `src` shows the
+   **mono compact SmarkForm logo** — the value of `"placeholder"`.
+   A relative URL works here; any URL or data URL is accepted.
+
+👉 **Default vs custom:** the second field keeps the stock neutral chessboard
+   while empty, so you can compare both states side by side.
+
+👉 **It is still a real field:** pick a photo to fill either field; press
+   **Delete** / **Backspace** to clear it and the placeholder comes right back.
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="image_placeholder"
+    htmlSource=image_placeholder_html
+    cssSource=image_placeholder_css
+    notes=image_placeholder_notes
+    selected="preview"
+    showEditor=true
+    tests=false
+%}
+
 The field never touches the authored `alt` text; keep it for accessibility.
 If the browser later fails to render a *loaded* value (e.g. an exotic format),
 the field falls back to the placeholder while keeping the value intact for
