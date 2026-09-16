@@ -281,6 +281,8 @@ endcapture %}
   * a data-URL string (`name`/`size`/`lastModified` come from the header),
   * a JSON object (or a JSON *string* of one) — partial objects are fine,
   * a bare base64 payload string,
+  * an **URL string** (fetched and embedded — see
+    [URLs as Input Values](#urls-as-input-values-sugar)),
   * `null` (clears the field).
 
 👉 **`accept` filters the picker AND drop/paste**: try dropping a `.png` on
@@ -326,8 +328,9 @@ Setting `"format":"json"` exports a structured object instead of the string:
 
 `data` is the byte payload encoded per `encoding`. Imports accept the full
 object, a *partial* object (`data` is required; everything else may be
-omitted), a bare payload string, or a JSON string describing any of the above
-— see the [Singleton Pattern](#the-singleton-pattern) example for each case.
+omitted), a bare payload string, a JSON string describing any of the above,
+or an URL string — see the [Singleton Pattern](#the-singleton-pattern) example
+for each case.
 
 ### Encodings
 
@@ -346,6 +349,25 @@ It never affects `data:` URLs, which are always base64.
 An empty file field exports `null` (never a data URL with an empty payload).
 Importing `null`, `undefined`, an empty string or an empty JSON payload
 clears the field back to its empty state.
+
+### URLs as Input Values (Sugar)
+
+`import()` — and therefore the constructor **`value`** option — also accepts an
+**URL string**: `http(s)://…`, protocol-relative `//host/…`, `blob:…`, or a
+root-relative or relative path (`/assets/…`, `./…`, `../…`).
+
+The bytes are fetched and embedded exactly like a data-URL value, so `export()`
+always returns the *embedded* data — never the URL. The file **name** is
+derived from the URL's last path segment (falling back to a name from the MIME
+type, or `file`, when the URL has no usable filename).
+
+Cross-origin URLs require the remote host to allow CORS
+(`Access-Control-Allow-Origin`); same-origin and relative URLs always work. A
+failed fetch (HTTP error, CORS, offline) warns via `console` and leaves the
+field at its empty state (`null`).
+
+> The same sugar applies to the [`image`]({{ "component_types/type_image" |
+> relative_url }}) field type.
 
 ## Options
 
