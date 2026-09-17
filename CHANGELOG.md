@@ -11,6 +11,32 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.21.1] — 2026-09-16
+
+🔗 URL values for file/image · ⚠️ Android camera capture note · 📚 docs harvest
+
+SmarkForm 0.21.1 lets `file` and `image` fields (and the form constructor `value` option) take their value from an **URL string** — `http(s)://…`, `//host`, `blob:`, `/path`, `./…`, `../…` are fetched and embedded at import time, with the file name derived from the last path segment. It also softens the default empty-state chessboard, fixes a click-focus regression, and harvests a season of documentation improvements: URL-prefilled playable examples seeded via `demoValue`, a new custom-placeholder sample, and a heads-up that live camera capture is unreliable on Android.
+
+### Features
+
+- **URLs as input values**: `file` and `image` `import()` — and the constructor `value` option — accept an URL string that is fetched and embedded at import time. Same-origin/relative forms (`http(s):`, `//host`, `blob:`, `/path`, `./…`, `../…`) work with no extra setup; cross-origin requires CORS. The file name derives from the last path segment; a failed fetch warns and yields `null` instead of breaking the import.
+- **Softer empty state**: the generated image placeholder is now a neutral gray-and-white chessboard.
+
+### Bug Fixes
+
+- **Click-focus regression**: clicking on an interactive/editable descendant inside a form control (e.g. an editable file-name caption) no longer yanks focus out of it.
+
+### Documentation
+
+- **Image field guide**: playable examples reworked and seeded through `demoValue` (URL-prefilled profile form, singleton, resize+format avatar and gallery), a new custom-placeholder example, and a warning that live camera capture is unreliable on Android — Chromium shows gallery-only, and taking a photo through Firefox for Android can reload or blank the tab. Picking existing images from the gallery is bulletproof everywhere.
+- **File field guide**: new "URLs as Input Values" section mirroring the image one.
+- **Specs**: URL string added to the inclusive-import contract (`spc/file.md` §6, `spc/image.md` §6.2).
+- **Agent docs**: `demoValue` is documented as the default way to preload sampletabs data; URL import values noted.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.21.1)
+
+---
+
 ## [0.21.0] — 2026-09-15
 
 🖼️ `image` field type · ✅ Decode-validated acquisition 🖼️ Gallery lists
