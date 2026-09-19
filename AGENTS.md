@@ -168,6 +168,38 @@ an editable file name via `figcaption contenteditable`.
   (value contract, `readFileToObject`, `acquire`, `toObjects`)
 - Spec: `spc/image.md` (authoritative design)
 
+### Video Field Type
+
+The `video` field extends `file` and binds an authored `<video>` element (or a
+singleton wrapper containing one) to the embedded file value contract. It keeps
+the original bytes, displays them through `src`, and uses a generated/native
+poster while empty.
+
+**Key API**:
+- Bare `<video data-smark>` infers `video`; explicit video fields on `<input>`
+  raise `VIDEO_TYPE_ON_INPUT`.
+- Options: `accept` (default `video/*`), `placeholder`, `video_maxSize`,
+  `smark_video_validate`, `smark_video_open`/`drop`/`paste`,
+  `smark_video_clearOnDelete`, and `smark_video_click` (`auto`/`pick`/`play`).
+- The `pick` action opens the hidden native picker from an explicit trigger,
+  which is useful beside a video that has native playback controls.
+- Interactive acquisition uses `_acceptFiles()` for byte-cap and metadata probe;
+  `import()` trusts embedded input like `file`.
+- `smark:videoNotice` is cancellable for size-cap notices; malformed media
+  probe failures remain silent.
+- Native `controls` is the default player extension point. SmarkForm does not
+  capture random thumbnails or open a modal player; frame capture is codec- and
+  timing-dependent and remains application-level behavior.
+- Lists use `of:"video"` and inherit file-like append/drop behavior. Captions
+  in singleton/gallery wrappers edit the exported filename.
+
+**Configuration file locations**:
+- Tests: `test/type_video.tests.js`
+- Implementation: `src/types/video.type.js`, `src/lib/component.js` (inference),
+  `src/main.js` (registration)
+- Documentation: `docs/_component_types/type_video.md`
+- Spec: `spc/video.md` (authoritative design)
+
 ### Playwright Test Runner
 
 **What it does**: Runs end-to-end tests against the built distribution files and validates documentation examples.
