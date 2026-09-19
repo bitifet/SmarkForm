@@ -224,11 +224,14 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
         + '    title="Clear the whole form"\n'
         + '    >\u274c Clear</button></span>\n'
         + '        </div>\n'
-        + '<textarea\n'
-        + '    placeholder="JSON playground editor"\n'
-        + '    data-smark=\'{"name":"editor","type":"input"}\'\n'
-        + '    style="resize: vertical; min-height: 8em; flex-grow: 1; width: 100%; box-sizing: border-box;"\n'
-        + '></textarea>\n'
++ '<div class="smarkform-json-editor">\n'
++ '<textarea\n'
++ '    placeholder="JSON playground editor"\n'
++ '    data-smark=\'{"name":"editor","type":"input"}\'\n'
++ '    style="resize: vertical; min-height: 8em; flex-grow: 1; width: 100%; box-sizing: border-box;"\n'
++ '></textarea>\n'
++ '<button type="button" class="smarkform-editor-clear" aria-label="Clear JSON playground" title="Clear JSON playground">❌</button>\n'
++ '</div>\n'
         + '    </div>\n'
         + p.closeTag
         + (p.after || ''); /* append sibling <template> elements outside the form */
@@ -242,7 +245,11 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-    var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}';
+     var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}'
+         + '.smarkform-json-editor{position:relative;}'
+         + '.smarkform-editor-clear{position:absolute;right:.45rem;bottom:.45rem;margin:0;padding:.15rem .3rem;border:0;border-radius:.25rem;background:rgba(0,0,0,.55);color:#fff;line-height:1;opacity:0;pointer-events:none;transition:opacity .15s ease;}'
+         + '.smarkform-json-editor:hover .smarkform-editor-clear,.smarkform-json-editor:focus-within .smarkform-editor-clear{opacity:1;pointer-events:auto;}'
+         + '.smarkform-editor-clear:hover{background:rgba(0,0,0,.8);}';
     var darkModeCss = 'body{background:#202020!important;color:#e9e9e9!important}'
         + 'label{color:#e9e9e9!important}'
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
@@ -257,15 +264,15 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
         + '\u003cmeta charset="UTF-8"\u003e'
         + '\u003c' + S + ' src="' + data.smarkformUrl + '"\u003e\u003c/' + S + '\u003e'
         + '\u003cstyle\u003e' + baseCss + '\n' + editorCss + '\n' + (srcs.css || '') + '\u003c/style\u003e'
-        + '\u003c/head\u003e\u003cbody\u003e'
+         + '\u003c/head\u003e\u003cbody\u003e'
         + (srcs.html || '')
         + sTag
-        + '\u003c/body\u003e\u003c/html\u003e';
+         + '\u003c/body\u003e\u003c/html\u003e';
     iframe.onload = function() {
         if (spinner) spinner.style.display = 'none';
         this.style.display = 'block';
         /* Inject dark mode CSS into the iframe's document when system prefers dark */
-        try {
+         try {
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 var doc = this.contentDocument || this.contentWindow.document;
                 if (doc && doc.head) {
@@ -273,6 +280,18 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
                     ds.textContent = darkModeCss;
                     doc.head.appendChild(ds);
                 }
+            }
+         } catch(e) {}
+        try {
+            var clearEditor = this.contentDocument.querySelector('.smarkform-editor-clear');
+            var editorTextarea = this.contentDocument.querySelector('.smarkform-json-editor textarea[data-smark]');
+            if (clearEditor && editorTextarea) {
+                clearEditor.addEventListener('click', function() {
+                    editorTextarea.value = '';
+                    editorTextarea.dispatchEvent(new Event('input', {bubbles: true}));
+                    editorTextarea.dispatchEvent(new Event('change', {bubbles: true}));
+                    editorTextarea.focus();
+                });
             }
         } catch(e) {}
         /* Auto-size to the content only on the first render (see smarkformAutosize).
@@ -927,5 +946,3 @@ button[data-smark] {
 </style>
 
 {% endif %}
-
-
