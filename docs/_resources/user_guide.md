@@ -206,6 +206,75 @@ These limits are intentional constraints based on the form's requirements. When 
   <figcaption>Button becomes disabled when list limit is reached</figcaption>
 </figure>
 
+## Working with Files and Media
+
+SmarkForm's `file`, `image`, and `video` fields use the same familiar upload
+patterns: choose a file with an upload button or picker, drop it onto the field,
+or paste it when the form supports paste. A future `audio` field will follow the
+same media conventions.
+
+### Images
+
+Image fields show the selected image directly in the form. Click the image when
+it is configured as a picker, or use the visible upload trigger. **Delete** and
+**Backspace** clear the image and restore its placeholder. In a figure or list
+item, the editable caption changes the exported filename; use **Tab** to reach
+the caption separately from the image field.
+
+<!-- TODO: Add /assets/images/user-guide/09-image-field-upload.png showing an image field with its click-to-pick affordance, placeholder, and editable caption. -->
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/09-image-field-upload.png' | relative_url }}"
+       alt="Image field showing the upload affordance and editable filename caption">
+  <figcaption>Image upload, placeholder, and caption navigation</figcaption>
+</figure>
+
+### Files
+
+File fields display the selected filename and metadata rather than a preview.
+Use the field's upload trigger, drag and drop, or paste. A download action can
+return the embedded bytes to the user. The visible filename is editable and
+takes precedence when the form is exported or downloaded.
+
+<!-- TODO: Add /assets/images/user-guide/10-file-field-actions.png showing file upload, filename editing, download, and clear actions. -->
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/10-file-field-actions.png' | relative_url }}"
+       alt="File field showing upload, editable filename, download, and clear actions">
+  <figcaption>File upload and filename actions</figcaption>
+</figure>
+
+### Videos
+
+Video fields are single SmarkForm fields even when they contain a native player.
+Use **Enter** and **Shift+Enter** to move between form fields. When the video
+has focus:
+
+- **Space** opens the picker in pick mode, or toggles playback in play mode.
+- **Shift+Space** opens the picker even when playback is enabled.
+- **Delete** or **Backspace** clears the video.
+
+Native video controls handle play, pause, seeking, volume, and fullscreen. An
+explicit upload trigger is recommended beside a video that uses native controls,
+because clicking the media surface should remain available for playback.
+
+When a video is wrapped in a figure or list item, its editable caption is a
+separate browser control. **Tab** and **Shift+Tab** reach the caption and nearby
+buttons, while Enter/Shift+Enter continue to treat the video itself as one
+SmarkForm field. Delete and Backspace edit caption text while the caption is
+focused; they clear the video only when the video field has focus.
+
+<!-- TODO: Add /assets/images/user-guide/11-video-field-navigation.png showing native video controls, an upload trigger, caption focus, and Enter/Tab navigation paths. -->
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/11-video-field-navigation.png' | relative_url }}"
+       alt="Video field showing native controls, upload trigger, filename caption, and keyboard navigation">
+  <figcaption>Video playback, upload, caption, and keyboard navigation</figcaption>
+</figure>
+
+{: .warning}
+> **Large media values:** media fields embed bytes in the form value. Exporting
+> a large video into a JSON textarea can temporarily freeze the browser because
+> the entire base64 payload must be rendered as text. Prefer an appropriate
+> upload or server-side storage flow for production-scale media.
+
 ## Working with Collapsible Sections
 
 Some forms use collapsible sections — areas that can be expanded or collapsed to help you focus on what matters and keep the form tidy. These are typically built with the browser's native `<details>` element, which shows or hides its contents when you click its heading (the `<summary>` area).
