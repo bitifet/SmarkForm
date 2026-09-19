@@ -32,6 +32,14 @@ Bare `<video data-smark>` elements infer `type: "video"` automatically. Reserve
 the media box with `width`/`height` attributes or CSS `aspect-ratio` to avoid
 layout shift when a different clip is loaded.
 
+{: .warning}
+> **Large export warning:** video values are embedded as base64. Exporting a
+> large clip into the playground textarea serializes the entire payload and can
+> temporarily freeze the browser. This is a limitation of displaying a large
+> JSON/data-URL value in a textarea, not a media playback requirement. Production
+> applications should avoid rendering multi-megabyte exports in a textarea and
+> should submit/store the value through an appropriate binary or server-side path.
+
 ## Try It
 
 These examples start empty deliberately: no remote video host is required, and
@@ -274,15 +282,6 @@ Common options:
 
 The type does not transcode, resize, or re-encode video. Imported values are
 trusted and embedded; validation applies to interactive acquisition.
-
-{: .warning}
-> **Large export warning:** video values are embedded as base64. Exporting a
-> large clip into the playground editor serializes the entire payload into a
-> textarea and can temporarily freeze the browser. This is a limitation of
-> displaying a large JSON/data-URL value in a text editor, not a media playback
-> requirement. Production applications should avoid rendering multi-megabyte
-> exports in a textarea and should submit/store the value through an appropriate
-> binary or server-side path.
 
 ## Singletons And Lists
 
