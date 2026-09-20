@@ -164,6 +164,7 @@ layout: smarkform
   .go-to-top {
     float: right;
     margin-right: 1em;
+    cursor: pointer;
   }
 
   @media print {
@@ -450,18 +451,25 @@ layout: smarkform
             link.addEventListener('click', closeToc);
         });
 
-        /* Create the "Go to top" anchor */
-        const goToTopLink = document.createElement("a");
-        goToTopLink.textContent = "Top ↑";
-        goToTopLink.title = "Go to Top";
-        goToTopLink.href = "#"; /* Navigates to top */
-        goToTopLink.className = "go-to-top"; /* For styling */
-        smartToc.querySelector("summary").appendChild(goToTopLink);
+        /* Create a non-interactive "Go to top" affordance inside <summary>.
+           An anchor/button here triggers the browser warning about interactive
+           content nested inside <summary>; this remains mouse/touch useful but
+           is intentionally hidden from assistive-technology navigation. */
+        const goToTopControl = document.createElement("span");
+        goToTopControl.textContent = "Top ↑";
+        goToTopControl.title = "Go to Top";
+        goToTopControl.setAttribute("aria-hidden", "true");
+        goToTopControl.className = "go-to-top";
+        goToTopControl.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            window.scrollTo({top: 0, behavior: "smooth"});
+        });
+        smartToc.querySelector("summary").appendChild(goToTopControl);
 
         window.addEventListener('beforeprint', openToc);
         window.addEventListener('afterprint', restoreToc);
 
     };
 </script>
-
 
