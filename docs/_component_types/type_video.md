@@ -32,24 +32,16 @@ Bare `<video data-smark>` elements infer `type: "video"` automatically. Reserve
 the media box with `width`/`height` attributes or CSS `aspect-ratio` to avoid
 layout shift when a different clip is loaded.
 
-{: .warning}
-> **Large export warning:** video values are embedded as base64. Exporting a
-> large clip into the playground textarea serializes the entire payload and can
-> temporarily freeze the browser. This is a limitation of displaying a large
-> JSON/data-URL value in a textarea, not a media playback requirement. Production
-> applications should avoid rendering multi-megabyte exports in a textarea and
-> should submit/store the value through an appropriate binary or server-side path.
-
 ## Try It
 
-These examples start empty deliberately: no remote video host is required, and
-you can upload a local clip in the preview. The playground's **Import** button
-can also be used with an exported embedded value.
+These examples use small locally bundled clips so they work without a remote
+media host. You can replace them with your own videos in the preview. The
+playground's **Import** button can also be used with an exported embedded value.
 
 {% raw %}<!-- video_basic_html {{{ -->{% endraw %}
 {% capture video_basic_html -%}
 <div id="myForm$$">
-    <label for="clip">Clip</label>
+    <strong>Clip</strong>
     <video id="clip" data-smark='{"name":"clip"}' width="320" height="180" controls preload="metadata"></video>
     <button data-smark='{"action":"pick","context":"clip"}'>Choose or replace video</button>
 </div>{%- endcapture %}
@@ -60,14 +52,19 @@ can also be used with an exported embedded value.
 👉 **Try it!** Choose a local H.264/AAC MP4, WebM, or another format your
 browser supports. Interactive uploads use a metadata probe and native controls.
 
-👉 The empty state uses a generated poster. No third-party media host or license
-is required, so this example also works offline.
+👉 The example starts with a small locally bundled Mixkit clip. The URL is
+fetched and embedded by `demoValue`; replace it with your own video to try the
+acquisition flow.
+
+The bundled demo sources and license links are listed in
+[`video-demo-attribution.md`]({{ "/assets/video-demo-attribution.md" | relative_url }}).
+Thanks to the Mixkit contributors for these freely available demo clips.
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- video_basic_demoValue {{{ -->{% endraw %}
 {% capture video_basic_demoValue -%}
-{"clip": null}
+{"clip": "/assets/video_cat_mixkit.mp4"}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -80,6 +77,14 @@ is required, so this example also works offline.
     showEditor=true
     tests=false
 %}
+
+{: .warning}
+> **Large export warning:** video values are embedded as base64. Exporting a
+> large clip into the playground textarea serializes the entire payload and can
+> temporarily freeze the browser. This is a limitation of displaying a large
+> JSON/data-URL value in a textarea, not a media playback requirement. Production
+> applications should avoid rendering multi-megabyte exports in a textarea and
+> should submit/store the value through an appropriate binary or server-side path.
 
 ### Singleton With An Editable Name
 
@@ -116,7 +121,7 @@ does not generate a thumbnail or modal player.
 
 {% raw %}<!-- video_singleton_demoValue {{{ -->{% endraw %}
 {% capture video_singleton_demoValue -%}
-{"clip": null}
+{"clip": "/assets/video_dog_mixkit.mp4"}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -155,7 +160,10 @@ lists append OS drops instead of replacing an existing item.
 
 {% raw %}<!-- video_list_demoValue {{{ -->{% endraw %}
 {% capture video_list_demoValue -%}
-{"clips": []}
+{"clips": [
+    "/assets/video_cat_mixkit.mp4",
+    "/assets/video_dog_mixkit.mp4"
+]}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -208,7 +216,7 @@ Use **Add clip** to create a row and **Remove clip** to remove the current row.
 
 {% raw %}<!-- video_form_list_demoValue {{{ -->{% endraw %}
 {% capture video_form_list_demoValue -%}
-{"clips": [{"video": null, "title": "", "notes": ""}]}
+{"clips": [{"video": "/assets/video_cat_mixkit.mp4", "title": "Black cat", "notes": "Replace this clip or edit its metadata."}]}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 

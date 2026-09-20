@@ -247,9 +247,9 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     iframe.style.display = 'none';
      var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}'
          + '.smarkform-json-editor{position:relative;}'
-         + '.smarkform-editor-clear{position:absolute;right:.45rem;bottom:.45rem;margin:0;padding:.15rem .3rem;border:0;border-radius:.25rem;background:rgba(0,0,0,.55);color:#fff;line-height:1;opacity:0;pointer-events:none;transition:opacity .15s ease;}'
-         + '.smarkform-json-editor:hover .smarkform-editor-clear,.smarkform-json-editor:focus-within .smarkform-editor-clear{opacity:1;pointer-events:auto;}'
-         + '.smarkform-editor-clear:hover{background:rgba(0,0,0,.8);}';
+         + '.smarkform-editor-clear{position:absolute;right:.45rem;bottom:.45rem;width:1.5rem;height:1.5rem;margin:0;padding:0;border:0;border-radius:50%;background:#c62828;color:#fff;font-size:.8rem;line-height:1;opacity:0;pointer-events:none;transition:opacity .15s ease;}'
+         + '.smarkform-json-editor:hover .smarkform-editor-clear{opacity:1;pointer-events:auto;}'
+         + '.smarkform-editor-clear:hover{background:#8e0000;}';
     var darkModeCss = 'body{background:#202020!important;color:#e9e9e9!important}'
         + 'label{color:#e9e9e9!important}'
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
