@@ -42,15 +42,16 @@ playground's **Import** button can also be used with an exported embedded value.
 {% capture video_basic_html -%}
 <div id="myForm$$">
     <strong>Clip</strong>
-    <video id="clip" data-smark='{"name":"clip"}' width="320" height="180" controls preload="metadata"></video>
+    <video id="clip" data-smark='{"name":"clip"}' width="320" height="180" preload="metadata"></video>
     <button data-smark='{"action":"pick","context":"clip"}'>Choose or replace video</button>
 </div>{%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- video_basic_notes {{{ -->{% endraw %}
 {% capture video_basic_notes -%}
-👉 **Try it!** Choose a local H.264/AAC MP4, WebM, or another format your
-browser supports. Interactive uploads use a metadata probe and native controls.
+👉 **Try it!** This first example omits native `controls`, so clicking the
+preview is the upload/replace affordance. Choose a local H.264/AAC MP4, WebM,
+or another format your browser supports.
 
 👉 The example starts with a small locally bundled Mixkit clip. The URL is
 fetched and embedded by `demoValue`; replace it with your own video to try the
@@ -93,7 +94,7 @@ Thanks to the Mixkit contributors for these freely available demo clips.
 <div id="myForm$$">
     <figure class="video-card" data-smark='{"type":"video","name":"clip"}'>
         <video data-smark width="320" height="180" controls></video>
-        <figcaption contenteditable="true">edit filename</figcaption>
+        <figcaption data-smark='{"action":"rename"}'>edit filename</figcaption>
         <button data-smark='{"action":"pick"}'>Choose or replace video</button>
         <button data-smark='{"action":"download"}'>Download</button>
     </figure>
@@ -114,8 +115,10 @@ Thanks to the Mixkit contributors for these freely available demo clips.
 👉 The wrapper accepts drops and pastes, while the caption edits the exported
 filename. Upload a clip, replace **edit filename**, then use **Download**.
 
-👉 Native `controls` supplies playback. SmarkForm keeps the bytes unchanged and
-does not generate a thumbnail or modal player.
+👉 Native `controls` supplies playback. Clicking the video is intentionally
+reserved for native playback; use the explicit **Choose or replace video**
+button to upload another clip. SmarkForm keeps the bytes unchanged and does not
+generate a thumbnail or modal player.
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -286,6 +289,8 @@ Common options:
 - `smark_video_open`, `smark_video_drop`, and `smark_video_paste` disable the
   corresponding interaction when set to `false`.
 - `smark_video_clearOnDelete` controls `Delete`/`Backspace` clearing.
+- `smark_video_autoPick` opens the picker after rendering when `true` (subject
+  to the browser's user-gesture policy).
 - `format` and `encoding` are inherited from `file`.
 
 The type does not transcode, resize, or re-encode video. Imported values are
@@ -293,13 +298,14 @@ trusted and embedded; validation applies to interactive acquisition.
 
 ## Singletons And Lists
 
-A wrapper containing exactly one inner `<video>` becomes a singleton. A
-`figcaption[contenteditable]` can mirror and edit the stored filename:
+A wrapper containing exactly one inner `<video>` becomes a singleton. Mark an
+editable filename with the `rename` trigger action; SmarkForm sets
+`contenteditable` and synchronizes the stored filename automatically:
 
 ```html
 <figure data-smark='{"type":"video","name":"clip"}'>
   <video data-smark width="320" height="180" controls></video>
-  <figcaption contenteditable></figcaption>
+  <figcaption data-smark='{"action":"rename"}'></figcaption>
 </figure>
 ```
 
@@ -314,6 +320,13 @@ Lists use `of: "video"` and inherit file-list acquisition and drop behavior:
 ```
 
 OS drops append video items in a video-capable list. Captions remain item-local.
+
+When a list item is a video field, `addItem` can open the picker immediately as
+part of the user's add action. For a form-backed list item containing several
+fields, use `smark_video_autoPick: true` on the particular video field when an
+automatic picker is desired. This is opt-in and browser-dependent: a picker
+opened after an asynchronous render may be blocked when no user gesture is
+active, so an explicit `pick` trigger remains the reliable fallback.
 
 ## Browser Limits
 

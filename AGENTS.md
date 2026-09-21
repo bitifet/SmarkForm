@@ -180,7 +180,8 @@ poster while empty.
   raise `VIDEO_TYPE_ON_INPUT`.
 - Options: `accept` (default `video/*`), `placeholder`, `video_maxSize`,
   `smark_video_validate`, `smark_video_open`/`drop`/`paste`,
-  `smark_video_clearOnDelete`, and `smark_video_click` (`auto`/`pick`/`play`).
+  `smark_video_clearOnDelete`, `smark_video_autoPick`, and `smark_video_click`
+  (`auto`/`pick`/`play`).
 - The `pick` action opens the hidden native picker from an explicit trigger,
   which is useful beside a video that has native playback controls.
 - Interactive acquisition uses `_acceptFiles()` for byte-cap and metadata probe;
@@ -190,8 +191,14 @@ poster while empty.
 - Native `controls` is the default player extension point. SmarkForm does not
   capture random thumbnails or open a modal player; frame capture is codec- and
   timing-dependent and remains application-level behavior.
-- Lists use `of:"video"` and inherit file-like append/drop behavior. Captions
-  in singleton/gallery wrappers edit the exported filename.
+- Singleton/gallery filename controls use
+  `data-smark='{"action":"rename"}'`; the media field makes the trigger
+  contenteditable and uses its text for export/download. Legacy contenteditable
+  captions remain supported.
+- Lists use `of:"video"` and inherit file-like append/drop behavior.
+- `smark_video_autoPick:true` requests the hidden picker after render, but
+  browsers may block it without a user gesture; explicit `pick` triggers remain
+  the reliable fallback.
 
 **Configuration file locations**:
 - Tests: `test/type_video.tests.js`

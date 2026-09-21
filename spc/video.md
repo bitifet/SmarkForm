@@ -128,9 +128,11 @@ the wrapper, delegation of export/import/navigation to the inner field.
 
 - `<figure>` and `<div>` are all valid wrappers — the singleton rule ("exactly
   one inner field, others must be triggers") is tag-agnostic.
-- In a `<figure>` wrapper, a `<figcaption contenteditable>` may serve as the
-  **editable visible name** (§6.1) — it is neither an inner field nor a trigger,
-  only the lone editable text node the field re-hearses.
+- In a wrapper, any descendant marked with
+  `data-smark='{"action":"rename"}'` may serve as the **editable visible name**
+  (§6.1). It is a trigger marker, not an additional singleton field; SmarkForm
+  makes it contenteditable and synchronizes the filename. Legacy
+  `contenteditable` captions remain supported.
 - Unlike `image`, there is **no `<picture>` analog to bless**: a `<video>`
   element gets its candidates through `<source>` children (not managed, above)
   or a single `src`; the wrapper is a plain container.
@@ -487,8 +489,8 @@ The `video` type exports/imports **exactly the `file` contract**
 - **Name resolution:** a `<video>` has no text *field*, so the `file`
   implementation's "edited-name-wins" `.value` rule must **not** reach
   `String(undefined)` on a media element — the override omits it. The **editable
-  caption** is the editable file name instead: when a `<figure>` singleton (or
-  gallery item, §7) has a `<figcaption contenteditable>`, its trimmed text
+  caption** is the editable file name instead: when a singleton or gallery item
+  has a descendant marked with `data-smark:'{"action":"rename"}'`, its trimmed text
   becomes the export `name` with the same precedence as `file`
   (`edited caption` > `stored name`). The caption **always mirrors the current
   name** — set on acquisition/import, emptied on `Delete`/`clear`, re-hearsed
@@ -537,9 +539,10 @@ A list whose item template is the `video` type:
   inherited automatically from `file` (no `video`-specific code; this is the
   generalized refactor `spc/image.md` §7 already landed).
 - **Paste stays item-scoped** (there is no list-level paste handler).
-- **Per-item captions:** a gallery item template may include its own
-  `<figcaption contenteditable>`, giving each clip the editable file name
-  exactly like a `<figure>` singleton (§6.1).
+- **Editable names:** a gallery or singleton template marks its filename control
+  with `data-smark='{"action":"rename"}'`. SmarkForm makes that trigger
+  contenteditable, synchronizes the current name, and uses edited text for
+  export/download. A legacy `contenteditable` caption remains supported.
 
 ---
 
@@ -579,6 +582,7 @@ unset playback hints, §3.6). It never changes `width`, `height`, `class`,
 | `smark_video_paste` | boolean | `true` | Paste replaces the value |
 | `smark_video_validate` | boolean | `true` | Media-container probe on acquisition (§4) |
 | `smark_video_clearOnDelete` | boolean | `true` | `Delete`/`Backspace` clear the value |
+| `smark_video_autoPick` | boolean | `false` | Best-effort picker open after render; browser user-gesture rules may block it |
 | `smark_video_click` | `"auto"` \| `"pick"` \| `"play"` | `"auto"` | Resolves the click/`Space` conflict (§3.4–§3.5) |
 | `video_maxSize` | number (bytes) | — | Reject acquisition above the byte cap, with notice (§4.4) |
 

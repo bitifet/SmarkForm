@@ -50,7 +50,7 @@ block mainForm
 
         figure(data-smark={type: "video", name: "fig"})
             video(data-smark, width="320" height="180" controls="true")
-            figcaption(contenteditable="true")
+            figcaption(data-smark={action: "rename"})
 `);// }}}
 
 const pugErrors = (// {{{
@@ -69,6 +69,12 @@ block mainForm
         ul(data-smark={type: "list", name: "gallery", of: "video", min_items: 0, max_items: 5})
             li(data-smark={type: "video"})
                 video(data-smark, width="240" height="135")
+`);// }}}
+
+const pugAutoPick = (// {{
+`extends layout.pug
+block mainForm
+    video(data-smark={type: "video", name: "clip", smark_video_autoPick: true}, width="320" height="180")
 `);// }}}
 
 
@@ -166,6 +172,20 @@ test.describe('Video Component Type Test', () => {
         const chooser = page.waitForEvent("filechooser");
         await page.locator('button').filter({hasText: "Choose video"}).click();
         await chooser;
+    });//}}}
+
+    test('autoPick requests the picker after rendering when enabled', async ({ page }) => {//{{{
+        await page.addInitScript(() => {
+            window.__smarkAutoPickCount = 0;
+            const nativeClick = HTMLInputElement.prototype.click;
+            HTMLInputElement.prototype.click = function() {
+                if (this.type === "file") window.__smarkAutoPickCount++;
+                return nativeClick.call(this);
+            };
+        });
+        await openPage(page, title, pugAutoPick);
+        const count = await page.evaluate(() => window.__smarkAutoPickCount);
+        expect(count).toBe(1);
     });//}}}
 
     test('Import displays src, survives export round-trip, clearing restores poster', async ({ page }) => {//{{{

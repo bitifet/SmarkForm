@@ -460,7 +460,11 @@ export class image extends file {
     _getCaption() {//{{{
         const me = this;
         if (! me.isSingleton) return null;
-        return me.targetNode.querySelector("figcaption[contenteditable]") || null;
+        const marked = Array.from(me.targetNode.querySelectorAll("[data-smark]"))
+            .find(node => me.getComponent(node)?.options?.action === "rename");
+        const caption = marked || me.targetNode.querySelector("figcaption[contenteditable]");
+        if (caption) caption.contentEditable = "true";
+        return caption || null;
     };//}}}
     _captionText() {//{{{
         const me = this;
@@ -473,6 +477,16 @@ export class image extends file {
         if (! cap) return;
         const name = String(value?.name ?? "");
         if (cap.textContent !== name) cap.textContent = name;
+    };//}}}
+    @action
+    async rename(_data, options = {}) {//{{{
+        const me = this;
+        const node = options.origin?.targetNode || me._getCaption();
+        if (! node) return await me.export(null, {silent: true});
+        node.contentEditable = "true";
+        me._syncCaption(me.children[""]?._file || me._file || null);
+        node.focus();
+        return await me.export(null, {silent: true});
     };//}}}
     async render() {//{{{
         const me = this;
