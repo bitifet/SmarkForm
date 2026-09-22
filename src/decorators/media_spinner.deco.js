@@ -5,9 +5,7 @@ export const media_spinner = targetClass => class mediaSpinner extends targetCla
         const me = this;
         const node = me.targetNode;
         if (! node) return;
-        const state = me._mediaSpinnerState ||= {
-            nodeVisibility: node.style.visibility,
-        };
+        const state = me._mediaSpinnerState ||= {};
         if (! state.overlay) {
             const overlay = document.createElement("span");
             overlay.setAttribute("aria-hidden", "true");
@@ -48,7 +46,6 @@ export const media_spinner = targetClass => class mediaSpinner extends targetCla
         };
         state.update();
         requestAnimationFrame(state.update);
-        node.style.visibility = "hidden";
     };//}}}
     _hideMediaSpinner() {//{{{
         const state = this._mediaSpinnerState;
@@ -57,7 +54,6 @@ export const media_spinner = targetClass => class mediaSpinner extends targetCla
         state.observer?.disconnect();
         window.removeEventListener("resize", state.update);
         window.removeEventListener("scroll", state.onScroll, true);
-        this.targetNode.style.visibility = state.nodeVisibility;
         this._mediaSpinnerState = null;
     };//}}}
     spin(active) {//{{{
