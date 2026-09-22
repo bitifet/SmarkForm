@@ -4,23 +4,18 @@ export const media_spinner = targetClass => class mediaSpinner extends targetCla
     _showMediaSpinner() {//{{{
         const me = this;
         const node = me.targetNode;
-        const parent = node?.parentElement;
-        if (! node || ! parent) return;
+        if (! node) return;
         const state = me._mediaSpinnerState ||= {
             nodeVisibility: node.style.visibility,
-            parentPosition: parent.style.position,
         };
         if (! state.overlay) {
-            if (getComputedStyle(parent).position === "static") {
-                parent.style.position = "relative";
-            };
             const overlay = document.createElement("span");
             overlay.setAttribute("aria-hidden", "true");
             Object.assign(overlay.style, {
-                position: "absolute",
+                position: "fixed",
                 display: "block",
                 pointerEvents: "none",
-                zIndex: "1",
+                zIndex: "2147483000",
                 backgroundColor: "rgba(31, 41, 55, .78)",
                 backgroundImage: `url("data:image/svg+xml,${encodeURIComponent(
                     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">'
@@ -35,21 +30,34 @@ export const media_spinner = targetClass => class mediaSpinner extends targetCla
                 backgroundSize: "2.5rem 2.5rem",
             });
             state.overlay = overlay;
-            parent.appendChild(overlay);
+            document.body.appendChild(overlay);
+            state.update = () => {
+                const rect = node.getBoundingClientRect();
+                overlay.style.left = `${rect.left}px`;
+                overlay.style.top = `${rect.top}px`;
+                overlay.style.width = `${rect.width}px`;
+                overlay.style.height = `${rect.height}px`;
+            };
+            state.onScroll = () => state.update();
+            window.addEventListener("resize", state.update);
+            window.addEventListener("scroll", state.onScroll, true);
+            if (typeof ResizeObserver === "function") {
+                state.observer = new ResizeObserver(state.update);
+                state.observer.observe(node);
+            };
         };
-        state.overlay.style.left = `${node.offsetLeft}px`;
-        state.overlay.style.top = `${node.offsetTop}px`;
-        state.overlay.style.width = `${node.offsetWidth}px`;
-        state.overlay.style.height = `${node.offsetHeight}px`;
+        state.update();
+        requestAnimationFrame(state.update);
         node.style.visibility = "hidden";
     };//}}}
     _hideMediaSpinner() {//{{{
         const state = this._mediaSpinnerState;
         if (! state) return;
         state.overlay?.remove();
+        state.observer?.disconnect();
+        window.removeEventListener("resize", state.update);
+        window.removeEventListener("scroll", state.onScroll, true);
         this.targetNode.style.visibility = state.nodeVisibility;
-        if (state.parentPosition) this.targetNode.parentElement.style.position = state.parentPosition;
-        else this.targetNode.parentElement.style.removeProperty("position");
         this._mediaSpinnerState = null;
     };//}}}
     spin(active) {//{{{
