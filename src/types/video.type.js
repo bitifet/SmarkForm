@@ -303,6 +303,7 @@ export class video extends file {
     };//}}}
     _onMediaSpinEnd() {//{{{
         const me = this;
+        if (me.isSingleton) return;
         if (! me._file?.data) me._setDisplay(null);
     };//}}}
     _setTargetFieldValue(value) {//{{{
@@ -412,7 +413,6 @@ export class video extends file {
     async render() {//{{{
         const me = this;
         if (me.targetNode.tagName === "VIDEO") {
-            console.log ("Rendering!!");
             me.spin(true);
             me.onRendered(() => me.spin(false));
         };
@@ -667,12 +667,17 @@ export class video extends file {
     @import_from_target
     async import(data, options = {}) {//{{{
         const me = this;
-        if (me.isSingleton) {
-            const retv = await super.import(data, options);
-            me._syncCaption(me.children[""]?._file || null);
-            return retv;
+        me.spin(true);
+        try {
+            if (me.isSingleton) {
+                const retv = await super.import(data, options);
+                me._syncCaption(me.children[""]?._file || null);
+                return retv;
+            };
+            return await super.import(data, options);
+        } finally {
+            me.spin(false);
         };
-        return await super.import(data, options);
     };//}}}
     @action
     async download(_data, options = {}) {//{{{
