@@ -234,24 +234,24 @@ endif %}{% if jsHidden != '-'
   <a href="#example{{ formId }}" class="link-anchor" title="Link">🔗</a>
   <div class="tab-labels">
     {% if current_tab == "html" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-    <div class="tab-label {{active_class}}" title="HTML Source">🗒️ HTML</div>
+     <a href="#example{{ formId }}@html" class="tab-label {{active_class}}" data-tab="html" title="HTML Source">🗒️ HTML</a>
     {% if current_tab == "css" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
     {% if cssSource == '-' %}<div class="tab-label {{active_class}}" style="opacity:0.4" title="CSS Source (empty)">🎨 CSS</div>
-    {% else %}<div class="tab-label {{active_class}}" title="CSS Source">🎨 CSS</div>
+     {% else %}<a href="#example{{ formId }}@css" class="tab-label {{active_class}}" data-tab="css" title="CSS Source">🎨 CSS</a>
     {% endif %}
     {% if jsHead != '-' or jsSource != '-' %}
         {% if current_tab == "js" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-        <div class="tab-label {{active_class}}" title="JS Source">⚙️  JS</div>
+         <a href="#example{{ formId }}@js" class="tab-label {{active_class}}" data-tab="js" title="JS Source">⚙️  JS</a>
     {% endif %}
     {% if current_tab == "preview" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-    <div class="tab-label {{active_class}}" title="Live Preview">👁️ Preview</div>
+    <a href="#example{{ formId }}@preview" class="tab-label {{active_class}}" data-tab="preview" title="Live Preview">👁️ Preview</a>
     {% if notes != '-' %}
         {% if current_tab == "notes" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-        <div class="tab-label tab-label-right {{active_class}}" title="Notes">📝 Notes</div>
+        <a href="#example{{ formId }}@notes" class="tab-label tab-label-right {{active_class}}" data-tab="notes" title="Notes">📝 Notes</a>
     {% endif %}
     {% if current_tab == "hint" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
     {% if notes == '-' %}{% assign hint_right_class = "tab-label-right" %}{% else %}{% assign hint_right_class = "" %}{% endif %}
-    <div class="tab-label {{hint_right_class}} {{active_class}}" title="Help">❓</div>
+    <a href="#example{{ formId }}@hint" class="tab-label {{hint_right_class}} {{active_class}}" data-tab="hint" title="Help">❓</a>
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
@@ -338,4 +338,3 @@ endif %}{% if jsHidden != '-'
   </script>
 </div>
 {% endif %}
-

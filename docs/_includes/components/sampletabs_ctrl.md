@@ -438,6 +438,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         });
+        /* Hash-addressable tab aliases, e.g. #example-video_list@preview. */
+        var applyHashTab = function() {
+            var marker = window.location.hash.slice(1);
+            var prefix = container.id + '@';
+            if (marker.indexOf(prefix) !== 0) return;
+            var tab = container.querySelector('.tab-label[data-tab="'
+                + marker.slice(prefix.length) + '"]');
+            if (tab) tab.click();
+        };
+        window.addEventListener('hashchange', applyHashTab);
+        applyHashTab();
         /* --- Source data and preview iframe --- */
         var srcEl = container.querySelector('.smarkform-src-data');
         var iframe = container.querySelector('.smarkform-preview-frame');
@@ -652,6 +663,8 @@ document.addEventListener('DOMContentLoaded', function() {
 .tab-label {
   flex-grow: 0;
   cursor: pointer;
+  color: inherit;
+  text-decoration: none;
   padding: 10px 15px;
   background-color: #f8f9fa;
   border: 1px solid #dee2e6;
