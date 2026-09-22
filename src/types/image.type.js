@@ -21,6 +21,7 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
+import {startMediaLoading, stopMediaLoading} from "../lib/helpers.js";
 
 
 // Format vocabulary:{{{
@@ -433,10 +434,14 @@ export class image extends file {
         const me = this;
         const img = me.targetNode;
         if (value?.data) {
+            startMediaLoading(img);
+            img.removeAttribute("src");
             img.src = "data:" + value.type + ";base64," + value.data;
         } else if (me.options.placeholder === false) {
+            stopMediaLoading(img);
             img.removeAttribute("src");
         } else {
+            stopMediaLoading(img);
             img.src = me._placeholderSrc();
         };
     };//}}}

@@ -22,6 +22,7 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
+import {startMediaLoading, stopMediaLoading} from "../lib/helpers.js";
 
 
 // Option readers (§9): `smark_video_*` are the canonical toggle names and the
@@ -264,15 +265,23 @@ export class video extends file {
         const me = this;
         const node = me.targetNode;
         if (value?.data) {
+            startMediaLoading(node, {
+                events: ["loadeddata", "canplay", "error"],
+                onFinish: () => {
+                    if (me._authoredPoster != null) {
+                        node.setAttribute("poster", me._authoredPoster);
+                    };
+                },
+            });
+            node.removeAttribute("poster");
             node.setAttribute("src", "data:" + value.type + ";base64," + value.data);
             // An authored poster (if any) governs until playback starts; the
             // field's own placeholder is removed so it never sits over the
             // first frame (§3.2).
-            if (me._authoredPoster != null) node.setAttribute("poster", me._authoredPoster);
-            else node.removeAttribute("poster");
             node.load();
             return;
         };
+        stopMediaLoading(node);
         node.removeAttribute("src");
         if (me._authoredPoster == null) {
             if (me.options.placeholder === false) node.removeAttribute("poster");
