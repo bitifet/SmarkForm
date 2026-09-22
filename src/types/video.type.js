@@ -22,7 +22,7 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {startMediaLoading, stopMediaLoading} from "../lib/helpers.js";
+import {startMediaLoading} from "../lib/helpers.js";
 
 
 // Option readers (§9): `smark_video_*` are the canonical toggle names and the
@@ -264,8 +264,10 @@ export class video extends file {
     _setDisplay(value) {//{{{
         const me = this;
         const node = me.targetNode;
+        me._mediaLoadingFinish?.();
+        me._mediaLoadingFinish = null;
         if (value?.data) {
-            startMediaLoading(node, {
+            me._mediaLoadingFinish = startMediaLoading(node, {
                 events: ["loadeddata", "canplay", "error"],
                 onFinish: () => {
                     if (me._authoredPoster != null) {
@@ -281,7 +283,6 @@ export class video extends file {
             node.load();
             return;
         };
-        stopMediaLoading(node);
         node.removeAttribute("src");
         if (me._authoredPoster == null) {
             if (me.options.placeholder === false) node.removeAttribute("poster");
@@ -395,6 +396,13 @@ export class video extends file {
     };//}}}
     async render() {//{{{
         const me = this;
+        if (me.targetNode.tagName === "VIDEO") {
+            me._renderLoadingFinish = startMediaLoading(me.targetNode);
+            me.onRendered(() => {
+                me._renderLoadingFinish?.();
+                me._renderLoadingFinish = null;
+            });
+        };
         // Defer the render body until the constructor chain completes: the
         // events mixin creates `me.eventHooks` after the base constructors
         // return, and render() is kicked off synchronously inside them.  This

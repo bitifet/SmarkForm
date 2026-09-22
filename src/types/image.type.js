@@ -21,7 +21,7 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {startMediaLoading, stopMediaLoading} from "../lib/helpers.js";
+import {startMediaLoading} from "../lib/helpers.js";
 
 
 // Format vocabulary:{{{
@@ -433,15 +433,15 @@ export class image extends file {
     _setDisplay(value) {//{{{
         const me = this;
         const img = me.targetNode;
+        me._mediaLoadingFinish?.();
+        me._mediaLoadingFinish = null;
         if (value?.data) {
-            startMediaLoading(img);
+            me._mediaLoadingFinish = startMediaLoading(img);
             img.removeAttribute("src");
             img.src = "data:" + value.type + ";base64," + value.data;
         } else if (me.options.placeholder === false) {
-            stopMediaLoading(img);
             img.removeAttribute("src");
         } else {
-            stopMediaLoading(img);
             img.src = me._placeholderSrc();
         };
     };//}}}
@@ -495,6 +495,13 @@ export class image extends file {
     };//}}}
     async render() {//{{{
         const me = this;
+        if (me.targetNode.tagName === "IMG") {
+            me._renderLoadingFinish = startMediaLoading(me.targetNode);
+            me.onRendered(() => {
+                me._renderLoadingFinish?.();
+                me._renderLoadingFinish = null;
+            });
+        };
         // Defer the render body until the constructor chain completes: the
         // events mixin creates `me.eventHooks` after the base constructors
         // return, and render() is kicked off synchronously inside them.  This

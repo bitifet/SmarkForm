@@ -138,11 +138,16 @@ function ensureMediaLoadingStyle() {//{{{
 };//}}}
 
 export function stopMediaLoading(node) {//{{{
-    mediaLoadingFinishes.get(node)?.();
+    const entry = mediaLoadingFinishes.get(node);
+    entry?.finishes[0]?.();
 };//}}}
 
 export function startMediaLoading(node, {events = ["load", "error"], onFinish} = {}) {//{{{
-    stopMediaLoading(node);
+    let entry = mediaLoadingFinishes.get(node);
+    if (! entry) {
+        entry = {finishes: []};
+        mediaLoadingFinishes.set(node, entry);
+    };
     ensureMediaLoadingStyle();
     node.classList.add("smarkform-media-loading");
     let finished = false;
@@ -152,12 +157,15 @@ export function startMediaLoading(node, {events = ["load", "error"], onFinish} =
         finished = true;
         clearTimeout(timer);
         for (const event of events) node.removeEventListener(event, finish);
-        mediaLoadingFinishes.delete(node);
-        node.classList.remove("smarkform-media-loading");
+        entry.finishes = entry.finishes.filter(item => item !== finish);
+        if (! entry.finishes.length) {
+            mediaLoadingFinishes.delete(node);
+            node.classList.remove("smarkform-media-loading");
+        };
         onFinish?.();
     };
     for (const event of events) node.addEventListener(event, finish);
-    mediaLoadingFinishes.set(node, finish);
+    entry.finishes.push(finish);
     return finish;
 };//}}}
 
