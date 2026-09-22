@@ -22,7 +22,6 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {watchMediaLoading} from "../lib/helpers.js";
 import {media_spinner} from "../decorators/media_spinner.deco.js";
 
 
@@ -270,7 +269,7 @@ export class video extends file {
         me._mediaLoadFinish = null;
         if (value?.data) {
             me.spin(true);
-            me._mediaLoadFinish = watchMediaLoading(
+            me._mediaLoadFinish = me.watchMediaLoading(
                 node, ["loadeddata", "canplay", "error"], () => {
                     me._mediaLoadFinish = null;
                     me.spin(false);

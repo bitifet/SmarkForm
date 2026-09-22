@@ -110,55 +110,6 @@ export function replaceWrongNode(targetNode, error) {// {{{
     targetNode.replaceWith(errorNode);
 };// }}}
 
-const mediaLoadingStyleId = "smarkform-media-loading-style";
-const mediaSpinnerSvg = "data:image/svg+xml," + encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">`
-    + `<circle cx="20" cy="20" r="14" fill="none" stroke="white"`
-    + ` stroke-width="4" stroke-linecap="round" stroke-dasharray="22 66">`
-    + `<animateTransform attributeName="transform" type="rotate"`
-    + ` from="0 20 20" to="360 20 20" dur=".8s" repeatCount="indefinite"/>`
-    + `</circle></svg>`
-);
-
-function ensureMediaLoadingStyle() {//{{{
-    if (document.getElementById(mediaLoadingStyleId)) return;
-    const style = document.createElement("style");
-    style.id = mediaLoadingStyleId;
-    style.textContent = `
-        .smarkform-media-loading {
-            background-color: rgba(31, 41, 55, .78) !important;
-            background-image: url("${mediaSpinnerSvg}") !important;
-            background-position: center !important;
-            background-repeat: no-repeat !important;
-            background-size: 2.5rem 2.5rem !important;
-        }
-    `;
-    (document.head || document.documentElement).appendChild(style);
-};//}}}
-
-export function setMediaLoading(node, active) {//{{{
-    if (active) {
-        ensureMediaLoadingStyle();
-        node.classList.add("smarkform-media-loading");
-    } else {
-        node.classList.remove("smarkform-media-loading");
-    };
-};//}}}
-
-export function watchMediaLoading(node, events, onFinish) {//{{{
-    let finished = false;
-    const timer = setTimeout(finish, 10000);
-    function finish() {
-        if (finished) return;
-        finished = true;
-        clearTimeout(timer);
-        for (const event of events) node.removeEventListener(event, finish);
-        onFinish?.();
-    };
-    for (const event of events) node.addEventListener(event, finish);
-    return finish;
-};//}}}
-
 export function parseTime(str) {//{{{
     // Accept "HH:mm" format (5 characters)
     if (str.length === 5 && str[2] === ":") {
