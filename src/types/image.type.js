@@ -21,7 +21,8 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {startMediaLoading} from "../lib/helpers.js";
+import {watchMediaLoading} from "../lib/helpers.js";
+import {media_spinner} from "../decorators/media_spinner.deco.js";
 
 
 // Format vocabulary:{{{
@@ -386,6 +387,7 @@ function fileLikeListAncestor(me) {//{{{
 // Image field type:
 // -----------------
 
+@media_spinner
 export class image extends file {
     constructor(...args) {//{{{
         super(...args);
@@ -433,17 +435,31 @@ export class image extends file {
     _setDisplay(value) {//{{{
         const me = this;
         const img = me.targetNode;
-        me._mediaLoadingFinish?.();
-        me._mediaLoadingFinish = null;
+        me._mediaLoadFinish?.();
+        me._mediaLoadFinish = null;
         if (value?.data) {
-            me._mediaLoadingFinish = startMediaLoading(img);
+            me.spin(true);
+            me._mediaLoadFinish = watchMediaLoading(
+                img, ["load", "error"], () => {
+                    me._mediaLoadFinish = null;
+                    me.spin(false);
+                }
+            );
             img.removeAttribute("src");
             img.src = "data:" + value.type + ";base64," + value.data;
         } else if (me.options.placeholder === false) {
             img.removeAttribute("src");
         } else {
+            if (me._spinCount) {
+                img.removeAttribute("src");
+                return;
+            };
             img.src = me._placeholderSrc();
         };
+    };//}}}
+    _onMediaSpinEnd() {//{{{
+        const me = this;
+        if (! me._file?.data) me._setDisplay(null);
     };//}}}
     _setTargetFieldValue(value) {//{{{
         const me = this;
@@ -496,11 +512,8 @@ export class image extends file {
     async render() {//{{{
         const me = this;
         if (me.targetNode.tagName === "IMG") {
-            me._renderLoadingFinish = startMediaLoading(me.targetNode);
-            me.onRendered(() => {
-                me._renderLoadingFinish?.();
-                me._renderLoadingFinish = null;
-            });
+            me.spin(true);
+            me.onRendered(() => me.spin(false));
         };
         // Defer the render body until the constructor chain completes: the
         // events mixin creates `me.eventHooks` after the base constructors

@@ -110,7 +110,6 @@ export function replaceWrongNode(targetNode, error) {// {{{
     targetNode.replaceWith(errorNode);
 };// }}}
 
-const mediaLoadingFinishes = new WeakMap();
 const mediaLoadingStyleId = "smarkform-media-loading-style";
 const mediaSpinnerSvg = "data:image/svg+xml," + encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">`
@@ -137,19 +136,16 @@ function ensureMediaLoadingStyle() {//{{{
     (document.head || document.documentElement).appendChild(style);
 };//}}}
 
-export function stopMediaLoading(node) {//{{{
-    const entry = mediaLoadingFinishes.get(node);
-    entry?.finishes[0]?.();
+export function setMediaLoading(node, active) {//{{{
+    if (active) {
+        ensureMediaLoadingStyle();
+        node.classList.add("smarkform-media-loading");
+    } else {
+        node.classList.remove("smarkform-media-loading");
+    };
 };//}}}
 
-export function startMediaLoading(node, {events = ["load", "error"], onFinish} = {}) {//{{{
-    let entry = mediaLoadingFinishes.get(node);
-    if (! entry) {
-        entry = {finishes: []};
-        mediaLoadingFinishes.set(node, entry);
-    };
-    ensureMediaLoadingStyle();
-    node.classList.add("smarkform-media-loading");
+export function watchMediaLoading(node, events, onFinish) {//{{{
     let finished = false;
     const timer = setTimeout(finish, 10000);
     function finish() {
@@ -157,15 +153,9 @@ export function startMediaLoading(node, {events = ["load", "error"], onFinish} =
         finished = true;
         clearTimeout(timer);
         for (const event of events) node.removeEventListener(event, finish);
-        entry.finishes = entry.finishes.filter(item => item !== finish);
-        if (! entry.finishes.length) {
-            mediaLoadingFinishes.delete(node);
-            node.classList.remove("smarkform-media-loading");
-        };
         onFinish?.();
     };
     for (const event of events) node.addEventListener(event, finish);
-    entry.finishes.push(finish);
     return finish;
 };//}}}
 

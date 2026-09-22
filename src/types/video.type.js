@@ -22,7 +22,8 @@ import {
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {startMediaLoading} from "../lib/helpers.js";
+import {watchMediaLoading} from "../lib/helpers.js";
+import {media_spinner} from "../decorators/media_spinner.deco.js";
 
 
 // Option readers (§9): `smark_video_*` are the canonical toggle names and the
@@ -200,6 +201,7 @@ function fileLikeListAncestor(me) {//{{{
 // Video field type:
 // -----------------
 
+@media_spinner
 export class video extends file {
     constructor(...args) {//{{{
         super(...args);
@@ -264,17 +266,19 @@ export class video extends file {
     _setDisplay(value) {//{{{
         const me = this;
         const node = me.targetNode;
-        me._mediaLoadingFinish?.();
-        me._mediaLoadingFinish = null;
+        me._mediaLoadFinish?.();
+        me._mediaLoadFinish = null;
         if (value?.data) {
-            me._mediaLoadingFinish = startMediaLoading(node, {
-                events: ["loadeddata", "canplay", "error"],
-                onFinish: () => {
+            me.spin(true);
+            me._mediaLoadFinish = watchMediaLoading(
+                node, ["loadeddata", "canplay", "error"], () => {
+                    me._mediaLoadFinish = null;
+                    me.spin(false);
                     if (me._authoredPoster != null) {
                         node.setAttribute("poster", me._authoredPoster);
                     };
-                },
-            });
+                }
+            );
             node.removeAttribute("poster");
             node.setAttribute("src", "data:" + value.type + ";base64," + value.data);
             // An authored poster (if any) governs until playback starts; the
@@ -284,11 +288,23 @@ export class video extends file {
             return;
         };
         node.removeAttribute("src");
-        if (me._authoredPoster == null) {
-            if (me.options.placeholder === false) node.removeAttribute("poster");
-            else node.setAttribute("poster", me._placeholderSrc());
+        if (me._spinCount) {
+            node.removeAttribute("poster");
+            node.load();
+            return;
+        };
+        if (me._authoredPoster != null) {
+            node.setAttribute("poster", me._authoredPoster);
+        } else if (me.options.placeholder === false) {
+            node.removeAttribute("poster");
+        } else {
+            node.setAttribute("poster", me._placeholderSrc());
         };
         node.load();
+    };//}}}
+    _onMediaSpinEnd() {//{{{
+        const me = this;
+        if (! me._file?.data) me._setDisplay(null);
     };//}}}
     _setTargetFieldValue(value) {//{{{
         const me = this;
@@ -397,11 +413,9 @@ export class video extends file {
     async render() {//{{{
         const me = this;
         if (me.targetNode.tagName === "VIDEO") {
-            me._renderLoadingFinish = startMediaLoading(me.targetNode);
-            me.onRendered(() => {
-                me._renderLoadingFinish?.();
-                me._renderLoadingFinish = null;
-            });
+            console.log ("Rendering!!");
+            me.spin(true);
+            me.onRendered(() => me.spin(false));
         };
         // Defer the render body until the constructor chain completes: the
         // events mixin creates `me.eventHooks` after the base constructors
