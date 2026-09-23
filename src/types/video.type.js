@@ -18,11 +18,17 @@ import {
     computeExport,
     acceptFile,
     b64ToBytes,
+    downloadFileObject,
     typeToName,
 } from "./file.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {media_spinner} from "../decorators/media_spinner.deco.js";
+import {
+    createMediaNotifier,
+    findFileLikeListAncestor,
+    processFileBatch,
+} from "../lib/media_helpers.js";
 
 
 // Option readers (§9): `smark_video_*` are the canonical toggle names and the
@@ -96,13 +102,6 @@ async function probeVideo(obj) {//{{{
 };//}}}
 
 
-// Notification channel (§4.3): a bubbling cancellable `smark:videoNotice` DOM
-// event plus an in-page toast. A handler calling preventDefault() keeps the
-// default toast but never suppresses the event itself. A single module-level
-// toast singleton ensures one transient notice at a time (latest wins).
-// Probe rejections stay silent (§4) — they are plain unaccepted-file rejections.//}}}
-let toastEl = null;
-let toastTimer = null;
 function formatBytes(bytes) {//{{{
     const num = Number(bytes) || 0;
     if (num >= 1073741824) return (num / 1073741824).toFixed(1) + " GB";
@@ -110,45 +109,7 @@ function formatBytes(bytes) {//{{{
     if (num >= 1024) return (num / 1024).toFixed(1) + " KB";
     return num + " B";
 };//}}}
-function showToast(message) {//{{{
-    if (toastTimer) clearTimeout(toastTimer);
-    if (toastEl?.parentNode) toastEl.remove();
-    toastEl = document.createElement("div");
-    toastEl.setAttribute("role", "status");
-    toastEl.setAttribute("aria-live", "polite");
-    Object.assign(toastEl.style, {
-        position: "fixed",
-        bottom: "24px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        maxWidth: "80vw",
-        padding: "10px 16px",
-        borderRadius: "6px",
-        background: "rgba(40,40,40,.92)",
-        color: "#fff",
-        font: "14px/1.4 system-ui, sans-serif",
-        boxShadow: "0 2px 12px rgba(0,0,0,.35)",
-        zIndex: "2147483000",
-        pointerEvents: "none",
-    });
-    toastEl.textContent = message;
-    document.body.appendChild(toastEl);
-    toastTimer = setTimeout(() => {
-        toastEl?.remove?.();
-        toastEl = null;
-        toastTimer = null;
-    }, 4000);
-};//}}}
-function notify(ctrl, detail) {//{{{
-    const event = new CustomEvent("smark:videoNotice", {
-        bubbles: true,
-        cancelable: true,
-        detail,
-    });
-    const keepDefault = ctrl.targetNode.dispatchEvent(event);
-    if (keepDefault === false) return; // preventDefault() → suppress toast.
-    showToast(detail.message);
-};//}}}
+const notify = createMediaNotifier("smark:videoNotice");
 
 
 // Acquisition pipeline (§4 + §4.4): ① byte-cap check, ② media probe, ③ default
@@ -177,23 +138,6 @@ async function acquirePipeline(obj, ctrl) {//{{{
         obj.name = typeToName(obj.type) === "file" ? "video.mp4" : typeToName(obj.type);
     };
     return obj;
-};//}}}
-
-
-// Find the nearest ancestor list and whether its item type is file-like
-// (capability test — see spc/video.md §7). Used to suppress item-level drops
-// inside video-capable lists: a drop on an existing item appends to the list
-// instead of replacing that item.
-function fileLikeListAncestor(me) {//{{{
-    for (const anc of me.parents) {
-        if (anc.options.type !== "list") continue;
-        return {
-            list: anc,
-            capable: !! me.types[anc.tplType]?.isFileLike,
-            dropEnabled: anc.options.fileDrop !== false,
-        };
-    };
-    return null;
 };//}}}
 
 
@@ -527,7 +471,7 @@ export class video extends file {
                     e.preventDefault();
                     // Inside a video-capable list the drop must append to the
                     // list (list-level handler) rather than replace this item.
-                    const fla = fileLikeListAncestor(me);
+                    const fla = findFileLikeListAncestor(me);
                     if (fla?.capable && fla.dropEnabled) return;
                     void me._acceptFiles(Array.from(e.dataTransfer.files));
                 };
@@ -588,7 +532,7 @@ export class video extends file {
         // container drop is suppressed so OS drops on an existing item append to
         // the list (§7). A drop/paste targeting the inner field directly is left
         // to the inner field.
-        const fla = fileLikeListAncestor(me);
+        const fla = findFileLikeListAncestor(me);
         const underVideoList = !! (fla?.capable && fla.dropEnabled);
         if (optDrop(me) !== false && ! underVideoList) {
             me.targetNode.addEventListener("drop", e => {
@@ -695,17 +639,7 @@ export class video extends file {
         const fileObj = me._file;
         if (! fileObj) return null;
         const filename = options.filename || fileObj.name || "file";
-        const type = fileObj.type || "application/octet-stream";
-        const bytes = b64ToBytes(fileObj.data);
-        const blob = new Blob([bytes], {type});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 0);
+        downloadFileObject(fileObj, {filename});
         return await me.export(null, {silent: true});
     };//}}}
     // Batch acquisition overrides (§4, §7): probe-validate and byte-cap every
@@ -715,27 +649,17 @@ export class video extends file {
     static async acquire(o = {}) {//{{{
         const objs = await file.acquire(o);
         if (! objs?.length) return objs;
-        const out = [];
-        for (const obj of objs) {
-            const processed = await acquirePipeline(obj, {
+        return await processFileBatch(objs, acquirePipeline, {
                 options: o.options || {},
                 targetNode: o.targetNode || document.body,
             });
-            if (processed) out.push(processed);
-        };
-        return out;
     };//}}}
     static async toObjects(files, o = {}) {//{{{
         const objs = await file.toObjects(files, o);
         if (! objs?.length) return objs;
-        const out = [];
-        for (const obj of objs) {
-            const processed = await acquirePipeline(obj, {
+        return await processFileBatch(objs, acquirePipeline, {
                 options: o.options || {},
                 targetNode: o.targetNode || document.body,
             });
-            if (processed) out.push(processed);
-        };
-        return out;
     };//}}}
 };

@@ -270,6 +270,24 @@ export function computeExport(file, {format = "raw", encoding = "base64"} = {}) 
     ].join(";");
 };//}}}
 
+export function downloadFileObject(file, {filename, fallbackFilename = "file"} = {}) {//{{{
+    if (! file) return null;
+    const type = file.type || "application/octet-stream";
+    const blob = new Blob([b64ToBytes(file.data)], {type});
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = filename || file.name || fallbackFilename;
+    document.body.appendChild(anchor);
+    try {
+        anchor.click();
+    } finally {
+        anchor.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
+    };
+    return url;
+};//}}}
+
 
 export class file extends input {
     // Capability flag: types inheriting this (e.g. `image`) are file-like, so
@@ -483,17 +501,7 @@ export class file extends input {
             )
             || "file"
         );
-        const type = fileObj.type || "application/octet-stream";
-        const bytes = b64ToBytes(fileObj.data);
-        const blob = new Blob([bytes], {type});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = filename;
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 0);
+        downloadFileObject(fileObj, {filename});
         return await me.export(null, {silent: true});
     };//}}}
     async isEmpty() {//{{{
