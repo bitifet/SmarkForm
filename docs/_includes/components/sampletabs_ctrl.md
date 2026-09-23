@@ -448,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (tab) tab.click();
         };
         window.addEventListener('hashchange', applyHashTab);
-        applyHashTab();
         /* --- Source data and preview iframe --- */
         var srcEl = container.querySelector('.smarkform-src-data');
         var iframe = container.querySelector('.smarkform-preview-frame');
@@ -459,6 +458,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var editMode = false;
         var savedContents = {};
         var aceEditors = {};
+        applyHashTab();
         var previewSrcs = function() {
             var useEditor = editMode ? withEditor : !!data.showEditor;
             /* When editor is hidden, demoValue is passed directly as value: {...}.

@@ -42,7 +42,7 @@ playground's **Import** button can also be used with an exported embedded value.
 {% capture video_basic_html -%}
 <div id="myForm$$">
     <strong>Clip</strong>
-    <video id="clip" data-smark='{"name":"clip"}' width="320" height="180" preload="metadata"></video>
+    <video data-smark='{"name":"clip"}' width="320" height="180" preload="metadata"></video>
     <button data-smark='{"action":"pick","context":"clip"}'>Choose or replace video</button>
 </div>{%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
@@ -194,7 +194,7 @@ the video plus title, notes, or any other related fields.
             <video data-smark='{"name":"video"}' width="240" height="135"></video>
             <input data-smark='{"name":"title"}' placeholder="Title">
             <textarea data-smark='{"name":"notes"}' rows="2" placeholder="Notes"></textarea>
-            <button data-smark='{"action":"removeItem"}'>Remove clip</button>
+            <button data-smark='{"action":"removeItem"}' title="Remove clip" aria-label="Remove clip">✖️</button>
         </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"clips"}'>Add clip</button>
@@ -204,9 +204,15 @@ the video plus title, notes, or any other related fields.
 {% raw %}<!-- video_form_list_css {{{ -->{% endraw %}
 {% capture video_form_list_css -%}
 {{""}}#myForm$$ ul { display: grid; gap: .75rem; padding: 0; list-style: none; }
-{{""}}#myForm$$ li { display: grid; gap: .4rem; padding: .75rem; border: 1px solid #ccc; border-radius: .5rem; }
-{{""}}#myForm$$ video { width: 240px; max-width: 100%; height: auto; }
-{{""}}#myForm$$ input, #myForm$$ textarea { box-sizing: border-box; width: 100%; padding: .4rem; }
+{{""}}#myForm$$ li { display: grid; grid-template-columns: 240px minmax(0, 1fr); grid-template-areas: "video title" "video notes" "video remove"; gap: .5rem .75rem; align-items: start; padding: .75rem; border: 1px solid #ccc; border-radius: .5rem; }
+{{""}}#myForm$$ video { grid-area: video; width: 240px; max-width: 100%; height: auto; }
+{{""}}#myForm$$ input { grid-area: title; box-sizing: border-box; width: 100%; padding: .4rem; }
+{{""}}#myForm$$ textarea { grid-area: notes; box-sizing: border-box; width: 100%; min-height: 5rem; padding: .4rem; resize: vertical; }
+{{""}}#myForm$$ li > button { grid-area: remove; justify-self: start; padding: .2rem .45rem; }
+@media (max-width: 520px) {
+    {{""}}#myForm$$ li { grid-template-columns: 1fr; grid-template-areas: "video" "title" "notes" "remove"; }
+    {{""}}#myForm$$ video { width: 100%; }
+}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
