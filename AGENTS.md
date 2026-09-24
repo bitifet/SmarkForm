@@ -93,7 +93,12 @@ a self-describing data-URL string by default, or as a structured object with
 
 **Configuration file locations**:
 - Tests: `test/co_located_tests.tests.js` (docs examples incl. `docs/_component_types/type_file.md`), list integration covered by the co-located examples in `docs/_component_types/type_file.md`
-- Implementation: `src/types/file.type.js` (field, `readFileToObject`, `acquire`, `toObjects`), `src/types/list.type.js` (`_addFiles`, encoding threading), `src/types/list.decorators/sortable.deco.js` (list-level file drop), `src/types/input.type.js` (format alias)
+- Implementation:
+  - `src/types/file.type.js` — field behavior (`readFileToObject`, `acquire`, `toObjects`)
+  - `src/lib/file_value.js` — value normalization, encoding, URL import/export, download
+  - `src/lib/file_caption.js` — singleton caption/rename behavior
+  - `src/lib/media_helpers.js` — list/batch helpers
+  - `src/types/list.type.js` (`_addFiles`, encoding threading), `src/types/list.decorators/sortable.deco.js` (list-level file drop), `src/types/input.type.js` (format alias)
 
 ### Image Field Type
 
@@ -158,14 +163,13 @@ an editable file name via `figcaption contenteditable`.
   `RenderError(/path): message` (not the code).
 
 **Configuration file locations**:
-- Tests: `test/type_image.tests.js` (13 tests: render, round-trip, capture
-  pipeline, resize/format, enforce matrix, keyboard, singleton, render errors,
-  gallery lists, drop-append); `test/co_located_tests.tests.js` (demoValue
+- Tests: `test/type_image.tests.js`; `test/co_located_tests.tests.js` (demoValue
   round-trip smoke tests for the sampletabs in `docs/_component_types/type_image.md`)
 - Implementation: `src/types/image.type.js` (extends `file`), `src/lib/component.js`
-  (`inferType` `case "img"`), `src/types/list.type.js` / `list.decorators/
-  sortable.deco.js` (capability-based file drop), `src/lib/file.type.js`
-  (value contract, `readFileToObject`, `acquire`, `toObjects`)
+  (`inferType` `case "img"`), `src/lib/file_value.js` (normalization, encoding,
+  URL import/export and download), `src/lib/file_caption.js` (shared caption and
+  rename behavior), `src/lib/media_helpers.js` (file-like list and batch helpers),
+  `src/decorators/media_spinner.deco.js` (reference-counted media loading)
 - Spec: `spc/image.md` (authoritative design)
 
 ### Video Field Type
@@ -203,7 +207,10 @@ poster while empty.
 **Configuration file locations**:
 - Tests: `test/type_video.tests.js`
 - Implementation: `src/types/video.type.js`, `src/lib/component.js` (inference),
-  `src/main.js` (registration)
+  `src/main.js` (registration), `src/lib/file_value.js` (shared file value
+  contract), `src/lib/file_caption.js` (shared rename/caption behavior),
+  `src/lib/media_helpers.js` (shared list/batch helpers),
+  `src/decorators/media_spinner.deco.js` (loading overlay)
 - Documentation: `docs/_component_types/type_video.md`
 - Spec: `spc/video.md` (authoritative design)
 

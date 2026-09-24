@@ -16,3 +16,5 @@ Read the source file directly for the latest content on:
 For deeper internals (component type implementations, `@action` decorator
 nuances, CSS grid patterns), see
 [`docs/_resources/AGENTS/SmarkForm-Usage.md`](../docs/_resources/AGENTS/SmarkForm-Usage.md).
+For media-specific usage (file, image, video, and future audio), see the
+Section *Media Fields* in that document.

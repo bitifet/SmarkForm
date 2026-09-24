@@ -20,9 +20,11 @@ coding agents avoid common mistakes.
 |------|------|-------|
 | `form` | Container for named fields | Default type for root and nested containers |
 | `list` | Ordered collection of items | Items are cloned from a template |
-| `input` | Scalar value input (`<input>`, `<textarea>`) | Auto-detected by element tag |
-| `file` | Whole-file uploader (picker/drop/paste) | `<input type="file">` or singleton container; exports data-URL string or `{...,data}` object |
-| `color` | Color picker | Wrapper around `<input type="color">` with null support |
+ | `input` | Scalar value input (`<input>`, `<textarea>`) | Auto-detected by element tag |
+ | `file` | Whole-file uploader (picker/drop/paste) | `<input type="file">` or singleton container; exports data-URL string or `{...,data}` object |
+ | `image` | In-place image field | Decoded `<img>` media with resize/reformat options |
+ | `video` | In-place video field | `<video>` media with probe, playback and pick modes |
+ | `color` | Color picker | Wrapper around `<input type="color">` with null support |
 | `date` | Date field | Wrapper with null support |
 | `time` | Time field | Wrapper with null support |
 | `datetime-local` | Date+time field | Wrapper with null support |
@@ -48,7 +50,22 @@ Type is often auto-inferred from the element tag or presence of the `action` pro
 | Download (action) | `{"action":"download","context":"/cv"}` triggers a **real browser download** of the stored bytes (Blob + object URL + `<a download>`); works on real fields and singletons (container delegates to the inner field). Empty field → no-op. Name precedence: `filename` trigger option (any extra trigger option) > edited visible name > stored name |
 | Lists | `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a **multi-file** picker (`multiple:false` forces single); OS drops **append** items anywhere in the list; `accept` on the list filters; list-level `fileDrop:false` disables drop-add |
 | Drop on an existing list item | **Appends** a new item — it never replaces that item. Inside a `of:"file"` list the item singleton's container-level drop is suppressed (paste stays item-scoped) |
-| `format` vs legacy `encoding` | Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy alias of `{"format":"json"}` — prefer `format` |
+ | `format` vs legacy `encoding` | Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy alias of `{"format":"json"}` — prefer `format` |
+
+## Image and Video Fields
+
+`image` and `video` extend `file` and share its value contract. Common rules:
+
+| Item | Fact |
+|------|------|
+| Declaration | `<img data-smark>` or `<video data-smark>` are auto-inferred as `image`/`video`; a singleton wrapper contains exactly one unnamed inner media element |
+| Value contract | Same as `file`: raw data-URL string default, `{name,type,size,lastModified,data}` with `"format":"json"`; no width/height metadata |
+| Interior state | Payload always stored as standard base64; `encoding` only affects JSON export and bare-payload imports; acquisition helpers re-encode to base64 before type-specific processing |
+| Options | `image`: `image_resize`, `image_maxSize`, `image_format` (`jpeg`/`png`/`webp`/`avif`), `image_enforce` (`strict`/`hard`/`warn`/`ignore`), `smark_image_validate`<br>`video`: `video_maxSize`, `smark_video_validate`, `smark_video_click` (`auto`/`pick`/`play`), `smark_video_autoPick` |
+| Notices | Unmet/unverifiable constraints dispatch a cancellable `smark:imageNotice` / `smark:videoNotice` event, with an in-page toast if not cancelled |
+| Controls | `video` relies on native `controls` for playback; do not attempt to capture random frames. `smark_video_click` controls click behaviour |
+| Layout | Authors must reserve media space (`width`/`height` attributes, CSS `aspect-ratio`, or `sizes`) — SmarkForm never sets layout dimensions |
+| Filename | Singleton/gallery media filename controls use `data-smark='{"action":"rename"}'`; legacy `contenteditable` captions still work |
 
 ## How SmarkForm Enhances HTML
 

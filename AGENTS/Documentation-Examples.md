@@ -100,7 +100,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 | `notes` | `'-'` | Markdown/HTML notes shown below the example |
 | `showEditor` | `false` | Whether to show the JSON editor textarea for import/export |
 | `selected` | `'preview'` | Which tab is initially active |
-| `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport (0–100). The iframe auto-sizes to its **measured** content on the **first render only**, never below this floor and never above 90% of the viewport. If omitted, a small absolute floor (75px) is used — the height is never guessed from the HTML source. |
+ | `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport, **clamped to 25–90**. The iframe auto-sizes to its **measured** content on the **first render only**, never below this floor and never above 90% of the viewport. If omitted, a small absolute floor (75px) is used — the height is never guessed from the HTML source. |
 
 ### `minHeight` and iframe Auto-sizing
 
@@ -290,6 +290,15 @@ Previously, the `demoValue` parameter was listed in `DOCS_ONLY_PARAMS` and filte
 
 There are currently no parameters in `DOCS_ONLY_PARAMS`.
 
+### Media Examples
+
+Media examples depend on URL imports being fetched and embedded at runtime. Use `demoValue` with a **same-origin/CORS URL** when demonstrating `image`, `video`, or a future audio field. Authors of examples should:
+
+- Reserve layout space with `width`/`height` attributes or CSS `aspect-ratio` to avoid layout shift.
+- Keep trigger contexts **relative** (`"context":"demo"`) — the editor wraps the example in a `demo` subform, so absolute paths break in preview.
+- Remember that `demoValue` round-trip smoke tests compare the exported JSON. Large embedded media values inflate the JSON textarea and may be slow to render; prefer small demo assets.
+- Use `action:"rename"` for gallery/singleton filename controls. Legacy `contenteditable` captions still work but lack the trigger action regularity.
+
 ### `smarkformOptions` — security and behaviour options
 
 SmarkForm applies a **secure-by-default** policy for features that carry a security risk.
@@ -368,14 +377,15 @@ To add pre-populated data to an existing example:
 
 ## Updating `sampletabs_tpl.md`
 
-Key sections in the template (approximate line numbers as of PR #70):
+Key sections in the template (refer to named captures rather than line numbers):
 
-- ~Line 47-58: `default_jsHead` / `default_jsHead_display` conditional block — generates the two JS variants based on `demoValue`
-- ~Line 64: `jsHead` / `jsHead_display` assignment (with `include.jsHead` override)
-- ~Line 97: `default_buttons` capture — the four action buttons
-- ~Line 224: `rendered_jsSource` uses `jsHead_display` for the JS tab display
-- ~Line 312: Actual form initialization uses `jsHead` (the executed version)
-- The `full_htmlSource` variable wraps the example HTML in the `demo` subform div, injecting `demoValue_inner` if set
+- `default_jsHead` / `default_jsHead_display` conditional block — generates the two JS variants based on `demoValue`
+- `jsHead` / `jsHead_display` assignment (supports `include.jsHead` override)
+- `default_buttons` capture — the four action buttons
+- `rendered_jsSource` uses `jsHead_display` for the JS tab display
+- Actual form initialization uses `jsHead` (the executed version)
+- `full_htmlSource` wraps the example HTML in the `demo` subform div, injecting `demoValue_inner` if set
+- Live iframe rendering and auto-sizing logic lives in `sampletabs_ctrl.md` under functions such as `smarkformBuildEditorHtml`, `smarkformRenderIframe`, `smarkformAutosize`, and `smarkformRenderScheduler`
 
 ## Updating Print Styles
 

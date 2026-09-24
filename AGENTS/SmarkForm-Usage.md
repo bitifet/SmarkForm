@@ -28,22 +28,29 @@ SmarkForm/
 │   │   ├── date.type.js     # date field (with null)
 │   │   ├── time.type.js     # time field (with null)
 │   │   ├── datetime-local.type.js
-│   │   ├── number.type.js   # numeric field (with null)
-│   │   ├── radio.type.js    # radio button group
-│   │   └── list.decorators/ # list-specific decorators
+ │   │   ├── number.type.js   # numeric field (with null)
+ │   │   ├── radio.type.js    # radio button group
+ │   │   ├── file.type.js     # embedded file field
+ │   │   ├── image.type.js    # in-place image field
+ │   │   ├── video.type.js    # in-place video field
+ │   │   └── list.decorators/ # list-specific decorators
 │   ├── lib/                 # Shared utilities
 │   │   ├── events.js        # Event system (@events decorator, emit, on, onLocal, onAll)
 │   │   ├── field.js         # Base field class (@action decorator lives here)
 │   │   ├── component.js     # Base component class
 │   │   ├── hotkeys.js       # Hotkey handler
-│   │   ├── helpers.js       # Utility functions
-│   │   ├── legacy.js        # Backwards-compat shims
-│   │   └── test/            # Internal test helpers
+ │   │   ├── helpers.js       # Utility functions
+ │   │   ├── file_value.js    # Shared file normalization/export/download
+ │   │   ├── file_caption.js  # Shared media caption/rename behavior
+ │   │   ├── media_helpers.js # Shared media list/batch helpers
+ │   │   ├── legacy.js        # Backwards-compat shims
+ │   │   └── test/            # Internal test helpers
 │   └── decorators/          # Cross-cutting decorators
 │       ├── export_to_target.deco.js
 │       ├── import_from_target.deco.js
-│       └── mutex.deco.js
-├── dist/                    # Built output (ESM + UMD, committed)
+ │       ├── mutex.deco.js
+ │       └── media_spinner.deco.js # Reference-counted media loading overlay
+ ├── dist/                    # Built output (ESM + UMD, committed)
 │   ├── SmarkForm.esm.js
 │   └── SmarkForm.umd.js
 ├── docs/                    # Documentation site (Jekyll)
@@ -137,9 +144,34 @@ Exceptions:
 | `number` | Numeric field | Wrapper with null support |
 | `radio` | Radio-button group | Group of `<input type="radio">` elements |
 | `trigger` | Action button | Required `action` property |
-| `label` | Read-only display | Uses `data-smark` on element with inner content |
+ | `label` | Read-only display | Uses `data-smark` on element with inner content |
+ | `file` | Embedded whole-file uploader | Picker/drop/paste; JSON/raw export; download action |
+ | `image` | In-place image field | Decode/resize/format pipeline; editable media name |
+ | `video` | In-place video field | Metadata probe, playback/pick modes, native controls |
 
-Type is often auto-inferred from the element tag or presence of the `action` property. The `type` key in `data-smark` can override.
+ Type is often auto-inferred from the element tag or presence of the `action` property. The `type` key in `data-smark` can override.
+
+ ## Media Fields
+
+ `file`, `image`, and `video` share the embedded file-value contract. Interior
+ state always stores payload bytes as standard base64; `encoding` controls JSON
+ export and bare-payload imports, while acquisition helpers normalize values back
+ to base64 before type-specific processing. URL imports fetch and embed bytes;
+ exports never contain the source URL.
+
+ - `file` is a whole-file uploader with an editable filename and download support.
+ - `image` displays the value on `<img>` and can resize/re-encode images.
+ - `video` displays the value on `<video>`, probes acquired metadata, and
+   separates native playback (`controls`) from picker behaviour (`pick` action or
+   `smark_video_click`). `smark_video_autoPick` is best-effort because browsers
+   may block picker opening without a user gesture.
+ - Singleton/gallery filename controls use
+   `data-smark='{"action":"rename"}'`; the media controller makes the trigger
+   editable and uses its text for export/download. Legacy editable captions remain
+   supported.
+ - Authors should reserve image/video layout space with dimensions or
+   `aspect-ratio`. Large embedded media exports can be expensive to render in a
+   JSON textarea.
 
 ## List Component — Critical Rules
 
