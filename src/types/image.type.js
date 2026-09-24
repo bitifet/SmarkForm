@@ -29,6 +29,13 @@ import {
     findFileLikeListAncestor,
     processFileBatch,
 } from "../lib/media_helpers.js";
+import {
+    getCaption,
+    captionText,
+    syncCaption,
+    bindCaption,
+    rename as renameCaption,
+} from "../lib/file_caption.js";
 
 
 // Format vocabulary:{{{
@@ -425,35 +432,17 @@ export class image extends file {
         me._syncCaption(value || null);
     };//}}}
     _getCaption() {//{{{
-        const me = this;
-        if (! me.isSingleton) return null;
-        const marked = Array.from(me.targetNode.querySelectorAll("[data-smark]"))
-            .find(node => me.getComponent(node)?.options?.action === "rename");
-        const caption = marked || me.targetNode.querySelector("figcaption[contenteditable]");
-        if (caption) caption.contentEditable = "true";
-        return caption || null;
+        return getCaption(this);
     };//}}}
     _captionText() {//{{{
-        const me = this;
-        const cap = me._getCaption();
-        return cap ? String(cap.textContent || "").trim() : "";
+        return captionText(this);
     };//}}}
     _syncCaption(value) {//{{{
-        const me = this;
-        const cap = me._getCaption();
-        if (! cap) return;
-        const name = String(value?.name ?? "");
-        if (cap.textContent !== name) cap.textContent = name;
+        syncCaption(this, value);
     };//}}}
     @action
     async rename(_data, options = {}) {//{{{
-        const me = this;
-        const node = options.origin?.targetNode || me._getCaption();
-        if (! node) return await me.export(null, {silent: true});
-        node.contentEditable = "true";
-        me._syncCaption(me.children[""]?._file || me._file || null);
-        node.focus();
-        return await me.export(null, {silent: true});
+        return await renameCaption(this, _data, options);
     };//}}}
     async render() {//{{{
         const me = this;
@@ -625,20 +614,7 @@ export class image extends file {
             });
         };
 
-        // Caption = the editable file name (§6.1): mirror the stored name on
-        // value changes and let the typed text override exports live (the
-        // `file` visible-name pattern — mutates the stored name, not state).
-        const cap = me._getCaption();
-        if (cap) {
-            cap.addEventListener("input", () => {
-                const inner = me.children[""];
-                if (inner?._file) inner._file.name = cap.textContent.trim();
-            });
-        };
-        me.targetNode.addEventListener("change", () => {
-            me._syncCaption(me.children[""]?._file || null);
-        });
-        me._syncCaption(me.children[""]?._file || null);
+        bindCaption(me);
     };//}}}
     _openPicker() {//{{{
         const me = this;
