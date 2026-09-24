@@ -14,13 +14,15 @@ import {action} from "./trigger.type.js";
 import {input} from "./input.type.js";
 import {
     file,
+} from "./file.type.js";
+import {
     readFileToObject,
     computeExport,
     acceptFile,
     b64ToBytes,
     downloadFileObject,
     typeToName,
-} from "./file.type.js";
+} from "../lib/file_value.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {media_spinner} from "../decorators/media_spinner.deco.js";
