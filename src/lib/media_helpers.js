@@ -19,6 +19,12 @@ export async function processFileBatch(objects, pipeline, context = {}) {//{{{
     return result;
 };//}}}
 
+export async function processFileSource(source, pipeline, context = {}) {//{{{
+    const objects = await source();
+    if (! objects?.length) return objects;
+    return await processFileBatch(objects, pipeline, context);
+};//}}}
+
 export function createMediaNotifier(eventName) {//{{{
     let toastEl = null;
     let toastTimer = null;

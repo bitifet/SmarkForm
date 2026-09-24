@@ -29,7 +29,7 @@ import {media_spinner} from "../decorators/media_spinner.deco.js";
 import {
     createMediaNotifier,
     findFileLikeListAncestor,
-    processFileBatch,
+    processFileSource,
 } from "../lib/media_helpers.js";
 import {
     getCaption,
@@ -625,19 +625,17 @@ export class video extends file {
     // video-safe. `options`/`targetNode` (the list's own) are threaded by the
     // list type so the video settings and notification channel work list-wide.
     static async acquire(o = {}) {//{{{
-        const objs = await file.acquire(o);
-        if (! objs?.length) return objs;
-        return await processFileBatch(objs, acquirePipeline, {
+        return await processFileSource(() => file.acquire(o), acquirePipeline, {
                 options: o.options || {},
                 targetNode: o.targetNode || document.body,
             });
     };//}}}
     static async toObjects(files, o = {}) {//{{{
-        const objs = await file.toObjects(files, o);
-        if (! objs?.length) return objs;
-        return await processFileBatch(objs, acquirePipeline, {
+        return await processFileSource(
+            () => file.toObjects(files, o), acquirePipeline, {
                 options: o.options || {},
                 targetNode: o.targetNode || document.body,
-            });
+            }
+        );
     };//}}}
 };
