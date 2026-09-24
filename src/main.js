@@ -19,6 +19,7 @@ import {color} from "./types/color.type.js";
 import {file} from "./types/file.type.js";
 import {image} from "./types/image.type.js";
 import {video} from "./types/video.type.js";
+import {audio} from "./types/audio.type.js";
 
 
 // Load core component types:
@@ -37,6 +38,7 @@ for (const [name, controller] of Object.entries({
     file,
     image,
     video,
+    audio,
 })) createType(name,controller);
 
 
