@@ -69,14 +69,14 @@ async function openPage(page, title, src) {//{{{
 
 // Fetch the shared test clip and wrap it in a File (acquisition path).
 const makeFileFn = `async (name = "clip.mp3", type = "audio/mpeg") => {
-    const res = await fetch("/assets/audio_test.mp3");
+    const res = await fetch("/assets/audio_beethoven_5th.mp3");
     const buf = await res.arrayBuffer();
     return new File([buf], name, {type});
 }`;
 
 // Fetch the shared test clip as a normalized file object (import path).
 const fetchObjFn = `async (name = "clip.mp3") => {
-    const res = await fetch("/assets/audio_test.mp3");
+    const res = await fetch("/assets/audio_beethoven_5th.mp3");
     const buf = await res.arrayBuffer();
     const bytes = new Uint8Array(buf);
     let bin = "";

@@ -42,9 +42,11 @@ companion triggers when you want an empty-state upload affordance.
 
 ## Try It
 
-These examples use a small locally bundled audio track so they work without a
-remote media host. You can replace it with your own audio in the preview. The
+These examples use short public-domain audio excerpts (Beethoven's 5th Symphony
+and Moonlight Sonata openings) so they work without a remote media host.
+You can replace them with your own audio in the preview. The
 playground's **Import** button can also be used with an exported embedded value.
+Attribution is in `docs/assets/audio-demo-attribution.md`.
 
 ### Basic Real Audio Field
 
@@ -64,13 +66,14 @@ playground's **Import** button can also be used with an exported embedded value.
 the clip.
 
 👉 Choose an MP3, MP4/AAC, Ogg, WAV or another format your browser supports.
-The example starts with a small locally bundled track loaded by `demoValue`.
+The example starts with the opening of Beethoven's 5th Symphony loaded by
+`demoValue`. Attribution is in the repo at `docs/assets/audio-demo-attribution.md`.
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- audio_basic_demoValue {{{ -->{% endraw %}
 {% capture audio_basic_demoValue -%}
-{"clip": "/assets/audio_test.mp3"}
+{"clip": "/assets/audio_beethoven_5th.mp3"}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -115,12 +118,15 @@ filename. Upload a clip, replace **edit filename**, then use **Download**.
 👉 Native `controls` supplies playback; the explicit **Choose or replace audio**
 button opens the picker. SmarkForm keeps the bytes unchanged and does not
 transcode the audio.
+
+👉 Initial clip: opening of Beethoven's *Moonlight Sonata*. Attribution is in
+`docs/assets/audio-demo-attribution.md`.
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- audio_singleton_demoValue {{{ -->{% endraw %}
 {% capture audio_singleton_demoValue -%}
-{"clip": "/assets/audio_test.mp3"}
+{"clip": "/assets/audio_moonlight_sonata.mp3"}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -160,8 +166,8 @@ lists append OS drops instead of replacing an existing item.
 {% raw %}<!-- audio_list_demoValue {{{ -->{% endraw %}
 {% capture audio_list_demoValue -%}
 {"tracks": [
-    "/assets/audio_test.mp3",
-    "/assets/audio_test.mp4"
+    "/assets/audio_beethoven_5th.mp3",
+    "/assets/audio_moonlight_sonata.mp3"
 ]}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
@@ -207,12 +213,15 @@ in a singleton container to provide an empty-state label and upload affordance.
 👉 Because the inner `<audio>` has no `controls`, the whole wrapper is the drop
 surface and the button opens the picker. Once a clip is loaded, the audio element
 plays through its own `src`; add `controls` if you want a visible player strip.
+
+👉 Initial clip: opening of Beethoven's 5th Symphony. See
+`docs/assets/audio-demo-attribution.md` for attribution.
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- audio_empty_demoValue {{{ -->{% endraw %}
 {% capture audio_empty_demoValue -%}
-{"clip": "/assets/audio_test.mp3"}
+{"clip": "/assets/audio_beethoven_5th.mp3"}
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
