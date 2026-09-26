@@ -291,9 +291,18 @@ export class video extends file {
     };//}}}
     _displayNode() {//{{{
         const me = this;
+        return me._innerVideoNode() || me.targetNode;
+    };//}}}
+    _innerVideoNode() {//{{{
+        const me = this;
         return me.isSingleton
             ? (me.targetFieldNode || me.children[""]?.targetNode)
             : me.targetNode;
+    };//}}}
+    // Spinner target (src/decorators/media_spinner.deco.js): keep the overlay on
+    // the inner <video> in singleton wrappers, not over the whole wrapper.
+    targetNodeForSpinner() {//{{{
+        return this._innerVideoNode();
     };//}}}
     _togglePlay() {//{{{
         const me = this;
@@ -312,7 +321,7 @@ export class video extends file {
         // field's own node, or the singleton's inner field).
         const me = this;
         const explicit = me.options.smark_video_click;
-        const node = me.targetFieldNode || me.targetNode;
+        const node = me._innerVideoNode() || me.targetNode;
         const controls = !! (node && node.tagName === "VIDEO"
             && node.hasAttribute("controls"));
         const mode = (

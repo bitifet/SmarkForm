@@ -1,9 +1,15 @@
 // Reference-counted media loading decorator. Each async phase owns a spin
 // lease, and the visual overlay remains until the final lease is released.
 export const media_spinner = targetClass => class mediaSpinner extends targetClass {
+    _spinnerTargetNode() {//{{{
+        const me = this;
+        return me.targetNodeForSpinner
+            ? me.targetNodeForSpinner()
+            : me.targetNode;
+    };//}}}
     _showMediaSpinner() {//{{{
         const me = this;
-        const node = me.targetNode;
+        const node = me._spinnerTargetNode();
         if (! node) return;
         const state = me._mediaSpinnerState ||= {};
         if (! state.overlay) {
