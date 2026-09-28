@@ -4,7 +4,8 @@
 // placeholder node with a clone of the referenced <template> root before
 // normal SmarkForm enhancement begins.
 
-import {parseJSON} from "./helpers.js";
+import {parseJSON, collectPrefixedOptions} from "./helpers.js";
+import {normalizeJson} from "./options.js";
 import {stampSourceIds, nextSourceId} from "./component.js";
 
 // Module-level caches (shared for the lifetime of the page):
@@ -93,7 +94,11 @@ function mergeAttributes(clone, placeholder) { //{{{
     // attribute merge semantics specified in the Mixin Types documentation.
     for (const attr of placeholder.attributes) {
         const name = attr.name;
-        if (name === 'data-smark') continue; // Handled via option merge.
+        // data-smark and any data-smark-* option attributes are already
+        // merged into the clone's canonical data-smark JSON; copying them
+        // would make the clone re-detect them as options and could cause
+        // double expansion or option loss.
+        if (name === 'data-smark' || name.startsWith('data-smark-')) continue;
         if (name === 'id') {
             // id is intentionally not merged; SmarkForm manages ids itself.
             console.warn(
@@ -180,10 +185,11 @@ function getUrlOrigin(absoluteUrl) { //{{{
 //   }
 // ----------------------------------------------------------------------------
 function resolvePolicy(option, origin, fallback) { //{{{
-    if (typeof option === 'string') return option;
-    if (option !== null && typeof option === 'object') {
-        if (Object.prototype.hasOwnProperty.call(option, origin)) return option[origin];
-        if (Object.prototype.hasOwnProperty.call(option, '*')) return option['*'];
+    const parsed = normalizeJson(option);
+    if (typeof parsed === 'string') return parsed;
+    if (parsed !== null && typeof parsed === 'object') {
+        if (Object.prototype.hasOwnProperty.call(parsed, origin)) return parsed[origin];
+        if (Object.prototype.hasOwnProperty.call(parsed, '*')) return parsed['*'];
     }
     return fallback;
 }; //}}}
@@ -356,9 +362,10 @@ export async function expandMixin(node, options, component) { //{{{
     const templateRoot = rootElements[0];
 
     // Validate: template root must not set "name" in data-smark:
-    const templateRootOptions = parseJSON(
-        templateRoot.getAttribute('data-smark')
-    ) || {};
+    const templateRootOptions = {
+        ...(parseJSON(templateRoot.getAttribute('data-smark')) || {}),
+        ...collectPrefixedOptions(templateRoot, 'smark'),
+    };
     if (templateRootOptions.name !== undefined) {
         throw component.renderError(
             'MIXIN_TEMPLATE_ROOT_HAS_NAME'
@@ -454,9 +461,14 @@ export async function expandMixin(node, options, component) { //{{{
     //   - mixin type reference is consumed (not forwarded as the concrete type)
     //   - template root options are defaults; placeholder options override
     const { type: _mixinRef, ...restPlaceholderOptions } = options;
+    const placeholderPrefixedOptions = collectPrefixedOptions(node);
+    // The mixin reference must not leak into the expanded clone; drop it from
+    // the per-option attributes too.
+    delete placeholderPrefixedOptions.type;
     const mergedOptions = {
-        ...templateRootOptions,    // template provides defaults
-        ...restPlaceholderOptions, // placeholder overrides (including name)
+        ...templateRootOptions,           // template provides defaults
+        ...restPlaceholderOptions,        // placeholder overrides (including name)
+        ...placeholderPrefixedOptions,    // author-time attribute overrides
     };
 
     // Write merged options back to the clone's data-smark:

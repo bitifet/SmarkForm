@@ -29,6 +29,7 @@ import {
     findFileLikeListAncestor,
     processFileSource,
 } from "../lib/media_helpers.js";
+import {normalizeJson, normalizeBoxOption} from "../lib/options.js";
 import {
     getCaption,
     captionText,
@@ -249,8 +250,8 @@ async function acquirePipeline(obj, ctrl) {//{{{
     // `ctrl` is the image field instance, or a stand-in
     // {options, targetNode} for the static list-facing methods.
     const mode = optEnforce(ctrl);
-    const resize = ctrl.options.image_resize ?? null;
-    const maxSize = ctrl.options.image_maxSize ?? null;
+    const resize = normalizeBoxOption(ctrl.options.image_resize) ?? null;
+    const maxSize = normalizeBoxOption(ctrl.options.image_maxSize) ?? null;
     const format = ctrl.options.image_format ?? null;
     const hasRequirements = !!(resize != null || maxSize != null || format);
 

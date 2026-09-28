@@ -1,8 +1,34 @@
 "use strict";
-export function getRoots(target, selector){//{{{
-    // Single-pass subtree traversal: return only the "topmost" elements
-    // matching `selector` under `target` — i.e. elements that match but have
-    // no intermediate matching ancestor between themselves and `target`.
+const SMARK_ATTR_PREFIX = "data-smark-";
+
+export function collectPrefixedOptions(node) {//{{{
+    const options = {};
+    for (const attr of node.attributes) {
+        if (attr.name.startsWith(SMARK_ATTR_PREFIX)) {
+            const optionName = attr.name.slice(SMARK_ATTR_PREFIX.length);
+            if (optionName) options[optionName] = attr.value;
+        }
+    }
+    return options;
+};//}}}
+
+function hasSmarkAttribute(node){//{{{
+    // Return true when the node carries the canonical data-smark attribute or
+    // any data-smark-<option> prefixed attribute.  Used for initial discovery
+    // because a CSS selector cannot match an arbitrary attribute-name prefix.
+    if (node.hasAttribute("data-smark")) return true;
+    for (const attr of node.attributes) {
+        if (attr.name.startsWith(SMARK_ATTR_PREFIX)) return true;
+    }
+    return false;
+};//}}}
+export {hasSmarkAttribute};
+
+export function getRoots(target){//{{{
+    // Single-pass subtree traversal: return only the "topmost" elements that
+    // carry a SmarkForm option attribute (`data-smark` or `data-smark-*`) under
+    // `target` — i.e. elements that match but have no intermediate matching
+    // ancestor between themselves and `target`.
     //
     // Strategy: iterative depth-first walk using an explicit stack.
     // When a matching element is found, it is added to the result and its
@@ -16,7 +42,7 @@ export function getRoots(target, selector){//{{{
     };
     while (stack.length) {
         const node = stack.pop();
-        if (node.matches(selector)) {
+        if (hasSmarkAttribute(node)) {
             // Match found: record it and do NOT descend into its children.
             result.push(node);
         } else {

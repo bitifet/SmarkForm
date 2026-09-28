@@ -9,15 +9,20 @@ import {sortable} from "./list.decorators/sortable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {mutex} from "../decorators/mutex.deco.js";
-import {makeRoom, getRoots, parseJSON, setTabIndex} from "../lib/helpers.js";
+import {makeRoom, getRoots, parseJSON, setTabIndex, collectPrefixedOptions} from "../lib/helpers.js";
 
 // Private helpers:
 // ----------------
 
 function loadTemplates(me) {//{{{
     const templates = {};
+    const prefix = "data-smark-";
     for (const child of [...me.targetNode.children]) {
-        const {role = "item"} = parseJSON(child.getAttribute("data-smark")) || {};
+        const options = {
+            ...(parseJSON(child.getAttribute("data-smark")) || {}),
+            ...collectPrefixedOptions(child),
+        };
+        const {role = "item"} = options;
         switch (role) {
             case "empty_list":
             case "header":
@@ -37,9 +42,12 @@ function loadTemplates(me) {//{{{
         };
     };
     if (me.targetNode.children.length) {
-        const {role = "(unspecified)"} = parseJSON(
-            me.targetNode.children[0].getAttribute("data-smark")
-        ) || {};
+        const firstChild = me.targetNode.children[0];
+        const options = {
+            ...(parseJSON(firstChild.getAttribute("data-smark")) || {}),
+            ...collectPrefixedOptions(firstChild),
+        };
+        const {role = "(unspecified)"} = options;
         throw me.renderError(
             'LIST_UNKNOWN_TEMPLATE_ROLE'
             , `Unknown list template role ${role}`
@@ -115,13 +123,19 @@ export class list extends SmarkField {
         ]) if (!! tpl) {
             me.targetNode.appendChild(tpl);
             // The header/footer container itself is not a SmarkForm component —
-            // only its children should be enhanced.  Strip data-smark so that
-            // getRoots() matches only the descendants, not the container.
+            // only its children should be enhanced.  Strip data-smark and any
+            // data-smark-* attributes so getRoots() matches only the
+            // descendants, not the container.
             tpl.removeAttribute('data-smark');
+            for (const attr of [...tpl.attributes]) {
+                if (attr.name.startsWith("data-smark-")) {
+                    tpl.removeAttribute(attr.name);
+                };
+            };
             // Enhance childs:
             for (
                 const node
-                of getRoots(tpl, me.selector)
+                of getRoots(tpl)
             ) {
                 const newItem = await me.safeEnhance(node);
                 if (!! newItem?._isField) {

@@ -2,7 +2,7 @@
 
 export function getCaption(me) {//{{{
     if (! me.isSingleton) return null;
-    const marked = Array.from(me.targetNode.querySelectorAll("[data-smark]"))
+    const marked = Array.from(me.targetNode.querySelectorAll("[data-smark], [data-smark-]"))
         .find(node => me.getComponent(node)?.options?.action === "rename");
     const caption = marked || me.targetNode.querySelector("figcaption[contenteditable]");
     if (caption) caption.contentEditable = "true";

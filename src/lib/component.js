@@ -4,7 +4,8 @@ const componentTypes = {};
 
 import {events} from "./events.js";
 import legacy from "./legacy.js";
-import {parseJSON, replaceWrongNode, isHiddenByClosedDetails} from "./helpers.js";
+import {parseJSON, replaceWrongNode, isHiddenByClosedDetails, collectPrefixedOptions} from "./helpers.js";
+import {normalizeCommonOptions} from "./options.js";
 import {isMixinRef, expandMixin} from "./mixin.js";
 
 const sym_smart = Symbol("smart_component");
@@ -17,7 +18,7 @@ let _nextSourceId = 1;
 export function nextSourceId() { return String(_nextSourceId++); }
 const _stampedDocs = new WeakSet();
 export function stampSourceIds(rootElement) {
-    for (const el of rootElement.querySelectorAll('[data-smark]')) {
+    for (const el of rootElement.querySelectorAll('[data-smark], [data-smark-]')) {
         if (!el.dataset.smSrc) {
             el.dataset.smSrc = nextSourceId();
         }
@@ -92,7 +93,6 @@ export class SmarkComponent {
     constructor(//{{{
         targetNode
         , {
-            property_name = "smark",
             _mixinChain,
             _scopedMasks,
             ...options
@@ -131,8 +131,7 @@ export class SmarkComponent {
         // TODO: Make this a private Symbol (#xx) — actions is an internal
         // wiring detail, not a public API. See PROMPTS.md "Private actions".
         me.actions = {};
-        me.property_name = property_name;
-        me.selector = `[data-${me.property_name}]`;
+        me.selector = "[data-smark]";
         me.types = componentTypes;
         me.targetNode = targetNode;
         me.options = options;
@@ -225,9 +224,9 @@ export class SmarkComponent {
     getNodeOptions(node, defaultOptions) {//{{{
         const me = this;
         let optionsSrc = (
-            node.dataset[me.property_name] || ""
+            node.dataset.smark || ""
         ).trim() || null;
-        if (optionsSrc === "data-"+me.property_name) {
+        if (optionsSrc === "data-smark") {
             // Accept <input data-smark="data-smark"> as special case since
             // <input data-smark> is not automatically converted to
             // data-smark="true" by the browser like other tags.
@@ -240,15 +239,17 @@ export class SmarkComponent {
             } else {
                 throw me.renderError(
                     "INVALID_OPTIONS_OBJECT"
-                    , `data-${me.property_name}: must be a valid JSON object.`
+                    , `data-smark: must be a valid JSON object.`
                     , node
                 );
             };
         };
-        const options = {
+        const prefixedOptions = collectPrefixedOptions(node);
+        const options = normalizeCommonOptions({
             ...defaultOptions,
             ...explicitOptions,
-        };
+            ...prefixedOptions,
+        });
         const isSingletonTarget = (
             me.isSingleton // New component's parent is a singleton
             && options.type !== "label"           // And not a trigger
@@ -315,7 +316,7 @@ export class SmarkComponent {
             )
         );
         isSerializable(filtered);
-        node.dataset[me.property_name] = JSON.stringify(filtered);
+        node.dataset.smark = JSON.stringify(filtered);
     };//}}}
     async safeEnhance(node, defaultOptions) {//{{{
         const me = this;

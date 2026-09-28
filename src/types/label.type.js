@@ -83,7 +83,7 @@ export class label extends SmarkComponent {
         let childField = null;
         for (
             const node
-            of getRoots(me.targetNode, me.selector)
+            of getRoots(me.targetNode)
         ) {
             const newItem = await me.enhance(node);
             if (!! newItem?._isField) {
