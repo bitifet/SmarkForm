@@ -78,7 +78,7 @@ Full reference: the File field chapter
 ## Standard Implementation Workflow
 
 1. Read primary source pages.
-2. Draft HTML with `data-smark` attributes on all managed fields.
+2. Draft HTML with `data-smark` (or `data-smark-<option>`) attributes on all managed fields.
 3. Initialize with:
    - `const myForm = new SmarkForm(document.getElementById("myForm"), options);`
    - `await myForm.rendered;`
@@ -108,7 +108,7 @@ Replace template markers with:
 
 Do not leave this section as an untouched unchecked template.
 
-- [ ] Managed fields include `data-smark`.
+- [ ] Managed fields include `data-smark` (or equivalent `data-smark-*` options).
 - [ ] Root element is passed to `new SmarkForm(...)` correctly.
 - [ ] Instance variable follows `myForm` convention (strongly recommended).
 - [ ] `await myForm.rendered` before `find()` and component-dependent logic.

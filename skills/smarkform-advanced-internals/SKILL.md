@@ -87,15 +87,16 @@ merges `data-smark` options and resolves context/target automatically.
 - `separator` renders between consecutive items.
 - `last_separator` renders between the second-last and last item (falls back
   to `separator` if not defined).
-- Template roles are assigned at registration time (via `data-role` or the
-  `role` property in `data-smark`).  Changing them afterwards has no effect.
+- Template roles are assigned at registration time (via `data-role`, the
+  `role` property in `data-smark`, or `data-smark-role`).  Changing them
+  afterwards has no effect.
 
 ### Mixin Security Options
 
 - `allowExternalMixins`, `allowLocalMixinScripts`,
   `allowSameOriginMixinScripts`, and `allowCrossOriginMixinScripts` are
-  **root-level only** — they cannot be overridden per-component via
-  `data-smark`.
+  **  root-level only** — they cannot be overridden per-component via
+  `data-smark` or `data-smark-*`.
 - Each option is independent: `allowExternalMixins` controls fetching the
   external template, and the script policy options control script execution
   after a successful fetch.  Setting one does not implicitly permit another.
