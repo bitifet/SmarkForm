@@ -44,6 +44,7 @@ playground's **Import** button can also be used with an exported embedded value.
     <strong>Clip</strong>
     <video data-smark='{"name":"clip"}' width="320" height="180" preload="metadata"></video>
     <button data-smark='{"action":"pick","context":"clip"}'>Choose or replace video</button>
+    <button data-smark='{"action":"download","context":"clip"}'>Download current video</button>
 </div>{%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 
@@ -51,7 +52,8 @@ playground's **Import** button can also be used with an exported embedded value.
 {% capture video_basic_notes -%}
 👉 **Try it!** This first example omits native `controls`, so clicking the
 preview is the upload/replace affordance. Choose a local H.264/AAC MP4, WebM,
-or another format your browser supports.
+or another format your browser supports, then use **Download current video**
+to retrieve the embedded value.
 
 👉 The example starts with a small locally bundled Mixkit clip. The URL is
 fetched and embedded by `demoValue`; replace it with your own video to try the
@@ -194,6 +196,7 @@ the video plus title, notes, or any other related fields.
             <video data-smark='{"name":"video"}' width="240" height="135"></video>
             <input data-smark='{"name":"title"}' placeholder="Title">
             <textarea data-smark='{"name":"notes"}' rows="2" placeholder="Notes"></textarea>
+            <button data-smark='{"action":"download"}'>Download video</button>
             <button data-smark='{"action":"removeItem"}' title="Remove clip" aria-label="Remove clip">✖️</button>
         </li>
     </ul>
@@ -209,6 +212,7 @@ the video plus title, notes, or any other related fields.
 {{""}}#myForm$$ input { grid-area: title; box-sizing: border-box; width: 100%; padding: .4rem; }
 {{""}}#myForm$$ textarea { grid-area: notes; box-sizing: border-box; width: 100%; min-height: 5rem; padding: .4rem; resize: vertical; }
 {{""}}#myForm$$ li > button { grid-area: remove; justify-self: start; padding: .2rem .45rem; }
+{{""}}#myForm$$ li > button[aria-label="Remove clip"] { grid-area: remove; }
 @media (max-width: 520px) {
     {{""}}#myForm$$ li { grid-template-columns: 1fr; grid-template-areas: "video" "title" "notes" "remove"; }
     {{""}}#myForm$$ video { width: 100%; }
@@ -219,7 +223,9 @@ the video plus title, notes, or any other related fields.
 {% raw %}<!-- video_form_list_notes {{{ -->{% endraw %}
 {% capture video_form_list_notes -%}
 👉 Each row is one form value: the clip travels with its title and notes.
-Use **Add clip** to create a row and **Remove clip** to remove the current row.
+The video has no native `controls`, so **Download video** lets you retrieve the
+embedded value. Use **Add clip** to create a row and **Remove clip** to remove
+the current row.
 {%- endcapture %}
 {% raw %}<!-- }}} -->{% endraw %}
 

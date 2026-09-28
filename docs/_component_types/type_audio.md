@@ -194,6 +194,7 @@ in a singleton container to provide an empty-state label and upload affordance.
         <audio data-smark preload="metadata"></audio>
         <p class="audio-hint">Drop an audio file or click to upload</p>
         <button data-smark='{"action":"pick"}'>Choose audio</button>
+        <button data-smark='{"action":"download"}'>Download audio</button>
         <span data-smark='{"action":"rename"}'>edit filename</span>
     </div>
 </div>{%- endcapture %}
@@ -211,8 +212,9 @@ in a singleton container to provide an empty-state label and upload affordance.
 {% raw %}<!-- audio_empty_notes {{{ -->{% endraw %}
 {% capture audio_empty_notes -%}
 👉 Because the inner `<audio>` has no `controls`, the whole wrapper is the drop
-surface and the button opens the picker. Once a clip is loaded, the audio element
-plays through its own `src`; add `controls` if you want a visible player strip.
+surface and the button opens the picker. Once a clip is loaded, use **Download
+audio** to retrieve the embedded value; add `controls` if you want a visible
+player strip.
 
 👉 Initial clip: opening of Beethoven's 5th Symphony. See
 `docs/assets/audio-demo-attribution.md` for attribution.
