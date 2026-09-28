@@ -834,7 +834,7 @@ additional capabilities of the library:
 {% raw %} <!-- capture html_phone_list {{{ --> {% endraw %}
 {% capture html_phone_list -%}
 <div id="myForm$$">
-  <div data-smark='{"name":"phones","type":"list","of":"input","max_items":6,"sortable":true}'>
+  <div data-smark-type="list" data-smark-name="phones" data-smark-of="input" data-smark-max_items="6" data-smark-sortable="true">
     <div>
       <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
       <input data-smark type='tel' placeholder='Telephone'/>
@@ -910,7 +910,7 @@ button:disabled { opacity: .5; }
       <span role='img' aria-label='Add new interval'>➕</span>
     </button>
     <strong data-smark='label'>Schedule:</strong>
-    <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+    <span data-smark-type="list" data-smark-name="surveillance_schedule" data-smark-min_items="0" data-smark-max_items="3" data-smark-exportEmpties="true">
       <span>
         <input data-smark type='time' name='start'/>
         to

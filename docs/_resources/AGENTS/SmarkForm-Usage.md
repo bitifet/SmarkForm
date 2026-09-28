@@ -77,6 +77,16 @@ const myForm = new SmarkForm(document.getElementById("myForm"));
 
 Only elements with a `data-smark` attribute are captured and enhanced by SmarkForm. SmarkForm is markup-agnostic — plain HTML elements inside a managed component are ignored unless they also have `data-smark`.
 
+As a convenience, any option can be written as a separate `data-smark-<option>`
+attribute instead of (or on top of) the JSON object. Values are read as raw
+strings and normalized to the expected type. Prefixed attributes override the
+JSON object, and later attributes in DOM order win. Example:
+
+```html
+<!-- data-smark-* attributes alone are enough; a bare data-smark is unnecessary. -->
+<input data-smark-type="input" data-smark-name="email">
+```
+
 Exceptions:
 - The **root element** passed directly to the `SmarkForm` constructor does not need `data-smark`
 - A **list's item template** implicitly becomes a `form` type; its type can also be overridden via the `of` property in the list's options
@@ -87,10 +97,10 @@ Exceptions:
 
 ### Template Roles
 
-Set via `data-smark='{"role":"<role>"}'`:
+Set via `data-smark='{"role":"<role>"}'` or `data-smark-role="<role>"`:
 
 | Role | Purpose |
-|------|---------|
+|------|----------|
 | `item` (default) | The repeating item template |
 | `empty_list` | Shown when list has 0 items |
 | `header` | Shown before items (not cloned) |

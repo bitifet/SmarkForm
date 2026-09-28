@@ -356,7 +356,7 @@ actions:
 {% capture pets_list_example -%}
 <div id="myForm$$">
   <b>Pets:</b>
-  <ul data-smark='{"type":"list","name":"pets", "sortable":true, "min_items": 0, "max_items": 5}' class="sortable">
+  <ul data-smark-type="list" data-smark-name="pets" data-smark-sortable="true" data-smark-min_items="0" data-smark-max_items="5" class="sortable">
     <li>
       <label data-smark title="Drag to reorder">☰</label>
       <select name='species' data-smark>
@@ -398,10 +398,9 @@ endcapture %}
    `[data-smark-label]` selector that SmarkForm adds automatically to
    rendered label components.
 
-🚀 In the future we plan to automatically map all properties of the
-   *data-smark* attribute as "data-smark-&lt;prop_name&gt;" like attributes so that
-   we will be able to use a selector like `[data-smark-sortable]` in the CSS
-   rule and, hence, avoid having to set a custom class in template.
+🚀 With the `data-smark-<option>` syntax you can now write exactly
+   `[data-smark-sortable="true"]` directly on the element, so the custom
+   `.sortable` class is only needed for your own styling.
 {%- endcapture %}
 {% raw %} <!-- }}} ]() --> {% endraw %}
 
@@ -831,7 +830,47 @@ attribute value can be omitted if we are happy with this inference:
 > 
 >   * **Shorthand:** `<textarea ... data-smark>`
 >   * **Long Form:** `<textarea data-smark='{}>`
->   * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}>`
+>   * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}'>`
+
+👉 **`data-smark-<option>` attributes:**
+
+Any property of the SmarkForm options object can also be written as a separate
+HTML attribute with a `data-smark-` prefix. This is often more convenient when
+using template engines that only allow dynamic attribute values, or when you
+find the resulting markup easier to read than a single JSON blob.
+
+> **Example:**
+>
+> ```html
+> <!-- The bare data-smark attribute is harmless but unnecessary here:
+>      any data-smark-* option is enough for SmarkForm to detect the node. -->
+> <input
+>   data-smark-type="input"
+>   data-smark-name="email"
+>   data-smark-placeholder="user@example.com"
+> >
+> ```
+> ...is equivalent to:
+> ```html
+> <input data-smark='{"type":"input","name":"email","placeholder":"user@example.com"}'>
+> ```
+
+Attribute values are always read as raw strings and normalized by SmarkForm to
+the type each option expects. Booleans accept `"true"`/`"false"`, numbers are
+parsed as decimal numbers, and JSON values are parsed when the option expects
+an object or array. Options that accept strings are used verbatim.
+
+Values in `data-smark-*` attributes take precedence over values in the main
+`data-smark` object. If you provide several `data-smark-*` attributes, their
+order in the DOM is respected: the last one wins. Only the canonical
+`data-smark` attribute is written back by the library; the prefixed attributes
+remain author-time shortcuts.
+
+{: .info }
+> 📌 You can mix all three forms freely, but in case of conflict the final
+> value is resolved from lowest to highest precedence:
+> `data-smark` JSON < `data-smark-*` attribute (in DOM order).
+> If a value appears only as a `data-smark-*` attribute it is used directly.
 
 
 

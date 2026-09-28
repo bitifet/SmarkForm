@@ -79,8 +79,8 @@ specified the *data-smark* attribute or not).
 {% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
 {% capture simple_list_example -%}
 <div id="myForm$$">
-  <section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
-    <fieldset style="text-align:right"><!-- ☛ 2, 3, 6 -->
+  <section data-smark-type="list" data-smark-name="users"><!-- ☛ 1 -->
+    <fieldset style="text-align:right"><!-- data-smark-type/data-smark-name above are equivalent to data-smark='{"type":"list","name":"users"}'. -->
       <p><label data-smark>User name:</label><input name='name' type='text' data-smark/></p>
       <p><label data-smark>Phone number:</label><input name='phone' type='tel' data-smark/></p>
       <p><label data-smark>Email:</label><input name='email' type='text' data-smark/></p>
