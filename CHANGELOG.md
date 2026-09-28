@@ -11,6 +11,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.22.0] — 2026-09-28
+
+🎵 `audio` field type · 🎬 `video` field type · 🎛️ shared media infrastructure
+
+SmarkForm 0.22.0 completes the file/media field family by adding `video` and `audio` field types. A native `<video>` or `<audio>` element (or a singleton wrapper containing one) becomes a first-class form field with the same embedded value contract, picker/drop/paste acquisition, import/export, list, and download behavior as `file`. `video` supports `controls`, playback hints, `video_maxSize`, declarative rename, auto-pick, and cancellable `smark:videoNotice` events. `audio` mirrors that design with `controls`, `preload`, `audio_maxSize`, pick/play/auto click modes, and `smark:audioNotice`. Under both types runs a new shared reference-counted loading spinner that overlays the actual media element (inner `<video>`/`<audio>` node, not wrapper containers) and restores focus safely; shared value normalization/encoding, caption/rename behavior, batch processing, and file helpers were extracted across `file`, `image`, `video`, and `audio`. Documentation examples now use short public-domain media excerpts and expose visible download affordances when native playback controls are absent.
+
+### Features
+
+- **`video` field type**: a native `<video>` element (or singleton container wrapping one) becomes a video-upload field. Bare `<video data-smark>` is auto-inferred as `video`; `<input type="video">` raises an error. Supports native `controls`, `preload`, `poster`, `video_maxSize`, `smark_video_click`/`autoPick`/`validate`, editable filename captions via the `rename` trigger action, and `smark:videoNotice` events for size-cap notices.
+- **`audio` field type**: a native `<audio>` element (or singleton container wrapping one) becomes an audio-upload field. Bare `<audio data-smark>` is auto-inferred as `audio`; `<input type="audio">` raises an error. Supports `controls`, `preload`, `audio_maxSize`, `smark_audio_click` (auto/pick/play), `smark_audio_autoPick`, `smark_audio_validate`, and `smark:audioNotice` events for size-cap notices.
+- **Media loading spinner**: shared reference-counted overlay (`src/decorators/media_spinner.deco.js`) shows a centered spinner while media values load, restores focus safely, and is scoped to the real media element in singleton wrappers.
+- **Declarative rename / auto-pick for media fields**: `rename` trigger actions turn media captions into editable filenames; `smark_video_autoPick`/`smark_audio_autoPick` request the native picker after render (browser policy permitting).
+
+### Bug Fixes
+
+- **Singleton spinner placement**: in media singletons the spinner overlay is attached to and sized over the inner `<video>`/`<audio>` element, instead of covering the entire wrapper.
+
+### Documentation
+
+- **Video component type page** (`docs/_component_types/type_video.md`): new playable sampletabs covering real-field, singleton with caption, gallery list, and form-backed list examples, with licensed demo clips and visible **Download** triggers where native controls are absent.
+- **Audio component type page** (`docs/_component_types/type_audio.md`): new playable sampletabs covering real-field, singleton with editable name, list, and empty-state upload examples, using public-domain Beethoven excerpts and full attribution.
+- **Agent docs**: updated media-field architecture guidance in `AGENTS.md` and `AGENTS/`.
+
+### Other
+
+- Internal refactor: extracted shared value normalization/encoding (`src/lib/file_value.js`), caption/rename behavior (`src/lib/file_caption.js`), batch processing (`src/lib/media_helpers.js`), and common file helpers across `file`, `image`, `video`, and `audio`.
+- Pinned `@babel/*` packages to v7 and added npm `overrides` to avoid a Dependabot-introduced Babel 8 incompatibility with `@rollup/plugin-babel`.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.22.0)
+
+---
+
 ## [0.21.1] — 2026-09-16
 
 🔗 URL values for file/image · ⚠️ Android camera capture note · 📚 docs harvest
