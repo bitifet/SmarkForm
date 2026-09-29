@@ -43,8 +43,8 @@ permalink: /
         <li>
           <details>
             <summary>
-              <span data-smark='{"type":"label"}' class="bullet">
-                <span data-smark='{"action":"position"}'>N</span> ☰
+              <span data-smark-type="label" class="bullet">
+                <span data-smark-action="position">N</span> ☰
               </span>
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>

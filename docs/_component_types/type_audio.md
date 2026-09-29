@@ -310,7 +310,7 @@ editable filename with the `rename` trigger action; SmarkForm sets
 ```html
 <figure data-smark='{"type":"audio","name":"clip"}'>
   <audio data-smark controls preload="metadata"></audio>
-  <figcaption data-smark='{"action":"rename"}'></figcaption>
+  <figcaption data-smark-action="rename"></figcaption>
 </figure>
 ```
 

@@ -60,7 +60,7 @@ array, *SmarkForm* automatically places it in a single-item list.
 █<button data-smark='{"action":"addItem","context":"email"}' title="Add email">➕</button>
 █<strong data-smark="label">Emails:</strong>
 █<ul data-smark='{"type":"list","name":"email","of":"input","min_items":0}'>
-█    <li data-smark='{"role":"empty_list"}'>(No emails on record)</li>
+█    <li data-smark-role="empty_list">(No emails on record)</li>
 █    <li><input type="email" data-smark placeholder="name@example.com"></li>
 █</ul>
 </div>{%- endcapture %}

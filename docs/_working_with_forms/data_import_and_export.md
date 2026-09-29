@@ -79,7 +79,7 @@ The structure of the exported value mirrors the nesting of the form:
       <li>
         <input data-smark type="text" name="product" placeholder="Product">
         <input data-smark type="number" name="qty" placeholder="Qty">
-        <button data-smark='{"action":"removeItem"}'>➖</button>
+        <button data-smark-action="removeItem">➖</button>
       </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"items"}'>➕ Add item</button>
@@ -253,7 +253,7 @@ You can opt out of this behaviour by passing `setDefault: false`:
 <button data-smark='{"action":"import","setDefault":false}'>Preview</button>
 
 <!-- Import and make this the new reset target (load mode) -->
-<button data-smark='{"action":"import"}'>Load Data</button>
+<button data-smark-action="import">Load Data</button>
 ```
 
 Summary of `setDefault` behaviour:
@@ -596,7 +596,7 @@ The recommended pattern is to place an `export` trigger on the page and listen
 for `AfterAction_export`:
 
 ```html
-<button data-smark='{"action":"export"}'>💾 Save</button>
+<button data-smark-action="export">💾 Save</button>
 ```
 
 ```javascript

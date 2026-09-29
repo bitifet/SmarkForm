@@ -56,7 +56,7 @@ button to edit the JSON in the playground editor at the bottom.
 native HTML, even `<input type="color">` can be null — just press `Delete` or
 use the ✕ trigger.
 
-👉 **Triggers.** Elements with `data-smark='{"action":"..."}'` call actions on
+👉 **Triggers.** Elements with `data-smark-action="..."` call actions on
 SmarkForm fields.  Common actions: `import`, `export`, `clear`, `addItem`,
 `removeItem`.
 
@@ -72,7 +72,7 @@ outside to import your changes back.
   <p>
     <label data-smark>Favorite Color:</label>
     <span data-smark='{"type":"color","name":"color"}'>
-      <input data-smark><button data-smark='{"action":"clear"}' title="Clear">✕</button>
+      <input data-smark><button data-smark-action="clear" title="Clear">✕</button>
     </span>
   </p>
 </div>{%
@@ -165,7 +165,7 @@ auto-open works as expected.
 👉 **Auto-disable.** Triggers disable themselves at their list's
 `min_items`/`max_items` boundary — no code needed.
 
-👉 **`position` action.** Span with `data-smark='{"action":"position"}'`
+👉 **`position` action.** Span with `data-smark-action="position"`
 auto-numbers each group.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -180,13 +180,13 @@ auto-numbers each group.
     </div>
 
     <ul data-smark='{"type":"list","name":"groups","sortable":true,"min_items":0}'>
-      <li data-smark='{"role":"empty_list"}' class="sg-empty">No groups yet</li>
+      <li data-smark-role="empty_list" class="sg-empty">No groups yet</li>
       <li>
         <div class="sg-card">
           <details>
             <summary>
-              <span data-smark='{"type":"label"}' class="sg-handle">⠿</span>
-              <span data-smark='{"action":"position"}'>#</span>
+              <span data-smark-type="label" class="sg-handle">⠿</span>
+              <span data-smark-action="position">#</span>
               <input name="name" placeholder="Group name" type="text" data-smark>
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove group">➖</button>
             </summary>
@@ -195,7 +195,7 @@ auto-numbers each group.
               <div class="sg-students">
                 <strong>Students</strong>
                 <ul data-smark='{"type":"list","name":"students","sortable":true,"movingDepth":2,"min_items":0}'>
-                  <li data-smark='{"role":"empty_list"}' class="sg-empty">No students yet</li>
+                  <li data-smark-role="empty_list" class="sg-empty">No students yet</li>
                   <li>
                     <details>
                       <summary>
@@ -207,7 +207,7 @@ auto-numbers each group.
                         <div class="sg-grade-col">
                           <div class="sg-grade-label">Math</div>
                           <div data-smark='{"type":"list","name":"math","min_items":0}'>
-                            <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
+                            <div data-smark-role="empty_list" class="sg-empty">∅</div>
                             <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
@@ -218,7 +218,7 @@ auto-numbers each group.
                         <div class="sg-grade-col">
                           <div class="sg-grade-label">Literature</div>
                           <div data-smark='{"type":"list","name":"literature","min_items":0}'>
-                            <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
+                            <div data-smark-role="empty_list" class="sg-empty">∅</div>
                             <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
@@ -229,7 +229,7 @@ auto-numbers each group.
                         <div class="sg-grade-col">
                           <div class="sg-grade-label">Science</div>
                           <div data-smark='{"type":"list","name":"science","min_items":0}'>
-                            <div data-smark='{"role":"empty_list"}' class="sg-empty">∅</div>
+                            <div data-smark-role="empty_list" class="sg-empty">∅</div>
                             <input type="number" step="0.1" min="0" max="10" data-smark>
                           </div>
                           <div class="sg-grade-btns">
@@ -557,9 +557,9 @@ list like the following example:
             <span>
                 <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
             </span>
-            <span data-smark='{"role":"empty_list"}'>(Closed)</span>
-            <span data-smark='{"role":"separator"}'>, </span>
-            <span data-smark='{"role":"last_separator"}'> and </span>
+            <span data-smark-role="empty_list">(Closed)</span>
+            <span data-smark-role="separator">, </span>
+            <span data-smark-role="last_separator"> and </span>
         </span>
     </p>
 </div>{%- endcapture %}
@@ -655,13 +655,13 @@ The `<template>` tag also accepts optional siblings:
 <template id="scheduleRow">
   <div class="schedule-row"
        data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
-    <strong data-smark='{"role":"header"}'><span id="label">Schedule</span></strong>
-    <span class='time_slot' data-smark='{"role":"empty_list"}'>(Closed)</span>
+    <strong data-smark-role="header"><span id="label">Schedule</span></strong>
+    <span class='time_slot' data-smark-role="empty_list">(Closed)</span>
     <span class='time_slot'>
       <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
       <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
     </span>
-    <span data-smark='{"role":"footer"}'>
+    <span data-smark-role="footer">
       <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Less intervals">➖</button>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="More intervals">➕</button>
     </span>
@@ -928,9 +928,9 @@ every list item and so forth to any depth.
 <template id="periodItem">
   <fieldset data-smark='{"type":"form","exportEmpties":true}' style='margin-top: 1em'>
     <legend>Period
-      <span data-smark='{"action":"position"}'>N</span>
+      <span data-smark-action="position">N</span>
       of
-      <span data-smark='{"action":"count"}'>M</span>
+      <span data-smark-action="count">M</span>
     </legend>
     <button
       data-smark='{"action":"addItem","source":".-1","hotkey":"d"}'
@@ -1021,7 +1021,7 @@ every list item and so forth to any depth.
 <div id="myForm$$">
   <h2>🗓️ Periods:</h2>
   <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
-    <fieldset data-smark='{"role":"empty_list"}' style='text-align: center'>🔒 Out of Service</fieldset>
+    <fieldset data-smark-role="empty_list" style='text-align: center'>🔒 Out of Service</fieldset>
     <div data-smark='{"type":"#periodItem"}'></div>
   </div>
   <button
@@ -1257,11 +1257,11 @@ In the *JS* tab there is a simple JavaScript code that:
 {{ nested_forms }}
     <div style="display: flex; justify-content: space-evenly; margin-top: 0.5em">
         <button
-            data-smark='{"action":"export"}'
+            data-smark-action="export"
             title="Export the whole form as JSON (see JS tab)"
             >💾 Save</button>
         <button
-            data-smark='{"action":"import"}'
+            data-smark-action="import"
             title="Import the whole form as JSON (see JS tab)"
             >📂 Load</button>
     </div>
@@ -1301,7 +1301,7 @@ endcapture %}
     <textarea data-smark name="message"></textarea>
   </p>
   <p>
-    <button data-smark='{"action":"submit"}'>📧 Send Email</button>
+    <button data-smark-action="submit">📧 Send Email</button>
   </p>
 </form>{%
 endcapture %}
@@ -1421,7 +1421,7 @@ import/export JSON while regular *inputs* import/export text --or number--).
             <tr style="text-align:center">
                 <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
                 <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
-                <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
+                <td><button data-smark-action="clear">❌ Clear</button></td>
             </tr>
         </table>
     </div>
@@ -1486,11 +1486,11 @@ slight modifications:
   <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
     <li class="row">
       <label data-smark>📞 Telephone
-      <span data-smark='{"action":"position"}'>N</span>
+      <span data-smark-action="position">N</span>
       </label>
-      <button data-smark='{"action":"removeItem"}' title='Remove this phone number'>➖</button>
+      <button data-smark-action="removeItem" title='Remove this phone number'>➖</button>
       <input type="tel" data-smark>
-      <button data-smark='{"action":"addItem"}' title='Insert phone number'>➕ </button>
+      <button data-smark-action="addItem" title='Insert phone number'>➕ </button>
     </li>
   </ul>
 </div>{%- endcapture %}
@@ -1554,7 +1554,7 @@ to add or remove phone numbers from the list, respectively.
 █<ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
 █    <li class="row">
 █        <label data-smark>📞 Telephone
-█        <span data-smark='{"action":"position"}'>N</span>
+█        <span data-smark-action="position">N</span>
 █        </label>
 █        <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
 █        <input type="tel" data-smark>
@@ -2260,7 +2260,7 @@ Try it in the following example:
 █            <span data-smark='{"action":"removeItem", "hotkey":"-"}' title='Delete this phonebook entry' style='cursor:pointer'>[➖]</span>
 █            <strong>
 █                Contact
-█                <span data-smark='{"action":"position"}'>N</span>
+█                <span data-smark-action="position">N</span>
 █            </strong>
 █        </legend>{{
          simple_list_hotkeys_with_context | replace: "█", "█        "
@@ -3340,8 +3340,8 @@ form, or import your own JSON to pre-populate it.
         <li>
           <details>
             <summary>
-              <span data-smark='{"type":"label"}' class="bullet">
-                <span data-smark='{"action":"position"}'>N</span> ☰
+              <span data-smark-type="label" class="bullet">
+                <span data-smark-action="position">N</span> ☰
               </span>
               <input data-smark type="text" name="name" placeholder="Name">
               <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove'>➖</button>

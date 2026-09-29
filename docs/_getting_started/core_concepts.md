@@ -132,7 +132,7 @@ seamlessly handle either the whole form or individual fields.
       <tr style="text-align:center">
         <td><button data-smark='{"action":"clear","context":"name"}'>❌ Clear</button></td>
         <td><button data-smark='{"action":"clear","context":"surname"}'>❌ Clear</button></td>
-        <td><button data-smark='{"action":"clear"}'>❌ Clear</button></td>
+        <td><button data-smark-action="clear">❌ Clear</button></td>
       </tr>
     </table>
   </div>
@@ -369,7 +369,7 @@ actions:
         <option value="turtle">Other</option>
       </select>
       <input name='name' placeholder="Name" data-smark>
-      <button data-smark='{"action":"removeItem"}' title="Remove Pet">❌</button>
+      <button data-smark-action="removeItem" title="Remove Pet">❌</button>
     </li>
   </ul>
   <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
@@ -675,7 +675,7 @@ This special behavior of the *input* component type is what we call a
 > <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
 >   <li>
 >     <input placeholder='Phone Number' type="text" data-smark>
->     <button data-smark='{"action":"removeItem"}'>❌</button>
+>     <button data-smark-action="removeItem">❌</button>
 >   </li>
 > </ul>
 > ```
@@ -860,17 +860,10 @@ the type each option expects. Booleans accept `"true"`/`"false"`, numbers are
 parsed as decimal numbers, and JSON values are parsed when the option expects
 an object or array. Options that accept strings are used verbatim.
 
-Values in `data-smark-*` attributes take precedence over values in the main
-`data-smark` object. If you provide several `data-smark-*` attributes, their
-order in the DOM is respected: the last one wins. Only the canonical
-`data-smark` attribute is written back by the library; the prefixed attributes
-remain author-time shortcuts.
-
-{: .info }
-> 📌 You can mix all three forms freely, but in case of conflict the final
-> value is resolved from lowest to highest precedence:
-> `data-smark` JSON < `data-smark-*` attribute (in DOM order).
-> If a value appears only as a `data-smark-*` attribute it is used directly.
+Values in `data-smark-*` attributes always take precedence over values for the
+same option in the main `data-smark` object. Only the canonical `data-smark`
+attribute is written back by the library; the prefixed attributes remain
+author-time shortcuts.
 
 
 

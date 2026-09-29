@@ -123,7 +123,7 @@ The value can be **empty** (SmarkForm infers everything from context) or a
 </div>
 
 <!-- Trigger: the "action" key marks this as a trigger button -->
-<button data-smark='{"action":"export"}'>Save</button>
+<button data-smark-action="export">Save</button>
 ```
 
 See [Core Concepts — The `data-smark` attribute](
@@ -187,12 +187,12 @@ its `data-smark` options. When clicked (or its hotkey is pressed), it invokes
 the named **action** on the appropriate component.
 
 ```html
-<button data-smark='{"action":"export"}'>Save</button>
-<button data-smark='{"action":"clear"}'>Clear</button>
-<button data-smark='{"action":"reset"}'>Reset</button>
+<button data-smark-action="export">Save</button>
+<button data-smark-action="clear">Clear</button>
+<button data-smark-action="reset">Reset</button>
 <!-- List-only actions: -->
-<button data-smark='{"action":"addItem"}'>Add row</button>
-<button data-smark='{"action":"removeItem"}'>Remove row</button>
+<button data-smark-action="addItem">Add row</button>
+<button data-smark-action="removeItem">Remove row</button>
 ```
 
 Not all actions are available on all component types — for example, `addItem`
@@ -299,7 +299,7 @@ component:
 ```html
 <span data-smark='{"type":"color","name":"bgcolor"}'>
     <input data-smark>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark-action="clear">❌ Clear</button>
 </span>
 ```
 
@@ -458,7 +458,7 @@ SmarkForm detects whether a list item contains any rendered label components
   <li>
     <label data-smark title="Drag to reorder">☰</label>
     <input data-smark name="value" placeholder="…">
-    <button data-smark='{"action":"removeItem"}'>✕</button>
+    <button data-smark-action="removeItem">✕</button>
   </li>
 </ul>
 ```
@@ -597,7 +597,7 @@ for encoding options, attribute resolution, and event hooks.
 2. Listen to `AfterAction_export` to receive the data and send it to your server.
 
 ```html
-<button data-smark='{"action":"export"}'>💾 Save</button>
+<button data-smark-action="export">💾 Save</button>
 ```
 
 ```javascript
@@ -677,7 +677,7 @@ or to set a different `context`), you can optionally add
 <button type="submit">Send</button>
 
 <!-- SmarkForm trigger submit — identical behaviour, just more explicit -->
-<button type="submit" data-smark='{"action":"submit"}'>Send</button>
+<button type="submit" data-smark-action="submit">Send</button>
 ```
 
 ### What happens to the submit button's `name` and `value` when the form submits?
@@ -829,7 +829,7 @@ const myForm = new SmarkForm(document.getElementById("myForm"), {
 ```
 
 ```html
-<button data-smark='{"action":"myAction"}'>Run Custom Action</button>
+<button data-smark-action="myAction">Run Custom Action</button>
 ```
 
 Custom actions are bound to the root form instance (`this` inside the function

@@ -79,12 +79,12 @@ specified the *data-smark* attribute or not).
 {% raw %} <!-- capture simple_list_example {{{ --> {% endraw %}
 {% capture simple_list_example -%}
 <div id="myForm$$">
-  <section data-smark-type="list" data-smark-name="users"><!-- ☛ 1 -->
-    <fieldset style="text-align:right"><!-- data-smark-type/data-smark-name above are equivalent to data-smark='{"type":"list","name":"users"}'. -->
+  <section data-smark='{"type":"list","name":"users"}'><!-- ☛ 1 -->
+    <fieldset style="text-align:right"><!-- ☛ 2, 3, 6 -->
       <p><label data-smark>User name:</label><input name='name' type='text' data-smark/></p>
       <p><label data-smark>Phone number:</label><input name='phone' type='tel' data-smark/></p>
       <p><label data-smark>Email:</label><input name='email' type='text' data-smark/></p>
-      <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+      <button data-smark-action="removeItem" title='Remove User'>➖</button>
     </fieldset>
   </section>
   <button data-smark='{"action":"addItem","context":"users"}' title='Add User'>➕</button>
@@ -208,7 +208,7 @@ inside.
   <ul data-smark='{"name": "phones", "of": "input", "max_items": 3}'>
     <li>
       <input placeholder='Phone Number' type="tel" data-smark>
-      <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+      <button data-smark-action="removeItem" title='Remove Phone'>➖</button>
     </li>
   </ul>
   <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>
@@ -261,7 +261,7 @@ say, up to three phone numbers and up to three emails.
   <section data-smark='{"type":"list","name":"users"}'>
     <fieldset>
       <legend>User</legend>
-      <button data-smark='{"action":"removeItem"}' title='Remove User'>➖</button>
+      <button data-smark-action="removeItem" title='Remove User'>➖</button>
       <input name='name' placeholder='User name' type='text' data-smark/>
       <fieldset>
         <legend>
@@ -275,7 +275,7 @@ say, up to three phone numbers and up to three emails.
       <ul data-smark='{"type": "list", "name": "phones", "of": "input", "max_items": 3}'>
         <li>
           <input type="tel" data-smark>
-          <button data-smark='{"action":"removeItem"}' title='Remove Phone'>➖</button>
+          <button data-smark-action="removeItem" title='Remove Phone'>➖</button>
         </li>
       </ul>
     </fieldset>
@@ -376,7 +376,7 @@ container is the drop target.
 
 When a list item contains one or more *SmarkForm label components* (any element
 rendered with `data-smark` and resolved as type `label` — including native
-`<label>`, `<legend>`, or any other tag with `data-smark='{"type":"label"}'`),
+`<label>`, `<legend>`, or any other tag with `data-smark-type="label"`),
 SmarkForm automatically designates those labels as the drag handles:
 
 - The item root node is made **non-draggable** so that mouse gestures inside
@@ -398,7 +398,7 @@ original behaviour: the entire item root is draggable (backward compatible).
 > <li>
 >   <label data-smark title="Drag to reorder">☰</label>
 >   <input data-smark name="value" placeholder="…">
->   <button data-smark='{"action":"removeItem"}'>✕</button>
+>   <button data-smark-action="removeItem">✕</button>
 > </li>
 > ```
 >
@@ -485,19 +485,19 @@ item → employees → employee) — while still permitting same-list reordering
       <li>
         <div class="cdd-dept">
           <div class="cdd-dept-head">
-            <span data-smark='{"type":"label"}' class="cdd-handle">
-              <span data-smark='{"action":"position"}'>N</span> ⠿
+            <span data-smark-type="label" class="cdd-handle">
+              <span data-smark-action="position">N</span> ⠿
             </span>
             <input name='name' placeholder='Dept. name' type='text' data-smark/>
-            <button data-smark='{"action":"removeItem"}' title='Remove department'>➖</button>
+            <button data-smark-action="removeItem" title='Remove department'>➖</button>
           </div>
           <div class="cdd-employees">
             <ul data-smark='{"type":"list","name":"employees","sortable":true,"movingDepth":2,"min_items":0}'>
-              <li data-smark='{"role":"empty_list"}' class="cdd-empty">No employees yet</li>
+              <li data-smark-role="empty_list" class="cdd-empty">No employees yet</li>
               <li>
                 <label data-smark title="Drag to reorder or move between departments">⠿</label>
                 <input name='value' placeholder='Employee name' type='text' data-smark>
-                <button data-smark='{"action":"removeItem"}' title='Remove employee'>➖</button>
+                <button data-smark-action="removeItem" title='Remove employee'>➖</button>
               </li>
             </ul>
             <button data-smark='{"action":"addItem","context":"employees"}' title='Add employee'>➕ Add Employee</button>

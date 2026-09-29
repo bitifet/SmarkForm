@@ -508,7 +508,7 @@ Declaring a list whose item type is `"image"` renders each item as a thumbnail
 
 ```html
 <ul data-smark='{"type":"list","name":"gallery","of":"image","min_items":0,"max_items":5}'>
-    <li data-smark='{"role":"empty_list"}'>(Drop images here…)</li>
+    <li data-smark-role="empty_list">(Drop images here…)</li>
     <li data-smark='{"type":"image"}'>
         <img data-smark width="120" height="120" alt="Gallery item">
         <figcaption contenteditable></figcaption>

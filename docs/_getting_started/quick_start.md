@@ -184,8 +184,8 @@ Let's mark all fields, buttons and labels... by adding a *data-smark* attribute 
     <input type="email" name="email" data-smark>
   </p>
   <p>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
-    <button data-smark='{"action":"export"}'>💾 Submit</button>
+    <button data-smark-action="clear">❌ Clear</button>
+    <button data-smark-action="export">💾 Submit</button>
   </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -263,8 +263,8 @@ Let's add more `❌ Clear` buttons to clear each specific field:
     <button data-smark='{"action":"clear", "context":"email"}'>❌ Clear</button>
   </p>
   <p>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
-    <button data-smark='{"action":"export"}'>💾 Submit</button>
+    <button data-smark-action="clear">❌ Clear</button>
+    <button data-smark-action="export">💾 Submit</button>
   </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -380,9 +380,9 @@ similar way to the *export* action but in the opposite direction.
     <input type="email" name="email" data-smark>
   </p>
   <p>
-    <button data-smark='{"action":"import"}'>📂 Import</button>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
-    <button data-smark='{"action":"export"}'>💾 Submit</button>
+    <button data-smark-action="import">📂 Import</button>
+    <button data-smark-action="clear">❌ Clear</button>
+    <button data-smark-action="export">💾 Submit</button>
   </p>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -579,7 +579,7 @@ item, it will remove that item from the list. **No wiring code needed!**
       <li>
         <label data-smark>📞 </label>
         <input placeholder='+34...' type="tel" data-smark>
-        <button data-smark='{"action":"removeItem"}' title='Remove Phone'>❌</button>
+        <button data-smark-action="removeItem" title='Remove Phone'>❌</button>
       </li>
     </ul>
     <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕ </button>
@@ -842,8 +842,8 @@ additional capabilities of the library:
     </div>
   </div>
   <p>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
-    <button data-smark='{"action":"export"}'>💾 Submit</button>
+    <button data-smark-action="clear">❌ Clear</button>
+    <button data-smark-action="export">💾 Submit</button>
   </p>
 </div>{%
 endcapture %}

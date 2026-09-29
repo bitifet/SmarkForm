@@ -47,7 +47,7 @@ form field itself, but a wrapper tag surrounding it:
 <div data-smark='{"type":"input","name":"username"}'>
     <label data-smark>👤 User name</label>
     <input data-smark>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark-action="clear">❌ Clear</button>
 </div>
 ```
 
@@ -96,7 +96,7 @@ the whole thing behaves as one component:
 <span data-smark='{"type":"color","name":"bgcolor"}'>
     <label data-smark>Background</label>
     <input type="color" data-smark>
-    <button data-smark='{"action":"clear"}' title='Reset'>❌</button>
+    <button data-smark-action="clear" title='Reset'>❌</button>
 </span>
 ```
 
@@ -123,7 +123,7 @@ vs.
 ```html
 <span data-smark='{"type":"color","name":"bgcolor"}'>
     <input type="color" data-smark>
-    <button data-smark='{"action":"clear"}' title='Reset'>❌</button>
+    <button data-smark-action="clear" title='Reset'>❌</button>
 </span>
 ```
 
@@ -203,7 +203,7 @@ button stays relative and the block is portable:
   <span data-smark='{"type":"color","name":"bgcolor"}'>
     <label data-smark>Background</label>
     <input type="color" data-smark>
-    <button data-smark='{"action":"clear"}' title='Reset'>❌</button>
+    <button data-smark-action="clear" title='Reset'>❌</button>
   </span>
 </div>{%
 endcapture %}
@@ -279,7 +279,7 @@ so the item template can host its own **➖ Remove** button:
   <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":0}'>
     <li data-smark='{"type":"input","name":"phone"}'>
       <input type="tel" data-smark placeholder="Phone Number">
-      <button data-smark='{"action":"removeItem"}' title='Remove'>➖</button>
+      <button data-smark-action="removeItem" title='Remove'>➖</button>
     </li>
   </ul>
   <button data-smark='{"action":"addItem","context":"phones"}' title='Add Phone'>➕</button>

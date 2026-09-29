@@ -103,7 +103,7 @@ alongside your HTML, and reference it with a relative path:
 <div id="myForm">
   <input data-smark type="text" name="username" placeholder="Username">
   <input data-smark type="email" name="email" placeholder="Email">
-  <button data-smark='{"action":"export"}'>Export</button>
+  <button data-smark-action="export">Export</button>
 </div>
 
 <script type="module">
@@ -216,11 +216,11 @@ items, count labels, etc.) alongside the heading text.
   <!-- item template (default role) -->
   <li>
     <input data-smark type="text" name="tag">
-    <button data-smark='{"action":"removeItem"}'>−</button>
+    <button data-smark-action="removeItem">−</button>
   </li>
   <!-- footer: controls that stay visible, never cloned -->
-  <li data-smark='{"role":"footer"}'>
-    <button data-smark='{"action":"addItem"}'>+ Add tag</button>
+  <li data-smark-role="footer">
+    <button data-smark-action="addItem">+ Add tag</button>
   </li>
 </ul>
 ```
@@ -245,7 +245,7 @@ items, count labels, etc.) alongside the heading text.
   <li>
     <span data-smark='{"type":"label","name":"title"}'></span>
   </li>
-  <li data-smark='{"role":"empty_list"}'>No results yet.</li>
+  <li data-smark-role="empty_list">No results yet.</li>
 </ul>
 ```
 
@@ -267,7 +267,7 @@ items, count labels, etc.) alongside the heading text.
 <ul data-smark='{"type":"list","name":"priorities","sortable":true}'>
   <li>
     <input data-smark type="text" name="item">
-    <button data-smark='{"action":"removeItem"}'>−</button>
+    <button data-smark-action="removeItem">−</button>
   </li>
 </ul>
 ```

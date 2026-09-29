@@ -129,7 +129,7 @@ Only elements with a `data-smark` attribute are captured and enhanced by SmarkFo
 As a convenience, any option can be written as a separate `data-smark-<option>`
 attribute instead of (or on top of) the JSON object. Values are read as raw
 strings and normalized to the expected type. Prefixed attributes override the
-JSON object, and later attributes in DOM order win. Example:
+corresponding JSON object values. Example:
 
 ```html
 <!-- data-smark-* attributes alone are enough; a bare data-smark is unnecessary. -->

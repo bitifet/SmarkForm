@@ -317,7 +317,7 @@ editable filename with the `rename` trigger action; SmarkForm sets
 ```html
 <figure data-smark='{"type":"video","name":"clip"}'>
   <video data-smark width="320" height="180" controls></video>
-  <figcaption data-smark='{"action":"rename"}'></figcaption>
+  <figcaption data-smark-action="rename"></figcaption>
 </figure>
 ```
 

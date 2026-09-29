@@ -113,7 +113,7 @@ would have to specify the context in the button action, like this:
 <div id="myForm$$">
   <span data-smark='{"type":"color", "name":"myColor"}'>
     <input data-smark>
-    <button data-smark='{"action":"clear"}'>❌ Clear</button>
+    <button data-smark-action="clear">❌ Clear</button>
   </span>
 </div>{%
 endcapture %}
@@ -147,14 +147,14 @@ INPUT element or its type is explicitly defined and different to "color".
     <label>Correct:</label>
     <span data-smark='{"type":"color", "name":"myColor1"}'>
       <input type="color" name="myColor" data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Clear</button>
+      <button data-smark-action="clear">❌ Clear</button>
     </span>
   </p>
   <p>
     <label>Incorrect:</label>
     <span data-smark='{"type":"color", "name":"myColor2"}'>
       <input type="text" name="myColor" data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Clear</button>
+      <button data-smark-action="clear">❌ Clear</button>
     </span>
   </p>
 </div>{%

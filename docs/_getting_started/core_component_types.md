@@ -159,7 +159,7 @@ component of given *scalar* type.
   <!-- ... -->
   <li data-smark='{"type":"input"}'>
     <input placeholder='Phone number' type='tel'/>
-    <button data-smark='{"action":"removeItem"}'>❌</button>
+    <button data-smark-action="removeItem">❌</button>
   </li>
   <!-- ... -->
 ```
@@ -224,7 +224,7 @@ but, also, **it could avoid future issues** in case of field name being changed
     <label data-smark>Pick a Color:</label>
     <span data-smark='{"type":"color", "name":"bgcolor"}'>
       <input data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Reset</button>
+      <button data-smark-action="clear">❌ Reset</button>
     </span>
   </p>
 </div>{%
@@ -339,7 +339,7 @@ selected pure black (#000000) or simply overlooked the field altogether.
     <label data-smark>Pick a Color:</label>
     <span data-smark='{"type":"color", "name":"bgcolor"}'>
       <input data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Reset</button>
+      <button data-smark-action="clear">❌ Reset</button>
     </span>
   </p>
 </div>{%

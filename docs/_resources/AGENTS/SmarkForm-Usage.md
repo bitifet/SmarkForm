@@ -80,7 +80,7 @@ Only elements with a `data-smark` attribute are captured and enhanced by SmarkFo
 As a convenience, any option can be written as a separate `data-smark-<option>`
 attribute instead of (or on top of) the JSON object. Values are read as raw
 strings and normalized to the expected type. Prefixed attributes override the
-JSON object, and later attributes in DOM order win. Example:
+corresponding JSON object values. Example:
 
 ```html
 <!-- data-smark-* attributes alone are enough; a bare data-smark is unnecessary. -->
@@ -132,9 +132,9 @@ Context paths are resolved lazily at action-trigger time via `find()`. Relative 
     <input data-smark type="time" name="start"> to <input data-smark type="time" name="end">
   </span>
   <!-- placeholder fills gap when list has fewer items than max -->
-  <span data-smark='{"role":"placeholder"}'>❌</span>
+  <span data-smark-role="placeholder">❌</span>
   <!-- footer holds controls, always visible, not cloned -->
-  <span data-smark='{"role":"footer"}'>
+  <span data-smark-role="footer">
     <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖</button>
     <button data-smark='{"action":"addItem","hotkey":"+"}'>➕</button>
   </span>
@@ -411,7 +411,7 @@ await component.import(data, {setDefault: false});
 <!-- Import without updating defaults (preview mode) -->
 <button data-smark='{"action":"import","setDefault":false}'>Preview</button>
 <!-- Import with default update (load/apply mode, the new default) -->
-<button data-smark='{"action":"import"}'>Load Data</button>
+<button data-smark-action="import">Load Data</button>
 ```
 
 ## `find()` Prefer Relative Paths

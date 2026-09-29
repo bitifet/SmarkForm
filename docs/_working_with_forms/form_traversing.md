@@ -146,7 +146,7 @@ The **context** is the field component that *owns* the action being triggered.
 
 <!-- Natural context: the nearest ancestor implementing "clear" -->
 <div data-smark='{"name":"personalData", "type":"form"}'>
-    <button data-smark='{"action":"clear"}'>Clear</button>
+    <button data-smark-action="clear">Clear</button>
     <!-- Effective context resolves automatically to personalData -->
 </div>
 ```
@@ -193,7 +193,7 @@ The **target** is an optional second component involved in the action. Its role 
 <!-- Natural target resolution from DOM hierarchy (no explicit context or target) -->
 <div data-smark='{"name":"addresses", "type":"list"}'>
     <div>
-        <button data-smark='{"action":"removeItem"}'>Remove</button>
+        <button data-smark-action="removeItem">Remove</button>
         <!-- Target resolves automatically to this list item -->
     </div>
 </div>

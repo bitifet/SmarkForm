@@ -54,7 +54,7 @@ block mainForm
     await cleanup();
 });
 
-test('data-smark-* attributes override data-smark JSON in document order', async ({ page }) => {
+test('data-smark-* attributes override data-smark JSON values', async ({ page }) => {
     const cleanup = await loadPug(page, `
 extends layout.pug
 block mainForm

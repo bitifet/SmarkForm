@@ -454,7 +454,7 @@ is thrown.
   <ul data-smark='{"name":"phones"}'>
     <!-- ✅ The mixin type is referenced from inside the list item template,
          not defined here. -->
-    <li data-smark='{"role":"item"}'>
+    <li data-smark-role="item">
       <div data-smark='{"type":"#phoneEntry","name":"phone"}'></div>
     </li>
   </ul>
@@ -465,7 +465,7 @@ is thrown.
 <!-- ❌ Antipattern: template as direct child of list -->
 <ul data-smark='{"name":"phones"}'>
   <template id="phoneEntry"> ... </template>   <!-- consumed by list! -->
-  <li data-smark='{"role":"item"}'> ... </li>
+  <li data-smark-role="item"> ... </li>
 </ul>
 ```
 

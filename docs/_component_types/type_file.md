@@ -75,7 +75,7 @@ handlers over the *entire container*:
 <div id="myForm$$">
     <div class="drop-zone" data-smark='{"type":"file","name":"doc","format":"json","encoding":"hex"}'>
         <input type="file" data-smark placeholder="Click, paste or drop a file here…">
-        <button data-smark='{"action":"download"}'>Download</button>
+        <button data-smark-action="download">Download</button>
     </div>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -399,7 +399,7 @@ Declaring a list whose item type is `"file"` gives you a collection of files:
 
 ```html
 <ul data-smark='{"type":"list","name":"photos","of":"file","min_items":0,"max_items":5}'>
-    <li data-smark='{"role":"empty_list"}'>(Drop files here…)</li>
+    <li data-smark-role="empty_list">(Drop files here…)</li>
     <li data-smark='{"type":"file"}'>
         <input type="file" data-smark placeholder="Click to pick a file…">
     </li>
@@ -417,7 +417,7 @@ drop-zone: drag-reordering (Sortable) never populates files.
 <div id="myForm$$">
     <button data-smark='{"action":"addItem","context":"photos"}' title="Add files">➕ Add files</button>
     <ul data-smark='{"type":"list","name":"photos","of":"file","min_items":0,"max_items":5}'>
-        <li data-smark='{"role":"empty_list"}'>(Drop files here…)</li>
+        <li data-smark-role="empty_list">(Drop files here…)</li>
         <li data-smark='{"type":"file"}'>
             <input type="file" data-smark placeholder="Click to pick a file…">
         </li>

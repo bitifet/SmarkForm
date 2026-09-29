@@ -137,9 +137,9 @@ The following example demonstrates the distinction between `clear` and `reset` a
       <input data-smark type='number' name='age' />
     </p>
     <p>
-      <button data-smark='{"action":"clear"}'>Clear All</button>
-      <button data-smark='{"action":"reset"}'>Reset to Defaults</button>
-      <button data-smark='{"action":"export"}'>Show Data</button>
+      <button data-smark-action="clear">Clear All</button>
+      <button data-smark-action="reset">Reset to Defaults</button>
+      <button data-smark-action="export">Show Data</button>
     </p>
   </fieldset>
 </div>{%

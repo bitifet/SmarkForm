@@ -86,7 +86,7 @@ const form = new SmarkForm(element, options);
 ```html
 <li data-smark="input">
   <input data-smark type="tel">
-  <button data-smark='{"action":"removeItem"}'>✕</button>
+  <button data-smark-action="removeItem">✕</button>
 </li>
 ```
 
@@ -138,7 +138,7 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 **Explicit `context`:** resolved from the trigger's enclosing field component (triggers themselves are not path nodes).
 
 ```html
-<button data-smark='{"action":"clear"}'>Clear</button>
+<button data-smark-action="clear">Clear</button>
 <button data-smark='{"action":"export","context":"demo"}'>Export Demo</button>
 <button data-smark='{"action":"export","context":"/shipping"}'>Export Shipping</button>
 ```
@@ -364,7 +364,7 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
 
 ```html
 <form action="/api/submit" method="post">
-  <button type="submit" data-smark='{"action":"submit"}'>Submit</button>
+  <button type="submit" data-smark-action="submit">Submit</button>
 </form>
 ```
 
@@ -386,8 +386,8 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
   <input name="name" data-smark>
   <label data-smark>Email:</label>
   <input name="email" type="email" data-smark>
-  <button data-smark='{"action":"clear"}'>Clear</button>
-  <button data-smark='{"action":"export"}'>Export</button>
+  <button data-smark-action="clear">Clear</button>
+  <button data-smark-action="export">Export</button>
 </div>
 <script>new SmarkForm(document.getElementById("myForm"));</script>
 ```
@@ -406,12 +406,12 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
 ```html
 <div data-smark='{"type":"list","name":"items","min_items":0,"max_items":5}'>
   <div><input name="name" data-smark></div>
-  <div data-smark='{"role":"empty_list"}'>No items yet.</div>
-  <div data-smark='{"role":"header"}'><b>Items:</b></div>
-  <div data-smark='{"role":"footer"}'>
+  <div data-smark-role="empty_list">No items yet.</div>
+  <div data-smark-role="header"><b>Items:</b></div>
+  <div data-smark-role="footer">
     <button data-smark='{"action":"addItem","hotkey":"+"}'>Add</button>
   </div>
-  <hr data-smark='{"role":"separator"}'>
+  <hr data-smark-role="separator">
 </div>
 ```
 
@@ -429,7 +429,7 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
   <li>
     <label data-smark title="Drag to reorder">☰</label>
     <input name="name" data-smark>
-    <button data-smark='{"action":"removeItem"}'>✕</button>
+    <button data-smark-action="removeItem">✕</button>
   </li>
 </ul>
 ```

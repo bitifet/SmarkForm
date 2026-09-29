@@ -334,7 +334,7 @@ placed on the singleton wrapper is automatically inherited by the inner
           <span data-smark='{"type":"input","name":"phone","mask":"digits"}'>
             <input data-smark type="tel" placeholder="Phone number">
           </span>
-          <button data-smark='{"action":"removeItem"}' title="Remove">✕</button>
+          <button data-smark-action="removeItem" title="Remove">✕</button>
         </p>
       </div>
       <button data-smark='{"action":"addItem","context":"phones"}'>Add Phone</button>
