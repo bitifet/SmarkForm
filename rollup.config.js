@@ -83,11 +83,10 @@ export default [
                 presets: [
                     ['@babel/preset-env', {
                         targets: { esmodules: true },
-                        bugfixes: true,
                     }],
                 ],
                 plugins: [
-                    ["@babel/plugin-proposal-decorators", { "version": "2023-01" }]
+                    ["@babel/plugin-proposal-decorators", { "version": "2023-11" }]
                 ]
             }),
             cleanup(),
@@ -118,7 +117,7 @@ export default [
                     }],
                 ],
                 plugins: [
-                    ["@babel/plugin-proposal-decorators", { "version": "2023-01" }]
+                    ["@babel/plugin-proposal-decorators", { "version": "2023-11" }]
                 ]
             }),
             cleanup(),
