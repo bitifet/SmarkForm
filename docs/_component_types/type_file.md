@@ -366,8 +366,8 @@ Cross-origin URLs require the remote host to allow CORS
 failed fetch (HTTP error, CORS, offline) warns via `console` and leaves the
 field at its empty state (`null`).
 
-> The same sugar applies to the [`image`]({{ "component_types/type_image" |
-> relative_url }}) field type.
+> The same sugar applies to the
+> [`image`]({{ "component_types/type_image" | relative_url }}) field type.
 
 ## Options
 
