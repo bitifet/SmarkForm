@@ -499,14 +499,15 @@ npm run dev
 **Key details**:
 - Uses `concurrently` to run multiple processes
 - Library changes trigger automatic rebuilds
-- Documentation server provides live reload
+- **Documentation server provides browser auto-reload**: Jekyll serves internally on port 4001 while `browser-sync` proxies it on the public port **4000** and injects its reload snippet, so edits reload the open browser automatically. Jekyll's `--livereload` (removed in `2f7cb353`) could not be re-enabled: its `eventmachine` native dep fails to load against OpenSSL 3 (`undefined symbol: SSL_get_peer_certificate`) and the pure-Ruby reactor crashes on Ruby 3.2 — hence the Node-based reloader
 - `npm run servedoc` / `npm run dev` also start the chapter-TOC watcher (`scripts/watch-chaptertocs.js`), so editing markdown headings updates the generated TOC includes and Jekyll rebuilds the page live — no dev-server restart needed
 - **Automatically stops any previously running instance** on startup — running `npm run dev` in a different branch or worktree always cleanly terminates the previous server first, so you never accidentally test against the wrong build
 - Stop with **Ctrl+C** in the terminal where it was started
 
 **Troubleshooting**:
 - If changes don't appear, check that watchers are running
-- Ensure ports are not already in use
+- Ensure ports are not already in use (Jekyll: **4001**, browser-sync: **4000** public + **3001** UI)
+- The browser-sync snippet is only injected on browser-like requests (with `Accept-Encoding`); a `curl` with minimal headers may show un-injected HTML — that's expected
 - Check console output for build errors
 
 ### GitHub Pages Workflow
