@@ -1,0 +1,7 @@
+// Shadow of just-the-docs utilities/utilities.scss. Load-path-relative
+// imports: "layout" and "spacing" resolve to the site's patched copies.
+@import "utilities/colors";
+@import "utilities/layout";
+@import "utilities/typography";
+@import "utilities/lists";
+@import "utilities/spacing";

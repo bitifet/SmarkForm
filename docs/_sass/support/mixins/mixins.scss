@@ -1,0 +1,5 @@
+// Shadow of just-the-docs support/mixins/mixins.scss. Load-path-relative
+// imports: "buttons" resolves to the site's patched _buttons.scss first.
+@import "support/mixins/layout";
+@import "support/mixins/buttons";
+@import "support/mixins/typography";

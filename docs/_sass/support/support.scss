@@ -1,0 +1,4 @@
+// Shadow of just-the-docs support/support.scss. Relative imports rewritten as
+// load-path-relative so unshadowed siblings resolve to the theme gem.
+@import "support/variables";
+@import "support/mixins/mixins";

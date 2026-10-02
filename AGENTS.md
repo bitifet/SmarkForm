@@ -396,11 +396,44 @@ scripts/liveserve_all.sh
 - Check Jekyll version compatibility
 - Review `docs/Gemfile` for dependencies
 
+### Just-The-Docs Sass Shadow Layer
+
+**What it does**: Shadows a handful of `just-the-docs` theme Sass files with
+site-local modernized copies, eliminating Dart Sass deprecation warnings that
+upstream refuses to fix (their `color.adjust()` fix PR #1548 was closed because
+`pages-gem` users lack the `sass:color` module). The compiled CSS is
+byte-identical to the unpatched theme.
+
+**Location**:
+- Shadow files: `docs/_sass/` (site `_sass` is searched before the theme's `_sass` on the Sass load path, so same-named files win)
+- Regenerator script: `scripts/update_just_the_docs_sass_shadow.sh`
+
+**How to run locally**:
+```bash
+bash scripts/update_just_the_docs_sass_shadow.sh
+```
+
+**Key details**:
+- Patches two deprecation classes:
+  - `[color-functions]`: `darken()/lighten()` → `color.adjust()` (in `buttons.scss`, `support/mixins/_buttons.scss`, `color_schemes/{light,dark}.scss`) with `@use "sass:color"`
+  - `[global-builtin]`: `map-get()/map-keys()/length()/variable-exists()` → `map.get()/map.keys()/list.length()/meta.variable-exists()` (in `support/_variables.scss`, `support/mixins/_layout.scss`, `utilities/{_layout,_spacing}.scss`, `layout.scss`, `code.scss`) with the matching `@use "sass:..."`
+- Three kinds of shadow files: **PATCHED** (rewritten with module functions), **REDIRECT** (import-chain files with load-path-relative `@import` paths so unshadowed siblings still resolve to the theme), and **VERBATIM** (copied unchanged)
+- `modules.scss`, `support/support.scss`, `support/mixins/mixins.scss` and `utilities/utilities.scss` are redirects because the patched files sit behind their relative import chains
+- After a theme upgrade, rerun the script to regenerate the shadow copies from the newly installed gem
+
+**Verification**:
+- `cd docs && bundle exec jekyll build 2>&1 | grep -oE "DEPRECATION WARNING \[[a-z-]+\]" | sort | uniq -c` should show only `[import]` warnings (Sass `@import` rules, theme architecture — out of scope)
+- CSS must stay byte-identical: compare `docs/_site/assets/css/just-the-docs-{light,dark,default}.css` hashes before/after
+
+**Troubleshooting**:
+- If the build fails with "Can't find stylesheet to import", a redirect file's load-path-relative import doesn't resolve — rerun the script and check the generated `_sass/` files
+- If `darken()`/`map-get()` warnings reappear after a theme upgrade, rerun `scripts/update_just_the_docs_sass_shadow.sh` with the new gem installed
+
 ### Auto Color Scheme Implementation
 
 **What it does**: Provides automatic color scheme switching for the documentation site based on user's system preferences.
 
-**Configuration**: 
+**Configuration**:
 - CSS: `docs/assets/css/auto-color-scheme.css`
 - JavaScript: `docs/assets/js/auto-logo-switcher.js`
 - Include: `docs/_includes/head_custom.html`
@@ -534,6 +567,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Example collector | `scripts/collect-docs-examples.js` |
 | Chapter TOC generator | `scripts/generate-chaptertocs.js`, `scripts/watch-chaptertocs.js` (dev live-regen) — output: git-ignored `docs/_includes/chaptertoc/` |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |
+| Just-The-Docs Sass shadow | `scripts/update_just_the_docs_sass_shadow.sh` → generated `docs/_sass/` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
 | Example Pug layout | `src/examples/include/layout.pug` |
 | Example Pug mixins | `src/examples/include/mixins.pug` |
