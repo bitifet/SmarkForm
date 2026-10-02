@@ -350,6 +350,15 @@ scripts/livebuild_dev_smarkform.sh
   `src/examples/include/mixins.pug` (Pug convenience wrappers),
   `src/examples/include/templates.pug` (SmarkForm native mixin `<template>`
   elements included at body level by the layout)
+- The examples rollup entry (`src/examples/index.js`) is a pure file-generation
+  pipeline: its `import`s are `.pug`/`.scss` sources compiled to
+  `dist/examples/*.html` and `*.css` by the custom plugins, and the emitted JS
+  chunk is empty **by design** (the plugins mark those imports
+  `moduleSideEffects: false`). The examples config therefore filters the
+  `EMPTY_BUNDLE` warning via `onwarn`; library builds keep all warnings.
+- `nextSourceId`/`stampSourceIds` live in their own module
+  (`src/lib/source_ids.js`) — not in `component.js` — to avoid a circular
+  import between `component.js` and `mixin.js`.
 
 **Troubleshooting**:
 - If build fails, check Node.js version compatibility

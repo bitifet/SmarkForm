@@ -6,7 +6,7 @@
 
 import {parseJSON, collectPrefixedOptions} from "./helpers.js";
 import {normalizeJson} from "./options.js";
-import {stampSourceIds, nextSourceId} from "./component.js";
+import {stampSourceIds, nextSourceId} from "./source_ids.js";
 
 // Module-level caches (shared for the lifetime of the page):
 const docCache = new Map();           // absoluteUrl → Promise<Document>

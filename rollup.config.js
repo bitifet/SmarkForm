@@ -134,6 +134,15 @@ export default [
         output: {
             file: 'tmp/index.js',
         },
+        // The examples "build" is a file-generation pipeline: the pug/sass
+        // plugins compile every imported .pug/.scss into dist/examples/*.html
+        // and *.css. The JS entry itself is only a side-effect container
+        // (moduleSideEffects: false), so the emitted chunk is empty by design.
+        // Filter exactly that one warning; every other warning still shows.
+        onwarn: (warning, warn) => {
+            if (warning.code === 'EMPTY_BUNDLE') return;
+            warn(warning);
+        },
         plugins: [
             computed_plugin(),
             sass({

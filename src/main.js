@@ -1,7 +1,8 @@
 // SmarkForm.js
 // ============
 
-import {createType, stampSourceIds} from "./lib/component.js";
+import {createType} from "./lib/component.js";
+import {stampSourceIds} from "./lib/source_ids.js";
 import {hotKeys_handler} from "./lib/hotkeys.js";
 
 // Import core component types and event handlers:
