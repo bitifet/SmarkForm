@@ -102,6 +102,19 @@ search:
   button: false
 
 
+# Dart Sass deprecation handling.
+#
+# The just-the-docs theme still uses `@import` everywhere (root Liquid
+# templates + the whole `_sass` import graph). Converting it to `@use` would
+# require forking the theme, and upstream is forced to do that migration
+# itself before Dart Sass 3.0.0 removes `@import`. We therefore silence only
+# this one deprecation ID; any other/future deprecation warnings still appear
+# so we stay informed. The other deprecated functions (darken/lighten/map-get/
+# map-keys/length/variable-exists) are real fixes shipped as `docs/_sass/`
+# shadows (see scripts/update_just_the_docs_sass_shadow.sh).
+sass:
+  silence_deprecations: ["import"]
+
 enable_copy_code_button: true
 
 # mermaid:

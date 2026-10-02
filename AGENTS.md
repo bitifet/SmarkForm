@@ -417,17 +417,19 @@ bash scripts/update_just_the_docs_sass_shadow.sh
 - Patches two deprecation classes:
   - `[color-functions]`: `darken()/lighten()` → `color.adjust()` (in `buttons.scss`, `support/mixins/_buttons.scss`, `color_schemes/{light,dark}.scss`) with `@use "sass:color"`
   - `[global-builtin]`: `map-get()/map-keys()/length()/variable-exists()` → `map.get()/map.keys()/list.length()/meta.variable-exists()` (in `support/_variables.scss`, `support/mixins/_layout.scss`, `utilities/{_layout,_spacing}.scss`, `layout.scss`, `code.scss`) with the matching `@use "sass:..."`
+- The third deprecation class (`[import]` — the theme's `@import`-based architecture, wired through its root Liquid templates) is **silenced by ID** via `sass.silence_deprecations: ["import"]` in `docs/_config.yml` **instead of being patched**: converting the whole graph to `@use` would fork the theme, and upstream is forced to do that migration itself before Dart Sass 3.0.0 removes `@import`. Silencing only this ID keeps all other/future deprecation warnings visible.
 - Three kinds of shadow files: **PATCHED** (rewritten with module functions), **REDIRECT** (import-chain files with load-path-relative `@import` paths so unshadowed siblings still resolve to the theme), and **VERBATIM** (copied unchanged)
 - `modules.scss`, `support/support.scss`, `support/mixins/mixins.scss` and `utilities/utilities.scss` are redirects because the patched files sit behind their relative import chains
 - After a theme upgrade, rerun the script to regenerate the shadow copies from the newly installed gem
 
 **Verification**:
-- `cd docs && bundle exec jekyll build 2>&1 | grep -oE "DEPRECATION WARNING \[[a-z-]+\]" | sort | uniq -c` should show only `[import]` warnings (Sass `@import` rules, theme architecture — out of scope)
+- `cd docs && bundle exec jekyll build 2>&1 | grep -oE "DEPRECATION WARNING \[[a-z-]+\]" | sort | uniq -c` should print **nothing** (the shadow fixes kill `color-functions`/`global-builtin`, and `sass.silence_deprecations` kills `import`)
 - CSS must stay byte-identical: compare `docs/_site/assets/css/just-the-docs-{light,dark,default}.css` hashes before/after
 
 **Troubleshooting**:
 - If the build fails with "Can't find stylesheet to import", a redirect file's load-path-relative import doesn't resolve — rerun the script and check the generated `_sass/` files
-- If `darken()`/`map-get()` warnings reappear after a theme upgrade, rerun `scripts/update_just_the_docs_sass_shadow.sh` with the new gem installed
+- If warnings reappear after a theme upgrade, rerun `scripts/update_just_the_docs_sass_shadow.sh` with the new gem installed
+- If a **new** deprecation class shows up, it's intentional — only `import` is silenced, and new deprecations should be fixed (extend the shadow) rather than silenced
 
 ### Auto Color Scheme Implementation
 
