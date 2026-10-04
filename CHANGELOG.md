@@ -11,6 +11,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [0.23.0] — 2026-10-04
+
+✍️ `data-smark-<option>` attribute syntax · 📚 docs migrated to prefixed attributes · 🔄 dev auto-reload restored
+
+SmarkForm 0.23.0 lets any option be declared as a separate `data-smark-<option>` HTML attribute instead of (or on top of) the canonical `data-smark` JSON object — ideal for template engines that can only set dynamic attribute values. Values are read as raw strings and normalized to the expected type (booleans, numbers, JSON), prefixed attributes always take precedence over the same option in the JSON, and they work through mixin placeholders and list templates. The docs were migrated across ~20 pages to use prefixed attributes for single-option declarations, the docs build is now warning-free (modern Sass, byte-identical CSS), the dev server regained browser auto-reload via a Node-based solution, and the Rollup build was cleaned up.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.23.0)
+
+### Features
+
+- **`data-smark-<option>` attribute syntax**: any option can be written as a separate HTML attribute (`data-smark-name`, `data-smark-type`, `data-smark-placeholder`, …). Values are read as raw strings and normalized to the expected type: booleans accept `"true"`/`"false"`, numbers are parsed as decimals, and JSON values are parsed when the option expects an object or array.
+- **Deterministic precedence**: a prefixed attribute always overrides the same option inside the canonical `data-smark` JSON object; only the canonical attribute is written back by the library.
+- **Mixin & list support**: mixin placeholders forward inherited `data-smark-*` options and suppress duplicated attributes on the expanded clone; list template roles accept prefixed attribute declarations.
+
+### Bug Fixes
+
+- Fixed a Liquid syntax error in the `type_file.md` doc page cross-reference.
+
+### Documentation
+
+- Migrated single-option `data-smark` declarations to prefixed attributes across the docs (component type pages, getting-started, working-with-forms, agent docs).
+- Docs build is now deprecation-warning-free: modernized the just-the-docs theme's Sass (darken/lighten → color.adjust; map-get/map-keys/length/variable-exists → module-scoped equivalents) and silenced the theme's `@import` deprecation by ID. Compiled CSS stays byte-identical.
+
+### Other
+
+- **Dev server auto-reload restored**: Jekyll's `--livereload` can no longer load its `eventmachine` native dependency against OpenSSL 3; the docs dev server now uses Node-based `browser-sync` to proxy and auto-reload.
+- **Rollup build cleanup**: removed the `component.js ↔ mixin.js` circular dependency (extracted shared source-ID helpers into `src/lib/source_ids.js`) and filtered the intentional empty-chunk warning in the examples build.
+- Dev-dependency updates: rollup, sass, @babel/*, jsonc and related tooling.
+
+---
+
 ## [0.22.0] — 2026-09-28
 
 🎵 `audio` field type · 🎬 `video` field type · 🎛️ shared media infrastructure
@@ -685,11 +716,21 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.19.0...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.23.0...HEAD
+[0.23.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.23.0
+[0.22.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.22.0
+[0.21.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.21.1
+[0.21.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.21.0
 [0.20.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.20.0
 [0.19.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.19.0
 [0.18.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.18.0
 [0.17.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.17.0
+[0.16.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.16.0
+[0.15.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.15.0
+[0.14.2]: https://github.com/bitifet/SmarkForm/releases/tag/0.14.2
+[0.14.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.14.1
+[0.14.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.14.0
+[0.13.2]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.2
 [0.13.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.1
 [0.13.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.13.0
 [0.12.9]: https://github.com/bitifet/SmarkForm/releases/tag/0.12.9
