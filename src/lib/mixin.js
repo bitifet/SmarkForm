@@ -4,13 +4,47 @@
 // placeholder node with a clone of the referenced <template> root before
 // normal SmarkForm enhancement begins.
 
-import {parseJSON, collectPrefixedOptions} from "./helpers.js";
-import {normalizeJson} from "./options.js";
+import {parseJSON, collectPrefixedOptions, hasSmarkAttribute} from "./helpers.js";
+import {normalizeJson, normalizeBoolean} from "./options.js";
 import {stampSourceIds, nextSourceId} from "./source_ids.js";
 
 // Module-level caches (shared for the lifetime of the page):
 const docCache = new Map();           // absoluteUrl → Promise<Document>
 const injectedStyleSrcs = new Set();  // dedup injected <style> content
+
+// ----------------------------------------------------------------------------
+// Internal: getMixinDocument(absoluteUrl)
+// Returns the cached Promise<Document> for an external mixin document, starting
+// the fetch/parse on first access.  Shared by eager preloading and on-demand
+// expansion so a document is fetched at most once per page.
+// ----------------------------------------------------------------------------
+function getMixinDocument(absoluteUrl) { //{{{
+    if (! docCache.has(absoluteUrl)) {
+        docCache.set(
+            absoluteUrl
+            , fetch(absoluteUrl)
+                .then(r => {
+                    if (! r.ok) throw Object.assign(
+                        new Error(
+                            `Failed to fetch mixin source: ${absoluteUrl}`
+                            + ` (HTTP ${r.status})`
+                        )
+                        , { code: 'MIXIN_FETCH_ERROR' }
+                    );
+                    return r.text();
+                })
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    // Stamp source IDs on this external document so
+                    // clones carry the same IDs for cross-list drag.
+                    stampSourceIds(doc);
+                    return doc;
+                })
+        );
+    }
+    return docCache.get(absoluteUrl);
+}; //}}}
 
 // ----------------------------------------------------------------------------
 // Internal: applySnippetParams(clone, params, component)
@@ -83,6 +117,71 @@ function applySnippetParams(clone, params) { //{{{
 // ----------------------------------------------------------------------------
 export function isMixinRef(type) { //{{{
     return typeof type === 'string' && type.includes('#');
+}; //}}}
+
+// ----------------------------------------------------------------------------
+// Internal: prefetchMixinDocument(typeRef, rootOptions)
+// Best-effort, non-blocking prefetch of an external mixin document.  Applies
+// the external fetch policy but never throws: preloading is an optimisation,
+// so a blocked or unreachable document is simply skipped (it will surface as
+// an error later if the mixin is actually used).
+// ----------------------------------------------------------------------------
+function prefetchMixinDocument(typeRef, rootOptions) { //{{{
+    const urlPart = typeRef.slice(0, typeRef.indexOf('#'));
+    let absoluteUrl;
+    try {
+        absoluteUrl = new URL(urlPart, document.baseURI).href;
+    } catch (_) {
+        return;
+    }
+    // Preloading always happens at the top level (main document), so the
+    // external fetch policy is read from the root options.
+    const extPolicyRaw = rootOptions['smark_mixin_allowExternal'] ?? 'block';
+    const fetchOrigin = getUrlOrigin(absoluteUrl);
+    const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
+    if (extPolicy === 'block') return;
+    if (extPolicy === 'same-origin' && isCrossOrigin(absoluteUrl)) return;
+    getMixinDocument(absoluteUrl).catch(() => {});
+}; //}}}
+
+// ----------------------------------------------------------------------------
+// Public: preloadMixins(rootNode, rootOptions)
+// Eagerly prefetch external mixin documents referenced anywhere in the
+// (initial) form subtree — including inside list item templates and other
+// markup that is not rendered yet.  Called by the root form at render time so
+// later on-demand expansions (e.g. list items added after render) hit a warm
+// document cache.
+//
+// A `preload` option on a mixin reference (default `true`) controls whether
+// that reference participates; `preload:false` opts out.  Local references and
+// non-mixin nodes are ignored.
+// ----------------------------------------------------------------------------
+export function preloadMixins(rootNode, rootOptions = {}) { //{{{
+    if (! rootNode) return;
+    const pending = [];
+    const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_ELEMENT);
+    let node = walker.currentNode;
+    while (node) {
+        if (node !== rootNode && hasSmarkAttribute(node)) {
+            const opts = {
+                ...(parseJSON(node.getAttribute('data-smark')) || {}),
+                ...collectPrefixedOptions(node),
+            };
+            if (isMixinRef(opts.type)) {
+                const urlPart = opts.type.slice(0, opts.type.indexOf('#'));
+                if (urlPart) {
+                    const preload = opts.preload === undefined
+                        ? true
+                        : normalizeBoolean(opts.preload, true);
+                    if (preload !== false) pending.push(opts.type);
+                }
+            }
+        }
+        node = walker.nextNode();
+    }
+    for (const typeRef of pending) {
+        prefetchMixinDocument(typeRef, rootOptions);
+    }
 }; //}}}
 
 // ----------------------------------------------------------------------------
@@ -285,31 +384,7 @@ export async function expandMixin(node, options, component) { //{{{
         // extPolicy === 'allow', or 'same-origin' with a same-origin URL,
         // or per-origin policy resolved to 'allow': proceed with the fetch.
 
-        if (! docCache.has(absoluteUrl)) {
-            docCache.set(
-                absoluteUrl
-                , fetch(absoluteUrl)
-                    .then(r => {
-                        if (! r.ok) throw Object.assign(
-                            new Error(
-                                `Failed to fetch mixin source: ${absoluteUrl}`
-                                + ` (HTTP ${r.status})`
-                            )
-                            , { code: 'MIXIN_FETCH_ERROR' }
-                        );
-                        return r.text();
-                    })
-                    .then(html => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(html, 'text/html');
-                        // Stamp source IDs on this external document so
-                        // clones carry the same IDs for cross-list drag.
-                        stampSourceIds(doc);
-                        return doc;
-                    })
-            );
-        }
-        targetDoc = await docCache.get(absoluteUrl);
+        targetDoc = await getMixinDocument(absoluteUrl);
     }
 
     const mixinKey = `${absoluteUrl}#${templateId}`;

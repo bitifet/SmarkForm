@@ -109,6 +109,7 @@ const BOOLEAN_OPTIONS = new Set([
     "fileDrop",
     "focus_on_click",
     "multiple",
+    "preload",
     "sortable",
     // smark_* toggles
     "smark_audio_autoPick",

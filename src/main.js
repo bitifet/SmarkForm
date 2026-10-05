@@ -3,6 +3,7 @@
 
 import {createType} from "./lib/component.js";
 import {stampSourceIds} from "./lib/source_ids.js";
+import {preloadMixins} from "./lib/mixin.js";
 import {hotKeys_handler} from "./lib/hotkeys.js";
 
 // Import core component types and event handlers:
@@ -111,6 +112,10 @@ class SmarkForm extends form {
     };
     async render() {
         const me = this;
+        // Eagerly preload external mixin documents referenced by the form
+        // subtree (including list item templates not rendered yet) before
+        // rendering, so later on-demand expansions hit a warm cache.
+        preloadMixins(me.targetNode, me.options);
         me.targetNode.setAttribute("aria-busy", "true");
         await super.render();
         me.targetNode.setAttribute("aria-busy", "false");
