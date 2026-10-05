@@ -1469,3 +1469,161 @@ test.describe('Mixin Types — external template base path (nested references)',
 
 });
 
+// ---------------------------------------------------------------------------
+// Eager preloading (proposal B)
+//
+// A mixin reference may carry a `preload` option (default true).  At form
+// render time SmarkForm prefetches external documents for references that are
+// already present in the DOM (including inside list item templates) but not
+// rendered yet, warming the document cache for later use.  `preload:false`
+// opts a reference out.
+// ---------------------------------------------------------------------------
+test.describe('Mixin Types — eager preloading (preload)', () => {
+
+    // Fetch spy installed before SmarkForm is constructed.
+    const fetchSpy = `
+<script>
+window.__mixinFetch = [];
+(function(){
+  const orig = window.fetch.bind(window);
+  window.fetch = function(input, init){
+    try {
+      window.__mixinFetch.push(
+        typeof input === 'string' ? input : (input && input.url) || String(input)
+      );
+    } catch (e) {}
+    return orig(input, init);
+  };
+})();
+</script>`;
+
+    test('a mixin in a list item template is preloaded at form render', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_preload_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="widget">
+  <input data-smark type="text">
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+${fetchSpy}
+<form id="myForm">
+  <ul data-smark='{"name":"items","min_items":0}'>
+    <li data-smark-role="item">
+      <div data-smark='{"type":"${extUrl}#widget","name":"field"}'></div>
+    </li>
+  </ul>
+</form>
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const calls = await pg.evaluate(() => window.__mixinFetch || []);
+            const exported = await pg.evaluate(() => window.myForm.export());
+            // No item was rendered...
+            expect(exported.items).toHaveLength(0);
+            // ...yet the external document was preloaded at render time.
+            expect(calls.some(u => String(u).includes(extFname))).toBe(true);
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('preload:false opts a reference out of eager preloading', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extAOnClosed;
+        let extBOnClosed;
+        try {
+            const suffix = Math.random().toString(36).slice(2, 8);
+            const extAFname = `ext_preload_on_${suffix}.html`;
+            const extBFname = `ext_preload_off_${suffix}.html`;
+            const extAPath = path.join(tmpDir, extAFname);
+            const extBPath = path.join(tmpDir, extBFname);
+            const extTemplate = `<!DOCTYPE html>
+<html><body>
+<template id="widget">
+  <input data-smark type="text">
+</template>
+</body></html>`;
+            await Fs.promises.writeFile(extAPath, extTemplate);
+            await Fs.promises.writeFile(extBPath, extTemplate);
+            extAOnClosed = async () => Fs.promises.unlink(extAPath).catch(() => {});
+            extBOnClosed = async () => Fs.promises.unlink(extBPath).catch(() => {});
+
+            const { url, onClosed: oc } = await renderHtml(page(`
+${fetchSpy}
+<form id="myForm">
+  <ul data-smark='{"name":"items","min_items":0}'>
+    <li data-smark-role="item">
+      <div data-smark='{"type":"/test/tmp/${extAFname}#widget","name":"a"}'></div>
+      <div data-smark='{"type":"/test/tmp/${extBFname}#widget","name":"b","preload":false}'></div>
+    </li>
+  </ul>
+</form>
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const calls = await pg.evaluate(() => window.__mixinFetch || []);
+            expect(calls.some(u => String(u).includes(extAFname))).toBe(true);
+            expect(calls.some(u => String(u).includes(extBFname))).toBe(false);
+        } finally {
+            if (onClosed) await onClosed();
+            if (extAOnClosed) await extAOnClosed();
+            if (extBOnClosed) await extBOnClosed();
+        }
+    });//}}}
+
+    test('blocked external mixins are not fetched during preload', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_preload_blocked_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="widget">
+  <input data-smark type="text">
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            // Default policy is "block".
+            const { url, onClosed: oc } = await renderHtml(page(`
+${fetchSpy}
+<form id="myForm">
+  <ul data-smark='{"name":"items","min_items":0}'>
+    <li data-smark-role="item">
+      <div data-smark='{"type":"${extUrl}#widget","name":"field"}'></div>
+    </li>
+  </ul>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const calls = await pg.evaluate(() => window.__mixinFetch || []);
+            expect(calls.some(u => String(u).includes(extFname))).toBe(false);
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+});
+
+
