@@ -428,6 +428,33 @@ distinction is intentional — the document cache is keyed by URL alone because
 one fetch retrieves all templates from that document, while the expansion stack
 is keyed per template to catch cycles at the individual template level.
 
+### Eager preloading (`preload`)
+
+External mixin documents referenced by a form are **preloaded at render time**,
+before the referencing nodes are enhanced.  This warms the document cache so
+that a mixin used later — for example inside a list item template that renders
+no items initially, or a lazily shown subform — expands without a network wait.
+
+SmarkForm scans the form subtree at render time, including markup that is not
+rendered yet (such as list item templates), and issues the fetches without
+blocking rendering.  Preloading obeys the same `smark_mixin_allowExternal`
+policy as on-demand loading: blocked references are silently skipped and only
+raise an error if they are actually used.
+
+A mixin reference may opt out of preloading with `preload: false`:
+
+```html
+<!-- Preloaded (default). -->
+<div data-smark='{"type":"./widgets.html#emailField","name":"email"}'></div>
+
+<!-- Loaded on demand instead. -->
+<div data-smark='{"type":"./widgets.html#phoneField","name":"phone","preload":false}'></div>
+```
+
+`preload` is also available as a prefixed attribute (`data-smark-preload="false"`).
+Only external references are preloaded; local (`#id`) templates are always
+available immediately.
+
 ### Nested mixins and circular dependency detection
 
 A mixin template may itself reference another mixin type (nested mixins).

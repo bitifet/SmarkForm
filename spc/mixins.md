@@ -105,6 +105,20 @@ loaded from.
 - Missing template → `MIXIN_TEMPLATE_NOT_FOUND`.
 - Fetch failure (non-OK HTTP) → `MIXIN_FETCH_ERROR`.
 
+### Eager preloading (`preload`)
+
+At root-form render time SmarkForm prefetches external mixin documents
+referenced anywhere in the form subtree — including markup that is not
+rendered yet (e.g. list item templates). This warms `docCache` so later
+on-demand expansions (items added after render, lazily shown subforms) do not
+wait on the network. Prefetching is non-blocking and obeys
+`smark_mixin_allowExternal`: blocked references are skipped silently and only
+raise an error if actually used.
+
+A mixin reference may opt out with `preload: false` (default `true`), given in
+the `data-smark` JSON or as `data-smark-preload`. Only external references are
+prefetched; local templates are resolved immediately.
+
 ---
 
 ## 5. Expansion pipeline
