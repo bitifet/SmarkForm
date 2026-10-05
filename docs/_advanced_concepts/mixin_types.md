@@ -140,7 +140,11 @@ The external file `shared/widgets.html` would contain:
 ```
 
 {: .info }
-> External URLs are resolved against `document.baseURI` (for relative paths).
+> A mixin reference is resolved against the **source document it appears in**:
+> at the top level of the page that is `document.baseURI`, but a reference
+> *inside* an external template resolves against that template's own document
+> and URL. This lets an external widget library reference sibling templates
+> with `#id` and load further files relative to itself.
 > The same external document is fetched **only once** per page load and its
 > templates are cached for all subsequent references.
 
@@ -391,11 +395,18 @@ any enhancement takes place.
 A mixin type reference **must** contain a `#<templateId>` fragment.  A
 reference without a fragment causes a `MIXIN_TYPE_MISSING_FRAGMENT` error.
 
+References are resolved against the **source document** of the template in
+which they appear — the page itself, or the external document an enclosing
+template was loaded from:
+
 - **Local reference** (`"#<templateId>"`): the template is looked up by `id`
-  in `document`.
+  in the source document.
 - **External reference** (`"<url>#<templateId>"`): the URL part (everything
-  before `#`) is resolved against `document.baseURI` using the standard
+  before `#`) is resolved against the source document's URL using the standard
   `URL` constructor.
+
+At the top level of the page the source document is `document`, so this is
+equivalent to resolving against `document.baseURI`.
 
 ### Fetch and cache strategy
 
@@ -421,8 +432,8 @@ is keyed per template to catch cycles at the individual template level.
 
 A mixin template may itself reference another mixin type (nested mixins).
 To prevent infinite expansion, SmarkForm maintains an expansion stack of keys
-of the form `absoluteUrl#templateId` (local references use `document.baseURI`
-as their URL).  Before expanding any mixin SmarkForm checks whether the key is
+of the form `absoluteUrl#templateId` (local references use the source
+document's URL).  Before expanding any mixin SmarkForm checks whether the key is
 already present in the stack.  If it is, a `MIXIN_CIRCULAR_DEPENDENCY` error
 is thrown.
 

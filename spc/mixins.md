@@ -54,8 +54,10 @@ A `type` string is a mixin reference when it contains a `#`
 The fragment (`#<templateId>`) is **mandatory**; a reference without it throws
 `MIXIN_TYPE_MISSING_FRAGMENT`.
 
-External URL parts are resolved against **`document.baseURI`** using the
-standard `URL` constructor. There is no per-component "base path" concept.
+References are resolved against the **source document** they appear in (the
+page, or the external document an enclosing template was loaded from). Local
+`#id` lookups use that document, and external URL parts are resolved against
+that document's URL. At the top level this is `document` / `document.baseURI`.
 
 ---
 
@@ -83,13 +85,23 @@ Non-element nodes (text/comments) directly inside the `<template>` are ignored.
 
 ## 4. Resolution and caching
 
-- **Local reference** (`"#id"`): looked up with
-  `document.getElementById(id)` and must be a `<template>`.
-- **External reference** (`"<url>#id"`): fetched once per page load, parsed as
-  HTML with `DOMParser`, source-stamped, and cached:
-  `Map<absoluteUrl, Promise<Document>>`. All references to the same URL
-  (regardless of fragment) reuse the same promise → a single network request
-  per external document.
+Each component carries a `_mixinBase` (`{ doc, baseUrl }`) inherited down the
+tree. It identifies the **source document** of the markup it lives in: the
+main document by default, or the external document an enclosing template was
+loaded from.
+
+- **Local reference** (`"#id"`): looked up with `getElementById(id)` in the
+  source document (`_mixinBase.doc`, or `document` at the top level) and must
+  be a `<template>`.
+- **External reference** (`"<url>#id"`): the URL is resolved against the
+  source document's URL (`_mixinBase.baseUrl`, or `document.baseURI`), fetched
+  once per page load, parsed as HTML with `DOMParser`, source-stamped, and
+  cached: `Map<absoluteUrl, Promise<Document>>`. All references to the same
+  URL (regardless of fragment) reuse the same promise → a single network
+  request per external document.
+- On expansion, the returned base is the **target** document and its resolved
+  URL, so mixin references nested inside the expanded template resolve against
+  it (sibling templates via `#id`, further files via relative URLs).
 - Missing template → `MIXIN_TEMPLATE_NOT_FOUND`.
 - Fetch failure (non-OK HTTP) → `MIXIN_FETCH_ERROR`.
 
@@ -269,3 +281,5 @@ elements originating from the same template/mixin.
   preprocessing pass.
 - **No external templating engine** — cloning and substitution are done with
   native DOM APIs.
+
+
