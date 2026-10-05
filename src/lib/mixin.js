@@ -229,17 +229,28 @@ export async function expandMixin(node, options, component) { //{{{
         );
     }
 
-    // Resolve the target document (local or external):
+    // Resolve the target document (local or external).
+    //
+    // Resolution is relative to the "source document" of the referencing
+    // template, not always the main document:
+    //   - placeholders in the main document resolve against `document`;
+    //   - placeholders inside an expanded external template resolve against
+    //     that external document (so sibling templates can be referenced via
+    //     "#id" and relative URLs resolve against the external file itself).
+    // The source base is threaded down the component tree via `_mixinBase`.
+    const base = component._mixinBase
+        || { doc: document, baseUrl: document.baseURI };
     let targetDoc;
     let absoluteUrl;
 
     if (! urlPart) {
-        // Local reference: "#templateId"
-        targetDoc = document;
-        absoluteUrl = document.baseURI;
+        // Local reference: "#templateId" → resolved in the source document.
+        targetDoc = base.doc;
+        absoluteUrl = base.baseUrl;
     } else {
-        // External reference: "url#templateId"
-        absoluteUrl = new URL(urlPart, document.baseURI).href;
+        // External reference: "url#templateId" → URL resolved relative to the
+        // source document's URL.
+        absoluteUrl = new URL(urlPart, base.baseUrl).href;
 
         // Enforce external mixin fetch policy before attempting any network
         // request.  The policy is read exclusively from the root SmarkForm
@@ -522,5 +533,8 @@ export async function expandMixin(node, options, component) { //{{{
         scripts,
         childChain,
         scopedMasks,
+        // Base for mixin references found *inside* the expanded template:
+        // the document the template came from plus its base URL.
+        base: { doc: targetDoc, baseUrl: absoluteUrl },
     };
 }; //}}}

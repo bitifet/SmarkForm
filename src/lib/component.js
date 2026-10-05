@@ -81,6 +81,7 @@ export class SmarkComponent {
         , {
             _mixinChain,
             _scopedMasks,
+            _mixinBase,
             ...options
         } = {}
         , parent
@@ -96,6 +97,12 @@ export class SmarkComponent {
         // an enclosing mixin template).  Available to this component and
         // its descendants for declarative mask resolution.
         me._scopedMasks = _scopedMasks || null;
+
+        // Store the mixin source base (document + base URL) this component's
+        // node was expanded from.  Inherited by descendants so that nested
+        // mixin references inside an expanded external template resolve
+        // against that template's own document/URL.
+        me._mixinBase = _mixinBase || null;
 
         me.validName = (function nameGenerator() {//{{{
             let counter = 0;
@@ -372,9 +379,17 @@ export class SmarkComponent {
         const inheritedMasks = mixinExpansion
             ? mixinExpansion.scopedMasks
             : (me._scopedMasks || null);
+        const inheritedBase = mixinExpansion
+            ? mixinExpansion.base
+            : (me._mixinBase || null);
         const component = new ctrl(
             node
-            , { ...options, _mixinChain: inheritedChain, _scopedMasks: inheritedMasks }
+            , {
+                ...options,
+                _mixinChain: inheritedChain,
+                _scopedMasks: inheritedMasks,
+                _mixinBase: inheritedBase,
+            }
             , me
         );
 
