@@ -5,7 +5,7 @@
 **.sw*
 
 # Git Worktree
-wtree
+wt
 
 # Generated files
 dist/examples/*.html
