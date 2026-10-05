@@ -1327,3 +1327,145 @@ test.describe('Mixin Types — external template loading', () => {
     });//}}}
 
 });
+
+// ---------------------------------------------------------------------------
+// External template base path (nested references) — proposal A
+//
+// A mixin reference found *inside* an external template must be resolved
+// against the document that template was loaded from: local "#id" lookups
+// hit the external document, and relative URL parts resolve against the
+// external file's own directory.
+// ---------------------------------------------------------------------------
+test.describe('Mixin Types — external template base path (nested references)', () => {
+
+    test('a template in an external file can reference a sibling template in the same file via #id', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_sibling_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="outerTpl">
+  <div data-smark='{"type":"form"}'>
+    <div data-smark='{"type":"#innerTpl","name":"child"}'></div>
+  </div>
+</template>
+<template id="innerTpl">
+  <input data-smark type="text">
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#outerTpl","name":"outer"}'></div>
+</form>
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const exported = await pg.evaluate(() => window.myForm.export());
+            // "#innerTpl" is not present in the main document; it must be
+            // resolved against the external file itself.
+            expect(exported.outer.child).toBe('');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('a local #id inside an external template resolves against the external document, not the main document', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let extOnClosed;
+        try {
+            const extSuffix = Math.random().toString(36).slice(2, 8);
+            const extFname = `ext_scope_${extSuffix}.html`;
+            const extFpath = path.join(tmpDir, extFname);
+            await Fs.promises.writeFile(extFpath, `<!DOCTYPE html>
+<html><body>
+<template id="outerTpl">
+  <div data-smark='{"type":"form"}'>
+    <div data-smark='{"type":"#innerTpl","name":"child"}'></div>
+  </div>
+</template>
+<template id="innerTpl">
+  <input data-smark type="text">
+</template>
+</body></html>`);
+            extOnClosed = async () => Fs.promises.unlink(extFpath).catch(() => {});
+
+            const extUrl = `/test/tmp/${extFname}`;
+            // Decoy: a DIFFERENT template with the same id lives in the main
+            // document. It must NOT be picked up by the nested reference.
+            const { url, onClosed: oc } = await renderHtml(page(`
+<template id="innerTpl">
+  <div data-smark='{"type":"form"}'>
+    <input data-smark name="decoyField" type="text">
+  </div>
+</template>
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#outerTpl","name":"outer"}'></div>
+</form>
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const exported = await pg.evaluate(() => window.myForm.export());
+            // External #innerTpl is a bare text input → child exports "".
+            // The main-document decoy would have exported an object instead.
+            expect(exported.outer.child).toBe('');
+        } finally {
+            if (onClosed) await onClosed();
+            if (extOnClosed) await extOnClosed();
+        }
+    });//}}}
+
+    test('relative external references resolve against the external file directory', async ({ page: pg }) => {//{{{
+        let onClosed;
+        let dir;
+        try {
+            const suffix = Math.random().toString(36).slice(2, 8);
+            dir = path.join(tmpDir, `nested_${suffix}`);
+            await Fs.promises.mkdir(dir, { recursive: true });
+            await Fs.promises.writeFile(path.join(dir, 'a.html'), `<!DOCTYPE html>
+<html><body>
+<template id="outerTpl">
+  <div data-smark='{"type":"form"}'>
+    <div data-smark='{"type":"./b.html#innerTpl","name":"child"}'></div>
+  </div>
+</template>
+</body></html>`);
+            await Fs.promises.writeFile(path.join(dir, 'b.html'), `<!DOCTYPE html>
+<html><body>
+<template id="innerTpl">
+  <input data-smark type="text">
+</template>
+</body></html>`);
+
+            const extUrl = `/test/tmp/nested_${suffix}/a.html`;
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <div data-smark='{"type":"${extUrl}#outerTpl","name":"outer"}'></div>
+</form>
+`, '', { smark_mixin_allowExternal: 'same-origin' }));
+            onClosed = oc;
+            await pg.goto(url);
+            await pg.waitForFunction(() => window.myForm?.rendered, { timeout: 5000 });
+
+            const exported = await pg.evaluate(() => window.myForm.export());
+            // "./b.html" must resolve next to a.html (inside nested_*/), not
+            // against the main page's directory.
+            expect(exported.outer.child).toBe('');
+        } finally {
+            if (onClosed) await onClosed();
+            if (dir) await Fs.promises.rm(dir, { recursive: true, force: true }).catch(() => {});
+        }
+    });//}}}
+
+});
+
