@@ -437,6 +437,51 @@ employees.forEach(async (employee) => {
 });
 ```
 
+### Multi-Context Triggers
+
+Because a trigger's `context` is resolved with `.find()`, a **wildcard path**
+in a trigger dispatches its action to **every** matching component, in
+sequence, each with its own resolved target. Components that do not implement
+the action are skipped silently, so a single button can operate on a whole
+group of components:
+
+```html
+<!-- Clear every empty item across all sibling lists -->
+<button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹</button>
+```
+
+{% raw %} <!-- form_trav_multicontext_html {{{ --> {% endraw %}
+{% capture form_trav_multicontext_html -%}
+<div id="myForm$$">
+  <div data-smark='{"name":"todo","type":"list","of":"input","min_items":0,"max_items":3}'>
+    <input data-smark type="text" placeholder="To do…">
+  </div>
+  <div data-smark='{"name":"done","type":"list","of":"input","min_items":0,"max_items":3}'>
+    <input data-smark type="text" placeholder="Done…">
+  </div>
+  <p>
+    <button data-smark='{"action":"addItem","context":"todo"}'>➕ Add to-dos</button>
+    <button data-smark='{"action":"addItem","context":"done"}'>➕ Add done</button>
+    <button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹 Clear all empty</button>
+  </p>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture form_trav_multicontext_notes %}
+The **🧹 Clear all empty** button uses `context:"*"`: one click dispatches
+`removeItem` to *both* lists at once. **Try it!** Add a few items, fill some of
+them in, then clear — only the empty ones are removed.
+{% endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="form_trav_multicontext"
+    htmlSource=form_trav_multicontext_html
+    notes=form_trav_multicontext_notes
+    showEditor=true
+    tests=false
+%}
+
 ## Practical Examples
 
 ### Data Copying Between List Items

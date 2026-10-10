@@ -165,6 +165,8 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `removeItem` + `target:"*"` | Remove ALL items |
 | `removeItem` + `preserve_non_empty:true` | Remove only empty items |
 
+**Multi-context triggers:** a wildcard `context` (e.g. `"*"` or `"foo/*"`) dispatches the action to **every** matched component in sequence (each with its own resolved `target`); components lacking the action are skipped. Non-wildcard contexts are unchanged.
+
 **Pitfall:** `target:"shipping"` looks for a child of context. Use `target:"../shipping"` for sibling.
 
 ---

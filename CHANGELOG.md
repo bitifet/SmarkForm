@@ -11,6 +11,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+### Features
+
+- **Multi-context triggers (wildcard `context`)**: when a trigger's `context`
+  (and optionally `target`) is a wildcard path (e.g. `"*"` or `"foo/*"`), the
+  action is now dispatched to **every** matching component in sequence, each
+  with its own resolved target. Components that don't implement the action are
+  skipped silently. This enables one "clean up everything" button such as
+  `{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}`.
+  Behaviour for non-wildcard contexts is unchanged.
+
+---
+
 ## [0.23.0] — 2026-10-04
 
 ✍️ `data-smark-<option>` attribute syntax · 📚 docs migrated to prefixed attributes · 🔄 dev auto-reload restored
