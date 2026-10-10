@@ -2,11 +2,17 @@
 
 > **Status:** authoritative description of the mixin feature as it exists in
 > the current codebase. It supersedes the earlier pre-implementation draft
-> (`0965f07b`).
+> (`0965f07b`) and folds in proposals **A** (per-document base path) and **B**
+> (eager preloading), both implemented. The remaining, **not-yet-implemented**
+> proposals — **C** (scoped registry / shadowing) and **D**
+> (`placement:"nest"`) — live in `spc/proposals/mixins.md`.
 
 Related sources: `src/lib/mixin.js` (expansion engine),
-`src/lib/component.js` (integration, script execution, cycle-chain), and the
-user-facing guide `docs/_advanced_concepts/mixin_types.md`.
+`src/lib/component.js` (integration, `enhance()` entry point, cycle-chain and
+state threading), `src/lib/source_ids.js` (source-ID stamping), `src/main.js`
+(root preload call, global mask registry), `src/types/input.type.js`
+(scoped-mask lookup), and the user-facing guide
+`docs/_advanced_concepts/mixin_types.md`.
 
 ---
 
@@ -119,6 +125,15 @@ A mixin reference may opt out with `preload: false` (default `true`), given in
 the `data-smark` JSON or as `data-smark-preload`. Only external references are
 prefetched; local templates are resolved immediately.
 
+The scan is performed by `preloadMixins(rootNode, rootOptions)` (exported from
+`src/lib/mixin.js`) which the **root form** invokes from its `render()` before
+`super.render()`. It walks the `[data-smark]` / `data-smark-*` elements of the
+root node's subtree (the root node itself is excluded), collects every external
+reference that has not opted out, and issues best-effort fetches through
+`getMixinDocument()`. The external-fetch policy is read from the root options.
+Blocked or unreachable documents are skipped without error; the failure only
+surfaces if the reference is actually expanded later.
+
 ---
 
 ## 5. Expansion pipeline
@@ -143,6 +158,14 @@ When a placeholder whose `type` is a mixin reference is enhanced:
 
 Per-instance scripts, if any, are registered to run after the newly created
 component finishes rendering.
+
+After the clone replaces the placeholder, `enhance()` **re-reads the clone's
+options** through `getNodeOptions(node, {})`. This means the regular
+classification applies to the expanded markup exactly as for authored markup:
+type inference (`inferType()` for a type-less root such as a bare `<img>`,
+`<video>` or `<audio>`), singleton-target type resolution, trigger detection,
+and so on. Mixin references are consumed before `me.types[options.type]` is
+looked up, so no `"type":"#…"` controller ever needs to exist.
 
 ---
 
@@ -203,11 +226,40 @@ Top-level `<script>` siblings of the root element are extracted and executed
 `new Function(scriptEl.textContent)` with `this` bound to the SmarkForm
 component instance. No `context` argument is passed.
 
-- **Mask scripts**: a top-level `<script type="smark-mask" data-name="…">` is
-  not executed as behaviour; it is evaluated into the component's scoped-mask
-  registry (see field masking docs).
-- Nested scripts (inside the root subtree) are always forbidden (§3).
-- Execution is gated by the script policy (§10).
+Top-level scripts do **not** count toward the single-root-element constraint
+(§3). Nested scripts — inside the root subtree, or injected via a `data-for`
+parameter — are always forbidden (§3, §7). Execution of regular scripts is
+gated by the script policy (§10).
+
+### Mixin-scoped masks
+
+A top-level `<script type="smark-mask" data-name="…">` is **not** executed as
+behaviour. It is treated as a declarative mask definition scoped to the mixin:
+
+1. Its text must evaluate to a factory function — it is read with
+   `new Function('return (' + text.trim() + ')')()`.
+2. On success the factory is stored on the expanded component as
+   `_scopedMasks[name]`; a missing `data-name`, a non-function value, or an
+   evaluation error is ignored (a `console.warn` is emitted for the latter).
+
+Because it is an ordinary top-level `<script>`, the same script policy (§10)
+applies to the origin class of the template: with the default `"block"` it
+throws the corresponding `MIXIN_SCRIPT_*_BLOCKED` error, with `"noscript"` it is
+silently discarded, and only with `"allow"` is the factory evaluated.
+
+The scoped-mask map is threaded to the component and all of its descendants via
+the `_scopedMasks` constructor option — the same inheritance channel as
+`_mixinBase` (§4) and `_mixinChain` (§11). When an `input`-type field carrying a
+`mask` option applies its mask, the lookup order is **scoped first, then
+global**:
+
+```
+_scopedMasks[name]  ||  SmarkForm._maskRegistry[name]
+```
+
+This lets a mixin ship masks that neither leak into nor collide with the
+page-global registry. See `docs/_working_with_forms/field_masking.md`
+("Mixin-Scoped Masks") for the author-facing description.
 
 ---
 
@@ -260,9 +312,25 @@ positives, while indirect cycles (A → form → B → A) are still caught.
 
 ## 12. Source IDs
 
-The template root and the clone are stamped with stable source IDs
-(`data-sf-tpl`, `data-sm-src`) used by cross-list drag-and-drop to recognise
-elements originating from the same template/mixin.
+`src/lib/source_ids.js` provides a monotonic `nextSourceId()` counter and a
+`stampSourceIds(rootElement)` helper. IDs must survive `cloneNode()`, hence
+they are stored as `data-*` attributes.
+
+- **`data-sf-tpl`** — assigned once to the template root *before* cloning
+  (`templateRoot.dataset.sfTpl`), so every clone of that template shares the
+  same value. This is the attribute the **sortable** decorator compares to
+  allow cross-list drag-and-drop between lists created from the same mixin
+  template (`list.decorators/sortable.deco.js`).
+- **`data-sm-src`** — a per-element id assigned by `stampSourceIds()` to every
+  `[data-smark]` / `data-smark-*` element in a subtree. External documents are
+  stamped as they are fetched (`getMixinDocument`) and each expanded clone is
+  stamped after option/attribute merge. It gives elements cloned from the same
+  source a stable identity. (Note: the current code writes `data-sm-src` but no
+  reader consumes it yet; `data-sf-tpl` is the attribute with an active
+  consumer.)
+
+Both ids come from the same counter but are assigned in independent scopes
+(one per template, one per element).
 
 ---
 
@@ -295,5 +363,23 @@ elements originating from the same template/mixin.
   preprocessing pass.
 - **No external templating engine** — cloning and substitution are done with
   native DOM APIs.
+
+---
+
+## 15. Integration points
+
+| Concern | Where |
+|---|---|
+| `isMixinRef()` test + expansion entry | `component.js` `enhance()`, first step |
+| Expansion engine (`expandMixin`, `preloadMixins`, `isMixinRef`) | `src/lib/mixin.js` |
+| External-document cache + source stamping | `src/lib/mixin.js` (`docCache`, `getMixinDocument`) |
+| Source-ID helpers | `src/lib/source_ids.js` |
+| Root eager preload call | `src/main.js` `render()` → `preloadMixins(me.targetNode, me.options)` |
+| Global mask registry (`registerMask`, `_maskRegistry`) | `src/main.js` |
+| Scoped-mask lookup | `src/types/input.type.js` `_applyMask()` |
+| State threading options (`_mixinChain`, `_scopedMasks`, `_mixinBase`) | `component.js` constructor, spread from `enhance()` |
+| Cross-list drag from the same template | `src/types/list.decorators/sortable.deco.js` (`data-sf-tpl`) |
+| Tests | `test/mixin_types.tests.js` |
+| User guide | `docs/_advanced_concepts/mixin_types.md` (and `field_masking.md` for scoped masks) |
 
 
