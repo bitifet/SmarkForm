@@ -84,7 +84,16 @@ export class trigger extends SmarkComponent {
             : parents.find(p=>(typeof p.actions[action] == "function"))
         );
 
-        const target = (
+        // Multi-context: a wildcard context path may resolve to several
+        // components at once (see find()'s multi-match mode). Keep only those
+        // that actually implement the action; the rest are skipped silently.
+        const contexts = (
+            Array.isArray(context)
+                ? context.filter(c => c && typeof c.actions?.[action] === 'function')
+                : null
+        );
+
+        const target = ( !contexts && (
             targetPath ? context?.find(targetPath) // Explicit target (context relative)
             : contextPath ? null // Explicit context path => don't mind component position
             : (
@@ -93,15 +102,27 @@ export class trigger extends SmarkComponent {
                     .find(p=>p.parent?.targetNode.isSameNode(context?.targetNode))
                 || null
             )
-        );
+        ));
 
-        return {
+        const opts = {
             action,
             origin: me,
-            context,
-            target,
             ...otherOptions,
         };
+        if (contexts) {
+            // Build one option block per matched context, each with its own
+            // resolved target, then dispatch them in sequence (see
+            // onTriggerClick). The first context is kept for back-compat.
+            opts._triggerContexts = contexts.map(ctx => ({
+                ...opts,
+                context: ctx,
+                target: targetPath ? ctx.find(targetPath) : null,
+            }));
+            opts.context = contexts[0];
+            opts.target = opts._triggerContexts[0]?.target ?? null;
+            return opts;
+        }
+        return { ...opts, context, target };
 
     };//}}}
 };
@@ -111,6 +132,18 @@ export async function onTriggerClick(ev) {
     const triggerComponent = me.getComponent(ev.target);
     const options = triggerComponent.getTriggerArgs();
     if (! options) return; // Not a trigger.
+    // Multi-context: dispatch the action once per matched context (each with
+    // its own resolved target), skipping those that don't implement it.
+    const {_triggerContexts} = options;
+    if (_triggerContexts) {
+        for (const task of _triggerContexts) {
+            const {context, action} = task;
+            const mtd = context?.actions[action];
+            if (typeof mtd !== 'function') continue;
+            await mtd(task.data, task);
+        }
+        return;
+    }
     const {context, action, data} = options;
     const mtd = context?.actions[action]
     if (
