@@ -1409,9 +1409,9 @@ import/export JSON while regular *inputs* import/export text --or number--).
                 <th>Whole Form:</th>
             </tr>
             <tr style="text-align:center">
-                <td><button data-smark='{"action":"import","context":"name","target":"/editor"}'>⬆️  Import</button></td>
-                <td><button data-smark='{"action":"import","context":"surname","target":"/editor"}'>⬆️  Import</button></td>
-                <td><button data-smark='{"action":"import","target":"/editor"}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","context":"name","target":"/editor","setDefault":false}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","context":"surname","target":"/editor","setDefault":false}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","target":"/editor","setDefault":false}'>⬆️  Import</button></td>
             </tr>
             <tr style="text-align:center">
                 <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
