@@ -23,6 +23,11 @@ Custom CSS that uses `@media (prefers-color-scheme: dark)` and `@media (prefers-
 - Tab components (code examples) adapt to color scheme
 - Edit toolbar and form labels styled for dark mode
 - **Iframe preview support**: dark mode CSS injected into example iframes via sampletabs base CSS, so live form previews also respect `prefers-color-scheme: dark`
+- **Sidebar nav states**: navigation links are light gray (`#b8b8b8` / child `#a8a8a8`); the **active** page renders in black with normal weight (overriding the theme's `font-weight: 600`), while **hover** renders in black and bold so the pointer target is unambiguous
+- **Logo hover swap**: the dark-mode logo (`smarkform_dark.svg`) swaps back to the light-mode logo (`smarkform.svg`) on hover for visual feedback
+- **GitHub icon**: the top-right GitHub icon is inverted (`filter: invert(1)`) to stay visible on the dark auxiliary nav
+- **ACE editor theme**: the embedded code editor switches to the `monokai` theme under dark mode (via `matchMedia` in `_includes/components/sampletabs_ctrl.md`)
+- **Semi-transparent example backgrounds**: example-only CSS uses `rgba(168,168,168,.25)` / `rgba(165,165,165,.25)` instead of opaque `#fff`/`#fafafa`, so those surfaces read correctly in both light and dark mode without per-element `@media` overrides inside iframes
 
 ### `/assets/js/auto-logo-switcher.js`
 JavaScript that dynamically switches the site logo between light and dark versions based on the user's color scheme preference.
@@ -43,6 +48,8 @@ Jekyll include file that loads the custom CSS and JavaScript files. This file is
 2. **Logo Switching**: The JavaScript detects the color scheme preference and updates the `.site-logo` element's background image to use either:
    - `/assets/logo/smarkform.svg` (light mode)
    - `/assets/logo/smarkform_dark.svg` (dark mode)
+
+   In dark mode CSS also swaps the logo back to `smarkform.svg` on hover for visual feedback.
 
 3. **Automatic Updates**: When the user changes their system color scheme preference, both the CSS and JavaScript automatically update to match.
 
