@@ -214,6 +214,48 @@ poster while empty.
 - Documentation: `docs/_component_types/type_video.md`
 - Spec: `spc/video.md` (authoritative design)
 
+### Mixin Types
+
+SmarkForm's **mixin types** let a component be defined by an HTML `<template>`
+blueprint instead of a built-in native type. A `type` value that contains `#`
+is treated as a mixin reference, expanded during enhancement by cloning the
+template's single root element, merging the placeholder's options/attributes
+into the clone, and replacing the placeholder in place.
+
+**Key API**:
+- Reference forms: `"#localId"` (template in the current/source document) and
+  `"<url>#templateId"` (external document + template id). Every reference
+  needs a `#fragment` (`MIXIN_TYPE_MISSING_FRAGMENT` otherwise).
+- References resolve against the **source document** they appear in (the page,
+  or the external document an enclosing template was loaded from) via an
+  inherited `_mixinBase`; sibling templates inside an external file can be
+  referenced with `#id`, and further files with relative URLs.
+- External documents are fetched **once per page load** (`Map<url, Promise<Document>>`)
+  and cached; the expansion stack is keyed `url#templateId` for cycle detection
+  (`MIXIN_CIRCULAR_DEPENDENCY`).
+- **Eager preloading (`preload`)**: external documents referenced by a form are
+  prefetched at render time (including list item templates) without blocking
+  render; opt out with `preload:false` (also `data-smark-preload="false"`).
+  Preloading obeys the external-fetch policy and is silently skipped when blocked.
+- Options/attributes from the placeholder **override** the template defaults
+  (option merge) except where a special merge rule applies; template `<style>`
+  is deduplicated per template; toggling `data-for`/rename slots is supported.
+- **Secure by default** (root-level options): `smark_mixin_allowExternal`
+  (`block`|`same-origin`|`allow`, or per-origin object) controls external fetch;
+  `smark_mixin_allowLocalScripts`, `smark_mixin_allowSameOriginScripts`,
+  `smark_mixin_allowCrossOriginScripts` (`block`|`noscript`|`allow`, or object)
+  control top-level template `<script>` execution.
+- **Gotcha**: never place `<template>` nodes as direct children of a SmarkForm
+  `list` — a list consumes every direct child as a role template.
+
+**Configuration file locations**:
+- Tests: `test/mixin_types.tests.js`
+- Implementation: `src/lib/mixin.js` (expansion engine), `src/lib/component.js`
+  (integration, option threading, `inferType`), `src/lib/source_ids.js`
+- Documentation: `docs/_advanced_concepts/mixin_types.md`
+- Spec: `spc/mixins.md` (authoritative design); pending proposals C & D are in
+  the untracked `spc/mixins-proposals.md`
+
 ### Playwright Test Runner
 
 **What it does**: Runs end-to-end tests against the built distribution files and validates documentation examples.
@@ -625,6 +667,10 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 | `AGENTS/Cheatsheet.md` | Developer Cheatsheet reference — what each section covers, how agents should use it when generating SmarkForm code, and validation details |
 | `AGENTS/Documentation-Tracking.md` | Docs-change tracking — whenever an agent creates or modifies a documentation file, add a brief entry to the gitignored `UPDATED_DOCS.md` so reviewers and fork-maintainers can see which pages changed |
 | `AGENTS/File-Access-Errors.md` | File-access error handling — before reporting a missing file or asking for permission, verify the path: check for typos, correct worktree, tilde expansion, case sensitivity, and symlinks |
+| `AGENTS/Build-Computed-Data.md` | How the Rollup `computed_plugin` writes `docs/_data/computed.json` (bundle size, timestamps) and how Jekyll exposes it as `site.data.computed` |
+| `AGENTS/Documentation-Guidelines.md` | Authoring rules for the Jekyll/Just-the-Docs pages under `docs/` — vim fold markers around `{% capture %}` blocks, sampletabs structure, and other conventions |
+| `AGENTS/Release-Process.md` | Step-by-step guide for preparing a SmarkForm release (gather info, version bump, CHANGELOG, `RELEASE_PREP.md`, final squash commit on `main`) |
+| `AGENTS/Showcase-Restructure-Plan.md` | Record of the showcase consolidation (25 → 20 examples) and the removal/conversion decisions behind it |
 
 **Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
 
