@@ -537,6 +537,112 @@ test.describe('Sortable List – move reorder integrity', () => {
     });
 });
 
+// ─── Cross-list drag between nested sortable lists (movingDepth) ──────────────
+//
+// Regression for the showcase "school_groups" example: the students lists are
+// nested one level below the groups list.  When a drop lands inside an inner
+// students list, the event bubbles up to the outer groups list, whose drop
+// handler overwrote `_crossListDrop.targetList` with the groups list itself
+// (missing `e.stopPropagation()`), so `move()` saw an incompatible sibling
+// distance and silently aborted the drag.
+
+const nestedCrossListPugSrc = `extends layout.pug
+block mainForm
+    div
+        ul(data-smark={
+            type: "list",
+            name: "groups",
+            sortable: true,
+            min_items: 0,
+        })
+            li
+                input(data-smark={
+                    type: "input",
+                    name: "groupName",
+                })
+                ul(data-smark={
+                    type: "list",
+                    name: "students",
+                    sortable: true,
+                    movingDepth: 2,
+                    min_items: 0,
+                })
+                    li
+                        input(data-smark={
+                            type: "input",
+                            name: "sname",
+                        })
+`;
+
+test.describe('Nested sortable lists – movingDepth cross-list drag', () => {
+    test('drops an item into a nested sibling list without the outer list stealing the drop', async ({ page }) => {
+        let onClosed;
+        try {
+            const rendered = await renderPug({
+                title: 'Nested Cross-list Drag',
+                src: nestedCrossListPugSrc,
+            });
+            onClosed = rendered.onClosed;
+            await page.goto(rendered.url);
+            await page.evaluate(() => form.rendered);
+
+            const result = await page.evaluate(async () => {
+                const groups = form.find("/groups");
+                await groups.addItem(null, {silent: true});
+                await groups.addItem(null, {silent: true});
+                await groups.children[0].import({groupName: "A"}, {silent: true});
+                await groups.children[1].import({groupName: "B"}, {silent: true});
+
+                const students0 = form.find("/groups/0/students");
+                const students1 = form.find("/groups/1/students");
+                await students0.addItem(null, {silent: true});
+                await students0.children[0].import({sname: "Alice"}, {silent: true});
+
+                const srcItem = students0.children[0].targetNode;
+                const dstNode = students1.targetNode;
+
+                // Synthetic drag sequence (no real pointer): dragstart on the
+                // source item, then drop on the *inner* destination list.
+                const dt = {setDragImage() {}};
+                const fire = (type, target) => {
+                    const ev = new Event(type, {bubbles: true, cancelable: true});
+                    Object.defineProperty(ev, "dataTransfer", {value: dt});
+                    Object.defineProperty(ev, "clientY", {value: 0});
+                    Object.defineProperty(ev, "offsetX", {value: 0});
+                    target.dispatchEvent(ev);
+                };
+                fire("dragstart", srcItem);
+                fire("dragover", dstNode);
+                fire("drop", dstNode);
+                fire("dragend", srcItem);
+
+                // Let the async move() settle.
+                for (
+                    let i = 0;
+                    i < 100
+                    && !(students0.children.length === 0 && students1.children.length === 1);
+                    i++
+                ) {
+                    await new Promise(r => setTimeout(r, 50));
+                }
+
+                const out = await form.export(null, {silent: true});
+                return {
+                    srcCount: students0.children.length,
+                    dstCount: students1.children.length,
+                    moved: out.groups[1]?.students[0]?.sname,
+                };
+            });
+
+            expect(result.srcCount).toBe(0);
+            expect(result.dstCount).toBe(1);
+            expect(result.moved).toBe("Alice");
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });
+});
+
 // ─── Enter-key navigation inside a scalar list ────────────────────────────────
 // Regression for: mobile Brave skips one field per Enter keypress.
 //
