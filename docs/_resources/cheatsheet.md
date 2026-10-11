@@ -155,6 +155,8 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `".+1"` | Next list item sibling |
 | `"../sibling"` | Sibling of parent |
 | `"items/*"` | All children matching wildcard |
+| `"*"` (in context) | All components implementing the action (multi-dispatch) |
+| `"*"` (in target) | All children of the context |
 
 **Target semantics:**
 
