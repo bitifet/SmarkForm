@@ -1237,7 +1237,7 @@ actions on the whole form **(their *context*)**:
 
 ### Intercepting the *import* and *export* events
 
-Below these lines you can see **the exact same form** with additional `💾 Save`
+Below these lines you can see a small example form with additional `💾 Save`
 and `📂 Load` buttons.
 
 They are *export* and *import* triggers, but placed outside of any subform so
@@ -1254,20 +1254,178 @@ In the *JS* tab there is a simple JavaScript code that:
 {% raw %} <!-- nested_forms_with_load_save {{{ --> {% endraw %}
 {% capture nested_forms_with_load_save -%}
 <div id="myForm$$">
-{{ nested_forms }}
-    <div style="display: flex; justify-content: space-evenly; margin-top: 0.5em">
-        <button
-            data-smark-action="export"
-            title="Export the whole form as JSON (see JS tab)"
-            >💾 Save</button>
-        <button
-            data-smark-action="import"
-            title="Import the whole form as JSON (see JS tab)"
-            >📂 Load</button>
-    </div>
+  <h2>Model details</h2>
+  <p>
+    <label data-smark>Model Name:</label>
+    <input type="text" name="model" data-smark />
+  </p>
+  <p>
+    <label data-smark>Type:</label>
+    <select name="type" data-smark='{"encoding":"json"}'>
+      <option value='null'>👇 Please select...</option>
+      <option value='"Car"'>Car</option>
+      <option>Bicycle</option>
+      <option>Motorcycle</option>
+      <option>Van</option>
+      <option>Pickup</option>
+      <option>Quad</option>
+      <option>Truck</option>
+    </select>
+  </p>
+  <p>
+    <label data-smark>Detailed description:</label>
+    <textarea name="longdesc" data-smark></textarea>
+  </p>
+  <p>
+    <label data-smark>Seats:</label>
+    <input type="number" name="seats" min="4" max="9" data-smark />
+  </p>
+  <p>
+    <label data-smark>Driving Side:</label>
+    <input type="radio" name="side" value="left" data-smark /> Left
+    <input type="radio" name="side" value="right" data-smark /> Right
+  </p>
+  <p>
+    <label data-smark>Color:</label>
+    <span data-smark='{"type":"color", "name":"color"}'>
+      <input data-smark>
+      <button data-smark='{"action":"clear"}' title="Indifferent or unknown">❌</button>
+    </span>
+  </p>
+  <fieldset data-smark='{"name":"safety","type":"form"}'>
+    <legend>Safety Features:</legend>
+    <label><input type="checkbox" name="airbag" data-smark /> Airbag</label>
+    <label><input type="checkbox" name="abs" data-smark /> ABS</label>
+    <label><input type="checkbox" name="esp" data-smark /> ESP</label>
+    <label><input type="checkbox" name="tc" data-smark /> TC</label>
+  </fieldset>
+  <div style="display: flex; justify-content: space-evenly; margin-top: 0.5em">
+    <button
+        data-smark-action="export"
+        title="Export the whole form as JSON (see JS tab)"
+        >💾 Save</button>
+    <button
+        data-smark-action="import"
+        title="Import the whole form as JSON (see JS tab)"
+        >📂 Load</button>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- form_export_example_import_export_js {{{ --> {% endraw %}
+{% capture form_export_example_import_export_js -%}
+myForm.on("AfterAction_export", ({data})=>{
+    /* Pretty print and show */
+    if (typeof data == "object") data = JSON.stringify(data, null, 4);
+    window.alert(data);
+});
+
+myForm.on("BeforeAction_import", async (ev)=>{
+    /* BONUS: Read previous data to use it as default value */
+    /*        so that you only need to edit it.              */
+    let previous_value = await ev.context.export();
+    let isObject = typeof previous_value == "object";
+    if (isObject) previous_value = JSON.stringify(previous_value);
+
+    /* Read new value: */
+    let data = window.prompt("Edit JSON data", previous_value);
+    if (data === null) return void ev.preventDefault(); /* User cancelled */
+
+    /* Parse as JSON, warn if invalid, and set */
+    try {
+        if (isObject) data = JSON.parse(data);
+        ev.data = data; /* ← Set the new value */
+    } catch(err) {
+        alert(err.message); /* ← Show error message */
+        ev.preventDefault();
+    };
+});
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- notes_nested_forms_with_load_save {{{ --> {% endraw %}
+{% capture notes_nested_forms_with_load_save -%}
+👉 The `💾 Save` and `📂 Load` buttons are plain *export* and *import* triggers
+whose natural context is the whole form.
+
+👉 Instead of wiring a `target`, the example intercepts the related events from
+the *JS* tab: exported data is shown in a `window.alert(...)` dialog and a new
+JSON value is requested through a `window.prompt(...)` dialog.
+
+👉 See the *JS* tab to see how the <em>BeforeAction_import</em> event handler
+prefills the prompt dialog with the JSON export of the whole form.
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue_nested_forms_with_load_save -%}
+{
+    "model": "Toyota Yaris",
+    "type": "Car",
+    "longdesc": "A reliable compact car perfect for city driving.",
+    "seats": 5,
+    "side": "left",
+    "color": "#3a7bd5",
+    "safety": {
+        "airbag": true,
+        "abs": true,
+        "esp": false,
+        "tc": false
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="nested_forms_with_load_save"
+    htmlSource=nested_forms_with_load_save
+    jsSource=form_export_example_import_export_js
+    notes=notes_nested_forms_with_load_save
+    demoValue=demoValue_nested_forms_with_load_save
+    selected="preview"
+    showEditor=false
+    tests=false
+%}
+
+👉 Remember to check the `📝 Notes` tab for more...
+
+{: .info :}
+> The JS code goes a little further than strictly needed, to:
+>
+>   * Pretty-print the JSON data in the *export* action making it more
+>     readable.
+>
+>   * Prefill the `window.prompt(...)` dialog with the JSON of current data in
+>     the *import* allowing you to edit it instead of having to write it from
+>     scratch.
+>
+> 👌 But you get the idea: This is just a simple mock of how you can interact
+> with your application logic or server APIs.
+>
+> {: .hint :}
+> > Notice you can even abort the *import* action by calling
+> > `ev.preventDefault()` in case of failure or, as shown for the `❌ Clear`
+> > button in the
+> > [🔗 Quick Start]({{"getting_started/quick_start#event-handling" | relative_url }})
+> > section, in case of user cancellation.
+
+### Submitting the form
+
+So far we have seen how to export and import form data using event handlers.
+But often all you really need is to **submit the form** — either to an HTTP
+endpoint or to the user's email client.
+
+*SmarkForm* enhances native browser form submission so that correctly-typed
+values (as collected by its *export* mechanism) are what get sent — not the
+raw strings that native form fields would produce.
+
+All standard HTML5 submission attributes are supported: `action`, `method`,
+`enctype`, `target`, and their per-button overrides (`formaction`, `formmethod`,
+etc.). For non-JSON encodings the data is flattened into name/value pairs and
+submitted via a temporary `<form>` element; for `enctype="application/json"` it
+is sent via `fetch()`.
+
+The example below shows a simple contact form submitted via `mailto:`. When the
+**📧 Send Email** button is clicked, the user's email client opens pre-populated
+with the form data:
 
 {% raw %} <!-- submit_form_example {{{ --> {% endraw %}
 {% capture submit_form_example -%}
