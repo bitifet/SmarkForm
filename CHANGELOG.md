@@ -23,6 +23,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}`.
   Behaviour for non-wildcard contexts is unchanged.
 
+### Fixes
+
+- **`movingDepth` cross-list drags between nested lists**: a regression
+  (introduced while cherry-picking sortable improvements) left the inner
+  sortable list's `drop` handler without `e.stopPropagation()`, so a drop on a
+  nested list bubbled to the enclosing sortable list, which overwrote the
+  drop target and silently aborted the move. Restored event-propagation
+  stopping — drops inside a nested sortable list now move items between the
+  inner lists as intended (e.g. the showcase school-groups pattern).
+
 ---
 
 ## [0.23.0] — 2026-10-04
