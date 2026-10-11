@@ -52,6 +52,14 @@ If sources disagree, prefer the highest-priority source.
 - Use `myForm` as the SmarkForm instance variable in generated JS examples.
   This keeps generated code consistent with the docs and makes it easier for
   users to follow. The code works identically with any variable name.
+- Prefer `<label data-smark>` for field labels: the label is auto-linked to
+  the adjacent field by DOM proximity, so no `for`/`id` attributes are needed.
+  For display-only labels on non-`<label>` elements use
+  `data-smark='{"type":"label"}'`.
+- To scope options (name, type, mask, targeted buttons) to one field, wrap a
+  single inner field with bare `data-smark` in a container that carries the
+  component options — the
+  [Singleton Pattern](https://smarkform.bitifet.net/getting_started/core_component_types#the-singleton-pattern).
 
 ## File Fields (component-specific guidance)
 
