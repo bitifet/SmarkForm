@@ -901,6 +901,34 @@ This is [well explained]({{ "/resources/user_guide" | relative_url
 feel free to link it in your UI or documentation to [help your users discover this
 kind of features]({{ "/community/branding" | relative_url }}).
 
+
+### Can one trigger act on several components at once?
+
+Yes — when the `context` (and optionally `target`) of a trigger is a **wildcard**
+path (e.g. `"*"` or `"foo/*"`), SmarkForm resolves it to **every matching
+component** and dispatches the action to each one in sequence. This is the
+multi-context edge case of a trigger.
+
+A single `context:"*"` button can therefore affect many independent components
+across the form in one click:
+
+```html
+<!-- Removes empty items from EVERY list in the form at once -->
+<button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹 Clean all lists</button>
+```
+
+A few things to keep in mind:
+
+- Only components that **implement the requested action** receive the call;
+  others are skipped silently (no error).
+- Each matched context gets its own dispatch with its own resolved `target` —
+  so `target:"*"` operates on the children of *each* context individually.
+- Actions run **sequentially** and are awaited one by one.
+- For a normal (non-wildcard) `context`, behaviour is unchanged: the action
+  fires on a single component as always.
+
+See [Wildcard `context` Multi-Dispatch]({{ "/working_with_forms/form_traversing#wildcard-context-multi-dispatch" | relative_url }}) for full details.
+
 ## Behaviour & Troubleshooting
 
 ### Where's the error message when something goes wrong?
@@ -1374,6 +1402,32 @@ build step if you use the CDN.
 > Not sure whether SmarkForm is the right fit for your project? Open a
 > [discussion](https://github.com/bitifet/SmarkForm/discussions) — we're happy
 > to help you evaluate!
+
+
+### Why does `clear` restore my default value instead of emptying the field?
+
+The `clear` action resets a field to its **type-level empty state** (empty
+string for inputs, empty array for lists, empty object for forms), NOT its
+default value.  If the exported data still shows a value after clearing, it
+is because you are calling `clear` on a **parent component** (e.g. the whole
+form) rather than on the individual field.
+
+A parent's `clear` iterates over its children and calls `clear` on each of
+them — but a child's default value, if set, becomes the field's new state.
+To completely empty a specific field regardless of its default, call `clear`
+directly on that field (e.g. via `{"action":"clear","context":"fieldName"}`).
+
+This distinction applies to `reset` as well: `reset` restores the
+`defaultValue`, while `clear` goes all the way to the empty state.  Both are
+recursive when applied to a parent component.
+
+```html
+<!-- Clears the whole form → fields with defaults keep their defaults -->
+<button data-smark='{"action":"clear"}'>❌ Clear form</button>
+
+<!-- Clears only the "colour" field → becomes null regardless of default -->
+<button data-smark='{"action":"clear","context":"colour"}'>❌ Clear colour</button>
+```
 
 
 ## Have a question not covered here?
