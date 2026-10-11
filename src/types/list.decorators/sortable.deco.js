@@ -143,36 +143,44 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             _crossListDrop.sourceList
                             && _crossListDrop.sourceList !== me
                         ) {
-                        let target = e.target;
-                        while (
-                            target.parentElement
-                            && target.parentElement !== me.targetNode
-                        ) target = target.parentElement;
-                        const targetComp = (
-                            target !== me.targetNode
-                            ? me.getComponent(target)
-                            : null
-                        );
-                        // If the target is not a regular list item (e.g. header,
-                        // footer, or the list container itself), insert at the end.
-                        const targetName = String(targetComp?.name ?? "");
-                        _crossListDrop.targetList = me;
-                        _crossListDrop.to = (
-                            targetComp && !isNaN(Number(targetName))
-                            ? targetComp
-                            : null
-                        );
-                        // Insert before or after based on mouse vertical position.
-                        // When dropping on a non-item (to === null), always append.
-                        if (_crossListDrop.to) {
-                            const rect = target.getBoundingClientRect();
-                            _crossListDrop.position = (
-                                e.clientY < rect.top + rect.height / 2
-                                ? "before" : "after"
+                            let target = e.target;
+                            while (
+                                target.parentElement
+                                && target.parentElement !== me.targetNode
+                            ) target = target.parentElement;
+                            const targetComp = (
+                                target !== me.targetNode
+                                ? me.getComponent(target)
+                                : null
                             );
-                        } else {
-                            _crossListDrop.position = "after";
-                        }
+                            // If the target is not a regular list item (e.g.
+                            // header, footer, or the list container itself),
+                            // insert at the end.
+                            const targetName = String(targetComp?.name ?? "");
+                            _crossListDrop.targetList = me;
+                            _crossListDrop.to = (
+                                targetComp && !isNaN(Number(targetName))
+                                ? targetComp
+                                : null
+                            );
+                            // Insert before or after based on mouse vertical
+                            // position. When dropping on a non-item
+                            // (to === null), always append.
+                            if (_crossListDrop.to) {
+                                const rect = target.getBoundingClientRect();
+                                _crossListDrop.position = (
+                                    e.clientY < rect.top + rect.height / 2
+                                    ? "before" : "after"
+                                );
+                            } else {
+                                _crossListDrop.position = "after";
+                            }
+                            // The inner list is the real drop target. Stop the
+                            // event so an enclosing sortable list does not
+                            // overwrite _crossListDrop with itself (which broke
+                            // cross-list drags between nested lists, e.g. the
+                            // school_groups showcase).
+                            e.stopPropagation();
                         };
                     });
                     me.targetNode.addEventListener("dragend", async e => {
