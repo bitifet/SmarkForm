@@ -425,16 +425,17 @@ const specificItems = form.find("data/?/value");
 ### Wildcard `context` Multi-Dispatch
 
 When a wildcard path (e.g. `"*"` or `"foo/*"`) is used as the `context` of a trigger button,
-SmarkForm automatically dispatches the action to **all** components that match the pattern and
-implement the requested action:
+SmarkForm resolves it with `.find()` and dispatches the action to **every** matching component,
+in sequence, each with its own resolved `target`. Components that do not implement the
+requested action are skipped silently:
 
 ```html
 <!-- Clears empty items from ALL lists in the form at once -->
 <button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹</button>
 ```
 
-- `context:"*"` resolves to **every named component** that implements `removeItem`
-  (i.e., all list components in the form).
+- `context:"*"` resolves to **every named component** in scope that implements
+  `removeItem` (i.e., all list components in the form).
 - `target:"*"` then resolves to all children of each matching context.
 - The action fires sequentially on each matching context — skipping any that
   don't implement the action, avoiding errors on non-list components.
@@ -443,6 +444,128 @@ implement the requested action:
 > `context` enables a **single button** to affect multiple independent components
 > across the form — each receiving its own action dispatch with its own resolved
 > target.
+
+The board below is three independent lists laid out as columns, sharing a single
+🧹 button that clears the empty slots in **all** of them at once:
+
+{% raw %} <!-- form_trav_kanban_html {{{ --> {% endraw %}
+{% capture form_trav_kanban_html -%}
+<div id="myForm$$">
+  <div class="kanban">
+    <div class="column">
+      <div data-smark='{"type":"#kanbanCol","name":"todo"}'>
+        <span data-for="colLabel">To Do</span>
+      </div>
+    </div>
+    <div class="column">
+      <div data-smark='{"type":"#kanbanCol","name":"progress"}'>
+        <span data-for="colLabel">In Progress</span>
+      </div>
+    </div>
+    <div class="column">
+      <div data-smark='{"type":"#kanbanCol","name":"done"}'>
+        <span data-for="colLabel">Done</span>
+      </div>
+    </div>
+  </div>
+  <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
+  <button
+    data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true,"autoscroll":"elegant"}'
+    title="Clear empty tasks from all columns"
+    class="clear-empties"
+  >🧹</button>
+</div>
+
+<template id="kanbanCol">
+  <style>
+    .kanban-mixin strong { display: block; margin-bottom: 0.4em; font-weight: 600; }
+    .kanban-mixin .card { display: flex; gap: 0.3em; margin: 0.3em 0; padding: 0.4em; background: #f8f9fa; border-radius: 4px; }
+    .kanban-mixin .card input { flex: 1; }
+    .kanban-mixin .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
+  </style>
+  <div data-smark='{"type":"list","sortable":true,"min_items":0,"movingDepth":1}' class="kanban-mixin">
+    <div data-smark='{"role":"header"}'>
+      <strong id="colLabel">Column</strong>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add task">➕</button>
+    </div>
+    <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
+    <div class="card">
+      <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
+      <input data-smark type="text" name="title" placeholder="Task title...">
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+    </div>
+  </div>
+</template>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %} <!-- form_trav_kanban_css {{{ --> {% endraw %}
+{% capture form_trav_kanban_css -%}
+{{""}}#myForm$$ .kanban { display: flex; gap: 1em; align-items: stretch; }
+{{""}}#myForm$$ .column { flex: 1; min-width: 200px; border: 1px solid #ddd; border-radius: 6px; padding: 0.5em; display: flex; flex-direction: column; }
+{{""}}#myForm$$ .column > [data-smark] { flex: 1; min-height: 0; }
+{{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
+{{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
+{{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button { position: relative; }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %} <!-- form_trav_kanban_js {{{ --> {% endraw %}
+{% capture form_trav_kanban_js -%}
+myForm.on("BeforeAction_removeItem", async (ev) => {
+  // Never confirm for bulk operations (target:*) or preserve_non_empty
+  if (
+    ev.target instanceof Array
+    || ev.preserve_non_empty
+  ) return;
+  if (await ev.target?.isEmpty()) return;
+  if (!window.confirm("Remove this task?")) ev.preventDefault();
+});
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% capture form_trav_kanban_demoValue -%}
+{
+  "todo": [
+    {"title": "Write documentation"},
+    {"title": "Review PR"}
+  ],
+  "progress": [
+    {"title": "Fix layout bug"}
+  ],
+  "done": [
+    {"title": "Setup CI"}
+  ]
+}
+{%- endcapture %}
+
+{% capture form_trav_kanban_notes -%}
+👉 **One button, every column.** The 🧹 button uses `context:"*"`, so a single
+click dispatches `removeItem` to *all* three lists at once — `preserve_non_empty`
+leaves the filled tasks untouched.  **Try it!** Add a couple of cards, then clear
+the empty slots in one go.
+
+👉 **Drag between columns.** All three lists have `sortable:true` — drag any task
+card to another column to move it.
+
+👉 **Hotkeys.** Hold <code>Ctrl</code> to discover <code>+</code> (add task) and
+<code>-</code> (remove task) on each column.  The same hotkeys adapt to the column
+you are working in (context sensitivity).
+
+> See <a href="{{ "/working_with_forms/hotkeys" | relative_url }}">Hotkeys</a>
+> for the full keyboard-shortcut reference.
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="form_trav_kanban"
+    htmlSource=form_trav_kanban_html
+    cssSource=form_trav_kanban_css
+    jsSource=form_trav_kanban_js
+    notes=form_trav_kanban_notes
+    demoValue=form_trav_kanban_demoValue
+    selected="preview"
+    showEditor=true
+    tests=false
+%}
 
 ### Multi-Match Results
 
@@ -458,51 +581,6 @@ employees.forEach(async (employee) => {
     console.log(data);
 });
 ```
-
-### Multi-Context Triggers
-
-Because a trigger's `context` is resolved with `.find()`, a **wildcard path**
-in a trigger dispatches its action to **every** matching component, in
-sequence, each with its own resolved target. Components that do not implement
-the action are skipped silently, so a single button can operate on a whole
-group of components:
-
-```html
-<!-- Clear every empty item across all sibling lists -->
-<button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹</button>
-```
-
-{% raw %} <!-- form_trav_multicontext_html {{{ --> {% endraw %}
-{% capture form_trav_multicontext_html -%}
-<div id="myForm$$">
-  <div data-smark='{"name":"todo","type":"list","of":"input","min_items":0,"max_items":3}'>
-    <input data-smark type="text" placeholder="To do…">
-  </div>
-  <div data-smark='{"name":"done","type":"list","of":"input","min_items":0,"max_items":3}'>
-    <input data-smark type="text" placeholder="Done…">
-  </div>
-  <p>
-    <button data-smark='{"action":"addItem","context":"todo"}'>➕ Add to-dos</button>
-    <button data-smark='{"action":"addItem","context":"done"}'>➕ Add done</button>
-    <button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹 Clear all empty</button>
-  </p>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture form_trav_multicontext_notes %}
-The **🧹 Clear all empty** button uses `context:"*"`: one click dispatches
-`removeItem` to *both* lists at once. **Try it!** Add a few items, fill some of
-them in, then clear — only the empty ones are removed.
-{% endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="form_trav_multicontext"
-    htmlSource=form_trav_multicontext_html
-    notes=form_trav_multicontext_notes
-    showEditor=true
-    tests=false
-%}
 
 ## Practical Examples
 
