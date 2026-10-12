@@ -17,7 +17,9 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 
 ### Agent Behavior Preferences
 
-- **Default to opening a PR** for all changes unless the user explicitly says otherwise. Always use `report_progress` to commit and push changes to a PR branch.
+- **Never push without an explicit request.** Committing locally as part of your work is fine, but leave pushing (and force-pushing) entirely to the user, who reviews everything personally before publishing. It is fine to *remind* the user when a lot of work is sitting unpushed, but never push on your own initiative.
+
+- **Default to opening a PR** for all changes unless the user explicitly says otherwise. Always use `report_progress` to commit changes to a PR branch. Pushing that branch still requires an explicit request — see the rule above.
 
 - **Make step commits**: When several steps are specified in the task, make at least one commit per each step. In case of bug fixes, a commit with failing tests should come first, then a commit with the fix, and finally a commit with documentation updates, etc... if needed. These are minimums: There can be more intermediate commits if it makes sense to break down the work into smaller steps or there is something that needs to be fix in an already committed change, but there should not be fewer than one commit per step.
 
@@ -665,7 +667,7 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 | `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
 | `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
 | `AGENTS/Cheatsheet.md` | Developer Cheatsheet reference — what each section covers, how agents should use it when generating SmarkForm code, and validation details |
-| `AGENTS/Documentation-Tracking.md` | Docs-change tracking — whenever an agent creates or modifies a documentation file, add a brief entry to the gitignored `UPDATED_DOCS.md` so reviewers and fork-maintainers can see which pages changed |
+| `AGENTS/Documentation-Tracking.md` | Docs-change tracking — whenever an agent creates or modifies a documentation file, add a dated entry to the gitignored `UPDATED_DOCS.md`, **grouped by affected page**: one `## <path>` heading per file (e.g. `## docs/_about/faq.md`) with that file's dated change lines beneath it, so reviewers and fork-maintainers can see each page's history at a glance |
 | `AGENTS/File-Access-Errors.md` | File-access error handling — before reporting a missing file or asking for permission, verify the path: check for typos, correct worktree, tilde expansion, case sensitivity, and symlinks |
 | `AGENTS/Build-Computed-Data.md` | How the Rollup `computed_plugin` writes `docs/_data/computed.json` (bundle size, timestamps) and how Jekyll exposes it as `site.data.computed` |
 | `AGENTS/Documentation-Guidelines.md` | Authoring rules for the Jekyll/Just-the-Docs pages under `docs/` — vim fold markers around `{% capture %}` blocks, sampletabs structure, and other conventions |
