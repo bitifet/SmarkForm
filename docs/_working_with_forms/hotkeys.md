@@ -199,27 +199,132 @@ Lower-priority duplicates are silently ignored.
 
 ## Hiding Trigger Buttons (While Keeping Hotkeys)
 
-Some actions (like per-item add/remove buttons in long lists) are non-essential
-and their buttons clutter the form. You can hide them with CSS while keeping
-their hotkeys active — touch users still tap the visible outer buttons, while
-keyboard users activate the hidden ones via hotkeys.
+As we already learned, a SmarkForm hotkey is defined *over a trigger component*,
+so making an action reachable from the keyboard means placing a trigger that
+calls that action **somewhere** in the form — the very same trigger touch users
+tap.
 
-**Critical CSS rule:** Do NOT use `display: none` — it removes the element from
-the layout and kills `::before`/`::after` pseudo-elements, which means hotkey
-hints won't appear when the user holds `Ctrl`. Instead, use `visibility: hidden`
-combined with `width: 0` (or `height: 0`):
+{: .info }
+> This aligns with SmarkForm's philosophy of offering the same functionality
+> regardless of the device or input method: on a touch device you will hardly
+> use the keyboard (let alone a hotkey), but you can always tap the button.
 
-```css
-/* Hide per-item buttons but preserve hotkey hints */
-li.row button[data-smark] {
+There are, nevertheless, cases where a hotkey is convenient but flooding the
+form with triggers for a non-essential action would clutter it more than needed.
+
+👉 This is the case of the `➖` and `➕` buttons surrounding every phone-number
+field in the examples above, which let you cherry-pick *where* to add or remove a
+phone. On a small device the general `➖` / `➕` buttons at the top of the list
+are enough — they add or remove at the *end* of the list — while keyboard users
+still benefit from acting on a specific row.
+
+💡 In this scenario **we can use CSS to hide the triggers** while keeping them
+accessible through their hotkeys.
+
+{: .warning }
+> Keep in mind that if, [like above](#hotkey-reveal-ctrl-discovery), you show the
+> hotkey hint through a `::before` or `::after` pseudo-element, you must not hide
+> the button with a property that removes it from the box tree, such as
+> `display: none;` — that would also prevent the pseudo-element from appearing.
+>
+> {: .hint }
+> > Better use `visibility: hidden;` or `opacity: 0;` to hide the button,
+> > together with `width: 0px;` and/or `height: 0px;` as needed to keep it from
+> > taking space in the layout.
+
+{% raw %} <!-- hk_hidden_html {{{ --> {% endraw %}
+{% capture hk_hidden_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type": "list", "name": "phonelist", "sortable": true}'>
+    <fieldset>
+      <legend>
+        <span data-smark='{"action":"removeItem", "hotkey":"-"}' title='Delete this phonebook entry' style='cursor:pointer'>[➖]</span>
+        <strong>
+          Contact
+          <span data-smark-action="position">N</span>
+        </strong>
+      </legend>
+      <p>
+        <label data-smark='{"type": "label"}'>Name:</label>
+        <input name='name' data-smark='{"type": "input"}' />
+      </p>
+      <p>
+        <label data-smark='{"type": "label"}'>Surname:</label>
+        <input name='surname' data-smark='{"type": "input"}' />
+      </p>
+      <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
+      <button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
+      <button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
+      <strong data-smark="label">Phones:</strong>
+      <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
+        <li class="row">
+          <label data-smark>📞 Telephone
+          <span data-smark-action="position">N</span>
+          </label>
+          <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
+          <input type="tel" data-smark>
+          <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
+        </li>
+      </ul>
+    </fieldset>
+  </div>
+  <p style="text-align: right; margin-top: 1em">
+    <b>Total entries:</b>
+    <span data-smark='{"action":"count", "context": "phonelist"}'>M</span>
+  </p>
+  <button
+    data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}'
+    style="float: right; margin-top: 1em"
+  >➕ Add Contact</button>
+</div>
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- hk_hidden_css {{{ --> {% endraw %}
+{% capture hk_hidden_css -%}
+/* Hotkey hints revealed on Ctrl press */
+{{""}}#myForm$$ [data-hotkey] { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute; top: -1.6em; left: 0;
+    font-size: 0.7em;
+    background: #333; color: #fff;
+    padding: 1px 4px; border-radius: 3px;
+    white-space: nowrap;
+}
+/* Hide the per-row ➕/➖ buttons, but keep their hotkeys and hints alive */
+{{""}}#myForm$$ li.row button[data-smark] {
     visibility: hidden;
     width: 0px;
     pointer-events: none;
 }
-li.row button[data-smark]::before {
+{{""}}#myForm$$ li.row button[data-smark]::after {
     visibility: visible;
 }
-```
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture hk_hidden_notes -%}
+Hold `Ctrl`: the `+` and `-` hints appear where the per-row `➕`/`➖` buttons
+used to be — even though those buttons are now hidden. Touch users can still add
+or remove a phone at the *end* of the list with the always-visible buttons.
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="hk_hidden"
+    htmlSource=hk_hidden_html
+    cssSource=hk_hidden_css
+    notes=hk_hidden_notes
+    demoValue='{"phonelist":[{"name":"Ada","surname":"Lovelace","phones":["+1 555 0100","+1 555 0101"]},{"name":"Alan","surname":"Turing","phones":["+1 555 0199"]}]}'
+    minHeight=45
+    selected="preview"
+    showEditor=true
+    tests=false
+%}
+
+This is just a CSS trick rather than a SmarkForm feature, but it helps build
+smoother and cleaner forms: when you hold `Ctrl`, the `+`/`-` hints appear next
+to the (now hidden) `➕`/`➖` buttons, while the ones still visible in the outer
+context let touch-device users add or remove phone numbers from the end of the
+list.
 
 
 ## Accessibility Considerations
