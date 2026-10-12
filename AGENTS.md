@@ -256,7 +256,7 @@ into the clone, and replacing the placeholder in place.
   (integration, option threading, `inferType`), `src/lib/source_ids.js`
 - Documentation: `docs/_advanced_concepts/mixin_types.md`
 - Spec: `spc/mixins.md` (authoritative design); pending proposals C & D are in
-  the untracked `spc/mixins-proposals.md`
+  `spc/proposals/mixins.md`
 
 ### Playwright Test Runner
 
