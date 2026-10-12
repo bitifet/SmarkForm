@@ -352,6 +352,61 @@ filled. If your "add" button is disabled, check whether you've hit `max_items`
 or whether a custom event handler is interfering.
 
 
+### Why does my list render with no items?
+
+A `list` renders one item slot per element of its current value, and
+`min_items` is only a **lower bound** — it never trims items that your `value`
+already provides. So a list declared with `{"min_items": 0}` and
+`"value": [""]` still shows that one (empty) slot; to start truly empty, pass
+`"value": []` or omit the value.
+
+When a list does have no items, you can show a friendly placeholder with the
+**`empty_list`** role: SmarkForm injects that template while the list is empty
+and removes it as soon as the first item appears.
+
+The example below starts with a single (empty) phone slot, keeps
+`exportEmpties` on so blank slots survive a save, and uses an `empty_list`
+placeholder:
+
+{% raw %} <!-- faq_empty_list {{{ --> {% endraw %}
+{% capture faq_empty_list_html -%}
+<div id="myForm$$">
+  <button data-smark='{"action":"removeItem","context":"phones","target":"*","preserve_non_empty":true}' title="Remove unused fields">🧹</button>
+  <button data-smark='{"action":"removeItem","context":"phones","preserve_non_empty":true}' title="Remove phone number">➖</button>
+  <button data-smark='{"action":"addItem","context":"phones"}' title="Add phone number">➕</button>
+  <strong data-smark="label">Phones:</strong>
+  <ul data-smark='{"name":"phones","of":"input","value":[""],"exportEmpties":true,"sortable":true,"min_items":0,"max_items":5}'>
+    <li data-smark-role="empty_list" class="row">(None)</li>
+    <li class="row">
+      <label data-smark>📞 Telephone
+        <span data-smark-action="position">N</span>
+      </label>
+      <button data-smark='{"action":"removeItem"}' title="Remove this phone number">➖</button>
+      <input type="tel" data-smark>
+      <button data-smark='{"action":"addItem"}' title="Insert phone number">➕</button>
+    </li>
+  </ul>
+</div>{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- faq_empty_list_css {{{ --> {% endraw %}
+{% capture faq_empty_list_css -%}
+#myForm$$ ul li { list-style-type: none; }
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="faq_empty_list"
+    htmlSource=faq_empty_list_html
+    cssSource=faq_empty_list_css
+    selected="preview"
+    tests=false
+%}
+
+👉 **Try it:** press 🧹 to drop the empty slot and watch the *(None)*
+placeholder appear, then use ➕ to add phone numbers.
+
+
 ### How do I add animations to list items?
 
 SmarkForm deliberately provides no built-in animation engine — transitions are a
