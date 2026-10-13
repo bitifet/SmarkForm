@@ -214,14 +214,14 @@ tap.
 There are, nevertheless, cases where a hotkey is convenient but flooding the
 form with triggers for a non-essential action would clutter it more than needed.
 
-👉 This is the case of the `➖` and `➕` buttons surrounding every phone-number
-field in the examples above, which let you cherry-pick *where* to add or remove a
-phone. On a small device the general `➖` / `➕` buttons at the top of the list
-are enough — they add or remove at the *end* of the list — while keyboard users
-still benefit from acting on a specific row.
+👉 In the examples above, **every** phone row carries its own `➖` and `➕`
+buttons so you can remove or insert a phone *at that exact position*. On a
+small screen the buttons at the top of the form are enough — they always act at
+the end of the list — yet they cannot target an individual row the way the
+buttons attached to the row can.
 
-💡 In this scenario **we can use CSS to hide the triggers** while keeping them
-accessible through their hotkeys.
+💡 In this scenario **we can use CSS to hide the per-row triggers** while
+keeping their hotkeys working.
 
 {: .warning }
 > Keep in mind that if, [like above](#hotkey-reveal-ctrl-discovery), you show the
@@ -237,47 +237,18 @@ accessible through their hotkeys.
 {% raw %} <!-- hk_hidden_html {{{ --> {% endraw %}
 {% capture hk_hidden_html -%}
 <div id="myForm$$">
-  <div data-smark='{"type": "list", "name": "phonelist", "sortable": true}'>
-    <fieldset>
-      <legend>
-        <span data-smark='{"action":"removeItem", "hotkey":"-"}' title='Delete this phonebook entry' style='cursor:pointer'>[➖]</span>
-        <strong>
-          Contact
-          <span data-smark-action="position">N</span>
-        </strong>
-      </legend>
-      <p>
-        <label data-smark='{"type": "label"}'>Name:</label>
-        <input name='name' data-smark='{"type": "input"}' />
-      </p>
-      <p>
-        <label data-smark='{"type": "label"}'>Surname:</label>
-        <input name='surname' data-smark='{"type": "input"}' />
-      </p>
-      <button data-smark='{"action":"removeItem", "context":"phones", "target":"*", "hotkey":"Delete", "preserve_non_empty":true}' title='Remove unused fields'>🧹</button>
-      <button data-smark='{"action":"removeItem", "context":"phones", "hotkey":"-", "preserve_non_empty":true}' title='Remove phone number'>➖</button>
-      <button data-smark='{"action":"addItem","context":"phones", "hotkey":"+"}' title='Add phone number'>➕ </button>
-      <strong data-smark="label">Phones:</strong>
-      <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "max_items":5}'>
-        <li class="row">
-          <label data-smark>📞 Telephone
-          <span data-smark-action="position">N</span>
-          </label>
-          <button data-smark='{"action":"removeItem", "hotkey":"-"}' title='Remove this phone number'>➖</button>
-          <input type="tel" data-smark>
-          <button data-smark='{"action":"addItem", "hotkey":"+"}' title='Insert phone number'>➕ </button>
-        </li>
-      </ul>
-    </fieldset>
-  </div>
-  <p style="text-align: right; margin-top: 1em">
-    <b>Total entries:</b>
-    <span data-smark='{"action":"count", "context": "phonelist"}'>M</span>
+  <p>
+    <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' title="Add a phone">➕ Add phone</button>
+    <button data-smark='{"action":"removeItem","context":"phones","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty phones">🧹</button>
   </p>
-  <button
-    data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}'
-    style="float: right; margin-top: 1em"
-  >➕ Add Contact</button>
+  <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
+    <li>
+      <label data-smark>📞 Telephone</label>
+      <input type="tel" data-smark placeholder="Phone number">
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this phone">➖</button>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert a phone here">➕</button>
+    </li>
+  </ul>
 </div>
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -294,20 +265,21 @@ accessible through their hotkeys.
     white-space: nowrap;
 }
 /* Hide the per-row ➕/➖ buttons, but keep their hotkeys and hints alive */
-{{""}}#myForm$$ li.row button[data-smark] {
+{{""}}#myForm$$ li button[data-smark] {
     visibility: hidden;
     width: 0px;
-    pointer-events: none;
+    padding: 0px;
+    border: none;
 }
-{{""}}#myForm$$ li.row button[data-smark]::after {
+{{""}}#myForm$$ li button[data-smark]::after {
     visibility: visible;
 }
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture hk_hidden_notes -%}
-Hold `Ctrl`: the `+` and `-` hints appear where the per-row `➕`/`➖` buttons
-used to be — even though those buttons are now hidden. Touch users can still add
-or remove a phone at the *end* of the list with the always-visible buttons.
+Hold `Ctrl`: the `+`/`-` hints appear where the per-row buttons used to be —
+even though those buttons are now hidden. The always-visible buttons at the top
+let touch users add or remove phones (at the end of the list).
 {%- endcapture %}
 
 {% include components/sampletabs_tpl.md
@@ -315,7 +287,7 @@ or remove a phone at the *end* of the list with the always-visible buttons.
     htmlSource=hk_hidden_html
     cssSource=hk_hidden_css
     notes=hk_hidden_notes
-    demoValue='{"phonelist":[{"name":"Ada","surname":"Lovelace","phones":["+1 555 0100","+1 555 0101"]},{"name":"Alan","surname":"Turing","phones":["+1 555 0199"]}]}'
+    demoValue='{"phones":["+1 555 0100","+1 555 0101"]}'
     minHeight=45
     selected="preview"
     showEditor=true
@@ -324,9 +296,8 @@ or remove a phone at the *end* of the list with the always-visible buttons.
 
 This is just a CSS trick rather than a SmarkForm feature, but it helps build
 smoother and cleaner forms: when you hold `Ctrl`, the `+`/`-` hints appear next
-to the (now hidden) `➕`/`➖` buttons, while the ones still visible in the outer
-context let touch-device users add or remove phone numbers from the end of the
-list.
+to the (now hidden) per-row `➖`/`➕` buttons, while the buttons that stay visible
+let touch users add or remove phones from the end of the list.
 
 
 ## Accessibility Considerations
