@@ -86,6 +86,8 @@ Your CSS can use this attribute to show a visual hint:
 
 {% raw %} <!-- hk_reveal_css {{{ --> {% endraw %}
 {% capture hk_reveal_css -%}
+/* Anchor the badge to its button */
+button { position: relative; }
 /* Show hotkey badge on the button */
 [data-hotkey]::after {
     content: "Ctrl+" attr(data-hotkey);
