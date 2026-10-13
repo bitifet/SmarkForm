@@ -327,26 +327,42 @@ while (currentItem) {
 
 #### Copy Data Between Adjacent List Items
 
+Each list item exposes its own copy controls: one fills the current row from the
+row above (`target:".-1"`), the other pushes the current row down into the next
+one (`target:".+1"`).  Both are resolved against the item the trigger belongs
+to, so the button always acts on its immediate neighbours.
+
 {% raw %} <!-- form_trav_copy_adjacent {{{ --> {% endraw %}
 {% capture form_trav_copy_adjacent_html -%}
 <div id="myForm$$">
-  <ul data-smark='{"name": "employees", "type": "list", "of": "form"}'>
+  <ul data-smark='{"name":"plan","type":"list","of":"form","min_items":1}'>
     <li>
-      <input name="name" data-smark placeholder="Name">
-      <input name="email" data-smark placeholder="Email">
-      <button data-smark='{"action":"export","target":".+1"}'>Copy to Next</button>
-      <button data-smark='{"action":"import","target":".-1"}'>Copy from Previous</button>
-      <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
+      <input name="day" data-smark type="text" placeholder="Day">
+      <input name="main" data-smark type="text" placeholder="Main dish">
+      <input name="side" data-smark type="text" placeholder="Side dish">
+      <button data-smark='{"action":"import","target":".-1"}' title="Fill this row with the day above">⤒ Fill from above</button>
+      <button data-smark='{"action":"export","target":".+1"}' title="Copy this row into the day below">⤓ Copy down</button>
+      <button data-smark='{"action":"removeItem"}' title="Remove this day">🗑️</button>
     </li>
   </ul>
-  <button data-smark='{"action":"addItem","context":"employees"}'>➕ Add</button>
+  <button data-smark='{"action":"addItem","context":"plan"}'>➕ Add day</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- form_trav_copy_adjacent_css {{{ --> {% endraw %}
+{% capture form_trav_copy_adjacent_css -%}
+{{""}}#myForm$$ ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .4em; }
+{{""}}#myForm$$ li { display: flex; gap: .4em; align-items: center; }
+{{""}}#myForm$$ li input { padding: .35em .5em; border: 1px solid #ccc; border-radius: 4px; min-width: 0; }
+{{""}}#myForm$$ input[name="day"] { flex: 0 0 6em; font-weight: 600; }
+{{""}}#myForm$$ input[name="main"], {{""}}#myForm$$ input[name="side"] { flex: 1; }
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="form_trav_copy_adjacent"
     htmlSource=form_trav_copy_adjacent_html
-    demoValue='{"employees":[{"name":"Alice","email":"alice@example.com"},{"name":"Bob","email":"bob@example.com"},{"name":"Carol","email":"carol@example.com"}]}'
+    cssSource=form_trav_copy_adjacent_css
+    demoValue='{"plan":[{"day":"Monday","main":"Lasagna","side":"Garlic bread"},{"day":"Tuesday","main":"Tacos","side":"Guacamole"},{"day":"Wednesday","main":"Pizza","side":"Caesar salad"}]}'
     tests=false
 %}
 
@@ -373,34 +389,47 @@ async function validateSequentially(list) {
 
 #### Dynamic List Navigation UI
 
+The same idea can be spelled out explicitly.  Setting `context:"."` on each
+button makes the *current* item the base from which the sibling path is
+resolved — useful once an item grows its own navigation toolbar:
+
 {% raw %} <!-- form_trav_navigation_ui {{{ --> {% endraw %}
 {% capture form_trav_navigation_ui_html -%}
 <div id="myForm$$">
-  <div data-smark='{"name": "records", "type": "list", "of": "form"}'>
-    <div>
-      <input name="data" data-smark>
+  <div data-smark='{"name":"itinerary","type":"list","of":"form"}'>
+    <div class="stop">
+      <input name="day" data-smark type="text" placeholder="Day">
+      <input name="activity" data-smark type="text" placeholder="Activity">
       <div class="navigation">
-        <button data-smark='{"action":"import","context":".","target":".-1"}'>← Copy from Previous</button>
-        <button data-smark='{"action":"export","context":".","target":".+1"}'>Copy to Next →</button>
+        <button data-smark='{"action":"import","context":".","target":".-1"}'>⬅ Copy from previous</button>
+        <button data-smark='{"action":"export","context":".","target":".+1"}'>Copy to next ➡</button>
       </div>
       <button data-smark='{"action":"removeItem"}'>🗑️ Remove</button>
     </div>
   </div>
-  <button data-smark='{"action":"addItem","context":"records"}'>➕ Add</button>
+  <button data-smark='{"action":"addItem","context":"itinerary"}'>➕ Add day</button>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- form_trav_navigation_ui_css {{{ --> {% endraw %}
+{% capture form_trav_navigation_ui_css -%}
+{{""}}#myForm$$ .stop { display: flex; flex-direction: column; gap: .4em; border: 1px solid #ddd; border-radius: 6px; padding: .6em; margin-bottom: .5em; }
+{{""}}#myForm$$ .stop input { padding: .35em .5em; border: 1px solid #ccc; border-radius: 4px; }
+{{""}}#myForm$$ .navigation { display: flex; gap: .4em; }
+{%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="form_trav_navigation_ui"
     htmlSource=form_trav_navigation_ui_html
-    demoValue='{"records":[{"data":"first"},{"data":"second"},{"data":"third"}]}'
+    cssSource=form_trav_navigation_ui_css
+    demoValue='{"itinerary":[{"day":"Friday","activity":"Arrival and hotel check-in"},{"day":"Saturday","activity":"Old town walking tour"},{"day":"Sunday","activity":"Museum day"}]}'
     tests=false
 %}
 
 Both buttons use `context:"."` — the trigger's parent resolves `"."` to the current list item.
 
-- **← Copy from Previous** uses `action:"import"` with `target:".-1"`. SmarkForm exports from the target (previous item) and imports the result into the context (current item). Direction: previous → current.
-- **Copy to Next →** uses `action:"export"` with `target:".+1"`. SmarkForm exports the context (current item) and imports the result into the target (next item). Direction: current → next.
+- **⬅ Copy from previous** uses `action:"import"` with `target:".-1"`. SmarkForm exports from the target (previous item) and imports the result into the context (current item). Direction: previous → current.
+- **Copy to next ➡** uses `action:"export"` with `target:".+1"`. SmarkForm exports the context (current item) and imports the result into the target (next item). Direction: current → next.
 
 {: .hint }
 > Because target paths are resolved from the **context** — not the trigger — and here the context
