@@ -239,13 +239,14 @@ keeping their hotkeys working.
 <div id="myForm$$">
   <p>
     <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' title="Add a phone">➕ Add phone</button>
-    <button data-smark='{"action":"removeItem","context":"phones","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty phones">🧹</button>
+    <button data-smark='{"action":"removeItem","context":"phones","hotkey":"-"}' title="Remove the last phone">➖ Remove phone</button>
+    <strong data-smark="label">Phones:</strong>
   </p>
   <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
     <li>
       <label data-smark>📞 Telephone</label>
-      <input type="tel" data-smark placeholder="Phone number">
       <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this phone">➖</button>
+      <input type="tel" data-smark placeholder="Phone number">
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert a phone here">➕</button>
     </li>
   </ul>
