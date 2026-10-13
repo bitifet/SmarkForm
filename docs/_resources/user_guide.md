@@ -208,10 +208,24 @@ These limits are intentional constraints based on the form's requirements. When 
 
 ## Working with Files and Media
 
-SmarkForm's `file`, `image`, and `video` fields use the same familiar upload
-patterns: choose a file with an upload button or picker, drop it onto the field,
-or paste it when the form supports paste. A future `audio` field will follow the
-same media conventions.
+SmarkForm's `file`, `image`, `video`, and `audio` fields share the same familiar
+upload patterns: choose a file with an upload button or picker, drop it onto the
+field, or paste it when the form supports paste. They all embed the selected
+bytes in the form value, so the generic `file` field comes first and the other
+types build on it.
+
+### Files
+
+File fields display the selected filename and metadata rather than a preview.
+Use the field's upload trigger, drag and drop, or paste. A download action can
+return the embedded bytes to the user. The visible filename is editable and
+takes precedence when the form is exported or downloaded.
+
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/09-file-field.png' | relative_url }}"
+       alt="File field showing upload, editable filename, download, and clear actions">
+  <figcaption>File upload and filename actions</figcaption>
+</figure>
 
 ### Images
 
@@ -221,25 +235,10 @@ it is configured as a picker, or use the visible upload trigger. **Delete** and
 item, the editable caption changes the exported filename; use **Tab** to reach
 the caption separately from the image field.
 
-<!-- TODO: Add /assets/images/user-guide/09-image-field-upload.png showing an image field with its click-to-pick affordance, placeholder, and editable caption. -->
 <figure class="user-guide-image">
-  <img src="{{ '/assets/images/user-guide/09-image-field-upload.png' | relative_url }}"
+  <img src="{{ '/assets/images/user-guide/10-image-field.png' | relative_url }}"
        alt="Image field showing the upload affordance and editable filename caption">
-  <figcaption>Image upload, placeholder, and caption navigation</figcaption>
-</figure>
-
-### Files
-
-File fields display the selected filename and metadata rather than a preview.
-Use the field's upload trigger, drag and drop, or paste. A download action can
-return the embedded bytes to the user. The visible filename is editable and
-takes precedence when the form is exported or downloaded.
-
-<!-- TODO: Add /assets/images/user-guide/10-file-field-actions.png showing file upload, filename editing, download, and clear actions. -->
-<figure class="user-guide-image">
-  <img src="{{ '/assets/images/user-guide/10-file-field-actions.png' | relative_url }}"
-       alt="File field showing upload, editable filename, download, and clear actions">
-  <figcaption>File upload and filename actions</figcaption>
+  <figcaption>A simple form with an image field</figcaption>
 </figure>
 
 ### Videos
@@ -262,11 +261,34 @@ buttons, while Enter/Shift+Enter continue to treat the video itself as one
 SmarkForm field. Delete and Backspace edit caption text while the caption is
 focused; they clear the video only when the video field has focus.
 
-<!-- TODO: Add /assets/images/user-guide/11-video-field-navigation.png showing native video controls, an upload trigger, caption focus, and Enter/Tab navigation paths. -->
 <figure class="user-guide-image">
-  <img src="{{ '/assets/images/user-guide/11-video-field-navigation.png' | relative_url }}"
+  <img src="{{ '/assets/images/user-guide/11-video-field.png' | relative_url }}"
        alt="Video field showing native controls, upload trigger, filename caption, and keyboard navigation">
   <figcaption>Video playback, upload, caption, and keyboard navigation</figcaption>
+</figure>
+
+### Audio
+
+Audio fields behave like video fields, but an empty `<audio>` element has no
+visual area of its own — a form that wants an obvious empty state wraps it in a
+visible container or provides an upload trigger. Use **Enter** and
+**Shift+Enter** to move between form fields. When the audio field has focus:
+
+- **Space** opens the picker in pick mode, or toggles playback in play mode.
+- **Shift+Space** opens the picker even when playback is enabled.
+- **Delete** or **Backspace** clears the audio.
+
+Native audio controls handle play, pause, seeking, and volume. When controls are
+present, prefer an explicit upload trigger so that clicking the player always
+means "play"; without controls, the field (or its wrapper) doubles as the upload
+surface. As with video, an editable caption acts as the file name: **Tab**
+reaches the caption and nearby buttons, and Delete/Backspace edit it while the
+caption is focused instead of clearing the clip.
+
+<figure class="user-guide-image">
+  <img src="{{ '/assets/images/user-guide/12-audio-field.png' | relative_url }}"
+       alt="Audio field showing native controls, an upload trigger, a filename caption, and keyboard navigation">
+  <figcaption>Audio playback, upload, caption, and keyboard navigation</figcaption>
 </figure>
 
 {: .warning}
