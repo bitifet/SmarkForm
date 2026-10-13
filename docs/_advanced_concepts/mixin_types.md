@@ -457,7 +457,6 @@ A mixin reference may opt out of preloading with `preload: false`:
 <div data-smark='{"type":"./widgets.html#phoneField","name":"phone","preload":false}'></div>
 ```
 
-`preload` is also available as a prefixed attribute (`data-smark-preload="false"`).
 Only external references are preloaded; local (`#id`) templates are always
 available immediately.
 

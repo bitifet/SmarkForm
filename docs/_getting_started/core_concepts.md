@@ -398,9 +398,8 @@ endcapture %}
    `[data-smark-label]` selector that SmarkForm adds automatically to
    rendered label components.
 
-🚀 With the `data-smark-<option>` syntax you can now write exactly
-   `[data-smark-sortable="true"]` directly on the element, so the custom
-   `.sortable` class is only needed for your own styling.
+🚀 The list can also be matched directly with `[data-smark-sortable="true"]`,
+   so the custom `.sortable` class is only needed for your own styling.
 {%- endcapture %}
 {% raw %} <!-- }}} ]() --> {% endraw %}
 
