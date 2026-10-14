@@ -469,6 +469,7 @@ requested action are skipped silently:
 - The action fires sequentially on each matching context — skipping any that
   don't implement the action, avoiding errors on non-list components.
 
+{: .info }
 > Unlike `target:"*"` which always operates within a single context, a wildcard
 > `context` enables a **single button** to affect multiple independent components
 > across the form — each receiving its own action dispatch with its own resolved
