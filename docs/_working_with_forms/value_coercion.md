@@ -140,8 +140,13 @@ export:
 - `<input type="date">` exports an ISO 8601 string (`YYYY-MM-DD`), and
   accepts compact strings (`YYYYMMDD`) and `Date` objects on import.
 - `<input type="time">` exports `HH:MM:SS` and accepts `HH:MM` on import.
-- Any field exports **`null`** when empty, to explicitly signal "unknown or
-  indifferent" rather than an empty string.
+- Value types with no natural empty state — `number`, `date`, `time`,
+  `datetime-local`, `color`, `radio`, `file`… — export **`null`** when empty,
+  to explicitly signal "unknown or indifferent" rather than `""` or `0`.
+- Plain **text** fields (`<input type="text">`, `<textarea>`) are the exception:
+  they export an empty **string** (`""`), because a native text input does not
+  distinguish "empty" from "no value". A text field with `format:"json"` does
+  export `null` when empty (see below).
 
 ### JSON format
 
