@@ -16,7 +16,7 @@ boolean, and so on. Because forms and lists are themselves fields, you can nest
 them to any depth and describe any JSON data structure — including
 variable-length arrays, clamped to a length range or not.
 
-No component framework. No imposed DOM structure. No CSS.
+No component framework. No imposed DOM structure or CSS.
 
 [![NPM Version][npm-image]][npm-url]
 [![npm dependencies][dependencies-image]][dependencies-url]
@@ -55,6 +55,7 @@ objects**:
   </ul>
 
   <button data-smark='{"action":"addItem","context":"phones"}'>➕ Add phone</button>
+  <button data-smark='{"action":"removeItem","context":"phones"}'>➖ Remove phone</button>
   <button data-smark='{"action":"export"}'>💾 Save</button>
 </div>
 ```
@@ -63,12 +64,18 @@ One line of JavaScript to bring it to life:
 
 ```javascript
 const form = new SmarkForm(document.querySelector("#form"));
+```
 
-// Read the data whenever you need it...
+Read the data whenever you need it:
+
+```javascript
 const data = await form.export();
 console.log(data);
+```
 
-// ...or react to the declared "export" trigger.
+...or react to the declared `"export"` trigger:
+
+```javascript
 form.on("AfterAction_export", ({ data }) => console.log(data));
 ```
 
@@ -140,7 +147,9 @@ The rest of the model follows from that:
 
   * A **trigger** is a component that performs an **action** on a field (add an
     item, export data, navigate…) — it holds no data itself.
-  * A **label** is a component that only displays text; it holds no data either.
+  * A **label** is a component that only displays text; it holds no data
+    either, but it automatically connects to the corresponding field — no manual
+    `for="…"` needed.
   * Components are addressed by their place in the SmarkForm **tree**, not the
     DOM.
   * Value fields whose JSON type has no empty form — number, date, color, radio,
@@ -248,9 +257,33 @@ nothing:
 <!-- Nothing at all: type and name are inferred from the tag and its attributes -->
 <input name="email" data-smark>
 
-<!-- String shorthand: just the type -->
-<ul data-smark="list"> … </ul>
-<label data-smark="label">Your e-mail</label>
+<!-- Minimal: a field needs a name; the type is inferred (ul → list) -->
+<ul data-smark='{"name":"students"}'> … </ul>
+
+<!-- The same, as a data-smark-<option> attribute -->
+<ul data-smark-name="students"> … </ul>
+
+<!-- String shorthand: the value is just the component type. Useful when the
+     tag doesn't imply it (a div can be a list); a name is still required. -->
+<div data-smark="list" data-smark-name="students"> … </div>
+
+<!-- The type is often inferred from the tag, so data-smark can be bare -->
+<label data-smark>Your e-mail</label>
+<textarea data-smark></textarea>
+
+<!-- The HTML input type stays native: this is a SmarkForm "input" field of type email -->
+<input name="email" type="email" data-smark>
+
+<!-- Inside a list, the item template needs no data-smark at all. With
+     of:"input", each <li> wraps one unnamed field (the Singleton Pattern) and
+     can still carry its own label and buttons. -->
+<ul data-smark='{"name":"emails","of":"input"}'>
+  <li>
+    <label data-smark>Your e-mail</label>
+    <input type="email" data-smark>
+    <button data-smark-action="removeItem">➖</button>
+  </li>
+</ul>
 
 <!-- Full form: any component options, as JSON -->
 <input data-smark='{"type":"input","name":"email","placeholder":"you@example.com"}'>
@@ -261,10 +294,10 @@ nothing:
 
 **Why JSON inside `data-smark`?** SmarkForm deliberately keeps a component's
 configuration in **one** attribute so that the markup stays portable: no
-framework-specific attributes, no bespoke per-option syntax, and a single,
-predictable place to look. The string shorthand (`data-smark="label"`) and the
-`data-smark-<option>` attributes are conveniences layered on top of that single
-JSON object, not a different model.
+framework-specific attribute conventions, and a single, predictable place to
+look. The string shorthand (`data-smark="list"`) and the `data-smark-<option>`
+attributes are conveniences layered on top of that single JSON object, not a
+different model.
 
 👉 Full syntax: [The `data-smark` attribute](https://smarkform.bitifet.net/getting_started/core_concepts#the-data-smark-attribute)
 and [Shorthand syntaxes](https://smarkform.bitifet.net/getting_started/core_concepts#shorthand-syntaxes).
