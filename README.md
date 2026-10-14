@@ -5,9 +5,16 @@
 **Complex HTML forms without complex JavaScript.**
 
 SmarkForm is a **markup-driven controller for structured HTML forms**. Annotate
-your markup with `data-smark`, and the DOM becomes the declarative description
-of a nested data model — objects and arrays, to any depth — that imports and
-exports as JSON.
+your markup with `data-smark`, and the DOM becomes a tree of **fields** that
+imports and exports as JSON.
+
+In SmarkForm, **everything is a field**, and every field returns a JSON value.
+A **form** is a field composed of named fields (it returns an object); a
+**list** is a field composed of a sequence of fields (it returns an array); an
+**input** returns a string, a **number** returns a number, a **checkbox** a
+boolean, and so on. Because forms and lists are themselves fields, you can nest
+them to any depth and describe any JSON data structure — including
+variable-length arrays, clamped to a length range or not.
 
 No component framework. No imposed DOM structure. No CSS.
 
@@ -77,50 +84,81 @@ form.on("AfterAction_export", ({ data }) => console.log(data));
 
 > **The HTML is your UI. The JSON is your data. SmarkForm connects them.**
 
-Every `data-smark` element becomes a **component**. Nested components become
-nested objects, lists become arrays, and the data stays in sync as the user
-adds, removes, sorts or moves things — with no manual wiring.
+Every `data-smark` element becomes a **field** — forms return objects, lists
+return arrays — and the data stays in sync as the user adds, removes, sorts or
+moves things, with no manual wiring.
 
 
-## The mental model
+## Everything is a field
+
+The one idea behind SmarkForm is that **every component is a field**, and every
+field produces a JSON value:
 
 ```
-                    SmarkForm
-                       │
-             ┌─────────┴─────────┐
-             │                   │
-           HTML                JSON
-             │                   │
-      ┌──────┼───────┐           │
-      │      │       │           │
-    input   form    list          │
-             │       │            │
-             │    ┌──┴──┐         │
-             │   item item        │
-             │                    │
-             └───────┬────────────┘
-                     ↓
-              structured data
+                       field
+                         │
+           ┌─────────────┴─────────────┐
+           │                           │
+    composite fields                  value fields
+    (made of fields)                  (a single value)
+           │                           │
+    ┌──────┴──────┐                   string · number · boolean
+    │             │                   ISO date / time strings
+  form          list                  "#RRGGBB"  or null
+    │             │                   data URL / object  or null
+    ▼             ▼
+ { object }   [ array ]
+    │             │
+    └──────┬──────┘
+           ▼
+    nested JSON data,
+      to any depth
 ```
 
-  * Every `data-smark` element becomes a SmarkForm **component**.
-  * A **form** contains fields; a **list** contains repeated fields or forms.
-  * A **trigger** is a component that performs an **action** on another
-    component.
+The differences between component types are only the *shape* of the value they
+return:
+
+| Field type | Returns (JSON) | Notes |
+|------------|----------------|-------|
+| `form` | object `{ … }` | composed of *named* child fields |
+| `list` | array `[ … ]` | a sequence of fields; grows and shrinks at runtime |
+| `input` | string | with `format:"json"`, the text parses to any JSON value |
+| `number` | number or `null` | string values are coerced |
+| `checkbox` | boolean | |
+| `radio` | string or `null` | radios sharing a name behave as one field |
+| `date`, `time`, `datetime-local` | ISO string or `null` | normalised on import and export |
+| `color` | `"#RRGGBB"` or `null` | `null` means *not selected* — impossible with native color inputs |
+| `file` | data-URL string, or object with `format:"json"`, or `null` | |
+| `image`, `video`, `audio` | same as `file` | specialised `file` fields |
+
+Because a **form** and a **list** are themselves fields, they can contain other
+forms and lists. Nest them to any depth and you describe **any JSON data
+structure** — including variable-length arrays, optionally clamped to a length
+range with `min_items` / `max_items`.
+
+The rest of the model follows from that:
+
+  * A **trigger** is a component that performs an **action** on a field (add an
+    item, export data, navigate…) — it holds no data itself.
+  * A **label** is a component that only displays text; it holds no data either.
   * Components are addressed by their place in the SmarkForm **tree**, not the
     DOM.
+  * Value fields whose JSON type has no empty form — number, date, color, radio,
+    file… — return `null` to mean *unknown* or *not applicable*, instead of a
+    misleading value.
 
 <!-- 🎞️ Placeholder: replace this ASCII diagram with an animated SVG/GIF that
      highlights each node as it is mentioned above. -->
 
-That's the whole conceptual key. Everything else in the documentation is a
-variation of those four ideas.
+That single model is the whole conceptual key. Everything else in the
+documentation is a variation of it.
 
 
 ## Nested data and dynamic lists
 
-The real payoff is structure: forms nested inside forms, lists nested inside
-lists, and objects nested inside lists — all described once, in plain HTML.
+Because a form and a list are just fields, the real payoff is structure: forms
+nested inside forms, lists nested inside lists, and objects nested inside
+lists — all described once, in plain HTML.
 
 Here is a three-level structure (groups → students → grades) with no
 application-specific JavaScript:
@@ -291,11 +329,11 @@ model is derived from it rather than replacing it.
 
 **Core concepts** — how SmarkForm works:
 
-  * [Markup-driven](https://smarkform.bitifet.net/about/features#markup-agnostic)
-    components defined by `data-smark`.
+  * [Markup-driven](https://smarkform.bitifet.net/about/features#markup-agnostic):
+    every `data-smark` element is a field that returns a JSON value.
   * [Nested forms](https://smarkform.bitifet.net/about/features#nestable-forms)
-    and [variable-length lists](https://smarkform.bitifet.net/about/features#variable-length-lists),
-    of scalars or subforms, to any depth.
+    and [variable-length lists](https://smarkform.bitifet.net/about/features#variable-length-lists)
+    are themselves fields, so they nest to any depth — of scalars or subforms.
   * Declarative [triggers, actions and contexts](https://smarkform.bitifet.net/working_with_forms/form_traversing),
     addressed by relative paths — not by DOM position.
   * [JSON import and export](https://smarkform.bitifet.net/about/features#json-based)
