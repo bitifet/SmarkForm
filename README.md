@@ -2,15 +2,19 @@
 
 # SmarkForm
 
-**Complex HTML forms without complex JavaScript.**
-
-<p align="center">
+<p>
   <a href="https://npmjs.org/package/smarkform"><img src="https://img.shields.io/npm/v/smarkform.svg" alt="NPM Version"></a>
   <a href="https://www.npmjs.com/package/smarkform?activeTab=dependencies"><img src="https://img.shields.io/badge/dependencies-0-green" alt="npm dependencies"></a>
   <a href="https://npmjs.org/package/smarkform"><img src="https://img.shields.io/npm/dm/smarkform.svg" alt="NPM Downloads"></a>
   <a href="https://www.jsdelivr.com/package/npm/smarkform"><img src="https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded" alt="jsDelivr Hits"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="License"></a>
 </p>
+
+**Complex HTML forms without complex JavaScript.**
+
+SmarkForm is a **markup-driven controller for structured HTML forms**. Annotate
+your markup with `data-smark`, and the DOM becomes a tree of **fields** that
+imports and exports as JSON.
 
 <!-- 🎬 Hero — animated GIF (docs/assets/hero/SmarkForm_hero.gif, 560×315,
      8 fps, ~23 MB) rendered from the full demo video.
@@ -29,10 +33,6 @@
          alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
   </a>
 </p>
-
-SmarkForm is a **markup-driven controller for structured HTML forms**. Annotate
-your markup with `data-smark`, and the DOM becomes a tree of **fields** that
-imports and exports as JSON.
 
 In SmarkForm, **everything is a field**, and every field returns a JSON value.
 A **form** is a field composed of named fields (it returns an object); a
