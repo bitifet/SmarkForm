@@ -34,12 +34,13 @@ No component framework. No imposed DOM structure or CSS.
      A GIF is used deliberately: it plays everywhere with no codec, autoplay
      or sanitizer rules to fight (GitHub/npm strip <video> from READMEs).
      The still frame is poster.png.
-     The click-through target is the docs home page with the #intro hash, where
-     its hero script plays the full video from the beginning (see the "Hero
-     video" section of docs/index.md); it used to point at the MP4 itself,
-     which GitHub refuses to serve as a page and which would 404 on npm. -->
+     The click-through target is just the docs home page, with no hash: the
+     hero there already starts from the beginning, autoplaying muted and
+     looped, so a deep link would add nothing. Linking straight at the MP4 is
+     not an option (GitHub refuses to render files that large and the
+     repo-relative path would 404 on npm). -->
 <p align="center">
-  <a href="https://smarkform.bitifet.net#intro">
+  <a href="https://smarkform.bitifet.net">
     <img src="docs/assets/hero/SmarkForm_hero.gif" width="560"
          style="width:min(100%, 560px); height:auto; border-radius:.5rem;"
          alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
