@@ -4,6 +4,7 @@
  * Two hash fragments drive it:
  *   #intro   → (re)start the hero video from the beginning
  *   #video   → offer to play the full video, full screen, in a modal dialog
+ *   #intro@x → not used: an unknown @mode is ignored
  *
  * `#intro` exists because the README hero GIF links to
  * https://smarkform.bitifet.net#intro. `intro` is not a real page fragment
