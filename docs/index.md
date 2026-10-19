@@ -201,6 +201,18 @@ endcapture %}
     border-radius: .5rem;
     width: 100%;
 }
+.SmarkForm-Video {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    margin: 1.25rem auto 0;
+    border-radius: .5rem;
+}
+.SmarkForm-Video-Caption {
+    margin: .35em 0 0;
+    text-align: center;
+    font-size: .85em;
+}
 @media (max-width: 600px) {
     .SmarkForm-Hero {
         display: none;
@@ -223,6 +235,15 @@ endcapture %}
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 
+<a href="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}"
+   title="Watch the full video (with sound)">
+  <img class="SmarkForm-Video"
+       src="{{ '/assets/hero/SmarkForm_hero.gif' | relative_url }}"
+       width="560" height="315" alt="">
+</a>
+<p class="SmarkForm-Video-Caption">
+  ▶ <a href="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}">Watch the full video</a> (with sound, in HD)
+</p>
 
 *SmarkForm* is a lightweight, markup-driven form controller for front-end
 developers: add `data-smark` attributes to your HTML, initialize with one line
