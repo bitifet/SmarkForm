@@ -215,6 +215,42 @@ endcapture %}
     text-align: center;
     font-size: .85em;
 }
+.SmarkForm-IntroDialog {
+    max-width: min(92vw, 26em);
+    padding: 1.2em 1.4em;
+    border: 1px solid #d0d0d0;
+    border-radius: .6rem;
+    text-align: center;
+}
+.SmarkForm-IntroDialog::backdrop {
+    /* Solid rgba() form: the site's older Sass frontend would choke on the
+       modern `rgb(0 0 0 / 45%)` syntax. */
+    background: rgba(0, 0, 0, .45);
+}
+.SmarkForm-IntroDialog h2 {
+    margin: 0 0 .4em;
+    font-size: 1.1em;
+}
+.SmarkForm-IntroDialog p {
+    margin: 0 0 1em;
+    font-size: .92em;
+}
+.SmarkForm-IntroDialog-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .6em;
+}
+.SmarkForm-IntroDialog-actions button {
+    padding: .5em 1em;
+    border: 1px solid rgba(196, 196, 196, 1);
+    border-radius: .4rem;
+    background: rgba(245, 245, 245, 1);
+    cursor: pointer;
+}
+.SmarkForm-IntroDialog-actions button:hover {
+    background: rgba(232, 232, 232, 1);
+}
 @media (max-width: 600px) {
     .SmarkForm-Hero {
         display: none;
@@ -245,60 +281,17 @@ endcapture %}
   🔇 Autoplays muted — unmute it (🔊 in the player controls) to hear the narration.
 </p>
 
-<script>
-/* Hero video: plays it from the beginning, optionally full screen.
- *
- * Driven by the URL hash so that the same behaviour can be reached from two
- * places:
- *   #intro        → (re)start the hero video from the beginning
- *   #intro@full   → the same, and go full screen
- *
- * The README hero GIF links to https://smarkform.bitifet.net#intro, which is
- * why the plain hash restarts playback: the homepage has many other in-page
- * fragments and the hero is not one of them, so no existing link is hijacked.
- *
- * requestFullscreen() needs a user gesture: the hash only counts as one when
- * the visitor arrived here by clicking — which is exactly the README case.
- * A visitor who paste-ed the URL sees a normal autoplaying hero instead.
- */
-(function () {
-  var video = document.querySelector('.SmarkForm-Video');
-  if (!video) return;
+{% include components/hero_video.md %}
 
-  function seekToStart() {
-    try { video.currentTime = 0; } catch (e) { /* not seekable yet */ }
-  }
-
-  function play() {
-    var p = video.play();
-    if (p && typeof p.catch === 'function') p.catch(function () { /* autoplay blocked */ });
-  }
-
-  function fullscreen() {
-    var fn = video.requestFullscreen || video.webkitRequestFullscreen ||
-             video.msRequestFullscreen;
-    if (!fn) return;
-    try {
-      var r = fn.call(video);
-      if (r && typeof r.catch === 'function') r.catch(function () { /* denied */ });
-    } catch (e) { /* denied */ }
-  }
-
-  function handle() {
-    var hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
-    var at = hash.indexOf('@');
-    var name = at < 0 ? hash : hash.slice(0, at);
-    var mode = at < 0 ? '' : hash.slice(at + 1);
-    if (name !== 'intro') return;
-    seekToStart();
-    play();
-    if (mode === 'full') fullscreen();
-  }
-
-  window.addEventListener('hashchange', handle);
-  handle();
-})();
-</script>
+<dialog id="smarkform-intro-dialog" class="SmarkForm-IntroDialog">
+  <h2>SmarkForm in action</h2>
+  <p>Watch the full demo video? It runs about 1&nbsp;minute&nbsp;47, with narration
+     and in full screen.</p>
+  <div class="SmarkForm-IntroDialog-actions">
+    <button type="button" id="smarkform-intro-play">▶️ Play full screen</button>
+    <button type="button" id="smarkform-intro-close">Stay on this page</button>
+  </div>
+</dialog>
 
 *SmarkForm* is a lightweight, markup-driven form controller for front-end
 developers: add `data-smark` attributes to your HTML, initialize with one line
