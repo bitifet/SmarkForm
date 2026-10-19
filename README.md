@@ -2,23 +2,7 @@
 
 # SmarkForm
 
----
-
 **Complex HTML forms without complex JavaScript.**
-
-SmarkForm is a **markup-driven controller for structured HTML forms**. Annotate
-your markup with `data-smark`, and the DOM becomes a tree of **fields** that
-imports and exports as JSON.
-
-In SmarkForm, **everything is a field**, and every field returns a JSON value.
-A **form** is a field composed of named fields (it returns an object); a
-**list** is a field composed of a sequence of fields (it returns an array); an
-**input** returns a string, a **number** returns a number, a **checkbox** a
-boolean, and so on. Because forms and lists are themselves fields, you can nest
-them to any depth and describe any JSON data structure — including
-variable-length arrays, clamped to a length range or not.
-
-No component framework. No imposed DOM structure or CSS.
 
 <p align="center">
   <a href="https://npmjs.org/package/smarkform"><img src="https://img.shields.io/npm/v/smarkform.svg" alt="NPM Version"></a>
@@ -45,6 +29,22 @@ No component framework. No imposed DOM structure or CSS.
          alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
   </a>
 </p>
+
+SmarkForm is a **markup-driven controller for structured HTML forms**. Annotate
+your markup with `data-smark`, and the DOM becomes a tree of **fields** that
+imports and exports as JSON.
+
+In SmarkForm, **everything is a field**, and every field returns a JSON value.
+A **form** is a field composed of named fields (it returns an object); a
+**list** is a field composed of a sequence of fields (it returns an array); an
+**input** returns a string, a **number** returns a number, a **checkbox** a
+boolean, and so on. Because forms and lists are themselves fields, you can nest
+them to any depth and describe any JSON data structure — including
+variable-length arrays, clamped to a length range or not.
+
+No component framework. No imposed DOM structure or CSS.
+
+---
 
 📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
 
