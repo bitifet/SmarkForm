@@ -27,9 +27,6 @@ No component framework. No imposed DOM structure or CSS.
   <a href="https://www.jsdelivr.com/package/npm/smarkform"><img src="https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded" alt="jsDelivr Hits"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="License"></a>
 </p>
-<!-- Highlighting fix: []() -->
-
-📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
 
 <!-- 🎬 Hero — animated GIF (docs/assets/hero/SmarkForm_hero.gif, 560×315,
      8 fps, ~23 MB) rendered from the full demo video.
@@ -48,6 +45,8 @@ No component framework. No imposed DOM structure or CSS.
          alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
   </a>
 </p>
+
+📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
 
 ## The idea in one example
 
