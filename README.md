@@ -27,13 +27,19 @@ No component framework. No imposed DOM structure or CSS.
 
 📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
 
+<!-- 🎬 Hero — animated GIF (docs/assets/hero/SmarkForm_hero.gif, 560×315,
+     8 fps, ~23 MB) rendered from the full demo video.
+     A GIF is used deliberately: it plays everywhere with no codec, autoplay
+     or sanitizer rules to fight (GitHub/npm strip <video> from READMEs).
+     The still frame is poster.png; the click-through target is
+     the full-length H.264 MP4 (faststart). -->
 <p align="center">
-  <img src="docs/assets/SmarkForm_hero.webp" alt="SmarkForm turns annotated HTML into structured JSON" width="75%">
+  <a href="docs/assets/hero/SmarkForm_hero_web.mp4">
+    <img src="docs/assets/hero/SmarkForm_hero.gif" width="560"
+         style="width:min(100%, 560px); height:auto; border-radius:.5rem;"
+         alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
+  </a>
 </p>
-
-<!-- 🎞️ Placeholder: replace/extend the hero with a short screencast that
-     annotates plain HTML with data-smark, initializes SmarkForm, then grows a
-     nested list and watches the exported JSON update. -->
 
 ## The idea in one example
 
