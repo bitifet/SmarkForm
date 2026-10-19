@@ -1,0 +1,76 @@
+1
+00:00:00,600 --> 00:00:04,167
+Complex HTML forms, without complex JavaScript.
+
+2
+00:00:04,600 --> 00:00:05,868
+Meet SmarkForm.
+
+3
+00:00:08,300 --> 00:00:10,462
+Start with a simple profile form.
+
+4
+00:00:12,200 --> 00:00:16,916
+Fill it in. The picture is a real field: click, drop, or paste an image.
+
+5
+00:00:19,400 --> 00:00:24,221
+Then export everything, image included, as one single JSON payload.
+
+6
+00:00:25,100 --> 00:00:28,980
+Behind it: plain HTML, with data smark attributes.
+
+7
+00:00:30,900 --> 00:00:32,470
+Your own CSS.
+
+8
+00:00:35,200 --> 00:00:37,455
+And one single line of JavaScript.
+
+9
+00:00:40,300 --> 00:00:41,684
+Need nested data?
+
+10
+00:00:43,400 --> 00:00:47,176
+Lists nest inside forms, inside lists, to any depth.
+
+11
+00:00:51,200 --> 00:00:52,793
+Fold what you don't need.
+
+12
+00:00:55,600 --> 00:00:58,807
+Even drag a student to another group. Grades included.
+
+13
+00:01:03,133 --> 00:01:04,715
+Still, just markup.
+
+14
+00:01:08,833 --> 00:01:10,160
+Complex grids?
+
+15
+00:01:11,733 --> 00:01:15,776
+Duplicate a whole period in one click, and only change what differs.
+
+16
+00:01:18,933 --> 00:01:22,036
+Add as many time slots as you need, at every level.
+
+17
+00:01:26,733 --> 00:01:29,104
+It all exports as clean JSON.
+
+18
+00:01:32,467 --> 00:01:35,906
+Repeated parts are defined once, as reusable templates.
+
+19
+00:01:39,167 --> 00:01:43,535
+SmarkForm. Easy to write, cheap to maintain, delightful to use.
+
