@@ -204,9 +204,11 @@ endcapture %}
 .SmarkForm-Video {
     display: block;
     width: 100%;
-    max-width: 560px;
+    max-width: 760px;
     margin: 1.25rem auto 0;
     border-radius: .5rem;
+    background: #000;
+    aspect-ratio: 16 / 9;
 }
 .SmarkForm-Video-Caption {
     margin: .35em 0 0;
@@ -235,14 +237,16 @@ endcapture %}
 [![jsDelivr Hits][cdnhits-image]][cdnhits-url]
 [![License][license-image]][license-url]
 
-<a href="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}"
-   title="Watch the full video (with sound)">
-  <img class="SmarkForm-Video"
-       src="{{ '/assets/hero/SmarkForm_hero.gif' | relative_url }}"
-       width="560" height="315" alt="">
-</a>
+<video class="SmarkForm-Video" autoplay muted loop playsinline controls
+       preload="metadata"
+       poster="{{ '/assets/hero/poster.png' | relative_url }}"
+       aria-label="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
+  <source src="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}" type="video/mp4">
+  Your browser cannot play embedded video —
+  <a href="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}">watch the SmarkForm demo</a>.
+</video>
 <p class="SmarkForm-Video-Caption">
-  ▶ <a href="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}">Watch the full video</a> (with sound, in HD)
+  🔇 Autoplays muted — unmute it (🔊 in the player controls) to hear the narration.
 </p>
 
 *SmarkForm* is a lightweight, markup-driven form controller for front-end
