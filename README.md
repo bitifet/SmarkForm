@@ -18,11 +18,13 @@ variable-length arrays, clamped to a length range or not.
 
 No component framework. No imposed DOM structure or CSS.
 
-[![NPM Version][npm-image]][npm-url]
-[![npm dependencies][dependencies-image]][dependencies-url]
-[![NPM Downloads][downloads-image]][downloads-url]
-[![jsDelivr Hits][cdnhits-image]][cdnhits-url]
-[![License][license-image]][license-url]
+<p align="center">
+  <a href="https://npmjs.org/package/smarkform"><img src="https://img.shields.io/npm/v/smarkform.svg" alt="NPM Version"></a>
+  <a href="https://www.npmjs.com/package/smarkform?activeTab=dependencies"><img src="https://img.shields.io/badge/dependencies-0-green" alt="npm dependencies"></a>
+  <a href="https://npmjs.org/package/smarkform"><img src="https://img.shields.io/npm/dm/smarkform.svg" alt="NPM Downloads"></a>
+  <a href="https://www.jsdelivr.com/package/npm/smarkform"><img src="https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded" alt="jsDelivr Hits"></a>
+  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-brightgreen.svg" alt="License"></a>
+</p>
 <!-- Highlighting fix: []() -->
 
 📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
@@ -31,10 +33,13 @@ No component framework. No imposed DOM structure or CSS.
      8 fps, ~23 MB) rendered from the full demo video.
      A GIF is used deliberately: it plays everywhere with no codec, autoplay
      or sanitizer rules to fight (GitHub/npm strip <video> from READMEs).
-     The still frame is poster.png; the click-through target is
-     the full-length H.264 MP4 (faststart). -->
+     The still frame is poster.png.
+     The click-through target is the docs home page with the #intro hash, where
+     its hero script plays the full video from the beginning (see the "Hero
+     video" section of docs/index.md); it used to point at the MP4 itself,
+     which GitHub refuses to serve as a page and which would 404 on npm. -->
 <p align="center">
-  <a href="docs/assets/hero/SmarkForm_hero_web.mp4">
+  <a href="https://smarkform.bitifet.net#intro">
     <img src="docs/assets/hero/SmarkForm_hero.gif" width="560"
          style="width:min(100%, 560px); height:auto; border-radius:.5rem;"
          alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
@@ -561,17 +566,3 @@ Please note that this project is released with a [Contributor Code of Conduct](C
 
 front-end – form – form-controller – form-library – json-form – lightweight –
 vanilla – css-agnostic – DOM – html-form – no-dependencies – a11y
-
-
-
-
-[npm-image]: https://img.shields.io/npm/v/smarkform.svg
-[npm-url]: https://npmjs.org/package/smarkform
-[dependencies-image]: https://img.shields.io/badge/dependencies-0-green
-[dependencies-url]: https://www.npmjs.com/package/smarkform?activeTab=dependencies
-[downloads-image]: https://img.shields.io/npm/dm/smarkform.svg
-[downloads-url]: https://npmjs.org/package/smarkform
-[cdnhits-image]: https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded
-[cdnhits-url]: https://www.jsdelivr.com/package/npm/smarkform
-[license-image]: https://img.shields.io/badge/license-MIT-brightgreen.svg
-[license-url]: https://opensource.org/licenses/MIT

@@ -231,11 +231,7 @@ endcapture %}
 
 🚀 **Add subforms, dynamic lists, hotkeys and more to any HTML form in one line of JavaScript.**
 
-[![NPM Version][npm-image]][npm-url]
-[![npm dependencies][dependencies-image]][dependencies-url]
-[![NPM Downloads][downloads-image]][downloads-url]
-[![jsDelivr Hits][cdnhits-image]][cdnhits-url]
-[![License][license-image]][license-url]
+{% include components/badges.md %}
 
 <video class="SmarkForm-Video" autoplay muted loop playsinline controls
        preload="metadata"
@@ -248,6 +244,61 @@ endcapture %}
 <p class="SmarkForm-Video-Caption">
   🔇 Autoplays muted — unmute it (🔊 in the player controls) to hear the narration.
 </p>
+
+<script>
+/* Hero video: plays it from the beginning, optionally full screen.
+ *
+ * Driven by the URL hash so that the same behaviour can be reached from two
+ * places:
+ *   #intro        → (re)start the hero video from the beginning
+ *   #intro@full   → the same, and go full screen
+ *
+ * The README hero GIF links to https://smarkform.bitifet.net#intro, which is
+ * why the plain hash restarts playback: the homepage has many other in-page
+ * fragments and the hero is not one of them, so no existing link is hijacked.
+ *
+ * requestFullscreen() needs a user gesture: the hash only counts as one when
+ * the visitor arrived here by clicking — which is exactly the README case.
+ * A visitor who paste-ed the URL sees a normal autoplaying hero instead.
+ */
+(function () {
+  var video = document.querySelector('.SmarkForm-Video');
+  if (!video) return;
+
+  function seekToStart() {
+    try { video.currentTime = 0; } catch (e) { /* not seekable yet */ }
+  }
+
+  function play() {
+    var p = video.play();
+    if (p && typeof p.catch === 'function') p.catch(function () { /* autoplay blocked */ });
+  }
+
+  function fullscreen() {
+    var fn = video.requestFullscreen || video.webkitRequestFullscreen ||
+             video.msRequestFullscreen;
+    if (!fn) return;
+    try {
+      var r = fn.call(video);
+      if (r && typeof r.catch === 'function') r.catch(function () { /* denied */ });
+    } catch (e) { /* denied */ }
+  }
+
+  function handle() {
+    var hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
+    var at = hash.indexOf('@');
+    var name = at < 0 ? hash : hash.slice(0, at);
+    var mode = at < 0 ? '' : hash.slice(at + 1);
+    if (name !== 'intro') return;
+    seekToStart();
+    play();
+    if (mode === 'full') fullscreen();
+  }
+
+  window.addEventListener('hashchange', handle);
+  handle();
+})();
+</script>
 
 *SmarkForm* is a lightweight, markup-driven form controller for front-end
 developers: add `data-smark` attributes to your HTML, initialize with one line
@@ -420,13 +471,4 @@ and expand the functionality of SmarkForm.
 
 
 
-[npm-image]: https://img.shields.io/npm/v/smarkform.svg
-[npm-url]: https://npmjs.org/package/smarkform
-[dependencies-image]: https://img.shields.io/badge/dependencies-0-green
-[dependencies-url]: https://www.npmjs.com/package/smarkform?activeTab=dependencies
-[downloads-image]: https://img.shields.io/npm/dm/smarkform.svg
-[downloads-url]: https://npmjs.org/package/smarkform
-[cdnhits-image]: https://data.jsdelivr.com/v1/package/npm/smarkform/badge?style=rounded
-[cdnhits-url]: https://www.jsdelivr.com/package/npm/smarkform
-[license-image]: https://img.shields.io/badge/license-MIT-brightgreen.svg
 [license-url]: https://opensource.org/licenses/MIT
