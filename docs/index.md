@@ -204,7 +204,7 @@ endcapture %}
 .SmarkForm-Video {
     display: block;
     width: 100%;
-    max-width: 760px;
+    max-width: 960px;
     margin: 1.25rem auto 0;
     border-radius: .5rem;
     background: #000;
@@ -245,15 +245,6 @@ endcapture %}
   🔇 Autoplays muted — unmute it (🔊 in the player controls) to hear the narration.
 </p>
 
-*SmarkForm* is a lightweight, markup-driven form controller for front-end
-developers: add `data-smark` attributes to your HTML, initialize with one line
-of JavaScript, and get powerful **subforms**, variable-length **lists**,
-context-driven **hotkeys**, and JSON import/export — all without touching your
-layout.
-
-👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
-
-
 ## Interactive Demo
 
 A nested subform, a sortable list, context-driven hotkeys, and date/time
@@ -293,6 +284,14 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
     <source srcset="assets/SmarkForm_hero.webp" type="image/webp">
     <img src="assets/SmarkForm_hero.png" alt="">
 </picture>
+
+*SmarkForm* is a lightweight, markup-driven form controller for front-end
+developers: add `data-smark` attributes to your HTML, initialize with one line
+of JavaScript, and get powerful **subforms**, variable-length **lists**,
+context-driven **hotkeys**, and JSON import/export — all without touching your
+layout.
+
+👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
 
 Want to dig deeper right away? Head to the [🔗 Showcase]({{ "about/showcase" | relative_url }})
 to explore interactive demos — including the example above — that show

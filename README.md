@@ -2,6 +2,8 @@
 
 # SmarkForm
 
+---
+
 **Complex HTML forms without complex JavaScript.**
 
 SmarkForm is a **markup-driven controller for structured HTML forms**. Annotate
