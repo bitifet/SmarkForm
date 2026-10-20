@@ -13,25 +13,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+<!-- Add new entries here when preparing the next release. -->
+
+---
+
+## [0.24.0] — 2026-10-20
+
+🌳 Wildcard trigger dispatch · 🧩 External mixin improvements · 🎬 New hero video and animated README
+
+SmarkForm 0.24.0 adds wildcard multi-context actions and makes external mixins more practical with source-relative nested references and eager preloading. It fixes cross-list dragging between nested lists and refreshes the landing pages with a narrated hero video, animated README diagrams, and substantially expanded examples and guidance.
+
 ### Features
 
-- **Multi-context triggers (wildcard `context`)**: when a trigger's `context`
-  (and optionally `target`) is a wildcard path (e.g. `"*"` or `"foo/*"`), the
-  action is now dispatched to **every** matching component in sequence, each
-  with its own resolved target. Components that don't implement the action are
-  skipped silently. This enables one "clean up everything" button such as
-  `{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}`.
-  Behaviour for non-wildcard contexts is unchanged.
+- **Wildcard multi-context triggers**: wildcard `context` paths such as `"*"` and `"foo/*"` dispatch an action to every matching component, each with its own resolved target; components that do not implement the action are skipped. Non-wildcard behavior is unchanged.
+- **Source-relative mixin references**: nested mixin references inside external templates now resolve local `#id` references in that template's source document and relative URLs against that document's URL.
+- **Eager external-mixin preloading**: external documents referenced by a form, including list item templates, are prefetched during render without blocking it. `preload:false` opts out, and existing external-fetch security policy is respected.
 
-### Fixes
+### Bug Fixes
 
-- **`movingDepth` cross-list drags between nested lists**: a regression
-  (introduced while cherry-picking sortable improvements) left the inner
-  sortable list's `drop` handler without `e.stopPropagation()`, so a drop on a
-  nested list bubbled to the enclosing sortable list, which overwrote the
-  drop target and silently aborted the move. Restored event-propagation
-  stopping — drops inside a nested sortable list now move items between the
-  inner lists as intended (e.g. the showcase school-groups pattern).
+- **Nested cross-list dragging**: stopping drop-event propagation in nested sortable lists prevents an outer list from overwriting the inner drop target; `movingDepth` moves between nested lists now complete correctly.
+
+### Documentation
+
+- **Landing-page media**: the documentation home page now features a narrated, muted-looping hero video; the README has a GIF hero plus animated field-model and nested-data demonstrations, with the source/build workflow documented under `media/`.
+- **Expanded guides and examples**: substantial updates to form traversal, hotkeys, mixins, the showcase, FAQ, and user guide clarify wildcard contexts, nested lists, empty values, and related patterns.
+- Corrected documentation for empty text values and updated the README's opening structure and examples.
+
+### Other
+
+- Updated `concurrently` and `shell-quote` to address a critical development-tooling advisory.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.24.0)
 
 ---
 
@@ -740,7 +752,8 @@ https://github.com/bitifet/SmarkForm/releases
 **Policy:** Keep full history until 1.0.0; after 1.0.0 archive older releases into
 `docs/changelog-archive/*.md`.
 
-[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.23.0...HEAD
+[Unreleased]: https://github.com/bitifet/SmarkForm/compare/0.24.0...HEAD
+[0.24.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.24.0
 [0.23.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.23.0
 [0.22.0]: https://github.com/bitifet/SmarkForm/releases/tag/0.22.0
 [0.21.1]: https://github.com/bitifet/SmarkForm/releases/tag/0.21.1
