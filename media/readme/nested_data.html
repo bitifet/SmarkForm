@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SmarkForm — nested data (README capture page)</title>
+<!-- Capture page for docs/assets/readme/nested_data.gif.
+     The form markup is the README "Nested data and dynamic lists" snippet;
+     the only additions are the grade placeholders/labels and styling. -->
+<style>
+  :root { --blue:#2497f3; --cyan:#24c6d3; --ink:#0b1022; --card:#121a33; }
+  * { box-sizing: border-box; }
+  body { margin:0; height:100vh; display:grid; grid-template-columns: 1fr 1.12fr;
+         gap:22px; padding:22px; background:linear-gradient(135deg,#0f1630,var(--ink));
+         font:16px/1.35 Lato, "Noto Sans", system-ui, sans-serif; color:#e8edf8; overflow:hidden; }
+  .pane { background:#f6f7fb; color:#1c2333; border-radius:14px; padding:18px 20px;
+          box-shadow:0 18px 50px rgba(0,0,0,.45); overflow:hidden; position:relative; }
+  .tag { position:absolute; top:-1px; right:16px; font:700 12px/1 Lato, sans-serif; letter-spacing:.12em;
+         text-transform:uppercase; color:#fff; padding:6px 10px; border-radius:0 0 8px 8px;
+         background:linear-gradient(90deg,var(--blue),var(--cyan)); }
+  #school input { font:inherit; padding:6px 9px; border:1px solid #c5ccdb; border-radius:7px; background:#fff; }
+  #school input:focus { outline:2px solid var(--blue); outline-offset:0; border-color:var(--blue); }
+  #school > input[name=name] { width:100%; font-weight:700; margin-bottom:12px; }
+  #school ul { list-style:none; margin:0; padding:0; }
+  #school > ul > li { background:#e9edf6; border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+  #school > ul > li > input[name=tutor] { width:100%; margin-bottom:8px; }
+  #school > ul > li ul > li { display:flex; gap:6px; align-items:center; margin-bottom:6px;
+                              background:#fff; border-radius:8px; padding:6px 8px; }
+  #school > ul > li ul > li > input[name=name] { flex:1; min-width:0; }
+  #school [data-smark*=grades] { display:flex; gap:6px; }
+  #school input[type=number] { width:86px; }
+  #school button { font:600 14px/1 Lato, sans-serif; padding:7px 11px; border:1px solid #c5ccdb;
+                   border-radius:7px; background:#fff; color:#1c2333; cursor:pointer; }
+  #json { margin:0; font:14px/1.33 Hack, "DejaVu Sans Mono", monospace; white-space:pre; }
+  #json .k { color:#1d6fc4; } #json .s { color:#a0571a; } #json .n { color:#7b3fbf; }
+  #json .line { display:block; border-radius:4px; transition: background-color 1.4s ease-out; }
+  #json .line.fresh { background-color:rgba(36,198,211,.32); transition:none; }
+  #cursor { position:fixed; left:0; top:0; width:24px; height:24px; z-index:99; pointer-events:none;
+            transition: transform .55s cubic-bezier(.3,.7,.3,1); }
+  #cursor.click::after { content:""; position:absolute; left:-12px; top:-12px; width:24px; height:24px;
+            border-radius:50%; border:3px solid var(--cyan); animation:ping .45s ease-out forwards; }
+  @keyframes ping { from { transform:scale(.3); opacity:1 } to { transform:scale(1.6); opacity:0 } }
+</style>
+</head>
+<body>
+<div class="pane">
+  <span class="tag">HTML</span>
+  <!-- ▼ README snippet ▼ -->
+  <div id="school">
+    <input name="name" data-smark placeholder="School name">
+
+    <ul data-smark='{"type":"list","name":"groups"}'>
+      <li>
+        <input name="tutor" data-smark placeholder="Tutor">
+
+        <ul data-smark='{"type":"list","name":"students"}'>
+          <li>
+            <input name="name" data-smark placeholder="Student">
+
+            <div data-smark='{"type":"form","name":"grades"}'>
+              <input name="math" type="number" data-smark placeholder="Math">
+              <input name="science" type="number" data-smark placeholder="Science">
+            </div>
+          </li>
+        </ul>
+
+        <button data-smark='{"action":"addItem","context":"students"}'>➕ Add student</button>
+      </li>
+    </ul>
+
+    <button data-smark='{"action":"addItem","context":"groups"}'>➕ Add group</button>
+  </div>
+  <!-- ▲ README snippet ▲ -->
+</div>
+<div class="pane">
+  <span class="tag">form.export() · live</span>
+  <pre id="json"></pre>
+</div>
+<svg id="cursor" viewBox="0 0 24 24"><path d="M3 2 L3 19 L8 14.5 L11.5 22 L14.5 20.6 L11 13.4 L18 13.4 Z"
+     fill="#111" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/></svg>
+<script src="../../dist/SmarkForm.umd.js"></script>
+<script>
+  const form = new SmarkForm(document.querySelector("#school"));
+  const pre = document.getElementById("json");
+  let prev = [];
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const paint = l => l.replace(/("(?:[^"\\]|\\.)*")(\s*:)?|-?\d+(?:\.\d+)?|null|true|false|[^"\d\-nt f]+|./g,
+      (m, str, colon) => str ? (colon ? `<span class="k">${esc(str)}</span>${colon}` : `<span class="s">${esc(str)}</span>`)
+          : /^(-?\d|null|true|false)/.test(m) ? `<span class="n">${m}</span>` : esc(m));
+  // JSON.stringify(…, null, 2), except that any object/array whose one-line
+  // form fits in MAX characters stays on one line (keeps the pane readable).
+  const MAX = 40;
+  function compact(v, ind = "") {
+      const one = JSON.stringify(v, null, 1).replace(/\s*\n\s*/g, " ")
+          .replace(/\[ /g, "[").replace(/ \]/g, "]");
+      if (v === null || typeof v !== "object" || one.length <= MAX) return one;
+      const pad = ind + "  ";
+      if (Array.isArray(v))
+          return "[\n" + v.map(x => pad + compact(x, pad)).join(",\n") + "\n" + ind + "]";
+      return "{\n" + Object.entries(v).map(([k, x]) => pad + JSON.stringify(k) + ": " + compact(x, pad))
+          .join(",\n") + "\n" + ind + "}";
+  }
+  async function refresh() {
+      const lines = compact(await form.export()).split("\n");
+      if (lines.join("\n") !== prev.join("\n")) {
+          pre.innerHTML = lines.map((l, i) =>
+              `<span class="line${prev.length && prev[i] !== l ? " fresh" : ""}">${paint(l)}</span>`).join("");
+          requestAnimationFrame(() => requestAnimationFrame(() =>
+              pre.querySelectorAll(".fresh").forEach(e => e.classList.remove("fresh"))));
+          prev = lines;
+      }
+  }
+  form.rendered.then(() => { refresh(); setInterval(refresh, 120); window.READY = true; });
+  // synthetic cursor driven by the capture script
+  const cur = document.getElementById("cursor");
+  window.moveCursor = (x, y) => { cur.style.transform = `translate(${x - 3}px, ${y - 2}px)`; };
+  window.clickCursor = () => { cur.classList.remove("click"); void cur.offsetWidth; cur.classList.add("click"); };
+  moveCursor(innerWidth * 0.55, innerHeight * 0.85);
+</script>
+</body>
+</html>
