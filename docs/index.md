@@ -191,16 +191,6 @@ endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 <style>
-.SmarkForm-Hero {
-    float: right;
-    display: block;
-    max-width: 30%;
-    margin: 1rem;
-}
-.SmarkForm-Hero img {
-    border-radius: .5rem;
-    width: 100%;
-}
 .SmarkForm-Video {
     display: block;
     width: 100%;
@@ -215,10 +205,21 @@ endcapture %}
     text-align: center;
     font-size: .85em;
 }
-@media (max-width: 600px) {
-    .SmarkForm-Hero {
-        display: none;
-    }
+.SmarkForm-FieldModel {
+    width: 100%;
+    max-width: 720px;
+    margin: 1.25rem auto;
+    text-align: center;
+}
+.SmarkForm-FieldModel img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: .5rem;
+}
+.SmarkForm-FieldModel figcaption {
+    margin-top: .35em;
+    font-size: .9em;
 }
 </style>
 
@@ -275,16 +276,18 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
 
 ## TL;DR
 
-<picture class="SmarkForm-Hero">
-    <source srcset="assets/SmarkForm_hero.webp" type="image/webp">
-    <img src="assets/SmarkForm_hero.png" alt="">
-</picture>
-
 *SmarkForm* is a lightweight, markup-driven form controller for front-end
 developers: add `data-smark` attributes to your HTML, initialize with one line
 of JavaScript, and get powerful **subforms**, variable-length **lists**,
 context-driven **hotkeys**, and JSON import/export — all without touching your
 layout.
+
+<figure class="SmarkForm-FieldModel">
+  <img src="{{ '/assets/readme/field_model.svg' | relative_url }}"
+       width="880" height="560" loading="lazy"
+       alt="Animated diagram: every SmarkForm component is a field. Forms return objects, lists return arrays, and value fields return individual JSON values. Forms and lists can nest to any depth.">
+  <figcaption>Forms and lists are fields too, so they compose into nested JSON.</figcaption>
+</figure>
 
 👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
 
