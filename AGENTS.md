@@ -610,6 +610,37 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 - Review package changelogs for migration guides
 - Test locally: `npm install <package>@<version>`
 
+### Media Projects (`media/`)
+
+**What it does**: Holds the sources, build scripts and intermediate artefacts of
+produced media. Each project lives in its own `media/<project>/` directory with a
+`README.md`; published deliverables go to `docs/assets/<project>/`.
+
+**Current projects**: `media/hero/` — the landing-page hero video and README GIF.
+
+**How to run locally**:
+```bash
+cd media/hero
+./setup.sh            # once: .venv with piper-tts + Piper voice models (git-ignored)
+./build.sh            # full rebuild (~40 min); see media/hero/README.md for partial steps
+./build.sh publish    # copy deliverables to docs/assets/hero/
+```
+
+**Key details**:
+- `media/hero/timeline.py` is the single source of truth (clip cuts, scene
+  durations, on-screen texts, narration); `STORYBOARD.md` mirrors it for review.
+- Rendering is a Python (PIL + numpy) frame compositor piping to ffmpeg; narration
+  uses Piper TTS. No CI involvement — builds are manual.
+- Code shown in the video is re-typeset from the docs sources
+  (`docs/_component_types/type_image.md`, `docs/_about/showcase.md`) by
+  `codeimg.py`; if those examples change, rebuild.
+- Git-ignored: `.venv/`, `assets/voices/`, `work/scenes/`,
+  `work/master_video.mp4`, `work/voice/narration.wav`, `out/`.
+- Narration takes are content-addressed and committed (Piper output is not
+  bit-for-bit reproducible).
+- **Privacy**: screencasts may capture browser autofill popups. Scan recordings
+  before committing (see "Privacy redaction" in `media/hero/README.md`).
+
 ## Configuration File Locations
 
 | Component | Configuration File(s) |
@@ -624,6 +655,7 @@ Note: The workflow sets `working-directory: docs` as the default, so npm command
 | Chapter TOC generator | `scripts/generate-chaptertocs.js`, `scripts/watch-chaptertocs.js` (dev live-regen) — output: git-ignored `docs/_includes/chaptertoc/` |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |
 | Just-The-Docs Sass shadow | `scripts/update_just_the_docs_sass_shadow.sh` → generated `docs/_sass/` |
+| Hero video (media project) | `media/hero/timeline.py`, `media/hero/build.sh`, `media/hero/setup.sh` — output: `docs/assets/hero/` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
 | Example Pug layout | `src/examples/include/layout.pug` |
 | Example Pug mixins | `src/examples/include/mixins.pug` |
