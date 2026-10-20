@@ -116,6 +116,24 @@ SCENES = [
          label="03 · Hotel schedules", chip="HTML",
          hints=[(0.4, 6.1, "Repeated parts?\nReusable <template> mixins")]),
 
+    # "There's more": a 3x3 grid of feature tiles on a tilted plane.  Tiles are
+    # listed in narration order; `at` = reveal time (scene-relative), aligned
+    # with the moment the narration names the feature (path addressing is shown
+    # but not spoken).
+    dict(id="more", kind="more", dur=13.6,
+         title="…and there's much more to explore",
+         tiles=[
+             dict(at=2.25, icon="🎬", title="Audio, video & files", sub="Embedded right in the JSON"),
+             dict(at=3.94, icon="⌨️", title="Context-aware hotkeys", sub="Hold Ctrl to reveal them"),
+             dict(at=5.56, icon="🎭", title="Input masking", sub="Plug in any mask library"),
+             dict(at=6.19, icon="🎨", title="Nullable fields", sub="Colors & radios can be unset"),
+             dict(at=7.39, icon="🔗", title="Auto-wired triggers", sub="By placement, or by context"),
+             dict(at=8.87, icon="♿", title="Accessible by design", sub="Keyboard-first, ARIA filled in"),
+             dict(at=9.40, icon="🧭", title="Path-addressable", sub="Like a filesystem: ../name, *"),
+             dict(at=9.93, icon="🤖", title="AI Skills", sub="Your coding agent speaks it"),
+             dict(at=10.98, icon="📦", title="CDN or npm", sub="Zero dependencies, any stack"),
+         ]),
+
     dict(id="outro", kind="outro", dur=8.5,
          tagline="Easy to write. Cheap to maintain. Delightful to use.",
          install="npm install smarkform",
@@ -146,6 +164,9 @@ NARRATION = [
     ("hotel", 7.8, "Add as many time slots as you need, at every level."),
     ("hotel", 15.6, "It all exports as clean JSON."),
     ("hotel_html", 0.6, "Repeated parts are defined once, as reusable templates."),
+    ("more", 0.3, "And there's much more to explore."),
+    ("more", 2.5, "Audio and video fields, context-aware hotkeys, masking, nullable fields, "
+                  "auto-wired triggers, accessibility, AI skills, and zero dependencies."),
     ("outro", 0.8, "SmarkForm. Easy to write, cheap to maintain, delightful to use."),
 ]
 

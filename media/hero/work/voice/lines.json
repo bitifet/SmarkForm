@@ -126,7 +126,21 @@
   "scene": "hotel_html"
  },
  {
-  "t": 99.16666666666666,
+  "t": 98.66666666666666,
+  "d": 1.7647165532879818,
+  "wav": "work/voice/take_7f2e98bca551.wav",
+  "text": "And there's much more to explore.",
+  "scene": "more"
+ },
+ {
+  "t": 100.86666666666666,
+  "d": 10.228390022675738,
+  "wav": "work/voice/take_1f293cdd37d5.wav",
+  "text": "Audio and video fields, context-aware hotkeys, masking, nullable fields, auto-wired triggers, accessibility, AI skills, and zero dependencies.",
+  "scene": "more"
+ },
+ {
+  "t": 112.76666666666667,
   "d": 4.167981859410431,
   "wav": "work/voice/take_1b1b99fec925.wav",
   "text": "SmarkForm. Easy to write, cheap to maintain, delightful to use.",

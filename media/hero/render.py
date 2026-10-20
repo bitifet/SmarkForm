@@ -686,7 +686,86 @@ class Outro(Scene):
         paste(c, self.url, x + self.inst.width + gap, 700 + (1 - ku) * 25, ku)
 
 
-KINDS = dict(hero=Hero, title=Title, demo=Demo, code=Code, init=Init, outro=Outro)
+class More(Scene):
+    """'…and there's much more': 3x3 feature tiles on a gently tilted plane."""
+    TW, TH, GX, GY = 560, 150, 34, 30          # tile size and gaps
+    COLS = 3
+
+    def __init__(self, s):
+        super().__init__(s)
+        self.head = text_img(s["title"], "Lato-Black.ttf", 76)
+        self.tiles = [self._tile(t) for t in s["tiles"]]
+        gw = self.COLS * self.TW + (self.COLS - 1) * self.GX
+        rows = math.ceil(len(self.tiles) / self.COLS)
+        gh = rows * self.TH + (rows - 1) * self.GY
+        self.gw, self.gh = gw, gh
+        self.pos = [((i % self.COLS) * (self.TW + self.GX), (i // self.COLS) * (self.TH + self.GY))
+                    for i in range(len(self.tiles))]
+
+    def _tile(self, t):
+        w, h = self.TW, self.TH
+        im = Image.new("RGBA", (w, h))
+        bg = Image.new("RGBA", (w, h), (14, 21, 44, 235))
+        im.paste(bg, (0, 0), round_mask(w, h, 22))
+        g = np.linspace(0, 1, h)[:, None, None]
+        col = (np.array(BLUE) * (1 - g) + np.array(CYAN) * g).astype(np.uint8)
+        bar = Image.fromarray(np.broadcast_to(col, (h, 7, 3)).copy(), "RGB").convert("RGBA")
+        m = Image.new("L", (w, h))
+        ImageDraw.Draw(m).rounded_rectangle((0, 0, 40, h - 1), 22, fill=255)
+        im.paste(bar, (0, 0), m.crop((0, 0, 7, h)))
+        ImageDraw.Draw(im).rounded_rectangle((0, 0, w - 1, h - 1), 22,
+                                             outline=(255, 255, 255, 42), width=2)
+        icon = emoji(t["icon"].replace("\ufe0f", ""), 64)
+        im.alpha_composite(icon, (34 + (64 - icon.width) // 2, (h - icon.height) // 2))
+        title = text_img(t["title"], "Lato-Black.ttf", 38)
+        sub = text_img(t["sub"], "Lato-Regular.ttf", 28, fill=(160, 178, 214))
+        x = 128
+        im.alpha_composite(title, (x - 9, 26 - 9))
+        im.alpha_composite(sub, (x - 7, 82 - 7))
+        return im
+
+    def draw(self, c, t):
+        s, d = self.s, self.dur
+        T = self.t0 + t
+        out = smooth((t - (d - 0.9)) / 0.9)
+        # heading
+        kh = ease_out((t - 0.15) / 0.7) * (1 - out)
+        paste(c, self.head, (W - self.head.width) / 2,
+              104 + (1 - ease_out((t - 0.15) / 0.7)) * 30 - out * 40, kh)
+        # tiles on a flat layer, then tilted as a whole
+        layer = Image.new("RGBA", (self.gw + 80, self.gh + 80))
+        for i, (tile, (x, y), spec) in enumerate(zip(self.tiles, self.pos, s["tiles"])):
+            k = ease_out((t - spec["at"]) / 0.55)
+            if k <= 0:
+                continue
+            kx = 1 - smooth((t - (d - 0.95 + 0.04 * i)) / 0.5)   # staggered exit
+            a = k * kx
+            if a <= 0.003:
+                continue
+            sc = 0.86 + 0.14 * k
+            tw, th = int(self.TW * sc), int(self.TH * sc)
+            im = tile if sc > 0.999 else tile.resize((tw, th), Image.BILINEAR)
+            dy = (1 - k) * 46 - (1 - kx) * 60
+            # freshly revealed tile: brief cyan glow ring
+            glow = clamp(1 - (t - spec["at"]) / 1.2)
+            if glow > 0:
+                ring = Image.new("RGBA", (tw + 20, th + 20))
+                ImageDraw.Draw(ring).rounded_rectangle((0, 0, tw + 19, th + 19), 30,
+                                                       outline=CYAN + (int(150 * glow * a),), width=4)
+                ring = ring.filter(ImageFilter.GaussianBlur(3))
+                layer.alpha_composite(ring, (int(40 + x + (self.TW - tw) / 2 - 10),
+                                             int(40 + y + (self.TH - th) / 2 + dy - 10)))
+            paste(layer, im, 40 + x + (self.TW - tw) / 2, 40 + y + (self.TH - th) / 2 + dy, a)
+        ry = -5 + 2.0 * math.sin(T * 0.4)
+        rx = 7 + 1.0 * math.sin(T * 0.33 + 1)
+        sc = 0.97 + 0.03 * smooth(t / d)
+        q = project(layer.width, layer.height, W / 2, 268 + layer.height / 2 + 8, sc, rx, ry)
+        warped, x0, y0 = warp(layer, q)
+        if warped is not None:
+            _paste_clip(c, warped, x0, y0)
+
+
+KINDS = dict(hero=Hero, title=Title, demo=Demo, code=Code, init=Init, more=More, outro=Outro)
 
 
 def make(sid):

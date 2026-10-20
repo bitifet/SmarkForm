@@ -1,0 +1,1 @@
+en_US-lessac-high|0.95|Audio and video fields, context-aware hotkeys, masking, nullable fields, auto-wired triggers, accessibility, AI skills, and zero dependencies.

@@ -1,6 +1,6 @@
 # SmarkForm — Hero video storyboard
 
-1920×1080 · 30 fps · ≈107 s · narrated (Piper `en_US-lessac-high`) + SRT.
+1920×1080 · 30 fps · ≈120 s · narrated (Piper `en_US-lessac-high`) + SRT.
 **Source of truth: `timeline.py`.** This file mirrors it for review; if they
 disagree, `timeline.py` wins.
 
@@ -36,7 +36,8 @@ disagree, `timeline.py` wins.
 | 10 | t3 | 2.6 | **03** — "Complex grids, zero tedium" / "Periods → services → time slots" |
 | 11 | hotel | 20.7 | Hotel_schedules: ✨ duplicate period (1.1×), date pickers (7×), extra pool slot (3×), Export → JSON (2×); card dollies up to show the JSON |
 | 12 | hotel_html | 6.5 | HTML crawl (`nested_schedule_table` + `#periodItem` + `#scheduleRow` templates; the optional date-prefill `<script>` body is abbreviated with a comment) |
-| 13 | outro | 8.5 | Logo, "Easy to write. Cheap to maintain. Delightful to use.", `$ npm install smarkform`, smarkform.bitifet.net |
+| 13 | more | 13.6 | "…and there's much more to explore": nine feature tiles on a gently tilted plane, each revealed (with a brief cyan glow) as the narration names it; staggered exit |
+| 14 | outro | 8.5 | Logo, "Easy to write. Cheap to maintain. Delightful to use.", `$ npm install smarkform`, smarkform.bitifet.net |
 
 ## On-screen text (callouts)
 
@@ -50,6 +51,20 @@ Scene-relative times: in → out.
 - **students_html**: "Still just markup"
 - **hotel**: 0.4–3.7 "✨ Duplicate an item. No retyping" · 3.9–7.4 "Native date & time pickers, for free" · 7.6–15.0 "Variable item counts at every level" · 15.3–20.4 "Export → the whole grid as clean JSON"
 - **hotel_html**: "Repeated parts? Reusable `<template>` mixins"
+
+Feature tiles in **more** (title / subtitle, reveal time):
+
+| at | tile | subtitle |
+|----|------|----------|
+| 2.25 | 🎬 Audio, video & files | Embedded right in the JSON |
+| 3.94 | ⌨️ Context-aware hotkeys | Hold Ctrl to reveal them |
+| 5.56 | 🎭 Input masking | Plug in any mask library |
+| 6.19 | 🎨 Nullable fields | Colors & radios can be unset |
+| 7.39 | 🔗 Auto-wired triggers | By placement, or by context |
+| 8.87 | ♿ Accessible by design | Keyboard-first, ARIA filled in |
+| 9.40 | 🧭 Path-addressable | Like a filesystem: ../name, * |
+| 9.93 | 🤖 AI Skills | Your coding agent speaks it |
+| 10.98 | 📦 CDN or npm | Zero dependencies, any stack |
 
 JS shown in the *init* scene:
 
@@ -81,6 +96,8 @@ const myForm = new SmarkForm(
 | hotel | 7.8 | Add as many time slots as you need, at every level. |
 | hotel | 15.6 | It all exports as clean JSON. |
 | hotel_html | 0.6 | Repeated parts are defined once, as reusable templates. |
+| more | 0.3 | And there's much more to explore. |
+| more | 2.5 | Audio and video fields, context-aware hotkeys, masking, nullable fields, auto-wired triggers, accessibility, AI skills, and zero dependencies. |
 | outro | 0.8 | SmarkForm. Easy to write, cheap to maintain, delightful to use. |
 
 ("data smark" is spelled that way so the TTS says *data-smark* correctly.)
