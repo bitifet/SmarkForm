@@ -359,40 +359,49 @@ or join the community chat, you can follow us on Telegram:
 
 <style>
   .qr--container {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: space-around;
+    align-items: stretch;
     gap: 1rem;
-    padding: 1rem;
+    margin: 0.5rem 1rem;
   }
 
-  .qr--image-box {
-    flex: 1;
-    max-width: 20vw; /* Limits the maximum width to 20% of the viewport */
-    min-width: 250px; /* Ensures a minimum width for readability */
+  .qr--figure {
+    flex: 0 1 9rem;
+    flex-grow: 1;
+    margin: 0;
     text-align: center;
+    outline: solid aliceblue 1px;
   }
 
-  /* Media query for smaller screens */
-  @media (max-width: 768px) {
-    .qr--image-box {
-      max-width: 100%; /* Full width on smaller screens */
-    }
+  .qr--figure img {
+    display: block;
+    width: 144px;
+    max-width: 100%;
+    height: auto;
+    margin: .5rem auto 0;
   }
+
+  .qr--figure figcaption {
+    color: #75b0e1;
+  }
+
 </style>
 <div class="qr--container">
-  <div class="qr--image-box">
-    <b>News and announcements:</b>
-    <a href="https://t.me/smarkform" rel="noopener noreferrer">
-    <img src="/assets/Telegram_Channel.png" alt="SmarkForm Telegram Channel" style="width: 100%; height: auto;">
+  <figure class="qr--figure">
+    <a href="https://t.me/smarkform">
+      <img src="{{ '/assets/Telegram_Channel.png' | relative_url }}" alt="Scan to follow SmarkForm news and announcements on Telegram">
     </a>
-  </div>
-  <div class="qr--image-box">
-    <b>Community Chat:</b>
-    <a href="https://t.me/SmarkFormCommunity" rel="noopener noreferrer">
-    <img src="/assets/Telegram_Community.png" alt="SmarkForm Telegram Community" style="width: 100%; height: auto;">
+    <figcaption><b>News and announcements</b></figcaption>
+  </figure>
+  <figure class="qr--figure">
+    <a href="https://t.me/SmarkFormCommunity">
+      <img src="{{ '/assets/Telegram_Community.png' | relative_url }}" alt="Scan to join the SmarkForm Telegram community chat">
     </a>
-  </div>
+    <figcaption><b>Community chat</b></figcaption>
+  </figure>
 </div>
 
 
