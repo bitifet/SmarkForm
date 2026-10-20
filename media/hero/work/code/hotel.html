@@ -1,0 +1,104 @@
+<div id="myForm">
+  <h2>🗓️ Periods:</h2>
+  <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+    <fieldset data-smark-role="empty_list" style='text-align: center'>🔒 Out of Service</fieldset>
+    <div data-smark='{"type":"#periodItem"}'></div>
+  </div>
+  <button
+    data-smark='{"action":"addItem","context":"periods","hotkey":"+"}'
+    style="float: right; margin-top: 1em"
+  >➕ Add Period</button>
+</div>
+<template id="periodItem">
+  <fieldset data-smark='{"type":"form","exportEmpties":true}' style='margin-top: 1em'>
+    <legend>Period
+      <span data-smark-action="position">N</span>
+      of
+      <span data-smark-action="count">M</span>
+    </legend>
+    <button
+      data-smark='{"action":"addItem","source":".-1","hotkey":"d"}'
+      title='Duplicate this period'
+      style="float: right"
+    >✨</button>
+    <button
+      data-smark='{"action":"removeItem","hotkey":"-"}'
+      title='Remove this period'
+      style="float: right"
+    >➖</button>
+    <p class='period-dates'>
+      <span class='period-date'><label data-smark>Start Date:</label>&nbsp;<input data-smark type='date' name='start_date'></span>
+      <span class='period-date'><label data-smark>End Date:</label>&nbsp;<input data-smark type='date' name='end_date'></span>
+    </p>
+    <div class="schtbl" data-smark='{"type":"form","name":"schedules"}'>
+      <div data-smark='{"type":"#scheduleRow","name":"rcpt_schedule"}'>
+        <span data-for="label">🛎️ Reception:</span></div>
+      <div data-smark='{"type":"#scheduleRow","name":"bar_schedule"}'>
+        <span data-for="label">🍸 Bar:</span></div>
+      <div data-smark='{"type":"#scheduleRow","name":"restaurant_schedule"}'>
+        <span data-for="label">🍽️ Restaurant:</span></div>
+      <div data-smark='{"type":"#scheduleRow","name":"pool_schedule"}'>
+        <span data-for="label">🏊 Pool:</span></div>
+    </div>
+  </fieldset>
+  <script>
+    const item = this;
+    item.parent.on('AfterAction_addItem', async function(ev) {
+      if (!ev.data || ev.data.getPath() !== item.getPath()) return;
+    // … optional: smart date defaults for new periods …
+  </script>
+</template>
+<template id="scheduleRow">
+  <div class="schedule-row"
+       data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+    <strong data-smark-role="header"><span id="label">Schedule</span></strong>
+    <span class='time_slot' data-smark-role="empty_list">(Closed)</span>
+    <span class='time_slot'>
+      <span class='time_from'>From <input class='small' data-smark type='time' name='start'></span>
+      <span class='time_to'>to <input class='small' data-smark type='time' name='end'></span>
+    </span>
+    <span data-smark-role="footer">
+      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Less intervals">➖</button>
+      <button data-smark='{"action":"addItem","hotkey":"+"}' title="More intervals">➕</button>
+    </span>
+  </div>
+  <style>
+    .schtbl {
+      display: flex; flex-direction: column; gap: 0.1em;
+    }
+    .schedule-row {
+      display: grid;
+      grid-template-columns: 10em 1fr auto;
+      align-items: start;
+      gap: 0.25em 0.5em;
+      padding: 0.2em 0.4em;
+      border-radius: 0.3em;
+    }
+    .schedule-row:nth-child(even) {
+      background-color: rgba(128, 128, 128, 0.08);
+    }
+    .schedule-row > [data-role="header"] {
+      grid-column: 1; grid-row: 1;
+      padding-top: 0.3em;
+    }
+    .schedule-row > .time_slot    { grid-column: 2; }
+    .schedule-row > [data-role="empty_list"] { padding-right: 5em; }
+    .schedule-row > [data-role="footer"] {
+      grid-column: 3; grid-row: 1 / -1; align-self: center; white-space: nowrap;
+    }
+    .time_slot {
+      display: flex; flex-wrap: wrap; gap: .15em .4em; align-items: center;
+      justify-content: flex-end;
+    }
+    .time_slot input.small { max-width: 5.5em; }
+    .time_from, .time_to { display: flex; align-items: center; gap: .2em; white-space: nowrap; }
+    @media (max-width: 30em) {
+      .schedule-row { grid-template-columns: 1fr auto; }
+      .schedule-row > .time_slot,
+      .schedule-row > [data-role="empty_list"] {
+        grid-column: 1; padding-left: 0.5em; text-align: right;
+      }
+      .schedule-row > [data-role="footer"] { grid-column: 2; grid-row: 2 / -1; }
+    }
+  </style>
+</template>

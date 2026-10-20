@@ -1,0 +1,1 @@
+en_US-lessac-high|0.95|It all exports as clean JSON.

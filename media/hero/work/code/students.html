@@ -1,0 +1,80 @@
+<div id="myForm">
+  <div class="sg">
+    <div class="sg-header">
+      <input name="name" placeholder="School name" type="text" data-smark>
+      <input name="level" placeholder="Level (e.g. Primary)" type="text" data-smark>
+      <input name="year" placeholder="Academic year" type="text" data-smark>
+    </div>
+
+    <ul data-smark='{"type":"list","name":"groups","sortable":true,"min_items":0}'>
+      <li data-smark-role="empty_list" class="sg-empty">No groups yet</li>
+      <li>
+        <div class="sg-card">
+          <details>
+            <summary>
+              <span data-smark-type="label" class="sg-handle">⠿</span>
+              <span data-smark-action="position">#</span>
+              <input name="name" placeholder="Group name" type="text" data-smark>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove group">➖</button>
+            </summary>
+            <div class="sg-body">
+              <label class="sg-tutor">Tutor: <input name="tutor" placeholder="Tutor name" type="text" data-smark></label>
+              <div class="sg-students">
+                <strong>Students</strong>
+                <ul data-smark='{"type":"list","name":"students","sortable":true,"movingDepth":2,"min_items":0}'>
+                  <li data-smark-role="empty_list" class="sg-empty">No students yet</li>
+                  <li>
+                    <details>
+                      <summary>
+                        <span data-smark='label' title="Drag to reorder or move between groups" class="sg-handle">⠿</span>
+                        <input name="name" placeholder="Student name" type="text" data-smark>
+                        <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove student">➖</button>
+                      </summary>
+                      <div data-smark='{"type":"form","name":"grades"}' class="sg-grades">
+                        <div class="sg-grade-col">
+                          <div class="sg-grade-label">Math</div>
+                          <div data-smark='{"type":"list","name":"math","min_items":0}'>
+                            <div data-smark-role="empty_list" class="sg-empty">∅</div>
+                            <input type="number" step="0.1" min="0" max="10" data-smark>
+                          </div>
+                          <div class="sg-grade-btns">
+                            <button data-smark='{"action":"addItem","hotkey":"+","context":"math"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","hotkey":"-","context":"math"}' title="Remove grade">➖</button>
+                          </div>
+                        </div>
+                        <div class="sg-grade-col">
+                          <div class="sg-grade-label">Literature</div>
+                          <div data-smark='{"type":"list","name":"literature","min_items":0}'>
+                            <div data-smark-role="empty_list" class="sg-empty">∅</div>
+                            <input type="number" step="0.1" min="0" max="10" data-smark>
+                          </div>
+                          <div class="sg-grade-btns">
+                            <button data-smark='{"action":"addItem","hotkey":"+","context":"literature"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","hotkey":"-","context":"literature"}' title="Remove grade">➖</button>
+                          </div>
+                        </div>
+                        <div class="sg-grade-col">
+                          <div class="sg-grade-label">Science</div>
+                          <div data-smark='{"type":"list","name":"science","min_items":0}'>
+                            <div data-smark-role="empty_list" class="sg-empty">∅</div>
+                            <input type="number" step="0.1" min="0" max="10" data-smark>
+                          </div>
+                          <div class="sg-grade-btns">
+                            <button data-smark='{"action":"addItem","hotkey":"+","context":"science"}' title="Add grade">➕</button>
+                            <button data-smark='{"action":"removeItem","hotkey":"-","context":"science"}' title="Remove grade">➖</button>
+                          </div>
+                        </div>
+                      </div>
+                    </details>
+                  </li>
+                </ul>
+                <button data-smark='{"action":"addItem","hotkey":"+","context":"students"}' title="Add student">➕ Add Student</button>
+              </div>
+            </div>
+          </details>
+        </div>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","hotkey":"+","context":"groups"}' title="Add group">➕ Add Group</button>
+  </div>
+</div>

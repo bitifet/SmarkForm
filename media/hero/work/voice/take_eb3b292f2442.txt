@@ -1,0 +1,1 @@
+en_US-lessac-high|0.95|Duplicate a whole period in one click, and only change what differs.

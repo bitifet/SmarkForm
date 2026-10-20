@@ -1,0 +1,42 @@
+#myForm .profile-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.25rem;
+    max-width: 620px;
+    background: #f5f5f5;
+    border-radius: .75rem;
+}
+#myForm .avatar {
+    display: block;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px dashed #999;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+#myForm .fields {
+    flex: 1;
+    min-width: 0;
+}
+#myForm .fields label {
+    display: block;
+    font: 600 .8em/1 system-ui, sans-serif;
+    margin: .7rem 0 .25rem;
+    color: #555;
+}
+#myForm .fields label:first-child {
+    margin-top: 0;
+}
+#myForm .fields input,
+#myForm .fields textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: .4em .55em;
+    border: 1px solid #bbb;
+    border-radius: .35rem;
+    font: inherit;
+    background: #fff;
+}

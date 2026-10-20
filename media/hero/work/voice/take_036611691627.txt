@@ -1,0 +1,1 @@
+en_US-lessac-high|0.95|Repeated parts are defined once, as reusable templates.

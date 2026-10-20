@@ -1,0 +1,135 @@
+[
+ {
+  "t": 0.6,
+  "d": 3.3668934240362813,
+  "wav": "work/voice/take_5a2381da98c1.wav",
+  "text": "Complex HTML forms, without complex JavaScript.",
+  "scene": "hero"
+ },
+ {
+  "t": 4.6,
+  "d": 1.0681179138321995,
+  "wav": "work/voice/take_d4b269699480.wav",
+  "text": "Meet SmarkForm.",
+  "scene": "hero"
+ },
+ {
+  "t": 8.3,
+  "d": 1.9620861678004535,
+  "wav": "work/voice/take_e41c1d08639e.wav",
+  "text": "Start with a simple profile form.",
+  "scene": "t1"
+ },
+ {
+  "t": 12.2,
+  "d": 4.516281179138322,
+  "wav": "work/voice/take_54bbdc522e9f.wav",
+  "text": "Fill it in. The picture is a real field: click, drop, or paste an image.",
+  "scene": "profile"
+ },
+ {
+  "t": 19.4,
+  "d": 4.620770975056689,
+  "wav": "work/voice/take_0a805e1c2dcd.wav",
+  "text": "Then export everything, image included, as one single JSON payload.",
+  "scene": "profile"
+ },
+ {
+  "t": 25.1,
+  "d": 3.680362811791383,
+  "wav": "work/voice/take_c5c96574d4f7.wav",
+  "text": "Behind it: plain HTML, with data smark attributes.",
+  "scene": "profile_html"
+ },
+ {
+  "t": 30.900000000000002,
+  "d": 1.3699773242630386,
+  "wav": "work/voice/take_b9c1f4c0384e.wav",
+  "text": "Your own CSS.",
+  "scene": "profile_css"
+ },
+ {
+  "t": 35.199999999999996,
+  "d": 2.0549659863945577,
+  "wav": "work/voice/take_c713f35dfe94.wav",
+  "text": "And one single line of JavaScript.",
+  "scene": "init"
+ },
+ {
+  "t": 40.3,
+  "d": 1.18421768707483,
+  "wav": "work/voice/take_a802b419fb45.wav",
+  "text": "Need nested data?",
+  "scene": "t2"
+ },
+ {
+  "t": 43.4,
+  "d": 3.575873015873016,
+  "wav": "work/voice/take_bc39f281ee48.wav",
+  "text": "Lists nest inside forms, inside lists, to any depth.",
+  "scene": "students"
+ },
+ {
+  "t": 51.2,
+  "d": 1.3931972789115645,
+  "wav": "work/voice/take_dcd483abf6c9.wav",
+  "text": "Fold what you don't need.",
+  "scene": "students"
+ },
+ {
+  "t": 55.6,
+  "d": 3.006984126984127,
+  "wav": "work/voice/take_72699a524488.wav",
+  "text": "Even drag a student to another group. Grades included.",
+  "scene": "students"
+ },
+ {
+  "t": 63.13333333333333,
+  "d": 1.3815873015873017,
+  "wav": "work/voice/take_ddd110fa83c9.wav",
+  "text": "Still, just markup.",
+  "scene": "students_html"
+ },
+ {
+  "t": 68.83333333333333,
+  "d": 1.1261678004535147,
+  "wav": "work/voice/take_22a343932560.wav",
+  "text": "Complex grids?",
+  "scene": "t3"
+ },
+ {
+  "t": 71.73333333333333,
+  "d": 3.842902494331066,
+  "wav": "work/voice/take_eb3b292f2442.wav",
+  "text": "Duplicate a whole period in one click, and only change what differs.",
+  "scene": "hotel"
+ },
+ {
+  "t": 78.93333333333334,
+  "d": 2.9024943310657596,
+  "wav": "work/voice/take_8b7f3234bca7.wav",
+  "text": "Add as many time slots as you need, at every level.",
+  "scene": "hotel"
+ },
+ {
+  "t": 86.73333333333333,
+  "d": 2.1710657596371883,
+  "wav": "work/voice/take_0558c8b1a37d.wav",
+  "text": "It all exports as clean JSON.",
+  "scene": "hotel"
+ },
+ {
+  "t": 92.46666666666665,
+  "d": 3.239183673469388,
+  "wav": "work/voice/take_036611691627.wav",
+  "text": "Repeated parts are defined once, as reusable templates.",
+  "scene": "hotel_html"
+ },
+ {
+  "t": 99.16666666666666,
+  "d": 4.167981859410431,
+  "wav": "work/voice/take_1b1b99fec925.wav",
+  "text": "SmarkForm. Easy to write, cheap to maintain, delightful to use.",
+  "scene": "outro"
+ }
+]
