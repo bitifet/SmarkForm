@@ -169,8 +169,9 @@ The rest of the model follows from that:
     file… — return `null` to mean *unknown* or *not applicable*, instead of a
     misleading value.
 
-<!-- 🎞️ Placeholder: replace this ASCII diagram with an animated SVG/GIF that
-     highlights each node as it is mentioned above. -->
+<!-- 🎞️ Placeholder: the diagram above could later become an animated SVG/GIF
+     that highlights each node as it is mentioned above. Nothing is missing
+     meanwhile: it is plain ASCII, so it renders everywhere. -->
 
 That single model is the whole conceptual key. Everything else in the
 documentation is a variation of it.
@@ -237,7 +238,9 @@ in the interactive playground, with HTML, CSS, JS and the resulting JSON side
 by side.
 
 <!-- 🎞️ Placeholder: a short screencast of adding groups, students and grades
-     and watching the JSON pane update live. -->
+     and watching the JSON pane update live (the hero video covers this in its
+     "students" scene; a clip scoped to this section would let readers see it
+     without scrubbing the full video). -->
 
 
 ## Real-world examples
