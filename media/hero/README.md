@@ -64,7 +64,7 @@ takes are committed. To swap the voice set `VOICE` in `timeline.py`
 | `SmarkForm_hero_silent.mp4` | same picture, no audio |
 | `SmarkForm_hero_web.mp4` | web-optimised H.264 (`+faststart`), used by docs/index.md |
 | `SmarkForm_hero.webm` | VP9 + Opus |
-| `SmarkForm_hero.gif` | 560×315, 8 fps, used by the repository README |
+| `SmarkForm_hero.gif` | 560×315, 6 fps, used by the repository README |
 | `SmarkForm_hero.en.srt` | narration subtitles |
 | `poster.png` | poster frame (logo reveal) |
 

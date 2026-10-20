@@ -49,11 +49,11 @@ assemble() {
   ls -la out
 }
 
-# README GIF: 560x315, 8 fps, one global palette (GitHub/npm strip <video>).
+# README GIF: 560x315, 6 fps, compact palette (GitHub/npm strip <video>).
 gif() {
   mkdir -p out
   ffmpeg -v error -y -i work/master_video.mp4 -filter_complex \
-    "fps=8,scale=560:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=192:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
+    "fps=6,scale=560:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
     out/SmarkForm_hero.gif
 }
 
