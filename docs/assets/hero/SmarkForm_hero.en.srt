@@ -71,6 +71,14 @@ It all exports as clean JSON.
 Repeated parts are defined once, as reusable templates.
 
 19
-00:01:39,167 --> 00:01:43,535
+00:01:38,667 --> 00:01:40,631
+And there's much more to explore.
+
+20
+00:01:40,867 --> 00:01:51,295
+Audio and video fields, context-aware hotkeys, masking, nullable fields, auto-wired triggers, accessibility, AI skills, and zero dependencies.
+
+21
+00:01:52,767 --> 00:01:57,135
 SmarkForm. Easy to write, cheap to maintain, delightful to use.
 

@@ -17,7 +17,7 @@ your markup with `data-smark`, and the DOM becomes a tree of **fields** that
 imports and exports as JSON.
 
 <!-- 🎬 Hero — animated GIF (docs/assets/hero/SmarkForm_hero.gif, 560×315,
-     8 fps, ~23 MB) rendered from the full demo video.
+     6 fps) rendered from the full demo video.
      A GIF is used deliberately: it plays everywhere with no codec, autoplay
      or sanitizer rules to fight (GitHub/npm strip <video> from READMEs).
      The still frame is poster.png.
@@ -30,7 +30,7 @@ imports and exports as JSON.
   <a href="https://smarkform.bitifet.net">
     <img src="docs/assets/hero/SmarkForm_hero.gif" width="560"
          style="width:min(100%, 560px); height:auto; border-radius:.5rem;"
-         alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
+         alt="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, export everything as a single JSON payload, then discover more features including media fields, hotkeys, masking, accessible controls, AI skills, and more">
   </a>
 </p>
 

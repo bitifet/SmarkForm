@@ -236,7 +236,7 @@ endcapture %}
 <video class="SmarkForm-Video" autoplay muted loop playsinline controls
        preload="metadata"
        poster="{{ '/assets/hero/poster.png' | relative_url }}"
-       aria-label="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, then export everything as a single JSON payload">
+       aria-label="SmarkForm demo: HTML annotated with data-smark attributes becomes a live form — fill in a profile with a picture, nest lists inside lists, drag a student to another group, duplicate a schedule period, export everything as a single JSON payload, then discover more features including media fields, hotkeys, masking, accessible controls, AI skills, and more">
   <source src="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}" type="video/mp4">
   Your browser cannot play embedded video —
   <a href="{{ '/assets/hero/SmarkForm_hero_web.mp4' | relative_url }}">watch the SmarkForm demo</a>.
@@ -412,4 +412,3 @@ and expand the functionality of SmarkForm.
 ## License
 
 [🔗 MIT]({{ "community/license" | relative_url }})
-
