@@ -11,17 +11,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## [Unreleased]
-
-<!-- Add new entries here when preparing the next release. -->
-
----
-
 ## [0.24.0] — 2026-10-20
 
 🌳 Wildcard trigger dispatch · 🧩 External mixin improvements · 🎬 New hero video and animated README
 
-SmarkForm 0.24.0 adds wildcard multi-context actions and makes external mixins more practical with source-relative nested references and eager preloading. It fixes cross-list dragging between nested lists and refreshes the landing pages with a narrated hero video, animated README diagrams, and substantially expanded examples and guidance.
+SmarkForm 0.24.0 adds wildcard multi-context actions and makes external mixins more practical with source-relative nested references and eager preloading. It fixes cross-list dragging between nested lists and refreshes the landing pages with a narrated hero video, an animated field-model diagram shared by the README and docs home page, a live nested-data README demo, and substantially expanded examples and guidance.
 
 ### Features
 
@@ -35,8 +29,9 @@ SmarkForm 0.24.0 adds wildcard multi-context actions and makes external mixins m
 
 ### Documentation
 
-- **Landing-page media**: the documentation home page now features a narrated, muted-looping hero video; the README has a GIF hero plus animated field-model and nested-data demonstrations, with the source/build workflow documented under `media/`.
+- **Landing-page media**: the documentation home page now features a narrated, muted-looping hero video and reuses the animated field-model diagram in its TL;DR; the README has a GIF hero plus animated field-model and nested-data demonstrations, with the source/build workflow documented under `media/`.
 - **Expanded guides and examples**: substantial updates to form traversal, hotkeys, mixins, the showcase, FAQ, and user guide clarify wildcard contexts, nested lists, empty values, and related patterns.
+- Polished the landing-page branding and compacted the Telegram QR links.
 - Corrected documentation for empty text values and updated the README's opening structure and examples.
 
 ### Other
