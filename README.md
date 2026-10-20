@@ -169,9 +169,15 @@ The rest of the model follows from that:
     file… — return `null` to mean *unknown* or *not applicable*, instead of a
     misleading value.
 
-<!-- 🎞️ Placeholder: the diagram above could later become an animated SVG/GIF
-     that highlights each node as it is mentioned above. Nothing is missing
-     meanwhile: it is plain ASCII, so it renders everywhere. -->
+<!-- 🎞️ Animated version of the diagram above (docs/assets/readme/field_model.svg,
+     built by media/readme/). Text is vectorised and the animation is pure CSS,
+     so it renders the same on GitHub, npm and the docs; the ASCII diagram stays
+     as the always-available fallback. -->
+<p align="center">
+  <img src="docs/assets/readme/field_model.svg" width="880"
+       style="width:min(100%, 880px); height:auto;"
+       alt="Animated diagram: every component is a field. Composite fields are made of fields — a form returns an object, a list returns an array. Value fields return a single value — string, number, boolean, ISO date/time strings, a #RRGGBB color or null, a data URL or object or null. Forms and lists are fields too, so they nest into JSON data of any depth.">
+</p>
 
 That single model is the whole conceptual key. Everything else in the
 documentation is a variation of it.
@@ -237,10 +243,14 @@ between nested lists, and the data follows.
 in the interactive playground, with HTML, CSS, JS and the resulting JSON side
 by side.
 
-<!-- 🎞️ Placeholder: a short screencast of adding groups, students and grades
-     and watching the JSON pane update live (the hero video covers this in its
-     "students" scene; a clip scoped to this section would let readers see it
-     without scrubbing the full video). -->
+<!-- 🎞️ The snippet above, running for real (docs/assets/readme/nested_data.gif,
+     built by media/readme/ against dist/SmarkForm.umd.js): adding groups,
+     students and grades while form.export() updates live. -->
+<p align="center">
+  <img src="docs/assets/readme/nested_data.gif" width="880"
+       style="width:min(100%, 880px); height:auto; border-radius:.5rem;"
+       alt="The school form above in action: typing a school name, a tutor and students with math and science grades, clicking Add student and Add group, while the exported JSON on the right updates live with every keystroke">
+</p>
 
 
 ## Real-world examples
