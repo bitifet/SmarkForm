@@ -1,0 +1,15 @@
+# Re-creatable with ./setup.sh
+.venv/
+assets/voices/
+
+# Regenerable renders (./build.sh scenes / assemble); final outputs are
+# published to docs/assets/hero/ by ./build.sh publish
+work/scenes/
+work/master_video.mp4
+work/voice/narration.wav
+work/logs/
+work/stills/
+work/qa/
+out/
+
+__pycache__/
