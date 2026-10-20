@@ -222,12 +222,7 @@ endcapture %}
 }
 </style>
 
-<h1>
-  <picture>
-    <source srcset="/assets/logo/smarkform_dark.svg" media="(prefers-color-scheme: dark)">
-    <img src="/assets/logo/smarkform.svg" alt="SmarkForm" width="240" height="60">
-  </picture>
-</h1>
+<h1>SmarkForm</h1>
 
 🚀 **Add subforms, dynamic lists, hotkeys and more to any HTML form in one line of JavaScript.**
 

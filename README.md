@@ -1,6 +1,6 @@
-[![SmarkForm Logo](docs/assets/logo/smarkform.svg)](https://smarkform.bitifet.net)
-
 # SmarkForm
+
+---
 
 <p>
   <a href="https://npmjs.org/package/smarkform"><img src="https://img.shields.io/npm/v/smarkform.svg" alt="NPM Version"></a>
