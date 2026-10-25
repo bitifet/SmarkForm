@@ -1,8 +1,14 @@
 ---
-title: Home
+title: SmarkForm
 layout: smarkform
 nav_order: 0
 permalink: /
+description: "Complex HTML forms without complex JavaScript: markup-driven subforms, dynamic lists, hotkeys and JSON import/export, with no framework or dependencies."
+image:
+  path: /assets/hero/social-card.png
+  width: 1280
+  height: 640
+  alt: "SmarkForm logo surrounded by form examples: markup-driven, JSON in and out, no framework or dependencies."
 
 ---
 

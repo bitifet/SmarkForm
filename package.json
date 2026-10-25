@@ -1,6 +1,7 @@
 {
   "name": "smarkform",
   "version": "0.24.0",
+  "description": "Complex HTML forms without complex JavaScript: markup-driven subforms, dynamic lists, hotkeys and JSON import/export, with no framework or dependencies.",
   "private": false,
   "type": "module",
   "browser": "dist/SmarkForm.esm.js",

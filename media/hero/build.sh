@@ -2,10 +2,11 @@
 # End-to-end build of the SmarkForm hero video.
 #
 #   ./setup.sh            once: venv with piper-tts + voice models (git-ignored)
-#   ./build.sh            full build (prep -> code -> voice -> scenes -> master -> exports -> gif)
+#   ./build.sh            full build (prep -> code -> voice -> scenes -> master -> exports -> poster/social card -> gif)
 #   ./build.sh scenes hero profile   re-render only some scenes, then re-assemble
-#   ./build.sh assemble   only concat + mux + exports + gif
+#   ./build.sh assemble   only concat + mux + exports + poster/social card + gif
 #   ./build.sh gif        only the README GIF
+#   ./build.sh social     only the 1280x640 social-preview card (needs out/poster.png)
 #   ./build.sh publish    copy the deliverables to docs/assets/hero/
 #
 # Requires: ffmpeg, python3 (PIL, numpy, pygments, fontTools), .venv with piper-tts
@@ -45,8 +46,18 @@ assemble() {
     -deadline good -cpu-used 2 -c:a libopus -b:a 96k out/SmarkForm_hero.webm
   # 5) poster (logo reveal in the hero)
   ffmpeg -v error -y -ss 6.6 -i out/SmarkForm_hero.mp4 -frames:v 1 -update 1 out/poster.png
+  # 6) social-preview card (2:1 crop shared by the docs site and GitHub)
+  social_card
   gif
   ls -la out
+}
+
+# Social card: centered 2:1 crop, resized for X/Open Graph and GitHub.
+social_card() {
+  mkdir -p out
+  ffmpeg -v error -y -i out/poster.png \
+    -vf "crop=1920:960:0:60,scale=1280:640:flags=lanczos" \
+    -frames:v 1 -update 1 out/social-card.png
 }
 
 # README GIF: 560x315, 6 fps, compact palette (GitHub/npm strip <video>).
@@ -61,13 +72,15 @@ publish() {
   local dst=../../docs/assets/hero
   mkdir -p "$dst"
   cp out/SmarkForm_hero.mp4 out/SmarkForm_hero_silent.mp4 out/SmarkForm_hero_web.mp4 \
-     out/SmarkForm_hero.webm out/SmarkForm_hero.gif out/SmarkForm_hero.en.srt out/poster.png "$dst"/
+     out/SmarkForm_hero.webm out/SmarkForm_hero.gif out/SmarkForm_hero.en.srt \
+     out/poster.png out/social-card.png "$dst"/
   ls -la "$dst"
 }
 
 case "${1:-all}" in
   all)      prep; code; voice; scenes; assemble ;;
   gif)      gif ;;
+  social)   social_card ;;
   publish)  publish ;;
   prep)     prep ;;
   code)     code ;;

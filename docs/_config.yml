@@ -1,6 +1,11 @@
 title: SmarkForm
+tagline: Complex HTML forms without complex JavaScript.
 description: Powerful while effortless Markup-driven and Extendable forms.
+url: "https://smarkform.bitifet.net"
 theme: just-the-docs
+
+twitter:
+  username: smarkform
 
 host: 0.0.0.0
 logo: "/assets/logo/smarkform.svg"

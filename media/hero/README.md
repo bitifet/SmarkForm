@@ -36,9 +36,10 @@ Git-ignored (re-creatable): `.venv/`, `assets/voices/` (`./setup.sh`),
 ```bash
 ./setup.sh                          # once
 ./build.sh                          # everything (≈40 min on 4 cores; JOBS=4 parallel scenes)
-./build.sh scenes hero outro        # re-render some scenes, then re-assemble (+ GIF)
+./build.sh scenes hero outro        # re-render some scenes, then re-assemble (+ poster/social card/GIF)
 ./build.sh voice && ./build.sh assemble   # narration changes only
 ./build.sh gif                      # README GIF only (needs work/master_video.mp4)
+./build.sh social                   # social-preview card only (needs out/poster.png)
 ./build.sh publish                  # copy out/* to docs/assets/hero/
 python3 render.py --still hero 6.5  # QA stills -> work/stills/
 ```
@@ -67,6 +68,7 @@ takes are committed. To swap the voice set `VOICE` in `timeline.py`
 | `SmarkForm_hero.gif` | 560×315, 6 fps, used by the repository README |
 | `SmarkForm_hero.en.srt` | narration subtitles |
 | `poster.png` | poster frame (logo reveal) |
+| `social-card.png` | 1280×640 social-preview card for the docs site and GitHub repository |
 
 ## Privacy redaction
 
