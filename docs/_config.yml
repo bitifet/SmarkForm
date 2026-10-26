@@ -1,8 +1,11 @@
 title: SmarkForm
 tagline: Complex HTML forms without complex JavaScript.
-description: Powerful while effortless Markup-driven and Extendable forms.
+description: "SmarkForm is a lightweight, dependency-free JavaScript library for building structured HTML forms with markup-driven fields, nested lists and JSON import/export."
 url: "https://smarkform.bitifet.net"
 theme: just-the-docs
+
+plugins:
+  - jekyll-sitemap
 
 twitter:
   username: smarkform

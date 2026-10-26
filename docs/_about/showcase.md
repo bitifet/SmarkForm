@@ -3,6 +3,7 @@ title: Showcase
 layout: chapter
 permalink: /about/showcase
 nav_order: 2
+description: "Explore interactive SmarkForm demos for nested forms, sortable lists, hotkeys, media fields and JSON import/export."
 
 ---
 

@@ -3,6 +3,7 @@ title: Getting SmarkForm
 layout: chapter
 permalink: /getting_started/getting_smarkform
 nav_order: 2
+description: "Install SmarkForm with npm or use its browser builds and CDNs, then choose the right way to add it to your project."
 
 ---
 

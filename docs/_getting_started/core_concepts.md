@@ -3,6 +3,7 @@ title: Core Concepts
 layout: chapter
 permalink: /getting_started/core_concepts
 nav_order: 3
+description: "Understand SmarkForm's data-smark syntax, component tree, field types, options, and how forms and lists map to JSON."
 
 ---
 

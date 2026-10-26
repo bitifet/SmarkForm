@@ -3,6 +3,7 @@ title: «image» Component Type
 layout: chapter
 permalink: /component_types/type_image
 nav_order: 27
+description: "Learn how SmarkForm image fields acquire, validate, resize and export images, with previews, editable captions and list support."
 
 ---
 

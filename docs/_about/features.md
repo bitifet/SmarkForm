@@ -3,6 +3,7 @@ title: Features
 layout: chapter
 permalink: /about/features
 nav_order: 3
+description: "Explore SmarkForm features: markup-driven forms, nested data, dynamic lists, JSON import/export, keyboard shortcuts, media fields and more."
 
 ---
 

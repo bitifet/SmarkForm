@@ -3,6 +3,7 @@ title: Developer Cheatsheet
 layout: chapter
 permalink: /resources/cheatsheet
 nav_order: 5
+description: "A quick reference for SmarkForm constructor options, component types, actions, events, methods and JSON import/export."
 
 ---
 

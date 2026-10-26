@@ -1,0 +1,28 @@
+# SmarkForm
+
+> SmarkForm is a lightweight, dependency-free JavaScript library for building structured HTML forms with markup-driven fields, nested lists and JSON import/export.
+
+SmarkForm enhances ordinary HTML using `data-smark` attributes. Forms export as objects, lists as arrays, and fields stay synchronized with the DOM.
+
+## Documentation
+
+- [Introduction](https://smarkform.bitifet.net/about/introduction): What SmarkForm is and when to use it.
+- [Features](https://smarkform.bitifet.net/about/features): Capabilities and design goals.
+- [Quick Start](https://smarkform.bitifet.net/getting_started/quick_start): Build a first working form.
+- [Core Concepts](https://smarkform.bitifet.net/getting_started/core_concepts): Markup syntax, component trees and value types.
+- [Component Types](https://smarkform.bitifet.net/getting_started/core_component_types): Built-in field and component types.
+- [Showcase](https://smarkform.bitifet.net/about/showcase): Interactive examples.
+- [Examples](https://smarkform.bitifet.net/resources/examples): Downloadable, ready-to-run forms.
+- [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet): Compact API reference.
+- [FAQ](https://smarkform.bitifet.net/about/faq): Common implementation questions.
+
+## Agent resources
+
+- [AI and Agent Resources](https://smarkform.bitifet.net/resources/ai-agents): Installable skills and project-specific agent guides.
+- [Core Form Builder skill](https://github.com/bitifet/SmarkForm/blob/main/skills/smarkform-form-builder/SKILL.md): Guidance for authoring forms.
+- [Advanced Internals skill](https://github.com/bitifet/SmarkForm/blob/main/skills/smarkform-advanced-internals/SKILL.md): Guidance for implementation and internals.
+
+## Project
+
+- [GitHub repository](https://github.com/bitifet/SmarkForm)
+- [npm package](https://www.npmjs.com/package/smarkform)

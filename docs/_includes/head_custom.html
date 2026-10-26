@@ -1,5 +1,9 @@
 <!-- Custom head content for auto color scheme and logo switching -->
 
+{% if page.url == "/404.html" %}
+<meta name="robots" content="noindex, follow">
+{% endif %}
+
 <!-- Auto Color Scheme CSS -->
 <link rel="stylesheet" href="{{ '/assets/css/auto-color-scheme.css' | relative_url }}">
 

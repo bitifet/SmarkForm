@@ -1,5 +1,6 @@
 ---
 nav_exclude: true
+sitemap: false
 title: SmarkForm
 permalink: /presentations/SmarkForm_es.impress.20241212.html
 

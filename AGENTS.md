@@ -448,6 +448,15 @@ scripts/liveserve_all.sh
   customize its Open Graph/X preview; an image selects `summary_large_image`.
   The landing page uses `docs/assets/hero/social-card.png` (1280×640), also
   suitable for the repository's GitHub social-preview upload.
+- `jekyll-sitemap` is enabled in `docs/_config.yml` and installed through
+  `docs/Gemfile`; it generates the root `sitemap.xml`. `docs/robots.txt` allows
+  crawling and points to that sitemap. Keep `sitemap: false` on non-discovery
+  pages such as internal notes and presentations. `docs/404.html` is the GitHub
+  Pages not-found page and is marked `noindex`; `docs/llms.txt` is a curated,
+  static index for AI-agent clients (a voluntary convention, not a ranking API).
+- Public documentation landing pages should set a concise, page-specific
+  front-matter `description`; otherwise `jekyll-seo-tag` falls back to the site
+  description or the page excerpt, which can be only a title or generic text.
 
 **Troubleshooting**:
 - If Jekyll fails, ensure Ruby and bundler are installed

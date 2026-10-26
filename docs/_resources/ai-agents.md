@@ -3,6 +3,7 @@ title: AI & Agent Resources
 layout: chapter
 permalink: /resources/ai-agents
 nav_order: 6
+description: "Official SmarkForm agent guides, installable AI skills and prompts for building forms or working with library internals."
 ---
 
 # {{ page.title }}

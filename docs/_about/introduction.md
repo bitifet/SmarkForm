@@ -3,6 +3,7 @@ title: Introduction
 layout: chapter
 permalink: /about/introduction
 nav_order: 1
+description: "Learn what SmarkForm is, how markup-driven fields map to structured JSON, and when this lightweight form library fits your project."
 
 ---
 

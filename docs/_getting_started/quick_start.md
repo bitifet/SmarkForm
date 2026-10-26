@@ -3,6 +3,7 @@ title: Quick Start
 layout: chapter
 permalink: /getting_started/quick_start
 nav_order: 1
+description: "Build a working SmarkForm in a few steps: annotate HTML with data-smark, initialize the library and exchange structured JSON."
 
 ---
 

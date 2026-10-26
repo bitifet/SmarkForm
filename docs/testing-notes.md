@@ -1,6 +1,7 @@
 ---
 title: Testing Notes
 nav_exclude: true
+sitemap: false
 ---
 
 # Testing Notes
