@@ -4,6 +4,13 @@ block properties
 html(style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");')
     head
         title=title
+        meta(name="description" content=description)
+        meta(property="og:title" content=title)
+        meta(property="og:description" content=description)
+        meta(property="og:type" content="website")
+        meta(name="twitter:card" content="summary")
+        meta(name="twitter:title" content=title)
+        meta(name="twitter:description" content=description)
         meta(name="viewport" content="width=device-width, initial-scale=1.0")
         meta(http-equiv='Content-Type', content='text/html; charset=utf-8')
         link(rel="stylesheet", href=css_layout_url)

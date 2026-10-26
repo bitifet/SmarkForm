@@ -2,6 +2,7 @@
 title: «radio» Component Type
 layout: chapter
 permalink: /component_types/type_radio
+description: "Manage native radio groups as SmarkForm fields with shared names, selection handling and predictable JSON values."
 nav_order: 9
 
 ---

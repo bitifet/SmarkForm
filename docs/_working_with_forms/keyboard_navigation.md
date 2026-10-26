@@ -2,6 +2,7 @@
 title: "Keyboard Navigation"
 layout: chapter
 permalink: /working_with_forms/keyboard_navigation
+description: "Navigate SmarkForm-powered forms with the keyboard, move between fields and use accessible shortcuts without a mouse."
 nav_order: 1
 
 ---

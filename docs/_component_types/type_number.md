@@ -2,6 +2,7 @@
 title: «number» Component Type
 layout: chapter
 permalink: /component_types/type_number
+description: "Use SmarkForm number fields to sanitize imported values, coerce numbers and export empty or invalid values predictably."
 nav_order: 4
 
 ---

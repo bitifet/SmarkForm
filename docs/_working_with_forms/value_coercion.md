@@ -2,6 +2,7 @@
 title: "Value Coercion"
 layout: chapter
 permalink: /working_with_forms/value_coercion
+description: "Learn how SmarkForm normalizes imported data and coerces field values for consistent JSON exports."
 nav_order: 4
 
 ---

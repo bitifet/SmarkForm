@@ -2,6 +2,7 @@
 title: «input» Component Type
 layout: chapter
 permalink: /component_types/type_input
+description: "Use SmarkForm input fields for text and native HTML input types, with inferred types and optional JSON value formatting."
 nav_order: 3
 
 ---

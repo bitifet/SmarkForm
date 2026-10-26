@@ -2,6 +2,7 @@
 title: Core Component Types
 layout: chapter
 permalink: /getting_started/core_component_types
+description: "Overview of SmarkForm's core component types, including forms, lists, inputs, labels, triggers and their JSON values."
 nav_order: 4
 
 ---

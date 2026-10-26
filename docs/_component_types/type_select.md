@@ -2,6 +2,7 @@
 title: «select» Component Type
 layout: chapter
 permalink: /component_types/type_select
+description: "Explore the in-progress SmarkForm select field API for loading options from endpoints and values in other fields."
 nav_order: 8
 
 ---

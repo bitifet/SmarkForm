@@ -2,6 +2,7 @@
 title: «trigger» Component Type
 layout: chapter
 permalink: /component_types/type_trigger
+description: "Connect SmarkForm actions to buttons and other triggers, targeting fields by context, path or relative position."
 nav_order: 10000
 
 ---

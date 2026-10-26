@@ -394,6 +394,8 @@ scripts/livebuild_dev_smarkform.sh
   `src/examples/include/mixins.pug` (Pug convenience wrappers),
   `src/examples/include/templates.pug` (SmarkForm native mixin `<template>`
   elements included at body level by the layout)
+- Each `src/examples/*.pug` page supplies a `description`; the shared example
+  layout emits it as standard, Open Graph and X metadata for direct example links.
 - The examples rollup entry (`src/examples/index.js`) is a pure file-generation
   pipeline: its `import`s are `.pug`/`.scss` sources compiled to
   `dist/examples/*.html` and `*.css` by the custom plugins, and the emitted JS

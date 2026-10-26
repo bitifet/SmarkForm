@@ -2,6 +2,7 @@
 title: «list» Component Type
 layout: chapter
 permalink: /component_types/type_list
+description: "Represent dynamic JSON arrays with SmarkForm lists, adding, removing, sorting and moving items while keeping data synchronized."
 nav_order: 2
 
 ---

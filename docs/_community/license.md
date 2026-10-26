@@ -2,6 +2,7 @@
 title: License
 layout: chapter
 permalink: /community/license
+description: "Read the MIT License that governs SmarkForm's use, modification and redistribution."
 nav_order: 3
 
 ---

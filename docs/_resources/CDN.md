@@ -2,6 +2,7 @@
 title: CDN
 layout: chapter
 permalink: /resources/CDN
+description: "Use SmarkForm's version-pinned or latest ESM and UMD builds from public CDNs, plus example CSS resources."
 nav_order: 3
 
 ---

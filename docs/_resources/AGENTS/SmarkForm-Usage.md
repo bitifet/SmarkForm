@@ -2,6 +2,7 @@
 title: "SmarkForm Usage — Agent Knowledge"
 layout: default
 permalink: /resources/AGENTS/SmarkForm-Usage
+description: "SmarkForm usage and internals reference for developers and AI agents, covering component types, lists, actions and export behavior."
 nav_exclude: true
 nav_order: 2
 ---

@@ -2,6 +2,7 @@
 title: Manifesto
 layout: chapter
 permalink: /about/manifesto
+description: "The design principles behind SmarkForm: use ordinary HTML as the form UI, keep data structured as JSON, and avoid framework lock-in."
 nav_order: 4
 
 ---

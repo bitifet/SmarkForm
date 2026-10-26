@@ -2,6 +2,7 @@
 title: Branding
 layout: chapter
 permalink: /community/branding
+description: "Use SmarkForm logos, badges and User Guide links consistently in your applications and documentation."
 nav_order: 5
 ---
 

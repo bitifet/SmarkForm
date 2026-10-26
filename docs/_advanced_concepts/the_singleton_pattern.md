@@ -2,6 +2,7 @@
 title: "The Singleton Pattern"
 layout: chapter
 permalink: /advanced_concepts/the_singleton_pattern
+description: "Wrap a single SmarkForm scalar field in any HTML element while keeping its data tree simple with the singleton pattern."
 nav_order: 1
 
 ---

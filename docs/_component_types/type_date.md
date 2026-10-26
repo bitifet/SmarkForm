@@ -2,6 +2,7 @@
 title: «date» Component Type
 layout: chapter
 permalink: /component_types/type_date
+description: "Use SmarkForm date fields to import, normalize and export calendar dates as ISO date strings."
 nav_order: 6
 
 ---

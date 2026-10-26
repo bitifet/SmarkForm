@@ -2,6 +2,7 @@
 title: The SmarkForm Constructor
 layout: chapter
 permalink: /advanced_concepts/the_smarkform_constructor
+description: "Configure SmarkForm during construction, set root options and initial values, and use its rendered promise and instance API."
 nav_order: 0
 
 ---

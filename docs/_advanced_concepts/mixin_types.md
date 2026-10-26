@@ -2,6 +2,7 @@
 title: "Mixin Types"
 layout: chapter
 permalink: /advanced_concepts/mixin_types
+description: "Create reusable SmarkForm components from HTML templates, including local or external mixins, preloading and script security."
 nav_order: 3
 
 ---

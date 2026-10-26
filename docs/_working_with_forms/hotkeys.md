@@ -2,6 +2,7 @@
 title: Hotkeys
 layout: chapter
 permalink: /working_with_forms/hotkeys
+description: "Add keyboard shortcuts to SmarkForm triggers for actions such as adding items, exporting data and moving through forms."
 nav_order: 2
 
 ---

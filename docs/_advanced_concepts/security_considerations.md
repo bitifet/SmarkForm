@@ -2,6 +2,7 @@
 title: Security Considerations
 layout: chapter
 permalink: /advanced_concepts/security_considerations
+description: "Review SmarkForm security defaults for external mixins, template scripts, file inputs and content loaded from untrusted sources."
 nav_order: 4
 
 ---

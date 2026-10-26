@@ -2,6 +2,7 @@
 title: «time» Component Type
 layout: chapter
 permalink: /component_types/type_time
+description: "Use SmarkForm time fields to normalize native time input values and exchange consistent values through JSON."
 nav_order: 7
 
 ---

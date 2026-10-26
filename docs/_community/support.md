@@ -2,6 +2,7 @@
 title: Support
 layout: chapter
 permalink: /community/support
+description: "Find the right place to get SmarkForm help, report a bug, request a feature or ask the community a question."
 nav_order: 1
 ---
 

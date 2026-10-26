@@ -2,6 +2,7 @@
 title: «file» Component Type
 layout: chapter
 permalink: /component_types/type_file
+description: "Acquire and export files with SmarkForm file fields, including data URLs, JSON values, drag and drop, paste, lists and downloads."
 nav_order: 26
 
 ---

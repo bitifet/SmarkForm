@@ -2,6 +2,7 @@
 title: Build in Public
 layout: chapter
 permalink: /community/build-in-public
+description: "Follow SmarkForm project updates, articles, talks and lessons learned while building an open-source HTML form library."
 nav_order: 6
 ---
 

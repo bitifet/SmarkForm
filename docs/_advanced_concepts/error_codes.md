@@ -2,6 +2,7 @@
 title: Error Codes Reference
 layout: chapter
 permalink: /advanced_concepts/error_codes
+description: "Reference SmarkForm's named errors, their causes and recovery guidance for rendering, imports, mixins, media and actions."
 nav_order: 5
 
 ---

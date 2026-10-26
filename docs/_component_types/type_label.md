@@ -2,6 +2,7 @@
 title: «label» Component Type
 layout: chapter
 permalink: /component_types/type_label
+description: "Connect accessible HTML labels to SmarkForm fields automatically, with support for implicit and explicit field association."
 nav_order: 10001
 
 ---

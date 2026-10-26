@@ -1,6 +1,7 @@
 ---
 nav_exclude: true
 search_exclude: true
+sitemap: false
 nav_order: 1000
 
 ---

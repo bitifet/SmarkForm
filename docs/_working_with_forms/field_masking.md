@@ -2,6 +2,7 @@
 title: "Field Masking"
 layout: chapter
 permalink: /working_with_forms/field_masking
+description: "Integrate input masking libraries with SmarkForm while keeping displayed formatting and exported field values in sync."
 nav_order: 5
 
 ---

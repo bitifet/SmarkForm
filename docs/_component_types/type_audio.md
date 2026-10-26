@@ -2,6 +2,7 @@
 title: "audio Component Type"
 layout: chapter
 permalink: /component_types/type_audio
+description: "Use SmarkForm audio fields to acquire, preview, play and export embedded audio files, with picker, drop, paste and list support."
 nav_order: 29
 ---
 

@@ -2,6 +2,7 @@
 title: Event Handling
 layout: chapter
 permalink: /advanced_concepts/events
+description: "Use SmarkForm lifecycle, field and action events to observe interactions and synchronize your application with form changes."
 nav_order: 2
 
 ---

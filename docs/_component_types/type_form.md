@@ -2,6 +2,7 @@
 title: «form» Component Type
 layout: chapter
 permalink: /component_types/type_form
+description: "Model structured JSON objects with SmarkForm forms, nesting named fields and other forms to describe your data."
 nav_order: 1
 
 ---

@@ -2,6 +2,7 @@
 title: Contact
 layout: chapter
 permalink: /community/contact
+description: "Contact the SmarkForm maintainers, ask questions, report bugs, suggest features or join the community."
 nav_order: 4
 ---
 

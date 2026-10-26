@@ -2,6 +2,7 @@
 title: Download
 layout: chapter
 permalink: /resources/download
+description: "Download SmarkForm ESM and UMD builds, example stylesheets and a ready-to-use starter template."
 nav_order: 2
 
 ---

@@ -2,6 +2,7 @@
 title: Contributing
 layout: chapter
 permalink: /community/contributing
+description: "Learn how to contribute to SmarkForm, report issues, propose changes, run the test suite and submit improvements."
 nav_order: 2
 ---
 

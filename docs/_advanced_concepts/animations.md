@@ -2,6 +2,7 @@
 title: "Animations"
 layout: chapter
 permalink: /advanced_concepts/animations
+description: "Add CSS transitions and animations to SmarkForm forms and dynamic lists without relying on a built-in animation engine."
 nav_order: 6
 
 ---

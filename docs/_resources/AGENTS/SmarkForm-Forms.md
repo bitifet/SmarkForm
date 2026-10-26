@@ -2,6 +2,7 @@
 title: "SmarkForm Forms — Agent Knowledge"
 layout: default
 permalink: /resources/AGENTS/SmarkForm-Forms
+description: "Implementation guide for AI agents and developers building production-ready SmarkForm forms with npm, CDNs, fields, lists and actions."
 nav_exclude: true
 nav_order: 1
 ---

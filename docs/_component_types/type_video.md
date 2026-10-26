@@ -2,6 +2,7 @@
 title: "video Component Type"
 layout: chapter
 permalink: /component_types/type_video
+description: "Use SmarkForm video fields to acquire, preview and export video files, with playback controls, picker, drop, paste and list support."
 nav_order: 28
 ---
 

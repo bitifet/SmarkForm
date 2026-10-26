@@ -2,6 +2,7 @@
 title: Importing and Exporting Data
 layout: chapter
 permalink: /working_with_forms/data_import_and_export
+description: "Import JSON into SmarkForm fields and export form data as objects and arrays, including nested and specialized values."
 nav_order: 3
 
 ---

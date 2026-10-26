@@ -2,6 +2,7 @@
 title: «datetime-local» Component Type
 layout: chapter
 permalink: /component_types/type_datetime-local
+description: "Use SmarkForm datetime-local fields to normalize local date and time values for consistent JSON import and export."
 nav_order: 8
 
 ---

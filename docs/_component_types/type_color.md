@@ -2,6 +2,7 @@
 title: «color» Component Type
 layout: chapter
 permalink: /component_types/type_color
+description: "Configure SmarkForm color fields and understand how selected colors, imported values and empty selections map to JSON."
 nav_order: 5
 
 ---

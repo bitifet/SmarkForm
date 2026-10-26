@@ -2,6 +2,7 @@
 title: Form Traversing
 layout: chapter
 permalink: /working_with_forms/form_traversing
+description: "Find and navigate SmarkForm components by name or path, using relative traversal, wildcards, contexts and targets."
 nav_order: 0
 
 ---

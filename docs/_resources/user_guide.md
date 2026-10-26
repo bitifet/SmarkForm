@@ -2,6 +2,7 @@
 title: User Guide
 layout: chapter
 permalink: /resources/user_guide
+description: "A guide for people filling out SmarkForm-powered forms, covering keyboard navigation, shortcuts, dynamic lists and other usability features."
 nav_order: 1
 ---
 
