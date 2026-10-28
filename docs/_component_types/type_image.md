@@ -35,7 +35,7 @@ action, and adds:
   while empty a placeholder is displayed.
 - **Decoded-image validation:** acquired files are actually *decoded*, so a
   broken or non-image file is rejected silently, like an unaccepted file.
-- **Best-effort processing:** optional `image_resize` / `image_maxSize` /
+- **Best-effort processing:** optional `image_resize` / `image_max_size` /
   `image_format` conversion on acquisition, with configurable `image_enforce`
   behaviour when a requirement cannot be met or verified.
 - **Editable file name:** on `<figure>` wrappers and in galleries, a
@@ -194,7 +194,7 @@ editable file **name**:
 <div id="myForm$$">
     <figure
         class="drop-zone"
-        data-smark='{"type":"image","name":"photo","image_maxSize":[300,300]}'
+        data-smark='{"type":"image","name":"photo","image_max_size":[300,300]}'
     >
         <img data-smark width="300" height="200" alt="Photo">
         <figcaption class="caption" contenteditable>(edit file name)</figcaption>
@@ -240,7 +240,7 @@ editable file **name**:
    a non-empty edited caption wins on export and download, exactly like the
    visible name field on a `file`. Typing here never triggers the picker.
 
-👉 **`image_maxSize [300,300]`:** images picked or dropped are **downscaled to
+👉 **`image_max_size [300,300]`:** images picked or dropped are **downscaled to
    fit within** 300×300, preserving the aspect ratio (picked images only —
    imports pass through untouched).
 
@@ -250,7 +250,7 @@ editable file **name**:
 👉 **Singleton rules:** the container must hold **exactly one** inner field
    (`NOT_A_SINGLETON` otherwise), and it must be an `<img>`
    (`IMAGE_MISSING_IMG` otherwise). Options declared on the container
-   (e.g. `image_maxSize`, `accept`, `format`) are inherited by the inner field.
+   (e.g. `image_max_size`, `accept`, `format`) are inherited by the inner field.
 
 **Try it!** The demo value is already seeded (a URL string fetched on load);
 edit the caption and download — the file arrives with the caption's name.
@@ -362,7 +362,7 @@ export, and logs a single `console.warn`.
   `Shift+Space` yields to the `<details>` folding convention when that wins.
 * **Drop** and **paste** replace the value; both are filtered by `accept`
   (default `"image/*"`).
-* **`Delete` / `Backspace`** clear the value (`smark_image_clearOnDelete`, on
+* **`Delete` / `Backspace`** clear the value (`smark_image_clear_on_delete`, on
   by default) — but never while the focus is inside an editable caption, where
   those keys edit text.
 
@@ -382,7 +382,7 @@ Each of the three acquisition paths can be disabled independently with
 
 Whatever the route, an acquired file must **decode as an image**
 (`smark_image_validate`, on by default); a candidate that does not is rejected
-silently. Only after that gate are `image_resize`/`image_maxSize`/
+silently. Only after that gate are `image_resize`/`image_max_size`/
 `image_format` processed and `image_enforce` consulted below. One `change`
 event fires whenever the value is set, replaced or cleared.
 
@@ -394,7 +394,7 @@ Imports (and re-imports of an already-acquired value) pass through untouched.
 | Option | Shape | Effect |
 |--------|-------|--------|
 | `image_resize` | `[w,h]`, `{width,height}` or a bare number (= square) | Resize to an **exact target box** (stretches) |
-| `image_maxSize` | same as `image_resize` | **Downscale-only cap**: fit *within* the box preserving aspect ratio |
+| `image_max_size` | same as `image_resize` | **Downscale-only cap**: fit *within* the box preserving aspect ratio |
 | `image_format` | `"jpeg"`·`"jpg"`·`"png"`·`"webp"`·`"avif"` (canonical) | Convert the encoded format on acquisition |
 
 Conversion runs through a canvas at ~92% JPEG quality. When the format changes
@@ -470,7 +470,7 @@ from your disk and watch it become a 200×200 square.
 
 ## Validation and image_enforce
 
-When a requirement (`image_resize`, `image_maxSize` or `image_format`) cannot
+When a requirement (`image_resize`, `image_max_size` or `image_format`) cannot
 be *met* (outcome **B** — known non-conforming conversion unavailable) or
 *cannot be verified* (outcome **C** — e.g. decode was skipped, so dimensions or
 the real encoded format are unknown), the field reports through

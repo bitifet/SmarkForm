@@ -28,7 +28,7 @@ same list integration — and specializes it for video:
 - **Validation**: on interactive acquisition, bytes must actually **parse as a
   playable media container** — a metadata-level probe on an off-DOM `<video>`
   element (`smark_video_validate`, default on). A cheap byte-size cap
-  (`video_maxSize`) can reject oversized clips before their bytes are read.
+  (`video_max_size`) can reject oversized clips before their bytes are read.
 - **Interaction**: click / `Space` / `Shift+Space` open the OS picker when the
   field is in pick mode; when the author opts into playback (native `controls`
   or `smark_video_click:"play"`), clicks and `Space` control playback instead.
@@ -63,7 +63,7 @@ without full playback, and WebCodecs is far too heavy for a form field. So the
 `video` type has **no resize, format-conversion or `enforce` policy options** in
 v1 (see §4.1): validation is a decodability *probe*, not a transform pipeline,
 and `video_enforce` is intentionally absent (there is no "conversion failed"
-outcome for it to govern). Size control is a plain byte cap (`video_maxSize`).
+outcome for it to govern). Size control is a plain byte cap (`video_max_size`).
 
 ---
 
@@ -229,7 +229,7 @@ The `file` contract (file spec §3) is inherited and extended. Unlike `image`,
 | `Enter` / `Shift+Enter` | Navigate to the next/previous field (inherited `input` hook) | Same |
 | `Space` | **Open the file picker** — `preventDefault()` (also stops page scroll) | **Toggle play/pause** when a value is set — `preventDefault()` (no page scroll); empty value → open the picker |
 | `Shift+Space` | **Open the file picker** — yields to the `<details>` folding convention first (same `defaultPrevented` rule as `file`) | **Open the file picker** — always (overrides play/pause; pickers stay reachable in play mode) |
-| `Delete` / `Backspace` | **Clear the value** when set (`preventDefault()`); no-op when empty. Toggle: `smark_video_clearOnDelete` (default `true`) | Same — **never** triggers in-DOM playback shortcuts |
+| `Delete` / `Backspace` | **Clear the value** when set (`preventDefault()`); no-op when empty. Toggle: `smark_video_clear_on_delete` (default `true`) | Same — **never** triggers in-DOM playback shortcuts |
 
 > In play mode, `Space` play/pause is implemented by the field's keydown hook
 > (`play()`/`pause()` + `preventDefault`), so the contract is identical whether
@@ -358,7 +358,7 @@ function probeVideo(obj) { // obj: {type, data(base64)}
 - A file that passes the `accept` filter but fails the probe (wrong MIME, stale
   extension, corrupted bytes) is **rejected exactly like an un-accepted file**:
   the previous value stays, no `change` event fires.
-- **`video_maxSize` (byte cap)** is checked *before* any bytes are read (it
+- **`video_max_size` (byte cap)** is checked *before* any bytes are read (it
   uses `file.size`) — see §4.4.
 - Option: `smark_video_validate` (default `true`); set `false` to rely on
   `accept`/MIME filtering alone. Interactive acquisition only — `import()`
@@ -389,7 +389,7 @@ Consequences, stated as API realities:
   mode decides on failure" has nothing to govern here, so the whole
   `image_enforce` B/C outcome matrix is **absent on purpose**).
 - "Downsizing" a clip means telling the *user* to produce a smaller file — the
-  byte cap `video_maxSize` (§4.4) is the pragmatic v1 control.
+  byte cap `video_max_size` (§4.4) is the pragmatic v1 control.
 - If transcoding ever arrives it would be an opt-in pipeline with its own
   `video_format` option and enforcement modes (§13).
 
@@ -416,7 +416,7 @@ reality:
 
 ### 4.3 Notification: toast + cancellable event
 
-When `video_maxSize` (or any future requirement) raises a rejection the field:
+When `video_max_size` (or any future requirement) raises a rejection the field:
 
 1. **Dispatches a DOM event** on its `targetNode` — `smark:videoNotice`,
    `bubbles: true`, `detail: {kind, code, message, mode, name, requirement}`
@@ -424,7 +424,7 @@ When `video_maxSize` (or any future requirement) raises a rejection the field:
    `requirement: {maxBytes: 52428800}`);
 2. **Unless a handler called `preventDefault()`**, shows an **in-page toast** —
    the same transient `role="status"` / `aria-live="polite"` notice channel as
-   `image` §4.3, with the reason ("Video is 80 MB but `video_maxSize` is
+   `image` §4.3, with the reason ("Video is 80 MB but `video_max_size` is
    50 MB").
 
 `window.alert()`/`window.confirm()` stay avoided (blocked in sandboxed
@@ -432,11 +432,11 @@ iframes), exactly as documented in `spc/image.md` §4.3. **Validation-probe
 failures stay silent** (§4) — they are *rejections of unaccepted files*, not
 requirement notices, matching `image`'s silent decode gate.
 
-### 4.4 `video_maxSize` (byte cap)
+### 4.4 `video_max_size` (byte cap)
 
 | Option | Type | Default | Effect |
 |---|---|---|---|
-| `video_maxSize` | number (bytes) | — | Reject acquisition when `file.size` exceeds the cap — checked **before reading bytes** (cheap, synchronous on `File.size`) |
+| `video_max_size` | number (bytes) | — | Reject acquisition when `file.size` exceeds the cap — checked **before reading bytes** (cheap, synchronous on `File.size`) |
 
 - Rejection follows §4.3 (`smark:videoNotice` + toast, kind `rejection`),
   previous value stays, no `change` event.
@@ -581,12 +581,12 @@ unset playback hints, §3.6). It never changes `width`, `height`, `class`,
 | `smark_video_drop` | boolean | `true` | Drag & drop replaces the value |
 | `smark_video_paste` | boolean | `true` | Paste replaces the value |
 | `smark_video_validate` | boolean | `true` | Media-container probe on acquisition (§4) |
-| `smark_video_clearOnDelete` | boolean | `true` | `Delete`/`Backspace` clear the value |
-| `smark_video_autoPick` | boolean | `false` | Best-effort picker open after render; browser user-gesture rules may block it |
+| `smark_video_clear_on_delete` | boolean | `true` | `Delete`/`Backspace` clear the value |
+| `smark_video_auto_pick` | boolean | `false` | Best-effort picker open after render; browser user-gesture rules may block it |
 | `smark_video_click` | `"auto"` \| `"pick"` \| `"play"` | `"auto"` | Resolves the click/`Space` conflict (§3.4–§3.5) |
-| `video_maxSize` | number (bytes) | — | Reject acquisition above the byte cap, with notice (§4.4) |
+| `video_max_size` | number (bytes) | — | Reject acquisition above the byte cap, with notice (§4.4) |
 
-> **Naming:** `video_`-prefixed options (`video_maxSize`) follow the `image_`
+> **Naming:** `video_`-prefixed options (`video_max_size`) follow the `image_`
 > convention (`spc/image.md` §9). `smark_video_*` toggle names mirror
 > `smark_image_*`/`smark_file_*`; the default of `true` is documented for each
 > so `smark_file_*` fallbacks are **not** offered (`smark_video_*` are the
@@ -604,7 +604,7 @@ unset playback hints, §3.6). It never changes `width`, `height`, `class`,
 - **`change`** — fires once (`bubbles: true`) whenever the value is set,
   replaced or cleared through pick/drop/paste/`Delete` (mirrors `file` §9).
 - **`smark:videoNotice`** — dispatched on the field's `targetNode` (bubbles)
-  whenever a requirement (`video_maxSize`, future requirements) raises a
+  whenever a requirement (`video_max_size`, future requirements) raises a
   rejection; `preventDefault()` suppresses the default toast (§4.3). **No event
   is emitted for silent probe rejections** (§4) — those are plain
   unaccepted-file rejections, exactly like `image`'s decode gate.
@@ -646,7 +646,7 @@ Additional, video-specific:
   costs ~67 MB of string. This is the same model as `file`/`image`; it is
   called out here because video payloads are routinely orders of magnitude
   larger than images.
-- `video_maxSize` (§4.4) is the v1 guard: it rejects before any byte is read,
+- `video_max_size` (§4.4) is the v1 guard: it rejects before any byte is read,
   so a user who drags a 1.5 GB camera roll onto the field is told "too large"
   without paying the read/encode cost.
 - The **value probe** (§4) reads bytes into a Blob + object URL *in addition*
@@ -659,7 +659,7 @@ Additional, video-specific:
   In practice browsers play `data:` media URLs, but authors are advised to keep
   clips reasonably sized.
 - Per-browser `data:` URL size ceilings exist (historically ~512 MB in some
-  engines) — another reason to keep clips below `video_maxSize` and to revisit
+  engines) — another reason to keep clips below `video_max_size` and to revisit
   object URLs if large uploads become a real requirement.
 
 ---

@@ -150,16 +150,16 @@ export class SmarkComponent {
             };
         };
 
-        // Calculate prefix or disable autoId:
-        const autoId = me.inheritedOption("autoId", false);
+        // Calculate prefix or disable auto_id:
+        const auto_id = me.inheritedOption("auto_id", false);
         me.genId = (
-            autoId === false ? false
+            auto_id === false ? false
                 // Do not auto-generate IDs.
-            : autoId === true ? p => p.replace(/\//g, "_")
+            : auto_id === true ? p => p.replace(/\//g, "_")
                 // Use "_path_in_underscore_style".
-            : typeof autoId == "string" ? p => autoId+p.replace(/\//g, "_")
+            : typeof auto_id == "string" ? p => auto_id+p.replace(/\//g, "_")
                 // Use "prefix" + "_path_in_underscore_style".
-            : typeof autoId == "function" ? autoId
+            : typeof auto_id == "function" ? auto_id
                 // Use fn(path) custom style.
             : false
                 // Failback to disabled.
@@ -300,9 +300,10 @@ export class SmarkComponent {
                 }
             }
         }
-        // Filter out on*/onLocal*/onAll*/onBeforeAction*/onAfterAction* handler
-        // functions and smark_* flags before validation and serialization —
-        // they are constructor-time configurations, not serializable options.
+        // Filter out function-valued event callbacks and SmarkForm-owned
+        // `smark_*` runtime settings before serializing options back to the DOM.
+        // The namespace includes both root policies and field-level controls;
+        // scope is determined by each option's consumer.
         const filtered = Object.fromEntries(
             Object.entries(options).filter(([k]) =>
                 !k.startsWith('on') && !k.startsWith('smark_')

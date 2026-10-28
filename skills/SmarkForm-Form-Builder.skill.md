@@ -86,7 +86,7 @@ Full reference: the File field chapter
 ## Standard Implementation Workflow
 
 1. Read primary source pages.
-2. Draft HTML with `data-smark` on managed fields. Use `data-smark-<option>` only for supported lowercase option names (including underscores); suffixes are literal and HTML lowercases them. Use JSON `data-smark` options for case-sensitive keys or structured values without a documented prefixed parser.
+2. Public configuration option names use `snake_case` in `data-smark`, constructor options, and programmatic option objects. Draft HTML with `data-smark` on managed fields; supported options can also use literal `data-smark-<option>` suffixes. Action identifiers such as `addItem` and function-valued JavaScript event hooks such as `onBeforeAction_export` retain their documented spelling; they are not serializable option keys. Use JSON for structured values without a documented prefixed parser.
 3. Initialize with:
    - `const myForm = new SmarkForm(document.getElementById("myForm"), options);`
    - `await myForm.rendered;`
@@ -116,7 +116,7 @@ Replace template markers with:
 
 Do not leave this section as an untouched unchecked template.
 
-- [ ] Managed fields include `data-smark` or a supported `data-smark-*` option attribute; camelCase/structured options use JSON `data-smark`.
+- [ ] Managed fields include `data-smark` or a supported `data-smark-*` option attribute; public option names use `snake_case`, and structured values use JSON unless a prefixed parser is documented.
 - [ ] Root element is passed to `new SmarkForm(...)` correctly.
 - [ ] Instance variable follows `myForm` convention (strongly recommended).
 - [ ] `await myForm.rendered` before `find()` and component-dependent logic.

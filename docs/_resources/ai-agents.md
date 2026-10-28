@@ -22,7 +22,7 @@ description: "Official SmarkForm agent guides, installable AI skills and prompts
 | File | Best for |
 |------|----------|
 | [SmarkForm Forms]({{ "/resources/AGENTS/SmarkForm-Forms" | relative_url }}) | **Implementing forms** — CDN/npm/downloaded-copy snippets, common component patterns, lists, actions, hotkeys, prompt templates, agent checklist |
-| [SmarkForm Usage]({{ "/resources/AGENTS/SmarkForm-Usage" | relative_url }}) | **Deep internals** — component types, list template roles, `exportEmpties`, `@action` decorator, `find()` timing, CSS grid layout |
+| [SmarkForm Usage]({{ "/resources/AGENTS/SmarkForm-Usage" | relative_url }}) | **Deep internals** — component types, list template roles, `export_empties`, `@action` decorator, `find()` timing, CSS grid layout |
 
 Both files are versioned alongside the library and always reflect the deployed
 release.
@@ -81,7 +81,7 @@ substantive rules for:
 - context/target resolution in nested list structures
 - list template role lifecycle and cloning behavior
 - mixin security option interactions and progressive allowlist semantics
-- data flattening edge cases (`exportEmpties`, `keyStyle`, `arrayStyle`)
+- data flattening edge cases (`export_empties`, `key_style`, `array_style`)
 
 ### Import into opencode or similar tools
 

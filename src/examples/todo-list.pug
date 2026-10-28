@@ -19,11 +19,11 @@ block mainForm
           type:"list",
           name:"tasklist",
           sortable: true,
-          exportEmpties: true,
+          export_empties: true,
           min_items:0
       })
         fieldset.form-group.aside.reverse(data-smark={
-            exportEmpties: false
+            export_empties: false
         })
           button.inline(data-smark='{"action":"removeItem"}', title='Remove task')
             span(role='img', aria-label='Remove task') ❌

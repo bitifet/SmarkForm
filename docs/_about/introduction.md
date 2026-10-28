@@ -218,7 +218,7 @@ label associations and position counters are all built in.
           <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title="Add attendee">➕</button>
           <strong data-smark='label'>👥 Attendees:</strong>
         </div>
-        <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
+        <ul data-smark='{"type":"list","name":"attendees","sortable":true,"export_empties":false}'>
           <li>
             <details>
               <summary>

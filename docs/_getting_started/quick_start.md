@@ -880,7 +880,7 @@ button:disabled { opacity: .5; }
 
 👉 Also note that, when you click the `💾 Submit` button **only non empty items get exported**.
 
-👉 ...You can prevent this behaviour by setting the *exportEmpties* property to *true*.
+👉 ...You can prevent this behaviour by setting the *export_empties* property to *true*.
 
 👉 Change items order by just dragging and dropping them.
 
@@ -911,7 +911,7 @@ button:disabled { opacity: .5; }
       <span role='img' aria-label='Add new interval'>➕</span>
     </button>
     <strong data-smark='label'>Schedule:</strong>
-  <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+  <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"export_empties":true}'>
       <span>
         <input data-smark type='time' name='start'/>
         to

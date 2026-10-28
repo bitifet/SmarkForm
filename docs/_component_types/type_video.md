@@ -292,7 +292,7 @@ focus.
 
 Interactive acquisition probes the bytes with an off-DOM video element and
 rejects malformed media silently. Set `smark_video_validate: false` to disable
-that probe. `video_maxSize` rejects oversized files before reading them and
+that probe. `video_max_size` rejects oversized files before reading them and
 dispatches cancellable `smark:videoNotice`.
 
 Common options:
@@ -301,8 +301,8 @@ Common options:
 - `placeholder` accepts a poster URL/data URL or `false`.
 - `smark_video_open`, `smark_video_drop`, and `smark_video_paste` disable the
   corresponding interaction when set to `false`.
-- `smark_video_clearOnDelete` controls `Delete`/`Backspace` clearing.
-- `smark_video_autoPick` opens the picker after rendering when `true` (subject
+- `smark_video_clear_on_delete` controls `Delete`/`Backspace` clearing.
+- `smark_video_auto_pick` opens the picker after rendering when `true` (subject
   to the browser's user-gesture policy).
 - `format` and `encoding` are inherited from `file`.
 
@@ -336,7 +336,7 @@ OS drops append video items in a video-capable list. Captions remain item-local.
 
 When a list item is a video field, `addItem` can open the picker immediately as
 part of the user's add action. For a form-backed list item containing several
-fields, use `smark_video_autoPick: true` on the particular video field when an
+fields, use `smark_video_auto_pick: true` on the particular video field when an
 automatic picker is desired. This is opt-in and browser-dependent: a picker
 opened after an asynchronous render may be blocked when no user gesture is
 active, so an explicit `pick` trigger remains the reliable fallback.
@@ -345,5 +345,5 @@ active, so an explicit `pick` trigger remains the reliable fallback.
 
 The metadata probe confirms that the browser recognizes the media container;
 it cannot guarantee every codec will play. H.264/AAC MP4 is the safest shared
-format. Video values are embedded as base64, so use `video_maxSize` to keep
+format. Video values are embedded as base64, so use `video_max_size` to keep
 memory and data-URL costs appropriate for the application.

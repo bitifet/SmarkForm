@@ -92,12 +92,12 @@ block mainForm
             .form-group(data-smark={
                 name: "expenses",
                 type: "list",
-                exportEmpties: true,
+                export_empties: true,
                 sortable: true,
                 min_items: 1,
             })
                 fieldset.full-width.form-group.aside.reverse(data-smark={
-                    exportEmpties: false
+                    export_empties: false
                 })
                     button.inline(data-smark={
                         action: "removeItem",

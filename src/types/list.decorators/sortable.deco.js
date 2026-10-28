@@ -15,7 +15,7 @@ const SMARK_LABEL_SELECTOR = "[data-smark-label]";
 // time, so a single shared object is safe.
 let _crossListDrop = {
     sourceList: null,   // list instance that initiated the drag
-    targetList: null,   // list instance where the drop landed (different from sourceList)
+    target_list: null,   // list instance where the drop landed (different from sourceList)
     to: null,           // target component in the destination list (null = append)
     position: "after",  // "before" or "after" relative to `to`
 };
@@ -28,10 +28,10 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 const me = this;
 
                 me.sortable = !!me.options.sortable;
-                // movingDepth: 0 / false = disabled, true = Infinity, N = max sibling distance
-                const raw = me.options.movingDepth;
-                me.movingDepth = raw === true ? Infinity : (Number(raw) || 0);
-                me._dragEnabled = me.sortable || me.movingDepth > 0;
+                // moving_depth: 0 / false = disabled, true = Infinity, N = max sibling distance
+                const raw = me.options.moving_depth;
+                me.moving_depth = raw === true ? Infinity : (Number(raw) || 0);
+                me._dragEnabled = me.sortable || me.moving_depth > 0;
 
                 // Whether the item template resolves to a file-capable type
                 // (one providing the `acquire` batch acquisition contract).
@@ -46,14 +46,14 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 // when the list isn't sortable (spec §10).  OS file drops never
                 // collide with internal drag handling: they arrive with
                 // dataTransfer.files present, while SmarkForm internal
-                // reordering never populates files.  The list-level `fileDrop`
+                // reordering never populates files.  The list-level `file_drop`
                 // option (default true) is the escape hatch.
                 if (fileCapable) {
                     me.targetNode.addEventListener("dragover", e => e.preventDefault());
                     me.targetNode.addEventListener("drop", e => {
                         if (
                             e.dataTransfer?.files?.length > 0
-                            && me.options.fileDrop !== false
+                            && me.options.file_drop !== false
                         ) {
                             e.preventDefault();
                             void me._addFiles(Array.from(e.dataTransfer.files));
@@ -102,7 +102,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                             dragSource = itemRoot;
                             _crossListDrop.sourceList = me;
-                            _crossListDrop.targetList = null;
+                            _crossListDrop.target_list = null;
                             e.stopPropagation();
                             me.getComponent(dragSource)?.focus();
 
@@ -157,7 +157,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             // header, footer, or the list container itself),
                             // insert at the end.
                             const targetName = String(targetComp?.name ?? "");
-                            _crossListDrop.targetList = me;
+                            _crossListDrop.target_list = me;
                             _crossListDrop.to = (
                                 targetComp && !isNaN(Number(targetName))
                                 ? targetComp
@@ -192,13 +192,13 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                             });
                             e.stopPropagation();
                         } else if (
-                            _crossListDrop.targetList
-                            && _crossListDrop.targetList !== me
+                            _crossListDrop.target_list
+                            && _crossListDrop.target_list !== me
                         ) {
                             await me.move({
                                 from: me.getComponent(dragSource),
                                 to: _crossListDrop.to,
-                                targetList: _crossListDrop.targetList,
+                                target_list: _crossListDrop.target_list,
                                 position: _crossListDrop.position,
                             });
                             e.stopPropagation();
@@ -207,7 +207,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                         dragDest = null;
                         _sameListPosition = "after";
                         _crossListDrop.sourceList = null;
-                        _crossListDrop.targetList = null;
+                        _crossListDrop.target_list = null;
                         _crossListDrop.to = null;
                         _crossListDrop.position = "after";
                     });
@@ -220,20 +220,20 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
             @mutex("list_mutating")
             async move(options = {}) {//{{{
                 const me = this;
-                let { from, to, targetList, position: explicitPosition } = options;
+                let { from, to, target_list, position: explicitPosition } = options;
                 const ongoingKey = options[sym_mutex_key];
 
                 if (from === null) return;
-                if (to === null && !targetList) return;
-                if (to && Number(from.name) === Number(to.name) && (!targetList || targetList === me)) return;
+                if (to === null && !target_list) return;
+                if (to && Number(from.name) === Number(to.name) && (!target_list || target_list === me)) return;
 
-                const destList = targetList || me;
+                const destList = target_list || me;
 
                 // Same-list: only allowed when sortable is enabled
                 if (destList === me && !me.sortable) return;
 
-                const srcDepthNum = me.movingDepth === true ? Infinity : (me.movingDepth || 0);
-                const dstDepthNum = destList.movingDepth === true ? Infinity : (destList.movingDepth || 0);
+                const srcDepthNum = me.moving_depth === true ? Infinity : (me.moving_depth || 0);
+                const dstDepthNum = destList.moving_depth === true ? Infinity : (destList.moving_depth || 0);
 
                 // Cross-list: enforce sibling distance limits
                 if (destList !== me) {
@@ -255,7 +255,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 );
 
                 // 1. Export item data (preserve empties)
-                const data = await from.export(null, {silent: true, exportEmpties: true});
+                const data = await from.export(null, {silent: true, export_empties: true});
 
                 // 2. Remove from source
                 await me.removeItem(null, {
@@ -276,7 +276,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 });
 
                 // 4. Restore data into the new item
-                await newItem.import(data, {silent: true, setDefault: false});
+                await newItem.import(data, {silent: true, set_default: false});
 
                 // 5. Restore focus to the moved item
                 if (me.renderedSync && !options.silent) newItem?.focus();
@@ -346,7 +346,7 @@ function _applyCursorGrab(handle) {
  * lengths, or whose first divergent ancestors are not both list items, are
  * considered incompatible (returns Infinity).
  *
- * This is used by the cross-list drag guard to enforce the `movingDepth`
+ * This is used by the cross-list drag guard to enforce the `moving_depth`
  * limit on both source and destination lists.
  */
 function _siblingDistance(a, b) {

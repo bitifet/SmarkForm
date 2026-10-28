@@ -151,7 +151,7 @@ produce deeply structured JSON automatically.
 👉 **Card layout.** Each group is a card with a scrollable student list
 (max-height, `overflow-y: auto`) — keeps the page tidy even with many students.
 
-👉 **Cross-list drag.** `movingDepth: 2` on the students list lets users drag
+👉 **Cross-list drag.** `moving_depth: 2` on the students list lets users drag
 students between groups (sibling distance = 2: student → group → sibling's
 students).
 
@@ -195,7 +195,7 @@ auto-numbers each group.
               <label class="sg-tutor">Tutor: <input name="tutor" placeholder="Tutor name" type="text" data-smark></label>
               <div class="sg-students">
                 <strong>Students</strong>
-                <ul data-smark='{"type":"list","name":"students","sortable":true,"movingDepth":2,"min_items":0}'>
+                <ul data-smark='{"type":"list","name":"students","sortable":true,"moving_depth":2,"min_items":0}'>
                   <li data-smark-role="empty_list" class="sg-empty">No students yet</li>
                   <li>
                     <details>
@@ -424,7 +424,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         const classBStudents = myForm.find('/groups/1/students');
         await classAStudents.move({
             from: classAStudents.children[1],  // Bart Simpson
-            targetList: classBStudents,
+            target_list: classBStudents,
             position: 'after',
         });
     });
@@ -554,7 +554,7 @@ list like the following example:
         <button data-smark='{"action":"removeItem","hotkey":"-","context":"schedule"}' title='Less intervals'>➖</button>
         <button data-smark='{"action":"addItem","hotkey":"+","context":"schedule"}' title='More intrevals'>➕</button>
         <strong data-smark="label">Schedule:</strong>
-        <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
+        <span data-smark='{"type":"list","name":"schedule","min_items":0,"max_items":3,"export_empties":true}'>
             <span>
                 <input class='small' data-smark type='time' name='start'> to <input class='small' data-smark type='time' name='end'>
             </span>
@@ -655,7 +655,7 @@ The `<template>` tag also accepts optional siblings:
 {% capture schedule_row_tpl -%}
 <template id="scheduleRow">
   <div class="schedule-row"
-       data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+       data-smark='{"type":"list","min_items":0,"max_items":3,"export_empties":false,"value":[{}]}'>
     <strong data-smark-role="header"><span id="label">Schedule</span></strong>
     <span class='time_slot' data-smark-role="empty_list">(Closed)</span>
     <span class='time_slot'>
@@ -927,7 +927,7 @@ every list item and so forth to any depth.
 {% raw %} <!-- period_item_tpl {{{ --> {% endraw %}
 {% capture period_item_tpl -%}
 <template id="periodItem">
-  <fieldset data-smark='{"type":"form","exportEmpties":true}' style='margin-top: 1em'>
+  <fieldset data-smark='{"type":"form","export_empties":true}' style='margin-top: 1em'>
     <legend>Period
       <span data-smark-action="position">N</span>
       of
@@ -963,7 +963,7 @@ every list item and so forth to any depth.
     item.parent.on('AfterAction_addItem', async function(ev) {
       if (!ev.data || ev.data.getPath() !== item.getPath()) return;
       const idx   = parseInt(item.getPath().split('/').pop());
-      const items = await item.parent.export({ exportEmpties: true });
+      const items = await item.parent.export({ export_empties: true });
       const prev  = idx > 0               ? items[idx - 1] : null;
       const next  = idx < items.length - 1 ? items[idx + 1] : null;
       const fmtDate = d =>
@@ -1009,8 +1009,8 @@ every list item and so forth to any depth.
       if (endDate && startDate && endDate < startDate) endDate = null;
       const startField = item.find('start_date');
       const endField   = item.find('end_date');
-      if (startField) await startField.import(startDate, { setDefault: false });
-      if (endField)   await endField.import(endDate,   { setDefault: false });
+      if (startField) await startField.import(startDate, { set_default: false });
+      if (endField)   await endField.import(endDate,   { set_default: false });
     });
   </script>
 </template>
@@ -1021,7 +1021,7 @@ every list item and so forth to any depth.
 {% capture nested_schedule_table -%}
 <div id="myForm$$">
   <h2>🗓️ Periods:</h2>
-  <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+  <div data-smark='{"type":"list","name":"periods","sortable":true,"export_empties":true,"min_items":0,"value":[{}]}'>
     <fieldset data-smark-role="empty_list" style='text-align: center'>🔒 Out of Service</fieldset>
     <div data-smark='{"type":"#periodItem"}'></div>
   </div>
@@ -1157,7 +1157,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     selected="preview"
     demoValue=demoValue
     showEditor=true
-    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allow_local_scripts":"allow"}'
     tests=nested_schedule_tests
 %}
 
@@ -1191,7 +1191,7 @@ you can build list items that start empty but inherit useful defaults.
 
 ### A note on empty values
 
-The `exportEmpties` option (default `false`) omits blank items from exported
+The `export_empties` option (default `false`) omits blank items from exported
 data. This behaviour inherits down to nested lists — see
 [List Types]({{ "/component_types/type_list" | relative_url }}) for the full
 inheritance rules.
@@ -1568,9 +1568,9 @@ import/export JSON while regular *inputs* import/export text --or number--).
                 <th>Whole Form:</th>
             </tr>
             <tr style="text-align:center">
-                <td><button data-smark='{"action":"import","context":"name","target":"/editor","setDefault":false}'>⬆️  Import</button></td>
-                <td><button data-smark='{"action":"import","context":"surname","target":"/editor","setDefault":false}'>⬆️  Import</button></td>
-                <td><button data-smark='{"action":"import","target":"/editor","setDefault":false}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","context":"name","target":"/editor","set_default":false}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","context":"surname","target":"/editor","set_default":false}'>⬆️  Import</button></td>
+                <td><button data-smark='{"action":"import","target":"/editor","set_default":false}'>⬆️  Import</button></td>
             </tr>
             <tr style="text-align:center">
                 <td><button data-smark='{"action":"export","context":"name","target":"/editor"}'>⬇️  Export</button></td>
@@ -1855,7 +1855,7 @@ while the full details (email and phone) are revealed on expansion:
 {% raw %} <!-- collapsible_sections {{{ --> {% endraw %}
 {% capture collapsible_sections -%}
 <div id="myForm$$">
-  <div data-smark='{"name":"contacts","type":"list","min_items":1,"exportEmpties":false}'>
+  <div data-smark='{"name":"contacts","type":"list","min_items":1,"export_empties":false}'>
     <details>
       <summary>
         <input data-smark type="text" name="fullname" placeholder="Full name">
@@ -3495,7 +3495,7 @@ form, or import your own JSON to pre-populate it.
       <button data-smark='{"action":"removeItem","context":"attendees","hotkey":"Delete","preserve_non_empty":true}' title='Remove empty slots'>🧹</button>
       <button data-smark='{"action":"addItem","context":"attendees","hotkey":"+"}' title='Add attendee'>➕</button>
       <strong data-smark='label'>👥 Attendees:</strong>
-      <ul data-smark='{"type":"list","name":"attendees","sortable":true,"exportEmpties":false}'>
+      <ul data-smark='{"type":"list","name":"attendees","sortable":true,"export_empties":false}'>
         <li>
           <details>
             <summary>
@@ -3672,7 +3672,7 @@ endcapture %}
   * **Nested subform**: The `organizer` fieldset is a subform — its fields are
     grouped and exported as a nested object.
   * **Sortable list**: Attendees can be dragged to reorder them. The list uses
-    `exportEmpties: false` so empty slots are not exported.
+    `export_empties: false` so empty slots are not exported.
   * **Context-driven hotkeys**: The `➕`/`➖` buttons inside each list item
     carry `-`/`+` hotkeys, active only when focus is within that item. The `🧹`
     button uses `Delete` as a context-wide hotkey.

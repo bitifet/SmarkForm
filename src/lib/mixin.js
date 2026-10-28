@@ -136,7 +136,7 @@ function prefetchMixinDocument(typeRef, rootOptions) { //{{{
     }
     // Preloading always happens at the top level (main document), so the
     // external fetch policy is read from the root options.
-    const extPolicyRaw = rootOptions['smark_mixin_allowExternal'] ?? 'block';
+    const extPolicyRaw = rootOptions['smark_mixin_allow_external'] ?? 'block';
     const fetchOrigin = getUrlOrigin(absoluteUrl);
     const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
     if (extPolicy === 'block') return;
@@ -202,7 +202,7 @@ function mergeAttributes(clone, placeholder) { //{{{
             // id is intentionally not merged; SmarkForm manages ids itself.
             console.warn(
                 `SmarkForm mixin: placeholder id="${attr.value}" ignored.`
-                + ' The id will be assigned by SmarkForm autoId if configured.'
+                + ' The id will be assigned by SmarkForm auto_id if configured.'
             );
             continue;
         }
@@ -272,12 +272,12 @@ function getUrlOrigin(absoluteUrl) { //{{{
 // the wildcard '*' key is used; if that is also absent, `fallback` is returned.
 // This enables fine-grained per-origin trust policies such as:
 //
-//   smark_mixin_allowExternal: {
+//   smark_mixin_allow_external: {
 //     'https://trusted-cdn.example.com': 'allow',
 //     '*': 'block',
 //   }
 //
-//   smark_mixin_allowCrossOriginScripts: {
+//   smark_mixin_allow_cross_origin_scripts: {
 //     'https://trusted.example.com': 'allow',
 //     'https://untrusted.example.com': 'noscript',
 //     '*': 'block',
@@ -355,17 +355,17 @@ export async function expandMixin(node, options, component) { //{{{
         // request.  The policy is read exclusively from the root SmarkForm
         // instance to prevent a malicious external template from escalating
         // its own privileges by setting the option in its data-smark.
-        // smark_mixin_allowExternal may be a string ('block'|'same-origin'|'allow')
+        // smark_mixin_allow_external may be a string ('block'|'same-origin'|'allow')
         // or a per-origin object map — see resolvePolicy().
-        const extPolicyRaw = component.root.options['smark_mixin_allowExternal'] ?? 'block';
+        const extPolicyRaw = component.root.options['smark_mixin_allow_external'] ?? 'block';
         const fetchOrigin = getUrlOrigin(absoluteUrl);
         const extPolicy = resolvePolicy(extPolicyRaw, fetchOrigin, 'block');
         if (extPolicy === 'block') {
             throw component.renderError(
                 'MIXIN_EXTERNAL_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references an external URL but`
-                + ' smark_mixin_allowExternal is "block" (the default).'
-                + ' Set smark_mixin_allowExternal to "same-origin", "allow", or a'
+                + ' smark_mixin_allow_external is "block" (the default).'
+                + ' Set smark_mixin_allow_external to "same-origin", "allow", or a'
                 + ' per-origin policy object on the root SmarkForm instance'
                 + ' to permit external mixin loading.'
                 , node
@@ -374,8 +374,8 @@ export async function expandMixin(node, options, component) { //{{{
             throw component.renderError(
                 'MIXIN_CROSS_ORIGIN_FETCH_BLOCKED'
                 , `Mixin type "${typeRef}" references a cross-origin URL`
-                + ` (${fetchOrigin}) but smark_mixin_allowExternal`
-                + ' is "same-origin". Set smark_mixin_allowExternal to "allow" or'
+                + ` (${fetchOrigin}) but smark_mixin_allow_external`
+                + ' is "same-origin". Set smark_mixin_allow_external to "allow" or'
                 + ' add the origin to the per-origin policy object to'
                 + ' permit cross-origin mixin loading.'
                 , node
@@ -505,7 +505,7 @@ export async function expandMixin(node, options, component) { //{{{
     // Scripts are blocked by default for all origin classes.
     // Each policy option may be a string ('block'|'noscript'|'allow') or a
     // per-origin object map — see resolvePolicy().  Per-origin maps are most
-    // useful for smark_mixin_allowCrossOriginScripts when templates from multiple
+    // useful for smark_mixin_allow_cross_origin_scripts when templates from multiple
     // different third-party origins need different trust levels.
     if (scripts.length > 0) {
         const isLocal = ! urlPart;
@@ -513,17 +513,17 @@ export async function expandMixin(node, options, component) { //{{{
         let policyOptionName;
         let errorCode;
         if (isLocal) {
-            policyOptionName = 'smark_mixin_allowLocalScripts';
+            policyOptionName = 'smark_mixin_allow_local_scripts';
             errorCode = 'MIXIN_SCRIPT_LOCAL_BLOCKED';
         } else if (isCross) {
-            policyOptionName = 'smark_mixin_allowCrossOriginScripts';
+            policyOptionName = 'smark_mixin_allow_cross_origin_scripts';
             errorCode = 'MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED';
         } else {
-            policyOptionName = 'smark_mixin_allowSameOriginScripts';
+            policyOptionName = 'smark_mixin_allow_same_origin_scripts';
             errorCode = 'MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED';
         }
         // Read policy exclusively from the root to prevent privilege escalation
-        // from within mixin templates (see smark_mixin_allowExternal comment above).
+        // from within mixin templates (see smark_mixin_allow_external comment above).
         const policyRaw = component.root.options[policyOptionName] ?? 'block';
         const scriptOrigin = getUrlOrigin(absoluteUrl);
         const policy = resolvePolicy(policyRaw, scriptOrigin, 'block');

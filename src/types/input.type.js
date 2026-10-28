@@ -137,7 +137,7 @@ export class input extends form {
 
         if (typeof maskFactory !== 'function') {
             const cfg = me.root.options;
-            if (cfg.smark_mask_throwOnMissing !== false) {
+            if (cfg.smark_mask_throw_on_missing !== false) {
                 throw me.renderError(
                     'MASK_NOT_FOUND'
                     , `Mask "${maskName}" not found for field`
@@ -305,7 +305,7 @@ export class input extends form {
         const isReset = data === undefined;
         // Undefined clears to default:
         if (isReset) data = me.defaultValue;
-        let {focus = false, silent = false, setDefault = true} = options;
+        let {focus = false, silent = false, set_default = true} = options;
         const nodeFld = me.targetFieldNode;
         if (
             typeof data === "object"
@@ -337,7 +337,7 @@ export class input extends form {
         } else {
             me._setTargetFieldValue(data);
         };
-        if (!isReset && setDefault) {
+        if (!isReset && set_default) {
             me.defaultValue = await me.export(null, {silent: true});
         };
         if (focus && !silent) me.focus();

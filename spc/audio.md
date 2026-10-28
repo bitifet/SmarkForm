@@ -26,7 +26,7 @@ same list integration — and specializes it for audio:
 - **Validation**: on interactive acquisition, bytes must actually **parse as a
   playable audio container** — a metadata-level probe on an off-DOM `<audio>`
   element (`smark_audio_validate`, default on). A cheap byte-size cap
-  (`audio_maxSize`) can reject oversized clips before their bytes are read.
+  (`audio_max_size`) can reject oversized clips before their bytes are read.
 - **Interaction**: click / `Space` / `Shift+Space` open the OS picker when the
   field is in pick mode; when the author opts into playback (native `controls`
   or `smark_audio_click:"play"`), clicks and `Space` control playback instead.
@@ -59,7 +59,7 @@ synchronous path** — `MediaRecorder` is stream-capture only and WebCodecs does
 not support audio encoders in a portable way. So the `audio` type has **no
 resize, format-conversion or `enforce` policy options** in v1: validation is a
 decodability *probe*, not a transform pipeline, and `audio_enforce` is
-intentionally absent. Size control is a plain byte cap (`audio_maxSize`).
+intentionally absent. Size control is a plain byte cap (`audio_max_size`).
 
 ---
 
@@ -206,7 +206,7 @@ player.
 | `Enter` / `Shift+Enter` | Navigate to the next/previous field (inherited `input` hook) | Same |
 | `Space` | **Open the file picker** — `preventDefault()` | **Toggle play/pause** when a value is set — `preventDefault()`; empty value → open the picker |
 | `Shift+Space` | **Open the file picker** — yields to `<details>` folding convention first | **Open the file picker** — always |
-| `Delete` / `Backspace` | **Clear the value** when set (`preventDefault()`); no-op when empty. Toggle: `smark_audio_clearOnDelete` (default `true`) | Same |
+| `Delete` / `Backspace` | **Clear the value** when set (`preventDefault()`); no-op when empty. Toggle: `smark_audio_clear_on_delete` (default `true`) | Same |
 
 > In play mode, `Space` play/pause is implemented by the field's keydown hook
 > (`play()`/`pause()` + `preventDefault`), so the contract is identical whether
@@ -306,7 +306,7 @@ function probeAudio(obj) { // obj: {type, data(base64)}
 - A file that passes the `accept` filter but fails the probe is **rejected**
   exactly like an un-accepted file: the previous value stays, no `change` event
   fires.
-- **`audio_maxSize` (byte cap)** is checked *before* any bytes are read.
+- **`audio_max_size` (byte cap)** is checked *before* any bytes are read.
 - Option: `smark_audio_validate` (default `true`); set `false` to rely on
   `accept`/MIME filtering alone. Interactive acquisition only — `import()`
   always trusts data and never probes.
@@ -329,7 +329,7 @@ Consequences:
 
 - **No `audio_resize`, `audio_format`, or `audio_enforce`.**
 - "Downsizing" a clip means telling the *user* to produce a smaller file — the
-  byte cap `audio_maxSize` is the pragmatic v1 control.
+  byte cap `audio_max_size` is the pragmatic v1 control.
 
 ### 4.2 Decodability matrix
 
@@ -350,7 +350,7 @@ Consequences:
 
 ### 4.3 Notification: toast + cancellable event
 
-When `audio_maxSize` raises a rejection the field:
+When `audio_max_size` raises a rejection the field:
 
 1. Dispatches `smark:audioNotice`, `bubbles: true`,
    `detail: {kind, code, message, mode, name, requirement}` (e.g.
@@ -360,11 +360,11 @@ When `audio_maxSize` raises a rejection the field:
 Validation-probe failures stay silent — they are rejections of unaccepted
 files, matching `image`'s decode gate and `video`'s probe gate.
 
-### 4.4 `audio_maxSize` (byte cap)
+### 4.4 `audio_max_size` (byte cap)
 
 | Option | Type | Default | Effect |
 |---|---|---|---|
-| `audio_maxSize` | number (bytes) | — | Reject acquisition when `file.size` exceeds the cap — checked **before reading bytes** |
+| `audio_max_size` | number (bytes) | — | Reject acquisition when `file.size` exceeds the cap — checked **before reading bytes** |
 
 - Rejection follows §4.3 (`smark:audioNotice` + toast), previous value stays,
   no `change` event.
@@ -473,10 +473,10 @@ other layout-affecting attributes.
 | `smark_audio_drop` | boolean | `true` | Drag & drop replaces value |
 | `smark_audio_paste` | boolean | `true` | Paste replaces value |
 | `smark_audio_validate` | boolean | `true` | Media-container probe on acquisition |
-| `smark_audio_clearOnDelete` | boolean | `true` | `Delete`/`Backspace` clear value |
-| `smark_audio_autoPick` | boolean | `false` | Best-effort picker open after render |
+| `smark_audio_clear_on_delete` | boolean | `true` | `Delete`/`Backspace` clear value |
+| `smark_audio_auto_pick` | boolean | `false` | Best-effort picker open after render |
 | `smark_audio_click` | `"auto"` \| `"pick"` \| `"play"` | `"auto"` | Resolves click/`Space` conflict |
-| `audio_maxSize` | number (bytes) | — | Reject acquisition above byte cap, with notice |
+| `audio_max_size` | number (bytes) | — | Reject acquisition above byte cap, with notice |
 
 > **Naming:** `audio_`-prefixed options follow the `image_`/`video_`
 > convention. `smark_audio_*` toggle names mirror `smark_image_*`/
@@ -489,7 +489,7 @@ other layout-affecting attributes.
 - **`change`** — fires once (`bubbles: true`) whenever value is set, replaced
   or cleared.
 - **`smark:audioNotice`** — dispatched on `targetNode` for requirement rejections
-  (`audio_maxSize`); `preventDefault()` suppresses default toast.
+  (`audio_max_size`); `preventDefault()` suppresses default toast.
 - `BeforeAction_*` / `AfterAction_*` apply to `export`/`import`/`clear`/`reset`.
 - **Download action** — inherited from `file`, name precedence:
   `options.filename` \| editable caption \| stored `name`.
@@ -507,7 +507,7 @@ All of `file` §11 applies unchanged:
 Additional, audio-specific:
 
 - **Large-payload awareness** — embedded audio values are base64 strings in
-  memory, state and `export()`; choose `audio_maxSize` accordingly.
+  memory, state and `export()`; choose `audio_max_size` accordingly.
 - **No remote loading.** The value is embedded; the field only loads `data:`
   URLs / in-memory object URLs for the probe / the author's own external
   resources.
@@ -518,7 +518,7 @@ Additional, audio-specific:
 
 - `readFileToObject()` reads the whole file into memory and encodes it as
   base64 — unavoidable for an embedded value.
-- `audio_maxSize` rejects before any byte is read.
+- `audio_max_size` rejects before any byte is read.
 - The probe (§4) creates a Blob + object URL in addition to the base64 copy;
   revoking the object URL is mandatory.
 - Display uses a `data:` URL `src`. Per-browser `data:` URL ceilings exist, so
@@ -553,7 +553,7 @@ Additional, audio-specific:
    handlers; default `accept="audio/*"`.
 4. **Probe validation** — implement `probeAudio()` (off-DOM `<audio>` + object
    URL) with `loadedmetadata`/`error` and timeout; integrate in `_acceptFiles()`
-   and static batch `acquire()`; emit `smark:audioNotice` for `audio_maxSize`
+   and static batch `acquire()`; emit `smark:audioNotice` for `audio_max_size`
    rejections.
 5. **Click/keyboard playback modes** — implement `smark_audio_click`
    (`auto`/`pick`/`play`) and `Space` handling in play mode.
@@ -564,7 +564,7 @@ Additional, audio-specific:
    - real-field render/audio tag inference,
    - singleton wrapper + missing-audio error,
    - pick/drop/paste acquisition and probe validation,
-   - `audio_maxSize` rejection + `smark:audioNotice`,
+   - `audio_max_size` rejection + `smark:audioNotice`,
    - keyboard contract (`Space`, `Shift+Space`, `Delete`),
    - click mode (`auto`/`pick`/`play`),
    - `format:"json"` round-trip,

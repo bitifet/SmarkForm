@@ -20,7 +20,7 @@ Use this optional skill for tasks involving any of the following:
 - Action method argument semantics (data vs options)
 - Complex `context` / `target` path resolution (cross-list, parent-relative)
 - Mixin/security-option-sensitive implementations
-- Data export flattening (`keyStyle`, `arrayStyle`, `exportEmpties`) edge cases
+- Data export flattening (`key_style`, `array_style`, `export_empties`) edge cases
 
 For standard form implementation, load the core skill first:
 - `skills/smarkform-form-builder/SKILL.md`
@@ -103,15 +103,15 @@ merges `data-smark` options and resolves context/target automatically.
 - Default is `"block"` for all.  Only opt-in when a specific mixin source
   is required and its provenance is verified.
 
-### Data Flattening (`exportEmpties`, `keyStyle`, `arrayStyle`)
+### Data Flattening (`export_empties`, `key_style`, `array_style`)
 
-- `exportEmpties: true` includes entries for empty lists, empty strings, and
+- `export_empties: true` includes entries for empty lists, empty strings, and
   `null` values in the exported JSON.  Without it, empty slots are omitted
   entirely, which can shift array indices on round-trip import.
-- `keyStyle: "dot"` flattens nested keys into dotted paths
+- `key_style: "dot"` flattens nested keys into dotted paths
   (`"address.city"`) instead of bracket notation (`"address[city]"`).
   Use `"bracket"` (default) for standard form encoding compatibility.
-- `arrayStyle: "index"` produces `"items[0]"`, `"items[1]"` keys; `"repeat"`
+- `array_style: "index"` produces `"items[0]"`, `"items[1]"` keys; `"repeat"`
   (default) produces repeated `"items[]"` keys.  Index style preserves
   position but breaks if items are removed mid-list.
 
@@ -139,7 +139,7 @@ merges `data-smark` options and resolves context/target automatically.
 - Inside a **file-capable list** (`of:"file"`), the item singleton's container
   drop is suppressed (`underFileList` check in `file.type.js`) so an OS drop on
   an existing item **appends** a new item rather than replacing that item's
-  file; paste stays item-scoped; list-level `fileDrop:false` disables drop-add.
+  file; paste stays item-scoped; list-level `file_drop:false` disables drop-add.
 - The `download` action triggers a real browser download from the field's
   current file (empty → no-op returning `null`); it is only meaningful with a
   real user gesture, and works from a trigger via `context` pointing at the

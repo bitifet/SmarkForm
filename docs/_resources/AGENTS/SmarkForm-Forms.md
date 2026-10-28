@@ -310,19 +310,19 @@ items, count labels, etc.) alongside the heading text.
 
 When `sortable:true`, list items can be reordered by dragging.
 
-### exportEmpties
+### export_empties
 
-By default, `exportEmpties` is `false`: empty items are stripped from
-exported arrays. Set `exportEmpties:true` to keep them (useful for draft
+By default, `export_empties` is `false`: empty items are stripped from
+exported arrays. Set `export_empties:true` to keep them (useful for draft
 saving):
 
 ```html
-<div data-smark='{"type":"list","name":"rows","exportEmpties":true}'>
+<div data-smark='{"type":"list","name":"rows","export_empties":true}'>
   <div><input data-smark type="text" name="value"></div>
 </div>
 ```
 
-`exportEmpties` is **inherited** — if a parent sets it, children inherit it.
+`export_empties` is **inherited** — if a parent sets it, children inherit it.
 Override explicitly on a child to change behaviour.
 
 ### Buttons outside a list (using context path)
@@ -400,18 +400,18 @@ Or via `data-smark` options (for container components):
 ### import() updates the default (since v0.13.0)
 
 Calling `component.import(data)` updates `defaultValue` by default
-(`setDefault:true`). After this, `reset()` restores the imported data.
+(`set_default:true`). After this, `reset()` restores the imported data.
 
 To import without touching the default:
 
 ```javascript
-await myForm.import(data, { setDefault: false });
+await myForm.import(data, { set_default: false });
 ```
 
 Or via a trigger:
 
 ```html
-<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
 ```
 
 ---
@@ -537,7 +537,7 @@ Before submitting a SmarkForm implementation, verify:
       (see [SmarkForm Usage]({{ "/resources/AGENTS/SmarkForm-Usage" | relative_url }}) — "Buttons inside vs. outside a list").
 - [ ] `@action` methods called with `null` as first arg when passing only options
       (e.g., `addItem(null, { silent: true })`).
-- [ ] `exportEmpties` set explicitly on nested lists when parent and child need
+- [ ] `export_empties` set explicitly on nested lists when parent and child need
       different behaviour.
 - [ ] No `value=""` HTML attribute AND `"value":...` in `data-smark` on the same element.
 - [ ] CDN URLs pin to a specific version for production code.
@@ -548,6 +548,6 @@ Before submitting a SmarkForm implementation, verify:
       heading text in the target `.md` file.  Kramdown converts `### Foo Bar`
       to `#foo-bar` (lowercase, spaces → hyphens, punctuation stripped).
       Do not guess fragment IDs.
-- [ ] If using mixin templates with `<script>` tags, `smark_mixin_allowLocalScripts: "allow"` (or `smark_mixin_allowSameOriginScripts` / `smark_mixin_allowCrossOriginScripts` for external templates) is set on the root SmarkForm constructor — scripts are blocked by default.
-- [ ] If using mixin type references with an external URL, `smark_mixin_allowExternal: "same-origin"` or `"allow"` is set on the root constructor — external mixin fetches are blocked by default.
-- [ ] If using `enctype="application/json"` form submission, `enableJsonEncoding: true` is set on the root SmarkForm constructor — JSON encoding is disabled by default.
+- [ ] If using mixin templates with `<script>` tags, `smark_mixin_allow_local_scripts: "allow"` (or `smark_mixin_allow_same_origin_scripts` / `smark_mixin_allow_cross_origin_scripts` for external templates) is set on the root SmarkForm constructor — scripts are blocked by default.
+- [ ] If using mixin type references with an external URL, `smark_mixin_allow_external: "same-origin"` or `"allow"` is set on the root constructor — external mixin fetches are blocked by default.
+- [ ] If using `enctype="application/json"` form submission, `enable_json_encoding: true` is set on the root SmarkForm constructor — JSON encoding is disabled by default.

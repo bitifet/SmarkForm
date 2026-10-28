@@ -212,7 +212,7 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
         + '    title="Export \'demo\' subform to \'editor\' textarea"\n'
         + '    >\u2b07\ufe0f Export</button></span>\n'
         + '<span><button\n'
-        + '    data-smark=\'{"action":"import","context":"demo","target":"../editor","setDefault":false}\'\n'
+        + '    data-smark=\'{"action":"import","context":"demo","target":"../editor","set_default":false}\'\n'
         + '    title="Import \'editor\' textarea contents to \'demo\' subform"\n'
         + '    >\u2b06\ufe0f Import</button></span>\n'
         + '<span' + (hasDemoValue ? '' : ' style="visibility: hidden"') + '><button\n'

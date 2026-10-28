@@ -59,19 +59,12 @@ class SmarkForm extends form {
         // share the same ID — used by cross-list drag-and-drop.
         stampSourceIds(document);
 
-        // Split options: smark_* prefixed → constructor-only, everything else
-        // (including on_* event handlers) → pass-through to root form component.
-        const ctorOnly = {};
+        // `smark_*` is a reserved namespace for SmarkForm-owned settings, not
+        // a universal scope marker: root policies and field-level controls are
+        // consumed by their respective components.
         const formOptions = {};
         for (const [k, v] of Object.entries(restOptions)) {
-            // smark_* options must also flow through to root.options so the mixin
-            // system can read them during the render phase (which starts inside
-            // super()). They are filtered from setNodeOptions below to prevent
-            // data-smark serialization.
             formOptions[k] = v;
-            if (k.startsWith('smark_')) {
-                ctorOnly[k] = v;
-            }
         }
 
         // Resolve string selectors to DOM nodes:
@@ -125,9 +118,9 @@ class SmarkForm extends form {
 // --- Declarative Masking API ---
 SmarkForm._maskRegistry = {};
 SmarkForm._scanned = false;
-// Constructor-only options and their defaults:
+// Defaults for SmarkForm-owned options:
 SmarkForm._ctorDefaults = {
-    smark_mask_throwOnMissing: true,
+    smark_mask_throw_on_missing: true,
 };
 
 SmarkForm.registerMask = function(name, factory) {
@@ -178,4 +171,3 @@ SmarkForm._scanGlobalMasks = function() {
 SmarkForm.createType = createType;
 
 export default SmarkForm;
-

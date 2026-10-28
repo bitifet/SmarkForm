@@ -27,10 +27,10 @@ saved data continues to work without any transformation step.
 
 ### Exporting Empty Items
 
-By default, empty items are **not** exported (`exportEmpties: false`). This
+By default, empty items are **not** exported (`export_empties: false`). This
 keeps saved data clean by omitting blank rows.
 
-Set `"exportEmpties": true` on the list to preserve empty slots — useful in
+Set `"export_empties": true` on the list to preserve empty slots — useful in
 draft-save workflows where you want to retain the user's position in the list.
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
@@ -44,11 +44,11 @@ array, *SmarkForm* automatically places it in a single-item list.
   * This mirrors the upgrade from a single-value field (e.g. `"email"`) to a
     list field (e.g. `"emails": [...] `).
 
-👉 **Empty items are not exported** by default (controlled by `exportEmpties`).
+👉 **Empty items are not exported** by default (controlled by `export_empties`).
 
   * Click **➕** to add a blank item, then **⬇️ Export** — the blank row will
     be absent from the output, keeping saved data clean.
-  * Set `"exportEmpties": true` on the list to keep blank slots in the data
+  * Set `"export_empties": true` on the list to keep blank slots in the data
     (useful in draft-save workflows where you want to preserve the user's
     position in the list).
 
@@ -95,11 +95,11 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         'Array import works normally'
     ).toEqual(['carol@example.com', 'dave@example.com']);
 
-    // exportEmpties = false: blank items are not exported
+    // export_empties = false: blank items are not exported
     await page.evaluate(() => myForm.find('/email').addItem());
     expect(
         await readField('email'),
-        'Blank item is not exported (exportEmpties defaults to false)'
+        'Blank item is not exported (export_empties defaults to false)'
     ).toEqual(['carol@example.com', 'dave@example.com']);
 
     // Filling the new blank item makes it appear in the export

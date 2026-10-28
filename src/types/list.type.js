@@ -179,29 +179,29 @@ export class list extends SmarkField {
     @mutex("list_mutating")
     @action
     @export_to_target
-    async export(_data, {exportEmpties: forceExportEmpties} = {}) {//{{{
+    async export(_data, {export_empties: forceExportEmpties} = {}) {//{{{
         const me = this;
         const list = [];
         const emptyChilds = [];
         const stripEmpties = forceExportEmpties !== undefined
             ? ! forceExportEmpties
-            : ! me.inheritedOption("exportEmpties", false);
+            : ! me.inheritedOption("export_empties", false);
         for (const child of me.children) {
             if (stripEmpties && await child.isEmpty()) {
                 if (list.length < me.min_items) emptyChilds.push(child);
                 continue;
             };
-            list.push(await child.export(null, {silent: true, exportEmpties: forceExportEmpties}));
+            list.push(await child.export(null, {silent: true, export_empties: forceExportEmpties}));
         };
         for (let i=0; list.length < me.min_items; i++) {
-            list.push(await emptyChilds[i].export(null, {silent: true, exportEmpties: forceExportEmpties}));
+            list.push(await emptyChilds[i].export(null, {silent: true, export_empties: forceExportEmpties}));
         };
         return list;
     };//}}}
     @action
     @import_from_target
     @mutex("list_import")
-    async import(data, {focus = false, silent = false, setDefault = true} = {}) {//{{{
+    async import(data, {focus = false, silent = false, set_default = true} = {}) {//{{{
         const me = this;
         const isReset = data === undefined;
         // Undefined clears to default:
@@ -216,9 +216,9 @@ export class list extends SmarkField {
             i++
         ) {
             if (me.children.length <= i) await me.addItem(null, {silent: true}); // Make room on demand
-            // setDefault is intentionally NOT propagated to children:
+            // set_default is intentionally NOT propagated to children:
             // only the field where import originates updates its own default.
-            await me.children[i].import(data[i], {focus: focus && !silent, silent, setDefault: false});
+            await me.children[i].import(data[i], {focus: focus && !silent, silent, set_default: false});
         };
         // Remove extra items if possible (over min_items):
         for (
@@ -241,8 +241,8 @@ export class list extends SmarkField {
             i < me.children.length; // (Due to min_items)
             i++
         ) await me.children[i].reset(null, {silent: true});
-        if (!isReset && setDefault) {
-            me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
+        if (!isReset && set_default) {
+            me.defaultValue = await me.export(null, {silent: true, export_empties: true});
         };
         if (focus && !silent) me.focus();
         return; // await me.export(null, {silent: true});
@@ -275,8 +275,8 @@ export class list extends SmarkField {
                 accept: me.options.accept,
                 encoding: me.options.encoding,
                 multiple: true,
-                currentCount: me.children.length,
-                maxItems: me.max_items,
+                current_count: me.children.length,
+                max_items: me.max_items,
                 // Thread the list's context so type-specific acquisition
                 // pipelines (e.g. `image` size/format + notices) work list-wide.
                 options: me.options,

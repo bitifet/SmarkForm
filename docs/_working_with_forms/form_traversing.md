@@ -514,7 +514,7 @@ The board below is three independent lists laid out as columns, sharing a single
     .kanban-mixin .card input { flex: 1; }
     .kanban-mixin .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
   </style>
-  <div data-smark='{"type":"list","sortable":true,"min_items":0,"movingDepth":1}' class="kanban-mixin">
+  <div data-smark='{"type":"list","sortable":true,"min_items":0,"moving_depth":1}' class="kanban-mixin">
     <div data-smark='{"role":"header"}'>
       <strong id="colLabel">Column</strong>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add task">➕</button>

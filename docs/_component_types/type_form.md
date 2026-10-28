@@ -241,7 +241,7 @@ API Reference
 
 #### value
 
-Sets the initial default data for the form. These defaults are restored when `reset()` is called and are updated by `import()` (unless `setDefault: false` is passed).
+Sets the initial default data for the form. These defaults are restored when `reset()` is called and are updated by `import()` (unless `set_default: false` is passed).
 
   * **Type:** Object
   * **Default value:** `{}`
@@ -256,7 +256,7 @@ Make forms get focused when clicked anywhere inside them.
   * **Default value:** true
 
 
-#### autoId
+#### auto_id
 
 Automatically generate `id` attributes for all components in the form. When enabled, each component receives an `id` derived from its path (e.g. `"address_street"`).
 
@@ -298,7 +298,7 @@ The `form` component type supports the following actions:
   * {{ site.data.definitions.actions.options.target_import }}
   * **data:** (JSON)
   * **focus:** (boolean, default true)
-  * **setDefault:** (boolean, default `true`) — When `true` (the default), the imported data becomes the new default restored by `reset()`. Pass `false` to import data without changing the reset target.
+  * **set_default:** (boolean, default `true`) — When `true` (the default), the imported data becomes the new default restored by `reset()`. Pass `false` to import data without changing the reset target.
 
 
 #### (Async) clear (Action)
@@ -319,7 +319,7 @@ For forms, this means setting all fields to empty values (empty strings for text
 
 #### (Async) reset (Action)
 
-Reverts all fields to their configured default values. The default is initially set by the `value` option and is updated every time `import()` is called with `setDefault: true` (the default). If no default has ever been set, fields revert to their type-level empty state.
+Reverts all fields to their configured default values. The default is initially set by the `value` option and is updated every time `import()` is called with `set_default: true` (the default). If no default has ever been set, fields revert to their type-level empty state.
 
 This action is recursive, applying to all nested forms and lists.
 
@@ -394,10 +394,10 @@ Data is exported as a JSON object and sent via `fetch()`. Any HTTP method is sup
 
 {: .warning :}
 > JSON encoding is **disabled by default** as a security measure. You must explicitly opt in
-> by setting `enableJsonEncoding: true` on the root SmarkForm instance:
+> by setting `enable_json_encoding: true` on the root SmarkForm instance:
 > ```js
 > const myForm = new SmarkForm(document.querySelector('#myForm'), {
->     enableJsonEncoding: true,
+>     enable_json_encoding: true,
 > });
 > ```
 > Without this option, attempting to submit a form with `enctype="application/json"` throws
@@ -435,18 +435,18 @@ Non-HTTP action URLs such as `mailto:someone@example.com` are fully supported th
 When using non-JSON encoding, the exported SmarkForm JSON is flattened into string key/value
 pairs. The following options on the root form control the flattening style:
 
-  * **`keyStyle`** *(string, default `"bracket"`)* — How nested keys are represented:
+  * **`key_style`** *(string, default `"bracket"`)* — How nested keys are represented:
     * `"bracket"` — `person[address][city]`
     * `"dot"` — `person.address.city`
 
-  * **`arrayStyle`** *(string, default `"repeat"`)* — How array items are represented:
+  * **`array_style`** *(string, default `"repeat"`)* — How array items are represented:
     * `"repeat"` — Same name repeated: `tags`, `tags`, `tags` (native PHP / Rails style)
-    * `"index"` — Indexed: `tags[0]`, `tags[1]` (or `tags.0`, `tags.1` with `keyStyle:"dot"`)
+    * `"index"` — Indexed: `tags[0]`, `tags[1]` (or `tags.0`, `tags.1` with `key_style:"dot"`)
 
 These options can be set via `data-smark` on the root form element:
 
 ```html
-<form data-smark='{"keyStyle":"dot","arrayStyle":"index"}' method="post" action="/submit">
+<form data-smark='{"key_style":"dot","array_style":"index"}' method="post" action="/submit">
   …
 </form>
 ```

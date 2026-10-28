@@ -28,7 +28,7 @@ block mainForm
         )
 
         video(
-            data-smark={type: "video", name: "capped", video_maxSize: 100}
+            data-smark={type: "video", name: "capped", video_max_size: 100}
             width="320" height="180"
         )
         video(
@@ -74,7 +74,7 @@ block mainForm
 const pugAutoPick = (// {{
 `extends layout.pug
 block mainForm
-    video(data-smark={type: "video", name: "clip", smark_video_autoPick: true}, width="320" height="180")
+    video(data-smark={type: "video", name: "clip", smark_video_auto_pick: true}, width="320" height="180")
 `);// }}}
 
 
@@ -235,7 +235,7 @@ test.describe('Video Component Type Test', () => {
         expect(res.g2name).toBe("bogus.mp4");
     });//}}}
 
-    test('video_maxSize rejects oversized media before reading bytes; under-cap accepted', async ({ page }) => {//{{{
+    test('video_max_size rejects oversized media before reading bytes; under-cap accepted', async ({ page }) => {//{{{
         await openPage(page, title, pugBase);
         const res = await page.evaluate(async ({makeFileFn}) => {
             const capped = window.form.find("/capped");

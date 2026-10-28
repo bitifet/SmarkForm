@@ -409,7 +409,7 @@ can safely define their own versions of shared mask names.
 
 {: .hint :}
 > **See also:** [Mixin Types → Scripts and Styles](mixin_types#scripts-and-styles)
-> for the full mixin script policy, including the `smark_mixin_allowLocalScripts` option.
+> for the full mixin script policy, including the `smark_mixin_allow_local_scripts` option.
 
 {% raw %}<!-- mixin_mask_html {{{ -->{% endraw %}
 {% capture mixin_mask_html -%}
@@ -444,13 +444,13 @@ The `digits` mask is defined inside the `#digitsMixin` template via a `<script t
    formId="mixin-mask"
    htmlSource=mixin_mask_html
    notes=mixin_mask_notes
-   smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
+   smarkformOptions='{"smark_mixin_allow_local_scripts":"allow"}'
    selected="html"
    showEditor=true
    tests=false
 %}
 
-This example requires `smark_mixin_allowLocalScripts: "allow"` because the
+This example requires `smark_mixin_allow_local_scripts: "allow"` because the
 `<script>` inside the `<template>` must be executed by the mixin system.
 
 ## Using Other Masking Libraries (Maska)
@@ -547,9 +547,9 @@ rejected and the field is cleared instead.
 ## Error Handling
 
 SmarkForm's masking error handling is controlled by the
-`smark_mask_throwOnMissing` constructor option (default `true`):
+`smark_mask_throw_on_missing` constructor option (default `true`):
 
-### `smark_mask_throwOnMissing: true` (default)
+### `smark_mask_throw_on_missing: true` (default)
 
 - **Mask not found** → throws `MASK_NOT_FOUND` render error.
 - **Mask factory throws** → throws `MASK_APPLY_ERROR` render error (the
@@ -557,7 +557,7 @@ SmarkForm's masking error handling is controlled by the
 - In both cases the input type is **restored** to its original value before
   the error is raised, so the error indicator is shown with the correct type.
 
-### `smark_mask_throwOnMissing: false`
+### `smark_mask_throw_on_missing: false`
 
 - Mask errors are reported via `console.warn` instead of throwing.
 - The field's original input type is **restored** and the field operates
@@ -565,7 +565,7 @@ SmarkForm's masking error handling is controlled by the
 
 ```javascript
 const myForm = new SmarkForm("#myForm", {
-  smark_mask_throwOnMissing: false
+  smark_mask_throw_on_missing: false
 });
 ```
 

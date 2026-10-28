@@ -139,7 +139,7 @@ these options into the SmarkForm constructor so the example renders correctly:
     formId="my_mixin_example"
     htmlSource=my_mixin_example_html
     demoValue='{"foo":"bar"}'
-    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allow_local_scripts":"allow"}'
     tests=false
 %}
 ```
@@ -148,10 +148,10 @@ Supported option keys (all optional):
 
 | Option | Allowed values | Default | Purpose |
 |---|---|---|---|
-| `smark_mixin_allowLocalScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
-| `smark_mixin_allowSameOriginScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in same-origin external mixin templates |
-| `smark_mixin_allowCrossOriginScripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in cross-origin external mixin templates |
-| `smark_mixin_allowExternal` | `"block"` / `"same-origin"` / `"allow"` / per-origin object | `"block"` | Allow fetching mixin templates from external URLs |
+| `smark_mixin_allow_local_scripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in local (`#id`) mixin templates |
+| `smark_mixin_allow_same_origin_scripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in same-origin external mixin templates |
+| `smark_mixin_allow_cross_origin_scripts` | `"block"` / `"noscript"` / `"allow"` / per-origin object | `"block"` | Allow `<script>` in cross-origin external mixin templates |
+| `smark_mixin_allow_external` | `"block"` / `"same-origin"` / `"allow"` / per-origin object | `"block"` | Allow fetching mixin templates from external URLs |
 
 **Per-origin object form** (supported by all four options): instead of a single
 string, any option may be a plain object whose keys are origin strings
@@ -162,11 +162,11 @@ When neither a matching origin key nor `"*"` is present the option defaults to
 
 ```json
 {
-  "smark_mixin_allowExternal": {
+  "smark_mixin_allow_external": {
     "https://trusted-cdn.example.com": "allow",
     "*": "block"
   },
-  "smark_mixin_allowCrossOriginScripts": {
+  "smark_mixin_allow_cross_origin_scripts": {
     "https://trusted-cdn.example.com": "allow",
     "*": "noscript"
   }
@@ -189,7 +189,7 @@ For every example that declares a `demoValue`, the test runner automatically gen
 1. Generates a dedicated HTML page that initialises the form with `{ value: <demoValue> }` as the SmarkForm constructor option.
 2. Waits for `myForm.rendered` to resolve (root-level render complete) and then explicitly calls `myForm.import(demoValue)` to handle the asynchronous rendering of deeply nested sub-forms.
 3. Exports the fully populated form.
-4. Compares the export against the original `demoValue` using `deepFilterFalsy()` — a recursive helper that filters falsy values out of arrays so that `{foo:[null,23,null]}` is treated as equal to `{foo:[23]}`. This accounts for lists that use `exportEmpties:false` stripping empty items.
+4. Compares the export against the original `demoValue` using `deepFilterFalsy()` — a recursive helper that filters falsy values out of arrays so that `{foo:[null,23,null]}` is treated as equal to `{foo:[23]}`. This accounts for lists that use `export_empties:false` stripping empty items.
 
 **Important**: demoValues must use the canonical formats that SmarkForm normalises to on export:
 - **Time fields**: use `"HH:MM:SS"` (e.g. `"10:00:00"`), not `"HH:MM"` (`"10:00"`).

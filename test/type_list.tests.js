@@ -31,12 +31,12 @@ block mainForm
             }, title="Clear all empty employee") 🧹
         div(data-smark = {
             type: "list",
-            exportEmpties: true,
+            export_empties: true,
             name: "employees",
             min_items: 0,
         })
             fieldset(data-smark={
-                exportEmpties: false
+                export_empties: false
             })
                 button(data-smark = {
                     action: "removeItem",
@@ -516,14 +516,14 @@ test.describe('Sortable List – move reorder integrity', () => {
                     to: list.children[0],
                 });
 
-                const afterMove = await list.export(null, {silent: true, exportEmpties: true});
+                const afterMove = await list.export(null, {silent: true, export_empties: true});
 
                 await list.addItem(null, {silent: true});
                 await list.children[3].import("fourth", {silent: true});
-                const afterAdd = await list.export(null, {silent: true, exportEmpties: true});
+                const afterAdd = await list.export(null, {silent: true, export_empties: true});
 
                 await list.removeItem(null, {silent: true, failback: "none"});
-                const afterRemove = await list.export(null, {silent: true, exportEmpties: true});
+                const afterRemove = await list.export(null, {silent: true, export_empties: true});
 
                 return { afterMove, afterAdd, afterRemove };
             });
@@ -537,12 +537,12 @@ test.describe('Sortable List – move reorder integrity', () => {
     });
 });
 
-// ─── Cross-list drag between nested sortable lists (movingDepth) ──────────────
+// ─── Cross-list drag between nested sortable lists (moving_depth) ──────────────
 //
 // Regression for the showcase "school_groups" example: the students lists are
 // nested one level below the groups list.  When a drop lands inside an inner
 // students list, the event bubbles up to the outer groups list, whose drop
-// handler overwrote `_crossListDrop.targetList` with the groups list itself
+// handler overwrote `_crossListDrop.target_list` with the groups list itself
 // (missing `e.stopPropagation()`), so `move()` saw an incompatible sibling
 // distance and silently aborted the drag.
 
@@ -564,7 +564,7 @@ block mainForm
                     type: "list",
                     name: "students",
                     sortable: true,
-                    movingDepth: 2,
+                    moving_depth: 2,
                     min_items: 0,
                 })
                     li
@@ -574,7 +574,7 @@ block mainForm
                         })
 `;
 
-test.describe('Nested sortable lists – movingDepth cross-list drag', () => {
+test.describe('Nested sortable lists – moving_depth cross-list drag', () => {
     test('drops an item into a nested sibling list without the outer list stealing the drop', async ({ page }) => {
         let onClosed;
         try {

@@ -598,14 +598,14 @@ type's *removeItem* action, may lead to several interesting combinations:
 ### Constraining lists
 
 👉 By default, lists can hold any number of items, from 1 to infinite. But this
-can be overridden with *minItems* and *maxItems* properties. Example:
+can be overridden with *minItems* and *max_items* properties. Example:
 
 ```html
 <ul data-smark='{
     "type":"list",
     "name":"pets",
     "minItems": 0,
-    "maxItems": 5,
+    "max_items": 5,
 }'>
   <li>
     <!-- ... -->
@@ -763,7 +763,7 @@ SmarkForm.
 ```html
 <div id="myForm">
     <!-- Other form fields... -->
-    <ul data-smark='{"name": "myList", "type": "list", "maxItems": 5}'>
+    <ul data-smark='{"name": "myList", "type": "list", "max_items": 5}'>
         <li>
             <!-- Template describing list Item's layout -->
         </li>
@@ -841,21 +841,22 @@ component by itself, so a bare `data-smark` attribute is not required. This
 syntax is useful with template engines that can set dynamic attributes, but it
 has naming and value limitations:
 
-- SmarkForm uses the attribute-name suffix literally; it does not translate
-  kebab-case to camelCase or otherwise canonicalize option names. HTML lowercases
-  attribute names, so use exact lowercase option names (including underscores)
-  that survive that conversion. For example, `data-smark-min_items` maps to
-  `min_items`.
-- Case-sensitive options such as `exportEmpties`, `movingDepth`,
-  `enableJsonEncoding`, `image_maxSize`, and `smark_video_autoPick` cannot be
-  represented by same-spelled HTML attributes: the browser lowercases the
-  suffix. Set these options in the JSON object.
+- Public option names use `snake_case` in `data-smark` JSON, constructor options,
+  and programmatic option objects. SmarkForm uses the attribute-name suffix
+  literally and does not translate kebab-case or camelCase. For example,
+  `data-smark-min_items` maps directly to the `min_items` option.
+- Function-valued JavaScript event hooks (for example, `onBeforeAction_export`
+  and `onLocal_AfterAction_export`) keep their documented `on...` spelling;
+  they are callbacks, not serializable configuration keys.
+- Action identifiers are separate from option names: the `action` option itself
+  is snake_case, while action values such as `addItem` retain their documented
+  spelling. Do not convert action identifiers when using a trigger or calling
+  an action method.
 - Attribute values arrive as strings. SmarkForm normalizes known boolean and
   numeric options, and some components parse particular structured values (for
   example, `image_resize`). It does not generically parse every prefixed value
   according to the option's expected type. Use JSON `data-smark` options for
-  case-sensitive names, objects/arrays, or values without a documented
-  attribute parser.
+  objects/arrays or values without a documented attribute parser.
 
 When the same exactly named option appears in both the JSON object and a
 `data-smark-*` attribute, the prefixed attribute wins. The effective options
@@ -880,7 +881,7 @@ The example above uses lowercase, string-valued options. For options whose
 names or values do not fit the prefixed-attribute syntax, use the JSON form:
 
 ```html
-<ul data-smark='{"type":"list","name":"items","min_items":0,"exportEmpties":true}'>
+<ul data-smark='{"type":"list","name":"items","min_items":0,"export_empties":true}'>
   <li><input name="label" data-smark></li>
 </ul>
 ```

@@ -325,7 +325,7 @@ test.describe('Declarative Masking API', () => {
     test('masked list items export clean values', async ({ page }) => {
         const html = pageHtml(`
 <div id="myForm">
-    <div data-smark='{"type":"list","name":"items","exportEmpties":true}'>
+    <div data-smark='{"type":"list","name":"items","export_empties":true}'>
         <div>
             <input data-smark='{"name":"val","mask":"digits"}' type="text">
         </div>
@@ -389,12 +389,12 @@ test.describe('Declarative Masking API', () => {
         }
     });
 
-    test('smark_mask_throwOnMissing: false warns instead of throwing', async ({ page }) => {
+    test('smark_mask_throw_on_missing: false warns instead of throwing', async ({ page }) => {
         const html = pageHtml(`
 <div id="myForm">
     <input data-smark='{"name":"x","mask":"nonexistent"}' type="text">
 </div>
-`, '', '', { smark_mask_throwOnMissing: false });
+`, '', '', { smark_mask_throw_on_missing: false });
 
         const errors = [];
         const warnings = [];
@@ -468,7 +468,7 @@ test.describe('Declarative Masking API', () => {
     test('<script type="smark-mask"> inside a <template> is NOT registered globally', async ({ page }) => {
         // The <script type="smark-mask"> is a sibling of the template's root
         // element, so it is classified as a top-level script for the mixin.
-        // With smark_mixin_allowLocalScripts: 'allow' it is processed into a scoped
+        // With smark_mixin_allow_local_scripts: 'allow' it is processed into a scoped
         // mask, NOT registered globally.
         // The "global" field outside the mixin should NOT see the scoped mask.
         const html = `<!DOCTYPE html>
@@ -494,7 +494,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allowLocalScripts: 'allow' });
+  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allow_local_scripts: 'allow' });
 </script>
 </body>
 </html>`;
@@ -548,7 +548,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allowLocalScripts: 'allow' });
+  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allow_local_scripts: 'allow' });
 </script>
 </body>
 </html>`;
@@ -604,7 +604,7 @@ test.describe('Declarative Masking API', () => {
 </div>
 <script src="../../dist/SmarkForm.umd.js"></script>
 <script>
-  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allowLocalScripts: 'allow' });
+  window.myForm = new SmarkForm(document.getElementById('myForm'), { smark_mixin_allow_local_scripts: 'allow' });
 </script>
 </body>
 </html>`;

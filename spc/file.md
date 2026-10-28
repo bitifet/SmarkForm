@@ -385,7 +385,7 @@ wired for per-file initialization):
 
 ```javascript
 // Proposed shape, on file.type.js
-static async acquire({ accept, multiple, currentCount, maxItems }) {
+static async acquire({ accept, multiple, current_count, max_items }) {
   // Returns Promise<Array<normalizedFileObject>>, or [] when cancelled.
   // Uses one hidden multi-file input (cached per list/document).
 }
@@ -395,7 +395,7 @@ The list's `addItem`:
 
 1. Resolves the item template's effective component type.
 2. If it implements `acquire` and `multiple !== false` → call it with
-   `currentCount`/`maxItems` to cap the selection *inside* the dialog where
+   `current_count`/`max_items` to cap the selection *inside* the dialog where
    possible, then enforce the cap *after* acquisition.
 3. For each returned file object → `addItem(data, { position, target,
    autoscroll })`, importing the file into its freshly created item.
@@ -406,7 +406,7 @@ The list's `addItem`:
 Overflow is handled **before** any item is created so a cancelled dialog
 leaves the list untouched:
 
-- `slots = max_items - currentCount`; if `acquire()` returns more than `slots`
+- `slots = max_items - current_count`; if `acquire()` returns more than `slots`
   files:
   - Default: synchronous `window.confirm()` — "Only N of M files fit; add the
     first N?" → **OK** = add first `N`, **Cancel** = add none.
@@ -438,7 +438,7 @@ drop:
   container-level drop would otherwise import the file into that item), the
   singleton's container drop is **suppressed** while it lives inside a
   file-capable list (`parent` is a `list` with `tplType == "file"` and
-  `fileDrop != false`), so a drop on an existing item never replaces it —
+  `file_drop != false`), so a drop on an existing item never replaces it —
   it appends.  Item-level **paste is kept**: there is no list-level paste
   handler, so pasting onto an item still replaces that item's file.
 - `dragover` already calls `preventDefault()` for both paths — required for
@@ -449,7 +449,7 @@ drop:
   field itself is disabled, exactly like any other text-like field).
 
 Auto-wired by default (no config required when the list is file-capable), with
-a list-level **`fileDrop`** option (default `true`) as the escape hatch to
+a list-level **`file_drop`** option (default `true`) as the escape hatch to
 route external file drops back to the browser default.
 
 ---

@@ -551,7 +551,7 @@ list untouched. Each chosen file becomes a regular item. Pass
 ### Dropping Files onto a List
 
 OS drops and pastes over the whole list are converted through the item type's
-`toObjects()` helper and appended one by one. Set `"fileDrop":false` on the
+`toObjects()` helper and appended one by one. Set `"file_drop":false` on the
 list to disable this and keep drag & drop for reordering only.
 
 ### Limits and Confirmation

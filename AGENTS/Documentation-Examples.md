@@ -140,7 +140,7 @@ When `demoValue` is provided:
    });
    ```
 
-3. **Reset behavior**: The Reset button has no `context` — it resets the **root** form. The root was initialized with `value: {"demo": demoValue}`, so `root.defaultValue = {"demo": demoValue, "editor": ""}`. Reset restores the demo values and clears the editor textarea. Note: `setDefault` propagation does NOT flow to children, so `demo.defaultValue` itself stays `{}`; only the root knows the correct default.
+3. **Reset behavior**: The Reset button has no `context` — it resets the **root** form. The root was initialized with `value: {"demo": demoValue}`, so `root.defaultValue = {"demo": demoValue, "editor": ""}`. Reset restores the demo values and clears the editor textarea. Note: `set_default` propagation does NOT flow to children, so `demo.defaultValue` itself stays `{}`; only the root knows the correct default.
 
 4. **Test isolation**: The regular co-located smoke test starts with an **empty form** — it uses `jsHead` (the raw include arg), never `demoValue`. A separate `demoValue round-trip` test (auto-generated) does initialise with `demoValue` and verifies the export matches.
 
@@ -178,7 +178,7 @@ The easiest way to produce a correct `demoValue` JSON for an existing example:
 4. Copy the JSON from the editor textarea
 5. Paste as the `demoValue` capture in Liquid, tweaking as needed
 
-This ensures the JSON structure exactly matches what the form expects. One common tweak: if a list uses `exportEmpties:false`, the exported JSON will omit empty items — but if you want Reset to restore a list with one empty item, provide `[{}]` in `demoValue` for that list.
+This ensures the JSON structure exactly matches what the form expects. One common tweak: if a list uses `export_empties:false`, the exported JSON will omit empty items — but if you want Reset to restore a list with one empty item, provide `[{}]` in `demoValue` for that list.
 
 ## Playground Buttons
 
@@ -265,9 +265,9 @@ If a test needs non-null values, use `writeField` to set them explicitly:
 await writeField('/fieldname', 'some value');
 ```
 
-### `exportEmpties` in Tests
+### `export_empties` in Tests
 
-When lists have `exportEmpties:false`, null/empty items are stripped from the exported array:
+When lists have `export_empties:false`, null/empty items are stripped from the exported array:
 ```javascript
 // 3 null intervals in DOM → exported as []
 expect(await readField('/myList')).toEqual([]);
@@ -325,7 +325,7 @@ The `smarkformOptions` JSON is:
 | `allowSameOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Examples using `<script>` inside a same-origin external mixin template |
 | `allowCrossOriginMixinScripts` | `"block"` / `"noscript"` / `"allow"` | `"block"` | Examples using `<script>` inside a cross-origin mixin template |
 | `allowExternalMixins` | `"block"` / `"same-origin"` / `"allow"` | `"block"` | Examples using mixin type references with an external URL |
-| `enableJsonEncoding` | `true` / `false` | `false` | Examples using `enctype="application/json"` form submission |
+| `enable_json_encoding` | `true` / `false` | `false` | Examples using `enctype="application/json"` form submission |
 
 **Important:** `smarkformOptions` only works with the auto-generated `default_jsHead`. If you
 provide a custom `jsHead`, you must incorporate the security options into it manually.
@@ -344,7 +344,7 @@ For every example with a `demoValue`, the test runner automatically generates a 
 
 1. Creates a test page initialising the form with `{ value: <demoValue> }` as the SmarkForm constructor option.
 2. Waits for `myForm.rendered` then re-imports demoValue to ensure nested sub-forms receive the value.
-3. Exports and compares using `deepFilterFalsy()` which filters falsy items out of arrays (to handle `exportEmpties:false`).
+3. Exports and compares using `deepFilterFalsy()` which filters falsy items out of arrays (to handle `export_empties:false`).
 
 Existing co-located tests are unaffected — they still start with an empty form.
 

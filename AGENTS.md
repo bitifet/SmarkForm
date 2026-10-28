@@ -62,10 +62,10 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - `data-smark mask` property: e.g., `<input data-smark='{"name":"card","mask":"digits"}'>`
 - `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
 - `import()`: Dispatches `input` event when `_maskInstance` exists, so masks stay synchronized
-- `smark_mask_throwOnMissing: false`: Suppresses error for unregistered or broken masks, falls back to unmasked input
+- `smark_mask_throw_on_missing: false`: Suppresses error for unregistered or broken masks, falls back to unmasked input
 - Singleton handling: delegates to inner field, `_maskInstance` lives on inner field
 - Mixin-scoped masks: `<script type="smark-mask">` inside `<template>` is scoped, not global; requires `allowLocalMixinScripts: 'allow'`
-- On error (mask not found or factory throws), original input type is restored; if `smark_mask_throwOnMissing` is `true` an error is thrown, otherwise a `console.warn` is emitted
+- On error (mask not found or factory throws), original input type is restored; if `smark_mask_throw_on_missing` is `true` an error is thrown, otherwise a `console.warn` is emitted
 - `MASK_APPLY_ERROR`: thrown when a mask factory throws; the original exception is available via `error.cause`
 - **Focus restoration**: `_applyMask()` saves `document.activeElement` before calling the factory and restores it afterward. If a mask library focuses the field asynchronously (e.g. Inputmask via `setTimeout`), the factory must `await` a macrotask yield before returning so the deferred focus fires before SmarkForm restores focus. See the "Focus and Mask Factories" section in `docs/_working_with_forms/field_masking.md`.
 
@@ -88,7 +88,7 @@ a self-describing data-URL string by default, or as a structured object with
 - **Encoding invariant**: the interior state always stores `data` as *base64*; `encoding` only selects how bytes are written on export (json form) and decoded on bare-string imports. An **acquired** file's object is therefore re-encoded to the field's `encoding` before import (`readFileToObject(file, {encoding})`, threaded through the singleton drop/paste, list `toObjects`, and list `acquire`).
 - Real field: the authored input is rewritten to `type="text"` and a hidden native picker is attached; `click` and `Shift+Space` open the OS picker (Shift+Space yields to the `<details>` folding convention). Plain `Space` types normally.
 - Singleton: drop/paste are detected over the whole container; drops originating inside the inner field are left to the inner field.
-- Lists: `{"type":"list","name":"photos","of":"file"}` → `addItem` opens a multi-file picker unless `multiple:false`; OS file drops auto-**append** items anywhere in the list (list-level `fileDrop:false` disables). Inside a file-capable list the item singleton's container drop is suppressed so a drop on an existing item appends instead of replacing that item's file; paste stays item-scoped. `max_items` overflow is confirmed via `window.confirm`.
+- Lists: `{"type":"list","name":"photos","of":"file"}` → `addItem` opens a multi-file picker unless `multiple:false`; OS file drops auto-**append** items anywhere in the list (list-level `file_drop:false` disables). Inside a file-capable list the item singleton's container drop is suppressed so a drop on an existing item appends instead of replacing that item's file; paste stays item-scoped. `max_items` overflow is confirmed via `window.confirm`.
 - **Download (action):** `{"action":"download","context":"/cv"}` (or `/cv` relative to a container) triggers a **real browser download** of the stored bytes (Blob + object URL + `<a download>`); works on real fields and singletons (the container delegates to its inner field). Empty field → no-op returning `null`. Name precedence: `filename` trigger option > edited visible name > stored name. Most reliable from a trigger click (user gesture).
 - The visible name field is fully editable; a non-empty edited name wins on export over the stored one.
 - `format`/`encoding` naming: field-level `{"encoding":"json"}` is the **legacy alias** of `{"format":"json"}` on `input` types (`isJsonFormatted` helper in `src/types/input.type.js` accepts either).
@@ -117,10 +117,10 @@ an editable file name via `figcaption contenteditable`.
 - `<input type="image">` raises `IMAGE_TYPE_ON_INPUT` (it is a form submit-
   piece, not an image field).
 - Options: `accept` (default `"image/*"`), `image_resize` (exact `[w,h]`/
-  `{width,height}`/number = stretch), `image_maxSize` (downscale-only cap,
+  `{width,height}`/number = stretch), `image_max_size` (downscale-only cap,
   aspect preserved), `image_format` (`"jpeg"`·`"jpg"`·`"png"`·`"webp"`·
   `"avif"`), `image_enforce` (`"strict"`·`"hard"`·`"warn"`(default)·`"ignore"`),
-  `smark_image_validate` (decode gate, default `true`), `smark_image_clearOnDelete`
+  `smark_image_validate` (decode gate, default `true`), `smark_image_clear_on_delete`
   (default `true`), `smark_image_open`/`drop`/`paste` (default `true`;
   `smark_file_*` honored as fallbacks), `placeholder` (default: generated
   chessboard SVG data URL; `false` = leave `src` empty).
@@ -184,9 +184,9 @@ poster while empty.
 **Key API**:
 - Bare `<video data-smark>` infers `video`; explicit video fields on `<input>`
   raise `VIDEO_TYPE_ON_INPUT`.
-- Options: `accept` (default `video/*`), `placeholder`, `video_maxSize`,
+- Options: `accept` (default `video/*`), `placeholder`, `video_max_size`,
   `smark_video_validate`, `smark_video_open`/`drop`/`paste`,
-  `smark_video_clearOnDelete`, `smark_video_autoPick`, and `smark_video_click`
+  `smark_video_clear_on_delete`, `smark_video_auto_pick`, and `smark_video_click`
   (`auto`/`pick`/`play`).
 - The `pick` action opens the hidden native picker from an explicit trigger,
   which is useful beside a video that has native playback controls.
@@ -202,7 +202,7 @@ poster while empty.
   contenteditable and uses its text for export/download. Legacy contenteditable
   captions remain supported.
 - Lists use `of:"video"` and inherit file-like append/drop behavior.
-- `smark_video_autoPick:true` requests the hidden picker after render, but
+- `smark_video_auto_pick:true` requests the hidden picker after render, but
   browsers may block it without a user gesture; explicit `pick` triggers remain
   the reliable fallback.
 
@@ -242,10 +242,10 @@ into the clone, and replacing the placeholder in place.
 - Options/attributes from the placeholder **override** the template defaults
   (option merge) except where a special merge rule applies; template `<style>`
   is deduplicated per template; toggling `data-for`/rename slots is supported.
-- **Secure by default** (root-level options): `smark_mixin_allowExternal`
+- **Secure by default** (root-level options): `smark_mixin_allow_external`
   (`block`|`same-origin`|`allow`, or per-origin object) controls external fetch;
-  `smark_mixin_allowLocalScripts`, `smark_mixin_allowSameOriginScripts`,
-  `smark_mixin_allowCrossOriginScripts` (`block`|`noscript`|`allow`, or object)
+  `smark_mixin_allow_local_scripts`, `smark_mixin_allow_same_origin_scripts`,
+  `smark_mixin_allow_cross_origin_scripts` (`block`|`noscript`|`allow`, or object)
   control top-level template `<script>` execution.
 - **Gotcha**: never place `<template>` nodes as direct children of a SmarkForm
   `list` — a list consumes every direct child as a role template.
@@ -720,7 +720,7 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 
 | File | Contents |
 |------|----------|
-| `AGENTS/SmarkForm-Usage.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Usage.md` — component types, list template roles, button context patterns, CSS grid layout, `exportEmpties` behaviour. Full content kept here for agents that need it without following a link. |
+| `AGENTS/SmarkForm-Usage.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Usage.md` — component types, list template roles, button context patterns, CSS grid layout, `export_empties` behaviour. Full content kept here for agents that need it without following a link. |
 | `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
 | `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
 | `AGENTS/Cheatsheet.md` | Developer Cheatsheet reference — what each section covers, how agents should use it when generating SmarkForm code, and validation details |
@@ -749,14 +749,17 @@ to maintain consistency across the site:
 
 ### `data-smark-*` option attributes
 
-These attributes use their suffix as a literal option key. HTML lowercases
-attribute names, and SmarkForm does not map kebab-case or camelCase suffixes to
-other option spellings. Document prefixed attributes only for supported
-lowercase option keys (including snake_case); use JSON `data-smark` options for
-case-sensitive names and structured values without a documented parser. Values
-are strings and only known common or option-specific normalizers convert them.
-Prefixed attributes can mark a component without a bare `data-smark`, and
-override the same exact option key from the JSON object. See
+Public configuration option names use `snake_case` in `data-smark` JSON,
+constructor options, and programmatic option bags. `data-smark-*` suffixes map
+literally to option keys; HTML lowercases attribute names, and SmarkForm does
+not translate kebab-case or camelCase. Use prefixed attributes for supported
+options; values arrive as strings and only known common or option-specific
+normalizers convert them. Use JSON for structured values unless an option
+documents a prefixed-value parser. Prefixed attributes can mark a component
+without bare `data-smark` and override the same key in JSON. Action identifiers
+(for example, `addItem`) are separate from option names and retain their
+documented spelling. Function-valued JavaScript event hooks retain their
+documented `on...` spelling. See
 [`AGENTS/Documentation-Guidelines.md`](AGENTS/Documentation-Guidelines.md).
 
 ### Page Structure

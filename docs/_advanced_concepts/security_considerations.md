@@ -45,9 +45,9 @@ Security options are set via the **root-level SmarkForm constructor options**
 
 ```js
 const myForm = new SmarkForm(document.getElementById("myForm"), {
-  smark_mixin_allowExternal: 'same-origin',
-  smark_mixin_allowLocalScripts: 'allow',
-  enableJsonEncoding: true,
+  smark_mixin_allow_external: 'same-origin',
+  smark_mixin_allow_local_scripts: 'allow',
+  enable_json_encoding: true,
   // …
 });
 ```
@@ -64,7 +64,7 @@ This is a deliberate security constraint.  Because `data-smark` attributes
 can come from external sources (e.g. a cross-origin mixin template), allowing
 descendant components to override security options would create a privilege
 escalation path: a malicious external template could set
-`smark_mixin_allowCrossOriginScripts: "allow"` on itself, then reference another
+`smark_mixin_allow_cross_origin_scripts: "allow"` on itself, then reference another
 cross-origin mixin with a `<script>` that now executes freely — even if the
 root only permitted same-origin scripts.
 
@@ -80,7 +80,7 @@ with) always takes precedence over anything that arrives in HTML.
 
 ---
 
-## Mixin External Template Loading (smark_mixin_allowExternal)
+## Mixin External Template Loading (smark_mixin_allow_external)
 
 By default SmarkForm **blocks all attempts to fetch mixin templates from
 external URLs** (any mixin type reference that contains a URL path before the
@@ -96,19 +96,19 @@ external URLs** (any mixin type reference that contains a URL path before the
 is a network side-effect that can be surprising, can leak information to
 third-party servers, and can introduce content from origins you do not control.
 
-**Safe usage:**  Only set `smark_mixin_allowExternal: "same-origin"` or `"allow"`
+**Safe usage:**  Only set `smark_mixin_allow_external: "same-origin"` or `"allow"`
 when you know exactly which URLs will be loaded and you trust them.
 
 ```js
 // Allow same-origin templates only (most common production case)
 const myForm = new SmarkForm(document.getElementById("myForm"), {
-  smark_mixin_allowExternal: 'same-origin',
+  smark_mixin_allow_external: 'same-origin',
 });
 ```
 
 ---
 
-## Mixin Script Execution (smark_mixin_allowLocalScripts, smark_mixin_allowSameOriginScripts, smark_mixin_allowCrossOriginScripts)
+## Mixin Script Execution (smark_mixin_allow_local_scripts, smark_mixin_allow_same_origin_scripts, smark_mixin_allow_cross_origin_scripts)
 
 Mixin templates may include a `<script>` element as a **top-level sibling of
 the template root** (not nested inside it).  By default, all such scripts are
@@ -118,9 +118,9 @@ The applicable policy option depends on the template's origin:
 
 | Template origin | Option | Default |
 |---|---|---|
-| Local (in-page `<template>` element) | `smark_mixin_allowLocalScripts` | `"block"` |
-| External, same origin | `smark_mixin_allowSameOriginScripts` | `"block"` |
-| External, cross-origin | `smark_mixin_allowCrossOriginScripts` | `"block"` |
+| Local (in-page `<template>` element) | `smark_mixin_allow_local_scripts` | `"block"` |
+| External, same origin | `smark_mixin_allow_same_origin_scripts` | `"block"` |
+| External, cross-origin | `smark_mixin_allow_cross_origin_scripts` | `"block"` |
 
 Each option accepts:
 
@@ -136,7 +136,7 @@ you do not fully control, or a third-party template) could exfiltrate form
 data or perform other malicious actions.
 
 {: .warning }
-> Setting `smark_mixin_allowCrossOriginScripts: "allow"` grants complete script
+> Setting `smark_mixin_allow_cross_origin_scripts: "allow"` grants complete script
 > execution for code from third-party origins.  Only use this if you fully
 > control and trust those origins.
 
@@ -145,13 +145,13 @@ data or perform other malicious actions.
 ```js
 // Allow scripts in your own in-page templates (local only)
 const myForm = new SmarkForm(document.getElementById("myForm"), {
-  smark_mixin_allowLocalScripts: 'allow',
+  smark_mixin_allow_local_scripts: 'allow',
 });
 
 // Allow templates and scripts from your own server
 const myForm = new SmarkForm(document.getElementById("myForm"), {
-  smark_mixin_allowExternal: 'same-origin',
-  smark_mixin_allowSameOriginScripts: 'allow',
+  smark_mixin_allow_external: 'same-origin',
+  smark_mixin_allow_same_origin_scripts: 'allow',
 });
 ```
 
@@ -187,7 +187,7 @@ visibility and control over them.
 
 ---
 
-## JSON Encoding (enableJsonEncoding)
+## JSON Encoding (enable_json_encoding)
 
 SmarkForm supports all standard HTML `enctype` values (`application/x-www-form-urlencoded`,
 `multipart/form-data`, and `text/plain`) by constructing and submitting a real
@@ -204,12 +204,12 @@ cookie-sending restrictions that some CSRF defences rely on.
 
 | Setting | Behaviour |
 |---|---|
-| `enableJsonEncoding: false` *(default)* | Attempting to submit with `enctype="application/json"` throws an error pointing to this option. |
-| `enableJsonEncoding: true` | JSON encoding is enabled; `fetch` is used for the submission. |
+| `enable_json_encoding: false` *(default)* | Attempting to submit with `enctype="application/json"` throws an error pointing to this option. |
+| `enable_json_encoding: true` | JSON encoding is enabled; `fetch` is used for the submission. |
 
 ```js
 const myForm = new SmarkForm(document.getElementById("myForm"), {
-  enableJsonEncoding: true,
+  enable_json_encoding: true,
 });
 ```
 
@@ -231,11 +231,11 @@ documentation]({{ "/component_types/type_form" | relative_url }}#submit).
 
 | Error code | Feature | Description |
 |---|---|---|
-| `MIXIN_EXTERNAL_FETCH_BLOCKED` | `smark_mixin_allowExternal` | External URL fetch blocked (policy `"block"`) |
-| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | `smark_mixin_allowExternal` | Cross-origin fetch blocked (policy `"same-origin"`) |
-| `MIXIN_SCRIPT_LOCAL_BLOCKED` | `smark_mixin_allowLocalScripts` | Local mixin script blocked (policy `"block"`) |
-| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | `smark_mixin_allowSameOriginScripts` | Same-origin mixin script blocked (policy `"block"`) |
-| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | `smark_mixin_allowCrossOriginScripts` | Cross-origin mixin script blocked (policy `"block"`) |
+| `MIXIN_EXTERNAL_FETCH_BLOCKED` | `smark_mixin_allow_external` | External URL fetch blocked (policy `"block"`) |
+| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | `smark_mixin_allow_external` | Cross-origin fetch blocked (policy `"same-origin"`) |
+| `MIXIN_SCRIPT_LOCAL_BLOCKED` | `smark_mixin_allow_local_scripts` | Local mixin script blocked (policy `"block"`) |
+| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | `smark_mixin_allow_same_origin_scripts` | Same-origin mixin script blocked (policy `"block"`) |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | `smark_mixin_allow_cross_origin_scripts` | Cross-origin mixin script blocked (policy `"block"`) |
 | `MIXIN_NESTED_SCRIPT_DISALLOWED` | *(always)* | `<script>` nested inside template root — unconditionally forbidden |
 
 See the [Error Codes Reference]({{ "/advanced_concepts/error_codes" | relative_url }})

@@ -23,7 +23,7 @@ same list integration — and specializes it for images:
 - **Validation**: on interactive acquisition, bytes must actually **decode as
   an image** — not just match an `image/*` MIME filter — and may optionally be
   resized and/or re-encoded to a target format (`image_resize` /
-  `image_maxSize` / `image_format`), with failure behaviour governed by the
+  `image_max_size` / `image_format`), with failure behaviour governed by the
   `image_enforce` mode (§4).
 - **Interaction**: click, `Space` / `Shift+Space` open the OS picker;
   `Delete`/`Backspace` clear; drag & drop and paste replace — mirroring and
@@ -204,7 +204,7 @@ text value, so **plain `Space` is free**:
 | `Enter` / `Shift+Enter` | Navigate to the next/previous field (inherited `input` hook) |
 | `Space` | **Open the file picker** — `preventDefault()` (also stops page scroll) |
 | `Shift+Space` | **Open the file picker** — yields to the `<details>` folding convention first (same `defaultPrevented` rule as `file`) |
-| `Delete` / `Backspace` | **Clear the value** when set (`preventDefault()`); no-op when empty. Toggle: `smark_image_clearOnDelete` (default `true`) |
+| `Delete` / `Backspace` | **Clear the value** when set (`preventDefault()`); no-op when empty. Toggle: `smark_image_clear_on_delete` (default `true`) |
 
 > `Enter` does **not** open the picker (unlike a native button): SmarkForm
 > navigation semantics win, matching every other field type. `Del`/`Backspace`
@@ -228,7 +228,7 @@ text value, so **plain `Space` is free**:
   `draggable="true"` on `templates.item`, not on the thumbnail, and its
   `dragstart` guard excludes interactive descendants. An `img draggable="false"`
   therefore leaves the item box and its handles fully draggable for sortable /
-  `movingDepth` drops. The image-capable list tests must assert that dragging an
+  `moving_depth` drops. The image-capable list tests must assert that dragging an
   item (or its handle) still reorders a list whose thumbnails are
   `draggable="false"`.
 - `dragover` `preventDefault()` is wired for both real-field and singleton
@@ -297,7 +297,7 @@ and/or converted** before it becomes state:
 | Option | Type | Default | Effect |
 |---|---|---|---|
 | `image_resize` | `[w,h]` \| `{width,height}` \| number (= square) | — | Rescale the image to the target dimensions |
-| `image_maxSize` | same shape as `image_resize` | — | *Downscale-only* cap: act only when the source exceeds the given dimensions; never upscale |
+| `image_max_size` | same shape as `image_resize` | — | *Downscale-only* cap: act only when the source exceeds the given dimensions; never upscale |
 | `image_format` | `"jpeg"` \| `"png"` \| `"webp"` \| `"avif"` | — | Convert the encoded format on acquisition |
 | `image_enforce` | `"strict"` \| `"hard"` \| `"warn"` \| `"ignore"` | `"warn"` | How "cannot meet" / "cannot verify" outcomes are handled (§4.1.1) |
 
@@ -322,7 +322,7 @@ and/or converted** before it becomes state:
 
 #### 4.1.1 Enforcement modes (`image_enforce`)
 
-Each requirement (`image_resize` / `image_maxSize` / `image_format`) is
+Each requirement (`image_resize` / `image_max_size` / `image_format`) is
 **verified** and, when missing, **converted**. Both operations are *best-effort*
 (§4.2: browsers can always *verify dimensions* once the image decodes and can
 always *resize*; format verification and `image_format` encoding are only
@@ -558,14 +558,14 @@ The documentation for the `image` type should include the canonical
 | `smark_image_drop` | boolean | `true` | Drag & drop replaces the value |
 | `smark_image_paste` | boolean | `true` | Paste replaces the value |
 | `smark_image_validate` | boolean | `true` | Decode-test acquired files (§4) |
-| `smark_image_clearOnDelete` | boolean | `true` | `Delete`/`Backspace` clear the value |
+| `smark_image_clear_on_delete` | boolean | `true` | `Delete`/`Backspace` clear the value |
 | `image_resize` | `[w,h]` \| `{width,height}` \| number | — | Resize acquired images to target dimensions (§4.1) |
-| `image_maxSize` | same as `image_resize` | — | Downscale-only cap (§4.1) |
+| `image_max_size` | same as `image_resize` | — | Downscale-only cap (§4.1) |
 | `image_format` | `"jpeg"` \| `"png"` \| `"webp"` \| `"avif"` | — | Convert-on-acquire format (§4.1) |
 | `image_enforce` | `"strict"` \| `"hard"` \| `"warn"` \| `"ignore"` | `"warn"` | How "cannot meet" / "cannot verify" candidates are handled (§4.1.1) |
 
 > **Naming:** project-specific options use the `image_` prefix
-> (`image_resize`/`image_maxSize`/`image_format`/`image_enforce`) to avoid
+> (`image_resize`/`image_max_size`/`image_format`/`image_enforce`) to avoid
 > colliding with the inherited `file` vocabulary (`format` = export
 > representation, `size` = byte length in the value object) while staying
 > unprefixed short keys like `accept`/`placeholder`.
@@ -676,7 +676,7 @@ duplicating logic.
   preview would need a `smark_image_click` mode (`"pick"` | `"preview"` | …).
 - **Export name control** — the editable name now lives in the
   `<figcaption contenteditable>` route (§6.1) on `<figure>` wrappers and
-  per-item in gallery lists (§7). A future `smark_image_exportName` (fixed
+  per-item in gallery lists (§7). A future `smark_image_export_name` (fixed
   name for exports) is still possible; without any, the stored name (or
   `download`'s `filename` option) governs.
 - **Alt / role management** — currently the field never touches `alt`/`role`

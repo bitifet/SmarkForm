@@ -366,7 +366,7 @@ When a list does have no items, you can show a friendly placeholder with the
 and removes it as soon as the first item appears.
 
 The example below starts with a single (empty) phone slot, keeps
-`exportEmpties` on so blank slots survive a save, and uses an `empty_list`
+`export_empties` on so blank slots survive a save, and uses an `empty_list`
 placeholder:
 
 {% raw %} <!-- faq_empty_list {{{ --> {% endraw %}
@@ -376,7 +376,7 @@ placeholder:
   <button data-smark='{"action":"removeItem","context":"phones","preserve_non_empty":true}' title="Remove phone number">➖</button>
   <button data-smark='{"action":"addItem","context":"phones"}' title="Add phone number">➕</button>
   <strong data-smark="label">Phones:</strong>
-  <ul data-smark='{"name":"phones","of":"input","value":[""],"exportEmpties":true,"sortable":true,"min_items":0,"max_items":5}'>
+  <ul data-smark='{"name":"phones","of":"input","value":[""],"export_empties":true,"sortable":true,"min_items":0,"max_items":5}'>
     <li data-smark-role="empty_list" class="row">(None)</li>
     <li class="row">
       <label data-smark>📞 Telephone
@@ -551,7 +551,7 @@ documentation]({{ "/component_types/type_list#sortable" | relative_url }}).
 
 By default, SmarkForm skips empty items in variable-length lists when exporting
 to JSON. If you want those empty items included (e.g. `""` or `null`), set
-`{"exportEmpties": true}` in your list config.
+`{"export_empties": true}` in your list config.
 
 See the [Showcase]({{ "/about/showcase" | relative_url }}#a-note-on-empty-values)
 for a worked example.
@@ -640,7 +640,7 @@ the root SmarkForm instance:
 
 ```javascript
 const myForm = new SmarkForm(document.querySelector('#myForm'), {
-    enableJsonEncoding: true,  // opt in — disabled by default
+    enable_json_encoding: true,  // opt in — disabled by default
 });
 ```
 
@@ -759,7 +759,7 @@ fields. This lets you tell which button triggered the submission.
 > `export()`.
 
 **JSON encoding (`enctype="application/json"`):**
-JSON encoding must be explicitly enabled via `enableJsonEncoding: true` on the root SmarkForm instance.
+JSON encoding must be explicitly enabled via `enable_json_encoding: true` on the root SmarkForm instance.
 The submitter name/value is **not** automatically added to the JSON body.
 You have full control over the payload; access the submitter element via
 `options.submitter` inside a `BeforeAction_submit` handler and add it however
@@ -825,31 +825,31 @@ Reset brings you back to that loaded data.
 await myForm.import({name: "Bob"});
 
 // Temporarily change value
-await myForm.import({name: "Temp"}, {setDefault: false}); // won't update default
+await myForm.import({name: "Temp"}, {set_default: false}); // won't update default
 
 // Reset restores {name: "Bob"}, not the original initialization default
 await myForm.reset();
 ```
 
-To **prevent** an import from changing the default, pass `setDefault: false`:
+To **prevent** an import from changing the default, pass `set_default: false`:
 
 ```javascript
-await myForm.import(someData, {setDefault: false});
+await myForm.import(someData, {set_default: false});
 // reset() will still restore the previous default
 ```
 
 The same option works from HTML triggers:
 
 ```html
-<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
 ```
 
 **Importing `undefined`** (which is what `reset()` does internally) never
 updates the default — it simply restores the current default value.
 
 {: .info :}
-> **How the new default is computed:** When `setDefault: true` and data is not
-> `undefined`, SmarkForm performs a silent `export` with `exportEmpties: true`
+> **How the new default is computed:** When `set_default: true` and data is not
+> `undefined`, SmarkForm performs a silent `export` with `export_empties: true`
 > and stores the result as the new `defaultValue`. This guarantees that the
 > stored default is a normalized, consistent representation of the imported
 > state — including empty list items that would otherwise be stripped.
@@ -1249,7 +1249,7 @@ of the named component without requiring an extra wrapper:
     formId="faq_mixin_labeled_input"
     htmlSource=faq_mixin_labeled_input_html
     demoValue='{"person":{"firstName":"Alice","lastName":"Smith"}}'
-    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
+    smarkformOptions='{"smark_mixin_allow_local_scripts":"allow"}'
     tests=false
 %}
 
@@ -1330,11 +1330,11 @@ for all subsequent references to the same URL on the same page.  `<style>` and
 for external and local templates.
 
 External template loading is **blocked by default**.  You must opt in via the
-`smark_mixin_allowExternal` option on the root SmarkForm instance:
+`smark_mixin_allow_external` option on the root SmarkForm instance:
 
 ```js
 // Allow same-origin external templates only
-new SmarkForm(el, { smark_mixin_allowExternal: 'same-origin' });
+new SmarkForm(el, { smark_mixin_allow_external: 'same-origin' });
 ```
 
 Script execution in external templates is also blocked by default; see the

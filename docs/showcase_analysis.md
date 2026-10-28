@@ -6,7 +6,7 @@
 |---|---------|-------|-----------------|
 | 1 | Deeply nested forms | 485–533 | `type_form.md` ("Arbitrary nesting depth") + playground scaffold note to `core_concepts.md` |
 | 2 | Item duplication + closure state | 1199–1218 | `type_list.md` ("Duplicating previous item", "`min_items:0`") |
-| 3 | A note on empty values | 1221–1242 | `type_list.md` ("`exportEmpties` inheritance") |
+| 3 | A note on empty values | 1221–1242 | `type_list.md` ("`export_empties` inheritance") |
 | 4 | Import/Export Data (intro) | 1259–1276 | `data_import_and_export.md` (already covered there) |
 | 5 | Reveal of hot keys | 1640–1664 | `hotkeys.md` ("Hotkey Reveal" section, expand CSS) |
 | 6 | Smooth navigation | 2273–2315 | **New page: `keyboard_navigation.md`** |

@@ -277,7 +277,7 @@ field itself has focus.
 
 Interactive acquisition probes the bytes with an off-DOM `<audio>` element and
 rejects malformed media silently. Set `smark_audio_validate: false` to disable
-that probe. `audio_maxSize` rejects oversized files before reading them and
+that probe. `audio_max_size` rejects oversized files before reading them and
 dispatches cancellable `smark:audioNotice`.
 
 Common options:
@@ -285,12 +285,12 @@ Common options:
 - `accept` defaults to `audio/*` and filters picker, drop, and paste input.
 - `smark_audio_open`, `smark_audio_drop`, and `smark_audio_paste` disable the
   corresponding interaction when set to `false`.
-- `smark_audio_clearOnDelete` controls `Delete`/`Backspace` clearing.
+- `smark_audio_clear_on_delete` controls `Delete`/`Backspace` clearing.
 - `smark_audio_click` (`"auto"` | `"pick"` | `"play"`) resolves the click/`Space`
   conflict. `"auto"` defaults to play when `controls` is present, otherwise pick.
-- `smark_audio_autoPick` opens the picker after rendering when `true` (subject
+- `smark_audio_auto_pick` opens the picker after rendering when `true` (subject
   to the browser's user-gesture policy).
-- `audio_maxSize` byte cap rejects acquisition above the limit.
+- `audio_max_size` byte cap rejects acquisition above the limit.
 - `format` and `encoding` are inherited from `file`.
 
 The type does not transcode or re-encode audio. Imported values are trusted and
@@ -329,7 +329,7 @@ OS drops append audio items in an audio-capable list. Captions remain item-local
 
 When a list item is an audio field, `addItem` can open the picker immediately as
 part of the user's add action. For a form-backed list item containing several
-fields, use `smark_audio_autoPick: true` on the particular audio field when an
+fields, use `smark_audio_auto_pick: true` on the particular audio field when an
 automatic picker is desired. This is opt-in and browser-dependent: a picker
 opened after an asynchronous render may be blocked when no user gesture is
 active, so an explicit `pick` trigger remains the reliable fallback.

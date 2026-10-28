@@ -129,11 +129,12 @@ Only elements with a `data-smark` attribute are captured and enhanced by SmarkFo
 As a convenience, supported options can be written as separate
 `data-smark-<option>` attributes instead of (or on top of) the JSON object.
 The suffix is used literally: there is no kebab-to-camel conversion, and HTML
-lowercases attribute names. Use the exact lowercase option key (including
-underscores, as in `min_items`) when it is attribute-compatible; use the JSON
-object for case-sensitive keys such as `exportEmpties`, `movingDepth`, or
-`image_maxSize`, and for structured values unless that option documents a
-prefixed-attribute parser.
+lowercases attribute names. Public option names use `snake_case` in markup,
+constructor options, and programmatic option objects. Action identifiers such
+as `addItem` are values, not option names, and retain their documented spelling.
+Function-valued JavaScript event hooks retain their documented `on...` spelling.
+Use JSON for structured values unless that option documents a prefixed-attribute
+parser.
 Attribute values arrive as strings and only supported options receive type
 normalization. When the exact same option key is present in both sources, the
 prefixed attribute overrides the JSON value. Example:
@@ -180,7 +181,7 @@ Exceptions:
  - `image` displays the value on `<img>` and can resize/re-encode images.
  - `video` displays the value on `<video>`, probes acquired metadata, and
    separates native playback (`controls`) from picker behaviour (`pick` action or
-   `smark_video_click`). `smark_video_autoPick` is best-effort because browsers
+   `smark_video_click`). `smark_video_auto_pick` is best-effort because browsers
    may block picker opening without a user gesture.
  - Singleton/gallery filename controls use
    `data-smark='{"action":"rename"}'`; the media controller makes the trigger
@@ -253,20 +254,20 @@ If `options.value` is set on a list, it becomes the list's `defaultValue`. On in
 </div>
 ```
 
-### `exportEmpties` Behavior
+### `export_empties` Behavior
 
-The `exportEmpties` option is **inherited** — a child component inherits the value from its nearest ancestor that sets it. This means you may need to explicitly set `exportEmpties:false` on a nested list even if it matches the default, to override an ancestor's `exportEmpties:true`.
+The `export_empties` option is **inherited** — a child component inherits the value from its nearest ancestor that sets it. This means you may need to explicitly set `export_empties:false` on a nested list even if it matches the default, to override an ancestor's `export_empties:true`.
 
-When `exportEmpties: false` (the default):
+When `export_empties: false` (the default):
 - List items are checked via `isEmpty()` before being included in the exported array
 - A form item is empty if ALL its field children are empty (null/undefined)
 - Empty items are stripped from the output → `[]` for a list of all-null items
 
-When `exportEmpties: true` (must be explicit):
+When `export_empties: true` (must be explicit):
 - All items are exported regardless of emptiness
 - Useful for "save progress" scenarios where partial data is intentional
 
-When an outer list (`exportEmpties:true`) contains an inner list (`exportEmpties:false`):
+When an outer list (`export_empties:true`) contains an inner list (`export_empties:false`):
 - Outer list exports all its items (including empty-looking ones)
 - Inner list strips its empty items when exported as part of the outer item
 - This is the correct pattern for the hotel schedule example
@@ -489,9 +490,9 @@ See `test/doc/WRITING_TESTS.md` for the full guide. Key points:
 - Button locators should prefer `title` attribute or role+name over positional `.nth()`
 - Use `page.getByTitle('Less intervals')` / `page.getByTitle('More intervals')` for interval controls
 
-## `exportEmpties` and Test Assertions
+## `export_empties` and Test Assertions
 
-When schedule lists have `exportEmpties:false` and all intervals are null/empty:
+When schedule lists have `export_empties:false` and all intervals are null/empty:
 ```javascript
 // All null intervals are stripped to [] in the exported data
 expect(await readField('/periods')).toEqual([{
@@ -513,35 +514,35 @@ await duplicateBtn.click();
 // Now both periods have the same dates → proves duplication, not reset
 ```
 
-## `import()` and `setDefault` — Default Value Semantics
+## `import()` and `set_default` — Default Value Semantics
 
-Since v0.13.0, calling `component.import(data)` **updates the component's `defaultValue`** by default (i.e., `setDefault` defaults to `true`). This means `reset()` after an `import()` restores the imported data, not the HTML initialization default.
+Since v0.13.0, calling `component.import(data)` **updates the component's `defaultValue`** by default (i.e., `set_default` defaults to `true`). This means `reset()` after an `import()` restores the imported data, not the HTML initialization default.
 
 ### Behavior Summary
 
 | Call | Updates default? | What `reset()` restores |
 |------|-----------------|------------------------|
-| `import(data)` | ✅ Yes | `data` (normalized via `exportEmpties:true`) |
-| `import(data, {setDefault:false})` | ❌ No | Previous default |
+| `import(data)` | ✅ Yes | `data` (normalized via `export_empties:true`) |
+| `import(data, {set_default:false})` | ❌ No | Previous default |
 | `import(undefined)` | ❌ No (always skipped) | Current default unchanged |
 | `clear()` | ❌ No | Default unchanged |
 | `reset()` | ❌ No | Current default |
 
 ### How the New Default is Computed
 
-After a successful `import(data)` with `setDefault:true`, the new `defaultValue` is set by:
+After a successful `import(data)` with `set_default:true`, the new `defaultValue` is set by:
 
 ```javascript
-me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
+me.defaultValue = await me.export(null, {silent: true, export_empties: true});
 ```
 
-Using `exportEmpties: true` ensures empty list items are included in the stored default so `reset()` restores the exact same structure (including empty slots).
+Using `export_empties: true` ensures empty list items are included in the stored default so `reset()` restores the exact same structure (including empty slots).
 
 ### Propagation Through Nested Components
 
-`setDefault` applies **only to the originating field**:
-- When a **form** imports data, it updates its own `defaultValue` but passes `setDefault: false` to all child imports.
-- When a **list** imports data, it updates its own `defaultValue` but passes `setDefault: false` to all item imports.
+`set_default` applies **only to the originating field**:
+- When a **form** imports data, it updates its own `defaultValue` but passes `set_default: false` to all child imports.
+- When a **list** imports data, it updates its own `defaultValue` but passes `set_default: false` to all item imports.
 - The top-level field is always the only one whose default is updated by a given `import()` call.
 
 This means that `clear()` after a parent-level import correctly empties the fields (restoring each child's own pre-import default), while `reset()` on the parent still restores the imported data via the parent's saved `defaultValue`.
@@ -551,14 +552,14 @@ This means that `clear()` after a parent-level import correctly empties the fiel
 Code that calls `import(data)` and expects `reset()` to restore the original HTML-defined default must now use:
 
 ```javascript
-await component.import(data, {setDefault: false});
+await component.import(data, {set_default: false});
 ```
 
 ### HTML Trigger Example
 
 ```html
 <!-- Import without updating defaults (preview mode) -->
-<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
 <!-- Import with default update (load/apply mode, the new default) -->
 <button data-smark='{"action":"import"}'>Load Data</button>
 ```

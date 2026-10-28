@@ -99,7 +99,7 @@ export class file extends input {
                 parentList
                 && parentList.options.type === "list"
                 && me.types[parentList.tplType]?.isFileLike
-                && parentList.options.fileDrop !== false
+                && parentList.options.file_drop !== false
             );
             if (me.options.smark_file_drop !== false && ! underFileList) {
                 me.targetNode.addEventListener("drop", e => {
@@ -213,7 +213,7 @@ export class file extends input {
     async import(data, options = {}) {//{{{
         const me = this;
         if (me.isSingleton) return await super.import(data, options);
-        const {focus = false, silent = false, setDefault = true} = options;
+        const {focus = false, silent = false, set_default = true} = options;
         const isReset = data === undefined;
         // Undefined clears to default:
         if (isReset) data = me.defaultValue;
@@ -223,7 +223,7 @@ export class file extends input {
         );
         me._file = normalized;
         me._setTargetFieldValue(me._file);
-        if (! isReset && setDefault) {
+        if (! isReset && set_default) {
             me.defaultValue = await me.export(null, {silent: true});
         };
         if (focus && ! silent) me.focus();
@@ -256,7 +256,7 @@ export class file extends input {
     // Batch file acquisition used by the list type (spec §10).  Opens a single
     // hidden multi-file picker; resolves to an array of normalized file objects
     // or [] when cancelled.  Only meaningful when called within a user gesture.
-    static async acquire({accept, multiple, currentCount, maxItems, encoding} = {}) {//{{{
+    static async acquire({accept, multiple, current_count, max_items, encoding} = {}) {//{{{
         return new Promise(resolve => {
             const input = document.createElement("input");
             input.type = "file";

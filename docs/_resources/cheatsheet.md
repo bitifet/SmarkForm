@@ -34,15 +34,15 @@ const form = new SmarkForm(element, options);
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `value` | Object | `{}` | [Initial data]({{ "component_types/type_form" | relative_url }}#value) |
-| `autoId` | Boolean/String/Function | `false` | [Auto-generate element IDs]({{ "component_types/type_form" | relative_url }}#autoid) |
-| `smark_mixin_allowExternal` | String | `"block"` | [External mixin fetching policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `smark_mixin_allowLocalScripts` | String | `"block"` | [Local mixin `<script>` policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `smark_mixin_allowSameOriginScripts` | String | `"block"` | [Same-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `smark_mixin_allowCrossOriginScripts` | String | `"block"` | [Cross-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
-| `enableJsonEncoding` | Boolean | `false` | [Enable `enctype`]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
-| `exportEmpties` | Boolean | `false` | [Export empty items]({{ "component_types/type_list" | relative_url }}#exportempties) |
-| `keyStyle` | `"bracket"` / `"dot"` | `"bracket"` | [Form encoding key style]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
-| `arrayStyle` | `"repeat"` / `"index"` | `"repeat"` | [Form encoding array style]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
+| `auto_id` | Boolean/String/Function | `false` | [Auto-generate element IDs]({{ "component_types/type_form" | relative_url }}#autoid) |
+| `smark_mixin_allow_external` | String | `"block"` | [External mixin fetching policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allow_local_scripts` | String | `"block"` | [Local mixin `<script>` policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allow_same_origin_scripts` | String | `"block"` | [Same-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allow_cross_origin_scripts` | String | `"block"` | [Cross-origin mixin script policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
+| `enable_json_encoding` | Boolean | `false` | [Enable `enctype`]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
+| `export_empties` | Boolean | `false` | [Export empty items]({{ "component_types/type_list" | relative_url }}#exportempties) |
+| `key_style` | `"bracket"` / `"dot"` | `"bracket"` | [Form encoding key style]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
+| `array_style` | `"repeat"` / `"index"` | `"repeat"` | [Form encoding array style]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
 | `focus_on_click` | Boolean | `true` | [Focus containers on click]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
 | `on*` | Function | — | [Event handlers]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}#on-event-handlers) (`on_click`, `onLocal_AfterAction_export`, etc.) |
 
@@ -220,16 +220,16 @@ await form.import({ name: "Alice" });   // Import data
 | Call | Updates default? | `reset()` restores |
 |------|-----------------|-------------------|
 | `import(data)` | Yes | `data` |
-| `import(data, {setDefault:false})` | No | Previous default |
+| `import(data, {set_default:false})` | No | Previous default |
 | `import(undefined)` | No (skipped) | Current default |
 | `clear()` | No | Default unchanged |
 | `reset()` | No | Current default |
 
-**`exportEmpties`** inherited from nearest ancestor that sets it:
+**`export_empties`** inherited from nearest ancestor that sets it:
 
 ```html
-<div data-smark='{"type":"list","name":"outer","exportEmpties":true}'>
-  <div data-smark='{"type":"list","name":"inner","exportEmpties":false}'></div>
+<div data-smark='{"type":"list","name":"outer","export_empties":true}'>
+  <div data-smark='{"type":"list","name":"inner","export_empties":false}'></div>
 </div>
 ```
 
@@ -274,7 +274,7 @@ await form.find("../shipping").import(data);
 - **Import:** data-URL string, (partial) object, bare payload string, or JSON string — all accepted; `size` is recomputed from the payload.
 - **Download (action):** `{"action":"download","context":"/cv"}` triggers a real browser download of the stored bytes; empty field → no-op. Name precedence: `filename` trigger option > edited visible name > stored name.
 - **Singleton:** drop/paste detected over the whole container; download delegates to the inner field.
-- **Lists:** `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a multi-file picker (`multiple:false` forces single); OS drops **append** items (list-level `fileDrop:false` disables).
+- **Lists:** `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a multi-file picker (`multiple:false` forces single); OS drops **append** items (list-level `file_drop:false` disables).
 
 > See: [File field type]({{ "component_types/type_file" | relative_url }}#introduction)
 
@@ -294,11 +294,11 @@ await form.find("../shipping").import(data);
 | `accept` | `"image/*"` | Native filter — also applied to drops/pastes |
 | `placeholder` | chessboard SVG | Empty-state image (URL/data URL); `false` = leave `src` empty |
 | `image_resize` | — | Acquired images stretched to exact `[w,h]` / `{width,height}` / square number |
-| `image_maxSize` | — | Downscale-only cap (fit *within* the box, aspect preserved) |
+| `image_max_size` | — | Downscale-only cap (fit *within* the box, aspect preserved) |
 | `image_format` | — | Convert on acquire: `"jpeg"` / `"jpg"` / `"png"` / `"webp"` / `"avif"` |
 | `image_enforce` | `"warn"` | `"strict"`·`"hard"`·`"warn"`·`"ignore"` — verdict for unmet/unverifiable requirements |
 | `smark_image_validate` | `true` | Decode-test acquired files (broken/non-image → silently rejected) |
-| `smark_image_clearOnDelete` | `true` | `Delete`/`Backspace` clear the value (never while editing a caption) |
+| `smark_image_clear_on_delete` | `true` | `Delete`/`Backspace` clear the value (never while editing a caption) |
 | `smark_image_open` / `smark_image_drop` / `smark_image_paste` | `true` | Acquisition toggles (`smark_file_*` honored as fallbacks) |
 
 - **Inference:** bare `<img data-smark>` is inferred as `image`; `<input type="image">` raises `IMAGE_TYPE_ON_INPUT`.
@@ -342,7 +342,7 @@ Every field component:
 | `onAll(ev, handler)` | [Listen always-bubbling]({{ "advanced_concepts/events" | relative_url }}#local-vs-all-handlers) |
 | `emit(evType, data, preventable)` | Emit custom event |
 | `getTriggers(actionName, limit)` | Find triggers targeting this component |
-| `updateId()` | Auto-generate `id` from `autoId` |
+| `updateId()` | Auto-generate `id` from `auto_id` |
 | `inheritedOption(name, default)` | Walk ancestors for option value |
 
 ---
@@ -376,7 +376,7 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
 
 - **Enter** navigates fields — does **not** submit.
 - Only explicit click on submit-type buttons triggers submission.
-- Supports `application/json` (`enableJsonEncoding: true`).
+- Supports `application/json` (`enable_json_encoding: true`).
 - Respects `formaction`, `formmethod`, `formenctype`, `formtarget`.
 
 ---

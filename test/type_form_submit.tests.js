@@ -173,7 +173,7 @@ test.describe(test_title, () => {
                 await form.rendered;
 
                 // Import test data
-                await form.import({name: 'Alice', age: '30'}, {silent: true, setDefault: false});
+                await form.import({name: 'Alice', age: '30'}, {silent: true, set_default: false});
 
                 // Intercept the hidden form fields
                 const entries = [];
@@ -308,7 +308,7 @@ test.describe(test_title, () => {
         }
     });//}}}
 
-    test('submit with keyStyle:dot and arrayStyle:index produces dotted names', async ({ page }) => {//{{{
+    test('submit with key_style:dot and array_style:index produces dotted names', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -322,13 +322,13 @@ test.describe(test_title, () => {
             const intercepted = await page.evaluate(async () => {
                 await form.rendered;
 
-                // Set keyStyle/arrayStyle options on root form
-                form.options.keyStyle = 'dot';
-                form.options.arrayStyle = 'index';
+                // Set key_style/array_style options on root form
+                form.options.key_style = 'dot';
+                form.options.array_style = 'index';
 
                 await form.import(
                     {personal: {name: 'Bob'}, work: {company: 'Acme'}},
-                    {silent: true, setDefault: false}
+                    {silent: true, set_default: false}
                 );
 
                 const entries = [];
@@ -352,8 +352,8 @@ test.describe(test_title, () => {
                 document.createElement = origCreate;
 
                 // Cleanup
-                delete form.options.keyStyle;
-                delete form.options.arrayStyle;
+                delete form.options.key_style;
+                delete form.options.array_style;
 
                 return entries;
             });
@@ -508,7 +508,7 @@ test.describe('Submit — native <form> root', () => {
 
 test.describe('Submit — JSON encoding', () => {
 
-    test('JSON encoding is blocked by default (enableJsonEncoding defaults to false)', async ({ page }) => {//{{{
+    test('JSON encoding is blocked by default (enable_json_encoding defaults to false)', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -535,7 +535,7 @@ test.describe('Submit — JSON encoding', () => {
             });
 
             expect(errorMessage).toMatch(/JSON encoding.*disabled by default/);
-            expect(errorMessage).toMatch(/enableJsonEncoding/);
+            expect(errorMessage).toMatch(/enable_json_encoding/);
         } finally {
             if (onClosed) await onClosed();
         }
@@ -556,7 +556,7 @@ test.describe('Submit — JSON encoding', () => {
                 await form.rendered;
 
                 // Opt in to JSON encoding.
-                form.options.enableJsonEncoding = true;
+                form.options.enable_json_encoding = true;
 
                 let capturedBody = null;
                 const origFetch = window.fetch;
@@ -569,7 +569,7 @@ test.describe('Submit — JSON encoding', () => {
                     };
                 };
 
-                await form.import({name: 'Alice', age: '25'}, {silent: true, setDefault: false});
+                await form.import({name: 'Alice', age: '25'}, {silent: true, set_default: false});
 
                 // Temporarily set JSON enctype on targetNode
                 form.targetNode.setAttribute('enctype', 'application/json');
@@ -745,7 +745,7 @@ test.describe('Submit — JSON encoding with non-HTTP action', () => {
             const errorMessage = await page.evaluate(async () => {
                 await form.rendered;
                 // Opt in to JSON encoding so the test reaches the HTTP-protocol check.
-                form.options.enableJsonEncoding = true;
+                form.options.enable_json_encoding = true;
                 form.targetNode.setAttribute('enctype', 'application/json');
                 form.targetNode.setAttribute('action', 'mailto:test@example.com');
                 form.targetNode.setAttribute('method', 'post');

@@ -30,11 +30,11 @@ block mainForm
             alt="Sized"
         )
         img(
-            data-smark={type: "image", name: "downscaled", image_maxSize: [50, 50]}
+            data-smark={type: "image", name: "downscaled", image_max_size: [50, 50]}
             alt="Downscaled"
         )
         img(
-            data-smark={type: "image", name: "uncapped", image_maxSize: [300, 300]}
+            data-smark={type: "image", name: "uncapped", image_max_size: [300, 300]}
             alt="Uncapped"
         )
         img(
@@ -235,7 +235,7 @@ test.describe('Image Component Type Test', () => {
         }
     });//}}}
 
-    test('image_resize forces the exact box; image_maxSize downscales only, preserving aspect', async ({ page }) => {//{{{
+    test('image_resize forces the exact box; image_max_size downscales only, preserving aspect', async ({ page }) => {//{{{
         let onClosed;
         try {
             onClosed = await openPage(page, title, pugBase);

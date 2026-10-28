@@ -118,7 +118,7 @@ referenced anywhere in the form subtree — including markup that is not
 rendered yet (e.g. list item templates). This warms `docCache` so later
 on-demand expansions (items added after render, lazily shown subforms) do not
 wait on the network. Prefetching is non-blocking and obeys
-`smark_mixin_allowExternal`: blocked references are skipped silently and only
+`smark_mixin_allow_external`: blocked references are skipped silently and only
 raise an error if actually used.
 
 A mixin reference may opt out with `preload: false` (default `true`), given in
@@ -271,7 +271,7 @@ string or a per-origin object (`{ "<origin>": <policy>, "*": <policy> }`); when
 an object is used, the exact origin is tried first, then `"*"`, then the
 built-in fallback `"block"`.
 
-### External fetch: `smark_mixin_allowExternal`
+### External fetch: `smark_mixin_allow_external`
 
 | Value | Behaviour |
 |---|---|
@@ -287,9 +287,9 @@ The controlling option depends on the template's origin:
 
 | Template origin | Option |
 |---|---|
-| Local (`#id`) | `smark_mixin_allowLocalScripts` |
-| External, same origin | `smark_mixin_allowSameOriginScripts` |
-| External, cross-origin | `smark_mixin_allowCrossOriginScripts` |
+| Local (`#id`) | `smark_mixin_allow_local_scripts` |
+| External, same origin | `smark_mixin_allow_same_origin_scripts` |
+| External, cross-origin | `smark_mixin_allow_cross_origin_scripts` |
 
 | Value | Behaviour |
 |---|---|
@@ -339,16 +339,16 @@ Both ids come from the same counter but are assigned in independent scopes
 | Error code | When thrown |
 |---|---|
 | `MIXIN_TYPE_MISSING_FRAGMENT` | Type reference has no `#<templateId>` fragment |
-| `MIXIN_EXTERNAL_FETCH_BLOCKED` | External URL but `smark_mixin_allowExternal` is `"block"` |
-| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | Cross-origin URL but `smark_mixin_allowExternal` is `"same-origin"` |
+| `MIXIN_EXTERNAL_FETCH_BLOCKED` | External URL but `smark_mixin_allow_external` is `"block"` |
+| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | Cross-origin URL but `smark_mixin_allow_external` is `"same-origin"` |
 | `MIXIN_FETCH_ERROR` | HTTP error while fetching an external template |
 | `MIXIN_CIRCULAR_DEPENDENCY` | The expansion chain already contains the current mixin key |
 | `MIXIN_TEMPLATE_NOT_FOUND` | No matching `<template>` in the target document |
 | `MIXIN_TEMPLATE_INVALID_ROOT` | Template does not contain exactly one root element |
 | `MIXIN_TEMPLATE_ROOT_HAS_NAME` | Template root specifies `name` in its options |
-| `MIXIN_SCRIPT_LOCAL_BLOCKED` | Local template `<script>` and `smark_mixin_allowLocalScripts` is `"block"` |
-| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | Same-origin external template `<script>` and `smark_mixin_allowSameOriginScripts` is `"block"` |
-| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | Cross-origin template `<script>` and `smark_mixin_allowCrossOriginScripts` is `"block"` |
+| `MIXIN_SCRIPT_LOCAL_BLOCKED` | Local template `<script>` and `smark_mixin_allow_local_scripts` is `"block"` |
+| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | Same-origin external template `<script>` and `smark_mixin_allow_same_origin_scripts` is `"block"` |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | Cross-origin template `<script>` and `smark_mixin_allow_cross_origin_scripts` is `"block"` |
 | `MIXIN_NESTED_SCRIPT_DISALLOWED` | A `<script>` exists inside the template root subtree |
 
 ---

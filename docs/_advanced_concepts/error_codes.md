@@ -308,10 +308,10 @@ A mixin type reference does not contain a `#<templateId>` fragment.
 
 ### `MIXIN_EXTERNAL_FETCH_BLOCKED`
 
-The mixin type reference includes a URL part but `smark_mixin_allowExternal` is
+The mixin type reference includes a URL part but `smark_mixin_allow_external` is
 `"block"` (the default).  No network request was made.
 
-**Fix:** Set `smark_mixin_allowExternal: "same-origin"` or `"allow"` on the root
+**Fix:** Set `smark_mixin_allow_external: "same-origin"` or `"allow"` on the root
 SmarkForm instance to permit external template loading.  For fine-grained
 control, pass a per-origin object such as
 `{ 'https://trusted.example.com': 'allow', '*': 'block' }`.  See
@@ -321,11 +321,11 @@ control, pass a per-origin object such as
 
 ### `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`
 
-The mixin type reference points to a cross-origin URL but `smark_mixin_allowExternal`
+The mixin type reference points to a cross-origin URL but `smark_mixin_allow_external`
 is `"same-origin"`.
 
 **Fix:** Either move the template to the same origin, set
-`smark_mixin_allowExternal: "allow"` if you trust all remote origins, or use a
+`smark_mixin_allow_external: "allow"` if you trust all remote origins, or use a
 per-origin policy object to allow only specific trusted origins:
 `{ 'https://trusted-cdn.example.com': 'allow', '*': 'block' }`.
 
@@ -385,9 +385,9 @@ name on the placeholder element instead.
 ### `MIXIN_SCRIPT_LOCAL_BLOCKED`
 
 The mixin template (loaded from a local in-page `<template>`) contains a
-top-level `<script>` and `smark_mixin_allowLocalScripts` is `"block"` (the default).
+top-level `<script>` and `smark_mixin_allow_local_scripts` is `"block"` (the default).
 
-**Fix:** Set `smark_mixin_allowLocalScripts: "allow"` to execute the script, or
+**Fix:** Set `smark_mixin_allow_local_scripts: "allow"` to execute the script, or
 `"noscript"` to silently discard it.  See
 [Security Considerations]({{ "/advanced_concepts/security_considerations" | relative_url }}#mixin-script-execution--allowlocalmixinscripts-allowsameoriginmixinscripts-allowcrossoriginmixinscripts).
 
@@ -396,9 +396,9 @@ top-level `<script>` and `smark_mixin_allowLocalScripts` is `"block"` (the defau
 ### `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED`
 
 The mixin template was fetched from a same-origin URL and contains a top-level
-`<script>`, but `smark_mixin_allowSameOriginScripts` is `"block"` (the default).
+`<script>`, but `smark_mixin_allow_same_origin_scripts` is `"block"` (the default).
 
-**Fix:** Set `smark_mixin_allowSameOriginScripts: "allow"` (or `"noscript"`), or pass
+**Fix:** Set `smark_mixin_allow_same_origin_scripts: "allow"` (or `"noscript"`), or pass
 a per-origin object for fine-grained control.
 
 ---
@@ -406,9 +406,9 @@ a per-origin object for fine-grained control.
 ### `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED`
 
 The mixin template was fetched from a cross-origin URL and contains a top-level
-`<script>`, but `smark_mixin_allowCrossOriginScripts` is `"block"` (the default).
+`<script>`, but `smark_mixin_allow_cross_origin_scripts` is `"block"` (the default).
 
-**Fix:** Set `smark_mixin_allowCrossOriginScripts: "allow"` (or `"noscript"`).
+**Fix:** Set `smark_mixin_allow_cross_origin_scripts: "allow"` (or `"noscript"`).
 Only use `"allow"` if you fully control and trust that external origin.
 For fine-grained per-origin control, pass an object such as:
 `{ 'https://trusted.example.com': 'allow', '*': 'block' }`.

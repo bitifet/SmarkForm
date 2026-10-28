@@ -158,16 +158,16 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const field = form.find("/inputNoDefault");
                 
-                // Set a value (setDefault:false to preserve initialization default)
-                await field.import("UserValue", {setDefault: false});
+                // Set a value (set_default:false to preserve initialization default)
+                await field.import("UserValue", {set_default: false});
                 const afterImport = await field.export();
                 
                 // Clear should remove the value (empty string for input)
                 await field.clear();
                 const afterClear = await field.export();
                 
-                // Import again (setDefault:false to preserve initialization default)
-                await field.import("AnotherValue", {setDefault: false});
+                // Import again (set_default:false to preserve initialization default)
+                await field.import("AnotherValue", {set_default: false});
                 const afterSecondImport = await field.export();
                 
                 // Reset should also clear (no default defined)
@@ -207,16 +207,16 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initially should have default
                 const initial = await field.export();
                 
-                // Set a different value (setDefault:false to preserve initialization default)
-                await field.import("UserValue", {setDefault: false});
+                // Set a different value (set_default:false to preserve initialization default)
+                await field.import("UserValue", {set_default: false});
                 const afterImport = await field.export();
                 
                 // Clear should remove ALL values (ignoring default)
                 await field.clear();
                 const afterClear = await field.export();
                 
-                // Import another value (setDefault:false to preserve initialization default)
-                await field.import("AnotherValue", {setDefault: false});
+                // Import another value (set_default:false to preserve initialization default)
+                await field.import("AnotherValue", {set_default: false});
                 const afterSecondImport = await field.export();
                 
                 // Reset should restore default value
@@ -257,13 +257,13 @@ test.describe('Clear vs Reset Action Tests', () => {
                 
                 const initial = await field.export();
                 
-                await field.import(100, {setDefault: false});
+                await field.import(100, {set_default: false});
                 const afterImport = await field.export();
                 
                 await field.clear();
                 const afterClear = await field.export();
                 
-                await field.import(200, {setDefault: false});
+                await field.import(200, {set_default: false});
                 const afterSecondImport = await field.export();
                 
                 await field.reset();
@@ -301,16 +301,16 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const form_field = form.find("/nestedForm");
                 
-                // Set values (setDefault:false to preserve initialization default)
-                await form_field.import({field1: "Value1", field2: "Value2"}, {setDefault: false});
+                // Set values (set_default:false to preserve initialization default)
+                await form_field.import({field1: "Value1", field2: "Value2"}, {set_default: false});
                 const afterImport = await form_field.export();
                 
                 // Clear should empty all fields
                 await form_field.clear();
                 const afterClear = await form_field.export();
                 
-                // Set again (setDefault:false to preserve initialization default)
-                await form_field.import({field1: "NewValue1", field2: "NewValue2"}, {setDefault: false});
+                // Set again (set_default:false to preserve initialization default)
+                await form_field.import({field1: "NewValue1", field2: "NewValue2"}, {set_default: false});
                 const afterSecondImport = await form_field.export();
                 
                 // Reset should also empty (no defaults)
@@ -350,16 +350,16 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initially should have defaults
                 const initial = await form_field.export();
                 
-                // Change values (setDefault:false to preserve initialization default)
-                await form_field.import({name: "Jane Doe", age: "25"}, {setDefault: false});
+                // Change values (set_default:false to preserve initialization default)
+                await form_field.import({name: "Jane Doe", age: "25"}, {set_default: false});
                 const afterImport = await form_field.export();
                 
                 // Clear should empty all fields (ignore defaults)
                 await form_field.clear();
                 const afterClear = await form_field.export();
                 
-                // Set different values (setDefault:false to preserve initialization default)
-                await form_field.import({name: "Alice", age: "35"}, {setDefault: false});
+                // Set different values (set_default:false to preserve initialization default)
+                await form_field.import({name: "Alice", age: "35"}, {set_default: false});
                 const afterSecondImport = await form_field.export();
                 
                 // Reset should restore defaults
@@ -398,8 +398,8 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const list = form.find("/listNoDefault");
                 
-                // Add items (setDefault:false to preserve initialization default)
-                await list.import([{item: "Item1"}, {item: "Item2"}], {setDefault: false});
+                // Add items (set_default:false to preserve initialization default)
+                await list.import([{item: "Item1"}, {item: "Item2"}], {set_default: false});
                 const afterImport = await list.export();
                 
                 // Clear should empty the list
@@ -407,8 +407,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterClear = await list.export();
                 const childCountAfterClear = list.children.length;
                 
-                // Add items again (setDefault:false to preserve initialization default)
-                await list.import([{item: "Item3"}], {setDefault: false});
+                // Add items again (set_default:false to preserve initialization default)
+                await list.import([{item: "Item3"}], {set_default: false});
                 const afterSecondImport = await list.export();
                 
                 // Reset should also empty (default is empty array)
@@ -454,8 +454,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const initial = await list.export();
                 const initialChildCount = list.children.length;
                 
-                // Change items (setDefault:false to preserve initialization default)
-                await list.import([{item: "UserItem1"}, {item: "UserItem2"}, {item: "UserItem3"}], {setDefault: false});
+                // Change items (set_default:false to preserve initialization default)
+                await list.import([{item: "UserItem1"}, {item: "UserItem2"}, {item: "UserItem3"}], {set_default: false});
                 const afterImport = await list.export();
                 const afterImportChildCount = list.children.length;
                 
@@ -464,8 +464,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterClear = await list.export();
                 const afterClearChildCount = list.children.length;
                 
-                // Add items again (setDefault:false to preserve initialization default)
-                await list.import([{item: "NewItem"}], {setDefault: false});
+                // Add items again (set_default:false to preserve initialization default)
+                await list.import([{item: "NewItem"}], {set_default: false});
                 const afterSecondImport = await list.export();
                 
                 // Reset should restore default items
@@ -516,24 +516,24 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initially should have default structure
                 const initial = await deepForm.export();
                 
-                // Modify the nested structure (setDefault:false to preserve initialization default)
+                // Modify the nested structure (set_default:false to preserve initialization default)
                 await deepForm.import({
                     users: [
                         {name: "Charlie", age: "40"},
                         {name: "Diana", age: "35"},
                         {name: "Eve", age: "28"}
                     ]
-                }, {setDefault: false});
+                }, {set_default: false});
                 const afterImport = await deepForm.export();
                 
                 // Clear should empty everything
                 await deepForm.clear();
                 const afterClear = await deepForm.export();
                 
-                // Set different data (setDefault:false to preserve initialization default)
+                // Set different data (set_default:false to preserve initialization default)
                 await deepForm.import({
                     users: [{name: "Frank", age: "50"}]
-                }, {setDefault: false});
+                }, {set_default: false});
                 const afterSecondImport = await deepForm.export();
                 
                 // Reset should restore the default nested structure
@@ -593,8 +593,8 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Start with default
                 const initial = await field.export();
                 
-                // User enters value (setDefault:false to preserve initialization default)
-                await field.import("UserValue", {setDefault: false});
+                // User enters value (set_default:false to preserve initialization default)
+                await field.import("UserValue", {set_default: false});
                 const afterUser = await field.export();
                 
                 // Clear removes everything
@@ -622,7 +622,7 @@ test.describe('Clear vs Reset Action Tests', () => {
         }
     });//}}}
 
-    test('setDefault:true (default) - import updates what reset restores (input)', async ({ page }) => {//{{{
+    test('set_default:true (default) - import updates what reset restores (input)', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -638,15 +638,15 @@ test.describe('Clear vs Reset Action Tests', () => {
                 // Initial default
                 const initial = await field.export();
 
-                // Import with default setDefault:true → updates default
+                // Import with default set_default:true → updates default
                 await field.import("NewDefault");
                 const afterImport = await field.export();
 
                 // Modify value without changing default
-                await field.import("TempValue", {setDefault: false});
+                await field.import("TempValue", {set_default: false});
                 const afterTempImport = await field.export();
 
-                // Reset should restore "NewDefault" (the last setDefault:true import)
+                // Reset should restore "NewDefault" (the last set_default:true import)
                 await field.reset();
                 const afterReset = await field.export();
 
@@ -662,7 +662,7 @@ test.describe('Clear vs Reset Action Tests', () => {
         }
     });//}}}
 
-    test('setDefault:true (default) - import with undefined does NOT update default', async ({ page }) => {//{{{
+    test('set_default:true (default) - import with undefined does NOT update default', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -684,7 +684,7 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterUndefinedImport = await field.export();
 
                 // Modify without changing default
-                await field.import("TempValue", {setDefault: false});
+                await field.import("TempValue", {set_default: false});
                 const afterTempImport = await field.export();
 
                 // Reset should still give "NewDefault"
@@ -703,7 +703,7 @@ test.describe('Clear vs Reset Action Tests', () => {
         }
     });//}}}
 
-    test('setDefault:true - form import updates what reset restores', async ({ page }) => {//{{{
+    test('set_default:true - form import updates what reset restores', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -721,7 +721,7 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterImport = await form_field.export();
 
                 // Modify without changing default
-                await form_field.import({field1: "X", field2: "Y"}, {setDefault: false});
+                await form_field.import({field1: "X", field2: "Y"}, {set_default: false});
                 const afterTempImport = await form_field.export();
 
                 // Reset restores what import set
@@ -739,7 +739,7 @@ test.describe('Clear vs Reset Action Tests', () => {
         }
     });//}}}
 
-    test('setDefault:true - list import updates what reset restores', async ({ page }) => {//{{{
+    test('set_default:true - list import updates what reset restores', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -752,13 +752,13 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const list = form.find("/listNoDefault");
 
-                // Import sets new default (includes empty items due to exportEmpties:true)
+                // Import sets new default (includes empty items due to export_empties:true)
                 await list.import([{item: "A"}, {item: "B"}]);
                 const afterImport = await list.export();
                 const afterImportChildCount = list.children.length;
 
                 // Modify without changing default
-                await list.import([{item: "X"}], {setDefault: false});
+                await list.import([{item: "X"}], {set_default: false});
                 const afterTempImport = await list.export();
 
                 // Reset restores what import set
@@ -779,7 +779,7 @@ test.describe('Clear vs Reset Action Tests', () => {
         }
     });//}}}
 
-    test('setDefault:true - nested form+list: import updates what reset restores', async ({ page }) => {//{{{
+    test('set_default:true - nested form+list: import updates what reset restores', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -799,7 +799,7 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterImport = await deepForm.export();
 
                 // Temporarily modify without changing default
-                await deepForm.import({users: [{name: "Temp", age: "0"}]}, {setDefault: false});
+                await deepForm.import({users: [{name: "Temp", age: "0"}]}, {set_default: false});
                 const afterTempImport = await deepForm.export();
 
                 // Reset restores what import set
@@ -821,7 +821,7 @@ test.describe('Clear vs Reset Action Tests', () => {
         }
     });//}}}
 
-    test('setDefault:true - exportEmpties:true effect observable in computed default', async ({ page }) => {//{{{
+    test('set_default:true - export_empties:true effect observable in computed default', async ({ page }) => {//{{{
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -834,42 +834,42 @@ test.describe('Clear vs Reset Action Tests', () => {
             const results = await page.evaluate(async () => {
                 const list = form.find("/listNoDefault");
 
-                // Import list with empty items — exportEmpties:true should include them in default
+                // Import list with empty items — export_empties:true should include them in default
                 await list.import([{item: ""}, {item: "Filled"}]);
-                // Regular export (exportEmpties:false) strips the empty item
+                // Regular export (export_empties:false) strips the empty item
                 const afterImport = await list.export();
 
                 // Verify empty item is included in default (reset should restore it)
-                await list.import([{item: "X"}], {setDefault: false});
+                await list.import([{item: "X"}], {set_default: false});
                 await list.reset();
                 // Regular export still strips empty items per list config
                 const afterReset = await list.export();
                 // But the empty item IS there — check child count
                 const childCountAfterReset = list.children.length;
-                // And verify with exportEmpties:true
-                const afterResetWithEmpties = await list.export(null, {exportEmpties: true});
+                // And verify with export_empties:true
+                const afterResetWithEmpties = await list.export(null, {export_empties: true});
 
                 return { afterImport, afterReset, childCountAfterReset, afterResetWithEmpties };
             });
 
-            // After import, exportEmpties:false strips the empty item from export
+            // After import, export_empties:false strips the empty item from export
             expect(results.afterImport).toEqual([{item: "Filled"}]);
             // Regular export still strips empties
             expect(results.afterReset).toEqual([{item: "Filled"}]);
             // But the empty item IS there (2 children total)
             expect(results.childCountAfterReset).toBe(2);
-            // Confirmed with exportEmpties:true
+            // Confirmed with export_empties:true
             expect(results.afterResetWithEmpties).toEqual([{item: ""}, {item: "Filled"}]);
         } finally {
             if (onClosed) await onClosed();
         }
     });//}}}
 
-    test('setDefault propagation: parent import does NOT update descendant defaults', async ({ page }) => {//{{{
-        // Regression test: when a parent form is imported with setDefault:true,
+    test('set_default propagation: parent import does NOT update descendant defaults', async ({ page }) => {//{{{
+        // Regression test: when a parent form is imported with set_default:true,
         // only the parent's own default should be updated.  Descendant fields
         // must NOT update their defaults (they should always receive
-        // setDefault:false during a propagated import).
+        // set_default:false during a propagated import).
         let onClosed;
         try {
             const rendered = await renderPug({
@@ -883,7 +883,7 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const deepForm = form.find("/deeplyNested");
                 const usersList = deepForm.children.users;
 
-                // Import into the parent form with setDefault:true (the default).
+                // Import into the parent form with set_default:true (the default).
                 // The parent form should update its own defaultValue.
                 // The child `users` list should NOT update its defaultValue.
                 await deepForm.import({
@@ -896,7 +896,7 @@ test.describe('Clear vs Reset Action Tests', () => {
                 const afterParentReset = await deepForm.export();
 
                 // Now temporarily modify the display without touching defaults.
-                await deepForm.import({users: [{name: "Temp", age: "0"}]}, {setDefault: false});
+                await deepForm.import({users: [{name: "Temp", age: "0"}]}, {set_default: false});
 
                 // Resetting the nested list directly must restore its OWN
                 // default.  The users list has no explicit `value` option, so

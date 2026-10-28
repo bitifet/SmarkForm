@@ -40,9 +40,9 @@ Most options you pass to the constructor are forwarded to the root form componen
 ```javascript
 const form = new SmarkForm(element, {
     value: { name: "Alice" },     // initial value (all field types)
-    exportEmpties: false,         // list option
+    export_empties: false,         // list option
     focus_on_click: false,        // form option
-    autoId: true,                 // component-level option
+    auto_id: true,                 // component-level option
 });
 ```
 
@@ -51,27 +51,27 @@ These options are documented on their respective component type pages:
 | Option | Scope | Documented at |
 |--------|-------|---------------|
 | `value` | All field types | Sets the initial/default value for any component. See [Form type → `value`]({{ "component_types/type_form" | relative_url }}#value), [Data import → defaults]({{ "working_with_forms/data_import_and_export" | relative_url }}#setting-defaults-via-value) |
-| `exportEmpties` | List type | [List type → `exportEmpties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `exportEmpties` option]({{ "working_with_forms/data_import_and_export" | relative_url }}#the-exportempties-option) |
+| `export_empties` | List type | [List type → `export_empties`]({{ "component_types/type_list" | relative_url }}#exportempties), [Data import → `export_empties` option]({{ "working_with_forms/data_import_and_export" | relative_url }}#the-exportempties-option) |
 | `on_<event>` / `onLocal_<event>` / `onAll_<event>` | All components | [Event handlers via options]({{ "advanced_concepts/events" | relative_url }}#via-options-declarative) |
 | `focus_on_click` | Form type | [Form type → `focus_on_click`]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
-| `autoId` | All components | [Form type → `autoId`]({{ "component_types/type_form" | relative_url }}#autoid) |
-| `enableJsonEncoding` | Form type | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
-| `keyStyle` / `arrayStyle` | Form type | [Form type → data flattening]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
+| `auto_id` | All components | [Form type → `auto_id`]({{ "component_types/type_form" | relative_url }}#autoid) |
+| `enable_json_encoding` | Form type | [Form type → encoding & transport]({{ "component_types/type_form" | relative_url }}#encoding-and-transport) |
+| `key_style` / `array_style` | Form type | [Form type → data flattening]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
 
 ### Merging rules
 
 If the root element also carries a `data-smark` attribute, both sources are merged. The constructor options take precedence.
 
 ```html
-<form data-smark='{"exportEmpties":true}'>
+<form data-smark='{"export_empties":true}'>
   <!-- … -->
 </form>
 ```
 
 ```javascript
-// exportEmpties from data-smark is overridden:
+// export_empties from data-smark is overridden:
 const form = new SmarkForm(document.querySelector("form"), {
-    exportEmpties: false, // wins
+    export_empties: false, // wins
 });
 ```
 
@@ -81,17 +81,20 @@ Options not specified in either source keep their documented defaults.
 
 ## Constructor-Only Options
 
-These options are extracted by the SmarkForm constructor and **not forwarded**
-to the root form component. They all follow the `smark_` prefix convention.
+The policies listed here must be supplied to the root `SmarkForm` constructor;
+their consumers read them from root options. SmarkForm omits `smark_*` keys when
+serializing options back to the DOM. The prefix is a reserved SmarkForm namespace,
+not a universal scope marker: media controls such as `smark_file_open` and
+`smark_video_auto_pick` are consumed by their corresponding field types.
 
 ### Field Masking
 
-- **`smark_mask_throwOnMissing`** — Controls whether a missing mask factory throws an error. Defaults to `true`.
+- **`smark_mask_throw_on_missing`** — Controls whether a missing mask factory throws an error. Defaults to `true`.
 
 ```javascript
 // Warn instead of throwing for unregistered masks:
 const form = new SmarkForm(element, {
-    smark_mask_throwOnMissing: false,
+    smark_mask_throw_on_missing: false,
 });
 ```
 
@@ -101,10 +104,10 @@ When `false`, the field's original input type is restored and the field operates
 
 Control whether mixin templates can fetch external content or execute scripts:
 
-- `smark_mixin_allowExternal` — fetch templates from external URLs
-- `smark_mixin_allowLocalScripts` — execute `<script>` blocks in local templates
-- `smark_mixin_allowSameOriginScripts` — execute same-origin external scripts
-- `smark_mixin_allowCrossOriginScripts` — execute cross-origin external scripts
+- `smark_mixin_allow_external` — fetch templates from external URLs
+- `smark_mixin_allow_local_scripts` — execute `<script>` blocks in local templates
+- `smark_mixin_allow_same_origin_scripts` — execute same-origin external scripts
+- `smark_mixin_allow_cross_origin_scripts` — execute cross-origin external scripts
 
 Each accepts `"block"` (default), `"allow"`, or per-origin object maps. See [Mixin security options]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) for full documentation.
 

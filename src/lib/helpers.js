@@ -5,6 +5,8 @@ export function collectPrefixedOptions(node) {//{{{
     const options = {};
     for (const attr of node.attributes) {
         if (attr.name.startsWith(SMARK_ATTR_PREFIX)) {
+            // The suffix is the option key verbatim; value conversion belongs
+            // to normalizeCommonOptions()/the consuming component, not here.
             const optionName = attr.name.slice(SMARK_ATTR_PREFIX.length);
             if (optionName) options[optionName] = attr.value;
         }

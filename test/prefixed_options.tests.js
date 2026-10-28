@@ -36,6 +36,18 @@ block mainForm
     await cleanup();
 });
 
+test('snake_case data-smark option suffix maps literally to the option key', async ({ page }) => {
+    const cleanup = await loadPug(page, `
+extends layout.pug
+block mainForm
+    ul(data-smark-type="list" data-smark-name="items" data-smark-export_empties="true")
+        li(data-smark): input(name="value")
+`);
+    const option = await page.evaluate(() => window.form.find("items").options.export_empties);
+    expect(option).toBe(true);
+    await cleanup();
+});
+
 test('bare data-smark-sortable is truthy and string "false" disables sorting', async ({ page }) => {
     const cleanup = await loadPug(page, `
 extends layout.pug

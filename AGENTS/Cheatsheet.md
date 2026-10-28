@@ -29,7 +29,7 @@ When you need to generate HTML markup or JavaScript that uses SmarkForm:
 2. For action signatures and options, look in the **Actions** section.
 3. For component-specific attributes, look in the **Component Types** section.
 4. For event names and payloads, look in the **Event System** section.
-5. For import/export options (`exportEmpties`, `setDefault`, `silent`, etc.), look in the **Data Import / Export** section.
+5. For import/export options (`export_empties`, `set_default`, `silent`, etc.), look in the **Data Import / Export** section.
 
 ## Validation
 

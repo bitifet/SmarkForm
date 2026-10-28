@@ -4,7 +4,7 @@ export function findFileLikeListAncestor(component) {//{{{
         return {
             list: ancestor,
             capable: !! component.types[ancestor.tplType]?.isFileLike,
-            dropEnabled: ancestor.options.fileDrop !== false,
+            dropEnabled: ancestor.options.file_drop !== false,
         };
     };
     return null;

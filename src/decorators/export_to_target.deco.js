@@ -7,8 +7,8 @@ export const export_to_target = function export_to_target_decorator(method, {kin
             const me = this;
             const value = await method.call(me, data, options);
             try {
-                const {setDefault = true} = options;
-                await target.import(value, {setDefault});
+                const {set_default = true} = options;
+                await target.import(value, {set_default});
             } catch (error) {
                 // target not provided or invalid
             };

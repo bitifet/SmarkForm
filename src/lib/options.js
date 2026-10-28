@@ -57,7 +57,7 @@ export function normalizeArray(value, {sep = ",", defaultValue = undefined} = {}
     return parts;
 };//}}}
 
-// Normalize the special `autoId` sentinel: false/true/string/function.
+// Normalize the special `auto_id` sentinel: false/true/string/function.
 // Function values cannot be represented in HTML attributes and are preserved
 // as-is; strings "false" and "true" are converted to their boolean forms.
 export function normalizeAutoId(value) {//{{{
@@ -76,7 +76,7 @@ export function normalizePlaceholder(value) {//{{{
     return value;
 };//}}}
 
-// Normalize a box-shaped option such as `image_resize` or `image_maxSize`.
+// Normalize a box-shaped option such as `image_resize` or `image_max_size`.
 // These accept a bare number (square box), a `[w,h]` array, or a
 // `{width,height}` object.  From an HTML attribute they may be given as:
 //   - a JSON string: "[200,200]" or "{\"width\":200,\"height\":200}"
@@ -103,17 +103,17 @@ export function normalizeBoxOption(value) {//{{{
 // "false" means `false`.
 const BOOLEAN_OPTIONS = new Set([
     "allow_select",
-    "enableJsonEncoding",
-    "excludeEmpties",
-    "exportEmpties",
-    "fileDrop",
+    "enable_json_encoding",
+    "exclude_empties",
+    "export_empties",
+    "file_drop",
     "focus_on_click",
     "multiple",
     "preload",
     "sortable",
     // smark_* toggles
-    "smark_audio_autoPick",
-    "smark_audio_clearOnDelete",
+    "smark_audio_auto_pick",
+    "smark_audio_clear_on_delete",
     "smark_audio_drop",
     "smark_audio_open",
     "smark_audio_paste",
@@ -121,38 +121,38 @@ const BOOLEAN_OPTIONS = new Set([
     "smark_file_drop",
     "smark_file_open",
     "smark_file_paste",
-    "smark_image_clearOnDelete",
+    "smark_image_clear_on_delete",
     "smark_image_drop",
     "smark_image_open",
     "smark_image_paste",
     "smark_image_validate",
-    "smark_mask_throwOnMissing",
-    "smark_video_autoPick",
-    "smark_video_clearOnDelete",
+    "smark_mask_throw_on_missing",
+    "smark_video_auto_pick",
+    "smark_video_clear_on_delete",
     "smark_video_drop",
     "smark_video_open",
     "smark_video_paste",
     "smark_video_validate",
 ]);
 
-// Names of options whose values are numbers.  `movingDepth` and `max_items`
+// Names of options whose values are numbers.  `moving_depth` and `max_items`
 // also accept the strings "true"/"Infinity" (mapped to Infinity) because
 // they double as unlimited-distance / unlimited-capacity sentinels.
 const NUMBER_OPTIONS = new Set([
-    "audio_maxSize",
+    "audio_max_size",
     "max_items",
     "min_items",
-    "movingDepth",
+    "moving_depth",
     "offset",
-    "video_maxSize",
+    "video_max_size",
 ]);
 const INFINITY_NUMBER_OPTIONS = new Set([
     "max_items",
-    "movingDepth",
+    "moving_depth",
 ]);
 
 // Apply centralized normalization to an options object in-place.
-// Component-specific structured options (image_resize, image_maxSize, ...)
+// Component-specific structured options (image_resize, image_max_size, ...)
 // are left to the components that consume them.
 export function normalizeCommonOptions(options) {//{{{
     for (const key of Object.keys(options)) {
@@ -163,11 +163,11 @@ export function normalizeCommonOptions(options) {//{{{
             options[key] = normalizeNumber(value, {
                 allowInfinity: INFINITY_NUMBER_OPTIONS.has(key),
             });
-        } else if (key === "autoId") {
+        } else if (key === "auto_id") {
             options[key] = normalizeAutoId(value);
         } else if (key === "placeholder") {
             options[key] = normalizePlaceholder(value);
-        } else if (key === "image_resize" || key === "image_maxSize") {
+        } else if (key === "image_resize" || key === "image_max_size") {
             options[key] = normalizeBoxOption(value);
         }
     }

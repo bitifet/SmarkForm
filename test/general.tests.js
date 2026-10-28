@@ -77,12 +77,12 @@ block mainForm
         div
             .form-group(data-smark = {
                 type: "list",
-                exportEmpties: true,
+                export_empties: true,
                 name: "employees",
                 min_items: 0,
             })
                 .form-group(data-smark={
-                    exportEmpties: false
+                    export_empties: false
                 })
                     fieldset.form-group
                         .form-group.spacer.no-wrap

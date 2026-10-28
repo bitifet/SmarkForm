@@ -49,7 +49,7 @@ Type is often auto-inferred from the element tag or presence of the `action` pro
 | Keyboard | Plain `Space` types normally; `Shift+Space` opens the OS picker (needs a real user gesture — cannot be driven by JS). `click` also opens the picker |
 | Singleton | Drop/paste detected over the whole container; drops originating inside the inner field are left to the inner field |
 | Download (action) | `{"action":"download","context":"/cv"}` triggers a **real browser download** of the stored bytes (Blob + object URL + `<a download>`); works on real fields and singletons (container delegates to the inner field). Empty field → no-op. Name precedence: `filename` trigger option (any extra trigger option) > edited visible name > stored name |
-| Lists | `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a **multi-file** picker (`multiple:false` forces single); OS drops **append** items anywhere in the list; `accept` on the list filters; list-level `fileDrop:false` disables drop-add |
+| Lists | `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a **multi-file** picker (`multiple:false` forces single); OS drops **append** items anywhere in the list; `accept` on the list filters; list-level `file_drop:false` disables drop-add |
 | Drop on an existing list item | **Appends** a new item — it never replaces that item. Inside a `of:"file"` list the item singleton's container-level drop is suppressed (paste stays item-scoped) |
  | `format` vs legacy `encoding` | Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy alias of `{"format":"json"}` — prefer `format` |
 
@@ -62,7 +62,7 @@ Type is often auto-inferred from the element tag or presence of the `action` pro
 | Declaration | `<img data-smark>` or `<video data-smark>` are auto-inferred as `image`/`video`; a singleton wrapper contains exactly one unnamed inner media element |
 | Value contract | Same as `file`: raw data-URL string default, `{name,type,size,lastModified,data}` with `"format":"json"`; no width/height metadata |
 | Interior state | Payload always stored as standard base64; `encoding` only affects JSON export and bare-payload imports; acquisition helpers re-encode to base64 before type-specific processing |
-| Options | `image`: `image_resize`, `image_maxSize`, `image_format` (`jpeg`/`png`/`webp`/`avif`), `image_enforce` (`strict`/`hard`/`warn`/`ignore`), `smark_image_validate`<br>`video`: `video_maxSize`, `smark_video_validate`, `smark_video_click` (`auto`/`pick`/`play`), `smark_video_autoPick` |
+| Options | `image`: `image_resize`, `image_max_size`, `image_format` (`jpeg`/`png`/`webp`/`avif`), `image_enforce` (`strict`/`hard`/`warn`/`ignore`), `smark_image_validate`<br>`video`: `video_max_size`, `smark_video_validate`, `smark_video_click` (`auto`/`pick`/`play`), `smark_video_auto_pick` |
 | Notices | Unmet/unverifiable constraints dispatch a cancellable `smark:imageNotice` / `smark:videoNotice` event, with an in-page toast if not cancelled |
 | Controls | `video` relies on native `controls` for playback; do not attempt to capture random frames. `smark_video_click` controls click behaviour |
 | Layout | Authors must reserve media space (`width`/`height` attributes, CSS `aspect-ratio`, or `sizes`) — SmarkForm never sets layout dimensions |
@@ -81,11 +81,12 @@ Only elements with a `data-smark` attribute are captured and enhanced by SmarkFo
 As a convenience, supported options can be written as separate
 `data-smark-<option>` attributes instead of (or on top of) the JSON object.
 The suffix is used literally: there is no kebab-to-camel conversion, and HTML
-lowercases attribute names. Use the exact lowercase option key (including
-underscores, as in `min_items`) when it is attribute-compatible; use the JSON
-object for case-sensitive keys such as `exportEmpties`, `movingDepth`, or
-`image_maxSize`, and for structured values unless that option documents a
-prefixed-attribute parser.
+lowercases attribute names. Public option names use `snake_case` in markup,
+constructor options, and programmatic option objects. Action identifiers such
+as `addItem` are values, not option names, and retain their documented spelling.
+Function-valued JavaScript event hooks retain their documented `on...` spelling.
+Use JSON for structured values unless that option documents a prefixed-attribute
+parser.
 Attribute values arrive as strings and only supported options receive type
 normalization. When the exact same option key is present in both sources, the
 prefixed attribute overrides the JSON value. Example:
@@ -164,20 +165,20 @@ If `options.value` is set on a list, it becomes the list's `defaultValue`. On in
 </div>
 ```
 
-### `exportEmpties` Behavior
+### `export_empties` Behavior
 
-The `exportEmpties` option is **inherited** — a child component inherits the value from its nearest ancestor that sets it. This means you may need to explicitly set `exportEmpties:false` on a nested list even if it matches the default, to override an ancestor's `exportEmpties:true`.
+The `export_empties` option is **inherited** — a child component inherits the value from its nearest ancestor that sets it. This means you may need to explicitly set `export_empties:false` on a nested list even if it matches the default, to override an ancestor's `export_empties:true`.
 
-When `exportEmpties: false` (the default):
+When `export_empties: false` (the default):
 - List items are checked via `isEmpty()` before being included in the exported array
 - A form item is empty if ALL its field children are empty (null/undefined)
 - Empty items are stripped from the output → `[]` for a list of all-null items
 
-When `exportEmpties: true` (must be explicit):
+When `export_empties: true` (must be explicit):
 - All items are exported regardless of emptiness
 - Useful for "save progress" scenarios where partial data is intentional
 
-When an outer list (`exportEmpties:true`) contains an inner list (`exportEmpties:false`):
+When an outer list (`export_empties:true`) contains an inner list (`export_empties:false`):
 - Outer list exports all its items (including empty-looking ones)
 - Inner list strips its empty items when exported as part of the outer item
 
@@ -381,43 +382,43 @@ These decorators are often stacked with `@action`:
 - **`@export_to_target`**: After the method returns a value, tries to call `options.target.import(value)`. Transparent if `target` is absent.
 - **`@import_from_target`**: Before calling the method, tries to call `options.target.export()` to replace `data`. Transparent if `target` is absent.
 
-## `import()` and `setDefault` — Default Value Semantics
+## `import()` and `set_default` — Default Value Semantics
 
-Since v0.13.0, calling `component.import(data)` **updates the component's `defaultValue`** by default (i.e., `setDefault` defaults to `true`). This means `reset()` after an `import()` restores the imported data, not the HTML initialization default.
+Since v0.13.0, calling `component.import(data)` **updates the component's `defaultValue`** by default (i.e., `set_default` defaults to `true`). This means `reset()` after an `import()` restores the imported data, not the HTML initialization default.
 
 ### Behavior Summary
 
 | Call | Updates default? | What `reset()` restores |
 |------|-----------------|------------------------|
-| `import(data)` | ✅ Yes | `data` (normalized via `exportEmpties:true`) |
-| `import(data, {setDefault:false})` | ❌ No | Previous default |
+| `import(data)` | ✅ Yes | `data` (normalized via `export_empties:true`) |
+| `import(data, {set_default:false})` | ❌ No | Previous default |
 | `import(undefined)` | ❌ No (always skipped) | Current default unchanged |
 | `clear()` | ❌ No | Default unchanged |
 | `reset()` | ❌ No | Current default |
 
 ### How the New Default is Computed
 
-After a successful `import(data)` with `setDefault:true`, the new `defaultValue` is set by:
+After a successful `import(data)` with `set_default:true`, the new `defaultValue` is set by:
 
 ```javascript
-me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
+me.defaultValue = await me.export(null, {silent: true, export_empties: true});
 ```
 
-Using `exportEmpties: true` ensures empty list items are included in the stored default so `reset()` restores the exact same structure (including empty slots).
+Using `export_empties: true` ensures empty list items are included in the stored default so `reset()` restores the exact same structure (including empty slots).
 
 ### Breaking Change From Earlier Versions
 
 Code that calls `import(data)` and expects `reset()` to restore the original HTML-defined default must now use:
 
 ```javascript
-await component.import(data, {setDefault: false});
+await component.import(data, {set_default: false});
 ```
 
 ### HTML Trigger Example
 
 ```html
 <!-- Import without updating defaults (preview mode) -->
-<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
 <!-- Import with default update (load/apply mode, the new default) -->
 <button data-smark-action="import">Load Data</button>
 ```

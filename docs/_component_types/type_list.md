@@ -95,7 +95,7 @@ endcapture %}
 
 {% raw %} <!-- capture simple_list_example_notes {{{ --> {% endraw %}
 {% capture simple_list_example_notes -%}
-👉 With *exportEmpties* option set to false (default), lists won't export empty
+👉 With *export_empties* option set to false (default), lists won't export empty
    items.
 
 👉 ...unless there is no enough non empty items to satisfy *minItems* option,
@@ -333,7 +333,7 @@ API Reference
 
 #### value
 
-Sets the initial default items for the list. These defaults are restored when `reset()` is called and are updated by `import()` (unless `setDefault: false` is passed).
+Sets the initial default items for the list. These defaults are restored when `reset()` is called and are updated by `import()` (unless `set_default: false` is passed).
 
   * **Type:** Array
   * **Default value:** `[]`
@@ -371,8 +371,8 @@ Controls wether the list can be user sorted by dragging and dropping list items.
   * **Type:** Boolean
   * **Default value:** false
 
-When `sortable` is `true` without setting [`movingDepth`](#movingdepth-cross-list-drag-scope),
-only same-list reordering is allowed.  Cross-list drag requires `movingDepth`
+When `sortable` is `true` without setting [`moving_depth`](#movingdepth-cross-list-drag-scope),
+only same-list reordering is allowed.  Cross-list drag requires `moving_depth`
 on at least one of the lists involved.
 
 Sorting relies on the browser's native HTML drag-and-drop API.  Each list item
@@ -429,7 +429,7 @@ original behaviour: the entire item root is draggable (backward compatible).
 > 🔗 [https://github.com/drag-drop-touch-js/dragdroptouch](https://github.com/drag-drop-touch-js/dragdroptouch)
 
 
-#### movingDepth (Cross-List Drag scope)
+#### moving_depth (Cross-List Drag scope)
 
 Controls cross-list drag-and-drop by enforcing a maximum *sibling distance*
 between source and destination lists.
@@ -437,7 +437,7 @@ between source and destination lists.
   * **Type:** Number \| true \| false
   * **Default value:** 0 (disabled)
 
-When `movingDepth` is set to a positive number or `true` on a list, its items
+When `moving_depth` is set to a positive number or `true` on a list, its items
 become draggable even if `sortable` is `false`. However, same-list reordering
 is only allowed when `sortable` is enabled.
 
@@ -448,13 +448,13 @@ sibling distance of 2 (department item → employees → employee).  Items withi
 the same employees list have distance 0.
 
 A cross-list move is only allowed when the sibling distance between the source
-and destination list is **less than or equal to** `movingDepth` on **both**
+and destination list is **less than or equal to** `moving_depth` on **both**
 lists.  A value of `true` grants unlimited reach.
 
 {: .info}
-> **Sortable vs movingDepth**
+> **Sortable vs moving_depth**
 >
-> | `sortable` | `movingDepth` | Behaviour |
+> | `sortable` | `moving_depth` | Behaviour |
 > |---|---|---|
 > | `false` (default) | `0` (default) | Static list — no drag at all |
 > | `true` | `0` (default) | Same-list reorder only (legacy) |
@@ -464,14 +464,14 @@ lists.  A value of `true` grants unlimited reach.
 **Programmatic moves**
 
 You can still trigger a cross-list move programmatically via `move()` by
-passing a `targetList` option pointing to the destination list instance.  The
+passing a `target_list` option pointing to the destination list instance.  The
 same distance guard applies:
 
 ```js
 await sourceList.move({
     from: srcItem,          // component to move
     to: dstItem,            // component in the target list (position reference)
-    targetList: destList,   // the destination list instance
+    target_list: destList,   // the destination list instance
     position: "before",     // or "after" (default)
 });
 ```
@@ -480,7 +480,7 @@ await sourceList.move({
 
 In this example the outer `departments` list has `sortable: true` (same-level
 reorder only), while each inner `employees` list has both `sortable: true` and
-`movingDepth: 2`.  This allows employees to be dragged between
+`moving_depth: 2`.  This allows employees to be dragged between
 departments — the sibling distance between two employee lists is 2 (department
 item → employees → employee) — while still permitting same-list reordering.
 
@@ -499,7 +499,7 @@ item → employees → employee) — while still permitting same-list reordering
             <button data-smark-action="removeItem" title='Remove department'>➖</button>
           </div>
           <div class="cdd-employees">
-            <ul data-smark='{"type":"list","name":"employees","sortable":true,"movingDepth":2,"min_items":0}'>
+            <ul data-smark='{"type":"list","name":"employees","sortable":true,"moving_depth":2,"min_items":0}'>
               <li data-smark-role="empty_list" class="cdd-empty">No employees yet</li>
               <li>
                 <label data-smark title="Drag to reorder or move between departments">⠿</label>
@@ -609,7 +609,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         await engEmps.move({
             from: engEmps.children[0],  // Alice Johnson
             to: desEmps.children[0],    // Carol White
-            targetList: desEmps,
+            target_list: desEmps,
             position: 'before',
         });
     });
@@ -629,7 +629,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         const desEmps = myForm.find('/departments/1/employees');
         await desEmps.move({
             from: desEmps.children[2],  // Dave Brown
-            targetList: engEmps,
+            target_list: engEmps,
             position: 'after',
         });
     });
@@ -657,7 +657,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 %}
 
 
-#### exportEmpties
+#### export_empties
 
 Controls whether unfilled list items should be exported or not. This allows for
 neater arrays when the user adds more items to the list than are used.
@@ -703,7 +703,7 @@ The `list` component type supports the following actions:
   * {{ site.data.definitions.actions.options.target_import }}
   * **data:** (array / any¹)
   * **focus:** (boolean, default true)
-  * **setDefault:** (boolean, default `true`) — When `true` (the default), the imported data becomes the new default restored by `reset()`. Pass `false` to import data without changing the reset target.
+  * **set_default:** (boolean, default `true`) — When `true` (the default), the imported data becomes the new default restored by `reset()`. Pass `false` to import data without changing the reset target.
 
 
 {: .hint}
@@ -725,7 +725,7 @@ Clears the list to an empty array, removing all items regardless of any configur
 
 #### (Async) reset (Action)
 
-Reverts the list to its default structure. The default is initially set by the `value` option, and is updated every time `import()` is called with `setDefault: true` (the default). If no default has ever been set, the list reverts to an empty array (same as `clear`).
+Reverts the list to its default structure. The default is initially set by the `value` option, and is updated every time `import()` is called with `set_default: true` (the default). If no default has ever been set, the list reverts to an empty array (same as `clear`).
 
 **Example use case:** A "Reset" button that restores the list to its last loaded state.
 

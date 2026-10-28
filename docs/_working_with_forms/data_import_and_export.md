@@ -132,23 +132,23 @@ object matches the form structure exactly:
 }
 ```
 
-### The `exportEmpties` option
+### The `export_empties` option
 
 By default, SmarkForm **strips empty items** from list exports. A list item is
 considered empty when all its fields are empty (null, undefined, or
 empty string).
 
-This behaviour is controlled by the `exportEmpties` option on the list
+This behaviour is controlled by the `export_empties` option on the list
 component:
 
-| `exportEmpties` value | Behaviour |
+| `export_empties` value | Behaviour |
 |---|---|
 | `false` (default) | Empty list items are omitted from the exported array |
 | `true` | All items, including empty ones, are included in the export |
 
 ```html
 <!-- Empty items will be included in the export -->
-<ul data-smark='{"type":"list","name":"slots","exportEmpties":true}'>
+<ul data-smark='{"type":"list","name":"slots","export_empties":true}'>
   <li>
     <input data-smark type="text" name="value">
   </li>
@@ -156,23 +156,23 @@ component:
 ```
 
 {: .hint }
-> `exportEmpties` is **inherited** — a child component inherits the value from
+> `export_empties` is **inherited** — a child component inherits the value from
 > its nearest ancestor that sets it explicitly. This means you may need to
-> explicitly set `exportEmpties:false` on a nested list to override an
-> ancestor's `exportEmpties:true`. For example:
+> explicitly set `export_empties:false` on a nested list to override an
+> ancestor's `export_empties:true`. For example:
 > ```html
 > <!-- Outer list: export all items, including empty ones -->
-> <ul data-smark='{"type":"list","name":"sessions","exportEmpties":true}'>
+> <ul data-smark='{"type":"list","name":"sessions","export_empties":true}'>
 >   <li>
 >     <!-- Inner list: strip empties regardless of the outer setting -->
->     <ul data-smark='{"type":"list","name":"tags","exportEmpties":false}'>
+>     <ul data-smark='{"type":"list","name":"tags","export_empties":false}'>
 >       <li><input data-smark type="text" name="tag"></li>
 >     </ul>
 >   </li>
 > </ul>
 > ```
 
-The `exportEmpties` option is particularly useful in "save progress" scenarios
+The `export_empties` option is particularly useful in "save progress" scenarios
 where you want to preserve the user's position in a list even if they haven't
 filled in all the items yet.
 
@@ -241,37 +241,37 @@ load into the form:
 {"name":"Bob Smith","email":"bob@example.com","role":"Designer"}
 ```
 
-### The `setDefault` option
+### The `set_default` option
 
 By default, every successful `import` call **updates the component's `defaultValue`**.
 This means that after an import, clicking **♻️ Reset** restores the imported
 data rather than the original HTML-defined defaults.
 
-You can opt out of this behaviour by passing `setDefault: false`:
+You can opt out of this behaviour by passing `set_default: false`:
 
 ```html
 <!-- Import without updating the reset target (preview mode) -->
-<button data-smark='{"action":"import","setDefault":false}'>Preview</button>
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
 
 <!-- Import and make this the new reset target (load mode) -->
 <button data-smark-action="import">Load Data</button>
 ```
 
-Summary of `setDefault` behaviour:
+Summary of `set_default` behaviour:
 
 | Call | Updates default? | What `reset()` restores |
 |---|---|---|
 | `import(data)` | Yes | The newly imported data |
-| `import(data, {setDefault:false})` | No | The previous default |
+| `import(data, {set_default:false})` | No | The previous default |
 | `import(undefined)` | No | The current default (unchanged) |
 | `clear()` | No | The current default (unchanged) |
 | `reset()` | No | The current default |
 
 {: .hint }
-> `setDefault` applies only to the **originating** field: when a form imports
-> data with `setDefault: true`, only that form updates its own default. Child
+> `set_default` applies only to the **originating** field: when a form imports
+> data with `set_default: true`, only that form updates its own default. Child
 > components (nested forms, lists, and leaf fields) always receive
-> `setDefault: false` so that their own defaults are not affected.
+> `set_default: false` so that their own defaults are not affected.
 
 ### The `focus` option
 
@@ -314,8 +314,8 @@ Individual input fields can also have a default via the HTML `value` attribute:
 
 ### How `import` updates the default
 
-After a successful `import(data)` call (with `setDefault: true`, the default),
-SmarkForm re-exports the component with `exportEmpties: true` and stores the
+After a successful `import(data)` call (with `set_default: true`, the default),
+SmarkForm re-exports the component with `export_empties: true` and stores the
 result as the new `defaultValue`:
 
 ```javascript
@@ -323,7 +323,7 @@ result as the new `defaultValue`:
 await myForm.import({ name: "Alice", role: "admin" });
 ```
 
-Using `exportEmpties: true` when capturing the new default ensures that
+Using `export_empties: true` when capturing the new default ensures that
 `reset()` restores the exact same list structure — including empty slots — that
 was in place right after the import.
 
@@ -415,10 +415,10 @@ const value = await source.export();
 await destination.import(value);
 ```
 
-The chained `destination.import()` respects the **`setDefault`** option from
-the trigger: if you add `"setDefault": false` to the export trigger, the
+The chained `destination.import()` respects the **`set_default`** option from
+the trigger: if you add `"set_default": false` to the export trigger, the
 target component's `defaultValue` will **not** be updated by the import.
-Omitting `setDefault` (the default) leaves it as `true`, so the target's
+Omitting `set_default` (the default) leaves it as `true`, so the target's
 `defaultValue` is updated — meaning ♻️ Reset will later restore the copied
 value rather than the target's previous default.
 
@@ -561,7 +561,7 @@ console.log(data); // { name: "Alice", … }
 await myForm.import({ name: "Bob", email: "bob@example.com" });
 
 // Import without updating the default (preview mode)
-await myForm.import(data, { setDefault: false });
+await myForm.import(data, { set_default: false });
 
 // Import a specific sub-form
 const addressForm = myForm.find("/address");
@@ -598,7 +598,7 @@ const data = await response.json();
 await myForm.import(data); // data becomes the new default
 ```
 
-Because `import` defaults to `setDefault: true`, the user can later click
+Because `import` defaults to `set_default: true`, the user can later click
 **♻️ Reset** to restore the loaded record without re-fetching.
 
 ### Submitting form data to a backend
@@ -636,7 +636,7 @@ SmarkForm also supports native HTML `<form>` submission:
 
 - **`mailto:`** — wrap your fields in `<form action="mailto:you@example.com" method="post">` and add a `{"action":"submit"}` trigger. SmarkForm submits all fields to the user's email client. Use the default encoding (`text/plain` or `application/x-www-form-urlencoded`) — `enctype="application/json"` is not compatible with `mailto:`.
 
-- **JSON APIs** — set `enctype="application/json"` on the `<form>`. SmarkForm serializes the data and sends it via `fetch()`. Requires `enableJsonEncoding: true` on the root form instance.
+- **JSON APIs** — set `enctype="application/json"` on the `<form>`. SmarkForm serializes the data and sends it via `fetch()`. Requires `enable_json_encoding: true` on the root form instance.
 
 ```html
 <form action="mailto:you@example.com" method="post" enctype="text/plain">
@@ -661,7 +661,7 @@ await myForm.rendered;
 // Restore draft (without making it the reset default)
 const draft = localStorage.getItem("myForm.draft");
 if (draft) {
-    await myForm.import(JSON.parse(draft), { setDefault: false });
+    await myForm.import(JSON.parse(draft), { set_default: false });
 }
 
 // Auto-save on every export
@@ -671,7 +671,7 @@ myForm.on("AfterAction_export", (ev) => {
 ```
 
 {: .info }
-> Using `setDefault: false` when restoring a draft ensures that **♻️ Reset**
+> Using `set_default: false` when restoring a draft ensures that **♻️ Reset**
 > still returns to the form's HTML-defined defaults, not the draft. This lets
 > the user discard a draft by pressing Reset.
 

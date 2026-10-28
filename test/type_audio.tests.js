@@ -27,7 +27,7 @@ block mainForm
         )
 
         audio(
-            data-smark={type: "audio", name: "capped", audio_maxSize: 100}
+            data-smark={type: "audio", name: "capped", audio_max_size: 100}
             width="320"
         )
         audio(
@@ -56,7 +56,7 @@ block mainForm
 const pugAutoPick = (// {{{
 `extends layout.pug
 block mainForm
-    audio(data-smark={type: "audio", name: "clip", smark_audio_autoPick: true}, width="320")
+    audio(data-smark={type: "audio", name: "clip", smark_audio_auto_pick: true}, width="320")
 `);// }}}
 
 
@@ -204,7 +204,7 @@ test.describe('Audio Component Type Test', () => {
         expect(res.g2name).toBe("bogus.mp3");
     });//}}}
 
-    test('audio_maxSize rejects oversized media before reading bytes; under-cap accepted', async ({ page }) => {//{{{
+    test('audio_max_size rejects oversized media before reading bytes; under-cap accepted', async ({ page }) => {//{{{
         await openPage(page, title, pugBase);
         const res = await page.evaluate(async ({makeFileFn}) => {
             const capped = window.form.find("/capped");

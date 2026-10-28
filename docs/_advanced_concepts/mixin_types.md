@@ -444,7 +444,7 @@ no items initially, or a lazily shown subform — expands without a network wait
 
 SmarkForm scans the form subtree at render time, including markup that is not
 rendered yet (such as list item templates), and issues the fetches without
-blocking rendering.  Preloading obeys the same `smark_mixin_allowExternal`
+blocking rendering.  Preloading obeys the same `smark_mixin_allow_external`
 policy as on-demand loading: blocked references are silently skipped and only
 raise an error if they are actually used.
 
@@ -638,7 +638,7 @@ mixin templates.
 Three separate concerns are controlled by root-level options on the SmarkForm
 instance (or any ancestor component via `inheritedOption`):
 
-#### External template fetch policy: `smark_mixin_allowExternal`
+#### External template fetch policy: `smark_mixin_allow_external`
 
 Controls whether SmarkForm is permitted to fetch templates from external URLs
 (any mixin type that contains a URL part before the `#` fragment).
@@ -660,21 +660,21 @@ origin nor `"*"` is found, the policy defaults to `"block"`.
 
 ```js
 // Allow loading templates from the same server only
-new SmarkForm(el, { smark_mixin_allowExternal: 'same-origin' });
+new SmarkForm(el, { smark_mixin_allow_external: 'same-origin' });
 
 // Allow templates from one specific CDN only; block everything else
 new SmarkForm(el, {
-  smark_mixin_allowExternal: {
+  smark_mixin_allow_external: {
     'https://trusted-cdn.example.com': 'allow',
     '*': 'block',
   },
 });
 
 // Allow templates from any origin using wildcard
-new SmarkForm(el, { smark_mixin_allowExternal: { '*': 'allow' } });
+new SmarkForm(el, { smark_mixin_allow_external: { '*': 'allow' } });
 ```
 
-#### Script execution policy: `smark_mixin_allowLocalScripts`, `smark_mixin_allowSameOriginScripts`, `smark_mixin_allowCrossOriginScripts`
+#### Script execution policy: `smark_mixin_allow_local_scripts`, `smark_mixin_allow_same_origin_scripts`, `smark_mixin_allow_cross_origin_scripts`
 
 Controls whether `<script>` elements found at the top level of a `<template>`
 are executed after the component renders.  The applicable option is determined
@@ -682,9 +682,9 @@ by where the template was loaded from:
 
 | Template origin | Controlling option |
 |---|---|
-| Local (`#id` only, no URL) | `smark_mixin_allowLocalScripts` |
-| External, same origin | `smark_mixin_allowSameOriginScripts` |
-| External, cross-origin | `smark_mixin_allowCrossOriginScripts` |
+| Local (`#id` only, no URL) | `smark_mixin_allow_local_scripts` |
+| External, same origin | `smark_mixin_allow_same_origin_scripts` |
+| External, cross-origin | `smark_mixin_allow_cross_origin_scripts` |
 
 **String form** (global policy):
 
@@ -701,24 +701,24 @@ Each option accepts the same three values:
 Any of the three script options also accepts a plain object whose keys are
 origin strings and whose values are `"block"`, `"noscript"`, or `"allow"`.
 The special key `"*"` provides a wildcard fallback.  This is most useful for
-`smark_mixin_allowCrossOriginScripts` when templates from multiple third-party origins
+`smark_mixin_allow_cross_origin_scripts` when templates from multiple third-party origins
 need different levels of trust.
 
 ```js
 // Allow local mixin scripts only
-new SmarkForm(el, { smark_mixin_allowLocalScripts: 'allow' });
+new SmarkForm(el, { smark_mixin_allow_local_scripts: 'allow' });
 
 // Allow loading and executing scripts from same-origin external templates
 new SmarkForm(el, {
-  smark_mixin_allowExternal: 'same-origin',
-  smark_mixin_allowSameOriginScripts: 'allow',
+  smark_mixin_allow_external: 'same-origin',
+  smark_mixin_allow_same_origin_scripts: 'allow',
 });
 
 // Fine-grained cross-origin script policy: trust one CDN, silence another,
 // block everything else
 new SmarkForm(el, {
-  smark_mixin_allowExternal: 'allow',
-  smark_mixin_allowCrossOriginScripts: {
+  smark_mixin_allow_external: 'allow',
+  smark_mixin_allow_cross_origin_scripts: {
     'https://trusted-cdn.example.com': 'allow',
     'https://partial-trust.example.com': 'noscript',
     '*': 'block',
@@ -727,7 +727,7 @@ new SmarkForm(el, {
 ```
 
 {: .warning }
-> Setting `smark_mixin_allowCrossOriginScripts` to `"allow"` (or to a per-origin
+> Setting `smark_mixin_allow_cross_origin_scripts` to `"allow"` (or to a per-origin
 > object whose `"*"` wildcard is `"allow"`) grants full script execution for
 > templates loaded from third-party origins.  Only use this when you fully
 > control and trust those external sources.
@@ -1084,13 +1084,13 @@ distinguish error causes programmatically.
 | Error code | When thrown |
 |---|---|
 | `MIXIN_TYPE_MISSING_FRAGMENT` | The mixin type reference does not contain a `#<templateId>` fragment |
-| `MIXIN_EXTERNAL_FETCH_BLOCKED` | The mixin type references an external URL but `smark_mixin_allowExternal` is `"block"` (the default) |
-| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | The mixin type references a cross-origin URL but `smark_mixin_allowExternal` is `"same-origin"` |
+| `MIXIN_EXTERNAL_FETCH_BLOCKED` | The mixin type references an external URL but `smark_mixin_allow_external` is `"block"` (the default) |
+| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | The mixin type references a cross-origin URL but `smark_mixin_allow_external` is `"same-origin"` |
 | `MIXIN_TEMPLATE_NOT_FOUND` | No `<template>` element with the given `id` exists in the target document |
 | `MIXIN_TEMPLATE_INVALID_ROOT` | The template does not contain exactly one root element node |
 | `MIXIN_TEMPLATE_ROOT_HAS_NAME` | The template root element's `data-smark` options specify a `name` |
 | `MIXIN_CIRCULAR_DEPENDENCY` | The expansion stack already contains the current mixin key (infinite loop detected) |
-| `MIXIN_SCRIPT_LOCAL_BLOCKED` | A local mixin template contains a `<script>` and `smark_mixin_allowLocalScripts` is `"block"` (the default) |
-| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | A same-origin external mixin template contains a `<script>` and `smark_mixin_allowSameOriginScripts` is `"block"` (the default) |
-| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `smark_mixin_allowCrossOriginScripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_LOCAL_BLOCKED` | A local mixin template contains a `<script>` and `smark_mixin_allow_local_scripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | A same-origin external mixin template contains a `<script>` and `smark_mixin_allow_same_origin_scripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `smark_mixin_allow_cross_origin_scripts` is `"block"` (the default) |
 | `MIXIN_NESTED_SCRIPT_DISALLOWED` | A `<script>` element was found inside the template root subtree (nested scripts are not allowed; use top-level sibling `<script>` inside the `<template>` instead) |

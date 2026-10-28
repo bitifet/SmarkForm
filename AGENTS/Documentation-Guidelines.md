@@ -63,16 +63,18 @@ like `document.getElementById("myForm")` rather than a bare variable named
 
 ## `data-smark-*` Option Attributes
 
-When documenting prefixed option attributes, do not imply that every option
-property maps directly to an HTML attribute. SmarkForm uses the suffix
-literally; HTML lowercases attribute names, and there is no camelCase or
-kebab-case conversion. Use prefixed attributes only for supported lowercase
-option keys (including snake_case keys such as `min_items`). Use JSON
-`data-smark` for case-sensitive options such as `exportEmpties`, `movingDepth`,
-or `image_maxSize`, and for structured values unless an option documents a specific prefixed-value
-parser. Prefixed attributes can identify a component by themselves and override
-the same exact option key in the JSON object. Their values are strings; describe
-only the type normalization that the implementation actually supports.
+Public configuration option names use `snake_case` in `data-smark` JSON,
+constructor options, and programmatic option objects. Action identifiers are
+not option names: values such as `"addItem"` in the `action` option retain their
+documented spelling. Function-valued JavaScript event hooks retain their
+documented `on...` spelling and are not serializable configuration keys.
+SmarkForm uses a `data-smark-*` suffix literally; HTML
+lowercases attribute names, and there is no camelCase or kebab-case conversion.
+Use prefixed attributes for supported options, and use JSON `data-smark` for
+structured values unless an option documents a specific prefixed-value parser.
+Prefixed attributes can identify a component by themselves and override the
+same option key in the JSON object. Their values are strings; describe only the
+type normalization that the implementation actually supports.
 
 
 The documentation uses the Just-the-docs theme's built-in callout styles for important notes, warnings, and tips. The syntax is:

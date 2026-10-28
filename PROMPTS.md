@@ -134,7 +134,7 @@ keeps the plain single-file behavior.
 2. **What goes in the archive.** Not just the resolved component — the *file*
    descendants. For `of:"file"` lists that is the items themselves; for a list
    of objects it is a tree walk collecting every file-typed field (skip
-   non-file fields, mirrors how `exportEmpties`/`isEmpty` filter). Consider an
+   non-file fields, mirrors how `export_empties`/`isEmpty` filter). Consider an
    include/exclude pattern option.
 
 3. **Format — and the zero-dependency constraint.** SmarkForm has **no runtime

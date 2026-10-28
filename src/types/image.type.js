@@ -82,7 +82,7 @@ const optAccept = me => (
 );
 const optValidate = me => me.options.smark_image_validate !== false;
 const optClearOnDelete = me => (
-    me.options.smark_image_clearOnDelete !== false
+    me.options.smark_image_clear_on_delete !== false
 );
 const optEnforce = me => (
     ["strict", "hard", "warn", "ignore"].includes(me.options.image_enforce)
@@ -129,7 +129,7 @@ function decodeImage(obj) {//{{{
 
 // Size & format helpers (§4.1)//}}}
 function resolveBox(value) {//{{{
-    // image_resize / image_maxSize may be [w,h], {width,height} or a bare
+    // image_resize / image_max_size may be [w,h], {width,height} or a bare
     // number (= square).
     if (value == null) return {width: null, height: null};
     if (Array.isArray(value)) {
@@ -236,7 +236,7 @@ async function processImage(img, obj, {resize, maxSize, format} = {}) {//{{{
                 notices.push({
                     outcome: "B",
                     code: "IMAGE_RESIZE_UNSUPPORTED",
-                    requirement: resize != null ? "image_resize" : "image_maxSize",
+                    requirement: resize != null ? "image_resize" : "image_max_size",
                     message: `Could not resize this image to ${targetW}×${targetH}.`,
                 });
             };
@@ -251,7 +251,7 @@ async function acquirePipeline(obj, ctrl) {//{{{
     // {options, targetNode} for the static list-facing methods.
     const mode = optEnforce(ctrl);
     const resize = normalizeBoxOption(ctrl.options.image_resize) ?? null;
-    const maxSize = normalizeBoxOption(ctrl.options.image_maxSize) ?? null;
+    const maxSize = normalizeBoxOption(ctrl.options.image_max_size) ?? null;
     const format = ctrl.options.image_format ?? null;
     const hasRequirements = !!(resize != null || maxSize != null || format);
 
@@ -293,7 +293,7 @@ async function acquirePipeline(obj, ctrl) {//{{{
                 notices.push({
                     outcome: "C",
                     code: "IMAGE_DIMENSIONS_UNKNOWN",
-                    requirement: resize != null ? "image_resize" : "image_maxSize",
+                    requirement: resize != null ? "image_resize" : "image_max_size",
                     message: "Cannot verify the image dimensions (decode was"
                         + " skipped).",
                 });

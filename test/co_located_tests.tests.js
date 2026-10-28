@@ -268,7 +268,7 @@ function generateDemoValueTestHTML(example) {
 
   // Use a simple constructor that passes demoValue as the value option.
   // Merge smarkformOptions (security/behaviour flags) with the value option so that
-  // examples requiring e.g. smark_mixin_allowLocalScripts:"allow" are initialised correctly.
+  // examples requiring e.g. smark_mixin_allow_local_scripts:"allow" are initialised correctly.
   // JSON.stringify(constructorOpts) re-serialises the whole object safely; demoValue
   // is already a parsed plain object from the manifest so no pre-sanitisation is needed.
   const constructorOpts = Object.assign({}, smarkformOptions || {}, { value: demoValue });
@@ -503,7 +503,7 @@ for (const example of examples) {
 // Each test initialises the form with demoValue passed as the SmarkForm
 // constructor's `value` option, then exports the form and asserts that the
 // exported data matches demoValue after filtering falsy values from arrays
-// (to account for exportEmpties:false stripping empty list slots).
+// (to account for export_empties:false stripping empty list slots).
 for (const example of examples) {
   if (skipFile(example.file)) continue;
   if (!example.demoValue) continue;

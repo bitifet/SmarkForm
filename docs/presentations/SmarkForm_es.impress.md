@@ -110,7 +110,7 @@ power_example: |
             <button data-smark='{"action":"removeItem", "context":"phones", "preserve_non_empty":true}' title='Eliminar teléfono'>➖</button>
             <button data-smark='{"action":"addItem","context":"phones"}' title='Añadir teléfono'>➕ </button>
             <strong data-smark='label'>Teléfonos:</strong>
-            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "exportEmpties": true}'>
+            <ul data-smark='{"name": "phones", "of": "input", "sortable":true, "min_items":0, "max_items":5, "export_empties": true}'>
                 <li data-smark='{"role": "empty_list"}' class="row">(No dispone)</li>
                 <li class="row">
                     <label data-smark>📞 </label><input type="tel" data-smark>

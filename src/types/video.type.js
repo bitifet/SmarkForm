@@ -51,11 +51,11 @@ const optAccept = me => (
 );
 const optValidate = me => me.options.smark_video_validate !== false;
 const optClearOnDelete = me => (
-    me.options.smark_video_clearOnDelete !== false
+    me.options.smark_video_clear_on_delete !== false
 );
-const optAutoPick = me => me.options.smark_video_autoPick === true;
+const optAutoPick = me => me.options.smark_video_auto_pick === true;
 const optMaxSize = me => (
-    Number(me.options.video_maxSize) > 0 ? Number(me.options.video_maxSize) : null
+    Number(me.options.video_max_size) > 0 ? Number(me.options.video_max_size) : null
 );
 
 
@@ -134,7 +134,7 @@ async function acquirePipeline(obj, ctrl) {//{{{
             name: String(obj.name || ""),
             requirement: {maxBytes: maxSize},
             message: (
-                `Video is ${formatBytes(obj.size)} but \`video_maxSize\``
+                `Video is ${formatBytes(obj.size)} but \`video_max_size\``
                 + ` is ${formatBytes(maxSize)}.`
             ),
         });
@@ -185,7 +185,7 @@ export class video extends file {
         const me = this;
         const fileItem = (files || []).find(f => acceptFile(f, me._accept()));
         if (! fileItem) return;
-        // `video_maxSize` is rejected BEFORE any byte is read (§4.4) — a cheap
+        // `video_max_size` is rejected BEFORE any byte is read (§4.4) — a cheap
         // synchronous `File.size` check spares the read/encode cost.
         const maxSize = optMaxSize(me);
         if (maxSize != null && Number(fileItem.size) > maxSize) {
@@ -196,7 +196,7 @@ export class video extends file {
                 name: String(fileItem.name || ""),
                 requirement: {maxBytes: maxSize},
                 message: (
-                    `Video is ${formatBytes(fileItem.size)} but \`video_maxSize\``
+                    `Video is ${formatBytes(fileItem.size)} but \`video_max_size\``
                     + ` is ${formatBytes(maxSize)}.`
                 ),
             });
@@ -506,7 +506,7 @@ export class video extends file {
                     name: String(fileItem.name || ""),
                     requirement: {maxBytes: maxSize},
                     message: (
-                        `Video is ${formatBytes(fileItem.size)} but \`video_maxSize\``
+                        `Video is ${formatBytes(fileItem.size)} but \`video_max_size\``
                         + ` is ${formatBytes(maxSize)}.`
                     ),
                 });

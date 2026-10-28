@@ -18,9 +18,9 @@ const sym_submit_bound = Symbol('smarkform_submit_bound');
 const sym_submit_click = Symbol('smarkform_submit_click');
 
 // Flatten a nested export object into a list of {name, value} pairs.//{{{
-// keyStyle:   'bracket' (default) → parent[child]  |  'dot' → parent.child
-// arrayStyle: 'repeat'  (default) → same name       |  'index' → name[i] / name.i
-function flattenData(data, {keyStyle = 'bracket', arrayStyle = 'repeat'} = {}) {
+// key_style:   'bracket' (default) → parent[child]  |  'dot' → parent.child
+// array_style: 'repeat'  (default) → same name       |  'index' → name[i] / name.i
+function flattenData(data, {key_style = 'bracket', array_style = 'repeat'} = {}) {
     const entries = [];
     function flatten(value, path) {
         if (value === undefined) return; // omit undefined
@@ -35,8 +35,8 @@ function flattenData(data, {keyStyle = 'bracket', arrayStyle = 'repeat'} = {}) {
         if (Array.isArray(value)) {
             value.forEach((item, index) => {
                 let childPath;
-                if (arrayStyle === 'index') {
-                    childPath = keyStyle === 'dot'
+                if (array_style === 'index') {
+                    childPath = key_style === 'dot'
                         ? `${path}.${index}`
                         : `${path}[${index}]`;
                 } else {
@@ -49,7 +49,7 @@ function flattenData(data, {keyStyle = 'bracket', arrayStyle = 'repeat'} = {}) {
         if (type === 'object') {
             for (const [key, val] of Object.entries(value)) {
                 const childPath = path
-                    ? (keyStyle === 'dot' ? `${path}.${key}` : `${path}[${key}]`)
+                    ? (key_style === 'dot' ? `${path}.${key}` : `${path}[${key}]`)
                     : key;
                 flatten(val, childPath);
             }
@@ -226,17 +226,17 @@ export class form extends SmarkField {
     };//}}}
     @action
     @export_to_target
-    async export(_data, {exportEmpties} = {}) {//{{{
+    async export(_data, {export_empties} = {}) {//{{{
         const me = this;
         return Object.fromEntries(
             await Promise.all(Object.entries(me.children).map(
-                async ([key, child])=>[key, await child.export(null, {silent: true, exportEmpties})]
+                async ([key, child])=>[key, await child.export(null, {silent: true, export_empties})]
             ))
         );
     };//}}}
     @action
     @import_from_target
-    async import(data, {focus = false, silent = false, setDefault = true} = {}) {//{{{
+    async import(data, {focus = false, silent = false, set_default = true} = {}) {//{{{
         const me = this;
         const isReset = data === undefined;
         if (isReset) {
@@ -264,16 +264,16 @@ export class form extends SmarkField {
                         // transpilers would break this check.
                         // ...and, IMHO, this approach is better than a dirty
                         // Promise.resolve(...)
-                        // setDefault is intentionally NOT propagated to children:
+                        // set_default is intentionally NOT propagated to children:
                         // only the field where import originates updates its own default.
-                        const value = await target.import(data[key], {focus: focus && !silent, silent, setDefault: false});
+                        const value = await target.import(data[key], {focus: focus && !silent, silent, set_default: false});
                         return [key, value];
                     }
                 )
             )
         );
-        if (!isReset && setDefault) {
-            me.defaultValue = await me.export(null, {silent: true, exportEmpties: true});
+        if (!isReset && set_default) {
+            me.defaultValue = await me.export(null, {silent: true, export_empties: true});
         };
         if (focus && !silent) me.focus();
         return retv;
@@ -338,13 +338,13 @@ export class form extends SmarkField {
 
         if (effectiveEnctype === 'application/json') {
             // JSON encoding must be explicitly enabled via the root option
-            // `enableJsonEncoding: true`.  It defaults to false (disabled) as
+            // `enable_json_encoding: true`.  It defaults to false (disabled) as
             // a secure-by-default measure: unknown or automatically-activated
             // JSON fetch submissions could be exploited in CSRF scenarios.
-            if (! me.inheritedOption('enableJsonEncoding', false)) {
+            if (! me.inheritedOption('enable_json_encoding', false)) {
                 throw new Error(
                     'SmarkForm: JSON encoding (enctype="application/json") is'
-                    + ' disabled by default. Set enableJsonEncoding: true on'
+                    + ' disabled by default. Set enable_json_encoding: true on'
                     + ' the root SmarkForm instance to enable it.'
                 );
             }
@@ -359,10 +359,10 @@ export class form extends SmarkField {
                 // / AfterAction_submit handlers for custom handling.
             });
         } else {
-            const keyStyle = me.inheritedOption('keyStyle', 'bracket');
-            const arrayStyle = me.inheritedOption('arrayStyle', 'repeat');
+            const key_style = me.inheritedOption('key_style', 'bracket');
+            const array_style = me.inheritedOption('array_style', 'repeat');
             const entries = [
-                ...flattenData(exportedData, {keyStyle, arrayStyle}),
+                ...flattenData(exportedData, {key_style, array_style}),
                 ...extraEntries,
             ];
             await _submitFormEncoded(entries, {

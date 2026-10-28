@@ -1,6 +1,6 @@
 <div id="myForm">
   <h2>🗓️ Periods:</h2>
-  <div data-smark='{"type":"list","name":"periods","sortable":true,"exportEmpties":true,"min_items":0,"value":[{}]}'>
+  <div data-smark='{"type":"list","name":"periods","sortable":true,"export_empties":true,"min_items":0,"value":[{}]}'>
     <fieldset data-smark-role="empty_list" style='text-align: center'>🔒 Out of Service</fieldset>
     <div data-smark='{"type":"#periodItem"}'></div>
   </div>
@@ -10,7 +10,7 @@
   >➕ Add Period</button>
 </div>
 <template id="periodItem">
-  <fieldset data-smark='{"type":"form","exportEmpties":true}' style='margin-top: 1em'>
+  <fieldset data-smark='{"type":"form","export_empties":true}' style='margin-top: 1em'>
     <legend>Period
       <span data-smark-action="position">N</span>
       of
@@ -50,7 +50,7 @@
 </template>
 <template id="scheduleRow">
   <div class="schedule-row"
-       data-smark='{"type":"list","min_items":0,"max_items":3,"exportEmpties":false,"value":[{}]}'>
+       data-smark='{"type":"list","min_items":0,"max_items":3,"export_empties":false,"value":[{}]}'>
     <strong data-smark-role="header"><span id="label">Schedule</span></strong>
     <span class='time_slot' data-smark-role="empty_list">(Closed)</span>
     <span class='time_slot'>

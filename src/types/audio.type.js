@@ -51,16 +51,16 @@ const optAccept = me => (
 );
 const optValidate = me => me.options.smark_audio_validate !== false;
 const optClearOnDelete = me => (
-    me.options.smark_audio_clearOnDelete !== false
+    me.options.smark_audio_clear_on_delete !== false
 );
-const optAutoPick = me => me.options.smark_audio_autoPick === true;
+const optAutoPick = me => me.options.smark_audio_auto_pick === true;
 const optClickMode = me => (
     ["pick", "play"].includes(me.options.smark_audio_click)
     ? me.options.smark_audio_click
     : "auto"
 );
 const optMaxSize = me => (
-    Number(me.options.audio_maxSize) > 0 ? Number(me.options.audio_maxSize) : null
+    Number(me.options.audio_max_size) > 0 ? Number(me.options.audio_max_size) : null
 );
 
 
@@ -132,7 +132,7 @@ async function acquirePipeline(obj, ctrl) {//{{{
             name: String(obj.name || ""),
             requirement: {maxBytes: maxSize},
             message: (
-                `Audio is ${formatBytes(obj.size)} but \`audio_maxSize\``
+                `Audio is ${formatBytes(obj.size)} but \`audio_max_size\``
                 + ` is ${formatBytes(maxSize)}.`
             ),
         });
@@ -183,7 +183,7 @@ export class audio extends file {
         const me = this;
         const fileItem = (files || []).find(f => acceptFile(f, me._accept()));
         if (! fileItem) return;
-        // `audio_maxSize` is rejected BEFORE any byte is read (§4.4).
+        // `audio_max_size` is rejected BEFORE any byte is read (§4.4).
         const maxSize = optMaxSize(me);
         if (maxSize != null && Number(fileItem.size) > maxSize) {
             notify(me, {
@@ -193,7 +193,7 @@ export class audio extends file {
                 name: String(fileItem.name || ""),
                 requirement: {maxBytes: maxSize},
                 message: (
-                    `Audio is ${formatBytes(fileItem.size)} but \`audio_maxSize\``
+                    `Audio is ${formatBytes(fileItem.size)} but \`audio_max_size\``
                     + ` is ${formatBytes(maxSize)}.`
                 ),
             });
@@ -435,7 +435,7 @@ export class audio extends file {
                     name: String(fileItem.name || ""),
                     requirement: {maxBytes: maxSize},
                     message: (
-                        `Audio is ${formatBytes(fileItem.size)} but \`audio_maxSize\``
+                        `Audio is ${formatBytes(fileItem.size)} but \`audio_max_size\``
                         + ` is ${formatBytes(maxSize)}.`
                     ),
                 });
