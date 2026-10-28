@@ -911,7 +911,7 @@ button:disabled { opacity: .5; }
       <span role='img' aria-label='Add new interval'>➕</span>
     </button>
     <strong data-smark='label'>Schedule:</strong>
-    <span data-smark-type="list" data-smark-name="surveillance_schedule" data-smark-min_items="0" data-smark-max_items="3" data-smark-exportEmpties="true">
+  <span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3,"exportEmpties":true}'>
       <span>
         <input data-smark type='time' name='start'/>
         to
@@ -1032,6 +1032,5 @@ constructor.
 > events **can be locally attached to any *SmarkForm* field**.
 > 
 > Handlers passed through that options are attached to the *root form*.
-
 
 

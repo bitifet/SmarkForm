@@ -784,26 +784,27 @@ SmarkForm.
 
 ### Syntax
 
-The `data-smark` attribute should contain a valid JSON object with following
-attributes:
+The `data-smark` attribute can be empty, contain a component type shorthand, or
+contain a JSON object of SmarkForm options:
 
-  * `type` **(Mandatory):** Which specifies the component type.
+```html
+<!-- Type and name inferred from the native element -->
+<input name="email" data-smark>
 
-  * `name` **(Recommended):** Field name to identify the component in its form
-    level. Defaults to the value of the `name` attribute of actual HTML tag. If
-    none given, random generated valued will be used instead.
+<!-- Type shorthand; the name still comes from the HTML name attribute -->
+<input name="email" data-smark="input">
 
-  * *(other...)*: Depending on actual component type...
+<!-- JSON options for explicit or structured configuration -->
+<input data-smark='{"type":"input","name":"email","placeholder":"you@example.com"}'>
+```
 
-
-{: .info }
-> 📌 There are also exceptions to this rule:
->
-> 1. Any component with the `action` property is of "trigger" type and hence
->    the *type* property can be omitted.
-> 
-> 2. *Trigger* components are not considered form fields and, therefore, they
->    have no *name* property.
+The `type` option is required only when SmarkForm cannot infer the type or when
+you want to override the inferred type. It is inferred from the element and its
+HTML attributes in common cases; an `action` option makes the component a
+trigger, whose type is `trigger`. The `name` option is recommended for fields
+but can be inferred from the HTML `name` attribute, and SmarkForm generates a
+name when neither is provided. Triggers and labels are not named data fields;
+singleton inner fields are intentionally unnamed.
 
 
 ### Shorthand Syntaxes
@@ -829,21 +830,41 @@ attribute value can be omitted if we are happy with this inference:
 > **Example:**
 > 
 >   * **Shorthand:** `<textarea ... data-smark>`
->   * **Long Form:** `<textarea data-smark='{}>`
+>   * **Long Form:** `<textarea data-smark='{}'>`
 >   * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}'>`
 
 👉 **`data-smark-<option>` attributes:**
 
-Any property of the SmarkForm options object can also be written as a separate
-HTML attribute with a `data-smark-` prefix. This is often more convenient when
-using template engines that only allow dynamic attribute values, or when you
-find the resulting markup easier to read than a single JSON blob.
+For supported option names, a prefixed attribute can stand in for that option
+in the JSON object. A prefixed attribute also marks the element as a SmarkForm
+component by itself, so a bare `data-smark` attribute is not required. This
+syntax is useful with template engines that can set dynamic attributes, but it
+has naming and value limitations:
+
+- SmarkForm uses the attribute-name suffix literally; it does not translate
+  kebab-case to camelCase or otherwise canonicalize option names. HTML lowercases
+  attribute names, so use exact lowercase option names (including underscores)
+  that survive that conversion. For example, `data-smark-min_items` maps to
+  `min_items`.
+- Case-sensitive options such as `exportEmpties`, `movingDepth`,
+  `enableJsonEncoding`, `image_maxSize`, and `smark_video_autoPick` cannot be
+  represented by same-spelled HTML attributes: the browser lowercases the
+  suffix. Set these options in the JSON object.
+- Attribute values arrive as strings. SmarkForm normalizes known boolean and
+  numeric options, and some components parse particular structured values (for
+  example, `image_resize`). It does not generically parse every prefixed value
+  according to the option's expected type. Use JSON `data-smark` options for
+  case-sensitive names, objects/arrays, or values without a documented
+  attribute parser.
+
+When the same exactly named option appears in both the JSON object and a
+`data-smark-*` attribute, the prefixed attribute wins. The effective options
+are merged in this order: defaults, the JSON object, then prefixed attributes.
 
 > **Example:**
 >
 > ```html
-> <!-- The bare data-smark attribute is harmless but unnecessary here:
->      any data-smark-* option is enough for SmarkForm to detect the node. -->
+> <!-- The prefixed attributes alone are enough to identify this node. -->
 > <input
 >   data-smark-type="input"
 >   data-smark-name="email"
@@ -855,55 +876,41 @@ find the resulting markup easier to read than a single JSON blob.
 > <input data-smark='{"type":"input","name":"email","placeholder":"user@example.com"}'>
 > ```
 
-Attribute values are always read as raw strings and normalized by SmarkForm to
-the type each option expects. Booleans accept `"true"`/`"false"`, numbers are
-parsed as decimal numbers, and JSON values are parsed when the option expects
-an object or array. Options that accept strings are used verbatim.
+The example above uses lowercase, string-valued options. For options whose
+names or values do not fit the prefixed-attribute syntax, use the JSON form:
 
-Values in `data-smark-*` attributes always take precedence over values for the
-same option in the main `data-smark` object. Only the canonical `data-smark`
-attribute is written back by the library; the prefixed attributes remain
-author-time shortcuts.
+```html
+<ul data-smark='{"type":"list","name":"items","min_items":0,"exportEmpties":true}'>
+  <li><input name="label" data-smark></li>
+</ul>
+```
 
-
-
-## Mandatory properties
-
-The following properties are (nearly) mandatory:
-
-- The `type` property is always necessary to determine which component type
-  controller should be used for rendering the component. In many cases, it can be
-  inferred based on the tag name or the presence of the `action` property, which
-  forces the type to be "trigger".
-
-- The `name` property is required for all non-trigger components.
-   - If not explicitly provided, it can be inferred from the `name` property of
-     the tag being enhanced. For example, `<input name="foo" data-smark>`.
-   - If not provided and cannot be inferred, a randomly generated name will be
-     used.
-
-- The `action` property is mandatory for all [components of the type
-  "trigger"](#trigger-components) to specify which [action](actions) they
-  actually trigger. In fact, the `type="trigger"` property itself is optional
-  here having it is implied by the presence of the `action` property.
+SmarkForm writes the effective options back to the canonical `data-smark`
+attribute after enhancement; the original prefixed attributes remain in the
+DOM as author-time markup.
 
 
-**Other properties:**
 
-{: .warning }
-> 🚧 This section is still a draft...
+## Required and inferred properties
+
+- **`type`** is required when SmarkForm cannot infer the component type from the
+  HTML element and its attributes. It is inferred for common native controls,
+  `<label>` elements, and any component with an `action` property (which makes
+  it a trigger). Use an explicit type to override inference when needed.
+- **`name`** is recommended for data fields. SmarkForm first uses an explicit
+  option, then the HTML `name` attribute, and otherwise generates a name.
+  Triggers and labels are not named data fields; the inner field of a singleton
+  is intentionally unnamed.
+- **`action`** is required for a trigger and identifies the action it invokes.
+  The presence of `action` implies `type: "trigger"`.
 
 
-    Depending on the actual component type other properties may be applicable.
+### Component-specific options
 
-    In case of *triggers*, despite `type`and `name`, is worth to mention that,
-    except for the `context` and `to` properties
-
-
-    FIXME: To be continued...
-    //// ** ... the rest of available properties depend on the type of its [context]()...
-
-    TODO: Link 'context' and 'to' to propper type_trigger.md section...
+Other options depend on the component type and, for triggers, the action being
+invoked. See [Core Component Types]({{ "getting_started/core_component_types" | relative_url }})
+and the individual component pages for supported options, defaults, and
+action-specific arguments.
 
 
 
@@ -911,13 +918,14 @@ The following properties are (nearly) mandatory:
 
 ### Components
 
-A SmarkForm *component* is just a DOM element (HTML tag) which has a
-"data-smark" property providding a JSON-formatted *options* object.
+A SmarkForm *component* is a DOM element that SmarkForm identifies through
+`data-smark` or a supported `data-smark-*` option attribute. The marker may be
+bare, use a type-name shorthand, or contain a JSON-formatted options object.
 
 It looks like as follows:
 
 ```html
-<input data-smark='{type: "input"}'/>
+<input data-smark='{"type":"input"}'>
 ```
 
 {: .info }
@@ -953,7 +961,7 @@ different value than "trigger".
 **Example:**
 
 ```html
-<button data-smark='{action: "removeItem"}'></button>
+<button data-smark='{"action":"removeItem"}'></button>
 ```
 
 {: .hint }
@@ -972,7 +980,3 @@ other components throug their *relative path*.
     showEditor=true
     tests=false
 %}
-
-
-
-

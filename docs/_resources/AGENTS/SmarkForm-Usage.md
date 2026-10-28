@@ -78,10 +78,17 @@ const myForm = new SmarkForm(document.getElementById("myForm"));
 
 Only elements with a `data-smark` attribute are captured and enhanced by SmarkForm. SmarkForm is markup-agnostic — plain HTML elements inside a managed component are ignored unless they also have `data-smark`.
 
-As a convenience, any option can be written as a separate `data-smark-<option>`
-attribute instead of (or on top of) the JSON object. Values are read as raw
-strings and normalized to the expected type. Prefixed attributes override the
-corresponding JSON object values. Example:
+As a convenience, supported options can be written as separate
+`data-smark-<option>` attributes instead of (or on top of) the JSON object.
+The suffix is used literally: there is no kebab-to-camel conversion, and HTML
+lowercases attribute names. Use the exact lowercase option key (including
+underscores, as in `min_items`) when it is attribute-compatible; use the JSON
+object for case-sensitive keys such as `exportEmpties`, `movingDepth`, or
+`image_maxSize`, and for structured values unless that option documents a
+prefixed-attribute parser.
+Attribute values arrive as strings and only supported options receive type
+normalization. When the exact same option key is present in both sources, the
+prefixed attribute overrides the JSON value. Example:
 
 ```html
 <!-- data-smark-* attributes alone are enough; a bare data-smark is unnecessary. -->

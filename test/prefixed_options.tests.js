@@ -136,7 +136,7 @@ block mainForm
     await cleanup();
 });
 
-test('prefixed options on a mixin placeholder are merged into the clone', async ({ page }) => {
+test('prefixed type and name on a mixin placeholder are merged into the clone', async ({ page }) => {
     const cleanup = await loadPug(page, `
 extends layout.pug
 block mainForm
@@ -144,7 +144,7 @@ block mainForm
         div(data-smark)
             input(data-smark name="email" type="email")
             input(data-smark name="phone" type="tel")
-    div(data-smark-type="#contactTpl" data-smark-name="primary" data-smark-exportEmpties="true")
+    div(data-smark-type="#contactTpl" data-smark-name="primary")
 `);
     const value = await page.evaluate(() => window.form.export());
     expect(value).toEqual({ primary: { email: "", phone: "" } });

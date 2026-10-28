@@ -121,7 +121,7 @@ SmarkForm.registerMask("card", (node) => {
     return new IMask(node, { mask: "0000 0000 0000 0000" });
 });
 
-const form = new SmarkForm(element);
+const myForm = new SmarkForm(element);
 // <input data-smark='{"mask":"card"}' ...> now works
 ```
 
@@ -129,10 +129,12 @@ Masks can also be registered declaratively via `<script type="smark-mask">` elem
 
 ### `SmarkForm.registerCustomAction(name, handler)`
 
-Registers a custom action globally, available to all forms without needing `customActions` at construction time.
+Registers a custom action globally so triggers in subsequently constructed
+forms can invoke it. The former `customActions` constructor option was removed;
+`SmarkForm.registerCustomAction()` is the supported registration API.
 
 ```javascript
-SmarkForm.registerCustomAction("sendEmail", async (data, options) => {
+SmarkForm.registerCustomAction("sendEmail", async function(data, options) {
     const formData = await this.export();
     await fetch("/api/send", { method: "POST", body: JSON.stringify(formData) });
 });
@@ -141,7 +143,10 @@ const form = new SmarkForm(element);
 // <button data-smark='{"action":"sendEmail"}'> now works
 ```
 
-Globally registered actions can be overridden per-instance via the [`customActions`](#customactions) constructor option.
+SmarkForm binds the handler's `this` to the root form instance. Registered
+custom-action handlers are not automatically wrapped in the built-in
+`BeforeAction_*` / `AfterAction_*` lifecycle; add any required validation or
+event behavior explicitly.
 
 ---
 

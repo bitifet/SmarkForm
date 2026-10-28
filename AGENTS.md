@@ -747,6 +747,18 @@ When you discover a new pattern, fix a bug caused by an undocumented constraint,
 When writing or editing documentation pages in `docs/`, follow these conventions
 to maintain consistency across the site:
 
+### `data-smark-*` option attributes
+
+These attributes use their suffix as a literal option key. HTML lowercases
+attribute names, and SmarkForm does not map kebab-case or camelCase suffixes to
+other option spellings. Document prefixed attributes only for supported
+lowercase option keys (including snake_case); use JSON `data-smark` options for
+case-sensitive names and structured values without a documented parser. Values
+are strings and only known common or option-specific normalizers convert them.
+Prefixed attributes can mark a component without a bare `data-smark`, and
+override the same exact option key from the JSON object. See
+[`AGENTS/Documentation-Guidelines.md`](AGENTS/Documentation-Guidelines.md).
+
 ### Page Structure
 
 - **Front matter**: Always include `title`, `layout: chapter`, `permalink`, and

@@ -274,10 +274,10 @@ Registration, Expense Report, Medical Intake, Property Inspection, Restaurant
 Reservation — and edit it locally.
 
 
-## `data-smark`: the only attribute you need
+## `data-smark`: the canonical configuration attribute
 
-Configuration lives in a single attribute, and it can be reduced to almost
-nothing:
+SmarkForm's canonical configuration lives in one attribute, and it can be
+reduced to almost nothing:
 
 ```html
 <!-- Nothing at all: type and name are inferred from the tag and its attributes -->
@@ -321,9 +321,12 @@ nothing:
 **Why JSON inside `data-smark`?** SmarkForm deliberately keeps a component's
 configuration in **one** attribute so that the markup stays portable: no
 framework-specific attribute conventions, and a single, predictable place to
-look. The string shorthand (`data-smark="list"`) and the `data-smark-<option>`
-attributes are conveniences layered on top of that single JSON object, not a
-different model.
+look. The string shorthand (`data-smark="list"`) and supported
+`data-smark-<option>` attributes are conveniences layered on top of that JSON
+object, not a different model. Prefixed attributes use their suffix literally;
+HTML lowercases attribute names, so use them for compatible lowercase option
+keys. Use the JSON object for case-sensitive keys (such as `exportEmpties` or
+`image_maxSize`) and structured values without a documented attribute parser.
 
 👉 Full syntax: [The `data-smark` attribute](https://smarkform.bitifet.net/getting_started/core_concepts#the-data-smark-attribute)
 and [Shorthand syntaxes](https://smarkform.bitifet.net/getting_started/core_concepts#shorthand-syntaxes).

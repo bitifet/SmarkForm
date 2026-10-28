@@ -34,7 +34,6 @@ const form = new SmarkForm(element, options);
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `value` | Object | `{}` | [Initial data]({{ "component_types/type_form" | relative_url }}#value) |
-| `customActions` | Object | `{}` | [Custom action implementations]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}#customactions) |
 | `autoId` | Boolean/String/Function | `false` | [Auto-generate element IDs]({{ "component_types/type_form" | relative_url }}#autoid) |
 | `smark_mixin_allowExternal` | String | `"block"` | [External mixin fetching policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
 | `smark_mixin_allowLocalScripts` | String | `"block"` | [Local mixin `<script>` policy]({{ "advanced_concepts/mixin_types" | relative_url }}#mixin-security-options) |
@@ -46,6 +45,8 @@ const form = new SmarkForm(element, options);
 | `arrayStyle` | `"repeat"` / `"index"` | `"repeat"` | [Form encoding array style]({{ "component_types/type_form" | relative_url }}#data-flattening-options) |
 | `focus_on_click` | Boolean | `true` | [Focus containers on click]({{ "component_types/type_form" | relative_url }}#focus_on_click) |
 | `on*` | Function | — | [Event handlers]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}#on-event-handlers) (`on_click`, `onLocal_AfterAction_export`, etc.) |
+
+Register custom actions globally with `SmarkForm.registerCustomAction(name, handler)` before constructing forms that use them. This is not a constructor option; see [The SmarkForm Constructor]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}).
 
 ---
 
@@ -60,7 +61,7 @@ const form = new SmarkForm(element, options);
 
 **`data-smark` is optional on:** root element (implicit form type, also gets options from constructor), list item template (implicit for the item role, type inferred or set in the "of" option of the list).
 
-> See: [`data-smark` syntax]({{ "getting_started/core_concepts" | relative_url }}#the-data-smark-attribute) · [Shorthand forms]({{ "getting_started/core_concepts" | relative_url }}#shorthand-syntaxes)
+> See: [`data-smark` syntax]({{ "getting_started/core_concepts" | relative_url }}#the-data-smark-attribute) · [Shorthand forms and prefixed-option limitations]({{ "getting_started/core_concepts" | relative_url }}#shorthand-syntaxes)
 
 ---
 
@@ -127,7 +128,7 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `count` | list | [Get/set total item count]({{ "component_types/type_list" | relative_url }}#count-action) |
 | `position` | list item | [Get/set 1-based index]({{ "component_types/type_list" | relative_url }}#position-action) |
 | `move` | list (sortable) | [Move item]({{ "component_types/type_list" | relative_url }}#sortable) within/across lists |
-| custom | any | Via [`customActions`]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}#customactions) |
+| custom | any | Register with `SmarkForm.registerCustomAction(name, handler)` before form construction; see [The SmarkForm Constructor]({{ "advanced_concepts/the_smarkform_constructor" | relative_url }}) |
 
 **Signature:** `async actionName(data, options = {})`
 

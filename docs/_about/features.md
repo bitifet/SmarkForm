@@ -112,7 +112,7 @@ JavaScript code.
 
   * Attach a keyboard shotcut to a trigger by just adding a `hotkey`
     property to the trigger component.
-    - Ex.: `<button data-smark='{action: "addItem", hotkey: "+"}'>Add Item</button>`.
+    - Ex.: `<button data-smark='{"action":"addItem","hotkey":"+"}'>Add Item</button>`.
     - Then use `Ctrl`+`+` to add an item to the list.
 
   * Allow users to discover available hotkeys by pressing `Ctrl` key.
@@ -260,4 +260,3 @@ development:
 
 👉 Visit [AI & Agent Resources]({{ "/resources/ai-agents" | relative_url }}) for
 prompt templates and agent-ready knowledge files.
-

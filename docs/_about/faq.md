@@ -870,28 +870,27 @@ See the [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) page 
 
 ### How do I add custom actions?
 
-Pass a `customActions` object to the `SmarkForm` constructor. Each key becomes
-an action name that can be referenced in `data-smark` trigger buttons:
+Register a custom action on the `SmarkForm` class before constructing forms
+that will use it. The action name can then be referenced by a trigger:
 
 ```javascript
-const customActions = {
-    async myAction(data, options) {
-        console.log("Custom action triggered with data:", data);
-    },
-};
-const myForm = new SmarkForm(document.getElementById("myForm"), {
-    customActions
+SmarkForm.registerCustomAction("myAction", async function(data, options) {
+    console.log("Custom action triggered with data:", data);
+    console.log("Root form:", this);
 });
+
+const myForm = new SmarkForm(document.getElementById("myForm"));
 ```
 
 ```html
 <button data-smark-action="myAction">Run Custom Action</button>
 ```
 
-Custom actions are bound to the root form instance (`this` inside the function
-refers to the root `SmarkForm`). They do **not** automatically participate in
-the `BeforeAction`/`AfterAction` event cycle unless you emit those events
-yourself.
+The handler's `this` is bound to the root form. Registered custom actions do
+not automatically emit the built-in `BeforeAction_*` / `AfterAction_*` events.
+The former `customActions` constructor option is no longer supported; see
+[The SmarkForm Constructor]({{ "/advanced_concepts/the_smarkform_constructor" | relative_url }})
+for the current API.
 
 
 ### How do I add keyboard shortcuts (hotkeys)?
@@ -1495,4 +1494,3 @@ Open a [discussion](https://github.com/bitifet/SmarkForm/discussions) on GitHub
 or reach out at the [Telegram community
 group](https://t.me/smarkformcommunity). We're happy to help you out and may
 even add your question to this FAQ if it's a common one!
-
