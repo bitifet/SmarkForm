@@ -11,6 +11,61 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [Unreleased]
+
+<!-- Add new entries here when preparing the next release. -->
+
+---
+
+## [0.25.0] — 2026-10-28
+
+🐍 Consistent snake_case configuration · 🧭 Clear option and action naming rules
+
+SmarkForm 0.25.0 standardizes public configuration option names on `snake_case` across markup, constructor settings, and programmatic option bags. This is a breaking change: update existing camelCase and mixed-case option keys to their documented snake_case replacements; action identifiers and JavaScript methods keep their existing spelling.
+
+### Breaking Changes
+
+- **Configuration option names**: renamed camelCase and mixed-case options, including `export_empties`, `moving_depth`, `enable_json_encoding`, `auto_id`, `image_max_size`, `smark_mixin_allow_external`, and related media, mask, and list settings. The same naming applies to options passed to methods such as `import()`, `export()`, `move()`, and media acquisition helpers. Update existing integrations; old spellings are not aliases.
+- **Identifiers outside configuration remain unchanged**: values such as `addItem`, JavaScript method names such as `registerMask`, and function-valued callback hooks such as `onBeforeAction_export` retain their existing documented spelling.
+
+Migration map for renamed keys:
+
+| Old name | New name |
+|---|---|
+| `arrayStyle` | `array_style` |
+| `audio_maxSize` | `audio_max_size` |
+| `autoId` | `auto_id` |
+| `currentCount` | `current_count` |
+| `enableJsonEncoding` | `enable_json_encoding` |
+| `excludeEmpties` | `exclude_empties` |
+| `exportEmpties` | `export_empties` |
+| `fileDrop` | `file_drop` |
+| `image_maxSize` | `image_max_size` |
+| `keyStyle` | `key_style` |
+| `maxItems` | `max_items` |
+| `movingDepth` | `moving_depth` |
+| `setDefault` | `set_default` |
+| `smark_audio_autoPick` | `smark_audio_auto_pick` |
+| `smark_audio_clearOnDelete` | `smark_audio_clear_on_delete` |
+| `smark_image_clearOnDelete` | `smark_image_clear_on_delete` |
+| `smark_mask_throwOnMissing` | `smark_mask_throw_on_missing` |
+| `smark_mixin_allowCrossOriginScripts` | `smark_mixin_allow_cross_origin_scripts` |
+| `smark_mixin_allowExternal` | `smark_mixin_allow_external` |
+| `smark_mixin_allowLocalScripts` | `smark_mixin_allow_local_scripts` |
+| `smark_mixin_allowSameOriginScripts` | `smark_mixin_allow_same_origin_scripts` |
+| `smark_video_autoPick` | `smark_video_auto_pick` |
+| `smark_video_clearOnDelete` | `smark_video_clear_on_delete` |
+| `targetList` | `target_list` |
+| `video_maxSize` | `video_max_size` |
+
+### Documentation
+
+- Updated source, tests, examples, and documentation to use the standardized option keys, and documented the naming rule alongside the literal `data-smark-*` suffix behavior.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.25.0)
+
+---
+
 ## [0.24.0] — 2026-10-20
 
 🌳 Wildcard trigger dispatch · 🧩 External mixin improvements · 🎬 New hero video and animated README
