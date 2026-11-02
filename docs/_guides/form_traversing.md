@@ -59,7 +59,10 @@ Absolute paths are particularly useful when you need to access components from a
 
 ### Relative Paths
 
-Relative paths do not begin with a forward slash and are resolved relative to the current component. This enables context-aware navigation that adapts based on the caller's position.
+Relative paths do not begin with a forward slash. They start from the current
+named component (or its nearest named ancestor if the caller is unnamed) and
+follow child names one segment at a time. Triggers and labels are not path
+nodes, so a trigger's relative `context` path starts from its enclosing field.
 
 ```javascript
 // From within a list item, access a sibling field
@@ -117,14 +120,22 @@ const formRoot = anyComponent.find("/");
 
 ## Context and Target in Actions
 
-Understanding the concepts of *context* and *target* is crucial for effective action implementation and form interaction patterns.
+`context` and `target` are distinct paths with different bases: context selects
+the component that performs an action; target identifies an optional component
+the action acts on or exchanges data with. See the
+[Trigger reference]({{ "/component_reference/trigger" | relative_url }}) for the
+canonical trigger-option semantics; this guide focuses on how those paths are
+looked up.
 
 ### Context Terminology
 
 Before diving into path rules, it helps to have three terms clearly defined:
 
-- **Natural context** — the context a trigger *would* use if no `context` option is specified: the nearest ancestor field component that implements the requested action (SmarkForm walks up the ancestor chain automatically until it finds one).
-- **Explicit context** — the context produced when the `context` option *is* set. Its path is resolved starting from **where the trigger is placed** in the component hierarchy (see below). The resolved component **must implement the requested action** — SmarkForm does not walk further up the chain; if the resolved component does not implement the action it is reported as an error.
+- **Natural context** — when `context` is omitted, the nearest ancestor field
+  component that implements the requested action.
+- **Explicit context** — when `context` is set, its path is resolved from the
+  trigger's enclosing field component. The resolved component must implement
+  the action; SmarkForm does not fall back to another ancestor.
 - **Effective context** — the context that actually handles the action: the explicit context if one is given, otherwise the natural context.
 
 ### Triggers and Labels Are Not Field Components
@@ -133,7 +144,8 @@ Triggers (and labels) are SmarkForm components, but they are **not field compone
 
 As a consequence, calling `find()` on a trigger or label behaves exactly as if it were called on the trigger's enclosing field component (its nearest field ancestor). This matters for context path resolution:
 
-> When SmarkForm resolves a relative `context` path, it starts navigation from the **trigger's enclosing field component** — not from the trigger node itself. In practical terms, this means paths are resolved relative to the component *containing* the trigger.
+> Relative `context` paths start from the **trigger's enclosing field
+> component**, not the trigger node itself. Absolute paths start at the root.
 
 ### Understanding Context
 
@@ -141,8 +153,12 @@ The **context** is the field component that *owns* the action being triggered.
 
 **How context is resolved:**
 
-1. **Explicit context** — when the `context` property is set, the path is resolved starting from **where the trigger is placed** (the enclosing field component). Because triggers are not addressable by path, a path like `"personalData"` navigates as if it were called from the trigger's parent field, not from the trigger itself. The resolved component **must implement the requested action**; SmarkForm does not automatically walk further up the ancestor chain. If the component does not implement the action, an error is reported.
+1. **Explicit context** — when the `context` property is set, its path is resolved from the trigger's enclosing field component. Triggers are not path nodes. The resolved component **must implement the requested action**; SmarkForm does not walk further up the ancestor chain. If it does not implement the action, activation reports `UNKNOWN_ACTION`.
 2. **Natural context** — when no `context` is specified, SmarkForm walks up the ancestor chain and picks the **first ancestor that implements the requested action** automatically.
+
+If there is no eligible natural context, activating the trigger reports
+`UNKNOWN_ACTION`. Wildcard contexts behave differently: they filter out
+non-matching components and are a no-op when no eligible match remains.
 
 ```html
 <!-- Explicit context: "personalData" is a child of the enclosing field where this trigger lives -->
@@ -163,6 +179,16 @@ The **target** is an optional second component involved in the action. Its role 
 
 - For **`export`** with a target — SmarkForm exports the context and then imports the result into the target.
 - For **`import`** with a target — SmarkForm exports from the target first and uses the result as the data to import into the context.
+
+If `target` is omitted, SmarkForm can infer a target from trigger placement
+when the trigger sits inside a child component of its natural context (for
+example, a list item containing a `removeItem` trigger). An explicit `context`
+does not infer a target from the trigger's position; the action's own default
+then applies.
+
+For a target copy, the direction depends on the action: `export` copies context
+→ target, while `import` copies target → context. This direction is important
+when choosing which side is the context.
 
 {: .important }
 > **Target paths are resolved from the *effective context*, not from the trigger's position.**
@@ -195,6 +221,12 @@ The **target** is an optional second component involved in the action. Its role 
 > </button>
 > ```
 
+SmarkForm does not validate every missing target path as the same error. The
+target-copy behavior is action-specific; for example, an `export` with no
+resolved destination cannot copy, while an `import` without a target export may
+pass `undefined` to the context's import/default behavior. Validate target paths
+instead of relying on a failed lookup.
+
 ```html
 <!-- Natural target resolution from DOM hierarchy (no explicit context or target) -->
 <div data-smark='{"name":"addresses", "type":"list"}'>
@@ -207,47 +239,27 @@ The **target** is an optional second component involved in the action. Its role 
 
 ### Natural Context Resolution
 
-When no `context` is specified, SmarkForm walks up the ancestor chain to find the most appropriate context (the natural context):
+When the trigger is inside a list item, a list action's natural context is the
+list and the containing item can be inferred as the target:
 
 ```
-// Example hierarchy:
-// Form Root
-//   ├── personalData (form)
-//   │   ├── name (input)
-//   │   └── clearButton (trigger)  ← trigger is placed here
-//   └── businessData (form)
-
-// When clearButton is clicked (no "context" option set):
-// 1. personalData — implements 'clear' ✓
-// Effective context = naturalContext = personalData
+Root form
+└── pets (list)                    ← natural context for removeItem
+    └── item 0 (form)              ← inferred target
+        └── remove trigger
 ```
 
-This automatic resolution eliminates the need for explicit wiring in most common scenarios.
+For an explicit context, trigger placement does not supply a target. If no
+target is provided, the action's own default applies—for example, `addItem`
+appends to the list.
 
 ### Explicit Context and Target Specification
 
-When specifying both `context` and `target`, remember that:
-- The `context` path is resolved from **where the trigger is placed** (its enclosing field component).
-- The `target` path is resolved from the **effective context**.
-
-```html
-<!-- Copy personalData into businessData.
-     The trigger lives inside the root form, so "personalData" is a direct child of root.
-     Using an absolute target path avoids any ambiguity. -->
-<button data-smark='{
-    "action": "export",
-    "context": "personalData",
-    "target": "/businessData"
-}'>Copy Personal to Business</button>
-
-<!-- Alternatively, a relative target works if you account for where context is:
-     Starting from personalData, go up one level then into businessData -->
-<button data-smark='{
-    "action": "export",
-    "context": "personalData",
-    "target": "../businessData"
-}'>Copy Personal to Business</button>
-```
+Resolve the two paths separately: `context` starts at the trigger's enclosing
+field, while `target` starts at the effective context. The billing/shipping
+example above shows a relative sibling target; use an absolute target when the
+root-relative path is clearer. For supported action behavior and edge cases,
+see the [Trigger reference]({{ "/component_reference/trigger" | relative_url }}).
 
 ## List Item Sibling Navigation
 
@@ -462,15 +474,16 @@ const specificItems = form.find("data/?/value");
 When a wildcard path (e.g. `"*"` or `"foo/*"`) is used as the `context` of a trigger button,
 SmarkForm resolves it with `.find()` and dispatches the action to **every** matching component,
 in sequence, each with its own resolved `target`. Components that do not implement the
-requested action are skipped silently:
+requested action are skipped silently. If no matches implement the action, the
+trigger is a no-op rather than an `UNKNOWN_ACTION` error:
 
 ```html
 <!-- Clears empty items from ALL lists in the form at once -->
 <button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹</button>
 ```
 
-- `context:"*"` resolves to **every named component** in scope that implements
-  `removeItem` (i.e., all list components in the form).
+ - `context:"*"` resolves to matching components in scope, then keeps only
+  those that implement `removeItem` (typically lists).
 - `target:"*"` then resolves to all children of each matching context.
 - The action fires sequentially on each matching context — skipping any that
   don't implement the action, avoiding errors on non-list components.

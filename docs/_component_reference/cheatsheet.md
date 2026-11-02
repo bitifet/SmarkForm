@@ -144,6 +144,11 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 **Natural context:** walks ancestors to find first component implementing the action.  
 **Explicit `context`:** resolved from the trigger's enclosing field component (triggers themselves are not path nodes).
 
+An explicit context must implement the action; SmarkForm does not fall back to
+another ancestor. A non-matching explicit context raises `UNKNOWN_ACTION` when
+the trigger is activated. A wildcard context instead dispatches to matching
+components that implement the action and skips the rest.
+
 ```html
 <button data-smark-action="clear">Clear</button>
 <button data-smark='{"action":"export","context":"demo"}'>Export Demo</button>
@@ -157,15 +162,21 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `"name"` | Sibling component named "name" |
 | `"/"` | Root form |
 | `"."` | Current field |
-| `"..fieldname"` | Field in *parent* scope (no `/` after `..`) |
+| `"../fieldname"` | Child named `fieldname` in the parent scope |
 | `".-1"` | Previous list item sibling |
 | `".+1"` | Next list item sibling |
 | `"../sibling"` | Sibling of parent |
 | `"items/*"` | All children matching wildcard |
-| `"*"` (in context) | All components implementing the action (multi-dispatch) |
-| `"*"` (in target) | All children of the context |
+| `"*"` (in context) | Matching components in the path's scope that implement the action (multi-dispatch) |
+| `"*"` (in target) | Matching children of the context |
 
 **Target semantics:**
+
+An explicit target path is resolved from the effective context; an absolute
+path starts at the root. When the natural context is used, placement can infer
+a target (for example, the list item containing a `removeItem` trigger). An
+explicit context does not infer a target from trigger placement; the action's
+default applies when no target is set.
 
 | Combination | Result |
 |-------------|--------|
@@ -174,9 +185,9 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `removeItem` + `target:"*"` | Remove ALL items |
 | `removeItem` + `preserve_non_empty:true` | Remove only empty items |
 
-**Multi-context triggers:** a wildcard `context` (e.g. `"*"` or `"foo/*"`) dispatches the action to **every** matched component in sequence (each with its own resolved `target`); components lacking the action are skipped. Non-wildcard contexts are unchanged.
+**Multi-context triggers:** a wildcard `context` (e.g. `"*"` or `"foo/*"`) dispatches the action to eligible matched components in sequence (each with its own resolved `target`); components lacking the action are skipped. No eligible matches are a no-op.
 
-**Pitfall:** `target:"shipping"` looks for a child of context. Use `target:"../shipping"` for sibling.
+**Pitfall:** `target:"shipping"` looks for a child of context. Use `target:"../shipping"` for a sibling. A missing target is not a universal trigger error; validate the path and follow the action-specific behavior.
 
 ---
 

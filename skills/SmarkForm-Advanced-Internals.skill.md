@@ -64,18 +64,27 @@ merges `data-smark` options and resolves context/target automatically.
 
 ### Action Context and Target Resolution
 
-- `context` resolves relative to the **trigger element's** component in the
-  SmarkForm tree.
-- `target` resolves relative to the **context result**, then walks up/down
-  the component tree by name.
-- Inside a list item, `context: ".."` refers to the list component itself;
-  `context: "../.."` refers to the list's parent.
-- When targeting a sibling list from inside a cloned item template, use
-  `target: ".."` + the sibling list name (e.g.
-  `data-smark='{"action":"addItem","target":"..parentList"}'` is wrong — use
-  the correct path documented in SmarkForm Usage).
-- Cross-list targets in sortable lists resolve relative to the **source**
-  trigger's context, not the drop target.
+- With no `context`, SmarkForm uses the nearest ancestor component that
+  implements the requested action (the **natural context**).
+- An explicit relative `context` path starts at the trigger's enclosing field
+  component; triggers and labels are not path nodes. An absolute path starts at
+  the root. The selected component must implement the action—there is no
+  fallback to another ancestor.
+- An explicit `target` path starts at the **effective context**, not the
+  trigger's position. An absolute target starts at the root.
+- `export` with a target copies context → target; `import` with a target copies
+  target → context.
+- When the natural context is a list, a trigger inside an item can infer that
+  item as its target. Explicit context does not infer a target from placement;
+  the action's own default applies when target is omitted.
+- Wildcard contexts may resolve multiple components. Dispatch is sequential and
+  filters to components that implement the action; no eligible matches are a
+  silent no-op. A single explicit context that does not implement the action,
+  or natural resolution with no action-capable ancestor, raises
+  `UNKNOWN_ACTION` on activation.
+- For sibling data copies, compute `context` from the trigger's enclosing field
+  and `target` from the resolved context. Cross-list drag/drop destination
+  handling is separate from trigger target paths.
 
 ### List Template Rendering
 

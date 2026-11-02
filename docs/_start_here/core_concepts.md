@@ -545,10 +545,11 @@ with fields. See the [Label reference]({{ "/component_reference/label" | relativ
 ### Triggers {#triggers}
 
 A trigger is a component with an `action` option. SmarkForm infers its type, so
-`"type":"trigger"` is usually unnecessary. The action runs on a component that
-implements it; placement and an optional `context` affect which component
-receives it. See the [Trigger reference]({{ "/component_reference/trigger" | relative_url }})
-for the detailed rules.
+`"type":"trigger"` is usually unnecessary. Without `context`, the nearest
+ancestor that implements the action receives it. An explicit context path starts
+at the trigger's enclosing field; a separate `target` path starts at the
+effective context. See the [Trigger reference]({{ "/component_reference/trigger" | relative_url }})
+and [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for details.
 
 <a id="actions-1"></a>
 

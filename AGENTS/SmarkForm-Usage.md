@@ -350,22 +350,35 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 
 ### Action Context Resolution
 
-When a trigger button is clicked, SmarkForm resolves its **effective context** (the component that owns the action):
+When a trigger is activated, SmarkForm resolves its **effective context**, the
+component that implements and receives the action:
 
-- **If `context` is specified** (explicit context): The path is resolved starting from **where the trigger is placed**. Because triggers are not field components (they can't be addressed by path), the path navigates from the trigger's enclosing field component — as if the trigger itself were not a node in the path. The resolved component **must implement the action** — SmarkForm does not walk further up the chain; if it doesn't implement the action an error is reported.
-- **If `context` is NOT specified** (natural context): SmarkForm walks up the ancestor chain automatically to find the first component that implements the action.
+- **Natural context** (no `context` option): the nearest ancestor component
+  that implements the requested action.
+- **Explicit context**: a path resolved from the trigger's enclosing field
+  component. Triggers and labels are not path nodes. The result must implement
+  the action; SmarkForm does not fall back to another ancestor.
+- A relative path starts at the enclosing field; an absolute path beginning
+  with `/` starts at the root form.
+- An explicit context that does not implement the action—or a natural context
+  search that finds no action-capable ancestor—raises `UNKNOWN_ACTION` when the
+  trigger is activated.
+- A wildcard context may match several components. SmarkForm dispatches
+  sequentially to those that implement the action, skips other matches, and
+  treats no eligible matches as a no-op.
 
-Context path examples (resolved relative to the trigger's enclosing field component):
-- `"demo"` — sibling named "demo" in the same parent field
-- `"/"` — root form
-- `".-1"` — previous sibling (used for `source` in duplicate)
-- `"..fieldname"` — named field in grandparent scope
+Context path examples (relative to the trigger's enclosing field component):
+- `"demo"` — a child named `demo`
+- `"/"` — the root form
+- `".-1"` — the previous sibling in a list
+- `"../fieldname"` — a named child of the enclosing field's parent
 
 ### Action Target Resolution
 
-⚠️ **This is a common source of bugs.** Target paths are **not** relative to the trigger's position — they are resolved from the **effective context**.
-
-When `target` is specified, the path is evaluated starting from the effective context component. If you want to target a *sibling* of the context, you must navigate up with `..` before going to the sibling:
+Target paths are **not** relative to the trigger's position — they are resolved
+from the **effective context**. An absolute target path begins with `/` and
+starts at the root; a relative target path starts at the context. To target a
+sibling of the context, navigate up to its parent first:
 
 ```html
 <!-- Export billing address, import into shipping address (both siblings of the root) -->
@@ -376,11 +389,11 @@ When `target` is specified, the path is evaluated starting from the effective co
 }'>📋 Copy to shipping</button>
 ```
 
-- `context:"billing"` — resolved from the trigger's enclosing field (root form) → the billing subform
-- `target:"../shipping"` — resolved from the effective context (billing) → up to billing's parent, then "shipping"
-- Using `"target":"shipping"` alone → looks for a **child of billing** named "shipping" — silent failure
+- `context:"billing"` — resolved from the trigger's enclosing field (root form) to the billing subform
+- `target:"../shipping"` — resolved from billing to its parent, then its sibling shipping form
+- `target:"shipping"` — looks for a child of billing, not its sibling
 
-Absolute target paths (starting with `/`) always resolve from the root and avoid this ambiguity:
+Absolute target paths resolve from the root and avoid this relative-path ambiguity:
 
 ```html
 <button data-smark='{"action":"export","context":"billing","target":"/shipping"}'>
@@ -391,6 +404,12 @@ Absolute target paths (starting with `/`) always resolve from the root and avoid
 **Target semantics by action:**
 - `export` with target → exports the context, then imports the result into the target (copy context → target)
 - `import` with target → exports from the target, then imports the result into the context (copy target → context)
+
+When context is inferred naturally, trigger placement can supply a target—for
+example, a `removeItem` trigger inside a list item targets that item. Explicit
+context does not infer a target from trigger placement; the action's own default
+applies if no target is set. Missing targets are not a universal trigger error,
+so validate paths and follow the action-specific behavior.
 
 ```html
 <!-- Copy FROM previous sibling INTO current item -->
@@ -576,23 +595,28 @@ await component.import(data, {set_default: false});
 <button data-smark='{"action":"import"}'>Load Data</button>
 ```
 
-## `find()` Prefer Relative Paths
+## `find()` Paths
 
-Always use **relative paths** (no leading `/`) in `find()` calls. Relative paths resolve from the nearest named ancestor, making code more portable when forms are restructured.
+Prefer relative paths when they make code resilient to an enclosing form being
+added or changed. A relative path starts from the current named component (or
+the nearest named ancestor if the caller is unnamed) and follows direct child
+names one segment at a time. Triggers and labels are not path nodes.
 
-An absolute path like `find("/cardNumber")` searches from the root form's **direct children** only. If the form structure changes (e.g., nested under a wrapper subform), the absolute path breaks.
-
-A relative multi-segment path like `find("demo/cardNumber")` navigates through child components step by step: `children["demo"]` → `children["cardNumber"]`. This is both more portable and equally explicit.
+An absolute path starts with `/` and starts lookup at the root form. It is valid
+when root-based addressing is intended; it does not search recursively.
 
 ```javascript
-// ❌ Absolute path — breaks if structure changes
-const field = myForm.find("/cardNumber");
-
-// ✅ Relative path — portable, explicit
+// Relative path — portable when this field is nested under a named component
 const field = myForm.find("demo/cardNumber");
+
+// Absolute path — explicitly starts from the root form
+const rootField = myForm.find("/cardNumber");
 ```
 
-> **Note**: `find()` does **not** search recursively. Each path segment is a direct child lookup via `children[name]`. Single-segment relative paths like `find("cardNumber")` only find direct children of the nearest named ancestor, not descendants at arbitrary depth.
+> **Note**: `find()` does **not** search recursively. Each path segment is a
+> direct child lookup via `children[name]`. Single-segment relative paths like
+> `find("cardNumber")` only find direct children of the current/nearest named
+> component, not descendants at arbitrary depth.
 
 ## `find()` Timing — Must Await `rendered`
 
@@ -602,11 +626,11 @@ The `find()` method looks up components in an internal map that is built **async
 const myForm = new SmarkForm(document.getElementById("myForm"));
 
 // ❌ WRONG — render is not done yet, find returns null
-const field = myForm.find("/name"); // null!
+const field = myForm.find("name"); // null!
 
 // ✅ CORRECT — wait for render to complete
 await myForm.rendered;
-const field = myForm.find("/name"); // returns the component
+const field = myForm.find("name"); // returns the component
 ```
 
 **Inside event handlers** (`AfterAction_*`, `afterRender`, etc.) this is not an issue because those events only fire after rendering has finished.

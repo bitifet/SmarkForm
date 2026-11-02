@@ -185,9 +185,9 @@ for the full reference.
 
 ### What are triggers and actions?
 
-A **trigger** is a button (or any focusable element) with an `"action"` key in
-its `data-smark` options. When clicked (or its hotkey is pressed), it invokes
-the named **action** on the appropriate component.
+A **trigger** is any SmarkForm component with an `"action"` option; a button is
+the common case. Clicking it (or pressing its configured hotkey) invokes the
+named **action** on the effective context.
 
 ```html
 <button data-smark-action="export">Save</button>
@@ -213,6 +213,12 @@ The **context** of a trigger is the component that receives the action. By
 default, SmarkForm resolves it automatically — the trigger's "natural context"
 is its **closest ancestor component that implements the action**.
 
+When `context` is specified, its path starts from the trigger's enclosing field
+component and must resolve to a component that implements the action; SmarkForm
+does not fall back to a different ancestor. Activating a trigger with an
+explicit context that does not implement the action reports `UNKNOWN_ACTION`.
+`target` is separate and resolves from the effective context.
+
 This means:
 
 - A `clear` button placed **directly inside** a list item's template clears
@@ -227,13 +233,14 @@ For the case where no convenient ancestor exists, you can always target any
 component explicitly with the `"context"` property and a relative path:
 
 ```html
-<!-- Clears only the "email" field, no matter where the button is placed -->
+<!-- Clears the sibling field named "email" from this enclosing form -->
 <button data-smark='{"action":"clear","context":"email"}'>Clear email</button>
 ```
 
-See [Core Concepts — Triggers]({{ "/start_here/core_concepts" | relative_url }}#triggers)
-and [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for more
-detail.
+See [Core Concepts — Triggers]({{ "/start_here/core_concepts" | relative_url }}#triggers),
+the [Trigger reference]({{ "/component_reference/trigger" | relative_url }}),
+and [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for the
+path bases and copy direction.
 
 
 ### What is the Singleton Pattern?
@@ -960,8 +967,8 @@ kind of features]({{ "/community/branding" | relative_url }}).
 ### Can one trigger act on several components at once?
 
 Yes — when the `context` (and optionally `target`) of a trigger is a **wildcard**
-path (e.g. `"*"` or `"foo/*"`), SmarkForm resolves it to **every matching
-component** and dispatches the action to each one in sequence. This is the
+path (e.g. `"*"` or `"foo/*"`), SmarkForm resolves matching components and
+dispatches the action in sequence to those that implement it. This is the
 multi-context edge case of a trigger.
 
 A single `context:"*"` button can therefore affect many independent components
@@ -976,6 +983,7 @@ A few things to keep in mind:
 
 - Only components that **implement the requested action** receive the call;
   others are skipped silently (no error).
+- If no matched component implements the action, the trigger is a silent no-op.
 - Each matched context gets its own dispatch with its own resolved `target` —
   so `target:"*"` operates on the children of *each* context individually.
 - Actions run **sequentially** and are awaited one by one.

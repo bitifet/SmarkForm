@@ -37,11 +37,18 @@ If sources disagree, prefer the highest-priority source.
    - Always wait for `await myForm.rendered` before any `find()` usage or
      component-tree-dependent logic.
 3. **List/template/context semantics**
-   - Follow list template role rules (`item`, `empty_list`, `header`, `footer`,
-     etc.).
-   - Respect context/target resolution semantics for triggers.
-   - For controls inside cloned item templates that target sub-lists, use safe
-     placement patterns documented in SmarkForm Usage.
+    - Follow list template role rules (`item`, `empty_list`, `header`, `footer`,
+      etc.).
+    - With no `context`, a trigger uses the nearest ancestor that implements its
+      action. An explicit context path starts at the trigger's enclosing field
+      and must resolve to a component that implements the action; triggers and
+      labels are not path nodes.
+    - Keep `target` distinct from `context`: explicit targets resolve from the
+      effective context. `export` copies context → target; `import` copies
+      target → context. When natural context is a list, placement can infer an
+      item target; explicit context does not infer one.
+    - For controls inside cloned item templates that target sub-lists, use safe
+      placement patterns documented in SmarkForm Usage.
 4. **Security/root options**
    - Security-sensitive options must be configured on the root SmarkForm
      constructor options (not via nested `data-smark` inheritance tricks).
