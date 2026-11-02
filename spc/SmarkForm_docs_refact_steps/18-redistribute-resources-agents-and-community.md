@@ -19,7 +19,9 @@ section by default.
    Agents.
 2. Move/retain Community pages in their own collection, using the approved
    route/nav map. Preserve contributor, support, contact, license, branding, and
-   Build in Public content.
+   Build in Public content. **Do not edit `docs/_community/contact.md`**: the
+   maintainer has explicitly asked that this page remain unchanged, including
+   its content, front matter, permalink, and nav order. Keep its existing route.
 3. Audit all links from Home, docs, readme/skills, footer/aux links, and examples
    to relocated pages. Update references in docs `AGENTS/` mirrors where
    affected.
