@@ -322,7 +322,7 @@ node scripts/validate-cheatsheet.js
 - Runs automatically as part of `npm run pretest` (after the TOC generator, before the collector)
 - Requires the cheatsheet to use the generated `{% include chaptertoc/cheatsheet.html depth=3 %}` tag (no hand-written TOCs)
 - When `docs/_includes/chaptertoc/cheatsheet.html` exists (i.e. the generator has run), cross-checks every TOC link against the computed GFM heading ids and every in-depth heading against the TOC links
-- Uses the same `gfmId`/`reduceRawText`/`extractHeadings` functions as `scripts/generate-chaptertocs.js` (imported, so both can never drift)
+- Uses the same `gfmId`/`reduceRawText`/`extractHeadings` functions as `scripts/generate-chaptertocs.js` (imported, so both can never drift), including `{#custom-id}` heading IAL overrides
 - Validates all `{{ "..." | relative_url }}` references against the real docs/ file tree
 - Accounts for Jekyll collection directory naming (`_advanced_concepts` → `advanced_concepts`)
 - Exit code 0 = pass, 1 = fail
@@ -348,6 +348,7 @@ node scripts/generate-chaptertocs.js
 - For every docs page carrying `{% include chaptertoc/<slug>.html %}` (with optional `depth=N`), writes `docs/_includes/chaptertoc/<slug>.html` containing the nested `<ul>` TOC
 - Replicates the exact id algorithm of **kramdown-parser-gfm 1.1.0** (Jekyll's default `input: GFM`): `downcase` → drop `[^\p{Word}\- \t]` (this keeps underscores, leading digits and accented letters) → each space/tab to `-` → `-N` suffix on duplicates. It is **not** the old kramdown `basic_generate_id` — that one would wrongly strip `_`/leading digits
 - Heading text is reduced to kramdown's `raw_text` (codespans, `*`/`**` emphasis, links, HTML entities) before id generation; labels are delegated to Liquid's `markdownify` in the generated include so they always match the rendered headings
+- Explicit kramdown id overrides (`## Heading {#custom-id}`) are honored: the id IAL is stripped from the TOC label and used verbatim as the anchor, so renamed headings can preserve legacy fragment links
 - `depth=N` truncates the tree (default 4); pages that only list h2 (or h2+h3) declare `depth=2` (or `depth=3`) on their include tag
 - Only rewrites a generated file when its content actually changed, so watchers and `jekyll serve --watch` are not forced into spurious rebuilds
 - **Dev watch mode**: `scripts/watch-chaptertocs.js` (started by `npm run servedoc` and `npm run dev` alongside Jekyll) reruns the generator whenever any docs `.md` changes; Jekyll then rebuilds the page, so TOCs update live without restarting the dev server. It debounces (250 ms) and serializes runs, ignores anything outside `.md` (generated `.html` includes never trigger it), and filters `.jekyll-cache`/dotfiles

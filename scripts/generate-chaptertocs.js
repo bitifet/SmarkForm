@@ -135,6 +135,10 @@ function applyUsedIds(entries) {
 const INCLUDE_TAG_RE = /{%-?\s*include\s+chaptertoc\/([\w.-]+\.html)([^%]*-?)\s*%}/;
 const FENCE_RE = /^\s*```/;
 const HEADING_RE = /^\s{0,3}(#{2,4})\s+(.+?)\s*$/;
+// Kramdown inline attribute list at the end of a heading. We only need the
+// id override: `## Heading {#custom-id}` renders with `id="custom-id"` and
+// without the attribute list in its text.
+const HEADING_IAL_ID_RE = /\s*\{#([^}\s]+)\}\s*$/;
 
 const SKIPPED_DIRS = new Set(['_includes', '_layouts', '_data', '_sass', 'assets', 'node_modules']);
 
@@ -158,6 +162,9 @@ function walk(dir, out = []) {
  *  - legacy vim-markdown-toc TOC blocks (transition support)
  *  - the <details>/<div class="chaptertoc"> wrapper itself
  *  - raw <pre>/<script>/<style> HTML blocks
+ *
+ * A trailing kramdown id IAL (`## Heading {#custom-id}`) is returned as
+ * `customId` and removed from the rendered label, matching kramdown's output.
  */
 function extractHeadings(text) {
   const entries = [];
@@ -211,9 +218,15 @@ function extractHeadings(text) {
 
     const m = HEADING_RE.exec(line);
     if (!m) continue;
-    const text_ = m[2];
+    let text_ = m[2];
     if (/^{%|^{{/.test(text_)) continue; // Liquid tags at the start – not a real heading
-    entries.push({ level: m[1].length, text: text_ });
+    let customId = null;
+    const idMatch = HEADING_IAL_ID_RE.exec(text_);
+    if (idMatch) {
+      customId = idMatch[1];
+      text_ = text_.slice(0, idMatch.index).trimEnd();
+    }
+    entries.push({ level: m[1].length, text: text_, customId });
   }
 
   return entries;
@@ -297,7 +310,10 @@ function main() {
     const maxDepth = depthMatch ? parseInt(depthMatch[1], 10) : 4;
     const raw = extractHeadings(text);
     const flat = applyUsedIds(
-      raw.map((e) => ({ ...e, id: gfmId(reduceRawText(e.text)) }))
+      raw.map((e) => ({
+        ...e,
+        id: e.customId ?? gfmId(reduceRawText(e.text)),
+      }))
     );
     for (const e of raw) {
       if (/{[{%]/.test(e.text)) {

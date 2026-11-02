@@ -41,7 +41,10 @@ if (!/{%-?\s*include\s+chaptertoc\/cheatsheet\.html\s+(?:[^%]*depth=\d+)?[^%]*%}
 
 // Compute the real kramdown-GFM ids for every heading, mirroring the generator.
 const flat = applyUsedIds(
-    extractHeadings(content).map((e) => ({ ...e, id: gfmId(reduceRawText(e.text)) }))
+    extractHeadings(content).map((e) => ({
+        ...e,
+        id: e.customId ?? gfmId(reduceRawText(e.text)),
+    }))
 );
 const headingIds = new Set(flat.map((e) => e.id));
 const expectedIds = new Set(flat.filter((e) => e.level <= CHEATSHEET_DEPTH).map((e) => e.id));
