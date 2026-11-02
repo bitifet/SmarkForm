@@ -26,6 +26,7 @@ changes for Step 07. It is a review aid, not reader-facing documentation.
 | `docs/_guides/form_traversing.md` | Keeps the path grammar and practical navigation examples; clarifies the enclosing-field context base, effective-context target base, natural target inference, and wildcard no-match behavior. Duplicate context/target exposition is reduced. Remaining traversal material stays in this guide. |
 | `docs/_start_here/core_concepts.md` | Retains only the concise action overview and links to Trigger / Form Traversing. |
 | `docs/_about/faq.md` | Clarifies explicit context resolution and points to Trigger and Form Traversing. |
+| `docs/_guides/events.md` | Clarifies that programmatic action calls have no trigger origin (unset); trigger-initiated lifecycle events expose their origin component. |
 | `docs/_component_reference/cheatsheet.md` | Corrects `..fieldname` to `../fieldname`; summarizes context/target bases, direction, wildcard filtering, and missing-target caution. |
 | `docs/_ai_agents/smarkform_usage.md`, `AGENTS/SmarkForm-Usage.md` | Aligns agent usage rules and relative-path examples with the implementation. |
 | `docs/_guides/using_smarkform.md` | Adds an interim, accurate context/target summary and links while preserving the Step 08 authoring boundary and noindex stub marker. |

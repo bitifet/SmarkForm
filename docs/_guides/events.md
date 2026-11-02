@@ -305,9 +305,9 @@ myForm.on("AfterAction_export", async (ev) => {
 {: .hint }
 > The `onAfterAction_export` handler is called **every time** an export action
 > runs — whether triggered by a button click or called programmatically via
- > `myForm.export()`.  If you only want to submit on user-initiated
-> exports, check `ev.origin` (the trigger component) and skip when it is `null`
-> (programmatic call).
+> `myForm.export()`. If you only want to submit on user-initiated exports, check
+> `ev.origin` (the trigger component) and skip when it is absent. Programmatic
+> action calls do not supply a trigger origin.
 
 {: .info }
 > If you need to prevent the export from running at all (e.g. to display inline
