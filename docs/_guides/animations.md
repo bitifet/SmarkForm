@@ -3,15 +3,12 @@ title: "Animations"
 layout: chapter
 description: "Add CSS transitions and animations to SmarkForm forms and dynamic lists without relying on a built-in animation engine."
 permalink: "/guides/animations"
-migration_in_progress: true
-sitemap: false
 nav_order: 9
 redirect_from:
   - "/advanced_concepts/animations"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/animations.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -114,10 +111,10 @@ The two-class approach always plays the same transition in reverse for exit.
 Sometimes you want **different** entry and exit effects — for example, sliding
 in from the left but fading out on removal.
 
-This needs a third class for the exit state.  The technique is the same:
-`afterRender` handles entry, `beforeUnrender` handles exit.  Both use a 1 ms
-delay before applying the final state so the browser has time to register the
-starting position.
+This needs a third class for the exit state. `afterRender` handles entry with a
+1 ms delay so the browser can register the starting position;
+`beforeUnrender` applies the exit class and waits for its CSS transition before
+SmarkForm removes the item.
 
 {% raw %}<!-- anim_adv_html {{{ -->{% endraw %}
 {% capture anim_adv_html -%}
@@ -185,9 +182,12 @@ Entry slides in from the left (`translateX` only, 300 ms). Exit fades out (`opac
 
 A symmetric effect (slide right for exit) puts the slowest part of the `ease-in` curve near the off-screen position, where the element is already nearly invisible. An `opacity`-only exit is simpler and looks cleaner. You can also compose both (`transform` + `opacity`) for a combined effect — the key is that the three-class approach lets you pick any combination.
 
-**Why the 1 ms delay in exit too?**
+**Why does exit wait for 250 ms?**
 
-When adding `adv-out`, the element already has `adv-visible` overriding it to `translateX(0)`. The `adv-out` class changes `opacity` from 1 to 0. Adding the class and `await` in the same tick would batch the style change — the 1 ms delay lets the browser register the new `opacity` before we start waiting for the animation to finish.
+When adding `adv-out`, the item already has `adv-visible` establishing its
+onscreen state, so the opacity transition has a starting value. The 250 ms wait
+matches the CSS transition duration and keeps the node in the DOM until the
+fade completes.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -222,4 +222,3 @@ The result is that **any list added anywhere in the form hierarchy** is
 automatically animated without further wiring.
 
 > **See also:** [Events](events) for the full lifecycle event reference.
-<!-- END old PORTED TO docs/_guides/animations.md -->

@@ -3,15 +3,12 @@ title: "The Singleton Pattern"
 layout: chapter
 description: "Wrap a single SmarkForm scalar field in any HTML element while keeping its data tree simple with the singleton pattern."
 permalink: "/guides/the_singleton_pattern"
-migration_in_progress: true
-sitemap: false
 nav_order: 8
 redirect_from:
   - "/advanced_concepts/the_singleton_pattern"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/the_singleton_pattern.md -->
 {% include links.md %}
 
 {% include components/sampletabs_ctrl.md %}
@@ -59,15 +56,14 @@ form field itself, but a wrapper tag surrounding it:
 
 The wrapper adopts the following rules:
 
-  * **Exactly one field:** the wrapper may contain only **one** non-trigger
-    component — an `<input>`, `<textarea>` or `<select>`, or any other *scalar*
-    field (e.g. `color` or `file`, which are themselves `<input>`-derived).
-    This is what makes it a *singleton*. Violating this raises a
-    `NOT_A_SINGLETON` error (see [Restrictions](#restrictions-and-errors)).
-  * **Naming:** the `name` can be declared on the wrapper (via its `data-smark`
-    property) or on the inner field (via the `name` attribute or a `data-smark`
-    property). Declaring it on the wrapper is recommended — it is more
-    structural, and it is what the examples below do.
+  * **Exactly one field:** the wrapper must contain exactly one data field —
+    an `<input>`, `<textarea>`, `<select>`, or another scalar field such as
+    `color` or `file`. It may also contain labels and triggers. Violating this
+    rule raises `NOT_A_SINGLETON` (see
+    [Restrictions](#restrictions-and-errors)).
+  * **Naming:** declare the data `name` on the wrapper, in its `data-smark`
+    options or HTML `name` attribute. The singleton's inner field is
+    intentionally unnamed; a `name` on that child is ignored.
   * **Scalar import/export:** the component imports and exports **only** the
     value of the inner field.
   * **Inheritance:** scalar options (e.g. `accept`, `format`, `encoding`,
@@ -179,17 +175,18 @@ hold exactly one field.
 
 ### SINGLETON_TYPE_MISMATCH
 
-If the inner field's type does not match the scalar type declared on the
-wrapper, a `SINGLETON_TYPE_MISMATCH` error is raisedhols. For example, a
-wrapper declared as `"type":"color"` must contain a single `color` (or
-`input`-derived, type-compatible) inner field.
+If the inner field's resolved type does not match the scalar type declared on
+the wrapper, SmarkForm raises `SINGLETON_TYPE_MISMATCH`. For example, a wrapper
+declared as `"type":"color"` must contain one inner field that resolves to
+the `color` type.
 
 ### Relative vs Absolute Context
 
-Inside a singleton, triggers without a `context` resolve up the ancestor
-chain to the wrapper — never to the form root. This is exactly what makes the
-pattern portableikuha. Use absolute paths (`"/name"`) only when you truly need
-to be global.
+Inside a singleton, a trigger without `context` uses the nearest ancestor that
+implements its action. For example, `clear` resolves to the scalar wrapper,
+which delegates to its inner field. This is what makes the pattern portable.
+Use explicit absolute paths only when you intentionally need root-based
+addressing; see the [Trigger reference]({{ "/component_reference/trigger" | relative_url }}).
 
 {: .info}
 > When an example is shown with the *sampletabs editor* (`showEditor=true`),
@@ -363,4 +360,3 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     demoValue=singleton_pattern_phones_demoValue
     tests=singleton_pattern_phones_tests
 %}
-<!-- END old PORTED TO docs/_guides/the_singleton_pattern.md -->

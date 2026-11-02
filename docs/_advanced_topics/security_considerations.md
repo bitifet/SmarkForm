@@ -1,17 +1,14 @@
 ---
-title: Security Considerations
+title: "Security Considerations"
 layout: chapter
 description: "Review SmarkForm security defaults for external mixins, template scripts, file inputs and content loaded from untrusted sources."
 permalink: "/advanced_topics/security_considerations"
-migration_in_progress: true
-sitemap: false
 nav_order: 2
 redirect_from:
   - "/advanced_concepts/security_considerations"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_advanced_topics/security_considerations.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -40,10 +37,10 @@ All security-sensitive SmarkForm features follow the same principle:
 
 > **Off by default.  Opt in explicitly.  Fail loudly when blocked.**
 
-When a blocked feature is triggered, SmarkForm throws a named error (e.g.
+When a blocked feature is actually used, SmarkForm throws a named error (e.g.
 `MIXIN_EXTERNAL_FETCH_BLOCKED`) rather than silently ignoring the request.
-This means you will notice the restriction immediately in the browser console
-and can make a conscious decision about whether and how to permit the feature.
+Eager mixin preloading is best-effort: blocked references are skipped during
+preloading and fail only if SmarkForm later tries to expand them.
 
 Security options are set via the **root-level SmarkForm constructor options**
 (the second argument to `new SmarkForm(…)`):
@@ -96,6 +93,11 @@ external URLs** (any mixin type reference that contains a URL path before the
 | `"block"` *(default)* | Throws `MIXIN_EXTERNAL_FETCH_BLOCKED` for any external URL. Cross-origin and same-origin alike. |
 | `"same-origin"` | Allows fetching templates from the same origin. Cross-origin URLs throw `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`. |
 | `"allow"` | Fetching is permitted from any origin. |
+
+The option also accepts a per-origin object. Keys are origin strings and values
+may be `"block"`, `"same-origin"`, or `"allow"`; `"*"` supplies the fallback
+policy, which is `"block"` when omitted. This lets an application allow one
+trusted CDN while blocking other origins.
 
 **Why blocked by default?**  Fetching an external document at page-load time
 is a network side-effect that can be surprising, can leak information to
@@ -200,12 +202,12 @@ form under the hood.  In addition, SmarkForm provides its own non-standard
 `enctype="application/json"` extension that serialises the form data as JSON
 and submits it via `fetch`.
 
-This `application/json` extension is **disabled by default** as a caution
-measure.  Although it does not introduce a meaningful additional security risk
-compared to standard form submissions, the use of `fetch` can be flagged by
-automated security evaluation tools and, unlike traditional form POSTs, JSON
-`fetch` requests do not benefit from the browser's built-in same-origin
-cookie-sending restrictions that some CSRF defences rely on.
+This `application/json` extension is **disabled by default** and requires an
+explicit root option. SmarkForm sends it through `fetch()` with a JSON content
+type and does not override Fetch's default credentials mode (`same-origin`).
+Cross-origin JSON requests are subject to CORS, including the browser's
+preflight for `application/json`. Do not treat the content type or preflight as
+a replacement for server-side authorization and CSRF protections.
 
 | Setting | Behaviour |
 |---|---|
@@ -245,4 +247,3 @@ documentation]({{ "/component_reference/form" | relative_url }}#async-submit-act
 
 See the [Error Codes Reference]({{ "/advanced_topics/error_codes" | relative_url }})
 for the full list of SmarkForm error codes.
-<!-- END old PORTED TO docs/_advanced_topics/security_considerations.md -->

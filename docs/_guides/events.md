@@ -1,17 +1,14 @@
 ---
-title: Event Handling
+title: "Events"
 layout: chapter
 description: "Use SmarkForm lifecycle, field and action events to observe interactions and synchronize your application with form changes."
 permalink: "/guides/events"
-migration_in_progress: true
-sitemap: false
 nav_order: 6
 redirect_from:
   - "/advanced_concepts/events"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/events.md -->
 {% include links.md %}
 
 {% include components/sampletabs_ctrl.md %}
@@ -30,12 +27,15 @@ redirect_from:
 
 ## Overview
 
-SmarkForm provides a rich event model that lets you observe and react to both
-user interactions and programmatic changes inside your forms.
+SmarkForm provides an event model for action lifecycles and captured DOM field
+events. Trigger-dispatched actions emit lifecycle events; direct calls to raw
+methods such as `myForm.import(data)` or `myForm.export()` do not. A
+programmatic field update may produce a DOM event only when that component's
+implementation dispatches one (for example, masked inputs dispatch `input`).
 
 Events fall into two categories:
 
-- **Action lifecycle events** — fired before and after every SmarkForm
+- **Action lifecycle events** — fired before and after trigger-dispatched SmarkForm
   [action]({{ "/component_reference/trigger" | relative_url }}) (such
   as `export`, `import`, `clear`, `reset`, `addItem`, …).
 - **DOM field events** — standard browser events (`input`, `change`, `focus`,
@@ -48,7 +48,8 @@ Both categories share the same registration API.
 
 ## Action Lifecycle Events
 
-When an action executes, two events are emitted around it:
+When a trigger dispatches an action, two events are emitted around it unless
+the action is marked `silent`:
 
 | Event name | When |
 |---|---|
@@ -90,8 +91,9 @@ A `BeforeAction_<name>` handler may cancel the action entirely by calling
 `ev.preventDefault()`:
 
 ```javascript
-myForm.on("BeforeAction_export", (ev) => {
-    if (!isValid()) {
+myForm.on("BeforeAction_export", async (ev) => {
+    // validateApplicationForm is supplied by your application.
+    if (!await validateApplicationForm(ev.context)) {
         ev.preventDefault(); // action will not execute
     }
 });
@@ -303,11 +305,10 @@ myForm.on("AfterAction_export", async (ev) => {
 %}
 
 {: .hint }
-> The `onAfterAction_export` handler is called **every time** an export action
-> runs — whether triggered by a button click or called programmatically via
-> `myForm.export()`. If you only want to submit on user-initiated exports, check
-> `ev.origin` (the trigger component) and skip when it is absent. Programmatic
-> action calls do not supply a trigger origin.
+> The `onAfterAction_export` handler runs when a trigger-dispatched export
+> completes. Direct calls to `myForm.export()` invoke the raw method and do not
+> emit lifecycle events. For trigger-driven exports, `ev.origin` identifies the
+> trigger component.
 
 {: .info }
 > If you need to prevent the export from running at all (e.g. to display inline
@@ -326,9 +327,13 @@ myForm.on("BeforeAction_import", async (ev) => {
     ev.preventDefault(); // Cancel the default (no-op) import
     const response = await fetch("/api/load");
     const data = await response.json();
-    await myForm.import(data); // Trigger a new import with the fetched data
+    await myForm.import(data); // Raw method: no second action lifecycle event
 });
 ```
+
+The initial trigger dispatch emits `BeforeAction_import`, which this handler
+cancels. The subsequent direct `myForm.import(data)` updates the fields but does
+not emit another `BeforeAction_import` / `AfterAction_import` pair.
 
 {: .hint }
 > `ev.data` *can* be defined when an import trigger has a `source` property
@@ -365,10 +370,10 @@ myForm.on("AfterAction_export", (ev) => {
 
 ### The `@action` decorator
 
-Every action method on a SmarkForm component is wrapped by the `@action`
-decorator at class-definition time (defined in `src/lib/field.js`, applied in
-`src/types/trigger.type.js` and each component type). The decorator registers
-a wrapper in `this.actions[name]` that:
+Action methods are marked with the `@action` decorator defined in
+`src/types/trigger.type.js`. Its per-instance initializer registers an action
+dispatcher in `this.actions[name]`; triggers call this dispatcher. The public
+prototype method itself remains a raw method. The dispatcher:
 
 1. Defaults `options.focus = true` (unless already set), so trigger-initiated
    calls auto-focus.
@@ -383,7 +388,10 @@ a wrapper in `this.actions[name]` that:
 
 ### Calling actions programmatically
 
-Actions can be called directly via `component.actionName(data, options)`. These are the raw prototype methods — they do not fire lifecycle events or auto-focus. Use triggers (HTML buttons with `data-smark='{"action":"..."}'`) when you need the full action lifecycle (`BeforeAction_*` / `AfterAction_*` events, focus defaulting).
+Component methods can be called directly via `component.actionName(data,
+options)`. These raw prototype methods do not fire lifecycle events or apply the
+trigger's default focus behavior. Use a trigger when you need the full action
+lifecycle (`BeforeAction_*` / `AfterAction_*` events and trigger focus defaults).
 
 ### Event bubbling: local, on, and all
 
@@ -409,4 +417,3 @@ Per-event `bubbles` metadata intentionally mirrors native DOM behaviour:
 | Action events (`BeforeAction_*`, `AfterAction_*`) | `true` | N/A |
 
 Event handling is implemented in `src/lib/events.js`.
-<!-- END old PORTED TO docs/_guides/events.md -->

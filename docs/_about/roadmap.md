@@ -44,6 +44,8 @@ Automatic sorting by field value is not scheduled.
 The *API interface* will allow components to fetch data from remote endpoints
 and automatically update when dependent field values change.
 
+> **Status:** This proposal is not implemented. See [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }}) for the current status and the existing integration alternatives.
+
 The `src` property will accept a URL string, or an array with the endpoint,
 optional arguments, and HTTP method. Arguments can reference other fields in
 the form by prepending `@` to the property name — those values are resolved at

@@ -1,7 +1,7 @@
 ---
 title: «select» Component Type
 layout: chapter
-description: "Explore the in-progress SmarkForm select field API for loading options from endpoints and values in other fields."
+description: "The proposed Select API Interface for loading options from endpoints is planned and not implemented."
 permalink: "/component_reference/select"
 migration_in_progress: true
 sitemap: false
@@ -33,10 +33,15 @@ redirect_from:
 Introduction
 ------------
 
-Select component will be capable of loading its options from a remote API call
-by passing its *src* property to so called
-[API Interface]({{ "/guides/the_api_interface" | relative_url }}).
+{: .warning }
+> **Planned, not implemented:** SmarkForm currently treats `<select>` as an
+> ordinary `input` field. It does not process a `src` option, fetch option data,
+> or update options when another field changes. See
+> [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }})
+> and the [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface).
 
+The following snippet records a **proposal only**. It is not runnable SmarkForm
+configuration and does not cause a request:
 
 **Example:**
 
@@ -64,22 +69,20 @@ by passing its *src* property to so called
   * **src[1]:** *(Optional)* Provides arguments to be passed.
   * **src[2]:** *(Optional)* Specifies the HTTP method ('GET' by default).
 
-**About API Interface:**
+**Proposed API Interface behavior (not implemented):**
 
-*API Interface* will be responsible for fetching the data based on the
+If implemented, the *API Interface* proposal would fetch data based on the
 specified endpoint, arguments, and other parameters (such as the method), while
 also keeping track of changes in every field it depends on (those marked with
-initial '@') allowing the comsummer component (a *select* in this case, but it
-may be others in the future) to update its options every time relevant data
-changes.
+an initial `@`) so the consuming component (a *select* here) could update its
+options when relevant data changes.
 
 {: .info}
-> 👉 One important feature here is the ability to perform the fetching process
-> through an interchangeable callback referred to as an 'adapter.'
+> One proposed feature is an interchangeable callback, called an *adapter*,
+> for performing the fetch.
 > 
-> By default, this adapter internally executes an HTTP request as explained earlier.
+> The default adapter described in the proposal would execute an HTTP request.
 > 
-> However, it can be easily substituted with a custom implementation tailored
-> to different types of APIs, ranging from GraphQL APIs to mock implementations
-> used for testing purposes.
+> An application could replace it with an implementation for another API style
+> or a mock used in tests.
 <!-- END old PORTED TO docs/_component_reference/select.md -->

@@ -1,17 +1,14 @@
 ---
-title: Error Codes Reference
+title: "Error Codes"
 layout: chapter
 description: "Reference SmarkForm's named errors, their causes and recovery guidance for rendering, imports, mixins, media and actions."
 permalink: "/advanced_topics/error_codes"
-migration_in_progress: true
-sitemap: false
 nav_order: 3
 redirect_from:
   - "/advanced_concepts/error_codes"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_advanced_topics/error_codes.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -261,6 +258,49 @@ type, or omit it and let SmarkForm infer it.
 
 ---
 
+### `MASK_NOT_FOUND`
+
+A field's `mask` option names no factory in the scoped or global registry. By
+default this is a render error. Setting root option
+`smark_mask_throw_on_missing:false` warns and leaves the field unmasked.
+
+**Note:** The option handles missing registrations only. An exception thrown by
+a registered factory currently propagates from mask application and is not
+wrapped as a SmarkForm error code. See [Field Masking — Error Handling]({{ "/guides/field_masking" | relative_url }}#error-handling).
+
+---
+
+## Native Input Type Validation
+
+These errors mean a SmarkForm scalar type was applied to an incompatible native
+input. Use an `<input>` whose `type` matches the declared SmarkForm type:
+
+| Code | Required native input |
+|---|---|
+| `NOT_A_NUMBER_FIELD` | `<input type="number">` |
+| `NOT_A_DATE_FIELD` | `<input type="date">` |
+| `NOT_A_TIME_FIELD` | `<input type="time">` |
+| `NOT_A_DATETIME_LOCAL_FIELD` | `<input type="datetime-local">` |
+| `NOT_A_COLOR_FIELD` | `<input type="color">` |
+| `NOT_A_RADIO_FIELD` | `<input type="radio">` |
+
+---
+
+## Media Field Errors
+
+These errors indicate an incompatible element or an invalid media singleton:
+
+| Code | Cause | Fix |
+|---|---|---|
+| `IMAGE_TYPE_ON_INPUT` | `<input type="image">` was declared as a SmarkForm image field. | Use an `<img>` field or a singleton containing one unnamed `<img>`. |
+| `IMAGE_MISSING_IMG` | An image singleton has no inner `<img>` or has the wrong element. | Include exactly one unnamed `<img>` field. |
+| `VIDEO_TYPE_ON_INPUT` | A video field was declared on an `<input>`. | Use a `<video>` field or a singleton containing one unnamed `<video>`. |
+| `VIDEO_MISSING_VIDEO` | A video singleton has no inner `<video>` or has the wrong element. | Include exactly one unnamed `<video>` field. |
+| `AUDIO_TYPE_ON_INPUT` | An audio field was declared on an `<input>`. | Use an `<audio>` field or a singleton containing one unnamed `<audio>`. |
+| `AUDIO_MISSING_AUDIO` | An audio singleton has no inner `<audio>` or has the wrong element. | Include exactly one unnamed `<audio>` field. |
+
+---
+
 ## Label
 
 ### `EXTRA_FIELD_IN_LABEL`
@@ -293,6 +333,26 @@ field elements.
 **Fix:** Use a different HTML tag (e.g. `<span>`) for labels that target
 non-native SmarkForm components, or ensure the target component renders a
 native field element.
+
+---
+
+### `SUMMARY_AS_LABEL`
+
+A `<summary>` element was used directly as a SmarkForm label. Clicking it would
+both focus the related field and toggle its parent `<details>` element.
+
+**Fix:** Use a non-native SmarkForm label element, such as
+`<span data-smark="label">`, inside `<summary>`.
+
+---
+
+### `LABEL_INSIDE_SUMMARY`
+
+A native `<label>` element appears inside `<summary>`. Browsers suppress the
+`<details>` toggle for interactive content placed there.
+
+**Fix:** Use a non-native SmarkForm label element (for example, a `<span>`)
+inside `<summary>`.
 
 ---
 
@@ -438,21 +498,19 @@ root element inside the `<template>`, not children of it.
 
 ---
 
-## Native Type Parsing Errors
+## Media Notice Codes (events, not exceptions)
 
-The `color`, `date`, `datetime-local`, `time`, `number`, and `radio`
-component types delegate to the browser's native `<input>` parsing.  In some
-edge cases, the browser may reject a value and produce a parse error; SmarkForm
-re-throws it with the corresponding component's error code.
+Media notices are dispatched as cancellable custom events rather than as
+render errors or generic `error` events:
 
-These errors should almost **never** occur in practice: SmarkForm is designed
-to coerce and normalise imported values so that they are always valid for the
-underlying native field.  If you do encounter one of these errors, treat it as
-a sign that something unexpected is happening — either a bug in SmarkForm's
-coercion logic, an undocumented browser behaviour, or a value type that the
-field genuinely cannot represent at all.
+| Event | Detail codes | Meaning |
+|---|---|---|
+| `smark:imageNotice` | `IMAGE_FORMAT_UNSUPPORTED`, `IMAGE_RESIZE_UNSUPPORTED`, `IMAGE_DIMENSIONS_UNKNOWN` | A requested image conversion or constraint cannot be applied or verified. |
+| `smark:videoNotice` | `VIDEO_TOO_LARGE` | An acquired video exceeds its configured size limit. |
+| `smark:audioNotice` | `AUDIO_TOO_LARGE` | An acquired audio file exceeds its configured size limit. |
 
-If you run into one, please [open an issue](https://github.com/bitifet/SmarkForm/issues)
-describing the field type, the imported value, and the browser — it is most
-likely worth investigating.
-<!-- END old PORTED TO docs/_advanced_topics/error_codes.md -->
+Call `preventDefault()` on the notice event to suppress its in-page toast. See
+the [Image]({{ "/component_reference/image" | relative_url }}),
+[Video]({{ "/component_reference/video" | relative_url }}), and
+[Audio]({{ "/component_reference/audio" | relative_url }}) references for
+acquisition behavior.

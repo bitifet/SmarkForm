@@ -1149,7 +1149,7 @@ Yes, with a few guidelines:
   <script>
   (async ()=>{
     const outerForm = new SmarkForm(document.getElementById("outerForm"));
-    await myForm.rendered;
+    await outerForm.rendered;
     const formA = outerForm.find("/formA");
     const formB = outerForm.find("/formB");
   })();
@@ -1166,9 +1166,10 @@ The API interface is a **planned future feature** for dynamic data — think
 fetching options for a `<select>` component from a server, or loading list
 items on demand. It is **not yet implemented**.
 
-Stay tuned — details will land in the docs when it's ready. See the
-[Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for more
-context.
+See [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }})
+for the current implementation status and the
+[Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for the
+proposal's current direction.
 
 ### Is SmarkForm's API stable? Will upgrading break my code?
 

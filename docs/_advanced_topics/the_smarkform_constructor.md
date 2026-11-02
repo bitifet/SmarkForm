@@ -1,17 +1,14 @@
 ---
-title: The SmarkForm Constructor
+title: "The SmarkForm Constructor"
 layout: chapter
 description: "Configure SmarkForm during construction, set root options and initial values, and use its rendered promise and instance API."
 permalink: "/advanced_topics/the_smarkform_constructor"
-migration_in_progress: true
-sitemap: false
 nav_order: 1
 redirect_from:
   - "/advanced_concepts/the_smarkform_constructor"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_advanced_topics/the_smarkform_constructor.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -202,4 +199,3 @@ const field = form.find("/name"); // safe now
 ```
 
 Methods like [`find()`]({{ "guides/form_traversing" | relative_url }}), [`export()`]({{ "guides/data_import_and_export" | relative_url }}), and [`import()`]({{ "guides/data_import_and_export" | relative_url }}) depend on the form being fully rendered.
-<!-- END old PORTED TO docs/_advanced_topics/the_smarkform_constructor.md -->

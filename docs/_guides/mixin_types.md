@@ -3,15 +3,12 @@ title: "Mixin Types"
 layout: chapter
 description: "Create reusable SmarkForm components from HTML templates, including local or external mixins, preloading and script security."
 permalink: "/guides/mixin_types"
-migration_in_progress: true
-sitemap: false
 nav_order: 7
 redirect_from:
   - "/advanced_concepts/mixin_types"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/mixin_types.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -170,7 +167,7 @@ SmarkForm raises a normative error (see [Error Codes](#error-codes)):
 |---|---|
 | The `<template>` element must exist and its `id` must match the fragment | Without it there is nothing to clone |
 | The template must contain **exactly one root element node** | SmarkForm replaces the placeholder with a single node; extra text or comment nodes are ignored, but extra element nodes are an error |
-| `<style>` and `<script>` siblings of the root are allowed and **do not count** toward the one-element limit | They carry component styles/behaviour, not markup |
+| Any number of top-level `<style>` and `<script>` siblings are allowed and **do not count** toward the one-root limit | Styles and behaviour accompany the component markup |
 | The template root element must **not** specify a `name` inside its `data-smark` options | The name belongs to the placeholder (the usage site), not the blueprint |
 
 ```html
@@ -240,16 +237,16 @@ The placeholder's `data-smark` options are merged with the template root's
 ```html
 <!-- Template defines default options -->
 <template id="countrySelect">
-  <select data-smark='{"type":"select","exportEmpty":false}'></select>
+  <input data-smark='{"type":"input","placeholder":"Choose a country"}'>
 </template>
 
-<!-- Placeholder overrides exportEmpty; name comes from placeholder -->
-<div data-smark='{"type":"#countrySelect","name":"country","exportEmpty":true}'></div>
+<!-- Placeholder overrides placeholder text; name comes from the usage site -->
+<div data-smark='{"type":"#countrySelect","name":"country","placeholder":"Select a country"}'></div>
 ```
 
 After expansion the effective options are:
 ```json
-{ "type": "select", "name": "country", "exportEmpty": true }
+{ "type": "input", "name": "country", "placeholder": "Select a country" }
 ```
 
 
@@ -526,17 +523,14 @@ element inside a `<template>`, giving mixin authors a way to bundle
 component-specific styles and behaviour alongside their markup.
 
 {: .info }
-> This feature is **exclusive to mixin templates**.  Placing `<style>` or
-> `<script>` directly inside a regular page element (outside a `<template>`)
-> causes the browser to parse and execute them immediately at page load, making
-> deferred/per-instance execution impossible.  The `<template>` tag prevents
-> that and is therefore the only supported location.
+> Only mixin-template siblings are deferred and processed by SmarkForm as
+> per-instance styles or scripts. Ordinary `<style>` and `<script>` elements
+> elsewhere in the page follow normal browser behavior and are not managed by
+> the mixin system.
 
-A mixin template may contain **up to three direct children**:
-
-1. **One root element** (the component markup — required)
-2. **One `<style>` element** (component styles — optional)
-3. **One `<script>` element** (component behaviour — optional)
+A mixin template must contain **exactly one root element**. It may also contain
+any number of top-level `<style>` and `<script>` siblings; those siblings are
+handled separately from the cloned component markup.
 
 ```html
 <template id="myWidget">
@@ -558,7 +552,8 @@ A mixin template may contain **up to three direct children**:
 ### Styles
 
 A `<style>` element that is a **direct sibling** of the template root element
-is extracted and injected into `<head>` exactly once per unique content.
+is extracted and injected into `<head>` exactly once per unique content. A
+template may contain multiple top-level style blocks.
 Injecting the same style block from multiple mixin instances is safe — the
 deduplication ensures the `<style>` appears in `<head>` only once, regardless
 of how many times the mixin is used.
@@ -574,12 +569,14 @@ A `<script>` element that is a **direct sibling** of the template root element
 is extracted, wrapped into a function, and executed **once per component
 instance** after the component has finished rendering.  The function receives
 `this` bound to the SmarkForm component instance, enabling direct API access.
+Multiple top-level scripts are allowed; each runs for the component instance.
 
 ```html
 <template id="autoFocus">
   <input data-smark type="text">
   <script>
     // `this` is the SmarkForm component instance
+    // This hook runs for trigger-dispatched imports, not raw .import() calls.
     this.on("AfterAction_import", (ev) => {
       console.log("Form loaded with:", ev.data);
     });
@@ -605,7 +602,7 @@ final data:
 // Inside the mixin template's <script>:
 const me = this;  // The new period component
 me.parent.on('AfterAction_addItem', async function(ev) {
-    // ev.context is the newly-added item (our "me")
+    // ev.context is the list; `me` is this newly-added item instance.
     const items = Object.values(me.parent.children);
     const idx  = items.indexOf(me);
     const prev = items[idx - 1] || null;
@@ -659,16 +656,20 @@ Controls whether SmarkForm is permitted to fetch templates from external URLs
 **Object form** (per-origin policy):
 
 Pass a plain object whose keys are origin strings (e.g. `"https://cdn.example.com"`)
-and whose values are `"block"` or `"allow"`.  The special key `"*"` acts as a
-wildcard default for origins not explicitly listed.  If neither a matching
-origin nor `"*"` is found, the policy defaults to `"block"`.
+and whose values are `"block"`, `"same-origin"`, or `"allow"`. For a matched
+origin, `"same-origin"` permits same-origin URLs and rejects cross-origin URLs.
+The special key `"*"` acts as a wildcard default for origins not explicitly
+listed. If neither a matching origin nor `"*"` is found, the policy defaults
+to `"block"`.
 
 ```js
 // Allow loading templates from the same server only
-new SmarkForm(el, { smark_mixin_allow_external: 'same-origin' });
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+  smark_mixin_allow_external: 'same-origin',
+});
 
 // Allow templates from one specific CDN only; block everything else
-new SmarkForm(el, {
+const myForm = new SmarkForm(document.getElementById("myForm"), {
   smark_mixin_allow_external: {
     'https://trusted-cdn.example.com': 'allow',
     '*': 'block',
@@ -676,7 +677,9 @@ new SmarkForm(el, {
 });
 
 // Allow templates from any origin using wildcard
-new SmarkForm(el, { smark_mixin_allow_external: { '*': 'allow' } });
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+  smark_mixin_allow_external: { '*': 'allow' },
+});
 ```
 
 #### Script execution policy: `smark_mixin_allow_local_scripts`, `smark_mixin_allow_same_origin_scripts`, `smark_mixin_allow_cross_origin_scripts`
@@ -711,17 +714,19 @@ need different levels of trust.
 
 ```js
 // Allow local mixin scripts only
-new SmarkForm(el, { smark_mixin_allow_local_scripts: 'allow' });
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+  smark_mixin_allow_local_scripts: 'allow',
+});
 
 // Allow loading and executing scripts from same-origin external templates
-new SmarkForm(el, {
+const myForm = new SmarkForm(document.getElementById("myForm"), {
   smark_mixin_allow_external: 'same-origin',
   smark_mixin_allow_same_origin_scripts: 'allow',
 });
 
 // Fine-grained cross-origin script policy: trust one CDN, silence another,
 // block everything else
-new SmarkForm(el, {
+const myForm = new SmarkForm(document.getElementById("myForm"), {
   smark_mixin_allow_external: 'allow',
   smark_mixin_allow_cross_origin_scripts: {
     'https://trusted-cdn.example.com': 'allow',
@@ -1099,4 +1104,3 @@ distinguish error causes programmatically.
 | `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | A same-origin external mixin template contains a `<script>` and `smark_mixin_allow_same_origin_scripts` is `"block"` (the default) |
 | `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `smark_mixin_allow_cross_origin_scripts` is `"block"` (the default) |
 | `MIXIN_NESTED_SCRIPT_DISALLOWED` | A `<script>` element was found inside the template root subtree (nested scripts are not allowed; use top-level sibling `<script>` inside the `<template>` instead) |
-<!-- END old PORTED TO docs/_guides/mixin_types.md -->
