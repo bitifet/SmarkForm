@@ -1,17 +1,14 @@
 ---
-title: Importing and Exporting Data
+title: "Importing and Exporting Data"
 layout: chapter
 description: "Import JSON into SmarkForm fields and export form data as objects and arrays, including nested and specialized values."
 permalink: "/guides/data_import_and_export"
-migration_in_progress: true
-sitemap: false
 nav_order: 2
 redirect_from:
   - "/working_with_forms/data_import_and_export"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/data_import_and_export.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -63,6 +60,10 @@ value:
 | `form` / root | `{ fieldName: value, … }` plain object |
 | `list` | `[ item, … ]` array |
 | `input` / scalar fields | The raw field value (string, number, boolean, …) |
+
+Scalar types normalize their own imported and exported values. See
+[Value Coercion]({{ "/guides/value_coercion" | relative_url }}) for number,
+date, time, list-scalar, and JSON-format behavior.
 
 ### Return value structure
 
@@ -339,7 +340,7 @@ Both `clear` and `reset` are built on top of `import` but behave differently:
 | Action | What it does | Updates default? |
 |---|---|---|
 | `reset` | Imports the current `defaultValue` | No |
-| `clear` | Imports the type-level empty value (`{}` for forms, `[]` for lists, `""` for inputs) | No |
+| `clear` | Imports the component's type-level empty value (`{}` for forms, `[]` for lists; scalar field types may use `""` or `null`) | No |
 
 Use **`reset`** to undo user changes and return to the last loaded state.  
 Use **`clear`** to blank every field without regard to defaults — for example,
@@ -389,15 +390,15 @@ SmarkForm makes it easy to copy data from one component to another using the
 **`target`** option on `export` and `import` triggers. This avoids writing
 any JavaScript for common copy-data workflows.
 
-**How context is determined:** A trigger's *context* defaults to the
-**innermost ancestor component in the DOM tree** that implements the
-triggered action. Place an `export` button inside a form → that form is the
-context. Place it outside any subform → the root form is the context. You
-can override this with the explicit `context` property.
+**How context is determined:** Without an explicit `context`, the nearest
+ancestor component that implements the action handles it. An explicit context
+path starts at the trigger's enclosing field and must select a component that
+implements the action; see the [Trigger reference]({{ "/component_reference/trigger" | relative_url }}).
 
-Similarly, `target` sets the destination (for export) or source (for import).
-Without it, SmarkForm resolves context by DOM position alone — the same
-trigger button can control different fields just by being placed differently.
+`target` is separate from context. An explicit target path starts at the
+effective context; `export` copies context → target, while `import` copies
+target → context. When `target` is omitted, the action's own default applies;
+placement-based target inference is available only with natural context.
 
 ### Using `target` with `export`
 
@@ -527,7 +528,8 @@ data to the shipping address with no JavaScript required.
 > hierarchy, while `target` paths are resolved relative to the **effective context** of the
 > action.
 >
-> 👉 More info at [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) chapter.
+> See [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for path
+> syntax and traversal examples.
 
 
 {: .hint }
@@ -592,10 +594,6 @@ the form to finish rendering and then call `import`:
 ```javascript
 const myForm = new SmarkForm(document.getElementById("myForm"));
 
-myForm.on("AfterAction_import", (ev) => {
-    console.log("Form loaded with:", ev.data);
-});
-
 await myForm.rendered;
 
 const response = await fetch("/api/record/42");
@@ -605,6 +603,11 @@ await myForm.import(data); // data becomes the new default
 
 Because `import` defaults to `set_default: true`, the user can later click
 **♻️ Reset** to restore the loaded record without re-fetching.
+
+Direct calls such as `myForm.import(data)` do **not** emit
+`BeforeAction_import` / `AfterAction_import` lifecycle events. Those events run
+when a trigger invokes the action; see the [Events guide]({{ "/guides/events" | relative_url }})
+if the workflow needs trigger-driven loading or lifecycle hooks.
 
 ### Submitting form data to a backend
 
@@ -679,4 +682,3 @@ myForm.on("AfterAction_export", (ev) => {
 > Using `set_default: false` when restoring a draft ensures that **♻️ Reset**
 > still returns to the form's HTML-defined defaults, not the draft. This lets
 > the user discard a draft by pressing Reset.
-<!-- END old PORTED TO docs/_guides/data_import_and_export.md -->

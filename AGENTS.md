@@ -62,11 +62,9 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - `data-smark mask` property: e.g., `<input data-smark='{"name":"card","mask":"digits"}'>`
 - `export()`: Returns `_maskInstance.unmaskedValue` when available, else `nodeFld.value`
 - `import()`: Dispatches `input` event when `_maskInstance` exists, so masks stay synchronized
-- `smark_mask_throw_on_missing: false`: Suppresses error for unregistered or broken masks, falls back to unmasked input
 - Singleton handling: delegates to inner field, `_maskInstance` lives on inner field
 - Mixin-scoped masks: `<script type="smark-mask">` inside `<template>` is scoped, not global; requires `allowLocalMixinScripts: 'allow'`
-- On error (mask not found or factory throws), original input type is restored; if `smark_mask_throw_on_missing` is `true` an error is thrown, otherwise a `console.warn` is emitted
-- `MASK_APPLY_ERROR`: thrown when a mask factory throws; the original exception is available via `error.cause`
+- `smark_mask_throw_on_missing` controls missing registry entries only: `true` throws `MASK_NOT_FOUND`; `false` warns and returns before changing the input type. A registered factory exception currently propagates from mask application; source does not wrap it as `MASK_APPLY_ERROR` or restore the input type.
 - **Focus restoration**: `_applyMask()` saves `document.activeElement` before calling the factory and restores it afterward. If a mask library focuses the field asynchronously (e.g. Inputmask via `setTimeout`), the factory must `await` a macrotask yield before returning so the deferred focus fires before SmarkForm restores focus. See the "Focus and Mask Factories" section in `docs/_guides/field_masking.md`.
 
 **Configuration file locations**:
@@ -279,7 +277,7 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 - `docs/_start_here/core_concepts.md` has the `components_paths` nested-model sampletab with `demoValue`; its custom test is disabled, but the collector generates the standard demoValue round-trip smoke test. Keep trigger paths in captured code relative when editor-wrapped.
 - `docs/_component_reference/trigger.md` has the `trigger_context_target` sampletab with relative context/target paths and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
 - `docs/_guides/using_smarkform.md` has the `using_smarkform_workshop` sampletab with relative action contexts and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
-- `docs/_guides/using_smarkform.md` has the `using_smarkform_workshop` sampletab with relative action contexts and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
+- `test/mask_imask.tests.js` mirrors the `mask_cc_js` factory and asserts the current `type:"number"` export contract for the full card sample; keep its code aligned when that sample changes.
 - `npm test` runs the full matrix: chromium, firefox, webkit, and chromium-mobile (Pixel 5 emulation)
 - `npm run test:quick` picks one project at random (see `scripts/test_quick.sh`) — useful for a fast sanity check without committing to a specific browser
 - Generates HTML reports

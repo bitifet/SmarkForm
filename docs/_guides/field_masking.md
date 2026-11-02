@@ -3,15 +3,12 @@ title: "Field Masking"
 layout: chapter
 description: "Integrate input masking libraries with SmarkForm while keeping displayed formatting and exported field values in sync."
 permalink: "/guides/field_masking"
-migration_in_progress: true
-sitemap: false
 nav_order: 5
 redirect_from:
   - "/working_with_forms/field_masking"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/field_masking.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -40,8 +37,8 @@ the `mask` property in `data-smark`.
 
 When a field has a `mask` property in its `data-smark`, SmarkForm:
 
-1. Saves the original input type (e.g. `number`, `tel`).
-2. Converts the input type to `text` so masking libraries can operate freely.
+1. Converts the native input type (e.g. `number`, `tel`) to `text` so masking
+   libraries can operate.
 3. Looks up the mask factory by name — first in scoped (mixin) masks, then in
    the global registry.
 4. **Awaits** the factory (factories may be `async`). The factory receives the
@@ -53,8 +50,11 @@ When a field has a `mask` property in its `data-smark`, SmarkForm:
 7. Exports the **unmasked value** (raw data) instead of the formatted display.
 8. Dispatches `input` events when values are set programmatically so masks stay
    synchronized.
-9. If the mask fails (not found or factory throws), the original type is
-   **restored** and the field operates unmasked.
+9. If the mask name is not registered and
+   `smark_mask_throw_on_missing:false`, SmarkForm warns and leaves the field
+   unmasked without changing its native type. A registered factory exception
+   escapes mask application; the option does not catch it, and SmarkForm does
+   not restore the input type after conversion.
 
 ## Applying a Mask to a Field
 
@@ -67,7 +67,7 @@ automatically when the field renders — no post-construction setup needed.
 <div id="myForm$$">
   <label data-smark>Card Number:</label>
   <input
-    data-smark='{"type":"number","name":"card","mask":"cardNumber"}'
+    data-smark='{"type":"input","name":"card","mask":"cardNumber"}'
     placeholder="0000 0000 0000 0000"
   >
 </div>
@@ -85,7 +85,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- apply_mask_notes {{{ -->{% endraw %}
 {% capture apply_mask_notes -%}
-The HTML declares a `number`-type field with `mask: "cardNumber"`. SmarkForm converts it to `type="text"` so IMask can operate, then exports the clean digit string.
+The HTML declares a string `input` field with `mask: "cardNumber"`. SmarkForm converts its native input to `type="text"` so IMask can operate, then exports the unmasked digit string without numeric coercion (and without losing leading zeroes).
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -295,7 +295,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 {% raw %}<!-- mask_cc_notes {{{ -->{% endraw %}
 {% capture mask_cc_notes -%}
-The wrapper object overriding `unmaskedValue` to return `null` for incomplete numbers is the key refinement — `export()` never returns partially-typed card data. The field is marked `:invalid` when partially filled (not empty but not complete), and rejected keystrokes trigger a brief orange blink — visually distinct from the persistent invalid state.
+The wrapper object overriding `unmaskedValue` to return `null` for incomplete card numbers is the key refinement — `export()` never returns partially typed data. This example deliberately declares a `number` field, so complete digits export as a JavaScript number, matching the field-type coercion rules. For identifiers where leading zeroes or full numeric precision must be preserved, use `type:"input"` and keep the unmasked digits as a string. The field is marked `:invalid` when partially filled (not empty but not complete), and rejected keystrokes trigger a brief orange blink — visually distinct from the persistent invalid state.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mask_cc_css {{{ -->{% endraw %}
@@ -557,16 +557,16 @@ SmarkForm's masking error handling is controlled by the
 ### `smark_mask_throw_on_missing: true` (default)
 
 - **Mask not found** → throws `MASK_NOT_FOUND` render error.
-- **Mask factory throws** → throws `MASK_APPLY_ERROR` render error (the
-  original exception is available via `error.cause`).
-- In both cases the input type is **restored** to its original value before
-  the error is raised, so the error indicator is shown with the correct type.
+- A registered mask factory that throws is **not handled by this option** in
+  the current implementation. Its exception escapes mask application; SmarkForm
+  does not wrap it as `MASK_APPLY_ERROR` or restore the input type.
 
 ### `smark_mask_throw_on_missing: false`
 
-- Mask errors are reported via `console.warn` instead of throwing.
-- The field's original input type is **restored** and the field operates
-  unmasked.
+- An unregistered mask name is reported via `console.warn` instead of throwing.
+- The field remains unmasked. Because registration is checked before changing
+  the input type, its authored type is left in place.
+- Exceptions thrown by a registered factory are not suppressed by this option.
 
 ```javascript
 const myForm = new SmarkForm("#myForm", {
@@ -579,7 +579,6 @@ const myForm = new SmarkForm("#myForm", {
 | Code | Meaning |
 |------|---------|
 | `MASK_NOT_FOUND` | No factory registered for the given mask name |
-| `MASK_APPLY_ERROR` | Factory was found but threw during execution; inspect `error.cause` |
 
 See [Error Codes Reference]({{ "/advanced_topics/error_codes" | relative_url }}) for all SmarkForm error codes.
 
@@ -647,4 +646,3 @@ to use:
 > e.g. `return 1234.56;`. A returned `null` is preserved as-is to signal "no
 > value" (useful for partially-filled fields). The **setter** receives the raw
 > unformatted value and is responsible for writing the formatted display.
-<!-- END old PORTED TO docs/_guides/field_masking.md -->

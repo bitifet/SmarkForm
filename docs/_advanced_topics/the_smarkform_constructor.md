@@ -103,7 +103,7 @@ const form = new SmarkForm(element, {
 });
 ```
 
-When `false`, the field's original input type is restored and the field operates unmasked. See [Field Masking — Error Handling]({{ "guides/field_masking" | relative_url }}#error-handling) for details.
+When `false` and the mask name is not registered, SmarkForm warns and leaves the field unmasked before changing its authored input type. This option does not suppress exceptions from registered factories. See [Field Masking — Error Handling]({{ "guides/field_masking" | relative_url }}#error-handling) for details.
 
 ### Mixin security policies
 

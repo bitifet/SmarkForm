@@ -1,17 +1,14 @@
 ---
-title: Form Traversing
+title: "Form Traversing"
 layout: chapter
 description: "Find and navigate SmarkForm components by name or path, using relative traversal, wildcards, contexts and targets."
 permalink: "/guides/form_traversing"
-migration_in_progress: true
-sitemap: false
 nav_order: 3
 redirect_from:
   - "/working_with_forms/form_traversing"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/form_traversing.md -->
 {% include links.md %}
 
 {% include components/sampletabs_ctrl.md %}
@@ -29,12 +26,15 @@ redirect_from:
 
 ## Introduction
 
-Form traversing in SmarkForm provides a powerful and intuitive way to navigate through the component hierarchy and interact with specific parts of your forms. The `.find()` method serves as the primary mechanism for locating components within the form structure, supporting both simple navigation and complex path-based queries.
+The `.find()` method navigates the SmarkForm component tree by name and path.
+Paths are not recursive searches: each segment selects a direct child of the
+current component.
 
 {: .warning :}
 > **Call `find()` only after `await myForm.rendered`.**
-> SmarkForm builds its internal map of field components asynchronously. Calling
-> `find()` before rendering is complete will return `null` for every path.
+> SmarkForm builds its descendant component map asynchronously. Calling
+> `find()` before rendering is complete can return `null` for paths that have
+> not been rendered yet.
 > Inside event handlers this is not necessary since they only fire after render.
 
 Building on the component-tree model introduced in [Core Concepts]({{ "/start_here/core_concepts" | relative_url }}), this guide explores the full capabilities of SmarkForm's traversing system.
@@ -482,7 +482,7 @@ trigger is a no-op rather than an `UNKNOWN_ACTION` error:
 <button data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true}'>🧹</button>
 ```
 
- - `context:"*"` resolves to matching components in scope, then keeps only
+- `context:"*"` resolves to matching components in scope, then keeps only
   those that implement `removeItem` (typically lists).
 - `target:"*"` then resolves to all children of each matching context.
 - The action fires sequentially on each matching context — skipping any that
@@ -624,11 +624,11 @@ When using wildcards, `.find()` returns an array of matching components:
 // Returns array of all employee components
 const employees = form.find("employees/*");
 
-// Process each match
-employees.forEach(async (employee) => {
+// Await each export before moving to the next match
+for (const employee of employees) {
     const data = await employee.export();
     console.log(data);
-});
+}
 ```
 
 ## Practical Examples
@@ -693,7 +693,9 @@ const cityField = currentAddress.find("city");
 
 ### Dynamic Context Resolution
 
-Implement dynamic behavior based on component relationships:
+Implement dynamic behavior based on component relationships. This handler runs
+for trigger-driven imports; direct calls to `import()` do not emit action
+lifecycle events:
 
 ```javascript
 // Smart data synchronization
@@ -723,7 +725,7 @@ class FormSynchronizer {
         if (nextEmployee) {
             const nextData = await nextEmployee.export();
             nextData.department = employeeData.department; // Sync department
-            await nextEmployee.import(nextData);
+            await nextEmployee.import(nextData, { set_default: false });
         }
     }
 }
@@ -772,13 +774,13 @@ class FormSynchronizer {
 ### Sequential Processing Pattern
 
 ```javascript
-// Process all list items in order
-function processListSequentially(list) {
+// Process all list items in order and await each result
+async function processListSequentially(list) {
     let currentItem = list.find("0");
     const results = [];
     
     while (currentItem) {
-        results.push(processItem(currentItem));
+        results.push(await processItem(currentItem));
         currentItem = currentItem.find(".+1");
     }
     
@@ -786,23 +788,27 @@ function processListSequentially(list) {
 }
 ```
 
-### Bidirectional Data Sync Pattern
+### Copy a value to adjacent items {#bidirectional-data-sync-pattern}
+
+This copies the current value outward; it does not automatically synchronize
+later edits in both directions. Pass `set_default:false` when the copied value
+should not replace the destination item's reset default.
 
 ```javascript
-// Synchronize data between adjacent items
-async function syncBidirectional(item, field) {
+// Copy one field's value to its previous and next list items
+async function copyToAdjacentItems(item, field) {
     const value = await item.find(field).export();
     
     // Sync with previous item
     const prevItem = item.find(".-1");
     if (prevItem) {
-        await prevItem.find(field).import(value);
+        await prevItem.find(field).import(value, { set_default: false });
     }
     
     // Sync with next item
     const nextItem = item.find(".+1");
     if (nextItem) {
-        await nextItem.find(field).import(value);
+        await nextItem.find(field).import(value, { set_default: false });
     }
 }
 ```
@@ -811,11 +817,12 @@ async function syncBidirectional(item, field) {
 
 ```javascript
 // Navigate based on conditions
-function findNextValidItem(currentItem) {
+async function findNextValidItem(currentItem, validateItem) {
     let candidate = currentItem.find(".+1");
     
     while (candidate) {
-        if (await candidate.isValid()) {
+        // Provide validateItem from your application's validation rules.
+        if (await validateItem(candidate)) {
             return candidate;
         }
         candidate = candidate.find(".+1");
@@ -842,15 +849,12 @@ class FormCoordinator {
         
         // Map personal data to business fields
         await businessData.import({
-            data: {
-                companyName: personal.name,
-                contactEmail: personal.email,
-                // ... other mappings
-            }
+            companyName: personal.name,
+            contactEmail: personal.email,
+            // ... other mappings
         });
     }
 }
 ```
 
 The combination of these patterns with SmarkForm's traversing capabilities enables the creation of sophisticated, interactive forms with minimal boilerplate code. The path-based navigation system, enhanced with sibling navigation, provides a powerful foundation for building complex form interactions while maintaining code clarity and maintainability.
-<!-- END old PORTED TO docs/_guides/form_traversing.md -->

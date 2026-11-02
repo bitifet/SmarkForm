@@ -1,7 +1,7 @@
 // test/mask_imask.tests.js
 // ========================
 // Playwright tests for the IMask credit-card example ("card" mask) used in
-// the docs (docs/_working_with_forms/field_masking.md and showcase).
+// the docs (docs/_guides/field_masking.md and Showcase).
 // Replicates the mask factory verbatim so a broken example can't hide behind
 // a passing smoke test — specifically the runtime import()/export() path.
 
@@ -9,8 +9,8 @@ import { test, expect } from '@playwright/test';
 import {renderPug} from '../src/lib/test/helpers.js';
 
 // Verbatim copy of the "card" mask factory from the docs example.
-// When this drifts from docs/_working_with_forms/field_masking.md (mask_cc_js)
-// or docs/_about/showcase.md (showcase_mask_js), update both copies together.
+// When this drifts from docs/_guides/field_masking.md (mask_cc_js) or
+// docs/_showcase_examples/showcase.md (showcase_mask_js), update both copies.
 const cardMaskPreScript = `
 SmarkForm.registerMask("card", (node) => {
   node.placeholder = "0000 0000 0000 0000";

@@ -1,30 +1,35 @@
 ---
 title: "Value Coercion"
 layout: chapter
-description: "Learn how SmarkForm normalizes imported data and coerces field values for consistent JSON exports."
+description: "Understand scalar-to-array handling and field-type coercion, including number, date, time and JSON-formatted values."
 permalink: "/guides/value_coercion"
-migration_in_progress: true
-sitemap: false
 nav_order: 4
 redirect_from:
   - "/working_with_forms/value_coercion"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_guides/value_coercion.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
-SmarkForm automatically normalises imported values to match the expected type
-and shape of each field. This keeps your forms resilient to data-model changes
-and ensures that what you save is always clean and well-typed.
+<details class="chaptertoc">
+<summary><strong>📖 Table of Contents</strong></summary>
+
+  {% include chaptertoc/value_coercion.html depth=3 %}
+
+</details>
+
+SmarkForm normalizes imported values according to component type and shape.
+This can help with data-model changes, such as evolving a scalar field into a
+list. The rules below describe the supported conversions and their limits.
 
 ## Scalar-to-Array List Coercion
 
-When a **list** field receives a non-array value — a plain string, a number,
-or an object — it automatically wraps it in a single-item array.
+When a **list** field receives a non-array value — a string, number, object, or
+`null` — it wraps that value in a single-item array. `undefined` is special: it
+resets the list to its current default instead.
 
 This is particularly useful for **model migrations**: if a field that used to
 hold a single `email` string is upgraded to accept a list of `emails`, old
@@ -121,7 +126,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 {% capture demoValue -%}
 {
-    "email": "alice@example.com" // Old data saved before upgrading to an array
+    "email": "alice@example.com"
 }
 {%- endcapture %}
 
@@ -146,6 +151,7 @@ export:
 - `<input type="date">` exports an ISO 8601 string (`YYYY-MM-DD`), and
   accepts compact strings (`YYYYMMDD`) and `Date` objects on import.
 - `<input type="time">` exports `HH:MM:SS` and accepts `HH:MM` on import.
+- Time fields also accept `Date` objects and epoch-millisecond numbers on import.
 - Value types with no natural empty state — `number`, `date`, `time`,
   `datetime-local`, `color`, `radio`, `file`… — export **`null`** when empty,
   to explicitly signal "unknown or indifferent" rather than `""` or `0`.
@@ -156,9 +162,17 @@ export:
 
 ### JSON format
 
-Adding `{"format":"json"}` (or the legacy alias `encoding:"json"`) to any `<input>` or `<textarea>` enables JSON
-round-trips: the field stores the value internally as a JSON string but
-**exports** it as a parsed JavaScript value (object, array, number, or `null`).
+Adding `{"format":"json"}` (or the legacy alias `encoding:"json"`) to an
+`<input>` or `<textarea>` enables JSON parsing and serialization: the field
+stores JSON text and exports a parsed JavaScript value.
+
+{: .warning }
+> **Current limitation:** the JSON field's export uses falsey parsed values as
+> its empty state. Therefore `0`, `false`, `""`, and `null` export as `null`;
+> do not use this option when those values must round-trip distinctly.
+
+For import/export lifecycle, defaults, and target copying, see
+[Importing and Exporting Data]({{ "/guides/data_import_and_export" | relative_url }}).
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes -%}
@@ -266,10 +280,9 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 {% capture demoValue -%}
 {
     "name": "Alice",
-    "age": "28",  // String instead of number, will be coerced to a number
-    "dob": "19960315", // Correctly parsed as date.
-    "metadata": { // Will be exported/imported as JSON
-                  // If invalid exports null (catch that from validation)
+    "age": "28",
+    "dob": "19960315",
+    "metadata": {
         "subscribed": true,
         "tier": "premium"
     }
@@ -290,4 +303,3 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 > [Data Import and Export]({{ "/guides/data_import_and_export" | relative_url }}),
 > [Form Types]({{ "/component_reference/form" | relative_url }}),
 > [List Types]({{ "/component_reference/list" | relative_url }})
-<!-- END old PORTED TO docs/_guides/value_coercion.md -->

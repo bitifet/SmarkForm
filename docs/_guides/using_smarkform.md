@@ -205,6 +205,8 @@ absolute and relative paths, wildcards, sibling navigation, and action contexts.
   events and submit values to an API.
 - [Data Import and Export]({{ "/guides/data_import_and_export" | relative_url }}) —
   work with defaults, resets, and payloads.
+- [Value Coercion]({{ "/guides/value_coercion" | relative_url }}) — see how
+  scalar fields and lists normalize imported and exported values.
 - [Component Reference]({{ "/component_reference/overview" | relative_url }}) —
   look up component types, actions, and options.
 - [SmarkForm Constructor]({{ "/advanced_topics/the_smarkform_constructor" | relative_url }}) —
