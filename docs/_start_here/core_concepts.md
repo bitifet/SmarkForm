@@ -1,40 +1,196 @@
 ---
-title: Core Concepts
+title: "Core Concepts"
 layout: chapter
-description: "Understand SmarkForm's data-smark syntax, component tree, field types, options, and how forms and lists map to JSON."
+description: "Understand how data-smark markup becomes a component tree and how forms, lists, and fields map to structured values."
 permalink: "/start_here/core_concepts"
-migration_in_progress: true
-sitemap: false
 nav_order: 5
 redirect_from:
   - "/getting_started/core_concepts"
 ---
 
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
+SmarkForm reads marked-up HTML, builds a component tree, and imports or exports
+structured JavaScript values. The tree follows SmarkForm components—not every
+HTML wrapper used to arrange the page.
+
 <details class="chaptertoc">
-<summary>
-<strong>📖 Table of Contents</strong>
-</summary>
+<summary><strong>📖 Table of Contents</strong></summary>
 
   {% include chaptertoc/core_concepts.html depth=3 %}
 
 </details>
 
-## Forms, Lists and (other) Fields
+## From HTML to a component tree
 
-When we initialize a *SmarkForm* instance over some DOM element, it is enhanced
-as **a *SmarkForm* form** component which is returned as our *root form*.
+The root node passed to `new SmarkForm(...)` becomes the root form. Marked
+children become fields, nested forms, lists, labels, or triggers. Unmarked
+layout elements do not add levels to the exported data.
 
-```javascript
-const myForm = new SmarkForm(some_DOM_element); // Our root form
+The data model can be read as a tree:
+
+- Root form — created from the DOM node passed to SmarkForm.
+  - `profile` — a named form component whose value is an object.
+    - `name` — a scalar field.
+    - `contact` — a nested form object.
+      - `email` — a scalar field.
+  - `skills` — a list component whose value is an array.
+    - Each item follows the list template and is typed here as `input`.
+
+The matching value is:
+
+```json
+{
+  "profile": {
+    "name": "Ada Lovelace",
+    "contact": { "email": "ada@example.com" }
+  },
+  "skills": ["mathematics", "computing"]
+}
 ```
 
-👉 Then, every inner DOM element with a *data-smark* attribute, will be
-enhanced as another SmarkForm component. No matter if it is a direct child or a
-descendant of any depth.
+{% raw %}<!-- core_concepts_model_html {{{ -->{% endraw %}
+{% capture core_concepts_model_html -%}
+<div id="myForm$$">
+  <fieldset data-smark='{"type":"form","name":"profile"}'>
+    <p>
+      <label data-smark>Name:</label>
+      <input name="name" type="text" data-smark>
+    </p>
+    <fieldset data-smark='{"type":"form","name":"contact"}'>
+      <legend>Contact</legend>
+      <label data-smark>Email:</label>
+      <input name="email" type="email" data-smark>
+    </fieldset>
+  </fieldset>
+  <div>
+    <strong>Skills</strong>
+    <ul data-smark='{"type":"list","name":"skills","of":"input","min_items":0}'>
+      <li><input type="text" data-smark></li>
+    </ul>
+  </div>
+</div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- core_concepts_model_js {{{ -->{% endraw %}
+{% capture core_concepts_model_js -%}
+// The playground's Export control shows the component tree's current value.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- core_concepts_model_notes {{{ -->{% endraw %}
+{% capture core_concepts_model_notes -%}
+**Try it:** Change the profile fields or add/remove skills, then choose **Export**
+to see how named forms and list items map into the object above.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- core_concepts_model_demoValue {{{ -->{% endraw %}
+{% capture core_concepts_model_demoValue -%}
+{
+  "profile": {
+    "name": "Ada Lovelace",
+    "contact": { "email": "ada@example.com" }
+  },
+  "skills": ["mathematics", "computing"]
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="components_paths"
+    htmlSource=core_concepts_model_html
+    jsSource=core_concepts_model_js
+    notes=core_concepts_model_notes
+    demoValue=core_concepts_model_demoValue
+    showEditor=true
+    tests=false
+%}
+
+For programmatic work, wait until rendering completes before looking up
+components. A named subform can be found and exported like this:
+
+```javascript
+async function readContact(myForm) {
+    await myForm.rendered;
+    const contact = myForm.find("profile/contact");
+    return await contact.export();
+}
+```
+
+## Marking components with `data-smark` {#the-data-smark-attribute}
+
+Use `data-smark` on the elements SmarkForm should manage. The root is implicit;
+other elements without the marker remain ordinary HTML layout. Lists interpret
+their child markup as item and optional role templates.
+
+### Syntax {#syntax}
+
+The attribute accepts three common forms:
+
+```html
+<!-- Infer a common type from the element and native attributes. -->
+<input name="email" type="email" data-smark>
+
+<!-- A string shorthand specifies only the SmarkForm type. -->
+<input name="email" data-smark="input">
+
+<!-- JSON options set or override component properties. -->
+<input data-smark='{"type":"input","name":"email","placeholder":"you@example.com"}'>
+```
+
+A JSON value must be valid JSON, not a JavaScript object literal: use double
+quotes for keys and strings, and do not include trailing commas.
+
+### Inferred types and names {#required-and-inferred-properties}
+
+SmarkForm infers common types from the element and its attributes—for example,
+`<label>` becomes a label, `<textarea>` and `<select>` become `input` fields, and
+`<input type="number">` becomes a number field. An `action` option identifies
+a trigger. Use `type` when inference is unavailable or when you want to override
+it.
+
+A field's `name` option takes precedence over its HTML `name` attribute. Give
+fields a useful name when their values should appear under a readable object
+key. Labels and triggers are not named data fields; singleton inner fields are
+intentionally unnamed. If neither name is supplied, SmarkForm assigns an
+internal fallback name.
+
+### Shorthand syntax and prefixed options {#shorthand-syntaxes}
+
+A `data-smark` string such as `"list"` is a type shorthand. For common inferred
+types, the attribute may be empty. A supported `data-smark-<option>` attribute
+can also identify a component on its own:
+
+```html
+<ul data-smark-type="list" data-smark-name="items" data-smark-min_items="0">
+  <li><input name="label" data-smark></li>
+</ul>
+```
+
+The suffix maps literally to an option name: public option names use
+`snake_case`, and SmarkForm does not convert kebab-case or camelCase. Values of
+prefixed attributes start as strings; only documented common or
+component-specific normalization is applied. Use JSON `data-smark` for objects,
+arrays, or structured options without a documented attribute parser.
+
+Action identifiers are values, not option names: for example,
+`"action":"addItem"` keeps the documented `addItem` spelling.
+
+When an option is specified in both JSON and a prefixed attribute, the prefixed
+attribute wins. The effective order is defaults, JSON options, then prefixed
+attributes. Event hooks and root constructor options are separate from the
+serializable options written in `data-smark`.
+
+### Component-specific options {#component-specific-options}
+
+Options depend on the component type and, for triggers, on the action. See the
+[Component Types Overview]({{ "/component_reference/overview" | relative_url }})
+and individual type pages for supported options and defaults.
+
+## Map forms, lists, and fields to values {#forms-lists-and-other-fields}
+
+The examples below unpack the tree from the first example: fields provide
+values, named forms group them into objects, and lists group items into arrays.
 
 {% raw %} <!-- capture simple_form_example {{{ --> {% endraw %}
 {% capture simple_form_example -%}
@@ -53,16 +209,9 @@ endcapture %}
 
 {% raw %} <!-- capture simple_form_example_notes {{{ --> {% endraw %}
 {% capture simple_form_example_notes -%}
-👉 For this to work you need to get SmarkForm loaded into your page or
-module (More information at *Getting SmarkForm* section).
-
-💡 Try to fill the form and then press the *Export* button to get it as
-JSON.
-
-💡 Try to *Import* button and fill the gaps in provided JSON structure.
-
-🔨 Try to add more JSON keys, remove existing, and even provide invalid
-JSON data and see what happen.
+**Try it:** Change the name or surname in Preview, then choose **Export** to see
+the object. Edit the JSON in the playground and choose **Import** to update the
+fields.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -85,23 +234,334 @@ JSON data and see what happen.
 
 ### Fields
 
-Every *SmarkForm* component (except [labels](#labels) and
-[triggers](#triggers)) is a form field from and to which we can import and
-export values.
+Fields support import and export. A form field—including the root—exports
+an object; a list exports an array. Scalar fields provide their own value types.
+Labels and triggers are components, but they do not add values to the data tree.
 
-So **our *root form* is also a *field*** (of type "form") and we can import and
-export its *value*.
+### Form nesting
 
-In the case of the *form* fields, **its value is a JSON object.**
+The root is a form field, and a named child form groups its fields into a
+nested object. Nest forms as needed to represent the data structure.
 
 
-{: .info :}
-> All field types (including form) provide so called *import* and *export*
-> [actions](#actions) allowing to, respectively, write and read data to/from
-> them.
+{% raw %} <!-- capture nested_forms_example {{{ --> {% endraw %}
+{% capture nested_forms_example -%}
+<div id="myForm$$">
+  <b>User:</b>
+  <p>
+    <label data-smark>Id:</label>
+    <input name='userId' value='0001' data-smark>
+  </p>
+  <fieldset data-smark='{"type":"form","name":"personal_data"}'>
+    <legend>Personal Data</legend>
+    <p>
+      <label data-smark>Name:</label>
+      <input name='name' value='John' data-smark>
+    </p>
+    <p>
+      <label data-smark>Surname:</label>
+      <input name='surname' value='Doe' data-smark>
+    </p>
+    <fieldset data-smark='{"type":"form","name":"contact"}'>
+      <legend>Contact Data</legend>
+      <p>
+        <label data-smark>Phone:</label>
+        <input name='phone' type='tel' value='555444999' data-smark>
+      </p>
+      <p>
+        <label data-smark>eMail:</label>
+        <input name='email' type='email' value='john@dohe.example.org' data-smark>
+      </p>
+    </fieldset>
+  </fieldset>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
 
-The following example shows how we can use the *import* and *export* actions to
-seamlessly handle either the whole form or individual fields.
+{% raw %} <!-- capture notes {{{ --> {% endraw %}
+{% capture notes -%}
+👉 This example comes with pre-filled values to make it more illustrative,
+but feel free to change them if you like.
+
+👉 We could have also added nested lists (to allow multiple phone numbers
+and/or emails).
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+
+{% capture demoValue -%}
+{
+    "userId": "0042",
+    "personal_data": {
+        "name": "John",
+        "surname": "Doe",
+        "contact": {
+            "phone": "+1 555 867 5309",
+            "email": "john.doe@example.com"
+        }
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="nested_forms"
+    htmlSource=nested_forms_example
+    notes=notes
+    selected="preview"
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
+
+
+
+### Lists
+
+Use a list component when a value is a variable-length array. Forms map to
+objects; lists map to arrays. Nested forms and lists express common nested
+object/array structures, while each scalar field type defines its own value
+contract.
+
+
+{% raw %} <!-- capture fixed_list_example {{{ --> {% endraw %}
+{% capture fixed_list_example -%}
+<div id="myForm$$">
+  <b>Phones:</b>
+  <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
+    <li>
+      <input data-smark type="tel" placeholder="Phone number" />
+    </li>
+  </ul>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture fixed_list_example_notes {{{ --> {% endraw %}
+{% capture fixed_list_example_notes -%}
+`min_items: 3` starts the list with three scalar items. Since this example has no
+`max_items`, importing a longer array can add more. Set `min_items: 0` to allow
+an empty list. The `of: "input"` option makes each item export a scalar value;
+the List reference covers item templates and other `of` types.
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "phones": [
+        "+1 555 234 5678",
+        "+1 555 876 4321",
+        "+1 555 100 2000"
+    ]
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="fixed_list"
+    htmlSource=fixed_list_example
+    notes=fixed_list_example_notes
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
+
+
+👉 In order to enable users to control the array's length, the *list* component
+type offers the "addItem" and "removeItem" *actions*.
+
+👉 By default, *lists* have at least one item and can grow to infinity. But
+this can be changed through the *min_items* and *max_items* properties.
+
+👉 They also can be sorted by the user (by setting the *sortable* property to *true*).
+
+The following example uses *trigger* components to allow user to invoke those
+actions:
+
+
+{% raw %} <!-- capture pets_list_example {{{ --> {% endraw %}
+{% capture pets_list_example -%}
+<div id="myForm$$">
+  <b>Pets:</b>
+  <ul data-smark-type="list" data-smark-name="pets" data-smark-sortable="true" data-smark-min_items="0" data-smark-max_items="5" class="sortable">
+    <li>
+      <label data-smark title="Drag to reorder">☰</label>
+      <select name='species' data-smark>
+        <option value="cat">Cat</option>
+        <option value="dog">Dog</option>
+        <option value="hamster">Hamster</option>
+        <option value="fish">Fish</option>
+        <option value="bird">Bird</option>
+        <option value="turtle">Turtle</option>
+        <option value="other">Other</option>
+      </select>
+      <input name='name' placeholder="Name" data-smark>
+      <button data-smark-action="removeItem" title="Remove Pet">❌</button>
+    </li>
+  </ul>
+  <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture pets_list_example_css {{{ --> {% endraw %}
+{% capture pets_list_example_css %}.sortable>* {
+    cursor: default;
+}
+.sortable [data-smark-label] {
+    cursor: grab;
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture pets_list_example_notes {{{ --> {% endraw %}
+{% capture pets_list_example_notes -%}
+👉 You can rearrange list items by dragging the ☰ handle label. We set
+   `sortable: true` and added a `<label data-smark>` as the drag handle so you
+   can still **select text in the fields** without accidentally starting a drag.
+
+👉 The CSS applies `cursor: grab` only to the label handle via the
+   `[data-smark-label]` selector that SmarkForm adds automatically to
+   rendered label components.
+
+🚀 The list can also be matched directly with `[data-smark-sortable="true"]`,
+   so the custom `.sortable` class is only needed for your own styling.
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "pets": [
+        {
+            "species": "cat",
+            "name": "Whiskers"
+        },
+        {
+            "species": "dog",
+            "name": "Rex"
+        }
+    ]
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="pets_list"
+    htmlSource=pets_list_example
+    cssSource=pets_list_example_css
+    notes=pets_list_example_notes
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
+
+### Scalar field values
+
+The component type determines the leaf value. Ordinary `input` fields and
+`select` fields usually export strings; checkbox inputs export booleans, number
+fields export numbers or `null`, and radio groups export the selected value or
+`null`. Date and time components normalize their values to documented strings.
+See [Value Coercion]({{ "/guides/value_coercion" | relative_url }}) and the
+individual type references for details.
+
+
+### Constraining lists {#constraining-lists}
+
+Lists default to at least one item and have no upper limit. Set `min_items` and
+`max_items` to allow an empty list or cap its length:
+
+```html
+<ul data-smark='{"type":"list","name":"pets","min_items":0,"max_items":5}'>
+  <li><input name="name" data-smark></li>
+</ul>
+```
+
+### Singletons {#singletons}
+
+A singleton declares a scalar component type on a wrapper containing exactly
+one unnamed inner field. The wrapper can also contain labels or triggers. This
+is useful for list items that need their own action while still exporting a
+scalar value rather than an object.
+
+{% raw %} <!-- core_singleton_phones {{{ --> {% endraw %}
+{% capture core_singleton_phones_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"personal_data"}'>
+    <input name='name'  data-smark>
+    <input name='surname' data-smark>
+    <ul data-smark='{"type":"list","name":"phones"}'>
+      <li data-smark='{"type":"input"}'>
+        <input placeholder='Phone Number' type="tel" data-smark>
+        <button data-smark='{"action":"removeItem"}'>❌</button>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
+</div>
+</div>{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="core_singleton_phones"
+    htmlSource=core_singleton_phones_html
+    demoValue='{"personal_data":{"name":"Alice","surname":"Smith","phones":["555-1234","555-5678"]}}'
+    tests=false
+%}
+
+{: .hint}
+> This forced us to explicitly specify the *data-smark* property in the list
+> item template. To avoid this we can use the "of" property of the list to
+> specify the desired SmarkForm component type:
+> 
+> 
+> ```html
+> <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
+>   <li>
+>     <input placeholder='Phone Number' type="text" data-smark>
+>     <button data-smark-action="removeItem">❌</button>
+>   </li>
+> </ul>
+> ```
+
+## Actions, triggers, and component paths {#components-and-actions}
+
+### Components {#components}
+
+A component is a DOM element SmarkForm manages. Fields carry values; labels and
+triggers support interaction without adding data fields. The root form is
+implicit, while marked descendants declare the rest of the tree.
+
+### Component types {#component-types}
+
+A component's type determines how SmarkForm treats it. Common types include
+`form`, `list`, `input`, `number`, `date`, `time`, `datetime-local`, `color`,
+`radio`, and media fields. `<select>` is handled by the `input` type. Labels and
+triggers are non-field types. See the [Component Types Overview]({{ "/component_reference/overview" | relative_url }})
+and the individual type pages for details.
+
+### Labels
+
+Labels are non-field components that associate authored `<label>` elements
+with fields. See the [Label reference]({{ "/component_reference/label" | relative_url }}).
+
+<a id="trigger-components"></a>
+
+### Triggers {#triggers}
+
+A trigger is a component with an `action` option. SmarkForm infers its type, so
+`"type":"trigger"` is usually unnecessary. The action runs on a component that
+implements it; placement and an optional `context` affect which component
+receives it. See the [Trigger reference]({{ "/component_reference/trigger" | relative_url }})
+for the detailed rules.
+
+<a id="actions-1"></a>
+
+### Actions {#actions}
+
+Actions are operations implemented by component types. Common field actions
+include `import`, `export`, `clear`, and `reset`; lists also implement
+`addItem` and `removeItem`. They can be invoked by triggers or through the
+component API. Application event patterns are covered in the
+[Events guide]({{ "/guides/events" | relative_url }}).
+
+The following example contrasts actions on individual fields with actions on
+the whole form.
 
 
 
@@ -154,22 +614,9 @@ endcapture %}
 
 {% raw %} <!-- capture notes {{{ --> {% endraw %}
 {% capture notes -%}
-👉 Notice that **all *Import* and *Export* buttons (triggers) are handled
-by the same event handlers** (for "BeforeAction_import" and
-"AfterAction_export", respectively).
-
-👉 **They belong to different *SmarkForm* fields** determined by **(1)**
-where they are placed in the DOM and **(2)** the relative path from that
-place pointed by the *context* property.
-
-ℹ️  Different field types may import/export different data types (*forms*
-import/export JSON while regular *inputs* import/export text).
-
-🔧 For the sake of simplicity, the *BeforeAction_import* event handler
-reads the previous value of the field (no matter its type) and provides it
-stringified as JSON as default value for the window.prompt() call. Making
-it easy to edit the value no matter if we are importing one of the text
-fields or the whole form.
+Use the field buttons to compare importing/exporting one value with doing the
+same for the whole form. The target editor is another field; see the Trigger
+reference for the exact `context` and `target` behavior.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -187,339 +634,10 @@ fields or the whole form.
 > *HTML* tab for the sake of clutter minimization.
 
 
-### Form nesting
+### Triggers target {#triggers-target}
 
-Now we know *SmarkForm* root form is just a *SmarkForm Field* of the type
-"form".
-
-This means that **we can nest forms** inside other forms as regular fields
-(holding JSON objects) with no depth limit.
-
-
-{% raw %} <!-- capture nested_forms_example {{{ --> {% endraw %}
-{% capture nested_forms_example -%}
-<div id="myForm$$">
-  <b>User:</b>
-  <p>
-    <label data-smark>Id:</label>
-    <input name='userId' value='0001' data-smark>
-  </p>
-  <fieldset data-smark='{"type":"form","name":"personal_data"}'>
-    <legend>Personal Data</legend>
-    <p>
-      <label data-smark>Name:</label>
-      <input name='name' value='John' data-smark>
-    </p>
-    <p>
-      <label data-smark>Surname:</label>
-      <input name='surname' value='Doe' data-smark>
-    </p>
-    <fieldset data-smark='{"type":"form","name":"contact"}'>
-      <legend>Contact Data</legend>
-      <p>
-        <label data-smark>Phone:</label>
-        <input name='phone' type='tel' value='555444999' data-smark>
-      </p>
-      <p>
-        <label data-smark>eMail:</label>
-        <input name='email' type='mail' value='john@dohe.example.org' data-smark>
-      </p>
-    </fieldset>
-  </fieldset>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture notes {{{ --> {% endraw %}
-{% capture notes -%}
-👉 This example comes with pre-filled values to make it more illustrative,
-but feel free to change them if you like.
-
-👉 We could have also added nested lists (to allow multiple phone numbers
-and/or emails).
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-
-{% capture demoValue -%}
-{
-    "userId": "0042",
-    "personal_data": {
-        "name": "John",
-        "surname": "Doe",
-        "contact": {
-            "phone": "+1 555 867 5309",
-            "email": "john.doe@example.com"
-        }
-    }
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="nested_forms"
-    htmlSource=nested_forms_example
-    notes=notes
-    selected="preview"
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-
-### Lists
-
-👉 In case we need arrays, the *list* component type come to rescue.
-
-Likewise forms hold JSON objects, **lists hold JSON arrays**.
-
-
-...This means that we are able to define simple **HTML forms that can import
-and export any imaginable JSON data structure**.
-
-
-{% raw %} <!-- capture fixed_list_example {{{ --> {% endraw %}
-{% capture fixed_list_example -%}
-<div id="myForm$$">
-  <b>Phones:</b>
-  <ul data-smark='{"type":"list","name":"phones","of":"input","min_items":3}'>
-    <li>
-      <input data-smark type="tel" placeholder="Phone number" />
-    </li>
-  </ul>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture fixed_list_example_notes {{{ --> {% endraw %}
-{% capture fixed_list_example_notes -%}
-👉 Here we used the *min_items* property to ensure at least 3 items are
-   laid out.
-
-💡 Having we have not (yet) disposed any mechanism for the list to grow,
-   this **almost** works as a fixed-length list.
-
-💣 ...But notice that we can `⬆️ Import` larger arrays since we did not set the
-   *max_items* too.
-
-ℹ️  *min_items* default value is 1, but we can also set it to 0 to allow
-   empty lists.
-
-👉 By default, unless `<input>`, `<textarea>` or `<select>` used as list
-item template is rendered as a SmarkForm field of the type *form*
-(producing a JSON object for each item). But here we want an array of
-phones: not an array of objects with a phone...
-       
-➡️  ...The `of` property allows us to use a different component type (we
-   could have also used `<li data-smark="input"> instead.
-
-➡️  ...We could just have used an actual `<input>` tag directly, but that
-   would have broken the layout in this case.
-
-➡️  When we assign the "input" (or any other *scalar* type) to an html tag
-   different than `<input>`, `<textarea>` or `<select>`, it is expected to
-   contain exactly one *SmarkForm* field inside and will export the value
-   of that type, not an object with it. **This is called the *singleton*
-   pattern**.
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "phones": [
-        "+1 555 234 5678",
-        "+1 555 876 4321",
-        "+1 555 100 2000"
-    ]
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="fixed_list"
-    htmlSource=fixed_list_example
-    notes=fixed_list_example_notes
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-👉 In order to enable users to control the array's length, the *list* component
-type offers the "addItem" and "removeItem" *actions*.
-
-👉 By default, *lists* have at least one item and can grow to infinity. But
-this can be changed through the *min_items* and *max_items* properties.
-
-👉 They also can be sorted by the user (by setting the *sortable* property to *true*).
-
-The following example uses *trigger* components to allow user to invoke those
-actions:
-
-
-{% raw %} <!-- capture pets_list_example {{{ --> {% endraw %}
-{% capture pets_list_example -%}
-<div id="myForm$$">
-  <b>Pets:</b>
-  <ul data-smark-type="list" data-smark-name="pets" data-smark-sortable="true" data-smark-min_items="0" data-smark-max_items="5" class="sortable">
-    <li>
-      <label data-smark title="Drag to reorder">☰</label>
-      <select name='species' data-smark>
-        <option value="cat">Cat</option>
-        <option value="dog">Dog</option>
-        <option value="hamster">Hamster</option>
-        <option value="fish">Fish</option>
-        <option value="bird">Bird</option>
-        <option value="turtle">Turtle</option>
-        <option value="turtle">Other</option>
-      </select>
-      <input name='name' placeholder="Name" data-smark>
-      <button data-smark-action="removeItem" title="Remove Pet">❌</button>
-    </li>
-  </ul>
-  <button data-smark='{"action":"addItem","context":"pets"}'>Add Pet</button>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture pets_list_example_css {{{ --> {% endraw %}
-{% capture pets_list_example_css %}.sortable>* {
-    cursor: default;
-}
-.sortable [data-smark-label] {
-    cursor: grab;
-}
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% raw %} <!-- capture pets_list_example_notes {{{ --> {% endraw %}
-{% capture pets_list_example_notes -%}
-👉 Notice **you can rearrange list items** by dragging the ☰ handle label.
-   We set *sortable* to *true* and added a `<label data-smark>` as a drag
-   handle — SmarkForm automatically makes it the drag handle so you can still
-   **select text in the fields** without accidentally starting a drag.
-
-👉 The CSS applies `cursor: grab` only to the label handle via the
-   `[data-smark-label]` selector that SmarkForm adds automatically to
-   rendered label components.
-
-🚀 The list can also be matched directly with `[data-smark-sortable="true"]`,
-   so the custom `.sortable` class is only needed for your own styling.
-{%- endcapture %}
-{% raw %} <!-- }}} ]() --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "pets": [
-        {
-            "species": "cat",
-            "name": "Whiskers"
-        },
-        {
-            "species": "dog",
-            "name": "Rex"
-        }
-    ]
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="pets_list"
-    htmlSource=pets_list_example
-    cssSource=pets_list_example_css
-    notes=pets_list_example_notes
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-### Component Types
-
-In *SmarkForm* we don't talk of *components* but of *component types*.
-
-Except for [labels](#labels) and [triggers](#triggers), *component types* are
-kind of regular form-field types.
-
-
-
-### Labels
-
-*Labels* are non-field SmarkForm components that enhance standard `<label>`
-elements (or any inline element with `data-smark="label"`) with automatic
-association to the nearest field, support for SmarkForm-relative `target`
-paths, and correct behaviour inside nested subforms and lists.
-
-👉 See [Label component type]({{ "component_reference/label" | relative_url }})
-for the full reference and examples.
-
-
-
-### Triggers
-
-*Triggers* are special components that allow the user to interact with the form
-through given so-called "actions".
-
-👉 They have a (mandatory) *action* attribute which specifies the action to be
-triggered.
-
-👉 *Trigger* components resolve their **effective context** — the component that will handle the
-action — as follows:
-
-- **Natural context** (when no `context` option is set): The first ancestor field component
-  that implements the requested action. SmarkForm walks up the ancestor chain automatically —
-  there is no need for hard-wiring.
-
-- **Explicit context** (when the `context` option is set): The component found by following
-  the given path starting from **where the trigger is placed**. Because triggers are not
-  field components themselves (see below), the path is always resolved from the trigger's
-  enclosing field component. The resolved component **must implement the requested action** —
-  SmarkForm does not walk further up the ancestor chain for explicit contexts. If the resolved
-  component does not implement the action, an error is reported.
-
-{: .hint :}
-> Triggers (and labels) are SmarkForm components but **not field components** — they cannot
-> be addressed by a path, and they do not count as steps in path navigation.
->
-> This means: when you write `"context":"personalData"`, that path is navigated starting from
-> the field that contains the trigger — exactly as if the trigger were not there.
-
-👉 The *context* property specifies the path, **from the component where the trigger is
-placed**, to the desired effective context.
-
-
-{: .info :}
-> In order to improve readability, the *action* property is not allowed in
-> any other component type and, hence, the `"type": "trigger"` become optional
-> (and discouraged).
-
-
-### Actions
-
-*Actions* are functions provided by component types for interaction.
-
-They can be triggered by components of the so-called "trigger" type, where the
-inner component ancestors implementing that specific action acts as their
-*context*.
-
-Actions may also require additional parameters, provided as *data-smark* object
-properties, that may be specific of a given action and/or component type.
-
-
-
-### Triggers target
-
-👉 Besides the *context*, *trigger* components may also have a *target*
-consisting of an inner component to which the specified action is performed.
-
-The target can be specified using the *to* property, but it can also have a
-default value depending on the context's component type. In the case of *lists*,
-the default target is the list item that contains the *trigger* component (if
-it is contained within one) or the last item in the list otherwise. For
-example, when clicking the "Remove Pet" button in the previous example, the
-last pet in the list would be removed.
-
-**In other words:** We can move the *removeItem* trigger button inside list
-items allowing users to cherry-pick which item to remove:
+Some actions also accept a `target` distinct from their `context`. A remove
+trigger placed inside a list item can act on that item:
 
 {% raw %} <!-- core_remove_inside_item {{{ --> {% endraw %}
 {% capture core_remove_inside_item_html -%}
@@ -543,444 +661,40 @@ items allowing users to cherry-pick which item to remove:
 %}
 
 {: .info }
-> Similarly, we could have placed an "addItem" button too inside the list item
-> template. In that case, new items would be inserted **after** the item
-> containing the button (its default target) unless if we set the *position*
-> property to "before".
-> 
-> {: .warning }
-> > But keep in mind that, if *minItems* (see [Constraining
-> > lists](#constraining-lists) below...) is set to 0 you would need at least
-> > another *external* "addItem" button to be able to add items to the list
-> > when it is empty...
+> An `addItem` trigger can also sit inside an item; by default, it adds the next
+> item after that one. If `min_items` is 0, keep an external add trigger so the
+> empty list still has a way to grow.
 
 
-### Behaviour tunning
+### Wildcard list targets {#behaviour-tunning}
 
-👉 A special case for the "to" property is specifying it as "\*". In this case,
-the *trigger* button's target will be all items of the list.
+Some list actions can use `target:"*"` to operate across list items, and
+`preserve_non_empty` can restrict which items a removal affects. See the
+[List reference]({{ "/component_reference/list" | relative_url }}) for the
+supported combinations.
+## Accessing components {#accessing-components}
 
-Which combined (or not) with the *preserve_non_empty* property of *list* component
-type's *removeItem* action, may lead to several interesting combinations:
-
-➡️  Remove last empty pet. If none is empty, remove last one:
-
-```html
-<button
-    data-smark='{
-        "action":"removeItem",
-        "context":"pets",
-        "preserve_non_empty":true
-    }'
->Remove Pet</button>
-```
-
-➡️  Remove all pets with no filled data:
-```html
-<button
-    data-smark='{
-        "action":"removeItem",
-        "context":"pets",
-        "to":"*",
-        "preserve_non_empty":true
-    }'
->Clear Empty Pets</button>
-```
-
-➡️  Remove all pets unconditionally:
-```html
-<button
-    data-smark='{
-        "action":"removeItem",
-        "context":"pets",
-        "to":"*",
-    }'
->Remove All Pets</button>
-```
-
-### Constraining lists
-
-👉 By default, lists can hold any number of items, from 1 to infinite. But this
-can be overridden with *minItems* and *max_items* properties. Example:
-
-```html
-<ul data-smark='{
-    "type":"list",
-    "name":"pets",
-    "minItems": 0,
-    "max_items": 5,
-}'>
-  <li>
-    <!-- ... -->
-  </li>
-</ul>
-```
-
-### Singletons
-
-👉 As we have seen, lists can hold any number of *subform* instances. But  if
-we need a list of just scalar values such as text or numbers (`<input>`,
-`<textarea>`, `<select>`...) there will be no room for trigger components in
-list items to, say, remove given item.
-
-But the *input* component type can handle not only single `<input>`, `<selext>`
-and `<textarea>`tags but also any other tag surrounding a whole subform with
-the only restriction that only one actual field is allowed (and, in fact,
-required) inside but allowing the presence of any number of *trigger*
-components.
-
-This special behavior of the *input* component type is what we call a
-*singleton*, which adheres to the following rules:
-
-  * They only allow for a single non *trigger* component in it.
-  * Does not require (and it's not advisable) to provide a name for that
-    component.
-  * When imported or exported, they receive and return only the value ot that
-    field.
-
-{: .info}
-> Not only *input* components are *singletons*. Also all other components
-> inheriting from it (*number*, *date*...) work as singletons too.
-
-**Example:**
-
-{% raw %} <!-- core_singleton_phones {{{ --> {% endraw %}
-{% capture core_singleton_phones_html -%}
-<div id="myForm$$">
-  <div data-smark='{"type":"form","name":"personal_data"}'>
-    <input name='name'  data-smark>
-    <input name='surname' data-smark>
-    <ul data-smark='{"type":"list","name":"phones"}'>
-      <li data-smark='{"type":"input"}'>
-        <input placeholder='Phone Number' type="tel" data-smark>
-        <button data-smark='{"action":"removeItem"}'>❌</button>
-      </li>
-    </ul>
-    <button data-smark='{"action":"addItem","context":"phones"}'>➕</button>
-</div>
-</div>{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% include components/sampletabs_tpl.md
-    formId="core_singleton_phones"
-    htmlSource=core_singleton_phones_html
-    demoValue='{"personal_data":{"name":"Alice","surname":"Smith","phones":["555-1234","555-5678"]}}'
-    tests=false
-%}
-
-{: .hint}
-> This forced us to explicitly specify the *data-smark* property in the list
-> item template. To avoid this we can use the "of" property of the list to
-> specify the desired SmarkForm component type:
-> 
-> 
-> ```html
-> <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
->   <li>
->     <input placeholder='Phone Number' type="text" data-smark>
->     <button data-smark-action="removeItem">❌</button>
->   </li>
-> </ul>
-> ```
-
-### Addressability
-
-In the previous examples we have seen the *context* and *to* properties that let us
-pointing to some *SmarkForm* component from another.
-
-It may seem we simply used the value of the *name* property of the field we
-want to point to. But, in fact, those were "directory-like" relative paths.
-
-We also mentioned that our root form is, in fact, a SmarkForm field that
-imports and exports JSON data.
-
-And all SmarkForm fields have a `.find()` method through which we can get any
-other fields of the form by providding a relative or absolute (starting with
-'/' which points to our root).
-
-**Example:***
+Use `find()` to work with a component by path. Wait until rendering completes
+before looking up descendants:
 
 ```javascript
-myForm.export().then(console.log);
-// {name:"",surname:"",phones:[""],pets:[{ species: '', name: '' } ] }
-const firstPet = myForm.find("pets/0")
-firstPet.export().then(console.log);
-// { species: '', name: '' } 
-
+async function readContact(myForm) {
+    await myForm.rendered;
+    const contact = myForm.find("profile/contact");
+    return await contact.export();
+}
 ```
 
-<!--
-
-TODO:
-
-  * Addressability:
-    - Import and export given vectors.
-
-  * AutoId...
-
--->
-
-
-
-
-
-
-### More...
-
-{: .hint }
-> Check out our [🔗 Examples section]({{ "showcase_examples/examples" | relative_url }})
-> to better understand these concepts.
-
-
-## The `data-smark` Attribute
-
-The `data-smark` attribute is used in SmarkForm to identify and enhance
-specific DOM elements (HTML tags) as SmarkForm components. It also provides the
-required properties for their enhancement.
-
-{: .warning }
-> The terms *attribute* and *property* may lead to confussion.
-> 
-> In this whole manual, we will consistently use **the term *attribute* to refer
-> [HTML elemnts attributes](https://www.w3schools.com/html/html_attributes.asp)**
-> and **the term *property* to refer object properties** and, specially
-> SmarkForm components's properties defined in their *data-smark* attribute.
-
-By using the `data-smark` attribute, you can mark elements to be transformed
-into SmarkForm components, while the remaining elements are ignored by
-SmarkForm.
-
-{: .info }
-> The following are **exceptions to this rule:**
->
-> 1. The root element (the DOM element passed to the SmarkForm constructor to
->    be enhanced as *SmarkForm*) is always considered a SmarkForm component.
-> 2. The item template of a list component, which is the only allowed direct
->    child in the HTML source before rendering, will always be rendered (per
->    each list item) as a SmarkForm component by default.
-> 
-> 👉 **In both cases, the `data-smark` attribute can be omitted.**
-
-**Example:**
-
-```html
-<div id="myForm">
-    <!-- Other form fields... -->
-    <ul data-smark='{"name": "myList", "type": "list", "max_items": 5}'>
-        <li>
-            <!-- Template describing list Item's layout -->
-        </li>
-    </ul>
-    <!-- Other form fields... -->
-</div>
-<script>
-    const myForm = new SmarkForm(document.getElementById("myForm"));
-</script>
-```
-
-{: .hint }
-> In the previous example:
->   * The outer `<div>` does not need the *data-smark* property since it is the
->     DOM element we enhanced as a *SmarkForm* root form field.
->   * The `<li>` element is the template that the  *list* component will render
->     as SmarkForm component every time a new item is added to the list.
-
-### Syntax
-
-The `data-smark` attribute can be empty, contain a component type shorthand, or
-contain a JSON object of SmarkForm options:
-
-```html
-<!-- Type and name inferred from the native element -->
-<input name="email" data-smark>
-
-<!-- Type shorthand; the name still comes from the HTML name attribute -->
-<input name="email" data-smark="input">
-
-<!-- JSON options for explicit or structured configuration -->
-<input data-smark='{"type":"input","name":"email","placeholder":"you@example.com"}'>
-```
-
-The `type` option is required only when SmarkForm cannot infer the type or when
-you want to override the inferred type. It is inferred from the element and its
-HTML attributes in common cases; an `action` option makes the component a
-trigger, whose type is `trigger`. The `name` option is recommended for fields
-but can be inferred from the HTML `name` attribute, and SmarkForm generates a
-name when neither is provided. Triggers and labels are not named data fields;
-singleton inner fields are intentionally unnamed.
-
-
-### Shorthand Syntaxes
-
-For the sake of brevity, the *data-smark* attribute can also be specified in
-the following alternative ways:
-
-👉 **String Value:**
-
-If only the type needs to be specified, it can be done as a regular string.
-
-> **Example:**
-> 
->   * **Shorthand:** `<div data-smark="list">` 
->   * **Long Form:** `<div data-smark='{"type": "list"}'>`
-
-👉 **No value at all:**
-
-Since component type can be infered from actual tag name and attributes, and
-field name can be provided as regular property, the whole *data-smark*
-attribute value can be omitted if we are happy with this inference:
-
-> **Example:**
-> 
->   * **Shorthand:** `<textarea ... data-smark>`
->   * **Long Form:** `<textarea data-smark='{}'>`
->   * **Equivalent (type infered) value:** `<textarea data-smark='{"type": "input"}'>`
-
-👉 **`data-smark-<option>` attributes:**
-
-For supported option names, a prefixed attribute can stand in for that option
-in the JSON object. A prefixed attribute also marks the element as a SmarkForm
-component by itself, so a bare `data-smark` attribute is not required. This
-syntax is useful with template engines that can set dynamic attributes, but it
-has naming and value limitations:
-
-- Public option names use `snake_case` in `data-smark` JSON, constructor options,
-  and programmatic option objects. SmarkForm uses the attribute-name suffix
-  literally and does not translate kebab-case or camelCase. For example,
-  `data-smark-min_items` maps directly to the `min_items` option.
-- Function-valued JavaScript event hooks (for example, `onBeforeAction_export`
-  and `onLocal_AfterAction_export`) keep their documented `on...` spelling;
-  they are callbacks, not serializable configuration keys.
-- Action identifiers are separate from option names: the `action` option itself
-  is snake_case, while action values such as `addItem` retain their documented
-  spelling. Do not convert action identifiers when using a trigger or calling
-  an action method.
-- Attribute values arrive as strings. SmarkForm normalizes known boolean and
-  numeric options, and some components parse particular structured values (for
-  example, `image_resize`). It does not generically parse every prefixed value
-  according to the option's expected type. Use JSON `data-smark` options for
-  objects/arrays or values without a documented attribute parser.
-
-When the same exactly named option appears in both the JSON object and a
-`data-smark-*` attribute, the prefixed attribute wins. The effective options
-are merged in this order: defaults, the JSON object, then prefixed attributes.
-
-> **Example:**
->
-> ```html
-> <!-- The prefixed attributes alone are enough to identify this node. -->
-> <input
->   data-smark-type="input"
->   data-smark-name="email"
->   data-smark-placeholder="user@example.com"
-> >
-> ```
-> ...is equivalent to:
-> ```html
-> <input data-smark='{"type":"input","name":"email","placeholder":"user@example.com"}'>
-> ```
-
-The example above uses lowercase, string-valued options. For options whose
-names or values do not fit the prefixed-attribute syntax, use the JSON form:
-
-```html
-<ul data-smark='{"type":"list","name":"items","min_items":0,"export_empties":true}'>
-  <li><input name="label" data-smark></li>
-</ul>
-```
-
-SmarkForm writes the effective options back to the canonical `data-smark`
-attribute after enhancement; the original prefixed attributes remain in the
-DOM as author-time markup.
-
-
-
-## Required and inferred properties
-
-- **`type`** is required when SmarkForm cannot infer the component type from the
-  HTML element and its attributes. It is inferred for common native controls,
-  `<label>` elements, and any component with an `action` property (which makes
-  it a trigger). Use an explicit type to override inference when needed.
-- **`name`** is recommended for data fields. SmarkForm first uses an explicit
-  option, then the HTML `name` attribute, and otherwise generates a name.
-  Triggers and labels are not named data fields; the inner field of a singleton
-  is intentionally unnamed.
-- **`action`** is required for a trigger and identifies the action it invokes.
-  The presence of `action` implies `type: "trigger"`.
-
-
-### Component-specific options
-
-Other options depend on the component type and, for triggers, the action being
-invoked. See [Core Component Types]({{ "component_reference/overview" | relative_url }})
-and the individual component pages for supported options, defaults, and
-action-specific arguments.
-
-
-
-## Components and Actions
-
-### Components
-
-A SmarkForm *component* is a DOM element that SmarkForm identifies through
-`data-smark` or a supported `data-smark-*` option attribute. The marker may be
-bare, use a type-name shorthand, or contain a JSON-formatted options object.
-
-It looks like as follows:
-
-```html
-<input data-smark='{"type":"input"}'>
-```
-
-{: .info }
-> 📌 If only type option is specified, it can be simplified as:
-> ```html
-> <input data-smark='input'/>
-> ```
-> ...or just leave it empty to let SmarkForm engine to figure out its type:
-> ```html
-> <input data-smark/>
-> ```
-
-
-### Actions
-
-*Actions* are operations that can be performed over components.
-
-Some of them such as `import`, `export` and `clear` are available for all
-components types while others are tied to secific types like `addItem` and
-`removeItem` for lists, etc...
-
-
-### Trigger Components
-
-*Trigger Components* are a special type of *component* that serve to trigger
-actions on another compoenent which we refer to it as its "context".
-
-Any SmarkForm component whith an *action* property is a [Trigger
-Component]({{ "component_reference/trigger" | relative_url }}) and for the
-sake of simplicity, its *type* property can be ommitted but it cannot take a
-different value than "trigger".
-
-**Example:**
-
-```html
-<button data-smark='{"action":"removeItem"}'></button>
-```
-
-{: .hint }
-> 📖 For detailed information see [Trigger Type Documentation]({{ "component_reference/trigger" | relative_url }}).
-
-
-## Accessing Components
-
-Every *SmarkForm* component have a *.find()* method that allows to navigate to
-other components throug their *relative path*.
-
-
-{% include components/sampletabs_tpl.md
-    formId="components_paths"
-    htmlSource=null
-    showEditor=true
-    tests=false
-%}
+See [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for path
+syntax and traversal patterns. The [Using SmarkForm]({{ "/guides/using_smarkform" | relative_url }})
+guide applies this model in a complete workflow.
+
+## Next steps {#more}
+
+- [Using SmarkForm]({{ "/guides/using_smarkform" | relative_url }}) — follow a
+  practical form-building walkthrough.
+- [Component Reference]({{ "/component_reference/overview" | relative_url }}) —
+  check type-specific behavior and options.
+- [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) and the
+  [Trigger reference]({{ "/component_reference/trigger" | relative_url }}) —
+  continue with paths and action addressing.
