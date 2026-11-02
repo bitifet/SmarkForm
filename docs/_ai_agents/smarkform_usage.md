@@ -1,0 +1,487 @@
+---
+title: "SmarkForm Usage — Agent Knowledge"
+layout: default
+description: "SmarkForm usage and internals reference for developers and AI agents, covering component types, lists, actions and export behavior."
+nav_exclude: true
+permalink: "/ai_agents/smarkform_usage"
+migration_in_progress: true
+sitemap: false
+nav_order: 3
+redirect_from:
+  - "/resources/AGENTS/SmarkForm-Usage"
+---
+
+
+<!-- BEGIN old PORTED TO docs/_ai_agents/smarkform_usage.md -->
+{% include links.md %}
+
+# {{ page.title }}
+
+This document captures key knowledge about how SmarkForm works from a **usage**
+perspective (writing HTML/CSS/JS that uses the library). It is intended to help
+coding agents avoid common mistakes.
+
+## Component Types
+
+| Type | Role | Notes |
+|------|------|-------|
+| `form` | Container for named fields | Default type for root and nested containers |
+| `list` | Ordered collection of items | Items are cloned from a template |
+ | `input` | Scalar value input (`<input>`, `<textarea>`) | Auto-detected by element tag |
+ | `file` | Whole-file uploader (picker/drop/paste) | `<input type="file">` or singleton container; exports data-URL string or `{...,data}` object |
+ | `image` | In-place image field | Decoded `<img>` media with resize/reformat options |
+ | `video` | In-place video field | `<video>` media with probe, playback and pick modes |
+ | `color` | Color picker | Wrapper around `<input type="color">` with null support |
+| `date` | Date field | Wrapper with null support |
+| `time` | Time field | Wrapper with null support |
+| `datetime-local` | Date+time field | Wrapper with null support |
+| `number` | Numeric field | Wrapper with null support |
+| `radio` | Radio-button group | Group of `<input type="radio">` elements |
+| `trigger` | Action button | Required `action` property |
+| `label` | Read-only display | Uses `data-smark` on element with inner content |
+
+Type is often auto-inferred from the element tag or presence of the `action` property. The `type` key in `data-smark` can override.
+
+## File Fields — Key Rules
+
+| Item | Fact |
+|------|------|
+| Declaration | `{"type":"file","name":"cv"}` on a real `<input>` (tuned to a text field showing the **editable file name**) or on a **singleton container** wrapping exactly one inner field |
+| Export (default `format:"raw"`) | Self-describing data-URL string: `data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…`. Empty → `null` |
+| Export (`format:"json"`) | Structured object `{name, type, size, lastModified, data}` — `data` bytes in the field's `encoding` |
+| `encoding` | `"base64"` (default) / `"base64url"` / `"hex"`: byte encoding of `data` for the object form and of bare-string payload imports. A `data:` URL is **always** base64 |
+| **Object `data` is in the field's `encoding` form** | The object shape `export()` produces is what `import()` must receive — with `encoding:"hex"` the object payload is hex, and a base64 payload would be misdecoded as hex. Acquisition (pick/drop/paste and list `acquire`/`toObjects`) re-encodes internally, so this only bites when building object data by hand in JS |
+| `size` | Always recomputed from the decoded payload — an imported `size` is never trusted |
+| Keyboard | Plain `Space` types normally; `Shift+Space` opens the OS picker (needs a real user gesture — cannot be driven by JS). `click` also opens the picker |
+| Singleton | Drop/paste detected over the whole container; drops originating inside the inner field are left to the inner field |
+| Download (action) | `{"action":"download","context":"/cv"}` triggers a **real browser download** of the stored bytes (Blob + object URL + `<a download>`); works on real fields and singletons (container delegates to the inner field). Empty field → no-op. Name precedence: `filename` trigger option (any extra trigger option) > edited visible name > stored name |
+| Lists | `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a **multi-file** picker (`multiple:false` forces single); OS drops **append** items anywhere in the list; `accept` on the list filters; list-level `file_drop:false` disables drop-add |
+| Drop on an existing list item | **Appends** a new item — it never replaces that item. Inside a `of:"file"` list the item singleton's container-level drop is suppressed (paste stays item-scoped) |
+ | `format` vs legacy `encoding` | Field-level `{"encoding":"json"}` on `input`/`textarea`/`select` is a legacy alias of `{"format":"json"}` — prefer `format` |
+
+## Image and Video Fields
+
+`image` and `video` extend `file` and share its value contract. Common rules:
+
+| Item | Fact |
+|------|------|
+| Declaration | `<img data-smark>` or `<video data-smark>` are auto-inferred as `image`/`video`; a singleton wrapper contains exactly one unnamed inner media element |
+| Value contract | Same as `file`: raw data-URL string default, `{name,type,size,lastModified,data}` with `"format":"json"`; no width/height metadata |
+| Interior state | Payload always stored as standard base64; `encoding` only affects JSON export and bare-payload imports; acquisition helpers re-encode to base64 before type-specific processing |
+| Options | `image`: `image_resize`, `image_max_size`, `image_format` (`jpeg`/`png`/`webp`/`avif`), `image_enforce` (`strict`/`hard`/`warn`/`ignore`), `smark_image_validate`<br>`video`: `video_max_size`, `smark_video_validate`, `smark_video_click` (`auto`/`pick`/`play`), `smark_video_auto_pick` |
+| Notices | Unmet/unverifiable constraints dispatch a cancellable `smark:imageNotice` / `smark:videoNotice` event, with an in-page toast if not cancelled |
+| Controls | `video` relies on native `controls` for playback; do not attempt to capture random frames. `smark_video_click` controls click behaviour |
+| Layout | Authors must reserve media space (`width`/`height` attributes, CSS `aspect-ratio`, or `sizes`) — SmarkForm never sets layout dimensions |
+| Filename | Singleton/gallery media filename controls use `data-smark='{"action":"rename"}'`; legacy `contenteditable` captions still work |
+
+## How SmarkForm Enhances HTML
+
+SmarkForm reads `data-smark` attributes on DOM nodes to build a reactive form tree. The root element is passed to the `SmarkForm` constructor:
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+```
+
+Only elements with a `data-smark` attribute are captured and enhanced by SmarkForm. SmarkForm is markup-agnostic — plain HTML elements inside a managed component are ignored unless they also have `data-smark`.
+
+As a convenience, supported options can be written as separate
+`data-smark-<option>` attributes instead of (or on top of) the JSON object.
+The suffix is used literally: there is no kebab-to-camel conversion, and HTML
+lowercases attribute names. Public option names use `snake_case` in markup,
+constructor options, and programmatic option objects. Action identifiers such
+as `addItem` are values, not option names, and retain their documented spelling.
+Function-valued JavaScript event hooks retain their documented `on...` spelling.
+Use JSON for structured values unless that option documents a prefixed-attribute
+parser.
+Attribute values arrive as strings and only supported options receive type
+normalization. When the exact same option key is present in both sources, the
+prefixed attribute overrides the JSON value. Example:
+
+```html
+<!-- data-smark-* attributes alone are enough; a bare data-smark is unnecessary. -->
+<input data-smark-type="input" data-smark-name="email">
+```
+
+Exceptions:
+- The **root element** passed directly to the `SmarkForm` constructor does not need `data-smark`
+- A **list's item template** implicitly becomes a `form` type; its type can also be overridden via the `of` property in the list's options
+
+## List Component — Critical Rules
+
+**Every direct child of a list container is treated as a template node.** There is no notion of "regular children" — ALL children are templates and are **removed from the DOM** during initialization (stored internally). This is done by `loadTemplates()` in `src/types/list.type.js`.
+
+### Template Roles
+
+Set via `data-smark='{"role":"<role>"}'` or `data-smark-role="<role>"`:
+
+| Role | Purpose |
+|------|----------|
+| `item` (default) | The repeating item template |
+| `empty_list` | Shown when list has 0 items |
+| `header` | Shown before items (not cloned) |
+| `footer` | Shown after items (not cloned) |
+| `placeholder` | DOM filler for fixed-width grids when slots are empty |
+| `separator` | Between items |
+| `last_separator` | Between second-to-last and last items |
+
+### Buttons inside vs. outside a list
+
+Buttons (triggers) can be placed **outside** their target component using the `context` property with a path. The playground's Export/Import/Reset/Clear buttons are a canonical example — they live in the root form but target the `demo` subform via `context:"demo"`.
+
+```html
+<!-- Buttons OUTSIDE the list with explicit context path -->
+<div data-smark='{"type":"list","name":"myList"}'>...</div>
+<button data-smark='{"action":"addItem","context":"myList"}'>➕</button>
+```
+
+Context paths are resolved lazily at action-trigger time via `find()`. Relative paths are resolved from the trigger's **enclosing field component** (triggers are not field components themselves, so they don't count as path nodes).
+
+{: .warning}
+> **Exception — buttons inside cloned item templates**: When a list's item template itself contains a sub-list, and buttons targeting the sub-list are placed **outside** that sub-list but **inside** the item template (so they get cloned), context resolution may fail for the cloned instances. In this case, place the buttons **inside** the sub-list using `role="footer"`:
+
+```html
+<!-- SAFE: buttons inside the sub-list via role="footer" -->
+<div data-smark='{"type":"list","name":"myList","min_items":0,"max_items":3}'>
+  <!-- item template (default role) -->
+  <span class="slot">
+    <input data-smark type="time" name="start"> to <input data-smark type="time" name="end">
+  </span>
+  <!-- placeholder fills gap when list has fewer items than max -->
+  <span data-smark-role="placeholder">❌</span>
+  <!-- footer holds controls, always visible, not cloned -->
+  <span data-smark-role="footer">
+    <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖</button>
+    <button data-smark='{"action":"addItem","hotkey":"+"}'>➕</button>
+  </span>
+</div>
+```
+
+{: .info}
+> Only the *item* template is required. The rest are optional depending on
+> the desired UI/UX and layout.
+
+### List Initialization with `value` Property
+
+If `options.value` is set on a list, it becomes the list's `defaultValue`. On initialization, `reset()` is called which triggers `import(this.defaultValue)`.
+
+```html
+<!-- Starts with 1 empty item; reset() restores this state -->
+<div data-smark='{"type":"list","name":"items","min_items":0,"value":[{}]}'>
+  <span>...</span>
+</div>
+```
+
+### `export_empties` Behavior
+
+The `export_empties` option is **inherited** — a child component inherits the value from its nearest ancestor that sets it. This means you may need to explicitly set `export_empties:false` on a nested list even if it matches the default, to override an ancestor's `export_empties:true`.
+
+When `export_empties: false` (the default):
+- List items are checked via `isEmpty()` before being included in the exported array
+- A form item is empty if ALL its field children are empty (null/undefined)
+- Empty items are stripped from the output → `[]` for a list of all-null items
+
+When `export_empties: true` (must be explicit):
+- All items are exported regardless of emptiness
+- Useful for "save progress" scenarios where partial data is intentional
+
+When an outer list (`export_empties:true`) contains an inner list (`export_empties:false`):
+- Outer list exports all its items (including empty-looking ones)
+- Inner list strips its empty items when exported as part of the outer item
+
+## Form Component — `value` and `defaultValue`
+
+The `value` property in `data-smark` options sets the field's `defaultValue`. For native HTML elements that support the `value` attribute (`<input>`, `<textarea>`, etc.), you can also set the default via the HTML attribute directly — but not both simultaneously (SmarkForm raises a `VALUE_CONFLICT` error if both are set).
+
+```html
+<div data-smark='{"name":"demo","value":{"name":"Alice"}}'>
+  <input data-smark type="text" name="name">
+</div>
+```
+
+- `demo.defaultValue = {"name": "Alice"}`
+- `reset()` on `demo` → `import({"name": "Alice"})` → fills "Alice" into the name field
+
+## CSS Layout with SmarkForm Lists
+
+Because SmarkForm removes ALL direct children of a list container during initialization (treating them as templates), CSS tricks that depend on children being in the DOM at load time need to account for the SmarkForm lifecycle.
+
+### CSS Grid with Lists
+
+To align list rows in a grid while items stack vertically:
+
+```css
+/* Each list is a 3-column grid row: label | slots | controls */
+.schedule-row {
+    display: grid;
+    grid-template-columns: 10em 1fr auto;
+    align-items: center;
+}
+/* The header (label) goes in col 1, row 1 */
+.schedule-row > [data-role="header"] {
+    grid-column: 1;
+    grid-row: 1;
+}
+/* Items (slots) stack in col 2 */
+.schedule-row > .slot {
+    grid-column: 2;
+}
+/* Footer (controls) spans all item rows in col 3 */
+.schedule-row > [data-role="footer"] {
+    grid-column: 3;
+    grid-row: 1 / -1;
+    align-self: center;
+}
+/* Placeholder not needed for layout — hide it */
+.schedule-row > [data-role="placeholder"] {
+    display: none;
+}
+```
+
+{: .info}
+> `data-role` is set by SmarkForm on template nodes when they are re-injected
+> into the DOM. The CSS selects on `data-role`, not `data-smark`, because
+> `data-smark` is the original attribute while `data-role` is set by the
+> framework at render time.
+
+## Actions
+
+Common actions triggered via `data-smark='{"action":"<name>"}'`:
+
+| Action | Target | Notes |
+|--------|--------|-------|
+| `export` | form/list | Exports current values as JSON |
+| `import` | form/list | Imports JSON into the form |
+| `reset` | form/list | Resets to `defaultValue` |
+| `clear` | form/list | Clears to `emptyValue` (type-level empty) |
+| `addItem` | list | Adds a new item |
+| `removeItem` | list | Removes target item |
+| `position` | list item | Shows item's 1-based index |
+| `count` | list | Shows total item count |
+
+### Action Context Resolution
+
+When a trigger button is clicked, SmarkForm resolves its **effective context** (the component that owns the action):
+
+- **If `context` is specified** (explicit context): The path is resolved starting from **where the trigger is placed**. Because triggers are not field components (they can't be addressed by path), the path navigates from the trigger's enclosing field component — as if the trigger itself were not a node in the path. The resolved component **must implement the action** — SmarkForm does not walk further up the chain; if it doesn't implement the action an error is reported.
+- **If `context` is NOT specified** (natural context): SmarkForm walks up the ancestor chain automatically to find the first component that implements the action.
+
+Context path examples (resolved relative to the trigger's enclosing field component):
+- `"demo"` — sibling named "demo" in the same parent field
+- `"/"` — root form
+- `".-1"` — previous sibling (used for `source` in duplicate)
+- `"..fieldname"` — named field in grandparent scope
+
+### Action Target Resolution
+
+{: .warning}
+> Target paths are **not** relative to the trigger's position — they are resolved from the
+> **effective context**.
+
+When `target` is specified, the path is evaluated starting from the effective context component. If you want to target a *sibling* of the context, you must navigate up with `..` first:
+
+```html
+<!-- Export billing, import into shipping (siblings of the root) -->
+<button data-smark='{
+    "action": "export",
+    "context": "billing",
+    "target": "../shipping"
+}'>📋 Copy to shipping</button>
+```
+
+- `context:"billing"` — resolved from the trigger's enclosing field (root form) → the billing subform
+- `target:"../shipping"` — resolved from the effective context (billing) → up to billing's parent, then "shipping"
+- `"target":"shipping"` alone → looks for a **child of billing** named "shipping" — silent failure
+
+Absolute target paths (starting with `/`) resolve from the root and avoid this ambiguity:
+
+```html
+<button data-smark='{"action":"export","context":"billing","target":"/shipping"}'>📋 Copy</button>
+```
+
+**Target semantics by action:**
+- `export` with target → exports the context, imports result into target (copy: context → target)
+- `import` with target → exports from target, imports result into context (copy: target → context)
+
+```html
+<!-- Copy FROM previous sibling INTO current item -->
+<button data-smark='{"action":"import","context":".","target":".-1"}'>← Copy from Previous</button>
+
+<!-- Copy current item INTO next sibling -->
+<button data-smark='{"action":"export","context":".","target":".+1"}'>Copy to Next →</button>
+```
+
+### `@action` Decorator — Calling Convention and Nuances
+
+{: .warning}
+> This is a common source of bugs. Read carefully before writing internal or
+> programmatic action calls.
+
+#### Signature convention
+
+Every method decorated with `@action` follows the signature:
+
+```javascript
+async actionName(data, options = {})
+```
+
+`data` is the **first** positional argument. `options` is the **second**. Even when `data` is not used by the method itself, you **must** pass `null` (or a value) as the first argument when calling it in code if you want to pass options:
+
+```javascript
+// ✅ CORRECT — data is null, options is the second arg
+await me.addItem(null, { silent: true });
+await me.removeItem(null, { silent: true });
+
+// ❌ WRONG — options object is silently received as data, options defaults to {}
+await me.addItem({ silent: true });
+await me.removeItem({ silent: true });
+```
+
+#### How triggers call actions
+
+When a trigger button is clicked, `onTriggerClick` calls the action like this:
+
+```javascript
+const options = triggerComponent.getTriggerArgs();
+const { context, action, data } = options;
+await context.actions[action](data, options);
+```
+
+- `data` comes from a `"data"` property on the trigger's `data-smark` attribute — usually `undefined`
+- `options` is the full trigger-args object
+
+#### The `@action` wrapper — what it does
+
+The decorator registers a wrapper in `this.actions[name]` that runs around the raw method:
+
+1. **Sets `options.focus = true` by default** — unless `focus` is already an own property of `options`.
+2. **Sets `options.data = data`** — so `BeforeAction` event handlers can read or modify the incoming data.
+3. **Emits `BeforeAction_<name>`** — unless `options.silent`. Handlers can call `event.preventDefault()` to cancel the action.
+4. **Re-reads `data` from `options.data`** after `BeforeAction` — allowing event handlers to substitute the data.
+5. **Calls the raw method**: `targetMtd.call(me, data, options)`
+6. **Updates `options.data`** with the return value.
+7. **Emits `AfterAction_<name>`** — unless `options.silent`.
+
+```javascript
+// Adding an item silently (no focus, no events)
+await me.addItem(null, { silent: true });
+
+// From a beforeAction handler modifying data
+component.onLocal("BeforeAction_import", (ev) => {
+    ev.data = transformData(ev.data);
+});
+```
+
+#### Programmatic calls — prototype method
+
+Actions are called directly via `component.actionName(data, options)`. These
+are the raw prototype methods — they do not fire lifecycle events or
+auto-focus. Use triggers (HTML buttons with
+`data-smark='{"action":"..."}'`) when you need the full action lifecycle
+(`BeforeAction_*` / `AfterAction_*` events, focus defaulting).
+
+Most internal calls use the prototype method directly to avoid overhead and event noise.
+
+#### `export_to_target` and `import_from_target` — data pipeline decorators
+
+These decorators are often stacked with `@action`:
+
+- **`@export_to_target`**: After the method returns a value, tries to call `options.target.import(value)`. Transparent if `target` is absent.
+- **`@import_from_target`**: Before calling the method, tries to call `options.target.export()` to replace `data`. Transparent if `target` is absent.
+
+## `import()` and `set_default` — Default Value Semantics
+
+Since v0.13.0, calling `component.import(data)` **updates the component's `defaultValue`** by default (i.e., `set_default` defaults to `true`). This means `reset()` after an `import()` restores the imported data, not the HTML initialization default.
+
+### Behavior Summary
+
+| Call | Updates default? | What `reset()` restores |
+|------|-----------------|------------------------|
+| `import(data)` | ✅ Yes | `data` (normalized via `export_empties:true`) |
+| `import(data, {set_default:false})` | ❌ No | Previous default |
+| `import(undefined)` | ❌ No (always skipped) | Current default unchanged |
+| `clear()` | ❌ No | Default unchanged |
+| `reset()` | ❌ No | Current default |
+
+### How the New Default is Computed
+
+After a successful `import(data)` with `set_default:true`, the new `defaultValue` is set by:
+
+```javascript
+me.defaultValue = await me.export(null, {silent: true, export_empties: true});
+```
+
+Using `export_empties: true` ensures empty list items are included in the stored default so `reset()` restores the exact same structure (including empty slots).
+
+### Breaking Change From Earlier Versions
+
+Code that calls `import(data)` and expects `reset()` to restore the original HTML-defined default must now use:
+
+```javascript
+await component.import(data, {set_default: false});
+```
+
+### HTML Trigger Example
+
+```html
+<!-- Import without updating defaults (preview mode) -->
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
+<!-- Import with default update (load/apply mode, the new default) -->
+<button data-smark-action="import">Load Data</button>
+```
+
+## `find()` Prefer Relative Paths
+
+Always use **relative paths** (no leading `/`) in `find()` calls. Relative paths resolve from the nearest named ancestor, making code more portable when forms are restructured.
+
+An absolute path like `find("/cardNumber")` searches from the root form's **direct children** only. If the form structure changes (e.g., nested under a wrapper subform), the absolute path breaks.
+
+A relative multi-segment path like `find("demo/cardNumber")` navigates through child components step by step: `children["demo"]` → `children["cardNumber"]`. This is both more portable and equally explicit.
+
+```javascript
+// ❌ Absolute path — breaks if structure changes
+const field = myForm.find("/cardNumber");
+
+// ✅ Relative path — portable, explicit
+const field = myForm.find("demo/cardNumber");
+```
+
+> **Note**: `find()` does **not** search recursively. Each path segment is a direct child lookup via `children[name]`. Single-segment relative paths like `find("cardNumber")` only find direct children of the nearest named ancestor, not descendants at arbitrary depth.
+
+## `find()` Timing — Must Await `rendered`
+
+The `find()` method looks up components in an internal map that is built **asynchronously during `render()`**. Before rendering is complete, **all `find()` calls return `null`** (or `undefined`).
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+
+// ❌ WRONG — render is not done yet, find returns null
+const field = myForm.find("/name"); // null!
+
+// ✅ CORRECT — wait for render to complete
+await myForm.rendered;
+const field = myForm.find("/name"); // returns the component
+```
+
+**Inside event handlers** (`AfterAction_*`, `afterRender`, etc.) this is not an issue because those events only fire after rendering has finished.
+
+## List Template Roles — Complete Reference
+
+| Role | Behavior |
+|------|----------|
+| `item` (default) | Repeating item template. **Required.** Cloned for each list item. |
+| `empty_list` | Shown in the list container when there are 0 items. Removed when the first item is added. |
+| `header` | Prepended once to the list container. **Not cloned.** Cannot contain SmarkForm fields; can contain triggers. |
+| `footer` | Appended once to the list container. **Not cloned.** Cannot contain SmarkForm fields; can contain triggers. |
+| `separator` | Cloned between each pair of adjacent items. Removed when only one item remains. |
+| `last_separator` | Like `separator` but used only between the second-to-last and last item. Falls back to `separator` if not defined. |
+| `placeholder` | Visual filler shown for each empty slot when `max_items` is set. One placeholder per unfilled slot. |
+
+### Rules for non-`item` roles
+
+- `header`, `footer`: Rendered once per list, not duplicated. Can contain action triggers (`addItem`, etc.) but **not** SmarkForm data fields.
+- `separator`, `last_separator`: Cloned dynamically by `renum()` as items are added/removed. Not enhanced by SmarkForm.
+- `placeholder`: Only rendered when `max_items` is finite. Count = `max_items - children.length` (minus 1 if `empty_list` is also shown and the list is empty).
+- `empty_list`: Managed by `renum()`. Added when `children.length === 0`, removed otherwise.
+
+Set the role via `data-smark='{"role":"<role>"}'`. The `item` role is the default and does not need to be specified explicitly.
+<!-- END old PORTED TO docs/_ai_agents/smarkform_usage.md -->

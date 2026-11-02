@@ -1,0 +1,237 @@
+---
+title: «time» Component Type
+layout: chapter
+description: "Use SmarkForm time fields to normalize native time input values and exchange consistent values through JSON."
+permalink: "/component_reference/time"
+migration_in_progress: true
+sitemap: false
+nav_order: 7
+redirect_from:
+  - "/component_types/type_time"
+---
+
+
+<!-- BEGIN old PORTED TO docs/_component_reference/time.md -->
+# {{ page.title }}
+
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {% include chaptertoc/type_time.html %}
+
+</details>
+
+{% include components/sampletabs_ctrl.md %}
+
+## Introduction
+
+The `time` component type extends the [Input](/component_reference/input)
+component type, providing specialized handling for time input fields with
+enhanced parsing and formatting capabilities.
+
+- **Imports and Exports:** ISO time string (`HH:mm:ss`) or `null` (when empty)
+- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Data Conversion:** Converts between various time formats and ISO time strings
+
+## Usage
+
+Just add the *data-smark* attribute to the `<input>` element specifying the type:
+
+```html
+<input data-smark='{"type":"time", "name":"meetingTime"}'>
+```
+
+Alternatively, you can also use the shorthand notation inferring the type from the `<input>` element type:
+
+```html
+<input type="time" name="meetingTime" data-smark>
+```
+
+
+**Example:**
+
+{% raw %} <!-- simple_time {{{ --> {% endraw %}
+{% capture simple_time -%}
+<div id="myForm$$">
+  <input type="time" name="meetingTime" data-smark>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "meetingTime": "14:30:00"
+}
+{%- endcapture %}
+
+{% raw %} <!-- simple_time_tests {{{ --> {% endraw %}
+{% capture simple_time_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('meetingTime', new Date("2023-11-30T14:30:45.789Z"));
+    expect(await readField('meetingTime')).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('meetingTime', new Date("2023-12-25T09:15:30.000Z").getTime());
+    expect(await readField('meetingTime')).toMatch(/^\d{2}:\d{2}:\d{2}$/);
+
+    await writeField('meetingTime', "12:34");
+    expect(await readField('meetingTime')).toBe("12:34:00");
+
+    await writeField('meetingTime', "18:45:30");
+    expect(await readField('meetingTime')).toBe("18:45:30");
+
+    await writeField('meetingTime', "154530");
+    expect(await readField('meetingTime')).toBe("15:45:30");
+
+    await writeField('meetingTime', "1545");
+    expect(await readField('meetingTime')).toBe("15:45:00");
+
+    await writeField('meetingTime', "invalid-time");
+    expect(await readField('meetingTime')).toBe(null);
+
+    await writeField('meetingTime', null);
+    expect(await readField('meetingTime')).toBe(null);
+
+    await writeField('meetingTime', "");
+    expect(await readField('meetingTime')).toBe(null);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_time"
+    htmlSource=simple_time
+    demoValue=demoValue
+    showEditor=true
+    tests=simple_time_tests
+%}
+
+
+### Data Formats
+
+The `time` component accepts multiple input formats for maximum flexibility:
+
+- **ISO Time String (HH:mm:ss):** `"14:30:45"` (standard format with seconds)
+- **Short Time String (HH:mm):** `"14:30"` (automatically adds `:00` for seconds)
+- **Compact Time String (HHmmss):** `"143045"` (6-digit format, converted to `HH:mm:ss`)
+- **Short Compact Time String (HHmm):** `"1430"` (4-digit format, converted to `HH:mm:00`)
+- **Date Object:** `new Date("2023-12-25T14:30:45")` (extracts time portion)
+- **Epoch Timestamp:** `1703512245000` (milliseconds since Unix epoch, extracts time)
+- **Empty/Null Values:** `null`, `""`, or `undefined` (clears the field)
+
+All valid times are normalized to ISO time format (`HH:mm:ss`) for export,
+ensuring consistency across your application.
+
+## Requirements
+
+The time component will throw an error if the target field is not an INPUT
+element or its type is explicitly defined and different to "time". Invalid time
+strings that cannot be parsed will result in a `null` value rather than
+throwing an error.
+
+{% raw %} <!-- time_error {{{ --> {% endraw %}
+{% capture time_error -%}
+<div id="myForm$$">
+  <p>
+    <label>Correct:</label>
+    <input type="time" name="meetingTime1" data-smark='{"type":"time"}' />
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <input type="text" name="meetingTime2" data-smark='{"type":"time"}' />
+  </p>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- time_error_tests {{{ --> {% endraw %}
+{% capture time_error_tests -%}
+export default async ({ expect, readField, writeField }) => {
+    await writeField('meetingTime1', "14:25:37");
+
+    const exported = await readField('meetingTime1');
+    expect(exported).toBe("14:25:37");
+    expect(/^\d{2}:\d{2}:\d{2}$/.test(exported)).toBe(true);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="time_error"
+    htmlSource=time_error
+    showEditor=true
+    tests=time_error_tests
+    expectedPageErrors=0
+    expectedConsoleErrors=1
+%}
+
+
+{: .info :}
+> When a *SmarkForm* component fails to render due to a *RenderError*, it is
+> replaced by a flamboyant placeholder that shows the error code and provides a
+> handy button to "replay" it to the console making it easier to debug the
+> issue.
+> 
+> 👉 Take a look to the *Preview* tab of the previous example to see it in
+> action.
+>
+> {: .hint :}
+> > Notice that you'll need to open your browser console if you want to see the
+> > error details when pressing the "Replay Error" button.
+
+
+## API Reference
+
+### Actions
+
+{{ site.data.definitions.actions.intro }}
+
+The `time` component type supports the following actions:
+
+#### (Async) export (Action)
+
+Exports the value of the time input field as an ISO time string. If the field is empty or contains an invalid time, it returns `null`.
+
+##### Options (export)
+
+  * **action:** (= "export")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_export }}
+  * **data:**
+
+#### (Async) import (Action)
+
+Imports a value into the time input field. Accepts various time formats and converts them to the appropriate input format.
+
+##### Options (import)
+
+  * **action:** (= "import")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_import }}
+  * **data:** (Date object, ISO time string, compact time string, or epoch timestamp)
+  * **focus:** (boolean, default true)
+
+#### (Async) clear (Action)
+
+Clears the value of the time input field (sets it to `null`).
+
+##### Options (clear)
+
+  * **action:** (= "clear")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+
+
+#### (Async) reset (Action)
+
+Reverts the time field to its configured default value. If no default was configured, the field reverts to `null` (same as `clear`).
+
+##### Options (reset)
+
+  * **action:** (= "reset")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+<!-- END old PORTED TO docs/_component_reference/time.md -->

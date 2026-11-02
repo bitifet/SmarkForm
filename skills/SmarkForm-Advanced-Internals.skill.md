@@ -31,7 +31,7 @@ Use the exact source-priority order defined in
 `skills/SmarkForm-Form-Builder.skill.md`.  Additionally, for internals-first
 tasks, start by reading:
 
-- https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage
+- https://smarkform.bitifet.net/ai_agents/smarkform_usage
 
 ## Non-negotiable Internals Rules
 

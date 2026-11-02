@@ -5,7 +5,7 @@ import crypto from 'crypto';
 
 test.describe('Distribution Directory Synchronization Tests', () => {
     const distPath = path.resolve('dist');
-    const docsDistPath = path.resolve('docs/_resources/dist');
+    const docsDistPath = path.resolve('docs/resources/dist');
 
     /**
      * Recursively get all files in a directory
@@ -74,7 +74,7 @@ test.describe('Distribution Directory Synchronization Tests', () => {
         return dirs.sort();
     }
 
-    test('Both dist and docs/_resources/dist directories should exist', () => {
+    test('Both dist and docs/resources/dist directories should exist', () => {
         expect(
             fs.existsSync(distPath) && fs.statSync(distPath).isDirectory(),
             `Directory ${distPath} does not exist or is not a directory`
@@ -109,7 +109,7 @@ test.describe('Distribution Directory Synchronization Tests', () => {
 
             expect(
                 fs.existsSync(docsDistFilePath),
-                `File ${relativePath} exists in dist but not in docs/_resources/dist`
+                `File ${relativePath} exists in dist but not in docs/resources/dist`
             ).toBe(true);
 
             const distHash = getFileHash(distFilePath);
@@ -119,7 +119,7 @@ test.describe('Distribution Directory Synchronization Tests', () => {
         }
     });
 
-    test('There should be no extra files in docs/_resources/dist', () => {
+    test('There should be no extra files in docs/resources/dist', () => {
         const distFiles = getAllFiles(distPath);
         const docsDistFiles = getAllFiles(docsDistPath);
 

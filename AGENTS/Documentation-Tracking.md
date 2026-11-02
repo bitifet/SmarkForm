@@ -15,7 +15,7 @@ SmarkForm's documentation is split across the `docs/` tree (and potentially dupl
 3. **Group entries by affected file.** Give each file its own `## <path>` heading and list that file's entries beneath it (newest first). Keep each entry to a date and a one-line description:
 
    ```markdown
-   ## docs/_advanced_concepts/the_singleton_pattern.md
+   ## docs/_guides/the_singleton_pattern.md
 
    - 2026-09-12 — New singleton chapter (initial draft).
    ```

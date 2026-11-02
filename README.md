@@ -44,7 +44,7 @@ No component framework. No imposed DOM structure or CSS.
 
 ---
 
-📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) for the full API surface, actions, events, and component types at a glance.
+📋 **Quick reference:** See the [Developer Cheatsheet](https://smarkform.bitifet.net/component_reference/cheatsheet) for the full API surface, actions, events, and component types at a glance.
 
 ## The idea in one example
 
@@ -239,7 +239,7 @@ The `➕ Add` buttons carry no code — they are declared with `data-smark` and
 act on the list they can reach. Lists can be reordered and items can be moved
 between nested lists, and the data follows.
 
-▶ **[Try it live](https://smarkform.bitifet.net/about/showcase#multiple-level-nesting)**
+▶ **[Try it live](https://smarkform.bitifet.net/showcase_examples/showcase)**
 in the interactive playground, with HTML, CSS, JS and the resulting JSON side
 by side.
 
@@ -255,20 +255,20 @@ by side.
 
 ## Real-world examples
 
-The [Showcase](https://smarkform.bitifet.net/about/showcase) is a large set of
+The [Showcase](https://smarkform.bitifet.net/showcase_examples/showcase) is a large set of
 runnable, editable examples. Some highlights:
 
-  * [Multiple-level nesting](https://smarkform.bitifet.net/about/showcase#multiple-level-nesting)
-  * [Deeply nested forms](https://smarkform.bitifet.net/about/showcase#deeply-nested-forms)
-  * [Nested lists and forms](https://smarkform.bitifet.net/about/showcase#nested-lists-and-forms)
-  * [Smooth navigation](https://smarkform.bitifet.net/about/showcase#smooth-navigation)
-  * [Context-driven hotkeys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts-hot-keys)
-  * [Field masking](https://smarkform.bitifet.net/about/showcase#field-masking)
-  * [Team Event Planner](https://smarkform.bitifet.net/about/showcase#team-event-planner)
-  * [Simple Calculator](https://smarkform.bitifet.net/about/showcase#simple-calculator)
+  * [Multiple-level nesting](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Deeply nested forms](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Nested lists and forms](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Smooth navigation](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Context-driven hotkeys](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Field masking](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Team Event Planner](https://smarkform.bitifet.net/showcase_examples/showcase)
+  * [Simple Calculator](https://smarkform.bitifet.net/showcase_examples/showcase)
 
 Prefer to start from working code? Download any of the
-[ready-to-run examples](https://smarkform.bitifet.net/resources/examples) —
+[ready-to-run examples](https://smarkform.bitifet.net/showcase_examples/examples) —
 Company, TO-DO List, Adventure Tracking, Beach Surveillance, Event
 Registration, Expense Report, Medical Intake, Property Inspection, Restaurant
 Reservation — and edit it locally.
@@ -329,8 +329,8 @@ JSON, constructor options, and programmatic option objects. Action identifiers
 such as `addItem` are values, not option names, and keep their documented
 spelling. Use JSON for structured values without a documented attribute parser.
 
-👉 Full syntax: [The `data-smark` attribute](https://smarkform.bitifet.net/getting_started/core_concepts#the-data-smark-attribute)
-and [Shorthand syntaxes](https://smarkform.bitifet.net/getting_started/core_concepts#shorthand-syntaxes).
+👉 Full syntax: [The `data-smark` attribute](https://smarkform.bitifet.net/start_here/core_concepts#the-data-smark-attribute)
+and [Shorthand syntaxes](https://smarkform.bitifet.net/start_here/core_concepts#shorthand-syntaxes).
 
 
 ## Contexts, targets and actions
@@ -371,7 +371,7 @@ Form
 Paths traverse the SmarkForm tree, not the DOM, and support parents (`..`),
 siblings (`.-1`) and wildcards (`*`).
 
-👉 Full reference: [Form Traversing](https://smarkform.bitifet.net/working_with_forms/form_traversing).
+👉 Full reference: [Form Traversing](https://smarkform.bitifet.net/guides/form_traversing).
 
 
 ## Why SmarkForm?
@@ -397,7 +397,7 @@ model is derived from it rather than replacing it.
   * [Nested forms](https://smarkform.bitifet.net/about/features#nestable-forms)
     and [variable-length lists](https://smarkform.bitifet.net/about/features#variable-length-lists)
     are themselves fields, so they nest to any depth — of scalars or subforms.
-  * Declarative [triggers, actions and contexts](https://smarkform.bitifet.net/working_with_forms/form_traversing),
+  * Declarative [triggers, actions and contexts](https://smarkform.bitifet.net/guides/form_traversing),
     addressed by relative paths — not by DOM position.
   * [JSON import and export](https://smarkform.bitifet.net/about/features#json-based)
     for the whole form or any sub-tree.
@@ -418,7 +418,7 @@ model is derived from it rather than replacing it.
   * [Context-driven hotkeys](https://smarkform.bitifet.net/about/features#context-driven-hotkeys).
   * [Extendable](https://smarkform.bitifet.net/about/features#flexible-and-extendable)
     with custom component types and HTML
-    [mixin templates](https://smarkform.bitifet.net/advanced_concepts/mixin_types).
+    [mixin templates](https://smarkform.bitifet.net/guides/mixin_types).
 
 
 ## Install
@@ -446,7 +446,7 @@ Or load it straight from a CDN — as a global UMD script:
 
 > 📌 The snippets above track the latest published version (handy for
 > playgrounds). For production, pin a specific version; see
-> [Getting SmarkForm](https://smarkform.bitifet.net/getting_started/getting_smarkform).
+> [Getting SmarkForm](https://smarkform.bitifet.net/start_here/getting_smarkform).
 
 
 ## Framework agnostic — on purpose
@@ -478,8 +478,8 @@ Semantic labelling remains the responsibility of your markup. Feedback and
 bug reports are welcome in the
 [A11Y discussion](https://github.com/bitifet/SmarkForm/discussions/25).
 
-👉 See [Smooth navigation](https://smarkform.bitifet.net/about/showcase#smooth-navigation)
-and [Context-driven hotkeys](https://smarkform.bitifet.net/about/showcase#context-driven-keyboard-shortcuts-hot-keys)
+👉 See [Smooth navigation](https://smarkform.bitifet.net/showcase_examples/showcase)
+and [Context-driven hotkeys](https://smarkform.bitifet.net/showcase_examples/showcase)
 for keyboard-first examples.
 
 
@@ -519,19 +519,19 @@ For detailed usage instructions and API reference check out the
 <img align="right" alt="Reference Manual" src="docs/assets/ReferenceManual.png" />
 </a>
 
-  * [Showcase](https://smarkform.bitifet.net/about/showcase) — interactive
+  * [Showcase](https://smarkform.bitifet.net/showcase_examples/showcase) — interactive
     examples of everything SmarkForm can do.
 
-  * [Quick Start](https://smarkform.bitifet.net/getting_started/quick_start) —
+  * [Quick Start](https://smarkform.bitifet.net/start_here/quick_start) —
     from an empty page to a working form.
 
-  * [Live Examples](https://smarkform.bitifet.net/resources/examples) —
+  * [Live Examples](https://smarkform.bitifet.net/showcase_examples/examples) —
     downloadable forms you can run locally and tinker with.
 
-  * [Getting SmarkForm](https://smarkform.bitifet.net/getting_started/getting_smarkform) —
+  * [Getting SmarkForm](https://smarkform.bitifet.net/start_here/getting_smarkform) —
     ESM and UMD, via npm, GitHub or CDN.
 
-  * [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet) —
+  * [Developer Cheatsheet](https://smarkform.bitifet.net/component_reference/cheatsheet) —
     the whole API at a glance.
 
 

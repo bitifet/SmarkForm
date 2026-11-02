@@ -1,10 +1,11 @@
 ---
 title: Introduction
 layout: chapter
-permalink: /about/introduction
-nav_order: 1
 description: "Learn what SmarkForm is, how markup-driven fields map to structured JSON, and when this lightweight form library fits your project."
-
+permalink: "/about/introduction"
+nav_order: 1
+migration_in_progress: true
+sitemap: false
 ---
 
 {% include links.md %}
@@ -85,7 +86,7 @@ All that in a 100% declarative approach providing a consistent UX across very
 different forms.
 
 
-👉 See the [Showcase]({{ "/about/showcase" | relative_url }}) for a quick
+👉 See the [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) for a quick
 overview of what SmarkForm can do.
 
 

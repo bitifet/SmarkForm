@@ -21,7 +21,7 @@ nav_order: 5
 
 ## Why Link to the User Guide
 
-By linking to the SmarkForm [User Guide]({{ "/resources/user_guide" | relative_url }}), you provide several benefits to your users:
+By linking to the SmarkForm [User Guide]({{ "/for_end_users/user_guide" | relative_url }}), you provide several benefits to your users:
 
 **Better User Experience Through Education:**
 - Users discover powerful keyboard shortcuts that speed up form filling
@@ -81,7 +81,7 @@ Here are copy-paste ready code snippets for implementing SmarkForm badges in you
 The compact badge is perfect for form footers and provides a clean, unobtrusive link to the user guide:
 
 ```html
-<a href="https://smarkform.bitifet.net/resources/user_guide" 
+<a href="https://smarkform.bitifet.net/for_end_users/user_guide"
    title="Learn about SmarkForm-powered forms"
    target="_blank"
    rel="noopener noreferrer">
@@ -136,7 +136,7 @@ For a badge that scales appropriately on different screen sizes:
   }
 </style>
 
-<a href="https://smarkform.bitifet.net/resources/user_guide" 
+<a href="https://smarkform.bitifet.net/for_end_users/user_guide"
    class="smarkform-badge"
    title="Learn about SmarkForm-powered forms"
    target="_blank"
@@ -169,7 +169,7 @@ For sites with dark mode support, use CSS to switch between light and dark logos
   }
 </style>
 
-<a href="https://smarkform.bitifet.net/resources/user_guide" 
+<a href="https://smarkform.bitifet.net/for_end_users/user_guide"
    title="Learn about SmarkForm-powered forms"
    target="_blank"
    rel="noopener noreferrer">
@@ -195,7 +195,7 @@ For sites with dark mode support, use CSS to switch between light and dark logos
    <footer class="form-footer">
      <p>
        This form is powered by 
-       <a href="https://smarkform.bitifet.net/resources/user_guide">
+       <a href="https://smarkform.bitifet.net/for_end_users/user_guide">
          <img src="https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg" 
               alt="SmarkForm" 
               height="16" 
@@ -220,7 +220,7 @@ When implementing badges, ensure they're accessible:
 
 ```html
 <!-- Good: Descriptive alt text and title -->
-<a href="https://smarkform.bitifet.net/resources/user_guide" 
+<a href="https://smarkform.bitifet.net/for_end_users/user_guide"
    title="Learn about SmarkForm features and keyboard shortcuts"
    target="_blank"
    rel="noopener noreferrer"
@@ -292,14 +292,14 @@ When using SmarkForm logos and badges:
 When using SmarkForm in your project, we appreciate attribution. Here are the recommended formats:
 
 **Minimal (badge only):**
-- A visible badge linking to `https://smarkform.bitifet.net/resources/user_guide`
+- A visible badge linking to `https://smarkform.bitifet.net/for_end_users/user_guide`
 
 **Standard (badge + text):**
 ```html
 <p>
   This form is powered by 
   <a href="https://smarkform.bitifet.net">SmarkForm</a>.
-  <a href="https://smarkform.bitifet.net/resources/user_guide">
+  <a href="https://smarkform.bitifet.net/for_end_users/user_guide">
     Learn about the features →
   </a>
 </p>
@@ -313,7 +313,7 @@ This application uses [SmarkForm](https://smarkform.bitifet.net),
 a powerful form library that provides enhanced keyboard navigation, 
 context-aware hotkeys, and dynamic form features. 
 
-Learn more about [using SmarkForm-powered forms](https://smarkform.bitifet.net/resources/user_guide).
+Learn more about [using SmarkForm-powered forms](https://smarkform.bitifet.net/for_end_users/user_guide).
 ```
 
 {: .hint}
@@ -338,7 +338,7 @@ The parametric design ensures:
 > 🎯 **Ready to add a badge to your form?** Copy one of the examples above and paste it into your HTML!
 
 {: .hint}
-> 💻 **Want to see examples in action?** Check out the [Examples section]({{ "resources/examples" | relative_url }}) to see how other developers have implemented SmarkForm badges.
+> 💻 **Want to see examples in action?** Check out the [Examples section]({{ "showcase_examples/examples" | relative_url }}) to see how other developers have implemented SmarkForm badges.
 
 ---
 

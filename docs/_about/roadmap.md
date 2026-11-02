@@ -1,12 +1,15 @@
 ---
 title: Roadmap
 layout: chapter
-permalink: /about/roadmap
 description: "See planned SmarkForm improvements across component types, the API, documentation, tooling and future integrations."
-nav_order: 5
-
+permalink: "/about/roadmap"
+nav_order: 6
+migration_in_progress: true
+sitemap: false
 ---
 
+
+<!-- BEGIN old PORTED TO docs/_about/roadmap.md -->
 # {{ page.title }}
 
 <br />
@@ -125,3 +128,4 @@ components in their own repository rather than core features.
   * Downloads exported JSON by default, with optional transformation filters
     for other formats.
   * Allows specifying (or prompting for) the file name.
+<!-- END old PORTED TO docs/_about/roadmap.md -->

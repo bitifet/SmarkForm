@@ -67,7 +67,7 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - Mixin-scoped masks: `<script type="smark-mask">` inside `<template>` is scoped, not global; requires `allowLocalMixinScripts: 'allow'`
 - On error (mask not found or factory throws), original input type is restored; if `smark_mask_throw_on_missing` is `true` an error is thrown, otherwise a `console.warn` is emitted
 - `MASK_APPLY_ERROR`: thrown when a mask factory throws; the original exception is available via `error.cause`
-- **Focus restoration**: `_applyMask()` saves `document.activeElement` before calling the factory and restores it afterward. If a mask library focuses the field asynchronously (e.g. Inputmask via `setTimeout`), the factory must `await` a macrotask yield before returning so the deferred focus fires before SmarkForm restores focus. See the "Focus and Mask Factories" section in `docs/_working_with_forms/field_masking.md`.
+- **Focus restoration**: `_applyMask()` saves `document.activeElement` before calling the factory and restores it afterward. If a mask library focuses the field asynchronously (e.g. Inputmask via `setTimeout`), the factory must `await` a macrotask yield before returning so the deferred focus fires before SmarkForm restores focus. See the "Focus and Mask Factories" section in `docs/_guides/field_masking.md`.
 
 **Configuration file locations**:
 - Tests: `test/declarative_mask.tests.js`, `test/mask.tests.js`
@@ -94,7 +94,7 @@ a self-describing data-URL string by default, or as a structured object with
 - `format`/`encoding` naming: field-level `{"encoding":"json"}` is the **legacy alias** of `{"format":"json"}` on `input` types (`isJsonFormatted` helper in `src/types/input.type.js` accepts either).
 
 **Configuration file locations**:
-- Tests: `test/co_located_tests.tests.js` (docs examples incl. `docs/_component_types/type_file.md`), list integration covered by the co-located examples in `docs/_component_types/type_file.md`
+- Tests: `test/co_located_tests.tests.js` (docs examples incl. `docs/_component_reference/file.md`), list integration covered by the co-located examples in `docs/_component_reference/file.md`
 - Implementation:
   - `src/types/file.type.js` — field behavior (`readFileToObject`, `acquire`, `toObjects`)
   - `src/lib/file_value.js` — value normalization, encoding, URL import/export, download
@@ -166,7 +166,7 @@ an editable file name via `figcaption contenteditable`.
 
 **Configuration file locations**:
 - Tests: `test/type_image.tests.js`; `test/co_located_tests.tests.js` (demoValue
-  round-trip smoke tests for the sampletabs in `docs/_component_types/type_image.md`)
+  round-trip smoke tests for the sampletabs in `docs/_component_reference/image.md`)
 - Implementation: `src/types/image.type.js` (extends `file`), `src/lib/component.js`
   (`inferType` `case "img"`), `src/lib/file_value.js` (normalization, encoding,
   URL import/export and download), `src/lib/file_caption.js` (shared caption and
@@ -213,7 +213,7 @@ poster while empty.
   contract), `src/lib/file_caption.js` (shared rename/caption behavior),
   `src/lib/media_helpers.js` (shared list/batch helpers),
   `src/decorators/media_spinner.deco.js` (loading overlay)
-- Documentation: `docs/_component_types/type_video.md`
+- Documentation: `docs/_component_reference/video.md`
 - Spec: `spc/video.md` (authoritative design)
 
 ### Mixin Types
@@ -254,7 +254,7 @@ into the clone, and replacing the placeholder in place.
 - Tests: `test/mixin_types.tests.js`
 - Implementation: `src/lib/mixin.js` (expansion engine), `src/lib/component.js`
   (integration, option threading, `inferType`), `src/lib/source_ids.js`
-- Documentation: `docs/_advanced_concepts/mixin_types.md`
+- Documentation: `docs/_guides/mixin_types.md`
 - Spec: `spc/mixins.md` (authoritative design); pending proposals C & D are in
   `spc/proposals/mixins.md`
 
@@ -309,7 +309,7 @@ node scripts/collect-docs-examples.js
 
 ### Cheatsheet Validation Script
 
-**What it does**: Validates the Developer Cheatsheet (`docs/_resources/cheatsheet.md`) for structural integrity — verifies the generated TOC include matches the page's real kramdown-GFM heading anchors and all internal cross-reference links resolve to existing doc pages.
+**What it does**: Validates the Developer Cheatsheet (`docs/_component_reference/cheatsheet.md`) for structural integrity — verifies the generated TOC include matches the page's real kramdown-GFM heading anchors and all internal cross-reference links resolve to existing doc pages.
 
 **Location**: `scripts/validate-cheatsheet.js`
 
@@ -440,10 +440,13 @@ scripts/liveserve_all.sh
 
 **Key details**:
 - Jekyll site in `docs/` directory
+- Reader-facing collections follow the documentation IA under `_showcase_examples`, `_start_here`, `_guides`, `_accessibility`, `_component_reference`, `_advanced_topics`, `_about`, `_for_end_users`, `_ai_agents`, and `_community`. Temporary `_old_*` collections exist only on the refactor branch and must be removed before publication.
 - Generates chapter TOCs first (`node ../scripts/generate-chaptertocs.js` fills the git-ignored `docs/_includes/chaptertoc/` directory from the pages' include tags)
 - Built package and examples copied into docs for deployment
 - `package.json` copied to `docs/_data/` for Jekyll data files
-- Built examples copied to `docs/_resources/`
+- Generated package files stay at `/resources/dist/`; downloadable-example source extracts use hidden `.example_sources` folders next to the old and new Examples pages so `include_relative` works without publishing capture files as sitemap entries.
+- `jekyll-redirect-from` is enabled through `docs/Gemfile` and `docs/_config.yml` for clean-URL migration aliases; verify redirects and the sitemap in the built site.
+- Temporary `/old/` pages and in-progress canonical pages are `noindex`/sitemap-excluded during the refactor and must not ship.
 - Social link previews use the theme's `jekyll-seo-tag`: `docs/_config.yml` sets
   the canonical site `url` and `twitter.username` (`smarkform`). Any page can set
   front-matter `description` and `image` (`path`, `width`, `height`, `alt`) to
@@ -657,7 +660,7 @@ cd media/hero
 - `./build.sh social` regenerates the 2:1 social card from `out/poster.png`;
   `assemble` includes it automatically and `publish` copies it to `docs/assets/hero/`.
 - Code shown in the video is re-typeset from the docs sources
-  (`docs/_component_types/type_image.md`, `docs/_about/showcase.md`) by
+  (`docs/_component_reference/image.md`, `docs/_showcase_examples/showcase.md`) by
   `codeimg.py`; if those examples change, rebuild.
 - Git-ignored: `.venv/`, `assets/voices/`, `work/scenes/`,
   `work/master_video.mp4`, `work/voice/narration.wav`, `out/`.
@@ -720,8 +723,8 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 
 | File | Contents |
 |------|----------|
-| `AGENTS/SmarkForm-Usage.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Usage.md` — component types, list template roles, button context patterns, CSS grid layout, `export_empties` behaviour. Full content kept here for agents that need it without following a link. |
-| `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_resources/AGENTS/SmarkForm-Forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
+| `AGENTS/SmarkForm-Usage.md` | Pointer to `docs/_ai_agents/smarkform_usage.md` — component types, list template roles, button context patterns, CSS grid layout, `export_empties` behaviour. Full content kept here for agents that need it without following a link. |
+| `AGENTS/SmarkForm-Forms.md` | Pointer to `docs/_ai_agents/smarkform_forms.md` — practical form implementation guide, CDN/npm/downloaded-copy consumption snippets, prompt templates, and an agent checklist |
 | `AGENTS/Documentation-Examples.md` | How the playground template works — `demoValue`, `DOCS_ONLY_PARAMS`, co-located test patterns, tips for harvesting realistic demo data |
 | `AGENTS/Cheatsheet.md` | Developer Cheatsheet reference — what each section covers, how agents should use it when generating SmarkForm code, and validation details |
 | `AGENTS/Documentation-Tracking.md` | Docs-change tracking — whenever an agent creates or modifies a documentation file, add a dated entry to the gitignored `UPDATED_DOCS.md`, **grouped by affected page**: one `## <path>` heading per file (e.g. `## docs/_about/faq.md`) with that file's dated change lines beneath it, so reviewers and fork-maintainers can see each page's history at a glance |
@@ -834,7 +837,7 @@ When writing links to other documentation pages from within `.md` files:
   rendered page.
 - Example: a heading `### The Singleton Pattern.` in
   `_getting_started/core_component_types.md` produces
-  `{{ "/getting_started/core_component_types" | relative_url }}#the-singleton-pattern`.
+  `{{ "/component_reference/overview" | relative_url }}#the-singleton-pattern`.
 
 ## Agent Skills Directory (`skills/`)
 
@@ -850,7 +853,7 @@ implementation behavior.
 | `skills/smarkform-advanced-internals/SKILL.md` | OpenCode-format export of the advanced skill |
 
 Maintenance rule:
-- When `docs/_resources/AGENTS/SmarkForm-Forms.md` or `docs/_resources/AGENTS/SmarkForm-Usage.md` changes, review and update both skill specs in `skills/` if affected; when in doubt, update both in the same PR so installable skills stay aligned with canonical docs.
+- When `docs/_ai_agents/smarkform_forms.md` or `docs/_ai_agents/smarkform_usage.md` changes, review and update both skill specs in `skills/` if affected; when in doubt, update both in the same PR so installable skills stay aligned with canonical docs.
 - **Update both formats**: when editing a canonical `.skill.md` file, also update the corresponding `skills/<name>/SKILL.md` so both formats stay in sync.
 
 

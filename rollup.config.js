@@ -18,12 +18,17 @@ const isProduction = process.env.BUILD === 'production';
 const delTargets = [
     "dist/*",
     "docs/_resources/dist",
+    "docs/resources/dist",
+    "docs/_showcase_examples/.example_sources/dist/examples",
+    "docs/_old_resources/.example_sources/dist/examples",
     "docs/_data/package.json",
 ];
 
 const copyTargets = [
     { src: "package.json", dest: "docs/_data/" },
-    { src: "dist/*", dest: "docs/_resources/dist" },
+    { src: "dist/*", dest: "docs/resources/dist" },
+    { src: "dist/examples/*", dest: "docs/_showcase_examples/.example_sources/dist/examples" },
+    { src: "dist/examples/*", dest: "docs/_old_resources/.example_sources/dist/examples" },
 ];
 
 

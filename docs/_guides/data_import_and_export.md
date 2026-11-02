@@ -1,0 +1,682 @@
+---
+title: Importing and Exporting Data
+layout: chapter
+description: "Import JSON into SmarkForm fields and export form data as objects and arrays, including nested and specialized values."
+permalink: "/guides/data_import_and_export"
+migration_in_progress: true
+sitemap: false
+nav_order: 2
+redirect_from:
+  - "/working_with_forms/data_import_and_export"
+---
+
+
+<!-- BEGIN old PORTED TO docs/_guides/data_import_and_export.md -->
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
+
+# {{ page.title }}
+
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {% include chaptertoc/data_import_and_export.html depth=3 %}
+
+</details>
+
+
+## Overview
+
+SmarkForm manages all form data through two complementary actions: **`export`**
+and **`import`**.
+
+- **`export`** reads the current state of a form (or any component inside it)
+  and returns a plain JavaScript value — an object for forms, an array for
+  lists, and a scalar for individual fields.
+- **`import`** takes a plain JavaScript value (or a JSON string) and writes it
+  into the form, updating every field it can match by name.
+
+Both actions work **recursively**: exporting or importing a form exports or
+imports all its child components in one call, no matter how deeply they are
+nested. This means you rarely need to address individual fields from JavaScript
+— you simply read and write the whole form at once.
+
+Two related actions — **`reset`** and **`clear`** — build on top of `import`
+and are covered in the [Default Values, `clear`, and `reset`](#default-values-clear-and-reset) section.
+
+{: .info }
+> All four actions (`export`, `import`, `reset`, `clear`) are available as HTML
+> trigger buttons via the `data-smark` attribute as well as via the JavaScript
+> API.
+
+
+## The `export` Action
+
+When you call `export` on a component, SmarkForm collects all the current
+values in that component's subtree and returns them as a plain, JSON-serialisable
+value:
+
+| Component type | Exported value |
+|---|---|
+| `form` / root | `{ fieldName: value, … }` plain object |
+| `list` | `[ item, … ]` array |
+| `input` / scalar fields | The raw field value (string, number, boolean, …) |
+
+### Return value structure
+
+The structure of the exported value mirrors the nesting of the form:
+
+{% raw %} <!-- capture export_structure_html {{{ --> {% endraw %}
+{% capture export_structure_html -%}
+<div id="myForm$$">
+  <fieldset data-smark='{"type":"form","name":"order"}'>
+    <legend>Order</legend>
+    <p>
+      <label data-smark>Customer:</label>
+      <input data-smark type="text" name="customer">
+    </p>
+    <p>
+      <label data-smark>Notes:</label>
+      <textarea data-smark name="notes"></textarea>
+    </p>
+    <ul data-smark='{"type":"list","name":"items","min_items":0}'>
+      <li>
+        <input data-smark type="text" name="product" placeholder="Product">
+        <input data-smark type="number" name="qty" placeholder="Qty">
+        <button data-smark-action="removeItem">➖</button>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"items"}'>➕ Add item</button>
+  </fieldset>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "order": {
+        "customer": "Jane Smith",
+        "notes": "Please wrap as a gift",
+        "items": [
+            {
+                "product": "Widget A",
+                "qty": 3
+            },
+            {
+                "product": "Widget B",
+                "qty": 1
+            }
+        ]
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="export_structure"
+    htmlSource=export_structure_html
+    showEditor=true
+    demoValue=demoValue
+    tests=false
+%}
+
+Click **⬇️ Export** to see the exported JSON. The structure of the exported
+object matches the form structure exactly:
+
+```json
+{
+  "order": {
+    "customer": "Jane Smith",
+    "notes": "Please wrap as a gift",
+    "items": [
+      { "product": "Widget A", "qty": 3 },
+      { "product": "Widget B", "qty": 1 }
+    ]
+  }
+}
+```
+
+### The `export_empties` option
+
+By default, SmarkForm **strips empty items** from list exports. A list item is
+considered empty when all its fields are empty (null, undefined, or
+empty string).
+
+This behaviour is controlled by the `export_empties` option on the list
+component:
+
+| `export_empties` value | Behaviour |
+|---|---|
+| `false` (default) | Empty list items are omitted from the exported array |
+| `true` | All items, including empty ones, are included in the export |
+
+```html
+<!-- Empty items will be included in the export -->
+<ul data-smark='{"type":"list","name":"slots","export_empties":true}'>
+  <li>
+    <input data-smark type="text" name="value">
+  </li>
+</ul>
+```
+
+{: .hint }
+> `export_empties` is **inherited** — a child component inherits the value from
+> its nearest ancestor that sets it explicitly. This means you may need to
+> explicitly set `export_empties:false` on a nested list to override an
+> ancestor's `export_empties:true`. For example:
+> ```html
+> <!-- Outer list: export all items, including empty ones -->
+> <ul data-smark='{"type":"list","name":"sessions","export_empties":true}'>
+>   <li>
+>     <!-- Inner list: strip empties regardless of the outer setting -->
+>     <ul data-smark='{"type":"list","name":"tags","export_empties":false}'>
+>       <li><input data-smark type="text" name="tag"></li>
+>     </ul>
+>   </li>
+> </ul>
+> ```
+
+The `export_empties` option is particularly useful in "save progress" scenarios
+where you want to preserve the user's position in a list even if they haven't
+filled in all the items yet.
+
+
+## The `import` Action
+
+`import` takes a value and writes it into the component. For a `form` component
+it distributes each key of the object to the matching child field; for a `list`
+it adds or removes items to match the length of the incoming array, then fills
+each item.
+
+### Accepted data formats
+
+The `import` action accepts:
+
+- A **plain JavaScript object** for `form` components
+- A **JSON string** that parses to a plain object — SmarkForm parses it
+  automatically
+- An **array** for `list` components
+- A **scalar value** (string, number, boolean) for input fields
+
+{: .info }
+> Fields that are present in the form but absent from the imported data object
+> receive `undefined`, which triggers their own reset to default. Fields present
+> in the data object but absent from the form are silently ignored.
+
+{% raw %} <!-- capture import_example_html {{{ --> {% endraw %}
+{% capture import_example_html -%}
+<div id="myForm$$">
+  <p>
+    <label data-smark>Name:</label>
+    <input data-smark type="text" name="name">
+  </p>
+  <p>
+    <label data-smark>Email:</label>
+    <input data-smark type="email" name="email">
+  </p>
+  <p>
+    <label data-smark>Role:</label>
+    <input data-smark type="text" name="role">
+  </p>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "name": "Alice Johnson",
+    "email": "alice@example.com",
+    "role": "Developer"
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="import_example"
+    htmlSource=import_example_html
+    showEditor=true
+    demoValue=demoValue
+    tests=false
+%}
+
+Paste the following JSON into the editor and click **⬆️ Import** to see it
+load into the form:
+
+```json
+{"name":"Bob Smith","email":"bob@example.com","role":"Designer"}
+```
+
+### The `set_default` option
+
+By default, every successful `import` call **updates the component's `defaultValue`**.
+This means that after an import, clicking **♻️ Reset** restores the imported
+data rather than the original HTML-defined defaults.
+
+You can opt out of this behaviour by passing `set_default: false`:
+
+```html
+<!-- Import without updating the reset target (preview mode) -->
+<button data-smark='{"action":"import","set_default":false}'>Preview</button>
+
+<!-- Import and make this the new reset target (load mode) -->
+<button data-smark-action="import">Load Data</button>
+```
+
+Summary of `set_default` behaviour:
+
+| Call | Updates default? | What `reset()` restores |
+|---|---|---|
+| `import(data)` | Yes | The newly imported data |
+| `import(data, {set_default:false})` | No | The previous default |
+| `import(undefined)` | No | The current default (unchanged) |
+| `clear()` | No | The current default (unchanged) |
+| `reset()` | No | The current default |
+
+{: .hint }
+> `set_default` applies only to the **originating** field: when a form imports
+> data with `set_default: true`, only that form updates its own default. Child
+> components (nested forms, lists, and leaf fields) always receive
+> `set_default: false` so that their own defaults are not affected.
+
+### The `focus` option
+
+When `import` is invoked through a trigger button, SmarkForm automatically
+focuses the form after import. When called programmatically, focus is off by
+default. Pass `focus: true` to move keyboard focus after a programmatic import:
+
+```javascript
+await myForm.import(data, { focus: true });
+```
+
+
+## Default Values, `clear`, and `reset`
+
+### Setting defaults via `value`
+
+You can pre-populate a form's default values in HTML using the `value` property
+inside `data-smark`:
+
+```html
+<div data-smark='{"name":"profile","value":{"name":"Anonymous","role":"guest"}}'>
+  <input data-smark type="text" name="name">
+  <input data-smark type="text" name="role">
+</div>
+```
+
+This sets `defaultValue` for the `profile` form. Calling `reset()` on it
+always restores `{"name":"Anonymous","role":"guest"}`.
+
+Individual input fields can also have a default via the HTML `value` attribute:
+
+```html
+<input data-smark type="text" name="country" value="US">
+```
+
+{: .warning }
+> Do not set both the HTML `value` attribute and the `data-smark` `value`
+> option on the same element at the same time — SmarkForm will throw a
+> `VALUE_CONFLICT` error during render.
+
+### How `import` updates the default
+
+After a successful `import(data)` call (with `set_default: true`, the default),
+SmarkForm re-exports the component with `export_empties: true` and stores the
+result as the new `defaultValue`:
+
+```javascript
+// After this call, reset() will restore {name:"Alice",role:"admin"}
+await myForm.import({ name: "Alice", role: "admin" });
+```
+
+Using `export_empties: true` when capturing the new default ensures that
+`reset()` restores the exact same list structure — including empty slots — that
+was in place right after the import.
+
+### Comparing `clear` and `reset`
+
+Both `clear` and `reset` are built on top of `import` but behave differently:
+
+| Action | What it does | Updates default? |
+|---|---|---|
+| `reset` | Imports the current `defaultValue` | No |
+| `clear` | Imports the type-level empty value (`{}` for forms, `[]` for lists, `""` for inputs) | No |
+
+Use **`reset`** to undo user changes and return to the last loaded state.  
+Use **`clear`** to blank every field without regard to defaults — for example,
+a "New record" button.
+
+{% raw %} <!-- capture clear_vs_reset_html {{{ --> {% endraw %}
+{% capture clear_vs_reset_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
+    <p>
+      <label data-smark>Title:</label>
+      <input data-smark type="text" name="title">
+    </p>
+    <p>
+      <label data-smark>Priority:</label>
+      <input data-smark type="text" name="priority">
+    </p>
+    <p>
+      <button data-smark='{"action":"clear","context":"task"}'>❌ Clear</button>
+      <button data-smark='{"action":"reset","context":"task"}'>♻️ Reset</button>
+    </p>
+</div>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture clearResetNotes -%}
+The `task` form is initialized with `value` defaults.
+
+1. Modify the fields.
+2. Click **❌ Clear** — all fields become empty.
+3. Click **♻️ Reset** — the original defaults are restored.
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="clear_vs_reset"
+    htmlSource=clear_vs_reset_html
+    notes=clearResetNotes
+    showEditor=true
+    tests=false
+%}
+
+
+## Piping Data Between Components
+
+SmarkForm makes it easy to copy data from one component to another using the
+**`target`** option on `export` and `import` triggers. This avoids writing
+any JavaScript for common copy-data workflows.
+
+**How context is determined:** A trigger's *context* defaults to the
+**innermost ancestor component in the DOM tree** that implements the
+triggered action. Place an `export` button inside a form → that form is the
+context. Place it outside any subform → the root form is the context. You
+can override this with the explicit `context` property.
+
+Similarly, `target` sets the destination (for export) or source (for import).
+Without it, SmarkForm resolves context by DOM position alone — the same
+trigger button can control different fields just by being placed differently.
+
+### Using `target` with `export`
+
+When an `export` trigger has a `target` property, SmarkForm automatically
+imports the exported value into the target component after the export completes:
+
+```html
+<!-- Export "source" and automatically import the result into "destination" -->
+<button data-smark='{
+    "action": "export",
+    "context": "source",
+    "target": "/destination"
+}'>📋 Copy</button>
+```
+
+This is equivalent to writing the following JavaScript:
+
+```javascript
+const value = await source.export();
+await destination.import(value);
+```
+
+The chained `destination.import()` respects the **`set_default`** option from
+the trigger: if you add `"set_default": false` to the export trigger, the
+target component's `defaultValue` will **not** be updated by the import.
+Omitting `set_default` (the default) leaves it as `true`, so the target's
+`defaultValue` is updated — meaning ♻️ Reset will later restore the copied
+value rather than the target's previous default.
+
+### Using `target` with `import`
+
+Conversely, when an `import` trigger has a `target` property, SmarkForm
+**exports from the target first** and uses that value as the data to import:
+
+```html
+<!-- Export "source", then import the result here -->
+<button data-smark='{
+    "action": "import",
+    "target": "/source"
+}'>📥 Load from source</button>
+```
+
+This is useful inside list items for the "duplicate" pattern — export the
+previous sibling and import it into the current item.
+
+### Chaining export and import
+
+The following example shows a practical copy-between-sections workflow. The
+"Copy to shipping" button exports its context (the billing address) subform
+directly into its target (the shipping address) subform:
+
+{% raw %} <!-- capture pipe_example_html {{{ --> {% endraw %}
+{% capture pipe_example_html -%}
+<div id="myForm$$">
+  <fieldset data-smark='{"type":"form","name":"billing"}'>
+    <legend>Billing address</legend>
+    <p>
+      <label data-smark>Street:</label>
+      <input data-smark type="text" name="street">
+    </p>
+    <p>
+      <label data-smark>City:</label>
+      <input data-smark type="text" name="city">
+    </p>
+    <p>
+      <label data-smark>Postcode:</label>
+      <input data-smark type="text" name="postcode">
+    </p>
+  </fieldset>
+  <p>
+    <button data-smark='{
+    "action":"export",
+    "context":"billing",
+    "target":"../shipping"
+    }'>📋 Copy to shipping</button>
+  </p>
+  <fieldset data-smark='{"type":"form","name":"shipping"}'>
+    <legend>Shipping address</legend>
+    <p>
+      <label data-smark>Street:</label>
+      <input data-smark type="text" name="street">
+    </p>
+    <p>
+      <label data-smark>City:</label>
+      <input data-smark type="text" name="city">
+    </p>
+    <p>
+      <label data-smark>Postcode:</label>
+      <input data-smark type="text" name="postcode">
+    </p>
+  </fieldset>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture pipe_example_notes -%}
+Fill in the billing address, then click **📋 Copy to shipping** to copy the
+data to the shipping address with no JavaScript required.
+{%- endcapture %}
+
+{% capture demoValue -%}
+{
+    "billing": {
+        "street": "10 Downing Street",
+        "city": "London",
+        "postcode": "SW1A 2AA"
+    },
+    "shipping": {
+        "street": "",
+        "city": "",
+        "postcode": ""
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="pipe_example"
+    htmlSource=pipe_example_html
+    notes=pipe_example_notes
+    showEditor=true
+    demoValue=demoValue
+    tests=false
+%}
+
+{: .info }
+> The `context` path is resolved relative to **where the trigger is placed** in the form
+> hierarchy, while `target` paths are resolved relative to the **effective context** of the
+> action.
+>
+> 👉 More info at [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) chapter.
+
+
+{: .hint }
+> Notice that the same effect could have been seamlessly achieved with an
+> `import` action in the reverse direction.
+>
+> ```html
+> <button data-smark='{
+>     "action":"import",
+>     "context":"shipping",
+>     "target":"../billing"
+> }'>📋 Copy to shipping</button>
+> ```
+> 
+> ...or, in both cases, we could just reverse only the action (or only the
+> direction) to achieve Copy from shipping to billing instead of the other way
+> around.
+
+
+## Programmatic API
+
+Actions can be called directly on any component. These are the raw prototype
+methods — they do not fire lifecycle events or auto-focus. Use triggers (HTML
+buttons with `data-smark='{"action":"..."}'`) when you need the full action
+lifecycle (`BeforeAction_*` / `AfterAction_*` events, focus defaulting).
+
+```javascript
+// Wait for the form to finish rendering before using it
+await myForm.rendered;
+
+// Export the whole form
+const data = await myForm.export();
+console.log(data); // { name: "Alice", … }
+
+// Import data into the form
+await myForm.import({ name: "Bob", email: "bob@example.com" });
+
+// Import without updating the default (preview mode)
+await myForm.import(data, { set_default: false });
+
+// Import a specific sub-form
+const addressForm = myForm.find("/address");
+await addressForm.import({ street: "123 Main St", city: "Springfield" });
+```
+
+{: .warning }
+> Always `await myForm.rendered` before calling `find()` or accessing
+> components programmatically. SmarkForm builds its internal component map
+> asynchronously — calls made before rendering is complete will return `null`.
+
+See the [Event Handling]({{ "/guides/events" | relative_url }}) chapter
+for a deeper explanation of the `@action` wrapper and event lifecycle.
+
+
+## Common Patterns
+
+### Loading initial data from a server
+
+The typical pattern for pre-populating a form from the server is to wait for
+the form to finish rendering and then call `import`:
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+
+myForm.on("AfterAction_import", (ev) => {
+    console.log("Form loaded with:", ev.data);
+});
+
+await myForm.rendered;
+
+const response = await fetch("/api/record/42");
+const data = await response.json();
+await myForm.import(data); // data becomes the new default
+```
+
+Because `import` defaults to `set_default: true`, the user can later click
+**♻️ Reset** to restore the loaded record without re-fetching.
+
+### Submitting form data to a backend
+
+The recommended pattern is to place an `export` trigger on the page and listen
+for `AfterAction_export`:
+
+```html
+<button data-smark-action="export">💾 Save</button>
+```
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"), {
+    async onAfterAction_export(ev) {
+        const payload = ev.data; // Plain JSON-serialisable object
+        const res = await fetch("/api/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    },
+});
+```
+
+{: .hint }
+> To run validation before allowing the export, use `onBeforeAction_export` and
+> call `ev.preventDefault()` to cancel the action. See the
+> [Event Handling]({{ "/guides/events" | relative_url }}) chapter for
+> more details.
+
+### Using `<form>` with `mailto:` and `enctype`
+
+SmarkForm also supports native HTML `<form>` submission:
+
+- **`mailto:`** — wrap your fields in `<form action="mailto:you@example.com" method="post">` and add a `{"action":"submit"}` trigger. SmarkForm submits all fields to the user's email client. Use the default encoding (`text/plain` or `application/x-www-form-urlencoded`) — `enctype="application/json"` is not compatible with `mailto:`.
+
+- **JSON APIs** — set `enctype="application/json"` on the `<form>`. SmarkForm serializes the data and sends it via `fetch()`. Requires `enable_json_encoding: true` on the root form instance.
+
+```html
+<form action="mailto:you@example.com" method="post" enctype="text/plain">
+  <input data-smark name="email" type="email">
+  <button data-smark='{"action":"submit"}'>Send</button>
+</form>
+```
+
+{: .info :}
+> You can intercept submission via `BeforeAction_submit` (fire before submit — call `ev.preventDefault()` to cancel) and `AfterAction_submit` (fire after data has been sent).
+
+### Save and restore draft data
+
+You can persist draft data in `localStorage` and restore it the next time the
+user opens the page:
+
+```javascript
+const myForm = new SmarkForm(document.getElementById("myForm"));
+
+await myForm.rendered;
+
+// Restore draft (without making it the reset default)
+const draft = localStorage.getItem("myForm.draft");
+if (draft) {
+    await myForm.import(JSON.parse(draft), { set_default: false });
+}
+
+// Auto-save on every export
+myForm.on("AfterAction_export", (ev) => {
+    localStorage.setItem("myForm.draft", JSON.stringify(ev.data));
+});
+```
+
+{: .info }
+> Using `set_default: false` when restoring a draft ensures that **♻️ Reset**
+> still returns to the form's HTML-defined defaults, not the draft. This lets
+> the user discard a draft by pressing Reset.
+<!-- END old PORTED TO docs/_guides/data_import_and_export.md -->

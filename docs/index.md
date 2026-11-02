@@ -1,17 +1,20 @@
 ---
 title: SmarkForm
 layout: smarkform
-nav_order: 0
-permalink: /
 description: "Complex HTML forms without complex JavaScript: markup-driven subforms, dynamic lists, hotkeys and JSON import/export, with no framework or dependencies."
 image:
   path: /assets/hero/social-card.png
   width: 1280
   height: 640
   alt: "SmarkForm logo surrounded by form examples: markup-driven, JSON in and out, no framework or dependencies."
-
+permalink: "/"
+nav_order: 0
+migration_in_progress: true
+sitemap: false
 ---
 
+
+<!-- BEGIN old PORTED TO docs/index.md -->
 {% include components/sampletabs_ctrl.md %}
 
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
@@ -297,11 +300,11 @@ layout.
 
 👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
 
-Want to dig deeper right away? Head to the [🔗 Showcase]({{ "about/showcase" | relative_url }})
+Want to dig deeper right away? Head to the [🔗 Showcase]({{ "showcase_examples/showcase" | relative_url }})
 to explore interactive demos — including the example above — that show
 SmarkForm's full potential at a glance.
 
-Prefer to jump straight into code? Browse [🔗 Live Examples]({{ "resources/examples" | relative_url }})
+Prefer to jump straight into code? Browse [🔗 Live Examples]({{ "showcase_examples/examples" | relative_url }})
 for a collection of ready-to-use, downloadable forms you can run locally and
 start tinkering with immediately.
 
@@ -347,9 +350,9 @@ version. \[[🔗 More...]({{ "about/roadmap" | relative_url }}#current-status)\]
 To get started with SmarkForm you can:
 
 
-| 👉 Take a look to our [🔗 Showcase]({{ "about/showcase" | relative_url }}) section to see its full potential at a glance. |
-| 👉 Follow our [🔗 Quick Start Guide]({{ "getting_started/quick_start" | relative_url }}) to rapidly dive in. |
-| 👉 Check out our [🔗 Downloadable Examples]({{ "resources/examples" | relative_url }}) to see them in action and/or start tinkering. |
+| 👉 Take a look to our [🔗 Showcase]({{ "showcase_examples/showcase" | relative_url }}) section to see its full potential at a glance. |
+| 👉 Follow our [🔗 Quick Start Guide]({{ "start_here/quick_start" | relative_url }}) to rapidly dive in. |
+| 👉 Check out our [🔗 Downloadable Examples]({{ "showcase_examples/examples" | relative_url }}) to see them in action and/or start tinkering. |
 | 👉 Examine our [🔗 FAQ]({{ "about/faq" | relative_url }}) to find answers to common questions. |
 
 
@@ -425,3 +428,4 @@ and expand the functionality of SmarkForm.
 ## License
 
 [🔗 MIT]({{ "community/license" | relative_url }})
+<!-- END old PORTED TO docs/index.md -->

@@ -5,6 +5,7 @@ url: "https://smarkform.bitifet.net"
 theme: just-the-docs
 
 plugins:
+  - jekyll-redirect-from
   - jekyll-sitemap
 
 twitter:
@@ -25,64 +26,144 @@ logo: "/assets/logo/smarkform.svg"
 favicon_ico: "/assets/logo/smarkform_compact.svg"
 
 collections:
-  about:
+  showcase_examples:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 1
     sort_by: nav_order
-  getting_started:
+  start_here:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 2
     sort_by: nav_order
-  component_types:
+  guides:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 3
     sort_by: nav_order
-  working_with_forms:
+  accessibility:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 4
     sort_by: nav_order
-  advanced_concepts:
+  component_reference:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 5
     sort_by: nav_order
-  resources:
+  advanced_topics:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 6
+    sort_by: nav_order
+  about:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 7
     sort_by: nav_order
-  community:
+  for_end_users:
     permalink: "/:collection/:path/"
     output: true
     nav_order: 8
     sort_by: nav_order
+  ai_agents:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 9
+    sort_by: nav_order
+  community:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 10
+    sort_by: nav_order
+  old_home:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 90
+    sort_by: nav_order
+  old_about:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 91
+    sort_by: nav_order
+  old_getting_started:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 92
+    sort_by: nav_order
+  old_component_types:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 93
+    sort_by: nav_order
+  old_working_with_forms:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 94
+    sort_by: nav_order
+  old_advanced_concepts:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 95
+    sort_by: nav_order
+  old_resources:
+    permalink: "/:collection/:path/"
+    output: true
+    nav_order: 96
+    sort_by: nav_order
 
 just_the_docs:
   collections:
+    showcase_examples:
+      name: Showcase & Examples
+      nav_fold: true
+    start_here:
+      name: Start Here
+      nav_fold: true
+    guides:
+      name: Guides
+      nav_fold: true
+    accessibility:
+      name: Accessibility
+      nav_fold: true
+    component_reference:
+      name: Component Reference
+      nav_fold: true
+    advanced_topics:
+      name: Advanced Concepts
+      nav_fold: true
     about:
       name: About SmarkForm
       nav_fold: true
-    getting_started:
-      name: Getting Started
+    for_end_users:
+      name: For End Users
       nav_fold: true
-    component_types:
-      name: Component Types
-      nav_fold: true
-    working_with_forms:
-      name: Working with Forms
-      nav_fold: true
-    advanced_concepts:
-      name: Advanced Concepts
-      nav_fold: true
-    resources:
-      name: Resources
+    ai_agents:
+      name: AI & Agents
       nav_fold: true
     community:
       name: Community
+      nav_fold: true
+    old_home:
+      name: "Legacy — Home (temporary)"
+      nav_fold: true
+    old_about:
+      name: "Legacy — About (temporary)"
+      nav_fold: true
+    old_getting_started:
+      name: "Legacy — Getting Started (temporary)"
+      nav_fold: true
+    old_component_types:
+      name: "Legacy — Component Types (temporary)"
+      nav_fold: true
+    old_working_with_forms:
+      name: "Legacy — Working with Forms (temporary)"
+      nav_fold: true
+    old_advanced_concepts:
+      name: "Legacy — Advanced Concepts (temporary)"
+      nav_fold: true
+    old_resources:
+      name: "Legacy — Resources (temporary)"
       nav_fold: true
 
 
@@ -134,26 +215,26 @@ aux_links:
 
   "<img src='/assets/github.svg' style='width:1.5em;padding-right:4px' alt='' aria-label=''> GitHub": https://github.com/bitifet/SmarkForm
   "<span role='img' aria-label='' style='font-size:1.5em;color:white;background-color:#997777;font-weight:bold;line-height:.9em;padding:0px .2em; margin-right:.3em'>n</span> NPM": https://www.npmjs.com/package/smarkform
-  "<span role='img' aria-label=''>🔗</span> CDN": /resources/CDN
+  "<span role='img' aria-label=''>🔗</span> CDN": /start_here/cdn
 
 aux_links_new_tab: false
 
 nav_external_links:
 
   - title: <span role='img' aria-label=''>🥇</span> Showcase
-    url: /about/showcase
+    url: /showcase_examples/showcase
     hide_icon: true
   - title: <span role='img' aria-label=''>🚀</span> Features
     url: /about/features
     hide_icon: true
   - title: "<span role='img' aria-label=''>⚡</span> Quick Start"
-    url: /getting_started/quick_start
+    url: /start_here/quick_start
     hide_icon: true
   - title: "<span role='img' aria-label=''>💻</span> Examples"
-    url: /resources/examples
+    url: /showcase_examples/examples
     hide_icon: true
   - title: "<span role='img' aria-label=''>📋</span> Cheatsheet"
-    url: /resources/cheatsheet
+    url: /component_reference/cheatsheet
     hide_icon: true
   - title: 🤔 FAQ
     url: /about/faq

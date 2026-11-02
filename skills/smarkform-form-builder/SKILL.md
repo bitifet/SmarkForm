@@ -15,11 +15,11 @@ and avoid common implementation mistakes.
 When implementing or modifying forms, consult sources in this order:
 
 1. **Primary (always first):**
-   - https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Forms
-   - https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage
+   - https://smarkform.bitifet.net/ai_agents/smarkform_forms
+   - https://smarkform.bitifet.net/ai_agents/smarkform_usage
 2. **Fallback (repo source of canonical pages):**
-   - `docs/_resources/AGENTS/SmarkForm-Forms.md`
-   - `docs/_resources/AGENTS/SmarkForm-Usage.md`
+   - `docs/_ai_agents/smarkform_forms.md`
+   - `docs/_ai_agents/smarkform_usage.md`
 3. **Last fallback (repo pointers):**
    - `AGENTS/SmarkForm-Forms.md`
    - `AGENTS/SmarkForm-Usage.md`
@@ -59,7 +59,7 @@ If sources disagree, prefer the highest-priority source.
 - To scope options (name, type, mask, targeted buttons) to one field, wrap a
   single inner field with bare `data-smark` in a container that carries the
   component options — the
-  [Singleton Pattern](https://smarkform.bitifet.net/getting_started/core_component_types#the-singleton-pattern).
+  [Singleton Pattern](https://smarkform.bitifet.net/component_reference/overview#the-singleton-pattern).
 
 ## File Fields (component-specific guidance)
 
@@ -81,7 +81,7 @@ When a form needs whole-file uploads, use the `file` field type:
   `smark_file_paste` toggles, default `true`).
 
 Full reference: the File field chapter
-(`https://smarkform.bitifet.net/component_types/type_file`) and the cheatsheet.
+(`https://smarkform.bitifet.net/component_reference/file`) and the cheatsheet.
 
 ## Standard Implementation Workflow
 

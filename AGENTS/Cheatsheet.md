@@ -4,8 +4,8 @@ The **Developer Cheatsheet** is a concise reference for SmarkForm API surface,
 component types, actions, events, and common patterns. It lives on the docs
 site and is the single source of truth for quick lookups.
 
-- **Rendered page**: https://smarkform.bitifet.net/resources/cheatsheet
-- **Source**: `docs/_resources/cheatsheet.md`
+- **Rendered page**: https://smarkform.bitifet.net/component_reference/cheatsheet
+- **Source**: `docs/_component_reference/cheatsheet.md`
 
 ## What the cheatsheet covers
 
@@ -25,7 +25,7 @@ site and is the single source of truth for quick lookups.
 
 When you need to generate HTML markup or JavaScript that uses SmarkForm:
 
-1. Read `docs/_resources/cheatsheet.md` directly (it contains the full content).
+1. Read `docs/_component_reference/cheatsheet.md` directly (it contains the full content).
 2. For action signatures and options, look in the **Actions** section.
 3. For component-specific attributes, look in the **Component Types** section.
 4. For event names and payloads, look in the **Event System** section.

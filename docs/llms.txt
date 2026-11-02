@@ -8,17 +8,17 @@ SmarkForm enhances ordinary HTML using `data-smark` attributes. Forms export as 
 
 - [Introduction](https://smarkform.bitifet.net/about/introduction): What SmarkForm is and when to use it.
 - [Features](https://smarkform.bitifet.net/about/features): Capabilities and design goals.
-- [Quick Start](https://smarkform.bitifet.net/getting_started/quick_start): Build a first working form.
-- [Core Concepts](https://smarkform.bitifet.net/getting_started/core_concepts): Markup syntax, component trees and value types.
-- [Component Types](https://smarkform.bitifet.net/getting_started/core_component_types): Built-in field and component types.
-- [Showcase](https://smarkform.bitifet.net/about/showcase): Interactive examples.
-- [Examples](https://smarkform.bitifet.net/resources/examples): Downloadable, ready-to-run forms.
-- [Developer Cheatsheet](https://smarkform.bitifet.net/resources/cheatsheet): Compact API reference.
+- [Quick Start](https://smarkform.bitifet.net/start_here/quick_start): Build a first working form.
+- [Core Concepts](https://smarkform.bitifet.net/start_here/core_concepts): Markup syntax, component trees and value types.
+- [Component Types](https://smarkform.bitifet.net/component_reference/overview): Built-in field and component types.
+- [Showcase](https://smarkform.bitifet.net/showcase_examples/showcase): Interactive examples.
+- [Examples](https://smarkform.bitifet.net/showcase_examples/examples): Downloadable, ready-to-run forms.
+- [Developer Cheatsheet](https://smarkform.bitifet.net/component_reference/cheatsheet): Compact API reference.
 - [FAQ](https://smarkform.bitifet.net/about/faq): Common implementation questions.
 
 ## Agent resources
 
-- [AI and Agent Resources](https://smarkform.bitifet.net/resources/ai-agents): Installable skills and project-specific agent guides.
+- [AI and Agent Resources](https://smarkform.bitifet.net/ai_agents/resources): Installable skills and project-specific agent guides.
 - [Core Form Builder skill](https://github.com/bitifet/SmarkForm/blob/main/skills/smarkform-form-builder/SKILL.md): Guidance for authoring forms.
 - [Advanced Internals skill](https://github.com/bitifet/SmarkForm/blob/main/skills/smarkform-advanced-internals/SKILL.md): Guidance for implementation and internals.
 

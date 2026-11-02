@@ -1,12 +1,15 @@
 ---
 title: Manifesto
 layout: chapter
-permalink: /about/manifesto
 description: "The design principles behind SmarkForm: use ordinary HTML as the form UI, keep data structured as JSON, and avoid framework lock-in."
+permalink: "/about/manifesto"
 nav_order: 4
-
+migration_in_progress: true
+sitemap: false
 ---
 
+
+<!-- BEGIN old PORTED TO docs/_about/manifesto.md -->
 # {{ page.title }}
 
 
@@ -124,3 +127,4 @@ improvements, report issues, and contribute code to enhance the library.
 
 
 Each of these principles aims to make SmarkForm a robust, user-friendly, and powerful form library that meets the needs of both developers and users.
+<!-- END old PORTED TO docs/_about/manifesto.md -->

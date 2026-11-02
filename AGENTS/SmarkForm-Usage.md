@@ -3,8 +3,8 @@
 The canonical version of this document is maintained in the documentation site
 and is versioned together with the library:
 
-- **Rendered page**: https://smarkform.bitifet.net/resources/AGENTS/SmarkForm-Usage
-- **Source**: `docs/_resources/AGENTS/SmarkForm-Usage.md`
+- **Rendered page**: https://smarkform.bitifet.net/ai_agents/smarkform_usage
+- **Source**: `docs/_ai_agents/smarkform_usage.md`
 
 The content below is kept here for agents that need it without following a link.
 
@@ -55,12 +55,18 @@ SmarkForm/
 │   └── SmarkForm.umd.js
 ├── docs/                    # Documentation site (Jekyll)
 │   ├── index.md             # Home page
-│   ├── _about/              # About, FAQ, Showcase, Roadmap, Features
-│   ├── _getting_started/    # Quick start, core concepts, getting SmarkForm
-│   ├── _component_types/    # Per-type API docs
-│   ├── _advanced_concepts/  # Events, data import/export, traversal, API interface
-│   ├── _resources/          # User guide, examples list, CDN, download
-│   ├── _community/          # Contributing, branding, support, license, contact
+│   ├── _showcase_examples/   # Showcase, downloadable examples, playground
+│   ├── _start_here/          # Quick Start, installation, Core Concepts
+│   ├── _guides/              # Developer how-to and practical topics
+│   ├── _accessibility/       # Keyboard and accessible-name guidance
+│   ├── _component_reference/ # Overview, per-type API, Developer Cheatsheet
+│   ├── _advanced_topics/     # Constructor, security, errors
+│   ├── _about/               # About, Features, FAQ, Roadmap
+│   ├── _for_end_users/       # User Guide
+│   ├── _ai_agents/           # Agent resources and references
+│   ├── _community/           # Contributing, branding, support, license, contact
+│   ├── _old_*/               # Temporary, noindex legacy copies; removed before publish
+│   ├── _resources/           # Hidden generated downloads and Examples capture support
 │   ├── assets/              # CSS, JS, images
 │   ├── _includes/           # Jekyll includes (sampletabs, links, head_custom)
 │   ├── _layouts/            # Jekyll layouts
@@ -96,24 +102,30 @@ SmarkForm/
 
 ## Updating Component Type API Docs
 
-Each component type has a matching doc page under `docs/_component_types/`:
+Each component type has a matching reference page under
+`docs/_component_reference/`:
 
 | Type | Doc file |
 |------|----------|
-| `form` | `docs/_component_types/type_form.md` |
-| `list` | `docs/_component_types/type_list.md` |
-| `input` | `docs/_component_types/type_input.md` |
-| `trigger` | `docs/_component_types/type_trigger.md` |
-| `color` | `docs/_component_types/type_color.md` |
-| `date` | `docs/_component_types/type_date.md` |
-| `time` | `docs/_component_types/type_time.md` |
-| `datetime-local` | `docs/_component_types/type_datetime-local.md` |
-| `number` | `docs/_component_types/type_number.md` |
-| `radio` | `docs/_component_types/type_radio.md` |
-| `label` | `docs/_component_types/type_label.md` |
+| `form` | `docs/_component_reference/form.md` |
+| `list` | `docs/_component_reference/list.md` |
+| `input` | `docs/_component_reference/input.md` |
+| `trigger` | `docs/_component_reference/trigger.md` |
+| `label` | `docs/_component_reference/label.md` |
+| `radio` | `docs/_component_reference/radio.md` |
+| `number` | `docs/_component_reference/number.md` |
+| `date` | `docs/_component_reference/date.md` |
+| `time` | `docs/_component_reference/time.md` |
+| `datetime-local` | `docs/_component_reference/datetime-local.md` |
+| `color` | `docs/_component_reference/color.md` |
+| `select` | `docs/_component_reference/select.md` |
+| `file` | `docs/_component_reference/file.md` |
+| `image` | `docs/_component_reference/image.md` |
+| `video` | `docs/_component_reference/video.md` |
+| `audio` | `docs/_component_reference/audio.md` |
 
 When adding a new option or action to a component type in `src/types/`, also
-update the corresponding doc page under `docs/_component_types/`. Use the same
+update the corresponding doc page under `docs/_component_reference/`. Use the same
 front-matter structure and table conventions already in those files.
 
 ## How SmarkForm Enhances HTML

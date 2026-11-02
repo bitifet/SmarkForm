@@ -7,7 +7,7 @@ nav_order: 1000
 ---
 
 
-{% assign current_directory = page.path | split: '/' | slice: 0, -1 | join: '/' %}
+{% assign current_directory = ".example_sources" %}
 
 {% assign html_sources = "" %}
 {% assign js_sources = "" %}

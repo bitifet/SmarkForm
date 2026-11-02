@@ -1,12 +1,15 @@
 ---
 title: FAQ
 layout: chapter
-nav_order: 6
-permalink: /about/faq
 description: "Answers to common questions about SmarkForm behavior, component types, lists, data import/export, masking and media fields."
-
+permalink: "/about/faq"
+nav_order: 5
+migration_in_progress: true
+sitemap: false
 ---
 
+
+<!-- BEGIN old PORTED TO docs/_about/faq.md -->
 {% include links.md %}
 
 {% include components/sampletabs_ctrl.md %}
@@ -46,7 +49,7 @@ UMD). It is **not** a React/Vue/Angular component library — it is a DOM-first
 library that works best with server-rendered or static HTML.
 
 See the [Introduction]({{ "/about/introduction" | relative_url }}) and
-[Showcase]({{ "/about/showcase" | relative_url }}) for a fuller picture.
+[Showcase]({{ "/showcase_examples/showcase" | relative_url }}) for a fuller picture.
 
 
 ### Do I need a `<form>` tag?
@@ -101,7 +104,7 @@ npm install smarkform
 import SmarkForm from "smarkform";
 ```
 
-See [Getting SmarkForm]({{ "/getting_started/getting_smarkform" | relative_url }})
+See [Getting SmarkForm]({{ "/start_here/getting_smarkform" | relative_url }})
 for all distribution formats (ESM, UMD, CDN, npm, GitHub clone) and more details.
 
 
@@ -128,7 +131,7 @@ The value can be **empty** (SmarkForm infers everything from context) or a
 ```
 
 See [Core Concepts — The `data-smark` attribute](
-{{ "/getting_started/core_concepts" | relative_url }}#the-data-smark-attribute)
+{{ "/start_here/core_concepts" | relative_url }}#the-data-smark-attribute)
 for the full syntax reference.
 
 
@@ -177,7 +180,7 @@ blueprints stored in `<template>` elements.  A mixin reference starts with `#`
 [Can I implement my own component types?](#can-i-implement-my-own-component-types)
 for a quick overview.
 
-See [Core Component Types]({{ "/getting_started/core_component_types" | relative_url }})
+See [Core Component Types]({{ "/component_reference/overview" | relative_url }})
 for the full reference.
 
 
@@ -202,7 +205,7 @@ and `removeItem` are exclusive to `list` components. The common actions
 You can also define [custom actions](#how-do-i-add-custom-actions).
 
 See [Quick Start — Actions and Triggers](
-{{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
+{{ "/start_here/quick_start" | relative_url }}#actions-and-triggers)
 for a hands-on introduction.
 
 
@@ -231,8 +234,8 @@ component explicitly with the `"context"` property and a relative path:
 ```
 
 See [Quick Start — Actions and Triggers](
-{{ "/getting_started/quick_start" | relative_url }}#actions-and-triggers)
-and [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }})
+{{ "/start_here/quick_start" | relative_url }}#actions-and-triggers)
+and [Form Traversing]({{ "/guides/form_traversing" | relative_url }})
 for full details.
 
 
@@ -282,7 +285,7 @@ especially useful for:
 - Grouping a label and its field as a single named component.
 
 See [Core Component Types — The Singleton Pattern](
-{{ "/getting_started/core_component_types" | relative_url }}#the-singleton-pattern)
+{{ "/component_reference/overview" | relative_url }}#the-singleton-pattern)
 for a full walkthrough.
 
 
@@ -484,7 +487,7 @@ myForm.onAll("beforeUnrender", async (ev) => {
     tests=false
 %}
 
-See the [Showcase — Animations]({{ "/about/showcase" | relative_url }}#animations)
+See the [Showcase — Animations]({{ "/showcase_examples/showcase" | relative_url }})
 for detailed notes and a more elaborate example.
 
 
@@ -542,7 +545,7 @@ label component, so the selector always works.
   with a label handle in the wrapping item template.
 
 For more details see the [sortable option
-documentation]({{ "/component_types/type_list#sortable" | relative_url }}).
+documentation]({{ "/component_reference/list#sortable" | relative_url }}).
 
 
 ## Data: Import, Export & Reset
@@ -553,7 +556,7 @@ By default, SmarkForm skips empty items in variable-length lists when exporting
 to JSON. If you want those empty items included (e.g. `""` or `null`), set
 `{"export_empties": true}` in your list config.
 
-See the [Showcase]({{ "/about/showcase" | relative_url }}#a-note-on-empty-values)
+See the [Showcase]({{ "/showcase_examples/showcase" | relative_url }})
 for a worked example.
 
 ### Why are my nested form fields named weirdly in the JSON?
@@ -644,7 +647,7 @@ const myForm = new SmarkForm(document.querySelector('#myForm'), {
 });
 ```
 
-See [submit action]({{ "/component_types/type_form" | relative_url }}#async-submit-action)
+See [submit action]({{ "/component_reference/form" | relative_url }}#async-submit-action)
 for encoding options, attribute resolution, and event hooks.
 
 **Option B — Manual `fetch` (works with any root element):**
@@ -666,7 +669,7 @@ myForm.on("AfterAction_export", async ({ data }) => {
 });
 ```
 
-See [Event Handling — Common Patterns]({{ "/advanced_concepts/events" | relative_url }}#submitting-form-data-to-a-backend) for more detail.
+See [Event Handling — Common Patterns]({{ "/guides/events" | relative_url }}#submitting-form-data-to-a-backend) for more detail.
 
 ### Can I use a classic HTML form submission instead of JSON export?
 
@@ -694,7 +697,7 @@ exported values.
 For a JSON API, set `enctype="application/json"` and SmarkForm sends the data
 as a JSON object via `fetch()` instead of URL-encoding it.
 
-See [submit action]({{ "/component_types/type_form" | relative_url }}#async-submit-action)
+See [submit action]({{ "/component_reference/form" | relative_url }}#async-submit-action)
 for the full reference, including encoding options and event hooks.
 
 ### Does pressing Enter in a text field submit the form?
@@ -866,7 +869,7 @@ SmarkForm supports events like `AfterAction_export`, `AfterAction_addItem`,
 2. **Scoping** — `myForm.on(…)` listens to all descendants; `myForm.onLocal(…)` listens only on that specific component.
 3. **Timing** — handlers registered after the action fires are too late; register them during initialization.
 
-See the [Event Handling]({{ "/advanced_concepts/events" | relative_url }}) page for the full reference.
+See the [Event Handling]({{ "/guides/events" | relative_url }}) page for the full reference.
 
 ### How do I add custom actions?
 
@@ -889,7 +892,7 @@ const myForm = new SmarkForm(document.getElementById("myForm"));
 The handler's `this` is bound to the root form. Registered custom actions do
 not automatically emit the built-in `BeforeAction_*` / `AfterAction_*` events.
 The former `customActions` constructor option is no longer supported; see
-[The SmarkForm Constructor]({{ "/advanced_concepts/the_smarkform_constructor" | relative_url }})
+[The SmarkForm Constructor]({{ "/advanced_topics/the_smarkform_constructor" | relative_url }})
 for the current API.
 
 
@@ -940,7 +943,7 @@ can remove a phone when focus is inside the phones list, and remove a whole
 user when focus is at the user level. SmarkForm picks the right trigger
 automatically based on where the keyboard focus is.
 
-See [Hotkeys]({{ "/working_with_forms/hotkeys" | relative_url }}) for full details and examples.
+See [Hotkeys]({{ "/accessibility/hotkeys" | relative_url }}) for full details and examples.
 
 ### What if I want to reach an outer action with the same hotkey?
 
@@ -951,7 +954,7 @@ Following the previous example, if you have `Ctrl+-` to remove a phone and you
 want to remove the whole user instead, press `Alt+Ctrl+-` to skip the first
 match and trigger the next one.
 
-This is [well explained]({{ "/resources/user_guide" | relative_url
+This is [well explained]({{ "/for_end_users/user_guide" | relative_url
 }}#second-level-hotkeys-reaching-outer-contexts) of the end-user guide — 🚀
 feel free to link it in your UI or documentation to [help your users discover this
 kind of features]({{ "/community/branding" | relative_url }}).
@@ -982,7 +985,7 @@ A few things to keep in mind:
 - For a normal (non-wildcard) `context`, behaviour is unchanged: the action
   fires on a single component as always.
 
-See [Wildcard `context` Multi-Dispatch]({{ "/working_with_forms/form_traversing#wildcard-context-multi-dispatch" | relative_url }}) for full details.
+See [Wildcard `context` Multi-Dispatch]({{ "/guides/form_traversing#wildcard-context-multi-dispatch" | relative_url }}) for full details.
 
 ## Behaviour & Troubleshooting
 
@@ -1087,7 +1090,7 @@ library from focusing the field in the first place — or to accept the focus as
 a library-specific side effect.
 
 See [Field Masking — Focus and Mask Factories](
-{{ "/working_with_forms/field_masking" | relative_url }}#focus-and-mask-factories)
+{{ "/guides/field_masking" | relative_url }}#focus-and-mask-factories)
 for the full documentation.
 
 
@@ -1106,7 +1109,7 @@ instead.
 > looks like and the actual DOM structure SmarkForm sees.
 
 See [Restrictions and Errors](
-{{ "/advanced_concepts/the_singleton_pattern" | relative_url }}#restrictions-and-errors)
+{{ "/guides/the_singleton_pattern" | relative_url }}#restrictions-and-errors)
 in the Singleton Pattern chapter for the full details.
 
 
@@ -1174,7 +1177,7 @@ yet aware of production deployments that depend on API stability.
 A change in the *patch* digit (`0.x.y → 0.x.y+1`) is a safe upgrade — only
 bug fixes and documentation updates, no new features, no breaking changes.
 A change in the *minor* digit (`0.x.0 → 0.(x+1).0`) may introduce breaking
-changes; read the [CHANGELOG]({{ "/about/changelog" | relative_url }}) (or
+changes; read the [CHANGELOG](https://github.com/bitifet/SmarkForm/releases) (or
 the GitHub release notes) carefully before upgrading.
 
 **Recommended npm version range for SmarkForm dependencies:**
@@ -1259,7 +1262,7 @@ component — so you get full API access for event listeners, value manipulation
 and anything else the component API exposes.
 
 For a complete reference including external templates, option merge semantics,
-and error codes, see [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}).
+and error codes, see [Mixin Types]({{ "/guides/mixin_types" | relative_url }}).
 
 ### Are mixin styles isolated / scoped?
 
@@ -1338,7 +1341,7 @@ new SmarkForm(el, { smark_mixin_allow_external: 'same-origin' });
 ```
 
 Script execution in external templates is also blocked by default; see the
-[Mixin Types reference]({{ "/advanced_concepts/mixin_types" | relative_url }}#mixin-security-options)
+[Mixin Types reference]({{ "/guides/mixin_types" | relative_url }}#mixin-security-options)
 for the full security model.
 
 
@@ -1494,3 +1497,4 @@ Open a [discussion](https://github.com/bitifet/SmarkForm/discussions) on GitHub
 or reach out at the [Telegram community
 group](https://t.me/smarkformcommunity). We're happy to help you out and may
 even add your question to this FAQ if it's a common one!
+<!-- END old PORTED TO docs/_about/faq.md -->

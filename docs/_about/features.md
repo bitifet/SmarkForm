@@ -1,10 +1,11 @@
 ---
 title: Features
 layout: chapter
-permalink: /about/features
-nav_order: 3
 description: "Explore SmarkForm features: markup-driven forms, nested data, dynamic lists, JSON import/export, keyboard shortcuts, media fields and more."
-
+permalink: "/about/features"
+nav_order: 3
+migration_in_progress: true
+sitemap: false
 ---
 
 # {{ page.title }}
@@ -43,7 +44,7 @@ effort.
     - Developers don't have to worry about layout changes.
 
 
-👉  See the [Quick Start]({{ "/getting_started/quick_start" | relative_url }})
+👉  See the [Quick Start]({{ "/start_here/quick_start" | relative_url }})
 section for more details.
 
 
@@ -68,7 +69,7 @@ section for more details.
   * Of course, you can also call the `.import()` and `.export()` methods of
     the whole form (or any field) to import or export data programmatically.
 
-👉 Take a look to the [Showcase]({{ "/about/showcase" | relative_url }}#nested-forms)
+👉 Take a look to the [Showcase]({{ "/showcase_examples/showcase" | relative_url }})
 section to realize how easy it is to create complex forms with little or no
 JavaScript code.
 
@@ -87,7 +88,7 @@ JavaScript code.
 
   * The whole SmarkForm enhanced form is a field of this type.
 
-👉 [See them in action...]({{ "/about/showcase" | relative_url }}#nested-forms).
+👉 [See them in action...]({{ "/showcase_examples/showcase" | relative_url }}).
 
 
 ## Variable-length lists
@@ -105,7 +106,7 @@ JavaScript code.
   * Can be manually (user drag & drop) or automatically (🚧 comming soon...)
     sorted.
 
-👉 [See them in action...]({{ "/about/showcase" | relative_url }}#lists).
+👉 [See them in action...]({{ "/showcase_examples/showcase" | relative_url }}).
 
 
 ## Context driven hotkeys
@@ -120,7 +121,7 @@ JavaScript code.
       reachable *hotkey* will get the `data-hotkey` attribute of the their DOM
       element is filled/unfilled with the hotkey value.
     - This allows for a very simple
-      [CSS arrangement]({{ "/about/showcase" | relative_url }}#context-driven-keyboard-shortcuts-hot-keys)
+      [CSS arrangement]({{ "/showcase_examples/showcase" | relative_url }})
       for auto-reveal/unreveal feature.
 
   * Avoid hotkey cluttering by reusing the same hotkey in different contexts.
@@ -128,7 +129,7 @@ JavaScript code.
     - If the same hotkey is used more than once, only the one in the nearest
       context (depending on the current focus) is activated.
 
-👉 [See it in action...]({{ "/about/showcase" | relative_url }}#context-driven-keyboard-shortcuts-hot-keys).
+👉 [See it in action...]({{ "/showcase_examples/showcase" | relative_url }}).
 
 
 ## Consistent User Experience
@@ -147,7 +148,7 @@ JavaScript code.
     - **I.e.:** *Add Item* and *Remove Item* triggers are automatically
       disabled when the list is full or empty, respectively.
 
-👉 [Learn more...]({{ "/about/showcase" | relative_url }}#smooth-navigation).
+👉 [Learn more...]({{ "/showcase_examples/showcase" | relative_url }}).
 
 
 ## A11Y friendly
@@ -176,7 +177,7 @@ in GitHub.
     - Dates as well-formed date strings.
     - Booleans as booleans.
 
-👉 [See it in action...]({{ "/about/showcase" | relative_url }}#a-note-on-context-of-the-triggers)
+👉 [See it in action...]({{ "/showcase_examples/showcase" | relative_url }})
 
 
 ## Lightweight yet highly compatible
@@ -189,7 +190,7 @@ in GitHub.
   * &gt; 0.25%, browser coverage thanks to Babel
 
 
-👉 [Check it out...]({{ "/getting_started/getting_smarkform" | relative_url }})
+👉 [Check it out...]({{ "/start_here/getting_smarkform" | relative_url }})
 
 
 
@@ -199,7 +200,7 @@ in GitHub.
 
   * Use **SmarkForm native mixins** to define reusable component blueprints
     from plain HTML `<template>` elements — no JavaScript required.  See
-    [Mixin Types]({{ "/advanced_concepts/mixin_types" | relative_url }}) for a
+    [Mixin Types]({{ "/guides/mixin_types" | relative_url }}) for a
     full reference and examples.
 
 
@@ -218,7 +219,7 @@ in GitHub.
     hoizontally and even wildcards (`*`) to address multiple fields at once.
 
 
-👉 See the [Form Traversing]({{ "/working_with_forms/form_traversing" | relative_url }})
+👉 See the [Form Traversing]({{ "/guides/form_traversing" | relative_url }})
 section for more details.
 
 
@@ -237,7 +238,7 @@ section for more details.
       color is unknown or not applicable instead of defaulting to black.
 
 
-👉 [Try it yourself...]({{ "/about/showcase" | relative_url }}#basics)
+👉 [Try it yourself...]({{ "/showcase_examples/showcase" | relative_url }})
 
 
 ## AI-agent ready
@@ -258,5 +259,5 @@ development:
     AI agents always get accurate, up-to-date patterns — not stale
     `raw.githubusercontent.com` snapshots.
 
-👉 Visit [AI & Agent Resources]({{ "/resources/ai-agents" | relative_url }}) for
+👉 Visit [AI & Agent Resources]({{ "/ai_agents/resources" | relative_url }}) for
 prompt templates and agent-ready knowledge files.

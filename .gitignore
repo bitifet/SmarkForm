@@ -17,6 +17,9 @@ docs/.jekyll-cache/
 # NO (to trigger GitHub action every new version): docs/_data/package.json
 docs/_resources/dist/
 docs/_resources/examples/
+docs/resources/dist/
+docs/_showcase_examples/.example_sources/
+docs/_old_resources/.example_sources/
 docs/dist/
 docs/vendor/
 docs/.bundle/

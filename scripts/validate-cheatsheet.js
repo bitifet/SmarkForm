@@ -6,7 +6,7 @@ import { extractHeadings, reduceRawText, gfmId, applyUsedIds } from "./generate-
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REPO_ROOT = path.resolve(__dirname, "..");
-const CHEATSHEET_PATH = path.resolve(REPO_ROOT, "docs/_resources/cheatsheet.md");
+const CHEATSHEET_PATH = path.resolve(REPO_ROOT, "docs/_component_reference/cheatsheet.md");
 const CHEATSHEET_INCLUDE = path.resolve(REPO_ROOT, "docs/_includes/chaptertoc/cheatsheet.html");
 const DOCS_DIR = path.resolve(REPO_ROOT, "docs");
 

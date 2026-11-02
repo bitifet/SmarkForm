@@ -8,7 +8,7 @@ There are **two distinct kinds** of examples in this project. They serve differe
 
 ### 1. Standalone Complete Examples (`src/examples/*.pug`)
 
-These are full-page forms built as Pug templates and compiled by Rollup to `dist/examples/*.html`. They are displayed in the **`/resources/examples`** page via an `<iframe>` switcher.
+These are full-page forms built as Pug templates and compiled by Rollup to `dist/examples/*.html`. They are displayed in the **`/showcase_examples/examples`** page via an `<iframe>` switcher.
 
 **How to add a new standalone example:**
 
@@ -20,13 +20,13 @@ These are full-page forms built as Pug templates and compiled by Rollup to `dist
    ```
 
 3. **⚠️ IMPORTANT — Register in `docs/_data/examples.csv`:**  
-   Add a row to `docs/_data/examples.csv` so the example appears in the dropdown on the `/resources/examples` page. Without this step the HTML file is built but never shown in the documentation.
+    Add a row to `docs/_data/examples.csv` so the example appears in the dropdown on the `/showcase_examples/examples` page. Without this step the HTML file is built but never shown in the documentation.
    ```csv
    "/dist/examples/my-new-example.html","My Example Title","A short description"
    ```
    The CSV columns are `url`, `title`, `details` (first row in the file is the header).
 
-**File: `docs/_data/examples.csv`** is consumed by Jekyll in `docs/_resources/examples.md` via `{% for item in site.data.examples %}`. Every row becomes an `<option>` in the example selector dropdown.
+**File: `docs/_data/examples.csv`** is consumed by Jekyll in `docs/_showcase_examples/examples.md` via `{% for item in site.data.examples %}`. Every row becomes an `<option>` in the example selector dropdown.
 
 ### 2. Inline Jekyll Playground Examples (co-located in `.md` docs)
 

@@ -66,4 +66,4 @@ It is **not** committed to the repository; it lives only in the build output.
 - `docs/_about/faq.md` — `{{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB bundle`
 - `docs/_about/features.md` — `{{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB minified!`
 - `docs/_about/roadmap.md` — `{{ site.data.computed.lastUpdated }}`
-- `docs/_resources/download.md` — `{{ site.data.computed.bundleSizeKB }}KB each`
+- `docs/_start_here/download.md` — `{{ site.data.computed.bundleSizeKB }}KB each`

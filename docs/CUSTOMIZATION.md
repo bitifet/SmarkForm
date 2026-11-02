@@ -250,7 +250,7 @@ Images automatically adjust for dark mode:
 
 ### Example: User Guide Images
 
-See `docs/_resources/user_guide.md` for real-world examples of this system in use, including:
+See `docs/_for_end_users/user_guide.md` for real-world examples of this system in use, including:
 - Navigation demonstrations
 - Hotkey discovery screenshots
 - Context-aware behavior illustrations

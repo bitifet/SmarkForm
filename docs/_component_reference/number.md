@@ -1,0 +1,171 @@
+---
+title: «number» Component Type
+layout: chapter
+description: "Use SmarkForm number fields to sanitize imported values, coerce numbers and export empty or invalid values predictably."
+permalink: "/component_reference/number"
+migration_in_progress: true
+sitemap: false
+nav_order: 5
+redirect_from:
+  - "/component_types/type_number"
+---
+
+
+<!-- BEGIN old PORTED TO docs/_component_reference/number.md -->
+# {{ page.title }}
+
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {% include chaptertoc/type_number.html %}
+
+</details>
+
+{% include components/sampletabs_ctrl.md %}
+
+## Introduction
+
+The `number` component type extends the [Input](/component_reference/input) component type, providing additional sanitation (when importing) and formatting (when exporting).
+
+- **Imports and Exports:** `Number`
+- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Data Conversion:** Converts inappropriate types (like `String`) to `Number` on the fly.
+
+## Usage
+
+To use the `number` component type, ensure that the target field is an `INPUT`
+element of type `number`. If the type attribute is not specified, it will be
+set to `number` automatically.
+
+**Example:**
+
+{% raw %} <!-- simple_number {{{ --> {% endraw %}
+{% capture simple_number -%}
+<div id="myForm$$">
+  <input type="number" name="amount" data-smark>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "amount": 42
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="simple_number"
+    htmlSource=simple_number
+    demoValue=demoValue
+    showEditor=true
+    tests=false
+%}
+
+
+
+## Requirements
+
+The number component will throw an error if the target field is not an INPUT
+element or its type is explicitly defined and different to "number".
+
+The number component will throw an error if the target field is not an INPUT
+element or its type is explicitly defined and different to "number". Invalid
+numbers will result in a `null` value rather than throwing an error.
+
+{% raw %} <!-- number_error {{{ --> {% endraw %}
+{% capture number_error -%}
+<div id="myForm$$">
+  <p>
+    <label>Correct:</label>
+    <input type="number" name="amount1" data-smark='{"type":"number"}'>
+  </p>
+  <p>
+    <label>Incorrect:</label>
+    <input type="text" name="amount2" data-smark='{"type":"number"}'>
+  </p>
+</div>{%
+endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="number_error"
+    htmlSource=number_error
+    showEditor=true
+    tests=false
+    expectedPageErrors=0
+    expectedConsoleErrors=1
+%}
+
+
+{: .info :}
+> When a *SmarkForm* component fails to render due to a *RenderError*, it is
+> replaced by a flamboyant placeholder that shows the error code and provides a
+> handy button to "replay" it to the console making it easier to debug the
+> issue.
+> 
+> 👉 Take a look to the *Preview* tab of the previous example to see it in
+> action.
+>
+> {: .hint :}
+> > Notice that you'll need to open your browser console if you want to see the
+> > error details when pressing the "Replay Error" button.
+
+
+
+## API Reference
+
+### Actions
+
+{{ site.data.definitions.actions.intro }}
+
+The `number` component type supports the following actions:
+
+
+#### (Async) export (Action)
+
+Exports the value of the number input field. If the value is not a valid number, it returns null.
+
+##### Options (export)
+
+  * **action:** (= "export")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_export }}
+  * **data:**
+
+#### (Async) import (Action)
+
+Imports a value into the number input field. If the value is not a valid number or string that can be converted to a number, it sets the field to null.
+
+##### Options (import)
+
+  * **action:** (= "import")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * {{ site.data.definitions.actions.options.target_import }}
+  * **data:** (number or string)
+  * **focus:** (boolean, default true)
+
+#### (Async) clear (Action)
+
+Clears the value of the number input field (sets it to `null`).
+
+##### Options (clear)
+
+  * **action:** (= "clear")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+
+
+#### (Async) reset (Action)
+
+Reverts the number field to its configured default value. If no default was configured, the field reverts to `null` (same as `clear`).
+
+##### Options (reset)
+
+  * **action:** (= "reset")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+<!-- END old PORTED TO docs/_component_reference/number.md -->

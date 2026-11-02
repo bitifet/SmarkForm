@@ -1,0 +1,1100 @@
+---
+title: "Mixin Types"
+layout: chapter
+description: "Create reusable SmarkForm components from HTML templates, including local or external mixins, preloading and script security."
+nav_order: 3
+permalink: "/old/advanced_concepts/mixin_types"
+sitemap: false
+migration_legacy: true
+---
+
+
+<!-- BEGIN old PORTED TO docs/_guides/mixin_types.md -->
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
+
+# {{ page.title }}
+
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
+
+  {% include chaptertoc/old_mixin_types.html %}
+
+</details>
+
+
+## Overview
+
+**Mixin types** allow a SmarkForm component to be defined by an HTML
+`<template>` element rather than by a fixed native type such as `form`,
+`list`, or `input`.  They give authors a lightweight way to create reusable
+component "blueprints" that can be stamped out anywhere in a form tree —
+and even loaded from external files — without writing any JavaScript.
+
+{: .hint }
+> **When to use mixins:** Any piece of UI that repeats across your form with
+> the same structure but different data — schedules, contact blocks, option
+> groups — is a candidate for a mixin template.  Extract it once, reference
+> it with `type: "#yourTemplateName"` wherever needed.
+
+A mixin type is identified by a **mixin type reference**: a string that starts
+with `#` (local template) or contains `#` (external URL + template id):
+
+| Reference | Meaning |
+|---|---|
+| `"#myWidget"` | Template with `id="myWidget"` in the current document |
+| `"./widgets.html#myWidget"` | Template with `id="myWidget"` in external file `widgets.html` |
+| `"https://cdn.example.com/sf-widgets.html#myWidget"` | Absolute URL + template id |
+
+Whenever SmarkForm sees a `type` value that is a mixin reference it:
+
+1. Locates the referenced `<template>` element (locally or via fetch).
+2. Clones the template's single root element.
+3. Merges attributes and `data-smark` options from the placeholder node into
+   the clone.
+4. Replaces the placeholder node with the clone in the DOM.
+5. Continues enhancement as if the clone had been there from the start.
+
+{: .hint }
+> **TL;DR:** Mixin types are like macros or partials in a template engine, but
+> they work at the DOM level and are processed by SmarkForm during enhancement.
+> They let you define reusable component blueprints in HTML and use them with
+> different options and content across your form.
+> 
+> 👉 Go straight to the [Examples](#examples) section for concrete use cases
+> and code samples.
+
+
+## Defining a Mixin Template
+
+A mixin is declared with a plain HTML `<template>` element that has an `id`:
+
+```html
+<template id="myWidget">
+  <div data-smark='{"type":"form"}'>
+    <input data-smark='{"name":"value"}' type="text">
+  </div>
+</template>
+```
+
+The `<template>` element itself requires **no** `data-smark` attribute; its
+purpose is solely to hold the blueprint markup.
+
+{: .info }
+> Place `<template>` elements at document level (e.g., directly inside
+> `<body>`, or in `<head>` when the browser allows it) — **not** as direct
+> children of a SmarkForm `list` container.  See the
+> [List Placement Warning](#list-placement-warning) section.
+
+
+## Using a Mixin Type
+
+### Local mixin reference
+
+Reference a template in the same document by its `id`, prefixed with `#`:
+
+```html
+<!-- Declare the mixin template once -->
+<template id="labeledInput">
+  <label data-smark>
+    <span class="label-text"></span>
+    <input type="text">
+  </label>
+</template>
+
+<!-- Use the mixin type anywhere in the form -->
+<form id='myForm'>
+  <div data-smark='{"type":"#labeledInput","name":"firstName"}'></div>
+  <div data-smark='{"type":"#labeledInput","name":"lastName"}'></div>
+</form>
+```
+
+### External mixin reference
+
+Reference a template in an external HTML file using a relative or absolute URL
+followed by `#<templateId>`:
+
+```html
+<form id='myForm'>
+  <!-- Load template from a shared widget library -->
+  <div data-smark='{"type":"./shared/widgets.html#phoneField","name":"phone"}'></div>
+  <div data-smark='{"type":"./shared/widgets.html#emailField","name":"email"}'></div>
+</form>
+```
+
+The external file `shared/widgets.html` would contain:
+
+```html
+<!DOCTYPE html>
+<html>
+<body>
+
+<template id="phoneField">
+  <label data-smark>
+    <span>Phone</span>
+    <input type="tel" data-smark='{"name":"number"}'>
+  </label>
+</template>
+
+<template id="emailField">
+  <label data-smark>
+    <span>E-mail</span>
+    <input type="email" data-smark='{"name":"address"}'>
+  </label>
+</template>
+
+</body>
+</html>
+```
+
+{: .info }
+> A mixin reference is resolved against the **source document it appears in**:
+> at the top level of the page that is `document.baseURI`, but a reference
+> *inside* an external template resolves against that template's own document
+> and URL. This lets an external widget library reference sibling templates
+> with `#id` and load further files relative to itself.
+> The same external document is fetched **only once** per page load and its
+> templates are cached for all subsequent references.
+
+
+## Template Constraints
+
+The referenced `<template>` must satisfy the following constraints; otherwise
+SmarkForm raises a normative error (see [Error Codes](#error-codes)):
+
+| Constraint | Rationale |
+|---|---|
+| The `<template>` element must exist and its `id` must match the fragment | Without it there is nothing to clone |
+| The template must contain **exactly one root element node** | SmarkForm replaces the placeholder with a single node; extra text or comment nodes are ignored, but extra element nodes are an error |
+| `<style>` and `<script>` siblings of the root are allowed and **do not count** toward the one-element limit | They carry component styles/behaviour, not markup |
+| The template root element must **not** specify a `name` inside its `data-smark` options | The name belongs to the placeholder (the usage site), not the blueprint |
+
+```html
+<!-- ✅ Valid: single root, no name -->
+<template id="myField">
+  <div data-smark='{"type":"form"}'> ... </div>
+</template>
+
+<!-- ✅ Valid: root may omit data-smark entirely -->
+<template id="simpleWidget">
+  <div class="widget"> ... </div>
+</template>
+
+<!-- ✅ Valid: <style> and <script> siblings are allowed alongside the root -->
+<template id="styledWidget">
+  <div data-smark='{"type":"form"}'> ... </div>
+  <style>.widget { border: 1px solid #ccc; }</style>
+  <script>this.targetNode.classList.add('widget');</script>
+</template>
+
+<!-- ❌ Invalid: two root elements -->
+<template id="broken">
+  <div>first</div>
+  <div>second</div>
+</template>
+
+<!-- ❌ Invalid: root has "name" in data-smark -->
+<template id="namedRoot">
+  <div data-smark='{"name":"hardcoded"}'> ... </div>
+</template>
+```
+
+
+## Expansion Semantics
+
+Mixin expansion is a **preprocessing step** that happens during SmarkForm's
+component discovery/enhancement pass, before the replaced node is itself
+enhanced.  From the perspective of the rest of the rendering pipeline the
+mixin placeholder never existed; only its expanded form is visible.
+
+The sequence is:
+
+1. SmarkForm encounters a node whose `data-smark.type` is a mixin reference.
+2. SmarkForm resolves and fetches (if external) the referenced template.
+3. The template's single root element is cloned (deep clone).
+4. Attributes and options are merged (see the next two sections).
+5. The **placeholder node is replaced** in the DOM with the merged clone.
+6. Enhancement continues on the clone as if it were the original node.
+
+{: .info }
+> **Future option (not in v1):** A `"placement"` option could allow `"nest"`
+> (wrap placeholder inside the clone) in addition to the default `"replace"`.
+> v1 only supports `"replace"`.
+
+
+## Option Merge Semantics
+
+The placeholder's `data-smark` options are merged with the template root's
+`data-smark` options before enhancement begins.  The merge rules are:
+
+| Option key | Rule |
+|---|---|
+| `name` | Taken from the **placeholder** (placeholder value wins; template root must not set it) |
+| `type` | The mixin reference is consumed during expansion and does **not** become the final `type`; the clone's own `type` (if any) is used as the concrete component type |
+| All other keys | Placeholder value **overrides** template root value (template provides defaults, placeholder overrides) |
+
+```html
+<!-- Template defines default options -->
+<template id="countrySelect">
+  <select data-smark='{"type":"select","exportEmpty":false}'></select>
+</template>
+
+<!-- Placeholder overrides exportEmpty; name comes from placeholder -->
+<div data-smark='{"type":"#countrySelect","name":"country","exportEmpty":true}'></div>
+```
+
+After expansion the effective options are:
+```json
+{ "type": "select", "name": "country", "exportEmpty": true }
+```
+
+
+## Attribute Merge Semantics
+
+When the placeholder is replaced by the template root clone, HTML attributes
+are merged according to the following rules:
+
+| Attribute | Merge rule |
+|---|---|
+| `class` | **Union** — template classes and placeholder classes are both preserved |
+| `style` | **Concatenation** — template `style` first, then placeholder `style`, separated by `;`; the placeholder can therefore override any template property |
+| `aria-*` | Template value is the default; placeholder value **overrides** if present |
+| `data-*` (except `data-smark`) | Template value is the default; placeholder value **overrides** if present |
+| `id` | **Not copied/merged**; if the placeholder carries an `id` it is ignored (with a warning) because SmarkForm may later assign auto-generated ids |
+| All other attributes | Non-conflicting attributes are copied from the placeholder to the clone; where both define the same attribute, the **placeholder wins** |
+
+```html
+<!-- Template root -->
+<template id="fancyInput">
+  <input data-smark class="form-control" style="border: 1px solid #ccc;" aria-required="false">
+</template>
+
+<!-- Usage site -->
+<div
+  data-smark='{"type":"#fancyInput","name":"email"}'
+  class="email-field"
+  style="color: red;"
+  aria-required="true"
+></div>
+```
+
+After expansion the effective element is:
+```html
+<input
+  data-smark='{"name":"email"}'
+  class="form-control email-field"
+  style="border: 1px solid #ccc;color: red;"
+  aria-required="true"
+>
+```
+
+
+## Snippet Parameters
+
+**Snippet parameters** let you customise the internals of a mixin at each usage
+site by supplying replacement elements as children of the placeholder node.
+Each replacement child must carry a `data-for` attribute that names the
+element inside the template it should replace.
+
+This is a purely DOM-level substitution — no template engine, no string
+interpolation.  The supplied element (including its tag name, attributes, and
+all descendants) replaces the template element entirely, giving you the full
+power to redefine any part of the template.
+
+### How snippet parameters work
+
+1. **Mark replaceable slots** inside the mixin template by giving them an `id`.
+2. **Supply the replacement** as a direct child of the placeholder, with a
+   matching `data-for="<id>"` attribute.
+3. SmarkForm swaps out the template element before rendering begins — the
+   original element is gone and the replacement takes its place.
+4. The `data-for` child is **consumed**: it never appears in the final DOM as
+   a child of the placeholder.
+
+```html
+<!-- Template declares a slot via id="labelText" -->
+<template id="labeledInput">
+  <label data-smark>
+    <span id="labelText">Default label</span>
+    <input type="text">
+  </label>
+</template>
+
+<!-- Usage site supplies a replacement for that slot -->
+<div data-smark='{"type":"#labeledInput","name":"email"}'>
+  <span data-for="labelText">E-mail address</span>
+</div>
+
+<!-- Another usage site with a different label -->
+<div data-smark='{"type":"#labeledInput","name":"phone"}'>
+  <span data-for="labelText">Phone number</span>
+</div>
+```
+
+Each instance gets its own independent content — the template is cloned fresh
+for every expansion.
+
+{: .info }
+> If the `data-for` value does not match any element `id` in the template, the
+> parameter is silently ignored and the template default remains in place.
+
+### id to data-id conversion
+
+After snippet substitutions have been applied, SmarkForm converts **every**
+remaining `id` attribute in the cloned subtree to a `data-id` attribute.  This
+means:
+
+- **Surviving template slots** (those not replaced by a `data-for` child)
+  become self-documenting: you can inspect `data-id` to discover which ids are
+  available for parameterisation.
+- **id attributes on inserted parameter nodes** are also converted (using an
+  `id` inside a mixin is considered bad practice).
+- The mixin can be used multiple times on the same page without ever
+  introducing duplicate `id` attributes.
+
+```html
+<!-- Before expansion: template has two slots -->
+<template id="twoSlots">
+  <div data-smark='{"type":"form"}'>
+    <span id="title">Default title</span>
+    <p id="description">Default description</p>
+  </div>
+</template>
+
+<!-- Usage: override only the title -->
+<div data-smark='{"type":"#twoSlots","name":"section"}'>
+  <span data-for="title">Custom title</span>
+</div>
+
+<!--
+After expansion the rendered subtree looks like:
+  <div data-smark='{"type":"form","name":"section"}'>
+    <span>Custom title</span>           ← replaced, no id/data-id
+    <p data-id="description">Default description</p>  ← surviving, data-id
+  </div>
+-->
+```
+
+{: .info }
+> Because ids inside mixin templates are always removed before rendering,
+> mixin styles should use **CSS classes** to target elements — never ids.
+> SmarkForm automatically handles label/field association internally.
+
+### Security: no nested scripts
+
+SmarkForm disallows `<script>` elements **anywhere inside the template root
+subtree** (i.e., nested within the root element and its descendants).
+Attempting to place a `<script>` there throws a
+`MIXIN_NESTED_SCRIPT_DISALLOWED` error.
+
+`<script>` elements are **only** supported as direct siblings of the root
+element — the top-level position inside the `<template>` tag — where they are
+extracted and run as per-instance behaviour (see [Scripts](#scripts)).
+
+This restriction also applies to any elements injected via `data-for`: if a
+replacement element contains a nested `<script>`, the error is thrown before
+any enhancement takes place.
+
+
+## External Loading and Caching
+
+### URL resolution
+
+A mixin type reference **must** contain a `#<templateId>` fragment.  A
+reference without a fragment causes a `MIXIN_TYPE_MISSING_FRAGMENT` error.
+
+References are resolved against the **source document** of the template in
+which they appear — the page itself, or the external document an enclosing
+template was loaded from:
+
+- **Local reference** (`"#<templateId>"`): the template is looked up by `id`
+  in the source document.
+- **External reference** (`"<url>#<templateId>"`): the URL part (everything
+  before `#`) is resolved against the source document's URL using the standard
+  `URL` constructor.
+
+At the top level of the page the source document is `document`, so this is
+equivalent to resolving against `document.baseURI`.
+
+### Fetch and cache strategy
+
+External documents are fetched once per page load.  The recommended internal
+cache is:
+
+```
+Map<absoluteUrlWithoutFragment, Promise<Document>>
+```
+
+On first access SmarkForm initiates a `fetch()`, parses the response as HTML,
+and stores the resulting `Promise<Document>` in the map.  All subsequent
+requests for the same URL (even with different fragment ids) reuse the same
+cached promise, so only one network request is ever made per external document.
+
+The **expansion stack** (used for circular dependency detection) uses a
+different, more specific key format: `absoluteUrl#templateId`.  This
+distinction is intentional — the document cache is keyed by URL alone because
+one fetch retrieves all templates from that document, while the expansion stack
+is keyed per template to catch cycles at the individual template level.
+
+### Eager preloading (`preload`)
+
+External mixin documents referenced by a form are **preloaded at render time**,
+before the referencing nodes are enhanced.  This warms the document cache so
+that a mixin used later — for example inside a list item template that renders
+no items initially, or a lazily shown subform — expands without a network wait.
+
+SmarkForm scans the form subtree at render time, including markup that is not
+rendered yet (such as list item templates), and issues the fetches without
+blocking rendering.  Preloading obeys the same `smark_mixin_allow_external`
+policy as on-demand loading: blocked references are silently skipped and only
+raise an error if they are actually used.
+
+A mixin reference may opt out of preloading with `preload: false`:
+
+```html
+<!-- Preloaded (default). -->
+<div data-smark='{"type":"./widgets.html#emailField","name":"email"}'></div>
+
+<!-- Loaded on demand instead. -->
+<div data-smark='{"type":"./widgets.html#phoneField","name":"phone","preload":false}'></div>
+```
+
+Only external references are preloaded; local (`#id`) templates are always
+available immediately.
+
+### Nested mixins and circular dependency detection
+
+A mixin template may itself reference another mixin type (nested mixins).
+To prevent infinite expansion, SmarkForm maintains an expansion stack of keys
+of the form `absoluteUrl#templateId` (local references use the source
+document's URL).  Before expanding any mixin SmarkForm checks whether the key is
+already present in the stack.  If it is, a `MIXIN_CIRCULAR_DEPENDENCY` error
+is thrown.
+
+
+## List Placement Warning
+
+{: .warning }
+> **Do not place `<template>` nodes as direct children of a SmarkForm `list`
+> container.**
+>
+> A `list` component treats **every direct child** as a role template (such as
+> `item`, `empty-list`, `add-item`, etc.) and removes those children from the
+> DOM during initialisation.  A `<template>` element placed there will be
+> silently consumed and will never be available for mixin expansion.
+>
+> **Recommendation:** Define mixin templates outside any SmarkForm list, for
+> example at the top level of `<body>`, inside `<head>` (where browsers
+> permit), or in a dedicated `<div>` that is itself not managed by SmarkForm.
+
+```html
+<!-- ✅ Safe: template defined at document level -->
+<template id="phoneEntry">
+  <div data-smark='{"type":"form"}'>
+    <input data-smark='{"name":"number"}' type="tel">
+  </div>
+</template>
+
+<form data-smark='{"id":"contacts"}'>
+  <ul data-smark='{"name":"phones"}'>
+    <!-- ✅ The mixin type is referenced from inside the list item template,
+         not defined here. -->
+    <li data-smark-role="item">
+      <div data-smark='{"type":"#phoneEntry","name":"phone"}'></div>
+    </li>
+  </ul>
+</form>
+```
+
+```html
+<!-- ❌ Antipattern: template as direct child of list -->
+<ul data-smark='{"name":"phones"}'>
+  <template id="phoneEntry"> ... </template>   <!-- consumed by list! -->
+  <li data-smark-role="item"> ... </li>
+</ul>
+```
+
+
+## Scripts and Styles
+
+`<style>` and `<script>` elements can be placed as **siblings** of the root
+element inside a `<template>`, giving mixin authors a way to bundle
+component-specific styles and behaviour alongside their markup.
+
+{: .info }
+> This feature is **exclusive to mixin templates**.  Placing `<style>` or
+> `<script>` directly inside a regular page element (outside a `<template>`)
+> causes the browser to parse and execute them immediately at page load, making
+> deferred/per-instance execution impossible.  The `<template>` tag prevents
+> that and is therefore the only supported location.
+
+A mixin template may contain **up to three direct children**:
+
+1. **One root element** (the component markup — required)
+2. **One `<style>` element** (component styles — optional)
+3. **One `<script>` element** (component behaviour — optional)
+
+```html
+<template id="myWidget">
+  <div data-smark='{"type":"form"}'>
+    <!-- component markup -->
+    <input data-smark type="text" name="value">
+  </div>
+  <style>
+    /* Component-specific styles */
+    .widget-root { border: 1px solid #ccc; }
+  </style>
+  <script>
+    // Component-specific behaviour (`this` = SmarkForm component instance)
+    this.targetNode.classList.add('widget-root');
+  </script>
+</template>
+```
+
+### Styles
+
+A `<style>` element that is a **direct sibling** of the template root element
+is extracted and injected into `<head>` exactly once per unique content.
+Injecting the same style block from multiple mixin instances is safe — the
+deduplication ensures the `<style>` appears in `<head>` only once, regardless
+of how many times the mixin is used.
+
+{: .info }
+> Injected styles are **global**.  Authors are responsible for using specific
+> selectors to avoid conflicts between different mixin types.  Future versions
+> may introduce scoped styles via a convention-based wrapper selector.
+
+### Scripts
+
+A `<script>` element that is a **direct sibling** of the template root element
+is extracted, wrapped into a function, and executed **once per component
+instance** after the component has finished rendering.  The function receives
+`this` bound to the SmarkForm component instance, enabling direct API access.
+
+```html
+<template id="autoFocus">
+  <input data-smark type="text">
+  <script>
+    // `this` is the SmarkForm component instance
+    this.on("AfterAction_import", (ev) => {
+      console.log("Form loaded with:", ev.data);
+    });
+  </script>
+</template>
+```
+
+{: .warning }
+> Scripts run per instance.  If a list clones a mixin that contains a
+> `<script>`, the script runs for every list item that uses that mixin.
+> Ensure handlers are idempotent or clean up on `unrender` to avoid memory
+> leaks.
+
+#### Practical Example: Smart Date Prefill
+
+A common pattern: when a new list item is created (e.g. a new "period" in a
+scheduling form), automatically compute its `start_date` and `end_date` based
+on sibling items.  The `<script>` registers an `AfterAction_addItem` listener
+that fires **after** the `source:".-1"` import, so it always operates on the
+final data:
+
+```javascript
+// Inside the mixin template's <script>:
+const me = this;  // The new period component
+me.parent.on('AfterAction_addItem', async function(ev) {
+    // ev.context is the newly-added item (our "me")
+    const items = Object.values(me.parent.children);
+    const idx  = items.indexOf(me);
+    const prev = items[idx - 1] || null;
+    const next = items[idx + 1] || null;
+
+    if (!prev) {
+        // First period — default to today
+        me.find('start_date').import(new Date().toISOString().slice(0,10));
+    } else if (prev && next) {
+        // Inserted between two periods
+        me.find('start_date').import(/* prev.end + 1 day */);
+        me.find('end_date').import(/* next.start - 1 day */);
+    } else {
+        // Appended after last period
+        me.find('start_date').import(/* prev.end + 1 day */);
+    }
+});
+```
+
+| Situation | `start_date` | `end_date` |
+|---|---|---|
+| No previous period | today | blank |
+| Has previous (no `end_date`) | blank | blank |
+| Has previous, no next | prev.end + 1 day | same duration as prev |
+| Inserted — gap exists | prev.end + 1 day | next.start − 1 day |
+| Inserted — contiguous | prev.end + 1 day | blank (user decides) |
+
+### Mixin Security Options
+
+SmarkForm uses a **secure-by-default** model: all mixin script execution and
+external template loading is **blocked** unless explicitly allowed.  This
+prevents unexpected dynamic-code execution or network requests introduced by
+mixin templates.
+
+Three separate concerns are controlled by root-level options on the SmarkForm
+instance (or any ancestor component via `inheritedOption`):
+
+#### External template fetch policy: `smark_mixin_allow_external`
+
+Controls whether SmarkForm is permitted to fetch templates from external URLs
+(any mixin type that contains a URL part before the `#` fragment).
+
+**String form** (global policy):
+
+| Value | Behaviour |
+|---|---|
+| `"block"` *(default)* | Any attempt to load an external mixin template throws `MIXIN_EXTERNAL_FETCH_BLOCKED` and halts rendering. |
+| `"same-origin"` | Only same-origin URLs are permitted; cross-origin URLs throw `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED`. |
+| `"allow"` | External templates may be loaded from any origin. |
+
+**Object form** (per-origin policy):
+
+Pass a plain object whose keys are origin strings (e.g. `"https://cdn.example.com"`)
+and whose values are `"block"` or `"allow"`.  The special key `"*"` acts as a
+wildcard default for origins not explicitly listed.  If neither a matching
+origin nor `"*"` is found, the policy defaults to `"block"`.
+
+```js
+// Allow loading templates from the same server only
+new SmarkForm(el, { smark_mixin_allow_external: 'same-origin' });
+
+// Allow templates from one specific CDN only; block everything else
+new SmarkForm(el, {
+  smark_mixin_allow_external: {
+    'https://trusted-cdn.example.com': 'allow',
+    '*': 'block',
+  },
+});
+
+// Allow templates from any origin using wildcard
+new SmarkForm(el, { smark_mixin_allow_external: { '*': 'allow' } });
+```
+
+#### Script execution policy: `smark_mixin_allow_local_scripts`, `smark_mixin_allow_same_origin_scripts`, `smark_mixin_allow_cross_origin_scripts`
+
+Controls whether `<script>` elements found at the top level of a `<template>`
+are executed after the component renders.  The applicable option is determined
+by where the template was loaded from:
+
+| Template origin | Controlling option |
+|---|---|
+| Local (`#id` only, no URL) | `smark_mixin_allow_local_scripts` |
+| External, same origin | `smark_mixin_allow_same_origin_scripts` |
+| External, cross-origin | `smark_mixin_allow_cross_origin_scripts` |
+
+**String form** (global policy):
+
+Each option accepts the same three values:
+
+| Value | Behaviour |
+|---|---|
+| `"block"` *(default)* | A template `<script>` throws a script-blocked error and halts rendering.  Fail loudly so the developer makes an explicit decision. |
+| `"noscript"` | The template renders normally but its `<script>` is silently discarded.  Useful when you trust the template markup but not its scripts. |
+| `"allow"` | Scripts are executed as normal. |
+
+**Object form** (per-origin policy):
+
+Any of the three script options also accepts a plain object whose keys are
+origin strings and whose values are `"block"`, `"noscript"`, or `"allow"`.
+The special key `"*"` provides a wildcard fallback.  This is most useful for
+`smark_mixin_allow_cross_origin_scripts` when templates from multiple third-party origins
+need different levels of trust.
+
+```js
+// Allow local mixin scripts only
+new SmarkForm(el, { smark_mixin_allow_local_scripts: 'allow' });
+
+// Allow loading and executing scripts from same-origin external templates
+new SmarkForm(el, {
+  smark_mixin_allow_external: 'same-origin',
+  smark_mixin_allow_same_origin_scripts: 'allow',
+});
+
+// Fine-grained cross-origin script policy: trust one CDN, silence another,
+// block everything else
+new SmarkForm(el, {
+  smark_mixin_allow_external: 'allow',
+  smark_mixin_allow_cross_origin_scripts: {
+    'https://trusted-cdn.example.com': 'allow',
+    'https://partial-trust.example.com': 'noscript',
+    '*': 'block',
+  },
+});
+```
+
+{: .warning }
+> Setting `smark_mixin_allow_cross_origin_scripts` to `"allow"` (or to a per-origin
+> object whose `"*"` wildcard is `"allow"`) grants full script execution for
+> templates loaded from third-party origins.  Only use this when you fully
+> control and trust those external sources.
+
+
+## Examples
+
+### Reusable contact block
+
+The following example defines a single `#contactBlock` mixin template and
+stamps it out twice — once for the **primary** contact and once for an
+**emergency** contact.  Both instances share the same structure but are
+completely independent, each carrying its own `name` and therefore its own
+data path in the exported value.
+
+{% raw %} <!-- capture mixin_contact_block_html {{{ --> {% endraw %}
+{% capture mixin_contact_block_html -%}
+<div id="myForm$$">
+  <!-- Form — the same mixin is used for both contacts -->
+  <fieldset data-smark='{"type":"form","name":"contacts"}'>
+    <legend>Contacts</legend>
+    <h3>Primary</h3>
+    <div data-smark='{"type":"#contactBlock","name":"primary"}'></div>
+    <h3>Emergency</h3>
+    <div data-smark='{"type":"#contactBlock","name":"emergency"}'></div>
+  </fieldset>
+</div>
+<!-- Mixin template — defined once, reused anywhere -->
+<template id="contactBlock">
+    <fieldset data-smark='{"type":"form"}'>
+        <label data-smark>
+            Name: <input data-smark type="text" name="name">
+        </label>
+        <label data-smark>
+            E-mail: <input data-smark type="email" name="email">
+        </label>
+        <label data-smark>
+            Phone: <input data-smark type="tel" name="phone">
+        </label>
+    </fieldset>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_contact_block_tests {{{ --> {% endraw %}
+{% capture mixin_contact_block_tests -%}
+export default async ({ page, expect, root, writeField, readField }) => {
+    await expect(root).toBeVisible();
+
+    // Populate the two mixin instances independently.
+    await writeField('contacts/primary/name', 'Alice Smith');
+    await writeField('contacts/primary/email', 'alice@example.com');
+    await writeField('contacts/emergency/name', 'Bob Smith');
+    await writeField('contacts/emergency/phone', '555-9999');
+
+    // Each instance exports its own data at its own path.
+    expect(await readField('contacts/primary/name')).toBe('Alice Smith');
+    expect(await readField('contacts/emergency/name')).toBe('Bob Smith');
+    expect(await readField('contacts/emergency/phone')).toBe('555-9999');
+
+    // Export the whole form and verify the structure.
+    const data = await page.evaluate(async () => myForm.export());
+    expect(data.contacts.primary.email).toBe('alice@example.com');
+    expect(data.contacts.emergency.name).toBe('Bob Smith');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture demoValue -%}
+{
+    "contacts": {
+        "primary": {
+            "name": "Alice Smith",
+            "email": "alice@example.com",
+            "phone": "555-1234"
+        },
+        "emergency": {
+            "name": "Bob Smith",
+            "email": "bob@example.com",
+            "phone": "555-5678"
+        }
+    }
+}
+{%- endcapture %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_contact_block"
+    htmlSource=mixin_contact_block_html
+    demoValue=demoValue
+    showEditor=true
+    tests=mixin_contact_block_tests
+%}
+
+The exported value mirrors the nesting: both `primary` and `emergency` objects
+appear under a `contacts` key, each with `name`, `email`, and `phone` fields —
+exactly what you would get from two independently hand-authored `<fieldset>`
+blocks, but with zero markup duplication.
+
+
+### Option override per usage site
+
+Placeholder options **override** template defaults on a per-key basis.  The
+following example uses a single `#tagList` template that declares
+`"min_items":3` as its default.  One of the two usage sites overrides that to
+`"min_items":1` so it starts with only one slot, while the other keeps the
+template's default of three.
+
+{% raw %} <!-- capture mixin_option_override_html {{{ --> {% endraw %}
+{% capture mixin_option_override_html -%}
+<div id="myForm$$">
+  <fieldset data-smark='{"type":"form","name":"labels"}'>
+    <legend>Labels</legend>
+    <h3>Priority tags (3 slots by default)</h3>
+    <!-- No min_items override — keeps template default of 3 -->
+    <div data-smark='{"type":"#tagList","name":"priority"}'></div>
+    <button data-smark='{"action":"addItem","context":"priority"}'>➕ Add</button>
+
+    <h3>Optional tags (1 slot override)</h3>
+    <!-- Overrides min_items to 1 -->
+    <div data-smark='{"type":"#tagList","name":"optional","min_items":1}'></div>
+    <button data-smark='{"action":"addItem","context":"optional"}'>➕ Add</button>
+  </fieldset>
+</div>
+<template id="tagList">
+    <!-- Template default: start with 3 items -->
+    <ul data-smark='{"type":"list","min_items":3}'>
+        <li>
+            <input data-smark type="text" name="tag" placeholder="tag…">
+            <button data-smark='{"action":"removeItem"}'>✕</button>
+        </li>
+    </ul>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_option_override_tests {{{ --> {% endraw %}
+{% capture mixin_option_override_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // Export the initial form state (no items added by the test).
+    const data = await page.evaluate(async () => myForm.export());
+
+    // "priority" keeps the template default of min_items:3 →
+    // three empty slots are present after initialisation.
+    expect(data.labels.priority).toHaveLength(3);
+
+    // "optional" overrides to min_items:1 →
+    // only one empty slot is present after initialisation.
+    expect(data.labels.optional).toHaveLength(1);
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_option_override"
+    htmlSource=mixin_option_override_html
+    showEditor=true
+    demoValue='{"labels":{"priority":[{"tag":"critical"},{"tag":"needs-review"},{"tag":"assigned"}],"optional":[{"tag":"nice-to-have"}]}}'
+    tests=mixin_option_override_tests
+%}
+
+Notice how both `priority` and `optional` use the same `#tagList` blueprint,
+but each instance gets its own initial item count controlled by the `min_items`
+option — set by the placeholder for `optional` and falling through to the
+template default for `priority`.
+
+
+### Snippet parameters: custom labels
+
+The following example shows a `#personEntry` mixin where each usage site
+customises the label of the name field via a snippet parameter.  The template
+uses `id="nameLabel"` to mark the slot, and each placeholder supplies its own
+`<span data-for="nameLabel">` replacement.
+
+{% raw %} <!-- capture mixin_snippet_params_html {{{ --> {% endraw %}
+{% capture mixin_snippet_params_html -%}
+<div id="myForm$$">
+  <fieldset data-smark='{"type":"form","name":"people"}'>
+    <legend>People</legend>
+    <div data-smark='{"type":"#personEntry","name":"author"}'>
+      <span data-for="nameLabel">Author name</span>
+    </div>
+    <div data-smark='{"type":"#personEntry","name":"reviewer"}'>
+        <span data-for="nameLabel">Reviewer name</span>
+    </div>
+  </fieldset>
+</div>
+<!-- Mixin template — nameLabel slot is the default text for the label -->
+<template id="personEntry">
+    <fieldset data-smark='{"type":"form"}'>
+        <label>
+            <span id="nameLabel">Name</span>
+            <input data-smark type="text" name="name">
+        </label>
+    </fieldset>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_snippet_params_tests {{{ --> {% endraw %}
+{% capture mixin_snippet_params_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // The snippet parameters replaced the label text.
+    const spans = await page.evaluate(() =>
+        [...document.querySelectorAll('span')].map(s => s.textContent)
+    );
+    expect(spans).toContain('Author name');
+    expect(spans).toContain('Reviewer name');
+
+    // Original id is gone; data-id is present on any surviving slot.
+    const idCount = await page.evaluate(() =>
+        document.querySelectorAll('#nameLabel').length
+    );
+    expect(idCount).toBe(0);
+
+    // Form data is still accessible at the correct paths.
+    await page.evaluate(() => myForm.import({
+        people: { author: { name: 'Alice' }, reviewer: { name: 'Bob' } }
+    }));
+    const data = await page.evaluate(() => myForm.export());
+    expect(data.people.author.name).toBe('Alice');
+    expect(data.people.reviewer.name).toBe('Bob');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_snippet_params"
+    htmlSource=mixin_snippet_params_html
+    showEditor=true
+    demoValue='{"people":{"author":{"name":"Alice Smith"},"reviewer":{"name":"Bob Jones"}}}'
+    tests=mixin_snippet_params_tests
+%}
+
+Each placeholder supplies its own label text; the template default (`"Name"`)
+would appear on any instance that does not provide a `data-for="nameLabel"`
+child.  After expansion there are no `id` attributes in the rendered DOM — the
+slot is self-documented via `data-id="nameLabel"` on surviving nodes.
+
+
+### Labelled list of inputs: inputlist
+
+The following pattern appears throughout the SmarkForm documentation examples:
+a labelled, variable-length list where each item is a single `<input>` field
+with ➕ / ➖ hotkey-enabled buttons.  Rather than copy-pasting the list markup
+every time, you can define it once as a reusable `#inputlist` mixin and stamp
+it out anywhere in your form.
+
+The template's `id="listInput"` slot accepts a `data-for` snippet parameter so
+each usage site supplies a custom `<input>` (different `type`, `placeholder`,
+etc.).  List options such as `max_items`, `min_items`, and `sortable` are
+overridden per usage site directly on the placeholder's `data-smark` attribute.
+
+{% raw %} <!-- capture mixin_inputlist_html {{{ --> {% endraw %}
+{% capture mixin_inputlist_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"contacts"}'>
+    <div>
+      <strong data-smark="label">Phone numbers</strong>
+      <div data-smark='{"type":"#inputlist","name":"phones","max_items":4}'>
+        <input data-smark data-for="listInput" type="tel" placeholder="Phone number">
+      </div>
+    </div>
+    <div>
+      <strong data-smark="label">Email addresses</strong>
+      <div data-smark='{"type":"#inputlist","name":"emails","max_items":4}'>
+        <input data-smark data-for="listInput" type="email" placeholder="Email address">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- SmarkForm native mixin template — defined once, reused anywhere -->
+<template id="inputlist">
+    <div data-smark='{"type":"list","of":"input"}'>
+        <div class="singleton">
+            <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this item">
+                <span role='img' aria-label='Remove this item'>➖</span>
+            </button>
+            <input data-smark id="listInput">
+            <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add new item below">
+                <span role='img' aria-label='Add new item'>➕</span>
+            </button>
+        </div>
+    </div>
+</template>
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture mixin_inputlist_tests {{{ --> {% endraw %}
+{% capture mixin_inputlist_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+
+    // Import two phones and one email address.
+    await page.evaluate(async () => myForm.import({
+        contacts: {
+            phones: ['+1 555 123 4567', '+1 555 987 6543'],
+            emails: ['alice@example.com'],
+        }
+    }));
+
+    const data = await page.evaluate(async () => myForm.export());
+
+    // Both lists export as arrays under their respective names.
+    expect(data.contacts.phones).toHaveLength(2);
+    expect(data.contacts.phones[0]).toBe('+1 555 123 4567');
+    expect(data.contacts.phones[1]).toBe('+1 555 987 6543');
+    expect(data.contacts.emails).toHaveLength(1);
+    expect(data.contacts.emails[0]).toBe('alice@example.com');
+};
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- capture demoValue {{{ --> {% endraw %}
+{% capture demoValue -%}
+{
+    "contacts": {
+        "phones": ["+1 555 123 4567", "+1 555 987 6543"],
+        "emails": ["alice@example.com"]
+    }
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_inputlist"
+    htmlSource=mixin_inputlist_html
+    showEditor=true
+    demoValue=demoValue
+    tests=mixin_inputlist_tests
+%}
+
+The same `#inputlist` template is reused for both lists — only `name`, input
+`type`, and `placeholder` differ between usages.  The exported value is a
+simple flat array for each field, not a nested object.
+
+{: .hint }
+> This `#inputlist` pattern is the mixin used throughout the SmarkForm
+> documentation examples wherever a labelled, expandable list of single-input
+> items appears — phones, emails, tags, goals, and similar fields.  See the
+> [List component type]({{ "/component_types/type_list" | relative_url }})
+> page for a full reference of available list options.
+
+
+## Error Codes
+
+The following normative error codes are defined for the mixin types feature.
+Implementations must use these identifiers so that application code can
+distinguish error causes programmatically.
+
+| Error code | When thrown |
+|---|---|
+| `MIXIN_TYPE_MISSING_FRAGMENT` | The mixin type reference does not contain a `#<templateId>` fragment |
+| `MIXIN_EXTERNAL_FETCH_BLOCKED` | The mixin type references an external URL but `smark_mixin_allow_external` is `"block"` (the default) |
+| `MIXIN_CROSS_ORIGIN_FETCH_BLOCKED` | The mixin type references a cross-origin URL but `smark_mixin_allow_external` is `"same-origin"` |
+| `MIXIN_TEMPLATE_NOT_FOUND` | No `<template>` element with the given `id` exists in the target document |
+| `MIXIN_TEMPLATE_INVALID_ROOT` | The template does not contain exactly one root element node |
+| `MIXIN_TEMPLATE_ROOT_HAS_NAME` | The template root element's `data-smark` options specify a `name` |
+| `MIXIN_CIRCULAR_DEPENDENCY` | The expansion stack already contains the current mixin key (infinite loop detected) |
+| `MIXIN_SCRIPT_LOCAL_BLOCKED` | A local mixin template contains a `<script>` and `smark_mixin_allow_local_scripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_SAME_ORIGIN_BLOCKED` | A same-origin external mixin template contains a `<script>` and `smark_mixin_allow_same_origin_scripts` is `"block"` (the default) |
+| `MIXIN_SCRIPT_CROSS_ORIGIN_BLOCKED` | A cross-origin mixin template contains a `<script>` and `smark_mixin_allow_cross_origin_scripts` is `"block"` (the default) |
+| `MIXIN_NESTED_SCRIPT_DISALLOWED` | A `<script>` element was found inside the template root subtree (nested scripts are not allowed; use top-level sibling `<script>` inside the `<template>` instead) |
+<!-- END old PORTED TO docs/_guides/mixin_types.md -->
