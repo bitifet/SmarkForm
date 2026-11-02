@@ -37,7 +37,7 @@ Form traversing in SmarkForm provides a powerful and intuitive way to navigate t
 > `find()` before rendering is complete will return `null` for every path.
 > Inside event handlers this is not necessary since they only fire after render.
 
-Building upon the foundational concepts introduced in the [Quick Start Guide]({{ "start_here/quick_start#form-traversing" | relative_url }}), this comprehensive guide explores the full capabilities of SmarkForm's traversing system.
+Building on the component-tree model introduced in [Core Concepts]({{ "/start_here/core_concepts" | relative_url }}), this guide explores the full capabilities of SmarkForm's traversing system.
 
 Every SmarkForm component provides a `.find()` method that accepts a path-like route to locate target components. This path-based approach enables precise navigation through nested form structures, making it easy to access, manipulate, and coordinate between different parts of your form.
 

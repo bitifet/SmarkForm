@@ -203,9 +203,8 @@ and `removeItem` are exclusive to `list` components. The common actions
 (`export`, `import`, `clear`, `reset`) are available on all field components.
 You can also define [custom actions](#how-do-i-add-custom-actions).
 
-See [Quick Start — Actions and Triggers](
-{{ "/start_here/quick_start" | relative_url }}#actions-and-triggers)
-for a hands-on introduction.
+See [Core Concepts — Triggers]({{ "/start_here/core_concepts" | relative_url }}#triggers)
+for an introduction to action triggers and their contexts.
 
 
 ### What is «context» in SmarkForm?
@@ -232,10 +231,9 @@ component explicitly with the `"context"` property and a relative path:
 <button data-smark='{"action":"clear","context":"email"}'>Clear email</button>
 ```
 
-See [Quick Start — Actions and Triggers](
-{{ "/start_here/quick_start" | relative_url }}#actions-and-triggers)
-and [Form Traversing]({{ "/guides/form_traversing" | relative_url }})
-for full details.
+See [Core Concepts — Triggers]({{ "/start_here/core_concepts" | relative_url }}#triggers)
+and [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for more
+detail.
 
 
 ### What is the Singleton Pattern?
