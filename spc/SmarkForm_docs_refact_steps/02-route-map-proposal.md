@@ -1,6 +1,6 @@
 # Step 02 — Proposed Information Architecture and Clean Route Map
 
-**Status:** the maintainer selected clean collection-based URLs. This file maps those URLs, but exact collection/grouping details, new slugs, and the redirect mechanism remain pending approval. Do not start Step 03 until the remaining gate is cleared.
+**Status:** approved by the maintainer on 2026-11-02. The approved policy uses clean collection-based URLs, the collection/nav schema below, and `jekyll-redirect-from` for old public routes.
 
 ## Collection and navigation schema
 
@@ -33,7 +33,7 @@ Use lowercase section/page slugs, preserve meaningful basenames, strip `type_` f
 | `_about/manifesto.md` | About SmarkForm | `/about/manifesto` | `/about/manifesto` | — (unchanged route) | Remains in About; update content/links only as approved. |
 | `_about/roadmap.md` | About SmarkForm | `/about/roadmap` | `/about/roadmap` | — (unchanged route) | Remains in About; update content/links only as approved. |
 | `_about/showcase.md` | Legacy staging only | `/about/showcase` | `/old/about/showcase` | `/about/showcase` → `/showcase_examples/showcase` | Full source moves to staging; old public route redirects to the candidate final Showcase. |
-| `_about/showcase2.md` | Showcase & Examples | `/about/showcase2` | `/showcase_examples/showcase` | `/about/showcase2` (optional alias; confirm whether branch-only URL was shared externally) | Candidate final Showcase replaces legacy content at `/showcase_examples/showcase`; audit in Step 16. |
+| `_about/showcase2.md` | Showcase & Examples | `/about/showcase2` | `/showcase_examples/showcase` | `/about/showcase2` | Candidate final Showcase replaces legacy content at `/showcase_examples/showcase`; keep a conservative redirect for the branch-era URL. Audit in Step 16. |
 | `_advanced_concepts/animations.md` | Guides | `/advanced_concepts/animations` | `/guides/animations` | `/advanced_concepts/animations` | Move to the new collection and redirect the old public permalink. |
 | `_advanced_concepts/error_codes.md` | Advanced Concepts | `/advanced_concepts/error_codes` | `/advanced_topics/error_codes` | `/advanced_concepts/error_codes` | Move to the new collection and redirect the old public permalink. |
 | `_advanced_concepts/events.md` | Guides | `/advanced_concepts/events` | `/guides/events` | `/advanced_concepts/events` | Move to the new collection and redirect the old public permalink. |
@@ -107,15 +107,10 @@ Use lowercase section/page slugs, preserve meaningful basenames, strip `type_` f
 - `_component_types/type_form.md:249` and `type_list.md:341` point to `/advanced_concepts/data_import_and_export#setting-defaults-via-value`; proposed target is `/guides/data_import_and_export#setting-defaults-via-value`. Confirm the fragment against the target heading before correcting the source links.
 - `01-baseline-link-and-fragment-ledger.md` contains the explicit route/fragment inventory. Validate routes from the rendered site after migration, not from source names alone.
 
-## Remaining approval gate
+## Approval record
 
-The URL policy is selected, but confirm or amend these details before implementation:
-
-1. Approve the SPC collection names/titles, grouping, and nav sequence above.
-2. Approve **When SmarkForm Fits** under About and its proposed route.
-3. Approve the exact clean slugs, especially `overview`, stripping `type_`, `ai_agents/resources`, and the three new-page routes.
-4. Approve `jekyll-redirect-from` as the redirect mechanism, or choose another tested solution.
-5. Confirm `/about/showcase2` is not a public route that needs a redirect.
-6. Confirm Contact remains entirely unchanged at `/community/contact`.
-
-**Do not start Step 03 until these decisions are recorded.**
+The maintainer approved the proposed map and clean URL policy, including the
+collection/nav structure, new-page slugs, redirect approach, conservative
+`/about/showcase2` alias, and the no-edit `/community/contact` exception. Step 03
+may proceed using this map. Any newly discovered conflict must be reported and
+resolved before changing its affected route.
