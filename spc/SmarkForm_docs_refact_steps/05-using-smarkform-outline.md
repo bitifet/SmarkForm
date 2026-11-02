@@ -4,6 +4,9 @@
 tutorial. The full original remains unchanged at
 `docs/_old_getting_started/old_quick_start.md` (about 1,035 lines).
 
+Step 08's completed destination/disposition map is recorded in
+[`08-using-smarkform-transfer-map.md`](08-using-smarkform-transfer-map.md).
+
 ## Proposed guide sequence
 
 | Guide section (Step 08) | Legacy source locators | Transfer decision / canonical references |

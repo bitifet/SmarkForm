@@ -278,6 +278,8 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 - `docs/_start_here/quick_start.md` has the `quick_start_first_success` sampletab with `demoValue`; its regular custom test is disabled, but the collector generates the standard demoValue round-trip smoke test.
 - `docs/_start_here/core_concepts.md` has the `components_paths` nested-model sampletab with `demoValue`; its custom test is disabled, but the collector generates the standard demoValue round-trip smoke test. Keep trigger paths in captured code relative when editor-wrapped.
 - `docs/_component_reference/trigger.md` has the `trigger_context_target` sampletab with relative context/target paths and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
+- `docs/_guides/using_smarkform.md` has the `using_smarkform_workshop` sampletab with relative action contexts and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
+- `docs/_guides/using_smarkform.md` has the `using_smarkform_workshop` sampletab with relative action contexts and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
 - `npm test` runs the full matrix: chromium, firefox, webkit, and chromium-mobile (Pixel 5 emulation)
 - `npm run test:quick` picks one project at random (see `scripts/test_quick.sh`) — useful for a fast sanity check without committing to a specific browser
 - Generates HTML reports

@@ -29,7 +29,7 @@ changes for Step 07. It is a review aid, not reader-facing documentation.
 | `docs/_guides/events.md` | Clarifies that programmatic action calls have no trigger origin (unset); trigger-initiated lifecycle events expose their origin component. |
 | `docs/_component_reference/cheatsheet.md` | Corrects `..fieldname` to `../fieldname`; summarizes context/target bases, direction, wildcard filtering, and missing-target caution. |
 | `docs/_ai_agents/smarkform_usage.md`, `AGENTS/SmarkForm-Usage.md` | Aligns agent usage rules and relative-path examples with the implementation. |
-| `docs/_guides/using_smarkform.md` | Adds an interim, accurate context/target summary and links while preserving the Step 08 authoring boundary and noindex stub marker. |
+| `docs/_guides/using_smarkform.md` | Step 07 aligned the interim route's action wording; Step 08 replaced the stub with the full practical guide while retaining the verified context/target model and reference links. |
 | `skills/SmarkForm-Form-Builder.skill.md` and OpenCode export | Adds a concise correct context/target rule for generated forms. |
 | `skills/SmarkForm-Advanced-Internals.skill.md` and OpenCode export | Replaces incorrect trigger-relative context/target claims and the malformed `..parentList` example with source-verified behavior. |
 
