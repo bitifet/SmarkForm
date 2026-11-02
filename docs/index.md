@@ -1,7 +1,7 @@
 ---
 title: SmarkForm
 layout: smarkform
-description: "Complex HTML forms without complex JavaScript: markup-driven subforms, dynamic lists, hotkeys and JSON import/export, with no framework or dependencies."
+description: "Keep your HTML and CSS. Annotate form elements with data-smark to build nested subforms and variable-length lists that import and export structured JSON."
 image:
   path: /assets/hero/social-card.png
   width: 1280
@@ -9,12 +9,9 @@ image:
   alt: "SmarkForm logo surrounded by form examples: markup-driven, JSON in and out, no framework or dependencies."
 permalink: "/"
 nav_order: 0
-migration_in_progress: true
-sitemap: false
 ---
 
 
-<!-- BEGIN old PORTED TO docs/index.md -->
 {% include components/sampletabs_ctrl.md %}
 
 {% raw %} <!-- event_planner_html {{{ --> {% endraw %}
@@ -234,7 +231,7 @@ endcapture %}
 
 <h1>SmarkForm</h1>
 
-🚀 **Add subforms, dynamic lists, hotkeys and more to any HTML form in one line of JavaScript.**
+SmarkForm turns annotated HTML into a component tree whose fields, nested forms, and lists import and export structured JavaScript objects and arrays.
 
 {% include components/badges.md %}
 
@@ -250,10 +247,50 @@ endcapture %}
   🔇 Autoplays muted — unmute it (🔊 in the player controls) to hear the narration.
 </p>
 
-## Interactive Demo
+## How SmarkForm works
 
-A nested subform, a sortable list, context-driven hotkeys, and date/time
-coercion — all driven by `data-smark` attributes with zero extra JavaScript.
+Keep your HTML and CSS. Add `data-smark` to the elements SmarkForm should manage, then initialize the root:
+
+```html
+<div id="profile">
+  <input data-smark name="name" value="Ada">
+
+  <fieldset data-smark='{"type":"form","name":"address"}'>
+    <input data-smark name="city" value="Barcelona">
+  </fieldset>
+
+  <ul data-smark='{"type":"list","name":"phones"}'>
+    <li><input data-smark name="number" value="+34 600 000 000"></li>
+  </ul>
+</div>
+
+<script>
+  new SmarkForm(document.getElementById("profile"));
+</script>
+```
+
+That markup describes a component tree. Exporting the root returns ordinary structured data:
+
+```json
+{
+  "name": "Ada",
+  "address": { "city": "Barcelona" },
+  "phones": [{ "number": "+34 600 000 000" }]
+}
+```
+
+Named fields become object properties, each list item template becomes an array element, and forms and lists can nest to any depth. SmarkForm does not render a schema or take over your application: you still own the markup, styles, semantics, validation, and submission policy.
+
+<figure class="SmarkForm-FieldModel">
+  <img src="{{ '/assets/readme/field_model.svg' | relative_url }}"
+       width="880" height="560" loading="lazy"
+       alt="Animated diagram: every SmarkForm component is a field. Forms return objects, lists return arrays, and value fields return individual JSON values. Forms and lists can nest to any depth.">
+  <figcaption>Forms and lists are fields too, so they compose into nested JSON.</figcaption>
+</figure>
+
+## Try the interactive demo
+
+A nested subform, a sortable list, context-driven hotkeys, and date/time coercion — all driven by `data-smark` attributes. Switch between the HTML, CSS, JavaScript, and preview tabs, then export the result as JSON.
 
 {% capture demoValue -%}
 {
@@ -283,89 +320,81 @@ coercion — all driven by `data-smark` attributes with zero extra JavaScript.
     tests=false
 %}
 
-## TL;DR
+## What you get
 
-*SmarkForm* is a lightweight, markup-driven form controller for front-end
-developers: add `data-smark` attributes to your HTML, initialize with one line
-of JavaScript, and get powerful **subforms**, variable-length **lists**,
-context-driven **hotkeys**, and JSON import/export — all without touching your
-layout.
+**The core model**
 
-<figure class="SmarkForm-FieldModel">
-  <img src="{{ '/assets/readme/field_model.svg' | relative_url }}"
-       width="880" height="560" loading="lazy"
-       alt="Animated diagram: every SmarkForm component is a field. Forms return objects, lists return arrays, and value fields return individual JSON values. Forms and lists can nest to any depth.">
-  <figcaption>Forms and lists are fields too, so they compose into nested JSON.</figcaption>
-</figure>
+* [Your HTML and CSS stay yours]({{ "/about/features" | relative_url }}#markup-agnostic):
+  Mark elements; do not hand over the layout.
+* [Nested forms]({{ "/about/features" | relative_url }}#nestable-forms):
+  Forms are fields that export objects and can nest to any depth.
+* [Variable-length lists]({{ "/about/features" | relative_url }}#variable-length-lists):
+  Lists export arrays, grow and shrink at runtime, and support drag-and-drop sorting.
+* [JSON import and export]({{ "/about/features" | relative_url }}#json-based):
+  Move structured data in and out of the whole form or any single field.
 
-👉 See [What SmarkForm Is (and Isn't Yet)]({{ "about/introduction" | relative_url }}) for more details.
+**Developer experience**
 
-Want to dig deeper right away? Head to the [🔗 Showcase]({{ "showcase_examples/showcase" | relative_url }})
-to explore interactive demos — including the example above — that show
-SmarkForm's full potential at a glance.
+* [Declarative actions and context]({{ "/about/features" | relative_url }}#easy-to-use-low-code):
+  Triggers find their fields from their position in the form tree.
+* [Context-driven hotkeys]({{ "/about/features" | relative_url }}#context-driven-hotkeys):
+  Keyboard shortcuts are scoped to where the user is working.
+* [Consistent keyboard navigation]({{ "/about/features" | relative_url }}#consistent-user-experience):
+  Enter/Shift+Enter move between fields; controls stay reachable.
+* [Path-based addressing]({{ "/about/features" | relative_url }}#directory-like-addressability):
+  Address fields by form structure, not DOM position.
 
-Prefer to jump straight into code? Browse [🔗 Live Examples]({{ "showcase_examples/examples" | relative_url }})
-for a collection of ready-to-use, downloadable forms you can run locally and
-start tinkering with immediately.
+**Additional capabilities**
 
+* [Lightweight and dependency-free]({{ "/about/features" | relative_url }}#lightweight-yet-highly-compatible):
+  One library, no runtime dependencies, ESM and UMD builds.
+* [Accessibility support]({{ "/about/features" | relative_url }}#a11y-friendly):
+  Label wiring and keyboard behavior, with the remaining author responsibilities stated clearly.
+* [Media fields]({{ "/about/features" | relative_url }}#media-fields):
+  File, image, video, and audio fields share the same value model.
+* [AI-agent resources]({{ "/about/features" | relative_url }}#ai-agent-ready):
+  Optional agent guidance for generating forms from a description.
 
-## Main Features
+## Start where you are
 
-  * `<>` [Markup agnostic]({{ "/about/features" | relative_url }}#markup-agnostic):
-    Maximum decoupling between design and development teams.
-  * `🧩` [Low code]({{ "about/features" |relative_url }}#easy-to-use-low-code): No manual
-    wiring between controls and fields.
-  * `🗂` [Subforms]({{ "/about/features" | relative_url }}#nestable-forms): Nested
-    forms to any depth.
-  * `📑` [Lists]({{ "/about/features" | relative_url }}#variable-length-lists):
-    Sortable and variable-length lists (arrays) either of scalars or subforms.
-  * `🫳` [Configurable hot keys]({{ "/about/features" | relative_url }}#context-driven-hotkeys):
-    Context-driven and discoverable keyboard shortcuts.
-  * `🫶` [Consistent UX]({{ "/about/features" | relative_url }}#consistent-user-experience):
-    Smooth navigation and consistent behaviour across all forms.
-  * `{}` [JSON format]({{ "/about/features" | relative_url }}#json-based):
-    Data is imported / exported as JSON.
-  * `🪶` [Lightweight]({{ "/about/features" | relative_url }}#lightweight-yet-highly-compatible):
-    Only {{ site.data.computed.bundleSizeKB }}KB minified.
-  * `♿` [Accessibility]({{ "about/features" | relative_url }}#a11y-friendly):
-    Focus on UX and accessibility (a11y).
-  * `🆓` [Dependency-free](https://www.npmjs.com/package/smarkform?activeTab=dependencies):
-    No external dependencies required.
-  * `🤖` [AI-agent ready]({{ "/about/features" | relative_url }}#ai-agent-ready):
-    Generate complete, working forms by describing them to any AI assistant.
-  * `💪` Flexible, extendable and [more...]({{ "about/features" | relative_url }})
+**See it**
 
+* [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) — interactive examples at a glance.
+* [Downloadable examples]({{ "/showcase_examples/examples" | relative_url }}) — run and edit them locally.
+* [Playground]({{ "/showcase_examples/playground" | relative_url }}) — experiment in the browser.
+
+**Use it now**
+
+* [Quick Start]({{ "/start_here/quick_start" | relative_url }}) — make a form and export a useful value.
+* [Getting SmarkForm]({{ "/start_here/getting_smarkform" | relative_url }}) — CDN, npm, and downloaded copies.
+* [Core Concepts]({{ "/start_here/core_concepts" | relative_url }}) — the component tree and data model.
+* [Using SmarkForm]({{ "/guides/using_smarkform" | relative_url }}) — the fuller developer walkthrough.
+
+**Go deeper**
+
+* [Guides]({{ "/guides/using_smarkform" | relative_url }}) — tasks such as import/export, traversing, events, and mixins.
+* [Component Reference]({{ "/component_reference/overview" | relative_url }}) — type-specific options and edge cases.
+* [Developer Cheatsheet]({{ "/component_reference/cheatsheet" | relative_url }}) — a compact implementation reference.
+
+**Decide whether it fits**
+
+* [Introduction]({{ "/about/introduction" | relative_url }}) — what SmarkForm is and is not.
+* [When SmarkForm Fits]({{ "/about/when_smarkform_fits" | relative_url }}) — a neutral comparison of approaches.
+* [FAQ]({{ "/about/faq" | relative_url }}) — common questions and edge cases.
 
 ## Current Status
 
-SmarkForm implementation is stable and fully functional, but not all initially
-planned requirements are yet implemented. Hence, it's not yet in the 1.0.0
-version. \[[🔗 More...]({{ "about/roadmap" | relative_url }}#current-status)\]
+SmarkForm is stable and in active use, but still pre-1.0: implemented behavior is covered by tests, while the public API may evolve before 1.0.0. Not every initially planned feature is implemented; see the [Roadmap]({{ "/about/roadmap" | relative_url }}#current-status) for what is planned and what is not.
 
 **Last Updated:** {{ site.data.computed.lastUpdated }}.
 
-
-## Where to Go Next?
-
-To get started with SmarkForm you can:
-
-
-| 👉 Take a look to our [🔗 Showcase]({{ "showcase_examples/showcase" | relative_url }}) section to see its full potential at a glance. |
-| 👉 Follow our [🔗 Quick Start Guide]({{ "start_here/quick_start" | relative_url }}) to rapidly dive in. |
-| 👉 Check out our [🔗 Downloadable Examples]({{ "showcase_examples/examples" | relative_url }}) to see them in action and/or start tinkering. |
-| 👉 Examine our [🔗 FAQ]({{ "about/faq" | relative_url }}) to find answers to common questions. |
-
-
 ## Community and Support
 
-If you don't find a solution there, feel free to open a [discussion on our
-GitHub repository](https://github.com/bitifet/SmarkForm/discussions).
+If you don't find a solution in the documentation, feel free to open a [discussion on our GitHub repository](https://github.com/bitifet/SmarkForm/discussions).
 
-For further support, you can contact me through our [Contact
-Page](https://smarkform.bitifet.net/community/contact) or reach out via email at [smarkform@bitifet.net](mailto:smarkform@bitifet.net).
+For further support, you can contact me through our [Contact Page]({{ "/community/contact" | relative_url }}) or reach out via email at [smarkform@bitifet.net](mailto:smarkform@bitifet.net).
 
-If you want to stay updated with the latest news, releases, and announcements,
-or join the community chat, you can follow us on Telegram:
+If you want to stay updated with the latest news, releases, and announcements, or join the community chat, you can follow us on Telegram:
 
 ### 🚀 Stay tuned
 
@@ -416,16 +445,12 @@ or join the community chat, you can follow us on Telegram:
   </figure>
 </div>
 
-
 ## Contributing
 
-We welcome any feedback, suggestions, or improvements as we continue to enhance
-and expand the functionality of SmarkForm.
+We welcome feedback, suggestions, and improvements as we continue to enhance and expand SmarkForm.
 
-👉 See the [🔗 Contributing Section]({{ "community/contributing" | relative_url }}) for more details.
-
+👉 See the [Contributing section]({{ "/community/contributing" | relative_url }}) for more details.
 
 ## License
 
-[🔗 MIT]({{ "community/license" | relative_url }})
-<!-- END old PORTED TO docs/index.md -->
+[🔗 MIT]({{ "/community/license" | relative_url }})

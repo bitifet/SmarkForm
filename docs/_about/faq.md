@@ -4,12 +4,9 @@ layout: chapter
 description: "Answers to common questions about SmarkForm behavior, component types, lists, data import/export, masking and media fields."
 permalink: "/about/faq"
 nav_order: 5
-migration_in_progress: true
-sitemap: false
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_about/faq.md -->
 {% include links.md %}
 
 {% include components/sampletabs_ctrl.md %}
@@ -43,10 +40,12 @@ annotate your HTML with `data-smark` attributes and call
 - **Actions & events** for custom behaviour without writing DOM manipulation
   code.
 
-It has no runtime dependencies and ships as a single
+It has no runtime dependencies and ships as a single minified
 {{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB bundle (ESM or
-UMD). It is **not** a React/Vue/Angular component library — it is a DOM-first
-library that works best with server-rendered or static HTML.
+UMD) before gzip. It is **not** a React/Vue/Angular component library — it is a
+DOM-first library that works best with server-rendered or static HTML. See
+[Features]({{ "/about/features" | relative_url }}#lightweight-yet-highly-compatible)
+for the measurement details.
 
 See the [Introduction]({{ "/about/introduction" | relative_url }}) and
 [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) for a fuller picture.
@@ -1374,93 +1373,26 @@ real DOM nodes at initialisation time and keeps its own internal component
 tree in sync with those nodes. That model sits at odds with how React, Vue,
 and Angular work.
 
-Anyway, if you want to try it, please [give us feedback](https://github.com/bitifet/SmarkForm/discussions)
-on your experience.
+If you want to use SmarkForm inside a framework application, keep it on a
+static or server-rendered region and avoid letting the framework reconcile the
+nodes SmarkForm manages. See [When SmarkForm
+Fits]({{ "/about/when_smarkform_fits" | relative_url }}) for the trade-offs, or
+[give us feedback](https://github.com/bitifet/SmarkForm/discussions) on your
+experience.
 
 ### Where does SmarkForm really shine?
 
-SmarkForm is a DOM-first, markup-driven library — and that is a feature, not a
-limitation. It is an ideal fit anywhere you own the HTML and want powerful form
-behaviour without pulling in a heavyweight framework.
+SmarkForm fits best when you already own the HTML and want structured form
+behaviour without adopting a UI framework: server-rendered applications,
+static sites, CMS pages, progressively enhanced legacy pages, small internal
+tools, and widgets that need a form model without a build pipeline.
 
-#### Server-rendered HTML stacks
+It is a poor fit when the form UI itself must be generated from a schema, when
+form state has to participate fully in a virtual-DOM application's state model,
+or when you need a built-in validation rule engine.
 
-If your backend renders HTML (Ruby on Rails, Django, Laravel, Symfony, plain
-PHP, ASP.NET Razor, Go templates…), you already own every DOM node before the
-page loads. SmarkForm slots in with a single `<script>` import and a
-`new SmarkForm(el)` call — no build pipeline required.
-
-```html
-<!-- Drop this at the bottom of your server-rendered page -->
-<script type="module">
-  import SmarkForm from "https://cdn.jsdelivr.net/npm/smarkform/dist/SmarkForm.esm.js";
-  const myForm = new SmarkForm(document.getElementById("myForm"));
-  myForm.on("AfterAction_export", ({ data }) => {
-    fetch("/submit", { method: "POST", body: JSON.stringify(data) });
-  });
-</script>
-```
-
-Your backend devs keep writing plain HTML templates; SmarkForm upgrades them
-silently.
-
-#### Static-site generators and JAMstack
-
-Hugo, Jekyll, Eleventy, Astro (static output), Zola… — all generate HTML at
-build time. SmarkForm enhances those static pages with dynamic form behaviour
-without changing the rendering pipeline. The docs site you're reading right now
-is a Jekyll site that uses exactly this pattern.
-
-#### Progressive enhancement of existing pages
-
-Got a legacy app or a CMS (WordPress, Drupal, TYPO3, Joomla) where you can
-add `data-smark` attributes but can't change the server stack? Add a small
-`<script type="module">` block or enqueue the UMD bundle, point it at an
-existing `<form>` or `<div>`, and the page instantly gains subforms,
-variable-length lists, and JSON export — all without touching server code.
-
-#### Alpine.js and 'HTML-over-the-wire' stacks
-
-[Alpine.js](https://alpinejs.dev/), [HTMX](https://htmx.org/),
-[Hotwire/Turbo](https://hotwired.dev/), and similar tools share SmarkForm's
-philosophy of keeping behaviour close to the markup. They pair naturally:
-
-- **HTMX / Turbo** replace page fragments with server-rendered HTML; SmarkForm
-  re-initialises on the new fragment via the `DOMContentLoaded` equivalent or a
-  simple mutation observer.
-- **Alpine.js** can call `myForm.export()` / `myForm.import()` from its event
-  handlers, letting Alpine manage UI state while SmarkForm owns form data.
-
-#### Vanilla JavaScript projects and micro-frontends
-
-When you don't want any framework at all — a standalone widget, an embeddable
-form component, a micro-frontend — SmarkForm gives you complex form logic
-(nested subforms, dynamic lists, hotkeys) in a single ~38 KB bundle with
-zero runtime dependencies.
-
-#### Back-office tools and internal dashboards
-
-Internal tooling rarely needs a polished React stack. A lightweight HTML page
-plus SmarkForm can handle configuration editors, data-entry screens, and admin
-panels with far less boilerplate than a full SPA framework, and with no Node.js
-build step if you use the CDN.
-
-#### In short
-
-| Environment | Why SmarkForm fits well |
-|-------------|------------------------|
-| Rails / Django / Laravel / PHP | You own the HTML; one `<script>` tag is all you need |
-| Jekyll / Hugo / Eleventy | Static HTML at build time + dynamic forms at runtime |
-| WordPress / Drupal / CMS | Add `data-smark` attributes; no server changes required |
-| HTMX / Turbo / Alpine.js | Shared "HTML is the source of truth" philosophy |
-| Vanilla JS widgets | Zero deps, tiny bundle, pure DOM API |
-| Internal dashboards | No build pipeline needed; rapid iteration |
-
-{: .hint :}
-> Not sure whether SmarkForm is the right fit for your project? Open a
-> [discussion](https://github.com/bitifet/SmarkForm/discussions) — we're happy
-> to help you evaluate!
-
+See [When SmarkForm Fits]({{ "/about/when_smarkform_fits" | relative_url }}) for
+the fuller comparison, common environments, and an illustrative worked example.
 
 ### Why does `clear` restore my default value instead of emptying the field?
 
@@ -1497,4 +1429,3 @@ Open a [discussion](https://github.com/bitifet/SmarkForm/discussions) on GitHub
 or reach out at the [Telegram community
 group](https://t.me/smarkformcommunity). We're happy to help you out and may
 even add your question to this FAQ if it's a common one!
-<!-- END old PORTED TO docs/_about/faq.md -->

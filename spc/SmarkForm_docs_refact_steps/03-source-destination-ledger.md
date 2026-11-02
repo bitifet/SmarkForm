@@ -2,15 +2,18 @@
 
 **Authority:** This is the live migration ledger. Step 01 inventories provide baseline locators and full sampletab wiring; this ledger records approved routes, staged-copy destinations, locator-level status, and follow-up decisions. “Baseline copied” is not “ported”: content review and final transfer decisions remain open for later numbered sessions.
 
+**Step 04 evidence:** claim-by-claim sources and caveats for the Home/About rewrite are recorded in [`04-claim-evidence.md`](04-claim-evidence.md).
+
 ## Page and route status
 
 | Source page | Current public route | Canonical destination | Staged legacy route | Status / decision |
 |---|---|---|---|---|
-| `_about/faq.md` | `/about/faq` | `docs/_about/faq.md` | `/old/about/faq` | Baseline present in canonical About page and staged copy; review/port status pending. |
-| `_about/features.md` | `/about/features` | `docs/_about/features.md` | `/old/about/features` | Baseline present in canonical About page and staged copy; review/port status pending. |
-| `_about/introduction.md` | `/about/introduction` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copied; content/split transfer not yet reviewed. Do not count as ported. |
-| `_about/manifesto.md` | `/about/manifesto` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline present in canonical About page and staged copy; review/port status pending. |
-| `_about/roadmap.md` | `/about/roadmap` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline present in canonical About page and staged copy; review/port status pending. |
+| `_about/faq.md` | `/about/faq` | `docs/_about/faq.md` | `/old/about/faq` | Positioning, framework, bundle, and sorting claims reviewed in Step 04; detailed fit/environment answer moved to When SmarkForm Fits. Remaining FAQ content still queued for later review. |
+| `_about/features.md` | `/about/features` | `docs/_about/features.md` | `/old/about/features` | Reviewed and rewritten in Step 04 (core model / developer benefits / additional capabilities / limits); no content remains unreviewed on this page. |
+| `_about/introduction.md` | `/about/introduction` | `docs/_about/introduction.md` | `/old/about/introduction` | Reviewed in Step 04: motivation and fit summary rewritten; Event Planner comparison split to When SmarkForm Fits. |
+| `_about/manifesto.md` | `/about/manifesto` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04 for claim alignment; accessibility, sorting, JSON-scope, and framework-coexistence wording clarified; staging markers removed.|
+| `_about/roadmap.md` | `/about/roadmap` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04: planned-vs-implemented status clarified; manual sorting is implemented, automatic sorting is not scheduled. |
+| `_about/when_smarkform_fits.md` (new) | `/about/when_smarkform_fits` | `docs/_about/when_smarkform_fits.md` | `— (new canonical page)` | New in Step 04: neutral comparison of markup-first, framework, and schema-rendered approaches; fit guidance; caveated Event Planner comparison moved from Introduction/FAQ. |
 | `_about/showcase.md` | `/about/showcase` | `— (legacy only)` | `/old/about/showcase` | Legacy Showcase retained only in staging; Step 17 crosswalk decides material destinations. |
 | `_about/showcase2.md` | `/about/showcase2` | `docs/_showcase_examples/showcase.md` | `/old/about/showcase2` | Baseline copied; content/split transfer not yet reviewed. Do not count as ported. |
 | `_advanced_concepts/animations.md` | `/advanced_concepts/animations` | `docs/_guides/animations.md` | `/old/advanced_concepts/animations` | Baseline copied to canonical and staged legacy pages; content review/port status pending. |
@@ -62,7 +65,7 @@
 | `_working_with_forms/keyboard_navigation.md` | `/working_with_forms/keyboard_navigation` | `docs/_accessibility/keyboard_navigation.md` | `/old/working_with_forms/keyboard_navigation` | Baseline copied to canonical and staged legacy pages; content review/port status pending. |
 | `_working_with_forms/the_api_interface.md` | `/working_with_forms/the_api_interface` | `docs/_guides/the_api_interface.md` | `/old/working_with_forms/the_api_interface` | Baseline copied to canonical and staged legacy pages; content review/port status pending. |
 | `_working_with_forms/value_coercion.md` | `/working_with_forms/value_coercion` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Baseline copied to canonical and staged legacy pages; content review/port status pending. |
-| `index.md` | `/` | `docs/index.md` | `/old/` | Baseline copied to canonical and staged legacy pages; content review/port status pending. |
+| `index.md` | `/` | `docs/index.md` | `/old/` | Reviewed and rewritten in Step 04 around the product model, interactive Event Planner, audience routes, status, community, and license. |
 
 ## H2–H4 source locators
 
@@ -123,7 +126,7 @@ Locators are transcribed from `01-baseline-content-ledger.md`. A canonical desti
 | `_about/faq.md:L1319 Mixin Types > Can mixins load from external files?` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
 | `_about/faq.md:L1345 Integration & Deployment` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
 | `_about/faq.md:L1347 Integration & Deployment > Which browsers has SmarkForm been tested on?` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
-| `_about/faq.md:L1364 Integration & Deployment > Can I use SmarkForm in React (or Vue, Angular, etc.) projects?` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
+| `_about/faq.md:L1364 Integration & Deployment > Can I use SmarkForm in React (or Vue, Angular, etc.) projects?` | `docs/_about/faq.md` | `/old/about/faq` | Reviewed in Step 04; framework fit answer now links to When SmarkForm Fits. |
 | `_about/faq.md:L1377 Integration & Deployment > Where does SmarkForm really shine?` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
 | `_about/faq.md:L1383 Integration & Deployment > Where does SmarkForm really shine? > Server-rendered HTML stacks` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
 | `_about/faq.md:L1404 Integration & Deployment > Where does SmarkForm really shine? > Static-site generators and JAMstack` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
@@ -134,57 +137,57 @@ Locators are transcribed from `01-baseline-content-ledger.md`. A canonical desti
 | `_about/faq.md:L1445 Integration & Deployment > Where does SmarkForm really shine? > In short` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
 | `_about/faq.md:L1462 Integration & Deployment > Why does \`clear\` restore my default value instead of emptying the field?` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
 | `_about/faq.md:L1488 Have a question not covered here?` | `docs/_about/faq.md` | `/old/about/faq` | Baseline available; review and close in its content session. |
-| `_about/features.md:L22 Markup agnostic` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L50 Easy to use (low-code)` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L76 Nestable forms` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L93 Variable-length lists` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L111 Context driven hotkeys` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L134 Consistent User Experience` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L153 A11Y friendly` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L170 JSON based` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L182 Lightweight yet highly compatible` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L196 Flexible and extendable` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L206 Directory-like addressability` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L225 Reliability-oriented` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/features.md:L243 AI-agent ready` | `docs/_about/features.md` | `/old/about/features` | Baseline available; review and close in its content session. |
-| `_about/introduction.md:L29 What SmarkForm Is (and Isn't Yet)` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L51 About SmarkForm` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L92 Motivation` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L129 A Picture is Worth a Thousand Words` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L154 A Picture is Worth a Thousand Words > The Example: Event Planner` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L171 A Picture is Worth a Thousand Words > SmarkForm` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L293 A Picture is Worth a Thousand Words > React` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L570 A Picture is Worth a Thousand Words > Vue` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L802 A Picture is Worth a Thousand Words > Gotchas` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L818 A Picture is Worth a Thousand Words > What the numbers say` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L820 A Picture is Worth a Thousand Words > What the numbers say > Metrics` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/introduction.md:L859 A Picture is Worth a Thousand Words > What the numbers say > Implementation time` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline copy only; content/split decision pending. |
-| `_about/manifesto.md:L24 Be as easy to define as traditional HTML forms are.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L32 Be intuitive and accessible to users.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L39 Work seamlessly across all devices with no functionality penalty.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L46 Ensure a consistent user experience across different forms.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L52 Grant separation of concerns between design and logic.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L60 Encourage and facilitate usability and accessibility.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L68 Provide advanced capabilities like manual and automatic list sorting, etc.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L75 Not interfere with the actual HTML and CSS design.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L82 Return field values in proper data types according to the type of the field.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L89 Import and Export data in JSON format.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L96 Be able to handle any possible JSON structure.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L103 Be compatible with modern web technologies.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/manifesto.md:L111 Be Open Source and open to community contributions.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L23 Current Status` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L30 Planned` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L33 Planned > The «API interface»` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L53 Planned > The «select» component type` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L62 Planned > Conditional forms` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L72 Later` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L75 Later > The «UNDO» component` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L85 Later > Infinite lists` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L90 Later > Recursive lists` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L98 Brainstorm` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L105 Brainstorm > «hint» component type` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L114 Brainstorm > Table Of Contents component` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
-| `_about/roadmap.md:L122 Brainstorm > Download action` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Baseline available; review and close in its content session. |
+| `_about/features.md:L22 Markup agnostic` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L50 Easy to use (low-code)` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L76 Nestable forms` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L93 Variable-length lists` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L111 Context driven hotkeys` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L134 Consistent User Experience` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L153 A11Y friendly` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L170 JSON based` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L182 Lightweight yet highly compatible` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L196 Flexible and extendable` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L206 Directory-like addressability` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L225 Reliability-oriented` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/features.md:L243 AI-agent ready` | `docs/_about/features.md` | `/old/about/features` | Reviewed in Step 04; content rewritten under the new grouping and the legacy fragment anchor preserved. |
+| `_about/introduction.md:L29 What SmarkForm Is (and Isn't Yet)` | `docs/_about/introduction.md` | `/old/about/introduction` | Reviewed in Step 04; rewritten as `What SmarkForm is`, retaining the legacy `#what-smarkform-is-and-isnt-yet` anchor. |
+| `_about/introduction.md:L51 About SmarkForm` | `docs/_about/introduction.md` | `/old/about/introduction` | Reviewed in Step 04; folded into `What SmarkForm is` and `The problem it addresses`; `#about-smarkform` anchor retained. |
+| `_about/introduction.md:L92 Motivation` | `docs/_about/introduction.md` | `/old/about/introduction` | Reviewed in Step 04; rewritten as `The problem it addresses` (`#motivation`). |
+| `_about/introduction.md:L129 A Picture is Worth a Thousand Words` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; comparison reframed as illustrative and caveated. |
+| `_about/introduction.md:L154 A Picture is Worth a Thousand Words > The Example: Event Planner` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L171 A Picture is Worth a Thousand Words > SmarkForm` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L293 A Picture is Worth a Thousand Words > React` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L570 A Picture is Worth a Thousand Words > Vue` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L802 A Picture is Worth a Thousand Words > Gotchas` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L818 A Picture is Worth a Thousand Words > What the numbers say` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L820 A Picture is Worth a Thousand Words > What the numbers say > Metrics` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/introduction.md:L859 A Picture is Worth a Thousand Words > What the numbers say > Implementation time` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Moved and reviewed in Step 04; metrics/implementation-time claims caveated as non-reproducible estimates. |
+| `_about/manifesto.md:L24 Be as easy to define as traditional HTML forms are.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L32 Be intuitive and accessible to users.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L39 Work seamlessly across all devices with no functionality penalty.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L46 Ensure a consistent user experience across different forms.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L52 Grant separation of concerns between design and logic.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L60 Encourage and facilitate usability and accessibility.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L68 Provide advanced capabilities like manual and automatic list sorting, etc.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L75 Not interfere with the actual HTML and CSS design.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L82 Return field values in proper data types according to the type of the field.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L89 Import and Export data in JSON format.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L96 Be able to handle any possible JSON structure.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L103 Be compatible with modern web technologies.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/manifesto.md:L111 Be Open Source and open to community contributions.` | `docs/_about/manifesto.md` | `/old/about/manifesto` | Reviewed in Step 04; principle retained with claim-aligned wording.|
+| `_about/roadmap.md:L23 Current Status` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L30 Planned` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L33 Planned > The «API interface»` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L53 Planned > The «select» component type` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; heading clarified as `Dynamic options for «select»`, legacy `#the-select-component-type` anchor preserved. |
+| `_about/roadmap.md:L62 Planned > Conditional forms` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L72 Later` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L75 Later > The «UNDO» component` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L85 Later > Infinite lists` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L90 Later > Recursive lists` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L98 Brainstorm` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L105 Brainstorm > «hint» component type` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L114 Brainstorm > Table Of Contents component` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
+| `_about/roadmap.md:L122 Brainstorm > Download action` | `docs/_about/roadmap.md` | `/old/about/roadmap` | Reviewed in Step 04; planned status clarified. |
 | `_about/showcase.md:L46 Basics` | `— (legacy only)` | `/old/about/showcase` | Staged only; Step 17 crosswalk required. |
 | `_about/showcase.md:L48 Basics > Just a Form` | `— (legacy only)` | `/old/about/showcase` | Staged only; Step 17 crosswalk required. |
 | `_about/showcase.md:L123 Basics > Multiple-Level Nesting` | `— (legacy only)` | `/old/about/showcase` | Staged only; Step 17 crosswalk required. |
@@ -865,15 +868,15 @@ Locators are transcribed from `01-baseline-content-ledger.md`. A canonical desti
 | `_working_with_forms/value_coercion.md:L28 Scalar-to-Array List Coercion > Exporting Empty Items` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Baseline available; review and close in its content session. |
 | `_working_with_forms/value_coercion.md:L134 Number, Date, Time, and JSON Coercion` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Baseline available; review and close in its content session. |
 | `_working_with_forms/value_coercion.md:L152 Number, Date, Time, and JSON Coercion > JSON format` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Baseline available; review and close in its content session. |
-| `index.md:L250 Interactive Demo` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L283 TL;DR` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L309 Main Features` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L336 Current Status` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L345 Where to Go Next?` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L356 Community and Support` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L367 Community and Support > 🚀 Stay tuned` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L417 Contributing` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
-| `index.md:L425 License` | `docs/index.md` | `/old/` | Baseline available; review and close in its content session. |
+| `index.md:L250 Interactive Demo` | `docs/index.md` | `/old/` | Reviewed in Step 04; heading is now `Try the interactive demo` with the same Event Planner. |
+| `index.md:L283 TL;DR` | `docs/index.md` | `/old/` | Reviewed in Step 04; TL;DR folded into `How SmarkForm works`. |
+| `index.md:L309 Main Features` | `docs/index.md` | `/old/` | Reviewed in Step 04; replaced by grouped feature links under `What you get`. |
+| `index.md:L336 Current Status` | `docs/index.md` | `/old/` | Reviewed in Step 04; status copy clarified. |
+| `index.md:L345 Where to Go Next?` | `docs/index.md` | `/old/` | Reviewed in Step 04; replaced by `Start where you are` audience routes. |
+| `index.md:L356 Community and Support` | `docs/index.md` | `/old/` | Reviewed and retained in Step 04. |
+| `index.md:L367 Community and Support > 🚀 Stay tuned` | `docs/index.md` | `/old/` | Reviewed and retained in Step 04. |
+| `index.md:L417 Contributing` | `docs/index.md` | `/old/` | Reviewed and retained in Step 04. |
+| `index.md:L425 License` | `docs/index.md` | `/old/` | Reviewed and retained in Step 04. |
 
 ## Sampletab include locators
 
@@ -1011,7 +1014,7 @@ Every include keeps its original `formId` and capture wiring. Exact named captur
 | `_working_with_forms/keyboard_navigation.md:L152` | `nav-details`; htmlSource=nav_details_html, tests=false | `docs/_accessibility/keyboard_navigation.md` | `/old/working_with_forms/keyboard_navigation` | Baseline include preserved; verify in content session. |
 | `_working_with_forms/value_coercion.md:L123` | `smart_value_coercion`; htmlSource=smart_value_coercion, cssSource=smart_value_coercion_css, demoValue=demoValue, tests=smart_value_coercion_tests | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Baseline include preserved; verify in content session. |
 | `_working_with_forms/value_coercion.md:L274` | `type_coercion`; htmlSource=type_coercion, demoValue=demoValue, tests=type_coercion_tests | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Baseline include preserved; verify in content session. |
-| `index.md:L272` | `event_planner`; htmlSource=event_planner_html, cssSource=event_planner_css, jsSource=event_planner_js, demoValue=demoValue, tests=false | `docs/index.md` | `/old/` | Baseline include preserved; verify in content session. |
+| `index.md:L272` | `event_planner`; htmlSource=event_planner_html, cssSource=event_planner_css, jsSource=event_planner_js, demoValue=demoValue, tests=false | `docs/index.md` | `/old/` | Retained in Step 04 with `showEditor=false`; demoValue wiring unchanged. |
 
 ## Capture declaration locators
 
@@ -1026,9 +1029,9 @@ Capture names are stable locators because they bind include parameters to exampl
 | `_about/faq.md:L443 capture `faq_animations_css`` | `docs/_about/faq.md` | `/old/about/faq` | Capture copied with page; verify association in content session. |
 | `_about/faq.md:L457 capture `faq_animations_js`` | `docs/_about/faq.md` | `/old/about/faq` | Capture copied with page; verify association in content session. |
 | `_about/faq.md:L1220 capture `faq_mixin_labeled_input_html`` | `docs/_about/faq.md` | `/old/about/faq` | Capture copied with page; verify association in content session. |
-| `_about/introduction.md:L180 capture `sf_doc`` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline capture copied; split review pending. |
-| `_about/introduction.md:L302 capture `react_doc`` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline capture copied; split review pending. |
-| `_about/introduction.md:L579 capture `vue_doc`` | `docs/_about/introduction.md` | `/old/about/introduction` | Baseline capture copied; split review pending. |
+| `_about/introduction.md:L180 capture `sf_doc`` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Capture moved with the comparison in Step 04; doctabs wiring preserved. |
+| `_about/introduction.md:L302 capture `react_doc`` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Capture moved with the comparison in Step 04; doctabs wiring preserved. |
+| `_about/introduction.md:L579 capture `vue_doc`` | `docs/_about/when_smarkform_fits.md` | `/old/about/introduction` | Capture moved with the comparison in Step 04; doctabs wiring preserved. |
 | `_about/showcase.md:L55 capture `notes_just_form`` | `— (legacy only)` | `/old/about/showcase` | Staged only; destination pending Step 17 crosswalk. |
 | `_about/showcase.md:L69 capture `just_form_example`` | `— (legacy only)` | `/old/about/showcase` | Staged only; destination pending Step 17 crosswalk. |
 | `_about/showcase.md:L84 capture `just_form_demoValue`` | `— (legacy only)` | `/old/about/showcase` | Staged only; destination pending Step 17 crosswalk. |
@@ -1391,10 +1394,10 @@ Capture names are stable locators because they bind include parameters to exampl
 | `_working_with_forms/value_coercion.md:L188 capture `type_coercion`` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Capture copied with page; verify association in content session. |
 | `_working_with_forms/value_coercion.md:L210 capture `type_coercion_tests`` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Capture copied with page; verify association in content session. |
 | `_working_with_forms/value_coercion.md:L261 capture `demoValue`` | `docs/_guides/value_coercion.md` | `/old/working_with_forms/value_coercion` | Capture copied with page; verify association in content session. |
-| `index.md:L18 capture `event_planner_html`` | `docs/index.md` | `/old/` | Capture copied with page; verify association in content session. |
-| `index.md:L74 capture `event_planner_css`` | `docs/index.md` | `/old/` | Capture copied with page; verify association in content session. |
-| `index.md:L182 capture `event_planner_js`` | `docs/index.md` | `/old/` | Capture copied with page; verify association in content session. |
-| `index.md:L255 capture `demoValue`` | `docs/index.md` | `/old/` | Capture copied with page; verify association in content session. |
+| `index.md:L18 capture `event_planner_html`` | `docs/index.md` | `/old/` | Retained and re-associated in the Step 04 home rewrite. |
+| `index.md:L74 capture `event_planner_css`` | `docs/index.md` | `/old/` | Retained and re-associated in the Step 04 home rewrite. |
+| `index.md:L182 capture `event_planner_js`` | `docs/index.md` | `/old/` | Retained and re-associated in the Step 04 home rewrite. |
+| `index.md:L255 capture `demoValue`` | `docs/index.md` | `/old/` | Retained and re-associated in the Step 04 home rewrite. |
 
 ## Support and excluded sources
 

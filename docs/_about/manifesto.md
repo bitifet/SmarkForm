@@ -4,12 +4,11 @@ layout: chapter
 description: "The design principles behind SmarkForm: use ordinary HTML as the form UI, keep data structured as JSON, and avoid framework lock-in."
 permalink: "/about/manifesto"
 nav_order: 4
-migration_in_progress: true
-sitemap: false
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_about/manifesto.md -->
+{% include links.md %}
+
 # {{ page.title }}
 
 
@@ -35,8 +34,9 @@ straightforward.
 ## Be intuitive and accessible to users.
 
 Web forms should be user-friendly, ensuring that users can easily understand
-and interact with them. Accessibility features should be built-in, making the
-forms usable by people with various disabilities.
+and interact with them. Accessibility should be designed in: provide built-in
+support where the library can, and make the remaining author responsibilities
+explicit rather than implied.
 
 
 ## Work seamlessly across all devices with no functionality penalty.
@@ -68,11 +68,12 @@ reader compatibility, and other assistive technologies to ensure that forms are
 usable by everyone.
 
 
-##  Provide advanced capabilities like manual and automatic list sorting, etc.
+## Provide advanced capabilities such as manual list sorting and dynamic data.
 
-A modern form library should offer advanced features such as sorting lists
-manually or automatically, handling dynamic data, and providing complex form
-interactions without the need for extensive custom coding.
+A modern form library should offer advanced features such as manual list
+sorting, handling dynamic data, and providing complex form interactions
+without the need for extensive custom coding. Automatic sorting by field value
+is not a current feature; it remains a roadmap idea.
 
 
 ##  Not interfere with the actual HTML and CSS design.
@@ -96,19 +97,19 @@ This makes it easier to handle complex data structures and integrate with other
 systems that use JSON.
 
 
-##  Be able to handle any possible JSON structure.
+## Be able to handle nested JSON structures.
 
-A web form should be flexible enough to manage any JSON structure, including
-nested objects and arrays. This allows for the creation of complex forms that
-can handle sophisticated data models.
+A web form should be flexible enough to manage nested objects and arrays. This
+allows for the creation of complex forms that can handle sophisticated data
+models without forcing every value into a flat list.
 
 
-##  Be compatible with modern web technologies.
+## Coexist with modern web technologies.
 
-It also should work seamlessly with modern web technologies such as ES6
-modules, Web Components, and other contemporary JavaScript frameworks and
-libraries. This ensures that it remains relevant and useful in modern web
-development.
+It should work with modern web technologies such as ES modules, Web Components,
+and contemporary JavaScript frameworks and libraries without requiring them.
+Integration should be explicit: SmarkForm is a DOM-first form library, not a
+framework adapter.
 
 
 ##  Be Open Source and open to community contributions.
@@ -127,4 +128,3 @@ improvements, report issues, and contribute code to enhance the library.
 
 
 Each of these principles aims to make SmarkForm a robust, user-friendly, and powerful form library that meets the needs of both developers and users.
-<!-- END old PORTED TO docs/_about/manifesto.md -->

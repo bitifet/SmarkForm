@@ -1,263 +1,297 @@
 ---
 title: Features
 layout: chapter
-description: "Explore SmarkForm features: markup-driven forms, nested data, dynamic lists, JSON import/export, keyboard shortcuts, media fields and more."
+description: "SmarkForm's core HTML-to-component-tree model, developer-facing benefits, additional capabilities, and deliberate limits."
 permalink: "/about/features"
 nav_order: 3
-migration_in_progress: true
-sitemap: false
 ---
+
+{% include links.md %}
 
 # {{ page.title }}
 
 
-<br />
 <div class="chaptertoc toplevel">
-<p>The following are the most remarkable features of <strong>SmarkForm</strong>:</p>
+<p>What SmarkForm adds to ordinary HTML, and what it deliberately leaves to you.</p>
 
-  {% include chaptertoc/features.html depth=2 %}
+  {% include chaptertoc/features.html depth=3 %}
 
 </div>
 
 
-## Markup agnostic
+## The core model
 
-Leverage your existing HTML and CSS knowledge to create powerful forms with no
-effort.
+### Your HTML and CSS stay yours {#markup-agnostic}
 
-  * Markup-driven and Intuitive API
+Add `data-smark` to the elements SmarkForm should manage. SmarkForm enhances
+that subtree in place; it does not replace it with a schema, a renderer, or a
+required layout.
 
-    - Just add the *data-smark* attribute to form fields to
-      enhance them:
-      ```html
-      <input name="user" type="text" data-smark>
-      ```
-    - And initialize the form with a single line of JavaScript:
-      ```javascript
-      const myForm = new SmarkForm(form_container);
-      ```
+```html
+<input name="user" type="text" data-smark>
+```
 
-  * Does not impose any specific HTML structure or CSS design rules.
+Then initialize the root:
 
-    - Designers have complete freedom.
+```javascript
+const myForm = new SmarkForm(form_container);
+```
 
-    - Developers don't have to worry about layout changes.
+SmarkForm imposes no HTML structure and no CSS reset. Designers keep control of
+markup, layout, and styling. Developers get a form model without rewriting the
+page as framework components.
 
+👉 See [Quick Start]({{ "/start_here/quick_start" | relative_url }}) for the
+smallest complete example.
 
-👉  See the [Quick Start]({{ "/start_here/quick_start" | relative_url }})
-section for more details.
+### Declarative fields and typed values {#declarative-fields}
 
+The type and name can often be inferred from the element and its `name`
+attribute; the `data-smark` JSON object is available when you need to be
+explicit or combine options:
 
-## Easy to use (low-code)
+```html
+<input data-smark name="email" type="email">
+<input data-smark='{"type":"number","name":"quantity","min":1}'>
+<select data-smark name="country">…</select>
+```
 
-  * *Zero-Wiring*: Controls (called *trigger* components) reach their target
-    fields by its *context* (position in the form) or by relative paths within
-    the form.
-    ```html
-    <button data-smark='{"action": "addItem", "context": "contacts"}'>➕ Add contact</button>
-    <button data-smark='{"action": "export"}'>💾 Save</button>
-    ```
+SmarkForm provides field types for text-like inputs, numbers, dates and times,
+colors, checkboxes, radios, selects, and media. Typed fields are coerced to the
+appropriate JavaScript type instead of remaining strings. Empty numeric and
+date/time fields export as `null`, which keeps “missing” distinct from `0` or
+`""`.
 
-  * To handle data import and export from your own code, you just have to
-    listen to `onBeforeAction_import` and `onAfterAction_export` events.
-    ```javascript
-    myForm.on("afterAction_export", ({data}) => {
-        console.log("Exported data:", data);
-    });
-    ```
+The progression is intentional: start with the least noisy attribute, use
+`data-smark-*` for simple options, and use the JSON object when you need
+structured configuration. Prefixed attributes override matching keys in the
+JSON object. See [Core Concepts]({{ "/start_here/core_concepts" | relative_url }})
+for the syntax rules.
 
-  * Of course, you can also call the `.import()` and `.export()` methods of
-    the whole form (or any field) to import or export data programmatically.
+### Nested forms {#nestable-forms}
 
-👉 Take a look to the [Showcase]({{ "/showcase_examples/showcase" | relative_url }})
-section to realize how easy it is to create complex forms with little or no
-JavaScript code.
+Forms are fields of type `form`. They export their children as a JSON object
+and can nest to any depth:
 
+```html
+<fieldset data-smark='{"type":"form","name":"details"}'>
+  <!-- ... -->
+</fieldset>
+```
 
-## Nestable forms
+The whole SmarkForm-enhanced root is itself a form, so the same import/export
+and traversal rules apply at every level. See the [Form
+reference]({{ "/component_reference/form" | relative_url }}).
 
-  * Forms are just fields of the *form* type that import/export their data as
-    JSON.
-    ```html
-    <fieldset data-smark='{"type": "form", "name": "details"}'>
-        <!-- ... -->
-    </fieldset>
-    ```
+### Variable-length lists {#variable-length-lists}
 
-  * They can be nested to any depth.
+Lists export arrays, grow and shrink at runtime, and can enforce minimum and
+maximum item counts:
 
-  * The whole SmarkForm enhanced form is a field of this type.
+```html
+<ul data-smark='{"type":"list","name":"contacts","min_items":0,"max_items":10}'>
+  <li>
+    <input data-smark name="email" type="email">
+    <button data-smark='{"action":"removeItem"}'>Remove</button>
+  </li>
+</ul>
 
-👉 [See them in action...]({{ "/showcase_examples/showcase" | relative_url }}).
+<button data-smark='{"action":"addItem","context":"contacts"}'>Add contact</button>
+```
 
+Add, remove, insert, prune, and clearing operations are available as actions or
+methods. With `sortable: true`, items can be reordered by drag and drop (and
+between nested lists with `moving_depth`). Automatic sorting by field value is
+**not implemented**; the current feature is manual drag-and-drop sorting.
 
-## Variable-length lists
+See the [List reference]({{ "/component_reference/list" | relative_url }}) for
+item templates, position metadata, `min_items`/`max_items`, and sortable-list
+behavior.
 
-  * Variable-lenght lists of scalars or subforms.
-    - With configurable minimum and maximum length.
-    - Users can add or remove items by clicking on appropriate buttons
-      (*trigger* components) configured to call the *addItem* and *removeItem*
-      actions.
+### JSON import and export {#json-based}
 
-  * Data is imported/exported as JSON arrays.
-    - If non array is attempted to be imported, it is converted to an array
-      with a single item.
+Import and export move ordinary JavaScript data through the component tree:
 
-  * Can be manually (user drag & drop) or automatically (🚧 comming soon...)
-    sorted.
+```javascript
+myForm.import({ name: "Ada", contacts: [{ email: "ada@example.com" }] });
+const data = myForm.export();
+```
 
-👉 [See them in action...]({{ "/showcase_examples/showcase" | relative_url }}).
+The same operations are available as actions from markup, and as methods on any
+field or subform:
 
+```html
+<button data-smark='{"action":"export"}'>Export</button>
+<button data-smark='{"action":"import","context":"details"}'>Import details</button>
+```
 
-## Context driven hotkeys
+Objects map to forms, arrays map to lists, and scalar values map to fields. You
+can export the whole form or just one branch. See [Data Import and
+Export]({{ "/guides/data_import_and_export" | relative_url }}).
 
-  * Attach a keyboard shotcut to a trigger by just adding a `hotkey`
-    property to the trigger component.
-    - Ex.: `<button data-smark='{"action":"addItem","hotkey":"+"}'>Add Item</button>`.
-    - Then use `Ctrl`+`+` to add an item to the list.
+### Address fields by path, not DOM position {#directory-like-addressability}
 
-  * Allow users to discover available hotkeys by pressing `Ctrl` key.
-    - Every time the user presses/releases `Ctrl`, all triggers with a
-      reachable *hotkey* will get the `data-hotkey` attribute of the their DOM
-      element is filled/unfilled with the hotkey value.
-    - This allows for a very simple
-      [CSS arrangement]({{ "/showcase_examples/showcase" | relative_url }})
-      for auto-reveal/unreveal feature.
+Fields have names and a position in the **form** tree, which is independent of
+the DOM nesting introduced by layout wrappers. Actions and API calls can use:
 
-  * Avoid hotkey cluttering by reusing the same hotkey in different contexts.
-    - Hotkeys are attached to triggers and triggers are context-aware.
-    - If the same hotkey is used more than once, only the one in the nearest
-      context (depending on the current focus) is activated.
+* natural context — the nearest ancestor that implements the requested action;
+* relative paths such as `contacts`, `../organizer`, or `.-1`;
+* absolute paths from the root, such as `/organizer/email`;
+* wildcard contexts for operations that apply to many matching fields.
 
-👉 [See it in action...]({{ "/showcase_examples/showcase" | relative_url }}).
+Triggers themselves do not count as path nodes. See [Form
+Traversing]({{ "/guides/form_traversing" | relative_url }}) and the [Trigger
+reference]({{ "/component_reference/trigger" | relative_url }}).
 
+### Declarative actions and context {#easy-to-use-low-code}
 
-## Consistent User Experience
+Triggers reach their target fields through their **context** or a relative path.
+They do not need DOM selectors or wiring in JavaScript:
 
-  * Smooth navigation across all forms.
-    - Use `Tab` and `Shift`+`Tab` as usual to navigate between fields and controls.
-    - Use `Enter` and `Shift`+`Enter` to navigate between fields only, bypassing
-      controls.
-      - Use `Ctrl`+`Enter` instead of `Enter` in multiline (textarea) fields.
+```html
+<button data-smark='{"action":"addItem","context":"contacts"}'>➕ Add contact</button>
+<button data-smark='{"action":"export"}'>💾 Save</button>
+```
 
-  * Non-breaking unobtrusive keyboard navigation: triggers are smartly added or
-    removed from navigation flow (with tab) when there is a hotkey to reach
-    them.
+Actions cover export, import, clear, add/remove list items, sorting, media
+selection, and more. You can also call `.import()` and `.export()` directly
+from application code, and listen to `BeforeAction_*` and `AfterAction_*`
+events when you need to intervene.
 
-  * Automatically enabled/disabled controls (depending on context).
-    - **I.e.:** *Add Item* and *Remove Item* triggers are automatically
-      disabled when the list is full or empty, respectively.
+See [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for
+`context` and path resolution, and the [Trigger
+reference]({{ "/component_reference/trigger" | relative_url }}) for `target` and
+action options.
 
-👉 [Learn more...]({{ "/showcase_examples/showcase" | relative_url }}).
+## Developer benefits
 
+### Context-driven hotkeys {#context-driven-hotkeys}
 
-## A11Y friendly
+Add a `hotkey` to a trigger and SmarkForm exposes it only when the action is
+reachable from the user's current field:
 
-Its markup-agnostic nature allows developers and designers to implement their own
-accessible designs without interference.
+```html
+<button data-smark='{"action":"addItem","hotkey":"+"}'>Add</button>
+<button data-smark='{"action":"removeItem","hotkey":"-"}'>Remove</button>
+<button data-smark='{"action":"export","hotkey":"s"}'>Save</button>
+```
 
-Additionally, it attempts to help with accessibility whenever possible:
+Holding `Ctrl` reveals the available shortcuts without leaving the keyboard.
+See [Hotkeys]({{ "/accessibility/hotkeys" | relative_url }}).
 
-  * Ensuring keyboard navigability across all form elements.
+### Consistent keyboard navigation {#consistent-user-experience}
 
-  * Auto-filling some ARIA attributes if they are missing
+`Enter` and `Shift+Enter` move between fields and list items in form order,
+including across nested forms and lists. Triggers and controls remain reachable
+with the keyboard, and list changes are announced through an `aria-live` region.
+Authors still own focus order, focus visibility, and any custom keyboard
+interactions.
 
-Anyway, in this regard, feedback is welcome to improve SmarkForm's
-accessibility. If you have suggestions or find any issues, please open tell us
-via our [A11Y Discussion](https://github.com/bitifet/SmarkForm/discussions/25)
-in GitHub.
+See [Keyboard Navigation]({{ "/accessibility/keyboard_navigation" |
+relative_url }}).
 
+### Automatic list guardrails {#automatic-enablement}
 
-## JSON based
+List `addItem` and `removeItem` triggers are enabled or disabled as the list
+reaches its `min_items` and `max_items` bounds. This keeps the UI consistent
+without hand-written guards. Other actions keep their authored enabled state;
+application code can enable or disable them when needed.
 
-  * Every single field can import/export its data in the appropriate data type:
-    - Forms as JSON objects.
-    - Lists as JSON arrays.
-    - Numbers as numbers.
-    - Dates as well-formed date strings.
-    - Booleans as booleans.
+### Flexible, extendable component types {#flexible-and-extendable}
 
-👉 [See it in action...]({{ "/showcase_examples/showcase" | relative_url }})
+Custom component types can be registered with
+`SmarkForm.createType(name, controller)`. Mixin types let a `<template>` define
+a reusable component blueprint that is expanded in place, including external
+templates with controlled fetch and script policies.
 
+See [Mixin Types]({{ "/guides/mixin_types" | relative_url }}) and [Field
+Masking]({{ "/guides/field_masking" | relative_url }}) when you need behavior
+beyond the built-in types.
 
-## Lightweight yet highly compatible
+## Additional capabilities
 
+### Reliability-oriented value handling {#reliability-oriented}
 
-  * Just {{ site.data.computed.bundleSizeKB | xml_escape | textilize }}KB minified!
+SmarkForm handles empty values and `null` explicitly, avoids ambiguous `""` vs
+`0` conversions, and re-renders list items consistently when data changes. It
+also covers edge cases that are easy to miss in hand-written form code, such as
+removing the correct item after reordering, nested list drops, and keeping
+masked values in sync.
 
-  * Bundled both as modern ES Module and UMD for wide compatibility.
+The details are documented rather than assumed; see the [FAQ]({{
+"/about/faq" | relative_url }}) for the behaviors most likely to surprise you.
 
-  * &gt; 0.25%, browser coverage thanks to Babel
+### Accessibility support and author responsibilities {#a11y-friendly}
 
+SmarkForm wires labels to fields, preserves authored `aria-labelledby` tokens,
+provides keyboard navigation and context-aware hotkeys, announces list changes
+with `aria-live`, and sets `aria-busy` while the root renders.
 
-👉 [Check it out...]({{ "/start_here/getting_smarkform" | relative_url }})
+It cannot make arbitrary markup accessible. Authors remain responsible for
+meaningful labels, semantic grouping, contrast, focus styling, error
+announcements, and media alternatives. See [Accessibility]({{
+"/accessibility/keyboard_navigation" | relative_url }}) and [Accessible Labels
+and Names]({{ "/accessibility/accessible_labels_and_names" | relative_url }}).
 
+### Media fields {#media-fields}
 
+File, image, video, and audio fields share the same embedded-value model, with
+native pickers, drag and drop, paste, validation hooks, and download actions.
+They follow the same import/export shapes as other fields, so a file can be part
+of a nested object or a list item without special-casing the form model.
 
-## Flexible and extendable
+See [File]({{ "/component_reference/file" | relative_url }}), [Image]({{
+"/component_reference/image" | relative_url }}), [Video]({{
+"/component_reference/video" | relative_url }}), and [Audio]({{
+"/component_reference/audio" | relative_url }}).
 
-  * Develop your own component types to suit your specific needs.
+### Lightweight and dependency-free {#lightweight-yet-highly-compatible}
 
-  * Use **SmarkForm native mixins** to define reusable component blueprints
-    from plain HTML `<template>` elements — no JavaScript required.  See
-    [Mixin Types]({{ "/guides/mixin_types" | relative_url }}) for a
-    full reference and examples.
+SmarkForm has no runtime dependencies and ships as ESM and UMD bundles. The
+build used for this documentation produced a `dist/SmarkForm.umd.js` of about
+109 KB minified and roughly 30 KB gzip. Treat that as a measured snapshot, not
+a promise about every build: the exact size depends on version, selected
+artifact, enabled features, and server compression.
 
+The library is transpiled with Babel for compatibility and tested across
+Chromium, Firefox, and WebKit, including a mobile-emulation project. See the
+[FAQ]({{ "/about/faq" | relative_url }}#which-browsers-has-smarkform-been-tested-on)
+for the current browser-support statement.
 
-## Directory-like addressability
+### AI-agent resources {#ai-agent-ready}
 
-  * Address any field by from another field by its relative or absolute path.
+The project includes optional guidance for AI coding agents: a form-builder
+skill, an advanced-internals skill, and agent-oriented usage pages. These are
+aids for generating SmarkForm code from a description, not a runtime
+dependency.
 
-  * Those paths traverse the form structure: not the DOM.
-    - 🚀 This give you full freedom to **alter the form layout without
-      breaking the code**.
+See [AI Agents]({{ "/ai_agents/smarkform_forms" | relative_url }}) and the
+[Developer Cheatsheet]({{ "/component_reference/cheatsheet" | relative_url }}).
 
-  * They are highly useful to alter triggers' context and/or targetted
-    fields.
+## What SmarkForm does not do
 
-  * They support upper (`..`) and sibling (`.-1`) addressing to traverse lists
-    hoizontally and even wildcards (`*`) to address multiple fields at once.
+SmarkForm is deliberately narrow. It does **not** provide:
 
+* schema-based form generation;
+* a built-in validation rule engine or automatic error messages;
+* an official React, Vue, Svelte, or Angular adapter;
+* a guarantee of accessibility conformance for arbitrary markup;
+* a server-side security boundary.
 
-👉 See the [Form Traversing]({{ "/guides/form_traversing" | relative_url }})
-section for more details.
+Use native HTML constraint validation, `BeforeAction_*`/`AfterAction_*` event
+hooks, and application-level checks for validation. Validate and authorize
+every submission on the server. For a comparison of approaches, see [When
+SmarkForm Fits]({{ "/about/when_smarkform_fits" | relative_url }}).
 
+## Learn more
 
-## Reliability-oriented
-
-  * It handles edge cases gracefully:
-    - If non-Array is attempted to be imported into a list, it is converted
-      to an array with a single item.
-    - Textarea fields automatically stringify and pretty-print objects.
-
-  * Null awareness:
-    - Non text fields (like number, date, checkbox, etc.) can return `null` to
-      indicate that the value is unknown or not applicable.
-    - Radiobuttons can be unckecked.
-    - Color pickers can be cleared and return `null` to distinguish when the
-      color is unknown or not applicable instead of defaulting to black.
-
-
-👉 [Try it yourself...]({{ "/showcase_examples/showcase" | relative_url }})
-
-
-## AI-agent ready
-
-SmarkForm's clean, declarative API makes it a natural fit for AI-assisted
-development:
-
-  * **Describe a form in plain language — get working code immediately.**
-    The `data-smark` attribute and JSON options are self-descriptive, so any
-    capable AI assistant can generate correct, complete forms from a short
-    description.
-
-  * **No bespoke tooling required.** SmarkForm loads from a single CDN
-    `<script>` or `import`, and the output is a standalone HTML page with no
-    build step needed.
-
-  * **Versioned agent knowledge files** are published alongside the library so
-    AI agents always get accurate, up-to-date patterns — not stale
-    `raw.githubusercontent.com` snapshots.
-
-👉 Visit [AI & Agent Resources]({{ "/ai_agents/resources" | relative_url }}) for
-prompt templates and agent-ready knowledge files.
+* [Introduction]({{ "/about/introduction" | relative_url }}) — the model in
+  context.
+* [Core Concepts]({{ "/start_here/core_concepts" | relative_url }}) — syntax,
+  component types, and data mapping.
+* [Using SmarkForm]({{ "/guides/using_smarkform" | relative_url }}) — a full
+  developer walkthrough.
+* [Component Reference]({{ "/component_reference/overview" | relative_url }}) —
+  per-type options and edge cases.
+* [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) — larger
+  working examples.

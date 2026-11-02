@@ -4,12 +4,11 @@ layout: chapter
 description: "See planned SmarkForm improvements across component types, the API, documentation, tooling and future integrations."
 permalink: "/about/roadmap"
 nav_order: 6
-migration_in_progress: true
-sitemap: false
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_about/roadmap.md -->
+{% include links.md %}
+
 # {{ page.title }}
 
 <br />
@@ -25,7 +24,14 @@ sitemap: false
 
 ## Current Status
 
-  * Actively developed and open to enhancements from contributors.
+SmarkForm is pre-1.0 and actively developed. **The items below are plans, not
+current features.** Implemented behavior is documented in [Features]({{
+"/about/features" | relative_url }}) and the [Component
+Reference]({{ "/component_reference/overview" | relative_url }}); if a capability
+is not described there, do not assume it exists.
+
+Manual drag-and-drop list sorting (`sortable: true`) is already implemented.
+Automatic sorting by field value is not scheduled.
 
   * **Last Updated:** {{ site.data.computed.lastUpdated }}.
 
@@ -53,7 +59,7 @@ pair of `<select>` components) are handled gracefully: a fetch is skipped when
 the relevant values haven't actually changed, preventing infinite loops.
 
 
-### The «select» component type
+### Dynamic options for «select» {#the-select-component-type}
 
 The `<select>` component will load its options dynamically through the
 [API Interface](#the-api-interface), allowing options (or even `<optgroup>`s)
@@ -128,4 +134,3 @@ components in their own repository rather than core features.
   * Downloads exported JSON by default, with optional transformation filters
     for other formats.
   * Allows specifying (or prompting for) the file name.
-<!-- END old PORTED TO docs/_about/roadmap.md -->
