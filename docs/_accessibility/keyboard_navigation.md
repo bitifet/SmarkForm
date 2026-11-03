@@ -184,7 +184,6 @@ first focusable child, or to the summary itself). `Alt+Enter`
 provides a separate way to navigate into a collapsed section. Use semantic
 markup and test focus and announcements with your target assistive technology.
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_accessibility/keyboard_navigation.md -->{% endraw %}
 The contacts example below preserves the key field inside each collapsed
 summary. Its co-located test checks Space/Shift+Space, forward/backward list
 navigation, and `Alt`+`Enter` / `Alt`+`Shift`+`Enter` into hidden fields.
@@ -720,4 +719,3 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     tests=collapsible_sections_tests
     minHeight=40
 %}
-{% raw %}<!-- END old PORTED TO docs/_accessibility/keyboard_navigation.md -->{% endraw %}

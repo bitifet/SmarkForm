@@ -3,8 +3,8 @@
 **Status:** The four-example Showcase is corrected at `/showcase_examples/showcase`.
 Approved supporting examples/tests have landed in List, Mixin Types, Keyboard
 Navigation, Hotkeys, and Playground. The 20-example legacy Showcase and
-four-example candidate remain unchanged under `docs/_old_*`; no deletion or
-publication cleanup is part of this step.
+four-example candidate stayed unchanged under `docs/_old_*` through Step 17;
+Step 19 removed the temporary sources after final validation.
 
 ## Candidate examples and claim corrections
 
@@ -43,9 +43,9 @@ Dropdown remains reviewed not-retained because its source include referenced an
 undefined HTML capture and the section was an under-construction stub.
 
 The original **20 legacy sample IDs, 73 capture declarations, and six custom
-test captures** remain untouched in `docs/_old_about/old_showcase.md`; the four
-candidate sample IDs and 17 source capture names remain in
-`docs/_old_about/old_showcase2.md`.
+test captures** were verified before cleanup; the four candidate sample IDs and
+17 original capture names are retained in the canonical Showcase. The old
+source files have been removed.
 
 ## Migration records and verification
 
@@ -53,16 +53,18 @@ candidate sample IDs and 17 source capture names remain in
   destination decisions, every legacy include/capture, the approved additions,
   and the candidate correction status. Step 10, 11, 13, and 16 maps have Step 17
   addenda where their current example inventories changed.
-* Added paired `BEGIN old PORTED TO` / `END old PORTED TO` markers around the
-  final candidate page and the transferred List, Mixin, Accessibility, Hotkeys,
-  and Playground material. Legacy sources remain untouched.
+* Paired `BEGIN old PORTED TO` / `END old PORTED TO` markers delimited the
+  final candidate page and transferred List, Mixin, Accessibility, Hotkeys, and
+  Playground material during review. Legacy sources remained untouched through
+  Step 17; Step 19 removed the markers and source copies after final validation.
 * Updated root `README.md` feature links to actual Showcase anchors or canonical
   destinations; redirected its school-data demo to the new List example and
   keyboard guidance to Accessibility. Updated the FAQ's animation/list examples
   to their canonical guides.
-* The final Showcase keeps `migration_in_progress: true` and `sitemap: false`
-  until final cleanup; `head_custom.html` emits `noindex, nofollow`. Its clean
-  route and redirects are unchanged.
+* At the Step 17 completion state, the Showcase kept
+  `migration_in_progress: true` and `sitemap: false` and emitted
+  `noindex, nofollow`. Step 19 removed those temporary controls; the final route
+  is indexable, and approved legacy redirects remain.
 * Jekyll build passes. Rendered public-link/fragment checks report zero broken
   public links/fragments. The generated List/Mixin/Showcase TOCs include the new
   headings; the Playground TOC includes Keyboard Calculator.

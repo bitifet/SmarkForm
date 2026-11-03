@@ -8,7 +8,6 @@ redirect_from:
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_showcase_examples/playground.md -->
 # {{ page.title }}
 
 The interactive examples throughout this documentation are powered by the
@@ -231,7 +230,6 @@ myForm.on("BeforeAction_import", async (ev) => {
 > [Events]({{ "/guides/events" | relative_url }}) for the
 > `on()`/`onLocal()` scoping pattern used here.
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_showcase_examples/playground.md -->{% endraw %}
 ### Keyboard Calculator
 
 This variation accepts keyboard input as well as button clicks. Its arithmetic
@@ -348,5 +346,3 @@ export default async ({ page, expect, root, readField }) => {
     selected="preview"
     tests=supercalculator_tests
 %}
-{% raw %}<!-- END old PORTED TO docs/_showcase_examples/playground.md -->{% endraw %}
-<!-- END old PORTED TO docs/_showcase_examples/playground.md -->

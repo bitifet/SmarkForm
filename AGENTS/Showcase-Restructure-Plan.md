@@ -6,8 +6,11 @@
 > maintainer decisions are recorded in
 > [`16-showcase-audit-and-destination-decisions-transfer-map.md`](../spc/SmarkForm_docs_refact_steps/16-showcase-audit-and-destination-decisions-transfer-map.md)
 > and [`17-final-showcase-transfer-map.md`](../spc/SmarkForm_docs_refact_steps/17-final-showcase-transfer-map.md).
+> Step 19's final cleanup/build report is in
+> [`19-final-validation-transfer-map.md`](../spc/SmarkForm_docs_refact_steps/19-final-validation-transfer-map.md).
 > Do not use this file's old “current flow” or “remaining gaps” as the final
-> Showcase plan. Keep it as historical context until the final migration review.
+> Showcase plan. The legacy source pages were removed during Step 19; keep this
+> file only as historical context.
 
 ## Final State
 

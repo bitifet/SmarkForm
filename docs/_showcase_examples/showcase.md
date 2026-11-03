@@ -1,8 +1,6 @@
 ---
 layout: chapter
 permalink: "/showcase_examples/showcase"
-migration_in_progress: true
-sitemap: false
 nav_order: 1
 redirect_from:
   - "/about/showcase2"
@@ -15,7 +13,6 @@ description: "Explore runnable examples of SmarkForm markup, structured data, li
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_showcase_examples/showcase.md -->{% endraw %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -1034,4 +1031,3 @@ export default async ({ expect, root, readField, writeField }) => {
 > **Want the full feature set?** Each example above demonstrates a curated
 > subset of SmarkForm capabilities.  See the individual reference pages for
 > the complete API and advanced patterns.
-{% raw %}<!-- END old PORTED TO docs/_showcase_examples/showcase.md -->{% endraw %}

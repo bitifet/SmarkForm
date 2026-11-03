@@ -10,7 +10,6 @@ redirect_from:
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_ai_agents/smarkform_forms.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -550,4 +549,3 @@ Before submitting a SmarkForm implementation, verify:
 - [ ] If using mixin templates with `<script>` tags, `smark_mixin_allow_local_scripts: "allow"` (or `smark_mixin_allow_same_origin_scripts` / `smark_mixin_allow_cross_origin_scripts` for external templates) is set on the root SmarkForm constructor — scripts are blocked by default.
 - [ ] If using mixin type references with an external URL, `smark_mixin_allow_external: "same-origin"` or `"allow"` is set on the root constructor — external mixin fetches are blocked by default.
 - [ ] If using `enctype="application/json"` form submission, `enable_json_encoding: true` is set on the root SmarkForm constructor — JSON encoding is disabled by default.
-<!-- END old PORTED TO docs/_ai_agents/smarkform_forms.md -->

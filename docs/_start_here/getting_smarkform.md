@@ -9,7 +9,6 @@ redirect_from:
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_start_here/getting_smarkform.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -58,4 +57,3 @@ The UMD bundle exposes `SmarkForm` as a browser global. For ESM, use a module
 script or your bundler. The examples in the next pages show complete forms and
 the standard [Quick Start]({{ "/start_here/quick_start" | relative_url }})
 walks through building one.
-<!-- END old PORTED TO docs/_start_here/getting_smarkform.md -->

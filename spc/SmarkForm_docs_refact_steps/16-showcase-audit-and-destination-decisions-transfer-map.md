@@ -4,7 +4,8 @@
 landed the approved schedule-role and deep-nesting/composition examples in
 canonical references and moved the tested second calculator to Playground; see
 `17-final-showcase-transfer-map.md` for completion details. The 20-example
-legacy Showcase remains staged and unchanged; no legacy page has been deleted.
+legacy Showcase was staged and unchanged during the audit; Step 19 removed its
+temporary source after closing the transfer ledger.
 
 ## Maintainer decisions
 
@@ -15,8 +16,9 @@ legacy Showcase remains staged and unchanged; no legacy page has been deleted.
 | Legacy `supercalculator` | Move to the canonical Playground page as a second calculator example. | Landed as a second Playground sample with the original keyboard test, a field-scoped keyboard handler, and an arithmetic parser instead of `eval`. |
 | Legacy `dynamic_dropdown` | Reviewed not-retained. | The page is explicitly “under construction”; `htmlSource=dynamic_dropdown` refers to no capture and there is no runnable dropdown. The current Select page and API Interface page accurately mark dynamic options as planned, not implemented. Do not create a working claim from this stub. |
 
-All other source material has an exact current destination below. The old source
-and old candidate remain staged unchanged until the final cleanup step.
+All other source material had an exact destination or not-retained decision in
+this map. Both source files were kept unchanged during the audit and deleted in
+Step 19 after Step 17 closed their dispositions.
 
 ## Candidate claims: verified corrections
 
@@ -128,16 +130,16 @@ declarations**, all retained for Step 17 correction. No staged source is edited.
   `imask._selection`; the verified card integration instead pins IMask and is
   covered by `test/mask_imask.tests.js`. This test does not certify the money
   mask.
-* The final candidate preview currently uses an initializer that overrides
-  generated `demoValue` initialization; three demo captures are not passed to
-  the include. Step 17 must make the preview data and collector-generated
-  round-trip tests intentional.
+* At the Step 16 audit point, the candidate preview used an initializer that
+  overrode generated `demoValue` initialization and three demo captures were not
+  passed to the include. Step 17 corrected this and wired focused tests.
 * `docs/showcase_analysis.md`, `AGENTS/Showcase-Restructure-Plan.md`, and the
   Step 01 crosswalk are historical planning records. They are explicitly marked
   as superseded/current-status references in Step 16; this transfer map is the
   current authoritative source-to-destination decision record.
-* No staged legacy page has been deleted or altered. The calculators, old
-  Showcase, and old candidate remain under `docs/_old_*` until final cleanup.
+* At the Step 16 audit point no staged legacy page had been deleted or altered.
+  Step 19 later removed the Showcase and candidate source files after Step 17
+  closed their transfers.
 
 ## Verification status
 

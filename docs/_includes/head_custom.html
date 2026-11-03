@@ -1,6 +1,6 @@
 <!-- Custom head content for auto color scheme and logo switching -->
 
-{% if page.url contains "/old/" or page.migration_in_progress or page.migration_stub %}
+{% if page.noindex %}
 <meta name="robots" content="noindex, nofollow">
 {% elsif page.url == "/404.html" %}
 <meta name="robots" content="noindex, follow">

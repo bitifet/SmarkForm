@@ -294,7 +294,7 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
 - `test/co_located_tests_validation.tests.js` guards the sampletab editor wrapper: examples with `showEditor=true` must not use absolute trigger `context`/`target` paths (nor absolute `myForm.find('/…')` calls in example JS) — the editor wraps content in a `demo` subform and those break with `UNKNOWN_ACTION` in the preview while co-located tests still pass.
-- The final Showcase is at `docs/_showcase_examples/showcase.md` with `just_form`, `kanban`, `race`, and `configurator` examples; each has a demoValue and focused co-located test. Product Configurator uses a pinned IMask declarative mask. The Playground also keeps `playground-calculator` and the tested `supercalculator` keyboard example. Until Step 19, preserve `docs/_old_about/old_showcase.md` and `old_showcase2.md` as staged sources; see the Step 16/17 transfer maps.
+- The final Showcase is at `docs/_showcase_examples/showcase.md` with `just_form`, `kanban`, `race`, and `configurator` examples; each has a demoValue and focused co-located test. Product Configurator uses a pinned IMask declarative mask. The Playground also keeps `playground-calculator` and the tested `supercalculator` keyboard example. Step 19 removed the temporary Showcase sources; see the Step 16/17 transfer maps for the retained dispositions.
 - `docs/_start_here/quick_start.md` has the `quick_start_first_success` sampletab with `demoValue`; its regular custom test is disabled, but the collector generates the standard demoValue round-trip smoke test.
 - `docs/_start_here/core_concepts.md` has the `components_paths` nested-model sampletab with `demoValue`; its custom test is disabled, but the collector generates the standard demoValue round-trip smoke test. Keep trigger paths in captured code relative when editor-wrapped.
 - `docs/_component_reference/trigger.md` has the `trigger_context_target` sampletab with relative context/target paths and `demoValue`; its custom test is disabled, but the collector generates the standard round-trip smoke test.
@@ -466,18 +466,21 @@ scripts/liveserve_all.sh
 
 **Key details**:
 - Jekyll site in `docs/` directory
-- Reader-facing collections follow the documentation IA under `_showcase_examples`, `_start_here`, `_guides`, `_accessibility`, `_component_reference`, `_advanced_topics`, `_about`, `_for_end_users`, `_ai_agents`, and `_community`. Temporary `_old_*` collections exist only on the refactor branch and must be removed before publication.
+- Reader-facing collections follow the documentation IA under `_showcase_examples`, `_start_here`, `_guides`, `_accessibility`, `_component_reference`, `_advanced_topics`, `_about`, `_for_end_users`, `_ai_agents`, and `_community`. Step 19 removed all temporary `_old_*` collections; `/resources/dist/` remains a static download path, not a reader-facing Resources section.
 - Generates chapter TOCs first (`node ../scripts/generate-chaptertocs.js` fills the git-ignored `docs/_includes/chaptertoc/` directory from the pages' include tags)
 - Built package copied to `/dist/` for the Examples selector and to
   `/resources/dist/` for stable download URLs; downloadable-example source
-  extracts are copied into the hidden `.example_sources` folders beside the
-  canonical and staged Examples capture pages by `scripts/sync_documentation_assets.sh`.
+  extracts are copied into the hidden `.example_sources` folder beside the
+  canonical Examples capture page by `scripts/sync_documentation_assets.sh`.
 - `package.json` copied to `docs/_data/` for Jekyll data files
 - The asset sync runs from the local docs build/serve helpers and the Pages
   workflow; it requires a built root `dist/` including `dist/examples/` (run
   `npm run bundle` first if that directory is missing).
 - `jekyll-redirect-from` is enabled through `docs/Gemfile` and `docs/_config.yml` for clean-URL migration aliases; verify redirects and the sitemap in the built site.
-- Temporary `/old/` pages and in-progress canonical pages are `noindex`/sitemap-excluded during the refactor and must not ship.
+- No temporary `/old/` pages or migration controls remain after Step 19. Keep
+  only intentional non-discovery pages (for example, the hidden Examples
+  capture source) out of the sitemap and marked noindex; redirects stay aliases,
+  not sitemap entries.
 - Social link previews use the theme's `jekyll-seo-tag`: `docs/_config.yml` sets
   the canonical site `url` and `twitter.username` (`smarkform`). Any page can set
   front-matter `description` and `image` (`path`, `width`, `height`, `alt`) to
@@ -764,7 +767,7 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 | `AGENTS/Build-Computed-Data.md` | How the Rollup `computed_plugin` writes `docs/_data/computed.json` (bundle size, timestamps) and how Jekyll exposes it as `site.data.computed` |
 | `AGENTS/Documentation-Guidelines.md` | Authoring rules for the Jekyll/Just-the-Docs pages under `docs/` — vim fold markers around `{% capture %}` blocks, sampletabs structure, and other conventions |
 | `AGENTS/Release-Process.md` | Step-by-step guide for preparing a SmarkForm release (gather info, version bump, CHANGELOG, `RELEASE_PREP.md`, final squash commit on `main`) |
-| `AGENTS/Showcase-Restructure-Plan.md` | Historical prior showcase consolidation (25 → 20 examples); superseded for the current docs migration by the Step 16/17 source-to-destination maps |
+| `AGENTS/Showcase-Restructure-Plan.md` | Historical prior showcase consolidation (25 → 20 examples); superseded by the Step 16/17 audit maps and Step 19 cleanup report |
 
 **Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
 

@@ -1,10 +1,12 @@
 ---
+title: "Internal Example Source Capture"
+layout: default
 nav_order: 1000
 permalink: "/showcase_examples/examples.capture"
 sitemap: false
 nav_exclude: true
 search_exclude: true
-migration_in_progress: true
+noindex: true
 ---
 
 

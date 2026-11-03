@@ -16,12 +16,9 @@ fi
 mkdir -p \
     "${DOCS_DIR}/dist" \
     "${DOCS_DIR}/resources/dist" \
-    "${DOCS_DIR}/_showcase_examples/.example_sources/dist/examples" \
-    "${DOCS_DIR}/_old_resources/.example_sources/dist/examples"
+    "${DOCS_DIR}/_showcase_examples/.example_sources/dist/examples"
 
 cp -R "${DIST_DIR}/." "${DOCS_DIR}/dist/"
 cp -R "${DIST_DIR}/." "${DOCS_DIR}/resources/dist/"
 cp -R "${DIST_DIR}/examples/." \
     "${DOCS_DIR}/_showcase_examples/.example_sources/dist/examples/"
-cp -R "${DIST_DIR}/examples/." \
-    "${DOCS_DIR}/_old_resources/.example_sources/dist/examples/"

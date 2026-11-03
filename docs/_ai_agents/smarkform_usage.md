@@ -10,7 +10,6 @@ redirect_from:
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_ai_agents/smarkform_usage.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -520,4 +519,3 @@ const field = myForm.find("name"); // returns the component
 - `empty_list`: Managed by `renum()`. Added when `children.length === 0`, removed otherwise.
 
 Set the role via `data-smark='{"role":"<role>"}'`. The `item` role is the default and does not need to be specified explicitly.
-<!-- END old PORTED TO docs/_ai_agents/smarkform_usage.md -->

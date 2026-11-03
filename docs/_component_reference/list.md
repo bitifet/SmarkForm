@@ -55,7 +55,6 @@ list. This template is mandatory.
   * `last_separator`: Like `separator` but used only before the last item. Falls back to `separator` if not provided.
   * `placeholder`: Visual placeholder slot used only when `max_items` is set. One placeholder is shown for each slot not yet occupied by a real item.
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_component_reference/list.md -->{% endraw %}
 ### Empty and separator roles
 
 Use `empty_list` to explain an empty collection and `separator` / `last_separator`
@@ -175,7 +174,6 @@ export default async ({ expect, root, readField, writeField }) => {
     selected="preview"
     tests=schedule_list_tests
 %}
-{% raw %}<!-- END old PORTED TO docs/_component_reference/list.md -->{% endraw %}
 
 👉 Likewise [forms]({{ "component_reference/form" | relative_url }}), *list*
 inputs can be created over any HTML tag <a aria-hidden="true" href="#example-simple_list" style="cursor:pointer" title="Search for «☛ 1» in the code comments">(☛ 1)</a>  **except for actual HTML form
@@ -438,7 +436,6 @@ endcapture %}
 
 
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_component_reference/list.md -->{% endraw %}
 #### Deep nested forms and cross-list moves
 
 This example combines groups, student forms, a nested grades form, and scalar
@@ -590,7 +587,6 @@ export default async ({ page, expect, root, readField, writeField }) => {
     tests=deep_school_groups_tests
     minHeight=45
 %}
-{% raw %}<!-- END old PORTED TO docs/_component_reference/list.md -->{% endraw %}
 
 For more information on using the List component and its available methods,
 please refer to the [API Reference](#api-reference).

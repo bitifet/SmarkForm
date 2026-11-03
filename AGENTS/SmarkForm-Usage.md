@@ -65,7 +65,6 @@ SmarkForm/
 │   ├── _for_end_users/       # User Guide
 │   ├── _ai_agents/           # Agent resources and references
 │   ├── _community/           # Contributing, branding, support, license, contact
-│   ├── _old_*/               # Temporary, noindex legacy copies; removed before publish
 │   ├── resources/dist/       # Generated static download assets at /resources/dist/
 │   ├── assets/              # CSS, JS, images
 │   ├── _includes/           # Jekyll includes (sampletabs, links, head_custom)

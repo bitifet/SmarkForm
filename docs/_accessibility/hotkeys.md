@@ -366,7 +366,6 @@ this **suppresses inner hotkeys** and reveals the next level out.
 `Ctrl`+`-` removes a phone when focus is inside the `phones` list, but removes the whole entry when focus is outside it. Press `Ctrl`+`Alt` to reveal the 2nd-level `+` hotkey on the outer "Add entry" button.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_accessibility/hotkeys.md -->{% endraw %}
 {% raw %}<!-- hk_2ndlevel_tests {{{ -->{% endraw %}
 {% capture hk_2ndlevel_tests -%}
 export default async ({ page, expect, root }) => {
@@ -386,7 +385,6 @@ export default async ({ page, expect, root }) => {
     await page.keyboard.up('Control');
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-{% raw %}<!-- END old PORTED TO docs/_accessibility/hotkeys.md -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
    formId="hk-2ndlevel"

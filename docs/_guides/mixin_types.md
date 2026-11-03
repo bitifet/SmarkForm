@@ -473,7 +473,6 @@ already present in the stack.  If it is, a `MIXIN_CIRCULAR_DEPENDENCY` error
 is thrown.
 
 
-{% raw %}<!-- BEGIN old PORTED TO docs/_guides/mixin_types.md -->{% endraw %}
 #### Nested template composition example
 
 Here `#periodCard` uses the `#timeRange` mixin inside its own template. The
@@ -568,7 +567,6 @@ export default async ({ expect, root, readField, writeField }) => {
     tests=mixin_nested_composition_tests
     minHeight=35
 %}
-{% raw %}<!-- END old PORTED TO docs/_guides/mixin_types.md -->{% endraw %}
 
 ## List Placement Warning
 

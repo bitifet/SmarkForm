@@ -76,41 +76,6 @@ collections:
     output: true
     nav_order: 10
     sort_by: nav_order
-  old_home:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 90
-    sort_by: nav_order
-  old_about:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 91
-    sort_by: nav_order
-  old_getting_started:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 92
-    sort_by: nav_order
-  old_component_types:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 93
-    sort_by: nav_order
-  old_working_with_forms:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 94
-    sort_by: nav_order
-  old_advanced_concepts:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 95
-    sort_by: nav_order
-  old_resources:
-    permalink: "/:collection/:path/"
-    output: true
-    nav_order: 96
-    sort_by: nav_order
 
 just_the_docs:
   collections:
@@ -143,27 +108,6 @@ just_the_docs:
       nav_fold: true
     community:
       name: Community
-      nav_fold: true
-    old_home:
-      name: "Legacy — Home (temporary)"
-      nav_fold: true
-    old_about:
-      name: "Legacy — About (temporary)"
-      nav_fold: true
-    old_getting_started:
-      name: "Legacy — Getting Started (temporary)"
-      nav_fold: true
-    old_component_types:
-      name: "Legacy — Component Types (temporary)"
-      nav_fold: true
-    old_working_with_forms:
-      name: "Legacy — Working with Forms (temporary)"
-      nav_fold: true
-    old_advanced_concepts:
-      name: "Legacy — Advanced Concepts (temporary)"
-      nav_fold: true
-    old_resources:
-      name: "Legacy — Resources (temporary)"
       nav_fold: true
 
 

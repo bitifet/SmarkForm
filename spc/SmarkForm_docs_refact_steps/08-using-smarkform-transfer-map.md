@@ -1,16 +1,17 @@
 # Step 08 — Using SmarkForm Transfer Map
 
 **Status:** The canonical practical guide is authored at
-`docs/_guides/using_smarkform.md`. The original long Quick Start remains
-unchanged at `docs/_old_getting_started/old_quick_start.md` until final staging
-cleanup.
+`docs/_guides/using_smarkform.md`. The original long Quick Start was kept
+unchanged during Steps 08–18, then removed during Step 19 cleanup. Status text
+below is the historical Step 08 disposition; the Step 19 transfer map records
+the final deletion and validation.
 
 ## Section destinations
 
 | Legacy source locator | Final disposition |
 |---|---|
 | L33–138: setup, blank document, CDN include, unmarked form, initialization | Step 05 kept the short CDN/load/initialize first-success path; installation choices are in Getting SmarkForm/CDN/Download; Core Concepts explains marking. The long setup sequence is not duplicated. |
-| L162–226: “Do the magic” | Rebuilt as the guide's workshop form, which has a nested organizer and attendee list. The old simple marked form remains staged rather than duplicated. |
+| L162–226: “Do the magic” | Rebuilt as the guide's workshop form, which has a nested organizer and attendee list. The old simple marked form stayed staged during review rather than being duplicated; its source was deleted in Step 19. |
 | L227–295: Actions and Triggers | Clear organizer, add attendee, and remove attendee actions are demonstrated in the workshop sample; exact addressing semantics link to Core Concepts, Trigger, and Form Traversing. |
 | L296–366: Exporting data | Adapted `AfterAction_export` as `using_workshop_js`; the old alert was replaced by a console log. The playground Export control shows the data, while backend submission details link to Events. |
 | L367–422: Importing data | Replaced the prompt/modal sample with a short `myForm.import(data)` application function. Detailed import, default, and payload behavior links to Data Import and Export. |
@@ -29,8 +30,8 @@ All 14 original sampletab IDs are accounted for. Each legacy include used
 
 | Legacy `formId` | Final disposition |
 |---|---|
-| `simple_legacy` | Not transferred: its unmarked HTML is redundant with Quick Start/Core Concepts; source remains staged. |
-| `simple_initialized` | Not transferred: initialization is already visible in the Quick Start JavaScript tab; source remains staged. |
+| `simple_legacy` | Not transferred: its unmarked HTML is redundant with Quick Start/Core Concepts; the source was retained for review then deleted in Step 19. |
+| `simple_initialized` | Not transferred: initialization is already visible in the Quick Start JavaScript tab; the source was retained for review then deleted in Step 19. |
 | `enhanced_simple_form` | Replaced by the fuller nested workshop sample. |
 | `enhanced_simple_form_with_clears` | Clear-action idea adapted as the workshop's `Clear organizer` trigger. |
 | `enhanced_withExport` | `AfterAction_export` behavior adapted in `using_workshop_js`; the alert-based sample is not copied. |
@@ -73,7 +74,7 @@ source.
 | `html_phone_list` | Not transferred; List reference owns list markup details. |
 | `advanced_sample_css` | Not transferred; hotkey/disabled-button styling is presentation-specific. |
 | `phone_list_form_example_notes` | Not transferred; list limits, hotkeys, and export details link to their references. |
-| `html_schedule_list` | Not transferred; specialized schedule markup remains staged for Showcase/reference disposition. |
+| `html_schedule_list` | Not transferred in Step 08; the Step 19 canonical List `schedule_list` example closes its reviewed disposition, and the staged capture was deleted. |
 
 ## New guide sample and verification
 
@@ -87,3 +88,12 @@ Jekyll built successfully and the rendered-site route/fragment check found no
 broken non-legacy links. Node/npm and Playwright are unavailable here, so the
 collector and generated sample/round-trip tests must be run when those tools are
 available. The old Quick Start source was not modified.
+
+## Step 19 cleanup addendum
+
+All old Quick Start headings, sample IDs, captures, and not-transferred
+decisions above were closed by Step 08. The staged source and its old route were
+removed in Step 19 after the canonical Quick Start, Core Concepts, Using
+SmarkForm, List, References, and installation pages were validated. This map's
+“staged” language records the earlier review phase, not a remaining source file.
+See [`19-final-validation-transfer-map.md`](19-final-validation-transfer-map.md).

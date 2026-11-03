@@ -2,7 +2,7 @@
 
 **Status:** Reader-facing resources live in their approved audience collections;
 there is no `resources` reader collection in `docs/_config.yml`. The
-`old_resources` collection remains temporary staging until Step 19, while
+`old_resources` staging collection was removed in Step 19, while
 `/resources/dist/` remains a stable static download-asset route (not a
 navigation section). The protected Contact page is unchanged.
 
@@ -24,10 +24,9 @@ navigation section). The protected Contact page is unchanged.
 The Home-page links, header navigation, CDN aux link, Examples/Showcase links,
 FAQ references, and agent/skills links now point to canonical audience routes.
 The `src/examples/include/credits.pug` source now links to the Downloadable
-Examples route; the Pages workflow rebuilds those generated example files. Old
-`/resources/...` links inside staged `_old_*` pages remain untouched; redirect
-aliases continue to serve those historical routes while the staging collections
-remain present.
+Examples route; the Pages workflow rebuilds those generated example files.
+Staged copies with historical `/resources/...` links were removed in Step 19;
+the approved public aliases continue to redirect to canonical pages.
 
 ## Community pages and protected Contact
 
@@ -62,9 +61,9 @@ permalink, and nav order were not touched.
   links, and the Community sources were checked for relocated `/resources/...`
   links. Remaining public legacy URLs are intentional `redirect_from` entries;
   staged old pages and generated assets are not rewritten as part of this step.
-* There is no empty public Resources collection. `old_resources` remains a
-  temporary legacy staging collection and is removed with the other `_old_*`
-  collections in Step 19.
+* There is no public Resources collection. Step 19 removed `old_resources` with
+  the other temporary `_old_*` collections; stable static files remain under
+  `/resources/dist/`.
 
 ## Verification
 
