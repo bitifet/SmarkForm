@@ -1,17 +1,16 @@
 ---
-title: «number» Component Type
+title: "«number» Component Type"
 layout: chapter
-description: "Use SmarkForm number fields to sanitize imported values, coerce numbers and export empty or invalid values predictably."
+description: "Use SmarkForm number fields to convert valid numeric input to numbers and represent empty or invalid values as null."
 permalink: "/component_reference/number"
-migration_in_progress: true
-sitemap: false
 nav_order: 5
 redirect_from:
   - "/component_types/type_number"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/number.md -->
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -23,21 +22,21 @@ redirect_from:
 
 </details>
 
-{% include components/sampletabs_ctrl.md %}
-
 ## Introduction
 
-The `number` component type extends the [Input](/component_reference/input) component type, providing additional sanitation (when importing) and formatting (when exporting).
+The `number` component type extends the [Input]({{ "/component_reference/input" | relative_url }})
+type. It sanitizes imported numbers and exports valid, non-empty values as
+JavaScript numbers.
 
-- **Imports and Exports:** `Number`
+- **Imports and Exports:** Number or `null`
 - **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
-- **Data Conversion:** Converts inappropriate types (like `String`) to `Number` on the fly.
+- **Data Conversion:** Accepts numbers and numeric strings; invalid, empty, and null values become `null`.
 
 ## Usage
 
-To use the `number` component type, ensure that the target field is an `INPUT`
-element of type `number`. If the type attribute is not specified, it will be
-set to `number` automatically.
+Use an `<input type="number">`. If `type` is omitted, SmarkForm sets it to
+`number`; an explicit different native type or a non-`<input>` target raises a
+render error.
 
 **Example:**
 
@@ -70,9 +69,9 @@ endcapture %}
 The number component will throw an error if the target field is not an INPUT
 element or its type is explicitly defined and different to "number".
 
-The number component will throw an error if the target field is not an INPUT
-element or its type is explicitly defined and different to "number". Invalid
-numbers will result in a `null` value rather than throwing an error.
+Invalid values export as `null` rather than throwing. `0` is a valid number and
+is not considered empty. Empty strings, non-numeric strings, and `null` import
+as the empty state.
 
 {% raw %} <!-- number_error {{{ --> {% endraw %}
 {% capture number_error -%}
@@ -100,10 +99,9 @@ endcapture %}
 
 
 {: .info :}
-> When a *SmarkForm* component fails to render due to a *RenderError*, it is
-> replaced by a flamboyant placeholder that shows the error code and provides a
-> handy button to "replay" it to the console making it easier to debug the
-> issue.
+> When a component fails to render, SmarkForm replaces it with an error
+> placeholder that shows the code and provides a button to replay the error in
+> the console.
 > 
 > 👉 Take a look to the *Preview* tab of the previous example to see it in
 > action.
@@ -168,4 +166,3 @@ Reverts the number field to its configured default value. If no default was conf
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-<!-- END old PORTED TO docs/_component_reference/number.md -->

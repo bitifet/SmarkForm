@@ -26,8 +26,10 @@ A **trigger** is a SmarkForm component with an `action` option. A click or a
 configured hotkey invokes that action. The trigger's **context** identifies the
 component that handles the action; some actions also use a separate **target**.
 
-Actions can also be called through the component API. A programmatic action call
-has no trigger origin.
+Actions can also be called through the component API. A direct method call such
+as `myForm.export()` invokes the raw method: it has no trigger origin and does
+not emit `BeforeAction_*` / `AfterAction_*` lifecycle events. Trigger dispatch
+uses the event-emitting action wrapper. See [Events]({{ "/guides/events" | relative_url }}#action-lifecycle-events).
 
 ## Component model
 

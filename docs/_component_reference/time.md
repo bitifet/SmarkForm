@@ -1,17 +1,16 @@
 ---
-title: «time» Component Type
+title: "«time» Component Type"
 layout: chapter
 description: "Use SmarkForm time fields to normalize native time input values and exchange consistent values through JSON."
 permalink: "/component_reference/time"
-migration_in_progress: true
-sitemap: false
 nav_order: 7
 redirect_from:
   - "/component_types/type_time"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/time.md -->
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -23,13 +22,11 @@ redirect_from:
 
 </details>
 
-{% include components/sampletabs_ctrl.md %}
-
 ## Introduction
 
-The `time` component type extends the [Input](/component_reference/input)
+The `time` component type extends the [Input]({{ "/component_reference/input" | relative_url }})
 component type, providing specialized handling for time input fields with
-enhanced parsing and formatting capabilities.
+time parsing and formatting.
 
 - **Imports and Exports:** ISO time string (`HH:mm:ss`) or `null` (when empty)
 - **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
@@ -37,7 +34,9 @@ enhanced parsing and formatting capabilities.
 
 ## Usage
 
-Just add the *data-smark* attribute to the `<input>` element specifying the type:
+Use `<input type="time" data-smark>`. SmarkForm also infers `time` from the
+native type, or sets the native type when you explicitly declare
+`{"type":"time"}` on an `<input>` without `type`.
 
 ```html
 <input data-smark='{"type":"time", "name":"meetingTime"}'>
@@ -116,19 +115,31 @@ The `time` component accepts multiple input formats for maximum flexibility:
 - **Short Time String (HH:mm):** `"14:30"` (automatically adds `:00` for seconds)
 - **Compact Time String (HHmmss):** `"143045"` (6-digit format, converted to `HH:mm:ss`)
 - **Short Compact Time String (HHmm):** `"1430"` (4-digit format, converted to `HH:mm:00`)
-- **Date Object:** `new Date("2023-12-25T14:30:45")` (extracts time portion)
-- **Epoch Timestamp:** `1703512245000` (milliseconds since Unix epoch, extracts time)
-- **Empty/Null Values:** `null`, `""`, or `undefined` (clears the field)
+- **Date Object:** a valid JavaScript `Date` instance (extracts local time)
+- **Epoch Timestamp:** milliseconds since Unix epoch (converted to local time)
+- **Empty/Null Values:** `null` or `""` clears the field. `undefined` is a
+  reset signal; see the reset caveat below.
 
-All valid times are normalized to ISO time format (`HH:mm:ss`) for export,
+All valid times are normalized to `HH:mm:ss` for export,
 ensuring consistency across your application.
+The timezone used for `Date` and epoch imports is the runtime's local timezone;
+the exported time string contains no timezone information.
+
+### Field defaults and reset
+
+**Current implementation caveat:** `time.import(undefined)` normalizes the
+reset signal to `null` before delegating to the generic input type. A direct
+field `reset()` therefore clears to `null` and can replace the field's stored
+default with `null`; the base field's initial reset can also discard a
+field-local `value` default. A parent Form reset that imports an explicit time
+in its stored object still restores that value. No focused regression test
+covers time field-level defaults; see the Step 14 transfer map.
 
 ## Requirements
 
-The time component will throw an error if the target field is not an INPUT
-element or its type is explicitly defined and different to "time". Invalid time
-strings that cannot be parsed will result in a `null` value rather than
-throwing an error.
+The time component requires an `<input type="time">`; a missing native type is
+filled in, while a different type or tag raises a render error. Unparseable
+values export as `null`.
 
 {% raw %} <!-- time_error {{{ --> {% endraw %}
 {% capture time_error -%}
@@ -168,10 +179,9 @@ export default async ({ expect, readField, writeField }) => {
 
 
 {: .info :}
-> When a *SmarkForm* component fails to render due to a *RenderError*, it is
-> replaced by a flamboyant placeholder that shows the error code and provides a
-> handy button to "replay" it to the console making it easier to debug the
-> issue.
+> When a component fails to render, SmarkForm replaces it with an error
+> placeholder that shows the code and provides a button to replay the error in
+> the console.
 > 
 > 👉 Take a look to the *Preview* tab of the previous example to see it in
 > action.
@@ -227,11 +237,11 @@ Clears the value of the time input field (sets it to `null`).
 
 #### (Async) reset (Action)
 
-Reverts the time field to its configured default value. If no default was configured, the field reverts to `null` (same as `clear`).
+The reset behavior for this type differs from the generic field contract; see
+[Field defaults and reset](#field-defaults-and-reset).
 
 ##### Options (reset)
 
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-<!-- END old PORTED TO docs/_component_reference/time.md -->

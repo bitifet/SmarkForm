@@ -32,13 +32,16 @@ unavailable here, so the docs collector and browser tests were not run.
 
 * `form.export()` returns an object keyed by child names. `form.import()` accepts
   a plain object or a JSON string containing one; matching child names import
-  recursively, missing names pass `undefined` to the child (resetting its own
-  default), and unmatched keys are ignored. A parent import updates only the
-  originating component's default; descendant imports receive `set_default:false`.
+  recursively, missing names pass `undefined` to the child, and unmatched keys
+  are ignored. The child decides how `undefined` is handled: generic input,
+  number, and color use it as a reset signal; date/time/datetime-local normalize
+  it to `null`, and radio groups deselect. A parent import updates only the
+  originating component's default; descendants receive `set_default:false`.
 * `form.clear()` imports `{}`. It ignores the Form's saved default, but does not
-  recursively call each child's `clear()`: omitted child keys restore
-  child-local defaults. The Form sample has only a parent-level demoValue and
-  child fields with empty local defaults, so its text values become empty.
+  recursively call each child's `clear()`: omitted child keys receive
+  `undefined`, with the resulting state determined by each child type's import
+  override. The Form sample has only a parent-level demoValue and generic text
+  children, so its values become empty.
 * `list.min_items` defaults to `1`; `max_items` defaults to `Infinity` and is
   clamped to at least `min_items`. `addItem`/`removeItem` enforce those bounds.
   List export delegates emptiness to each item type; when `export_empties:false`,
@@ -67,7 +70,7 @@ unavailable here, so the docs collector and browser tests were not run.
 * Reviewed `src/types/form.type.js`, `list.type.js`, and `input.type.js`,
   `src/lib/field.js`, list decorators, and `test/type_form_submit.tests.js`,
   `test/type_list.tests.js`, and `test/clear_reset.tests.js`. The clear/reset
-  suite does not include a focused `min_items > 0` retained-row case, but the
-  source path explicitly resets rows retained to meet the minimum.
+  suite does not cover a Form child with a date/time/datetime-local/radio local
+  default; type overrides currently differ in their `undefined` handling.
 * Jekyll build and rendered public-link/fragment checks pass.
 * Node/npm and Playwright are unavailable; no browser test pass is claimed.

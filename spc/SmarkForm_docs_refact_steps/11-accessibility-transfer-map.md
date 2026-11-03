@@ -13,7 +13,7 @@ unchanged.
 | `_working_with_forms/hotkeys.md` → `docs/_accessibility/hotkeys.md` | All sections and five sampletabs remain, including context sensitivity, Ctrl reveal, conflict resolution, hidden convenience buttons, and second-level hotkeys. | Corrected to Ctrl/Ctrl+Alt only (no Cmd/Meta); states visual CSS hints are unverified for AT; warns against relying on visually hidden buttons as the only access to essential actions; requires visible, named, keyboard-reachable essential controls. |
 | `_resources/user_guide.md` → `docs/_for_end_users/user_guide.md` | All user-facing keyboard, list, file/media, details, focus and existing illustration material remains. | Removed Cmd/Meta instructions; corrected the false claim that filling the last list item auto-adds another; qualified keyboard support and collapsible/textarea combinations; corrected media Space behavior for native controls; shortened accessibility notes for the end-user audience. |
 | New `docs/_accessibility/accessible_labels_and_names.md` | Adds a runnable native-label/non-native-label example, generated `for`/`id`, preserved `aria-labelledby` tokens, semantic grouping, media alternatives, focus/contrast/reduced-motion responsibilities, and unverified AT caveat. | Deliberately makes no conformance or screen-reader outcome claim. Keeps the full label API in Component Reference. |
-| `docs/_component_reference/label.md` | Full type-specific API remains canonical and under its later component-reference review. | Links to Accessible Labels and Names; clarifies that native `<label>` targets native controls while non-native SmarkForm label elements can target lists/forms; removes unsupported screen-reader outcome wording. |
+| `docs/_component_reference/label.md` | Full type-specific API remains canonical and receives its detailed review in Step 14. | Links to Accessible Labels and Names; clarifies native `<label>` versus non-native targeting and avoids screen-reader claims. Step 14 later wires DOM association smoke tests to both label examples. |
 | `docs/_guides/using_smarkform.md`, FAQ, Showcase routes | Existing human-learning links retained. | Accessibility page is discoverable through the Accessibility navigation; User Guide remains under For End Users. No developer APIs are moved into the end-user guide. |
 
 ## Sampletab and capture inventory
@@ -26,7 +26,7 @@ sampletabs and keeps its existing image assets.
 |---|---|---:|---|
 | Keyboard Navigation | `nav-enter`, `nav-tabflow`, `nav-details` | 6 | None; all sampletabs remain `tests=false`. |
 | Hotkeys | `hk-define`, `hk-reveal`, `hotkeys_context_sensitivity`, `hk_hidden`, `hk-2ndlevel` | 11 | None; all sampletabs remain `tests=false`. |
-| Label Component Reference | `basic_examples`, `advanced_examples` | 6 | Both includes remain `tests=false`; the legacy `basic_tests` capture is not wired to an include. |
+| Label Component Reference | `basic_examples`, `advanced_examples` | 6 at Step 11 | At Step 11 both includes were `tests=false`; Step 14 later wires native association and non-native ARIA-token smoke tests. |
 | User Guide | None | None | Not applicable. |
 | Accessible Labels and Names | `accessible_labels_names` (new) | 4 | `tests=false`; `demoValue` enables the collector-generated round-trip smoke test. |
 
@@ -67,11 +67,11 @@ available in this session; see verification below.
 * `src/types/audio.type.js` and `video.type.js` distinguish play/pick mode and
   native controls for Space; Shift+Space requests the picker where enabled.
   Image fields do not set or alter `alt` text.
-* No focused automated test in `test/` asserts generated `for`/`id` or
-  `aria-labelledby` token behavior. A legacy `basic_tests` capture in the Label
-  reference is not wired to its `tests=false` sampletab. The new label sample's
-  `demoValue` will exercise only the collector-generated value round-trip, not
-  its accessibility associations.
+* At Step 11, no focused test asserted generated `for`/`id` or
+  `aria-labelledby` token behavior, and the legacy `basic_tests` capture was
+  unwired. Step 14 replaces that stale test body, wires it to the native-label
+  sample, and adds an ARIA-token preservation test to the non-native sample.
+  These are DOM assertions only; they do not verify assistive-technology output.
 
 ## Separate assistive-technology follow-up
 

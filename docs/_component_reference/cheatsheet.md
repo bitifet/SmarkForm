@@ -155,8 +155,8 @@ initial DOM before the list renders. Set the role in `data-smark` or with a
 actions emit `BeforeAction_*` / `AfterAction_*` events; direct calls such as
 `myForm.export()` call the raw method and do not emit those lifecycle events.
 
-`clear` imports the type-level empty value. On a form, child-local defaults can
-reappear; on a list, `min_items` can retain rows. See the [Form]({{ "/component_reference/form" | relative_url }}#async-clear-action)
+`clear` imports the type-level empty value. On a form, each child type interprets
+the omitted value; on a list, `min_items` retains rows. See the [Form]({{ "/component_reference/form" | relative_url }}#async-clear-action)
 and [List]({{ "/component_reference/list" | relative_url }}#async-clear-action)
 references for details.
 
@@ -266,7 +266,7 @@ await myForm.import({ name: "Alice" });   // Import data
 |------|-----------------|-------------------|
 | `import(data)` | Yes | `data` |
 | `import(data, {set_default:false})` | No | Previous default |
-| `import(undefined)` | No | Imports the current default |
+| `import(undefined)` | No | Usually restores the current default; see type-specific reset notes for date/time/datetime-local/radio |
 | `clear()` | No | Default unchanged |
 | `reset()` | No | Current default |
 

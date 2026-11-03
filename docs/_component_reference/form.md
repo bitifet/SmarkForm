@@ -47,8 +47,11 @@ still appear in the object with the value defined by their type (for example,
 
 `import()` accepts a plain object or a JSON string containing an object. It
 imports matching child names recursively. A child key omitted from the object
-receives `undefined` and resets that child to its own default; keys with no
-matching child are ignored. See [Import and Export]({{ "/guides/data_import_and_export" | relative_url }})
+receives `undefined`; what that means depends on the child's import method.
+Generic input, number, and color fields use it as a reset signal, while the
+current date/time/datetime-local types normalize it to `null` and radio groups
+deselect. Keys with no matching child are ignored. See the relevant type
+references and [Import and Export]({{ "/guides/data_import_and_export" | relative_url }})
 for the complete value/default contract.
 
 **Example:**
@@ -320,15 +323,16 @@ The `form` component type supports the following actions:
 #### (Async) clear (Action)
 
 `clear` imports the form's type-level empty object (`{}`) without changing the
-form's stored default. Since omitted child keys receive `undefined`, each child
-resets to its **own** default. This clears fields whose own default is empty,
-but a child with an HTML `value` attribute or `data-smark` `value` can restore
-that local default. A nested list also honors `min_items`; retained minimum rows
-are reset to their own defaults. See the [List reference]({{ "/component_reference/list" | relative_url }}#async-clear-action).
+form's stored default. Each child receives `undefined`; the resulting state is
+type-specific. Generic input, number, and color imports use it as a reset
+signal, while date/time/datetime-local fields become `null` and radio groups
+deselect. A nested list also honors `min_items`; retained minimum rows are reset
+to their own defaults. See the [List reference]({{ "/component_reference/list" | relative_url }}#async-clear-action)
+and the specialized type references.
 
 Unlike `reset`, `clear` does not restore the form's stored default, nor update
-it. To blank a field that has its own default, call `clear` on that field or
-import its type-specific empty value explicitly.
+it. A field-level reset may also vary by type; see the specialized type
+reference before relying on a field-local default.
 
 **Example use case:** A "New" button that discards the form-level loaded value.
 If child-local defaults exist, clear those fields separately when the desired

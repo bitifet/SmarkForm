@@ -1,17 +1,15 @@
 ---
-title: «select» Component Type
+title: "Select (Planned)"
 layout: chapter
-description: "The proposed Select API Interface for loading options from endpoints is planned and not implemented."
+description: "Status of the proposed remote-options Select API: planned and not implemented; native select elements currently use the input type."
 permalink: "/component_reference/select"
-migration_in_progress: true
-sitemap: false
 nav_order: 11
 redirect_from:
   - "/component_types/type_select"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/select.md -->
+{% include links.md %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -24,14 +22,7 @@ redirect_from:
 </details>
 
 
-{: .info}
-> 🚧  ＷＯＲＫ  ＩＮ  ＰＲＯＧＲＥＳＳ  🚧
-
-
-
-
-Introduction
-------------
+## Status
 
 {: .warning }
 > **Planned, not implemented:** SmarkForm currently treats `<select>` as an
@@ -40,15 +31,12 @@ Introduction
 > [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }})
 > and the [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface).
 
-The following snippet records a **proposal only**. It is not runnable SmarkForm
-configuration and does not cause a request:
-
-**Example:**
+**Proposal sketch only (not runnable):**
 
 ```html
 <select data-smark='{
     "src":[
-        "https/example.com/some/api",
+        "https://example.com/some/api",
         {
             "someConstant":"actual_value",
             "@someField":"sibling_field_name",
@@ -85,4 +73,3 @@ options when relevant data changes.
 > 
 > An application could replace it with an implementation for another API style
 > or a mock used in tests.
-<!-- END old PORTED TO docs/_component_reference/select.md -->

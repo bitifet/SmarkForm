@@ -352,7 +352,7 @@ Context paths are resolved relative to the trigger's parent component.
 | `export` | form / list | Emits `AfterAction_export` with data |
 | `import` | form / list | Reads from linked `target` textarea or uses `data` |
 | `reset` | form / list | Restores `defaultValue` |
-| `clear` | form / list | Imports the type-level empty value; child defaults and `min_items` can affect the resulting state |
+| `clear` | form / list | Imports the type-level empty value; child-type import behavior and `min_items` affect the resulting state |
 | `addItem` | list | Adds one item |
 | `removeItem` | list item | Removes the item containing this trigger |
 | `position` | list item | Shows 1-based index (label) |

@@ -1,17 +1,16 @@
 ---
-title: «color» Component Type
+title: "«color» Component Type"
 layout: chapter
 description: "Configure SmarkForm color fields and understand how selected colors, imported values and empty selections map to JSON."
 permalink: "/component_reference/color"
-migration_in_progress: true
-sitemap: false
 nav_order: 9
 redirect_from:
   - "/component_types/type_color"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/color.md -->
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -23,11 +22,9 @@ redirect_from:
 
 </details>
 
-{% include components/sampletabs_ctrl.md %}
-
 ## Introduction
 
-The `color` component type extends the [Input](/component_reference/input)
+The `color` component type extends the [Input]({{ "/component_reference/input" | relative_url }})
 component type.
 
 Since the native HTML *type=color* input field also returns a string and
@@ -49,7 +46,9 @@ its default value).
 
 ## Usage
 
-Just add the *data-smark* attribute to the `<input">` element specifying the type:
+Use `<input type="color" data-smark>`. SmarkForm also infers `color` from the
+native type, or sets the native type when you explicitly declare
+`{"type":"color"}` on an `<input>` without `type`.
 
 ```html
 <input data-smark='{"type":"color", "name":"myColor"}'>
@@ -143,8 +142,8 @@ endcapture %}
 
 ## Requirements
 
-The number component will throw a *RenderError* if the target field is not an
-INPUT element or its type is explicitly defined and different to "color".
+The color component requires an `<input type="color">`; a missing native type is
+filled in, while a different type or tag raises a render error.
 
 {% raw %} <!-- singleton_color_error {{{ --> {% endraw %}
 {% capture singleton_color_error -%}
@@ -245,4 +244,3 @@ Reverts the color field to its configured default value. If no default was confi
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-<!-- END old PORTED TO docs/_component_reference/color.md -->

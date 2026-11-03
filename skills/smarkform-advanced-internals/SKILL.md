@@ -131,6 +131,17 @@ merges `data-smark` options and resolves context/target automatically.
   (default) produces repeated `"items[]"` keys.  Index style preserves
   position but breaks if items are removed mid-list.
 
+### Default and Reset Overrides
+
+- The generic `import(undefined)` path is type-specific. Current `date`, `time`,
+  and `datetime-local` implementations normalize it to `null`; a direct field
+  reset can clear the value and overwrite a field-local default. `radio` treats
+  it as deselection and does not keep a per-field default.
+- An enclosing Form's `value` or explicit import passes concrete child values
+  and can restore date/time/radio selections on Form reset. No focused
+  regression tests cover field-local defaults for these types; see their
+  Component Reference pages before generating such patterns.
+
 ### File Field Internals
 
 - The `file` type stores its interior state as `data` in **base64** always;

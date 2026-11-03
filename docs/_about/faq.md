@@ -1404,9 +1404,11 @@ the fuller comparison, common environments, and an illustrative worked example.
 ### Why does `clear` restore my default value instead of emptying the field?
 
 On a scalar field, `clear` imports that field type's empty value and leaves its
-default unchanged. On a **form**, `clear` imports `{}`; each omitted child gets
-`undefined` and resets to its own default. A child's local `value` or HTML
-`value` can therefore reappear even though the form-level default was ignored.
+default unchanged. On a **form**, `clear` imports `{}` and passes `undefined` to
+each omitted child. The result is type-specific: generic input, number, and
+color fields use it as a reset signal; current date/time/datetime-local fields
+become `null`, and radio groups deselect. A child's local `value` or HTML
+`value` can reappear for types that honor it even though the form-level default was ignored.
 A **list** imports `[]`; rows above `min_items` are removed, and retained
 minimum rows reset to their own defaults. See the [Form]({{ "/component_reference/form" | relative_url }}#async-clear-action)
 and [List]({{ "/component_reference/list" | relative_url }}#async-clear-action)

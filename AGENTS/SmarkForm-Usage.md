@@ -346,7 +346,7 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 | `export` | form/list | Exports current values as JSON |
 | `import` | form/list | Imports JSON into the form |
 | `reset` | form/list | Resets to `defaultValue` |
-| `clear` | form/list | Imports the type-level empty value; child defaults and `min_items` can affect the resulting state |
+| `clear` | form/list | Imports the type-level empty value; child-type import behavior and `min_items` affect the resulting state |
 | `addItem` | list | Adds a new item |
 | `removeItem` | list | Removes target item |
 | `position` | list item | Shows item's 1-based index |
@@ -564,6 +564,13 @@ Since v0.13.0, calling `component.import(data)` **updates the component's `defau
 | `reset()` | ❌ No | Current default |
 
 ### How the New Default is Computed
+
+This is the generic contract, but type-specific `import()` overrides can differ.
+Current date, time, and datetime-local imports normalize `undefined` to `null`
+and can overwrite a direct field default; radio imports deselect and do not
+maintain a per-field default. Use a Form-level value/import for those group
+defaults until this behavior is covered and resolved. See the relevant
+Component Reference pages.
 
 After a successful `import(data)` with `set_default:true`, the new `defaultValue` is set by:
 

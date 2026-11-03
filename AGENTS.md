@@ -80,11 +80,14 @@ even when checked. A checkbox-only list row may therefore be omitted when
 `export_empties:false`; there is no focused automated test for that case. See
 `docs/_component_reference/input.md` and `docs/_component_reference/list.md`.
 
-Form/list clear behavior also follows each component's import implementation:
-forms import `{}` (omitted children reset to their own defaults), and lists
-import `[]` (rows above `min_items` are removed, while retained minimum rows
-reset to their own defaults). This behavior follows `list.import()` and its
-`reset()` loop for rows beyond the imported data.
+Form/list clear behavior follows each component's import implementation: forms
+import `{}` and pass `undefined` to omitted children (which is type-specific),
+while lists import `[]` (rows above `min_items` are removed, while retained
+minimum rows reset to their own defaults). Current date/time/datetime-local
+imports map `undefined` to `null`, and radio imports deselect; see their type
+references and the Step 14 transfer map. These four type overrides do not
+currently honor a direct field-local default through `import(undefined)`;
+enclosing Form defaults supplied as explicit values still work.
 
 ### File Field Type
 

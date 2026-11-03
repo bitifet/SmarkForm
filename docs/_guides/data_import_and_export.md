@@ -202,8 +202,10 @@ The `import` action accepts:
 
 {: .info }
 > Fields that are present in the form but absent from the imported data object
-> receive `undefined`, which triggers their own reset to default. Fields present
-> in the data object but absent from the form are silently ignored.
+> receive `undefined`. Whether that restores a field-local default depends on
+> the child's type-specific `import()` implementation; date/time/datetime-local
+> normalize it to `null`, and radio groups deselect. Fields present in the
+> data object but absent from the form are silently ignored.
 
 {% raw %} <!-- capture import_example_html {{{ --> {% endraw %}
 {% capture import_example_html -%}
@@ -347,9 +349,11 @@ Use **`clear`** to import the component's type-level empty value without
 changing its stored default. The resulting state depends on the component's
 children and constraints:
 
-- A form imports `{}`. Each omitted child receives `undefined` and resets to
-  that child's own default. Child-local defaults can therefore reappear even
-  though the form-level default is ignored.
+- A form imports `{}` and passes `undefined` to omitted children. The child
+  type's import method decides what that means: generic input, number, and color
+  fields use it as a reset signal; current date/time/datetime-local types map it
+  to `null`, and radio groups deselect. Child-local defaults can therefore
+  reappear for some types even though the form-level default is ignored.
 - A list imports `[]`. It removes rows above `min_items` and resets retained
   minimum rows to their own defaults; see the
   [List reference]({{ "/component_reference/list" | relative_url }}#min_items).

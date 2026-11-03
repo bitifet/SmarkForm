@@ -1,17 +1,15 @@
 ---
-title: «radio» Component Type
+title: "«radio» Component Type"
 layout: chapter
-description: "Manage native radio groups as SmarkForm fields with shared names, selection handling and predictable JSON values."
+description: "Manage native radio groups as SmarkForm fields with shared DOM names, a selected-value export, and a nullable selection."
 permalink: "/component_reference/radio"
-migration_in_progress: true
-sitemap: false
 nav_order: 10
 redirect_from:
   - "/component_types/type_radio"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/radio.md -->
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
@@ -30,8 +28,12 @@ redirect_from:
 The `radio` component type extends the [Input](/component_reference/input) component type, providing enhanced functionality for radio button groups with automatic name management and special interaction behaviors.
 
 - **Imports and Exports:** Selected radio button value (`String`) or `null` (when no selection)
-- **Multiple instances:** Implements a master-slave pattern where the first radio button in a group becomes the master
+- **Multiple instances:** The first SmarkForm radio with a given field name manages that group; later inputs delegate to it.
 - **Data Conversion:** No data conversion is performed. The selected value is returned as a `String`.
+
+Give each option a non-empty `value` to distinguish it from no selection. The
+current export uses `null` for an empty-string radio value; a radio with no
+`value` attribute uses the browser's default value (`"on"`).
 
 ## Usage
 
@@ -66,10 +68,10 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
 
 ## Radio Button Groups
 
-The `radio` component implements a sophisticated grouping mechanism:
+SmarkForm groups radio inputs by their SmarkForm field name:
 
 - **Master Selection:** The first radio button encountered with a given name becomes the "master" component
-- **Automatic Naming:** All radio buttons in the group receive a unique shared `name` attribute for proper DOM behavior
+- **Automatic Naming:** SmarkForm replaces the native `name` with a generated shared name so the browser treats the inputs as one radio group.
 - **Centralized Management:** The master component manages the state for the entire group
 - **Slave Components:** Subsequent radio buttons with the same name become "slave" components that delegate to the master
 
@@ -79,13 +81,15 @@ This approach ensures that radio button groups work correctly while providing a 
 
 The `radio` component provides enhanced user interaction capabilities beyond standard HTML radio buttons:
 
-- **Click-to-Uncheck:** Clicking on an already selected radio button will deselect it, allowing for "no selection" states
+- **Click-to-Uncheck:** Clicking the selected radio again deselects it, allowing a `null` state.
 - **Keyboard Support:** Pressing the `Delete` key when a radio button has focus will clear the selection
 - **Consistent Behavior:** These interactions work across all radio buttons in the group, regardless of which specific button is interacted with
 
 ## Requirements
 
-The radio component will throw an error if the target field is not an INPUT element or its type is explicitly defined and different to "radio".
+The radio component requires `<input type="radio">`; if `type` is omitted,
+SmarkForm sets it to `radio`. A different type or a non-`<input>` target raises
+a render error.
 
 
 ## API Reference
@@ -136,9 +140,17 @@ Clears the selection from all radio buttons in the group.
 
 Reverts the radio group to its configured default selection. If no default was configured, all radio buttons are deselected (same as `clear`).
 
+The group's reliable default source is a value imported by its enclosing Form
+or List. The radio import method treats `undefined` as `null` and does not
+maintain a per-field default, so a direct radio-field `reset()` deselects the
+group rather than restoring a field-level `value` default; initialization's
+first reset also means a field-local default selection is not applied. A parent
+Form reset that imports an explicit group value still selects the matching
+radio. No focused regression test covers this case; see the Step 14 transfer
+map.
+
 ##### Options (reset)
 
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-<!-- END old PORTED TO docs/_component_reference/radio.md -->

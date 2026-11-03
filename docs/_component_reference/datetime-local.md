@@ -1,17 +1,16 @@
 ---
-title: «datetime-local» Component Type
+title: "«datetime-local» Component Type"
 layout: chapter
 description: "Use SmarkForm datetime-local fields to normalize local date and time values for consistent JSON import and export."
 permalink: "/component_reference/datetime-local"
-migration_in_progress: true
-sitemap: false
 nav_order: 8
 redirect_from:
   - "/component_types/type_datetime-local"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/datetime-local.md -->
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -23,13 +22,11 @@ redirect_from:
 
 </details>
 
-{% include components/sampletabs_ctrl.md %}
-
 ## Introduction
 
-The `datetime-local` component type extends the [Input](/component_reference/input)
+The `datetime-local` component type extends the [Input]({{ "/component_reference/input" | relative_url }})
 component type, providing specialized handling for datetime-local input fields with
-enhanced parsing and formatting capabilities.
+local date/time parsing and formatting.
 
 - **Imports and Exports:** ISO datetime-local string (`YYYY-MM-DDTHH:mm:ss`) or `null` (when empty)
 - **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
@@ -37,7 +34,9 @@ enhanced parsing and formatting capabilities.
 
 ## Usage
 
-Just add the *data-smark* attribute to the `<input>` element specifying the type:
+Use `<input type="datetime-local" data-smark>`. SmarkForm also infers
+`datetime-local` from the native type, or sets it when you explicitly declare
+`{"type":"datetime-local"}` on an `<input>` without `type`.
 
 ```html
 <input data-smark='{"type":"datetime-local", "name":"appointmentTime"}'>
@@ -125,18 +124,29 @@ The `datetime-local` component accepts multiple input formats for maximum flexib
 - **ISO 8601 String with Timezone:** `"2023-12-25T14:30:45.000Z"` (converted to local time representation)
 - **Date Object:** `new Date("2023-12-25T14:30:45")` (JavaScript Date instance)
 - **Epoch Timestamp:** `1703512245000` (milliseconds since Unix epoch)
-- **Empty/Null Values:** `null`, `""`, or `undefined` (clears the field)
+- **Empty/Null Values:** `null` or `""` clears the field. `undefined` is a
+  reset signal; see the reset caveat below.
 
-All valid datetime values are normalized to ISO datetime-local format (`YYYY-MM-DDTHH:mm:ss`) for export,
-ensuring consistency across your application. Note that the datetime-local type works with local time
-(not UTC), so timezone information is not included in the exported value.
+All valid values are normalized to `YYYY-MM-DDTHH:mm:ss` for export. ISO strings
+with a timezone or epoch timestamps are converted to the runtime's local time;
+the exported value contains no timezone information.
+
+### Field defaults and reset
+
+**Current implementation caveat:** `datetime-local.import(undefined)`
+normalizes the reset signal to `null` before delegating to the generic input
+type. A direct field `reset()` therefore clears to `null` and can replace the
+field's stored default with `null`; the base field's initial reset can also
+discard a field-local `value` default. A parent Form reset that imports an
+explicit datetime in its stored object still restores that value. No focused
+regression test covers datetime-local field-level defaults; see the Step 14
+transfer map.
 
 ## Requirements
 
-The datetime-local component will throw an error if the target field is not an INPUT
-element or its type is explicitly defined and different to "datetime-local". Invalid datetime
-strings that cannot be parsed will result in a `null` value rather than
-throwing an error.
+The component requires an `<input type="datetime-local">`; a missing native type
+is filled in, while a different type or tag raises a render error. Unparseable
+values export as `null`.
 
 {% raw %} <!-- datetime_local_error {{{ --> {% endraw %}
 {% capture datetime_local_error -%}
@@ -175,10 +185,9 @@ export default async ({ expect, readField, writeField }) => {
 
 
 {: .info :}
-> When a *SmarkForm* component fails to render due to a *RenderError*, it is
-> replaced by a flamboyant placeholder that shows the error code and provides a
-> handy button to "replay" it to the console making it easier to debug the
-> issue.
+> When a component fails to render, SmarkForm replaces it with an error
+> placeholder that shows the code and provides a button to replay the error in
+> the console.
 > 
 > 👉 Take a look to the *Preview* tab of the previous example to see it in
 > action.
@@ -234,11 +243,11 @@ Clears the value of the datetime-local input field (sets it to `null`).
 
 #### (Async) reset (Action)
 
-Reverts the datetime-local field to its configured default value. If no default was configured, the field reverts to `null` (same as `clear`).
+The reset behavior for this type differs from the generic field contract; see
+[Field defaults and reset](#field-defaults-and-reset).
 
 ##### Options (reset)
 
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-<!-- END old PORTED TO docs/_component_reference/datetime-local.md -->
