@@ -182,10 +182,11 @@ See [Hotkeys]({{ "/accessibility/hotkeys" | relative_url }}).
 ### Consistent keyboard navigation {#consistent-user-experience}
 
 `Enter` and `Shift+Enter` move between fields and list items in form order,
-including across nested forms and lists. Triggers and controls remain reachable
-with the keyboard, and list changes are announced through an `aria-live` region.
-Authors still own focus order, focus visibility, and any custom keyboard
-interactions.
+including across nested forms and lists. `Tab` follows the browser's normal
+focus order, and configured hotkeys provide additional actions. Lists receive
+`aria-live="polite"` and `aria-atomic="true"`; actual assistive-technology
+announcements have not been verified. Authors still own focus order, visible
+focus styling, and custom keyboard interactions.
 
 See [Keyboard Navigation]({{ "/accessibility/keyboard_navigation" |
 relative_url }}).
@@ -224,8 +225,9 @@ The details are documented rather than assumed; see the [FAQ]({{
 ### Accessibility support and author responsibilities {#a11y-friendly}
 
 SmarkForm wires labels to fields, preserves authored `aria-labelledby` tokens,
-provides keyboard navigation and context-aware hotkeys, announces list changes
-with `aria-live`, and sets `aria-busy` while the root renders.
+provides keyboard navigation and context-aware hotkeys, marks lists with
+`aria-live` attributes, and sets `aria-busy` while the root renders. The
+resulting screen-reader announcements have not been verified.
 
 It cannot make arbitrary markup accessible. Authors remain responsible for
 meaningful labels, semantic grouping, contrast, focus styling, error

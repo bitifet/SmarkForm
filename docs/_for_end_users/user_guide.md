@@ -1,17 +1,14 @@
 ---
-title: User Guide
+title: "User Guide"
 layout: chapter
-description: "A guide for people filling out SmarkForm-powered forms, covering keyboard navigation, shortcuts, dynamic lists and other usability features."
+description: "Practical guidance for people filling out forms, including keyboard navigation, shortcuts, dynamic lists, files and media."
 nav_order: 1
 permalink: "/for_end_users/user_guide"
-migration_in_progress: true
-sitemap: false
 redirect_from:
   - "/resources/user_guide"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_for_end_users/user_guide.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -27,16 +24,20 @@ redirect_from:
 
 ## Welcome to SmarkForm-Powered Forms
 
-Welcome! You're about to fill out a form powered by **SmarkForm**, a technology designed to make form filling faster, easier, and more intuitive.
+Welcome! You're about to fill out a form powered by **SmarkForm**. Some forms
+include keyboard navigation, shortcuts, or dynamic lists to make common tasks
+more convenient.
 
-This guide will help you discover powerful features like keyboard shortcuts, smart navigation, and dynamic lists that will save you time and make the experience more pleasant.
+Available behavior depends on the form's markup, native controls, browser, and
+enabled features; forms may not provide every behavior in this guide.
 
 {: .hint}
 > **New to SmarkForm?** Don't worry! These forms work just like regular forms, but with helpful enhancements. You can use them normally, or speed things up with the tips below.
 
 ## Keyboard Navigation
 
-SmarkForm-powered forms offer smooth keyboard navigation that helps you move through forms quickly and efficiently.
+Some forms use SmarkForm's keyboard navigation to help you move between
+fields. The available behavior depends on the form and its controls.
 
 ### Navigating Between Fields
 
@@ -45,7 +46,9 @@ Use **Enter** and **Shift+Enter** to jump directly between form fields:
 - **Enter** `⏎ `— Move to the next field
 - **Shift+Enter** `⇧``⏎ `— Move to the previous field
 
-This navigation is smart: it skips over buttons and other non-field elements, taking you straight to where you need to enter information.
+Enter navigation skips buttons and other non-field components. Use Tab and
+Shift+Tab to follow the browser's normal focus order, which also depends on
+disabled controls and the form's markup.
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/01-navigation-enter-key.png' | relative_url }}"
@@ -54,7 +57,8 @@ This navigation is smart: it skips over buttons and other non-field elements, ta
 </figure>
 
 {: .hint}
-> **Pro tip:** This is much faster than using the mouse or tabbing through every element on the page!
+> **Tip:** Enter navigation can be faster than tabbing through every element
+> when you want to move directly between fields.
 
 ### Navigating All Elements
 
@@ -67,23 +71,27 @@ If you need to navigate through *all* elements (including buttons and links), us
 
 In multiline text areas (textarea fields), pressing **Enter** adds a new line within the textarea as usual. To move to the next field instead, use:
 
-- **Ctrl+Enter** (or **Cmd+Enter** on Mac) — Move to the next field from a multiline text area
-- **Ctrl+Shift+Enter** (or **Cmd+Shift+Enter** on Mac) — Move to the previous field from a multiline text area
+- **Ctrl+Enter** — Move forward from a multiline text area
+- **Shift+Enter** — Move backward (Ctrl may also be held)
 
 {: .hint}
-> **Pro tip:** You can consistently use **Ctrl+Enter** and **Ctrl+Shift+Enter** to navigate through fields from anywhere, regardless of field type!
+> **Note:** SmarkForm listens for Ctrl, not macOS Command/Meta. Native controls
+> and browser shortcuts may also handle key combinations.
 
 ## Discovering and Using Hotkeys
 
-One of SmarkForm's most powerful features is context-aware keyboard shortcuts (hotkeys) that let you perform actions without reaching for your mouse.
+Some forms configure context-aware keyboard shortcuts (hotkeys) for actions.
+They supplement the controls and focus order provided by the form.
 
 ### How to Discover Available Shortcuts
 
 To see which keyboard shortcuts are available at any moment:
 
-**Press and hold the Ctrl key** (or **Cmd** on Mac) ⌨️
+**Press and hold the Ctrl key** ⌨️
 
-While holding Ctrl, you'll see visual hints appear next to buttons showing their keyboard shortcuts. Release Ctrl to hide the hints.
+While holding Ctrl, visual hints may appear next to enabled triggers with
+configured hotkeys. Release Ctrl to hide the hints. These hints are CSS-generated
+visual content; their exposure to assistive technology has not been verified.
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/02-hotkeys-discovery.png' | relative_url }}"
@@ -100,9 +108,14 @@ SmarkForm uses an intelligent, context-aware hotkey system that makes forms intu
 
 **The same hotkey can be used in different parts of the form.** For example, many forms use **+** to add items and **−** to remove items. If your form has multiple lists (like a list of contacts, each with their own list of phone numbers), the same **+** hotkey can be used for all of them without conflicts.
 
-**SmarkForm automatically picks the right action based on context.** When you press a hotkey, SmarkForm triggers the action that's most relevant to where you're currently focused in the form. If you're focused on a phone number field, **Ctrl+Plus** adds a new phone number. The system always chooses the *nearest* action to your current position.
+**SmarkForm resolves matching hotkeys from the current focus context.** For
+example, if a form configures `+` for adding a phone, **Ctrl+Plus** can add a
+phone while focus is inside that list. A disabled trigger does not run, and
+available shortcuts depend on how the form is configured.
 
-This context-aware behavior means you can learn just a few simple hotkeys (like **+**, **−**, and **Delete**) and use them throughout the entire form in a natural, intuitive way.
+This context-aware behavior lets a form reuse keys such as **+**, **−**, and
+**Delete** in different regions. The form's visible controls remain the
+fallback when a hotkey is unavailable.
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/03-hotkeys-context-aware.png' | relative_url }}"
@@ -117,13 +130,15 @@ This context-aware behavior means you can learn just a few simple hotkeys (like 
 
 Sometimes you need to access an action in an outer context. For instance, while filling in a phone number, you might want to add a new contact (outer context) rather than another phone number (current context).
 
-**To access second-level hotkeys, hold Ctrl+Alt together** (or **Cmd+Alt** on Mac).
+**To access second-level hotkeys, hold Ctrl+Alt together.** Command/Meta is not
+an alternate modifier in the current implementation.
 
 This reveals hotkeys from the next level up in the form hierarchy. In our contact list example:
 - **Ctrl+Plus** adds a phone number to the current contact (first level)
 - **Ctrl+Alt+Plus** adds a new contact to the list (second level)
 
-This two-level system keeps the interface clean while giving you keyboard access to everything.
+This two-level system can expose a matching outer-context trigger when the form
+has configured one. It does not make every form action available by keyboard.
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/04-hotkeys-second-level.png' | relative_url }}"
@@ -166,7 +181,9 @@ Look for buttons with **plus** (+) or **minus** (−) icons, or use hotkeys if c
 > **Finding hotkeys:** Hold **Ctrl** to see which keyboard shortcuts are available for the specific form you're using. The actual hotkeys depend on how the form was designed.
 
 {: .hint}
-> **Empty items:** SmarkForm often creates a new empty item automatically when you start filling in the last one, so you can keep adding data smoothly.
+> **Empty items:** A blank row may already be present because of the list's
+> initial item count. Filling the last row does not automatically add another;
+> use the form's Add control or hotkey when available.
 
 ### Reordering Items
 
@@ -200,7 +217,7 @@ In both cases:
 
 ### Understanding List Limits
 
-Some lists have minimum or maximum limits for a reason:
+Some lists have minimum or maximum limits:
 
 - **Minimum limit:** At least this many items are required. You won't be able to remove items below this minimum. The default is 1, but it can be 0. You'll notice that the "Remove" button becomes disabled when you reach the minimum limit.
 - **Maximum limit:** No more items are allowed beyond this number. The "Add" button becomes disabled when the limit is reached.
@@ -254,7 +271,9 @@ Video fields are single SmarkForm fields even when they contain a native player.
 Use **Enter** and **Shift+Enter** to move between form fields. When the video
 has focus:
 
-- **Space** opens the picker in pick mode, or toggles playback in play mode.
+- **Space** opens the picker in pick mode. In play mode without native controls,
+  it toggles playback when a clip is present; with native controls, use the
+  browser's player controls for playback.
 - **Shift+Space** opens the picker even when playback is enabled.
 - **Delete** or **Backspace** clears the video.
 
@@ -281,7 +300,9 @@ visual area of its own — a form that wants an obvious empty state wraps it in 
 visible container or provides an upload trigger. Use **Enter** and
 **Shift+Enter** to move between form fields. When the audio field has focus:
 
-- **Space** opens the picker in pick mode, or toggles playback in play mode.
+- **Space** opens the picker in pick mode. In play mode without native controls,
+  it toggles playback when a clip is present; with native controls, use the
+  browser's player controls for playback.
 - **Shift+Space** opens the picker even when playback is enabled.
 - **Delete** or **Backspace** clears the audio.
 
@@ -312,19 +333,19 @@ Some forms use collapsible sections — areas that can be expanded or collapsed 
 
 SmarkForm extends its keyboard navigation to work naturally with collapsible sections:
 
-- **Enter** — When a collapsible section is **closed**, pressing Enter while in its summary field skips the hidden fields inside and moves directly to the next visible field. This keeps navigation smooth when you don't need to edit the collapsed content.
+- **Enter** — When a collapsible section is **closed**, pressing Enter while in its summary field skips hidden fields and moves to the next visible field.
 
-- **Shift+Enter** — Backward navigation is fully symmetric: pressing Shift+Enter when a closed section lies before you also skips its hidden fields and lands on the last *visible* field of that section (i.e. the summary field), without opening it.
+- **Shift+Enter** — Backward navigation also skips fields hidden in a closed section and leaves it closed.
 
-- **Alt+Enter** — When a collapsible section is **closed** and you want to navigate *forward* into its hidden fields, hold **Alt** while pressing Enter. The section opens automatically and focus moves to the first field inside, so you can edit it without reaching for the mouse.
+- **Alt+Enter** — When a collapsible section is **closed** and you want to navigate *forward* into its hidden fields, hold **Alt** while pressing Enter. The section opens and focus moves to the next field inside. From a textarea, hold Ctrl as well.
 
-- **Alt+Shift+Enter** — The backward equivalent of Alt+Enter: hold **Alt+Shift** while pressing Enter to open the *previous* closed section and land on its **last** field, ready to continue filling in backwards.
+- **Alt+Shift+Enter** — The backward equivalent: hold **Alt+Shift** while pressing Enter to open the previous closed section and move to the preceding field inside.
 
 - **Space** — In the summary field of a collapsible section, pressing Space types a space character as usual. The section is **not** toggled, so you can freely type in the visible field without accidentally collapsing it.
 
 - **Shift+Space** — Hold **Shift** while pressing Space to fold or toggle the section without typing a space character:
   - From a field **in the header row** (`<summary>`): *toggles* the section open or closed.
-  - From a field **inside the expanded body** (below the header): *folds* the section closed and moves focus back to the first field in the header row.
+  - From a field **inside the expanded body** (below the header): folds the section closed and moves focus to the first focusable control in its summary (or the summary itself).
 
 <figure class="user-guide-image">
   <img src="{{ '/assets/images/user-guide/08-collapsible-sections.png' | relative_url }}"
@@ -334,6 +355,10 @@ SmarkForm extends its keyboard navigation to work naturally with collapsible sec
 
 {: .hint}
 > **Tip:** If a form shows contacts (or other items) as collapsible rows, keep sections closed while scanning the list and use **Alt+Enter** / **Alt+Shift+Enter** only when you need to edit a specific item's details. This keeps the form compact and easy to read.
+
+> In a multiline text area, forward navigation requires **Ctrl+Enter**. To open
+> a collapsed section while moving forward from a textarea, hold **Ctrl+Alt**;
+> plain **Enter** inserts a new line.
 
 {: .info}
 > **Note:** Not all forms use collapsible sections. This feature is visible only when the form designer has chosen to wrap sections in `<details>` elements.
@@ -351,21 +376,20 @@ Some forms have sections nested within other sections (like contact details with
 > **Pro tip:** You don't need to think about the form's internal structure — just navigate naturally and SmarkForm handles the rest!
 
 
-## Accessibility Features
+## Accessibility and author responsibilities
 
-SmarkForm is designed with accessibility in mind, though we're continuously working to improve:
+Forms can include keyboard shortcuts and label associations, but the form's
+designer chooses the controls, labels, and available actions. If a label, focus
+order, keyboard action, or announcement does not work well with your assistive
+technology, contact the person or organization that provided the form.
 
-- **Mouse and touch support:** All essential actions have visible buttons that are reachable by mouse or touch. You never need a keyboard shortcut to perform a required task.
-- **Full keyboard support:** Everything can also be done without a mouse — keyboard navigation and Tab ordering work throughout.
-- **Power-user hotkeys:** Some non-essential, "power-user" actions may be available only as hotkeys (using [hidden trigger buttons](#common-hotkey-patterns)). These are still fully discoverable via the **Ctrl reveal** mechanism: hold Ctrl to see the available hotkeys at any time, even if no visible button is present.
-- **Smart tab order:** Disabled elements are automatically excluded from navigation, so Tab always moves you to an element you can actually interact with.
-- **Context-aware focus tracking:** When you add a new list item, SmarkForm automatically focuses the first field of the new item and (if `autoscroll` is enabled) scrolls it into view, so you never lose your place.
-- **Enter key navigation:** Pressing Enter / Shift + Enter moves between fields, skipping buttons and other non-field elements.
-- **Semantic HTML:** SmarkForm is markup-agnostic but encourages developers to use semantic HTML elements. It also provides ARIA labels for complex field types (like lists) so that assistive technologies can understand the structure and purpose of the form.
-- **Smart button states:** SmarkForm automatically sets the `disabled` property on trigger buttons when their action is not available (e.g., when a list has reached its minimum or maximum items). The visual styling of disabled buttons is the developer's responsibility via CSS.
+For developers building forms, see [Accessible Labels and Names]({{
+"/accessibility/accessible_labels_and_names" | relative_url }}) for label
+associations and author responsibilities.
 
 {: .info}
-> **Using assistive technologies?** We're committed to making SmarkForm accessible to everyone. If you encounter any accessibility issues, please [report them]({{ "/community/support" | relative_url }}) so we can continue improving!
+> **Using assistive technologies?** If a form's labels, focus order or
+> announcements do not work well for you, please [report the issue]({{ "/community/support" | relative_url }}).
 
 ## Tips for Efficient Form Filling
 
@@ -379,11 +403,12 @@ Here are some tips to make form filling even faster:
 
 4. **Try second-level hotkeys** — Hold **Ctrl+Alt** to access outer context actions when working with nested structures
 
-5. **Watch for smart features** — Notice how buttons disable themselves when limits are reached, or how new list items appear automatically. Lists of complex forms may provide a button to duplicate an item (huge time saver sometimes), etc...
+5. **Watch for form controls** — Add/remove buttons may disable when list limits
+   are reached. Use the form's Add control when you need another row.
 
-6. **Use Alt+Enter / Alt+Shift+Enter and Shift+Space in collapsible sections** — When a section is collapsed, **Alt+Enter** opens it and moves focus to the first field inside; **Alt+Shift+Enter** opens it and moves focus to the *last* field inside; **Shift+Space** toggles it open/closed from the header row, or folds it and returns focus to the header when you are editing a field in the expanded body
+6. **Use Alt+Enter / Alt+Shift+Enter and Shift+Space in collapsible sections** — These shortcuts can open or fold `<details>` sections while moving through fields; see the key behavior above. From a textarea, forward Enter navigation still requires Ctrl.
 
-7. **Use the keyboard for everything** — Once you're comfortable with navigation and hotkeys, you can often complete entire forms without touching your mouse
+7. **Use the keyboard for supported actions** — Enter navigation, Tab, and configured hotkeys can reduce pointer use. Available controls depend on the form's design.
 
 8. **Context-aware shortcuts are a feature** — The same hotkey doing different things in different sections is intentional and makes the interface more intuitive
 
@@ -400,4 +425,3 @@ Here are some tips to make form filling even faster:
 *This guide covers the core user-facing features of SmarkForm-powered forms. The specific features available in any given form depend on how the developer has implemented it.*
 
 **Questions or issues?** Visit the [Support page]({{ "/community/support" | relative_url }}) to get help.
-<!-- END old PORTED TO docs/_for_end_users/user_guide.md -->

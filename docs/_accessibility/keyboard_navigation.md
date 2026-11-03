@@ -1,31 +1,28 @@
 ---
 title: "Keyboard Navigation"
 layout: chapter
-description: "Navigate SmarkForm-powered forms with the keyboard, move between fields and use accessible shortcuts without a mouse."
+description: "Use Enter-based field navigation, native Tab order and SmarkForm shortcuts where forms provide them."
 permalink: "/accessibility/keyboard_navigation"
-migration_in_progress: true
-sitemap: false
 nav_order: 1
 redirect_from:
   - "/working_with_forms/keyboard_navigation"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_accessibility/keyboard_navigation.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
-SmarkForm provides an intuitive keyboard-driven interface that lets users
-fill data fluently without switching between keyboard and mouse.
+SmarkForm adds keyboard navigation to supported fields. The exact behavior also
+depends on the form's markup, native controls, browser, and enabled features.
 
 ## Enter / Shift+Enter Navigation
 
 Press `Enter` to move forward to the next field, and `Shift`+`Enter` to move
-backward. This is more convenient than `Tab` and `Shift`+`Tab` — it skips
-controls that would otherwise interrupt the data-entry flow, providing a
-more fluid experience.
+backward. This field-navigation shortcut skips buttons and other non-field
+components. Use `Tab` and `Shift`+`Tab` for the browser's normal sequential
+focus order; disabled controls and the form's authored markup affect that order.
 
 {% raw %}<!-- nav_enter_html {{{ -->{% endraw %}
 {% capture nav_enter_html -%}
@@ -51,7 +48,9 @@ more fluid experience.
 
 {% raw %}<!-- nav_enter_notes {{{ -->{% endraw %}
 {% capture nav_enter_notes -%}
-Press `Enter` in any text field to move to the next one. Shift`+`Enter` goes backward. In the textarea, use `Ctrl`+`Enter` to advance (plain `Enter` inserts a new line).
+Press `Enter` in a single-line field to move to the next one; `Shift`+`Enter`
+moves backward. In a textarea, plain `Enter` inserts a newline, `Ctrl`+`Enter`
+moves forward, and `Shift`+`Enter` moves backward.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -62,21 +61,26 @@ Press `Enter` in any text field to move to the next one. Shift`+`Enter` goes bac
    tests=false
 %}
 
-{: .info :}
-> In textareas, use `Ctrl`+`Enter` instead. Plain `Enter` inserts a new line
-> in the text.
-
 ## Tab-Flow Exclusion for Hotkey-Equipped Buttons
 
-Buttons that have a `hotkey` defined are automatically taken out of the `Tab`
-navigation flow. This prevents having to tab through dozens of inner-list
-action buttons (e.g. `➖` remove buttons) when filling a long list.
+Hotkey-equipped `addItem` and `removeItem` triggers inside their list context
+are removed from sequential `Tab` order, so a long list does not require
+tabbing through every row action. Hotkey-equipped controls outside that list
+context remain in `Tab` order, including an outer Add button.
 
-- **Inner buttons** (inside list items): Removed from `Tab` flow — users can
+- **Inner buttons** (inside list context): Removed from `Tab` flow — users can
   activate them via their hotkey instead.
 - **Outer buttons** (siblings of the list): Kept in `Tab` flow — with
   `min_items: 0`, the only way to create the first item is via the outer
   add button, which must remain keyboard-accessible.
+
+{: .hint }
+> This tab-order behavior is limited to list `addItem`/`removeItem` triggers
+> with hotkeys in their list context. SmarkForm sets `tabindex="-1"` when the
+> trigger has no authored `tabindex`; an explicit authored value is preserved.
+> If an action is essential, provide a
+> visible control that remains in the normal keyboard order; do not rely on a
+> CSS-generated hotkey hint as its only description.
 
 {% raw %}<!-- nav_tabflow_html {{{ -->{% endraw %}
 {% capture nav_tabflow_html -%}
@@ -108,17 +112,20 @@ Press `Tab` through the form — the outer `➕ Add`/`🧹` buttons are reachabl
 
 {: .info :}
 > Hold `Ctrl` to discover available hotkeys — each trigger button with a
-> hotkey shows a tooltip revealing its keyboard shortcut.
+> hotkey can show a visual hint when the form includes the corresponding CSS.
 
 ## Alt+Enter for Collapsed Sections
 
 When navigating with `Enter` / `Shift`+`Enter`, fields inside a closed
 `<details>` element are skipped. To navigate into them, hold `Alt` while
 pressing `Enter` — SmarkForm automatically opens any closed `<details>`
-ancestors along the path.
+ancestors along the path. When moving forward from a `<textarea>`, keep `Ctrl`
+held as well (`Ctrl`+`Alt`+`Enter`); plain `Enter` inserts a newline there.
+For backward navigation into a preceding closed section, use
+`Alt`+`Shift`+`Enter`.
 
 This allows you to keep optional sections collapsed by default while still
-being able to arrow-key into them when you need to fill data.
+being able to navigate into them when you need to fill data.
 
 {% raw %}<!-- nav_details_html {{{ -->{% endraw %}
 {% capture nav_details_html -%}
@@ -170,8 +177,9 @@ way, even when collapsed, the key information remains visible so the user can
 quickly scan the list, while the full details expand on click.
 
 SmarkForm fields inside the `<details>` work exactly as they would anywhere
-else — the browser handles the show/hide toggle natively.  Combined with
-`Space`/`Shift`+`Space` toggling and `Alt`+`Enter` for navigation into
-collapsed sections, this creates an accessible, space-efficient list UI
-without any custom JavaScript.
-<!-- END old PORTED TO docs/_accessibility/keyboard_navigation.md -->
+else — the browser handles the show/hide toggle natively. `Shift+Space` on a
+field inside a `<summary>` toggles its `<details>` section; on a field in the
+open body it folds the section and returns focus within its summary (to its
+first focusable child, or to the summary itself). `Alt+Enter`
+provides a separate way to navigate into a collapsed section. Use semantic
+markup and test focus and announcements with your target assistive technology.

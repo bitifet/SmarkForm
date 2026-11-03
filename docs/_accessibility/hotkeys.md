@@ -1,17 +1,15 @@
 ---
-title: Hotkeys
+title: "Hotkeys"
 layout: chapter
-description: "Add keyboard shortcuts to SmarkForm triggers for actions such as adding items, exporting data and moving through forms."
+description: "Use Ctrl-based shortcuts on SmarkForm triggers, discover visual hotkey hints, and understand focus context and conflicts."
 permalink: "/accessibility/hotkeys"
-migration_in_progress: true
-sitemap: false
 nav_order: 2
 redirect_from:
   - "/working_with_forms/hotkeys"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_accessibility/hotkeys.md -->
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
@@ -28,9 +26,9 @@ redirect_from:
 
 ## Overview
 
-SmarkForm supports keyboard shortcuts (*hotkeys*) for trigger components.
-Hotkeys let users activate any trigger — `addItem`, `removeItem`, `export`,
-`clear`, or any custom action — without reaching for the mouse.
+SmarkForm supports keyboard shortcuts (*hotkeys*) for configured trigger
+components. A hotkey can activate actions such as `addItem`, `removeItem`,
+`export`, or `clear` when its trigger is active in the current focus context.
 
 Hotkeys are:
 
@@ -41,6 +39,11 @@ Hotkeys are:
   visual hints on their trigger buttons, so users can discover them on the fly
   rather than needing to memorise a list.  A little CSS setup is needed — see
   [Hotkey Reveal](#hotkey-reveal-ctrl-discovery).
+
+SmarkForm checks the `Ctrl` modifier; it does not treat macOS `Cmd`/`Meta` as
+the hotkey modifier. Reveal hints are CSS-generated visual content, and their
+exposure to assistive technology has not been verified. Do not rely on a hint
+as the only accessible name or description for an action.
 
 
 ## Defining a Hotkey
@@ -214,11 +217,19 @@ tap.
 
 {: .info }
 > This aligns with SmarkForm's philosophy of offering the same functionality
-> regardless of the device or input method: on a touch device you will hardly
-> use the keyboard (let alone a hotkey), but you can always tap the button.
+> through multiple input methods. When the form provides a visible button, touch
+> users can tap it; ensure essential actions are not available only through a
+> hotkey or a visually hidden trigger.
 
-There are, nevertheless, cases where a hotkey is convenient but flooding the
-form with triggers for a non-essential action would clutter it more than needed.
+There are cases where a hotkey is convenient but flooding the form with
+triggers for a non-essential action would clutter it more than needed. The
+following CSS example hides only redundant row controls; its generated visual
+hints have not been verified with assistive technology.
+
+Use this hiding pattern only for redundant convenience controls. Do not hide
+the only control for an essential action: a CSS-generated hint is visual and
+its accessibility-tree exposure is not verified. Keep essential actions
+available through visible, keyboard-reachable controls with meaningful names.
 
 👉 In the examples above, **every** phone row carries its own `➖` and `➕`
 buttons so you can remove or insert a phone *at that exact position*. On a
@@ -313,12 +324,12 @@ let touch users add or remove phones from the end of the list.
   `Ctrl+A`, `F1`–`F12`, `Alt+F4`, etc. are used by browsers and operating
   systems.  Prefer punctuation characters (`+`, `-`, `n`, `d`, …) that are
   not typically claimed.
-- **Provide visible alternatives** — hotkeys are a convenience feature.  Every
-  action that has a hotkey should also be reachable with the mouse so that
-  users on touch devices or those who do not discover the hotkeys can still
-  operate the form.
-- **Label your buttons** — use `title` attributes or visible text on trigger
-  buttons so their purpose is clear even without hotkey hints.
+- **Provide suitable alternatives** — hotkeys are a convenience feature.
+  Essential actions need visible, keyboard-reachable controls; do not make a
+  hotkey or generated visual hint their only access path.
+- **Give controls accessible names** — prefer visible button text; for an
+  icon-only button, supply an appropriate accessible name. A `title` tooltip is
+  supplemental and does not replace good control text.
 
 
 ## Further Examples
@@ -363,7 +374,5 @@ this **suppresses inner hotkeys** and reveals the next level out.
    tests=false
 %}
 
-The [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) contains exhaustive
-real-world examples that demonstrate hotkeys in context, including nested
-lists, multi-level hotkey levels, and mixed trigger layouts.
-<!-- END old PORTED TO docs/_accessibility/hotkeys.md -->
+The [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) contains
+examples of hotkeys in context, including nested lists and mixed trigger layouts.

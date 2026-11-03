@@ -1,7 +1,7 @@
 ---
-title: «label» Component Type
+title: "«label» Component Type"
 layout: chapter
-description: "Connect accessible HTML labels to SmarkForm fields automatically, with support for implicit and explicit field association."
+description: "Associate SmarkForm labels with native fields and use non-native label elements for complex components."
 permalink: "/component_reference/label"
 migration_in_progress: true
 sitemap: false
@@ -11,14 +11,14 @@ redirect_from:
 ---
 
 
+{% include links.md %}
 <!-- BEGIN old PORTED TO docs/_component_reference/label.md -->
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
-The `label` component is an enhancement of the HTML `<label>` element. It
-provides better support for accessibility and field association, features
-SmarkForm features like relative paths, and intelligent defaults.
+The `label` component enhances native HTML labels and lets other elements label
+SmarkForm components. It supports path-based targeting and implicit association.
 
 
 <details class="chaptertoc">
@@ -37,6 +37,9 @@ Enhanced SmarkForm `label` elements work similarly to standard HTML labels but o
 - **Explicit Association:** Use the `target` property (instead of `for`). Specify a [relative path]({{"guides/form_traversing#relative-paths" | relative_url }}) to the field—typically its name.
 - **Implicit Association:** No need to specify `target`. SmarkForm automatically associates the `<label>` with the nearest field.
 - **Nested Association:** You can nest the field inside the `<label>` itself, just like in standard HTML (do not use `target` in this case).
+
+For label names, generated IDs, `aria-labelledby`, and author responsibilities,
+see [Accessible Labels and Names]({{ "/accessibility/accessible_labels_and_names" | relative_url }}).
 
 
 **Examples:**
@@ -174,7 +177,10 @@ pairing](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/la
   - Only one field can be nested inside a label.
   - Triggers are allowed inside label elements with no restriction.
 
-- **Limitations:** Labels are only compatible with native HTML input elements (scalars), not complex components or lists.
+- **Native `<label>` limitation:** A native HTML `<label>` must target a native
+  form control. To label a SmarkForm form, list, or other non-scalar component,
+  use a non-native element such as `<span>` or `<legend>` with SmarkForm's
+  `label` type.
 
 - **Selectable Text:** The `allow_select` option controls whether label text can be selected; default is `false` for better UX.
 
@@ -298,7 +304,9 @@ The `label` component supports several configuration options:
 The `label` component type is primarily a passive enhancement component and does not expose the standard import/export/clear actions that field components provide. Instead, it focuses on:
 
 - **Field Association:** Automatically establishing relationships with form fields
-- **Accessibility Enhancement:** Improving screen reader and keyboard navigation support
+- **Association helpers:** Adding native `for`/`id` or non-native
+  `aria-labelledby` relationships. Authors remain responsible for meaningful
+  names and assistive-technology testing.
 - **Action Component Management:** Allowing action components (like buttons) to be placed within labels for enhanced user interaction
 
 Labels work by enhancing the DOM structure and relationships rather than managing data, making them fundamentally different from field components that are data-oriented.
