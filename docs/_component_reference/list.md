@@ -1,17 +1,15 @@
 ---
-title: «list» Component Type
+title: "«list» Component Type"
 layout: chapter
-description: "Represent dynamic JSON arrays with SmarkForm lists, adding, removing, sorting and moving items while keeping data synchronized."
+description: "Represent JSON arrays with SmarkForm lists, defining item templates, limits, drag behavior, and add/remove actions."
 permalink: "/component_reference/list"
-migration_in_progress: true
-sitemap: false
 nav_order: 3
 redirect_from:
   - "/component_types/type_list"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/list.md -->
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 {% raw %} <!-- capture generic_sample_css {{{ --> {% endraw %}
@@ -103,8 +101,8 @@ endcapture %}
 👉 With *export_empties* option set to false (default), lists won't export empty
    items.
 
-👉 ...unless there is no enough non empty items to satisfy *minItems* option,
-    in which case up tu *minItems* empty items will be exported.
+👉 ...unless there are too few non-empty items to satisfy `min_items`, in which
+    case enough empty items are exported to meet that minimum.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -141,15 +139,12 @@ endcapture %}
 👉 Other field types can be used too as *item template*
 <a aria-hidden="true" href="#example-scalar_list" style="cursor:pointer" title ="Search for «☛ 4» in the code comments">(☛ 4)</a>.
 
-👉 ...but, in the case of
-([scalar field types]({{ "component_reference/overview#scalar-field-types" | relative_url }}))
-it may look like we are limited when it comes to inserting labels **and
-triggers** in the item template and hence we can only remove last item every
-time in the list.
+Scalar fields are useful when each item is one value. To put row-specific
+labels and triggers beside a scalar value, wrap its native input in a
+[singleton]({{ "/guides/the_singleton_pattern" | relative_url }}).
 
-This would force us to move the *Remove Item* button outside the list
-<a aria-hidden="true" href="#example-scalar_list" style="cursor:pointer" title ="Search for «☛ 5» in the code comments">(☛ 5)</a>
-like in the following example.
+The following scalar-list example places Add and Remove buttons outside the
+list; without a row target, `removeItem` uses its default target (the last item).
 
 
 **Example:**
@@ -185,17 +180,11 @@ endcapture %}
 %}
 
 {: .hint}
-> Notice that in this example, likewise the *fieldset* in the former, the
-> *input* tag has no "name" attribute
-> <a aria-hidden="true" href="#example-scalar_list" style="cursor:pointer" title="Search for «☛ 6» in the code comments">(☛ 6)</a>.
-> This is because it is a list item
-> template and it's actual name attribute will be automatically set depending
-> on its position in the array every time a new item is added, moved or
-> removed.
+> The scalar item template has no `name`; SmarkForm assigns each item its
+> position-based path as items are added, moved, or removed.
 
-👉 Now, when the user clicks the *Remove Item* button, it will default to the
-last item of the list, **but we cannot ([yet](#applying-the-singleton-pattern))
-cherry-pick which item we'd like to remove**.
+Without a target, `removeItem` defaults to the last item. A singleton item can
+contain its own remove trigger so each row can target itself, as shown below.
 
 
 ### Applying the singleton pattern
@@ -343,7 +332,7 @@ Sets the initial default items for the list. These defaults are restored when `r
   * **Type:** Array
   * **Default value:** `[]`
 
-> See: [Setting defaults via `value`]({{ "guides/data_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
+> See: [Setting defaults via `value`]({{ "/guides/data_import_and_export" | relative_url }}#setting-defaults-via-value) for details on how defaults work.
 
 #### min_items
 
@@ -360,7 +349,7 @@ Establishes the maximum number of items allowed.
 
   * **Type:** Number
   * **Default value:** Infinity
-  * **Minimum value:** Infinity
+  * **Minimum value:** `min_items`
 
 {: .info }
 > Trigger buttons targeting the list (e.g. `addItem` / `removeItem`) are
@@ -427,11 +416,11 @@ original behaviour: the entire item root is draggable (backward compatible).
 > that can include a label handle.
 
 {: .hint}
-> Drag and Drop events are not natively supported by touch devices.
+> Native HTML drag-and-drop support varies across touch browsers and devices.
+> Test target platforms if touch reordering is required.
 >
-> They can be emulated in serveral ways. A quite straighforward one is through the *dragdroptouch* library from Bernardo Castilho:
->
-> 🔗 [https://github.com/drag-drop-touch-js/dragdroptouch](https://github.com/drag-drop-touch-js/dragdroptouch)
+> A polyfill can emulate the interaction; one option is the
+> [DragDropTouch library](https://github.com/drag-drop-touch-js/dragdroptouch):
 
 
 #### moving_depth (Cross-List Drag scope)
@@ -670,6 +659,12 @@ neater arrays when the user adds more items to the list than are used.
   * **Type:** Boolean
   * **Default value:** false
 
+When `false`, the list asks each item type whether it is empty before exporting
+it. The generic `input` type currently treats checkboxes as empty even when
+checked, so a checkbox-only row may be omitted; see the
+[Input reference]({{ "/component_reference/input" | relative_url }}). No focused
+automated test currently covers checked checkboxes in this path.
+
 
 #### of
 
@@ -680,12 +675,22 @@ needed.
   * **Type:** string
   * **Default value:** undefined
 
+For file-like item types (`file`, `image`, `video`, `audio`), `addItem()` can
+open a batch picker and operating-system file drops append new rows. A drop on
+an existing media row does not replace that row's value. Set list-level
+`file_drop:false` to disable drop-to-append. See the linked media references
+for type-specific filtering and acquisition behavior.
+
 
 ### Actions
 
 {{ site.data.definitions.actions.intro }}
 
 The `list` component type supports the following actions:
+
+For full action context/target resolution, see the
+[Trigger reference]({{ "/component_reference/trigger" | relative_url }}) and
+[Form Traversing]({{ "/guides/form_traversing" | relative_url }}).
 
 
 #### (Async) export (Action)
@@ -717,7 +722,9 @@ The `list` component type supports the following actions:
 
 #### (Async) clear (Action)
 
-Clears the list to an empty array, removing all items regardless of any configured default values. Unlike `reset`, this action ignores any prepopulated default items that may have been set via the `value` option.
+`clear` imports the empty array without changing the list's stored default. It
+removes rows above `min_items`. Any rows retained to satisfy the minimum are
+reset to their own defaults. With `min_items:0`, the list becomes empty.
 
 **Example use case:** A "Clear All" button that removes all items from the list.
 
@@ -730,7 +737,10 @@ Clears the list to an empty array, removing all items regardless of any configur
 
 #### (Async) reset (Action)
 
-Reverts the list to its default structure. The default is initially set by the `value` option, and is updated every time `import()` is called with `set_default: true` (the default). If no default has ever been set, the list reverts to an empty array (same as `clear`).
+Reverts the list to its default structure. The default is initially set by the
+`value` option and is updated by `import()` with `set_default:true` (the
+default). If the default contains fewer rows than `min_items`, the remaining
+minimum rows are reset to their own defaults.
 
 **Example use case:** A "Reset" button that restores the list to its last loaded state.
 
@@ -748,7 +758,8 @@ Reverts the list to its default structure. The default is initially set by the `
   * **action:** (= "addItem")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-  * **target:** Path★  (absolute or relative to its *context*) to a component to be used as a base reference to calculate the position of the new item. If not provided, the last item in the list will be used.
+  * **target:** Path to the item used as the insertion reference. It resolves
+    from the effective context; if omitted, the new item is appended.
   * **position:** (= "after" (default) / "before") Determines where the new item will be inserted in relation to the target.
   * **source:** (Path★  (absolute or relative **to the newly created item**).
     If provided, the matched component value (result of its *export* action)
@@ -765,7 +776,8 @@ Reverts the list to its default structure. The default is initially set by the `
   * **action:** (= "removeItem")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-  * **target:** Path★  (absolute or relative to its *context*) to the component to be removed. If not provided, the last item in the list will be used.
+  * **target:** Path to the item to remove, resolved from the effective context.
+    If omitted, the last item is removed.
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **preserve_non_empty:** (boolean)
   * **failback:** (= "none" / "clear" / "throw" )
@@ -785,4 +797,3 @@ Reverts the list to its default structure. The default is initially set by the `
 
   * **action:**: (= "position")
   * **offset:**: (default 1)
-<!-- END old PORTED TO docs/_component_reference/list.md -->

@@ -155,6 +155,15 @@ initial DOM before the list renders. Set the role in `data-smark` or with a
 actions emit `BeforeAction_*` / `AfterAction_*` events; direct calls such as
 `myForm.export()` call the raw method and do not emit those lifecycle events.
 
+`clear` imports the type-level empty value. On a form, child-local defaults can
+reappear; on a list, `min_items` can retain rows. See the [Form]({{ "/component_reference/form" | relative_url }}#async-clear-action)
+and [List]({{ "/component_reference/list" | relative_url }}#async-clear-action)
+references for details.
+
+`clear` imports the type-level empty value. A form's children may restore their
+own defaults, and a list can retain minimum rows; see the Form and List
+references for these cases.
+
 ---
 
 ## Context & Target Resolution

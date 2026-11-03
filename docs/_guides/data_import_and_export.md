@@ -340,11 +340,26 @@ Both `clear` and `reset` are built on top of `import` but behave differently:
 | Action | What it does | Updates default? |
 |---|---|---|
 | `reset` | Imports the current `defaultValue` | No |
-| `clear` | Imports the component's type-level empty value (`{}` for forms, `[]` for lists; scalar field types may use `""` or `null`) | No |
+| `clear` | Imports the component's type-level empty value (`{}` for forms, `[]` for lists; scalar types use their empty value) | No |
 
-Use **`reset`** to undo user changes and return to the last loaded state.  
-Use **`clear`** to blank every field without regard to defaults — for example,
-a "New record" button.
+Use **`reset`** to undo user changes and return to the last loaded state.
+Use **`clear`** to import the component's type-level empty value without
+changing its stored default. The resulting state depends on the component's
+children and constraints:
+
+- A form imports `{}`. Each omitted child receives `undefined` and resets to
+  that child's own default. Child-local defaults can therefore reappear even
+  though the form-level default is ignored.
+- A list imports `[]`. It removes rows above `min_items` and resets retained
+  minimum rows to their own defaults; see the
+  [List reference]({{ "/component_reference/list" | relative_url }}#min_items).
+- A scalar field imports its type-level empty value. See the relevant type
+  reference for its empty export shape.
+
+See the [Form reference]({{ "/component_reference/form" | relative_url }}#async-clear-action)
+for the form-child default behavior. For a new blank record with local defaults
+or required list rows, explicitly clear those fields/items or import the
+desired empty structure.
 
 {% raw %} <!-- capture clear_vs_reset_html {{{ --> {% endraw %}
 {% capture clear_vs_reset_html -%}

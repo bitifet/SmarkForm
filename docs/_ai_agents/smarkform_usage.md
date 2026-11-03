@@ -180,6 +180,10 @@ When `export_empties: false` (the default):
 - A form item is empty if ALL its field children are empty (null/undefined)
 - Empty items are stripped from the output → `[]` for a list of all-null items
 
+The generic `input` type currently treats every checkbox as empty in `isEmpty()`,
+even when checked. A checkbox-only item may therefore be stripped from a list
+with `export_empties:false`; this behavior has no focused automated test.
+
 When `export_empties: true` (must be explicit):
 - All items are exported regardless of emptiness
 - Useful for "save progress" scenarios where partial data is intentional
@@ -252,7 +256,7 @@ Common actions triggered via `data-smark='{"action":"<name>"}'`:
 | `export` | form/list | Exports current values as JSON |
 | `import` | form/list | Imports JSON into the form |
 | `reset` | form/list | Resets to `defaultValue` |
-| `clear` | form/list | Clears to `emptyValue` (type-level empty) |
+| `clear` | form/list | Imports the type-level empty value; child defaults and `min_items` can affect the resulting state |
 | `addItem` | list | Adds a new item |
 | `removeItem` | list | Removes target item |
 | `position` | list item | Shows item's 1-based index |

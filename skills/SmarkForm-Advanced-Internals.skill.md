@@ -117,6 +117,13 @@ merges `data-smark` options and resolves context/target automatically.
 - `export_empties: true` includes entries for empty lists, empty strings, and
   `null` values in the exported JSON.  Without it, empty slots are omitted
   entirely, which can shift array indices on round-trip import.
+- Emptiness is delegated to each item's `isEmpty()`. The current generic
+  `input` implementation considers every checkbox empty, even when checked, so
+  a checkbox-only list item may be omitted with `export_empties:false`; no
+  focused automated test covers this behavior.
+- `list.clear()` imports `[]`; rows above `min_items` are removed, while
+  retained minimum rows are reset to their own defaults. `reset()` uses the
+  same import path for rows beyond a shorter default.
 - `key_style: "dot"` flattens nested keys into dotted paths
   (`"address.city"`) instead of bracket notation (`"address[city]"`).
   Use `"bracket"` (default) for standard form encoding compatibility.

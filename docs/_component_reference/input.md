@@ -1,17 +1,15 @@
 ---
-title: «input» Component Type
+title: "«input» Component Type"
 layout: chapter
-description: "Use SmarkForm input fields for text and native HTML input types, with inferred types and optional JSON value formatting."
+description: "Use SmarkForm input fields for text, selection and checkbox controls, with native attributes, value defaults and optional JSON formatting."
 permalink: "/component_reference/input"
-migration_in_progress: true
-sitemap: false
 nav_order: 4
 redirect_from:
   - "/component_types/type_input"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/input.md -->
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
@@ -27,16 +25,27 @@ redirect_from:
 
 ## Introduction
 
-The `input` component type is a fundamental building block for form elements in SmarkForm. It allows you to create and manage various types of input fields within your forms.
+The `input` component type wraps native `<input>`, `<textarea>`, and `<select>`
+controls. It returns their raw values rather than applying the typed conversion
+provided by specialized types such as `number` and `date`.
 
-- **Imports and Exports:** `String`
+- **Imports and Exports:** Usually a string; checkbox inputs export booleans.
 - **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
-- **Data Conversion:** No data conversion is performed. The value is returned as a `String`.
+- **Data Conversion:** No typed conversion is performed by the generic input type.
+
+Generic checkbox controls export `true` or `false`, but the current `isEmpty()`
+implementation treats every checkbox as empty, even when checked. A checkbox-only
+item can therefore be omitted by a list using `export_empties:false`; see the
+[List reference]({{ "/component_reference/list" | relative_url }}#export_empties).
+No focused checkbox-emptiness test currently covers this case.
 
 
 ## Usage
 
-To use the `input` component type, simply add the `data-smark` attribute to your input elements. The type of input can be specified within the `data-smark` attribute.
+Use `data-smark` on the native control. SmarkForm infers specialized types
+from supported native types such as `number`, `date`, `time`, `datetime-local`,
+`color`, and `radio`. Explicitly set `{"type":"input"}` when a control should
+keep the generic input/string behavior.
 
 **Example:**
 
@@ -64,7 +73,8 @@ the field round-trip **real JavaScript values** instead of raw text:
 - **On import**, an object, array, number, boolean or `null` is serialized to a
   JSON string in the field (pretty-printed in `<textarea>` for readability).
 - **On export**, the field's text is parsed back into a JavaScript value;
-  unparsable or empty input exports `null`.
+  unparsable or empty input exports `null`. The current implementation also
+  maps parsed falsey values (`0`, `false`, `""`, `null`) to `null`.
 
 In other words, the field's DOM value is always a *JSON string*, but the
 imported/exported data is a *structured value* — the string never leaks into
@@ -83,7 +93,23 @@ await myForm.export();
 Without the option the field simply exports its raw string value (the default
 `input` behaviour).
 
-> See: [JSON format]({{ "guides/value_coercion" | relative_url }}#json-format) for a full playable example.
+> See: [JSON format]({{ "/guides/value_coercion" | relative_url }}#json-format) for a full playable example and value limitations.
+
+## Native attributes, defaults and masks
+
+Native attributes such as `placeholder`, `autocomplete`, and `inputmode` remain
+available on the enhanced control. A placeholder is display guidance; it does
+not set the field value or its reset default.
+
+Set a default with either the native HTML `value` attribute or the SmarkForm
+`value` option in `data-smark`. Do not use both on the same element: SmarkForm
+raises `VALUE_CONFLICT`. Without either, text inputs default to an empty string.
+`import(undefined)` restores the field's own default; see
+[Setting defaults via `value`]({{ "/guides/data_import_and_export" | relative_url }}#setting-defaults-via-value).
+
+The generic `input` type also supports the `mask` option. Mask registration,
+unmasked exports, and focus behavior are covered in the
+[Field Masking guide]({{ "/guides/field_masking" | relative_url }}).
 
 ## API Reference
 
@@ -122,7 +148,9 @@ Imports a value into the input field.
 
 #### (Async) clear (Action)
 
-Clears the value of the input field to an empty string, removing any user-provided value and ignoring any configured default value.
+Imports the generic input type's empty value (`""`) without updating its
+default. Text/select controls become empty and checkboxes become unchecked
+(exporting `false`). With `format:"json"`, the empty JSON text exports `null`.
 
 ##### Options (clear)
 
@@ -140,4 +168,3 @@ Reverts the input field to its configured default value. If the field was initia
   * **action:** (= "reset")
   * {{ site.data.definitions.actions.options.origin }}
   * {{ site.data.definitions.actions.options.context }}
-<!-- END old PORTED TO docs/_component_reference/input.md -->

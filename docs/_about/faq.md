@@ -1403,26 +1403,24 @@ the fuller comparison, common environments, and an illustrative worked example.
 
 ### Why does `clear` restore my default value instead of emptying the field?
 
-The `clear` action resets a field to its **type-level empty state** (empty
-string for inputs, empty array for lists, empty object for forms), NOT its
-default value.  If the exported data still shows a value after clearing, it
-is because you are calling `clear` on a **parent component** (e.g. the whole
-form) rather than on the individual field.
+On a scalar field, `clear` imports that field type's empty value and leaves its
+default unchanged. On a **form**, `clear` imports `{}`; each omitted child gets
+`undefined` and resets to its own default. A child's local `value` or HTML
+`value` can therefore reappear even though the form-level default was ignored.
+A **list** imports `[]`; rows above `min_items` are removed, and retained
+minimum rows reset to their own defaults. See the [Form]({{ "/component_reference/form" | relative_url }}#async-clear-action)
+and [List]({{ "/component_reference/list" | relative_url }}#async-clear-action)
+references for details.
 
-A parent's `clear` iterates over its children and calls `clear` on each of
-them — but a child's default value, if set, becomes the field's new state.
-To completely empty a specific field regardless of its default, call `clear`
-directly on that field (e.g. via `{"action":"clear","context":"fieldName"}`).
-
-This distinction applies to `reset` as well: `reset` restores the
-`defaultValue`, while `clear` goes all the way to the empty state.  Both are
-recursive when applied to a parent component.
+`reset` imports the current `defaultValue`; `clear` does not update it. To
+empty a particular scalar regardless of its local default, call `clear` on that
+field (for example, through `{"action":"clear","context":"fieldName"}`).
 
 ```html
-<!-- Clears the whole form → fields with defaults keep their defaults -->
+<!-- Clears the form-level value; child-local defaults may reappear -->
 <button data-smark='{"action":"clear"}'>❌ Clear form</button>
 
-<!-- Clears only the "colour" field → becomes null regardless of default -->
+<!-- Clears only the "colour" field to its type-level empty value -->
 <button data-smark='{"action":"clear","context":"colour"}'>❌ Clear colour</button>
 ```
 

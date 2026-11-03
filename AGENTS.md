@@ -71,6 +71,21 @@ SmarkForm's declarative masking API allows integrating external masking librarie
 - Tests: `test/declarative_mask.tests.js`, `test/mask.tests.js`
 - Implementation: `src/main.js` (registry), `src/lib/mixin.js` (scoped mask filtering), `src/lib/component.js` (propagation), `src/types/input.type.js` (`_applyMask`, export/import integration)
 
+### Generic Input Field
+
+`input` wraps native `<input>`, `<textarea>`, and `<select>` controls. Text and
+select values export as strings; generic checkbox inputs export booleans. The
+current `input.isEmpty()` implementation returns `true` for every checkbox,
+even when checked. A checkbox-only list row may therefore be omitted when
+`export_empties:false`; there is no focused automated test for that case. See
+`docs/_component_reference/input.md` and `docs/_component_reference/list.md`.
+
+Form/list clear behavior also follows each component's import implementation:
+forms import `{}` (omitted children reset to their own defaults), and lists
+import `[]` (rows above `min_items` are removed, while retained minimum rows
+reset to their own defaults). This behavior follows `list.import()` and its
+`reset()` loop for rows beyond the imported data.
+
 ### File Field Type
 
 SmarkForm's `file` field type turns a field into a whole-file uploader with a

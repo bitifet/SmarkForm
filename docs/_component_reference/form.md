@@ -1,17 +1,15 @@
 ---
-title: «form» Component Type
+title: "«form» Component Type"
 layout: chapter
 description: "Model structured JSON objects with SmarkForm forms, nesting named fields and other forms to describe your data."
 permalink: "/component_reference/form"
-migration_in_progress: true
-sitemap: false
 nav_order: 2
 redirect_from:
   - "/component_types/type_form"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/form.md -->
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
@@ -40,6 +38,19 @@ elements (`<input>`, `<textarea>`, `<select>`, `<button>`...) and can contain
 any number of *SmarkForm* fields, **including nested forms** — there is no
 limit to the nesting depth beyond practical usability.
 
+## Value shape and field matching
+
+A `form` exports a plain object with one property for each named child field.
+Nested forms export nested objects; lists export arrays. Fields that are empty
+still appear in the object with the value defined by their type (for example,
+`""` for a text input and `null` for a number field).
+
+`import()` accepts a plain object or a JSON string containing an object. It
+imports matching child names recursively. A child key omitted from the object
+receives `undefined` and resets that child to its own default; keys with no
+matching child are ignored. See [Import and Export]({{ "/guides/data_import_and_export" | relative_url }})
+for the complete value/default contract.
+
 **Example:**
 
 Following example shows a simple *SmarkForm* form with two nested forms:
@@ -55,7 +66,7 @@ Following example shows a simple *SmarkForm* form with two nested forms:
     <legend>Personal Data:</legend>
     <p>
       <label data-smark>Name:</label>
-      <input data-smark type='text' name='name' placheolder='Family name'/>
+      <input data-smark type='text' name='name' placeholder='Family name'/>
     </p>
     <p>
       <label data-smark>Surname:</label>
@@ -70,7 +81,7 @@ Following example shows a simple *SmarkForm* form with two nested forms:
     <legend>Business Data:</legend>
     <p>
       <label data-smark>Company Name:</label>
-      <input data-smark type='text' name='name' placheolder='Company Name'/>
+      <input data-smark type='text' name='name' placeholder='Company Name'/>
     </p>
     <p>
       <label data-smark>Address:</label>
@@ -148,6 +159,7 @@ The following example demonstrates the distinction between `clear` and `reset` a
       <button data-smark-action="reset">Reset to Defaults</button>
       <button data-smark-action="export">Show Data</button>
     </p>
+    <pre data-export aria-live="polite">Exported data appears here.</pre>
   </fieldset>
 </div>{%
 endcapture %}
@@ -155,10 +167,10 @@ endcapture %}
 
 {% raw %} <!-- capture clear_reset_example_js {{{ --> {% endraw %}
 {% capture clear_reset_example_js -%}
-
-/* Show exported data in an alert() window */
+// Render exported data in the example instead of opening a modal dialog.
+const output = myForm.targetNode.querySelector("[data-export]");
 myForm.on("AfterAction_export", (ev) => {
-    alert(JSON.stringify(ev.data, null, 2));
+    output.textContent = JSON.stringify(ev.data, null, 2);
 });{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -167,9 +179,6 @@ endcapture %}
 {% capture clear_reset_example_tests -%}
 export default async ({ page, expect, id, root }) => {
     await expect(root).toBeVisible();
-
-    // Dismiss any alert dialogs triggered by the "Show Data" button
-    page.on('dialog', async (dialog) => { await dialog.dismiss(); });
 
     // Click each button and assert no errors are thrown
     const buttons = root.locator('button');
@@ -183,15 +192,17 @@ export default async ({ page, expect, id, root }) => {
 
 {% raw %} <!-- capture clear_reset_example_notes {{{ --> {% endraw %}
 {% capture clear_reset_example_notes -%}
-👉 This form is initialized with default values for all fields.
+👉 The example has a form-level `demoValue`; its child controls do not declare
+   their own HTML or field-level defaults.
 
-🔘 **Clear All** - Removes all values, leaving fields empty (ignoring defaults).
+🔘 **Clear All** — Imports the form's type-level empty object; with the child
+fields in this example, their empty-string values appear.
 
 🔄 **Reset to Defaults** - Restores the original default values.
 
 💡 Try this sequence:
 1. Modify some field values
-2. Click "Clear All" - all fields become empty
+2. Click "Clear All" — the example's text fields become empty
 3. Click "Reset to Defaults" - default values are restored
 
 ℹ️  The `value` option on the form sets the default values that `reset` will restore.
@@ -308,11 +319,20 @@ The `form` component type supports the following actions:
 
 #### (Async) clear (Action)
 
-Clears all fields to their type-level empty state, removing all user-provided values **and ignoring any configured default values**. This action is useful when you want to completely empty a form, regardless of any defaults that were set.
+`clear` imports the form's type-level empty object (`{}`) without changing the
+form's stored default. Since omitted child keys receive `undefined`, each child
+resets to its **own** default. This clears fields whose own default is empty,
+but a child with an HTML `value` attribute or `data-smark` `value` can restore
+that local default. A nested list also honors `min_items`; retained minimum rows
+are reset to their own defaults. See the [List reference]({{ "/component_reference/list" | relative_url }}#async-clear-action).
 
-For forms, this means setting all fields to empty values (empty strings for text fields, empty arrays for lists, empty objects for nested forms). Unlike `reset`, `clear` does not restore default values, nor does it update the stored default.
+Unlike `reset`, `clear` does not restore the form's stored default, nor update
+it. To blank a field that has its own default, call `clear` on that field or
+import its type-specific empty value explicitly.
 
-**Example use case:** A "New" button that clears everything to start fresh, even if the form had default values.
+**Example use case:** A "New" button that discards the form-level loaded value.
+If child-local defaults exist, clear those fields separately when the desired
+behavior is a completely blank form.
 
 ##### Options (clear)
 
@@ -463,4 +483,3 @@ These options can be set via `data-smark` on the root form element:
 The `null` action would explicitly set an entire form or field to `null`, representing an intentionally "not provided" state. This differs from `clear` (which empties fields) and `reset` (which restores defaults).
 
 For nested forms, this would set the entire form value to `null` rather than clearing individual fields. This is useful for optional form sections where you want to distinguish between "empty but provided" and "not provided at all".
-<!-- END old PORTED TO docs/_component_reference/form.md -->
