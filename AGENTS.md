@@ -102,7 +102,8 @@ a self-describing data-URL string by default, or as a structured object with
 - `export()` shapes: raw → `"data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…"`; json → `{name, type, size, lastModified, data}` with `data` per `encoding`; empty → `null`.
 - `import()` is inclusive: a raw data-URL string, an **URL string** (same-origin/relative `http(s)://…`, `//host`, `blob:`, `/path`, `./…`, `../…` — fetched and embedded at import time; cross-origin needs CORS; failed fetch warns and yields `null`), a (partial) object, a bare payload string, or a JSON string of an object — all normalized. `size` is always recomputed from the decoded payload bytes.
 - **Encoding invariant**: the interior state always stores `data` as *base64*; `encoding` only selects how bytes are written on export (json form) and decoded on bare-string imports. An **acquired** file's object is therefore re-encoded to the field's `encoding` before import (`readFileToObject(file, {encoding})`, threaded through the singleton drop/paste, list `toObjects`, and list `acquire`).
-- Real field: the authored input is rewritten to `type="text"` and a hidden native picker is attached; `click` and `Shift+Space` open the OS picker (Shift+Space yields to the `<details>` folding convention). Plain `Space` types normally.
+- **Zero-byte values:** direct acquisition on a real file field can retain a zero-byte file and export `size: 0`; a raw data-URL string can also represent it. An object with `data: ""` is normalized to empty, so a JSON export of a zero-byte file does not round-trip through object import. Wrapper-level drops and list acquisition use that object path; a list may retain an empty row.
+- Real field: the authored input is rewritten to `type="text"` and a hidden native picker is attached; clicking or pressing `Shift+Space` on that field opens the OS picker (Shift+Space yields to the `<details>` folding convention). In a file singleton, the inner field opens the picker; clicking elsewhere on the wrapper does not. Plain `Space` types normally.
 - Singleton: drop/paste are detected over the whole container; drops originating inside the inner field are left to the inner field.
 - Lists: `{"type":"list","name":"photos","of":"file"}` → `addItem` opens a multi-file picker unless `multiple:false`; OS file drops auto-**append** items anywhere in the list (list-level `file_drop:false` disables). Inside a file-capable list the item singleton's container drop is suppressed so a drop on an existing item appends instead of replacing that item's file; paste stays item-scoped. `max_items` overflow is confirmed via `window.confirm`.
 - **Download (action):** `{"action":"download","context":"/cv"}` (or `/cv` relative to a container) triggers a **real browser download** of the stored bytes (Blob + object URL + `<a download>`); works on real fields and singletons (the container delegates to its inner field). Empty field → no-op returning `null`. Name precedence: `filename` trigger option > edited visible name > stored name. Most reliable from a trigger click (user gesture).
@@ -123,7 +124,8 @@ a self-describing data-URL string by default, or as a structured object with
 SmarkForm's `image` field type extends `file` and renders the field **in place
 on a native `<img>`** (the picture *is* the field), adding decoded-image
 validation, optional resize/format conversion with `image_enforce` modes, and
-an editable file name via `figcaption contenteditable`.
+an editable file name via a `rename` action on a `figcaption` (legacy authored
+`contenteditable` captions remain supported).
 
 **Key API**:
 - Declaration: `<img data-smark='{"name":"photo"}'>` (bare `<img data-smark>`
@@ -154,8 +156,9 @@ an editable file name via `figcaption contenteditable`.
   `preventDefault()`). `window.alert/confirm` are avoided — blocked in
   sandboxed iframes.
 - **Caption = editable name**: on `<figure>` wrappers and per-item in
-  galleries, `figcaption contenteditable` mirrors/edits the stored `name`
-  (edited caption > stored name on export/download). Delete/Backspace never
+  galleries, a `rename` action makes the `figcaption` editable and mirrors/edits
+  the stored `name` (legacy authored `contenteditable` captions also work;
+  edited caption > stored name on export/download). Delete/Backspace never
   clears while focus is inside a caption.
 - **Lists**: `{"type":"list","of":"image"}` → flat array of data URLs; `addItem`
   multi-picks and decode-filters the batch; OS drops **append** items (a drop

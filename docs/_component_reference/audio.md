@@ -1,17 +1,14 @@
 ---
-title: "audio Component Type"
+title: "«audio» Component Type"
 layout: chapter
 description: "Use SmarkForm audio fields to acquire, preview, play and export embedded audio files, with picker, drop, paste and list support."
 permalink: "/component_reference/audio"
-migration_in_progress: true
-sitemap: false
 nav_order: 15
 redirect_from:
   - "/component_types/type_audio"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/audio.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -284,7 +281,9 @@ field itself has focus.
 Interactive acquisition probes the bytes with an off-DOM `<audio>` element and
 rejects malformed media silently. Set `smark_audio_validate: false` to disable
 that probe. `audio_max_size` rejects oversized files before reading them and
-dispatches cancellable `smark:audioNotice`.
+dispatches a cancellable `smark:audioNotice` (`AUDIO_TOO_LARGE`); unless a
+listener calls `preventDefault()`, SmarkForm also shows an in-page toast. A
+malformed-media probe failure remains silent.
 
 Common options:
 
@@ -339,4 +338,3 @@ fields, use `smark_audio_auto_pick: true` on the particular audio field when an
 automatic picker is desired. This is opt-in and browser-dependent: a picker
 opened after an asynchronous render may be blocked when no user gesture is
 active, so an explicit `pick` trigger remains the reliable fallback.
-<!-- END old PORTED TO docs/_component_reference/audio.md -->

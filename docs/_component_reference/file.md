@@ -1,17 +1,14 @@
 ---
-title: «file» Component Type
+title: "«file» Component Type"
 layout: chapter
 description: "Acquire and export files with SmarkForm file fields, including data URLs, JSON values, drag and drop, paste, lists and downloads."
 permalink: "/component_reference/file"
-migration_in_progress: true
-sitemap: false
 nav_order: 12
 redirect_from:
   - "/component_types/type_file"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/file.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -104,9 +101,10 @@ endcapture %}
 
 {% raw %} <!-- file_singleton_notes {{{ --> {% endraw %}
 {% capture file_singleton_notes -%}
-👉 **Singleton container:** the whole dashed box *is* the field.
+👉 **Singleton container:** the whole dashed box *is* the field for drop and
+   paste. Click or press **Shift+Space** on the inner field to open the picker;
+   clicking elsewhere on the wrapper does not open it.
 
-  * Click anywhere on it (or press **Shift+Space**) to open the OS picker.
   * Drop files from your file manager straight onto the box.
   * **Paste** an image/screenshot onto it.
 
@@ -705,14 +703,16 @@ export default async ({ page, expect, id, root }) => {
   always requires a real user gesture (click / **Shift+Space**, drop, or
   paste). Consequently a cancelled picker is indistinguishable from "no
   selection".
-- A zero-byte payload is only representable through a **data-URL string
-  import** (it exports as a `size:0` object). The *object* form requires a
-  non-empty `data` — an empty or missing `data` **clears** the field to the
-  `null` empty state, so picking/dropping a genuinely empty (0-byte) file is
-  indistinguishable from picking none.
-- The picker itself is always multiple-capable; the list decides how many
-  files are consumed (`multiple: false` on `addItem` limits the choice to a
-  single file).
+- An empty payload has route-specific behavior. A `data:` URL string can encode
+  zero bytes and exports with `size:0`; directly picking a zero-byte file on a
+  real file field also stores it. In contrast, an object with `data:""` is
+  treated as empty, so a JSON export of that zero-byte file does not round-trip
+  through object import. Wrapper-level drops and list acquisition also pass
+  file objects through that normalizer: the field ends up empty, and a list
+  acquisition can leave an empty item row.
+- A real file field's picker selects one file. A file-capable list's batch
+  picker allows multiple files by default; `multiple:false` on `addItem`
+  requests a single file.
 - `accept` filtering is best-effort on drop/paste: it matches MIME types and
   extension suffixes, and non-matching files are silently ignored.
 
@@ -720,4 +720,3 @@ export default async ({ page, expect, id, root }) => {
 > a field built on `file` that renders the value in place on an `<img>` and
 > adds decoded-image validation, resize/format conversion and editable
 > captions.
-<!-- END old PORTED TO docs/_component_reference/file.md -->

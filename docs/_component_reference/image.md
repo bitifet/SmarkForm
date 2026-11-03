@@ -1,17 +1,14 @@
 ---
-title: «image» Component Type
+title: "«image» Component Type"
 layout: chapter
 description: "Learn how SmarkForm image fields acquire, validate, resize and export images, with previews, editable captions and list support."
 permalink: "/component_reference/image"
-migration_in_progress: true
-sitemap: false
 nav_order: 13
 redirect_from:
   - "/component_types/type_image"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/image.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -44,7 +41,8 @@ action, and adds:
   `image_format` conversion on acquisition, with configurable `image_enforce`
   behaviour when a requirement cannot be met or verified.
 - **Editable file name:** on `<figure>` wrappers and in galleries, a
-  `figcaption contenteditable` mirrors and edits the stored `name`.
+  `rename` action makes a `figcaption` editable and syncs it with the stored
+  `name`. Legacy authored `contenteditable` captions remain supported.
 
 Images are **embedded-only**, exactly like `file`: the value always holds the
 bytes (as base64 internally), never an external URL. An URL is only accepted as
@@ -191,8 +189,8 @@ Wrapping the field in another element turns the whole wrap area into the field
 — the [Singleton
 Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}) — and
 applies **drop**, **paste** and **click** handlers over the *entire container*.
-A `<figure>` wrapper additionally turns a `figcaption contenteditable` into the
-editable file **name**:
+A `<figure>` wrapper can make a `<figcaption>` an editable file **name** with the
+`rename` action (legacy authored `contenteditable` captions also work):
 
 {% raw %} <!-- image_singleton_html {{{ --> {% endraw %}
 {% capture image_singleton_html -%}
@@ -202,7 +200,7 @@ editable file **name**:
         data-smark='{"type":"image","name":"photo","image_max_size":[300,300]}'
     >
         <img data-smark width="300" height="200" alt="Photo">
-        <figcaption class="caption" contenteditable>(edit file name)</figcaption>
+        <figcaption class="caption" data-smark='{"action":"rename"}'>edit file name</figcaption>
         <button data-smark='{"action":"download"}'>Download</button>
     </figure>
 </div>{%- endcapture %}
@@ -517,7 +515,7 @@ Declaring a list whose item type is `"image"` renders each item as a thumbnail
     <li data-smark-role="empty_list">(Drop images here…)</li>
     <li data-smark='{"type":"image"}'>
         <img data-smark width="120" height="120" alt="Gallery item">
-        <figcaption contenteditable></figcaption>
+        <figcaption data-smark='{"action":"rename"}'></figcaption>
     </li>
 </ul>
 ```
@@ -530,7 +528,7 @@ Declaring a list whose item type is `"image"` renders each item as a thumbnail
 * **OS drop:** dropping files anywhere on the list **appends** items (a drop on
   an existing item appends rather than replaces it — the item's own drop is
   suppressed inside an `of:"image"` list). Paste stays item-scoped.
-* **Per-item caption:** the optional `figcaption contenteditable` is each
+* **Per-item caption:** the optional `figcaption` with a `rename` action is each
   thumbnail's editable file name, exactly like the `<figure>` singleton.
 * **Limits:** `max_items` overflow is confirmed via `window.confirm`, as for
   `file`.
@@ -546,7 +544,7 @@ The list imports/exports a **flat array of data URLs** (or JSON objects with
         <li data-smark='{"role":"empty_list"}'>(Drop images here…)</li>
         <li data-smark='{"type":"image"}'>
             <img data-smark width="120" height="120" alt="Gallery item">
-            <figcaption contenteditable></figcaption>
+            <figcaption data-smark-action="rename"></figcaption>
         </li>
     </ul>
 </div>{%- endcapture %}
@@ -709,4 +707,3 @@ logged and the value is left empty (`null`), rather than breaking the import.
 > the underlying type and value contract; the [Singleton
 > Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}) and
 > [Files in Lists]({{ "component_reference/file" | relative_url }}#files-in-lists-of-file)).
-<!-- END old PORTED TO docs/_component_reference/image.md -->

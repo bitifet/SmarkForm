@@ -1,17 +1,14 @@
 ---
-title: "video Component Type"
+title: "«video» Component Type"
 layout: chapter
 description: "Use SmarkForm video fields to acquire, preview and export video files, with playback controls, picker, drop, paste and list support."
 permalink: "/component_reference/video"
-migration_in_progress: true
-sitemap: false
 nav_order: 14
 redirect_from:
   - "/component_types/type_video"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/video.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
@@ -299,7 +296,9 @@ focus.
 Interactive acquisition probes the bytes with an off-DOM video element and
 rejects malformed media silently. Set `smark_video_validate: false` to disable
 that probe. `video_max_size` rejects oversized files before reading them and
-dispatches cancellable `smark:videoNotice`.
+dispatches a cancellable `smark:videoNotice` (`VIDEO_TOO_LARGE`); unless a
+listener calls `preventDefault()`, SmarkForm also shows an in-page toast. A
+malformed-media probe failure remains silent.
 
 Common options:
 
@@ -353,4 +352,3 @@ The metadata probe confirms that the browser recognizes the media container;
 it cannot guarantee every codec will play. H.264/AAC MP4 is the safest shared
 format. Video values are embedded as base64, so use `video_max_size` to keep
 memory and data-URL costs appropriate for the application.
-<!-- END old PORTED TO docs/_component_reference/video.md -->
