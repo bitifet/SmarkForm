@@ -1,5 +1,11 @@
 # Step 18 — Redistribute Resources, Agent Material, and Community Pages
 
+**Status:** Resource pages are finalized in their approved audience collections;
+the old public route redirects, `/resources/dist/` is retained only for static
+assets, and no reader-facing Resources collection remains. Community routes and
+nav order are verified; the protected Contact page is byte-identical. See
+[`18-resource-and-community-transfer-map.md`](18-resource-and-community-transfer-map.md).
+
 ## Session goal
 
 Move remaining resources to their approved audiences/tasks and complete the

@@ -3,15 +3,12 @@ title: CDN
 layout: chapter
 description: "Use SmarkForm's version-pinned or latest ESM and UMD builds from public CDNs, plus example CSS resources."
 permalink: "/start_here/cdn"
-migration_in_progress: true
-sitemap: false
 nav_order: 3
 redirect_from:
   - "/resources/CDN"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_start_here/cdn.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -29,21 +26,23 @@ redirect_from:
 ## SmarkForm
 
 
-Latest SmarkForm version is currently ({{ site.data.package.version }}).
+The current release is **{{ site.data.package.version }}**. Use the versioned
+URLs below for production so an upstream release cannot change your app
+unexpectedly.
 
 
-You can link this version **(recommended)** it as CDN with following links:
+Use either ESM or UMD from jsDelivr:
 
   * ESM: `{{ smarkform_esm_cdn_current }}`
   * UMD: `{{ smarkform_umd_cdn_current }}`
 
 {: .hint}
-> See [Getting Started section]({{ "/start_here/getting_smarkform#using-a-cdn-esiest-approach" | relative_url }}) for more details:
+> See [Getting SmarkForm]({{ "/start_here/getting_smarkform" | relative_url }}) for help choosing a distribution format.
 
 ### Latest Version
 
-If your'd rather get always latest available SmarkForm version (not recommended
-for production code) through CDN, use the following links instead:
+For experiments, demos, and training, these unpinned URLs resolve to the latest
+published package version. Avoid them in production:
 
   * ESM: `{{ smarkform_esm_cdn_latest }}`
   * UMD: `{{ smarkform_umd_cdn_latest }}`
@@ -76,4 +75,3 @@ example CSS files, you can use the following links instead:
     <link rel='stylesheet' href='{{ css_layout_cdn_latest }}'>
     <link rel='stylesheet' href='{{ css_styles_cdn_latest }}'>
 ```
-<!-- END old PORTED TO docs/_start_here/cdn.md -->

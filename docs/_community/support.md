@@ -22,7 +22,7 @@ Get help with SmarkForm, the right way—faster for you, easier for maintainers.
   [smarkform@bitifet.net](mailto:smarkform@bitifet.net)
 
 **Before asking:**
-- Check the documentation and FAQ: [About → FAQ](/about/faq).
+- Check the documentation and [FAQ]({{ "/about/faq" | relative_url }}).
 - Search existing [Discussions](https://github.com/bitifet/SmarkForm/discussions) and [Issues](https://github.com/bitifet/SmarkForm/issues) to avoid duplicates.
 
 ## Community support (Q&A)

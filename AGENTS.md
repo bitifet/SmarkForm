@@ -468,9 +468,14 @@ scripts/liveserve_all.sh
 - Jekyll site in `docs/` directory
 - Reader-facing collections follow the documentation IA under `_showcase_examples`, `_start_here`, `_guides`, `_accessibility`, `_component_reference`, `_advanced_topics`, `_about`, `_for_end_users`, `_ai_agents`, and `_community`. Temporary `_old_*` collections exist only on the refactor branch and must be removed before publication.
 - Generates chapter TOCs first (`node ../scripts/generate-chaptertocs.js` fills the git-ignored `docs/_includes/chaptertoc/` directory from the pages' include tags)
-- Built package and examples copied into docs for deployment
+- Built package copied to `/dist/` for the Examples selector and to
+  `/resources/dist/` for stable download URLs; downloadable-example source
+  extracts are copied into the hidden `.example_sources` folders beside the
+  canonical and staged Examples capture pages by `scripts/sync_documentation_assets.sh`.
 - `package.json` copied to `docs/_data/` for Jekyll data files
-- Generated package files stay at `/resources/dist/`; downloadable-example source extracts use hidden `.example_sources` folders next to the old and new Examples pages so `include_relative` works without publishing capture files as sitemap entries.
+- The asset sync runs from the local docs build/serve helpers and the Pages
+  workflow; it requires a built root `dist/` including `dist/examples/` (run
+  `npm run bundle` first if that directory is missing).
 - `jekyll-redirect-from` is enabled through `docs/Gemfile` and `docs/_config.yml` for clean-URL migration aliases; verify redirects and the sitemap in the built site.
 - Temporary `/old/` pages and in-progress canonical pages are `noindex`/sitemap-excluded during the refactor and must not ship.
 - Social link previews use the theme's `jekyll-seo-tag`: `docs/_config.yml` sets
@@ -707,6 +712,7 @@ cd media/hero
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` |
 | Chapter TOC generator | `scripts/generate-chaptertocs.js`, `scripts/watch-chaptertocs.js` (dev live-regen) — output: git-ignored `docs/_includes/chaptertoc/` |
+| Documentation assets | `scripts/sync_documentation_assets.sh` — copies root `dist/` to `/dist/` and `/resources/dist/`, and populates hidden Examples capture inputs |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |
 | Just-The-Docs Sass shadow | `scripts/update_just_the_docs_sass_shadow.sh` → generated `docs/_sass/` |
 | Hero video (media project) | `media/hero/timeline.py`, `media/hero/build.sh`, `media/hero/setup.sh` — output: `docs/assets/hero/` |

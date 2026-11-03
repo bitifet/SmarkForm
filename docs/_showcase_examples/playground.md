@@ -2,8 +2,6 @@
 title: "Playground"
 layout: chapter
 permalink: "/showcase_examples/playground"
-migration_in_progress: true
-sitemap: false
 nav_order: 3
 redirect_from:
   - "/resources/playground"

@@ -12,6 +12,7 @@
 # (`undefined symbol: SSL_get_peer_certificate`), and the pure-Ruby reactor
 # crashes on Ruby 3.2, so devise the Node-based reloader above instead.
 cd docs \
+    && bash ../scripts/sync_documentation_assets.sh \
     && node ../scripts/generate-chaptertocs.js \
     && bundle install \
     && npx concurrently \

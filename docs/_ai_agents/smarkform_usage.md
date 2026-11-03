@@ -4,8 +4,6 @@ layout: default
 description: "SmarkForm usage and internals reference for developers and AI agents, covering component types, lists, actions and export behavior."
 nav_exclude: true
 permalink: "/ai_agents/smarkform_usage"
-migration_in_progress: true
-sitemap: false
 nav_order: 3
 redirect_from:
   - "/resources/AGENTS/SmarkForm-Usage"

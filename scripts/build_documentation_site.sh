@@ -3,6 +3,10 @@
 # Navigate to the docs directory
 cd docs || exit 1
 
+# Keep the Examples selector and the stable /resources/dist/ downloads in sync
+# with the root bundle before Jekyll resolves their static URLs and captures.
+bash ../scripts/sync_documentation_assets.sh
+
 # Check if Bundler is installed and install it if necessary
 if ! gem query --local --name-matches '^bundler$' --installed >/dev/null 2>&1; then
     echo "Installing Bundler..."

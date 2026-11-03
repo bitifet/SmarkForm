@@ -89,9 +89,9 @@ The quickest way is a CDN import — no build step needed:
 ```
 
 {: .warning :}
-> For production, pin to a specific version (e.g.
-> `.../smarkform@0.5.0/dist/SmarkForm.esm.js`) so your app isn't affected by
-> future changes.
+> For production, pin the CDN URL to a specific release so your app isn't
+> affected by future changes. See the [CDN guide]({{ "/start_here/cdn" | relative_url }})
+> for the current versioned URL.
 
 You can also **install from npm** and use with any bundler:
 

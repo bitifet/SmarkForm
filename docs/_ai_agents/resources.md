@@ -3,15 +3,14 @@ title: AI & Agent Resources
 layout: chapter
 description: "Official SmarkForm agent guides, installable AI skills and prompts for building forms or working with library internals."
 permalink: "/ai_agents/resources"
-migration_in_progress: true
-sitemap: false
 nav_order: 1
 redirect_from:
   - "/resources/ai-agents"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_ai_agents/resources.md -->
+{% include links.md %}
+
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -176,4 +175,3 @@ Load SmarkForm from npm (already installed as "smarkform"). Use ESM import.
 Set defaultValue for role to "editor". After export, POST the data to /api/register.
 See https://smarkform.bitifet.net/ai_agents/smarkform_forms for patterns.
 ```
-<!-- END old PORTED TO docs/_ai_agents/resources.md -->

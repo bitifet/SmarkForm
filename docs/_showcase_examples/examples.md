@@ -3,15 +3,14 @@ title: Examples
 layout: chapter
 description: "Browse ready-to-run SmarkForm examples, download complete forms and adapt them to your application."
 permalink: "/showcase_examples/examples"
-migration_in_progress: true
-sitemap: false
 nav_order: 2
 redirect_from:
   - "/resources/examples"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_showcase_examples/examples.md -->
+{% include links.md %}
+
 # {{ page.title }}
 
 <style>
@@ -48,7 +47,7 @@ redirect_from:
 
 
 <div class="example-selector">
-<label for="example_switcher">Select:</label>
+<label for="example_switcher">Choose an example:</label>
 <select class="btn" id="example_switcher">
 {% for item in site.data.examples %}
     <option
@@ -61,7 +60,7 @@ redirect_from:
 <div class="tab_buttons">
 <button onClick="selectTab('output_view', this)" class="btn" id="firstTabBtn">Output</button>
 <button onClick="selectTab('html_source', this)" class="btn">HTML</button>
-<button onClick="selectTab('js_source', this)" class="tabbuton btn">Js</button>
+<button onClick="selectTab('js_source', this)" class="tabbuton btn">JavaScript</button>
 <span class="spacer"></span>
 <a class="btn" id="fullscreen_link" target=_blank href=""><span aria-label="">🖥️</span> View FullScreen</a>
 <a id="dld_button" class="btn" href="" download><span aria-label="">💾</span> Download</a>
@@ -85,7 +84,8 @@ redirect_from:
     const dldLnk = document.getElementById("dld_button");
     const sources = document.getElementsByClassName("example-source");
     function updateExample() {
-        const exampleLink = "."+switcher.value;
+        // `value` is already a site-root URL, including any configured baseurl.
+        const exampleLink = switcher.value;
         iframe.src = exampleLink;
         fullScreenLnk.href = exampleLink;
         dldLnk.href = exampleLink;
@@ -130,4 +130,3 @@ redirect_from:
 
 
 </script>
-<!-- END old PORTED TO docs/_showcase_examples/examples.md -->

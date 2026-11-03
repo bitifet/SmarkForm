@@ -4,8 +4,6 @@ layout: default
 description: "Implementation guide for AI agents and developers building production-ready SmarkForm forms with npm, CDNs, fields, lists and actions."
 nav_exclude: true
 permalink: "/ai_agents/smarkform_forms"
-migration_in_progress: true
-sitemap: false
 nav_order: 2
 redirect_from:
   - "/resources/AGENTS/SmarkForm-Forms"
@@ -35,7 +33,7 @@ downloaded copy. The library is available in two formats:
 | Format | File | Usage |
 |--------|------|-------|
 | ESM | `SmarkForm.esm.js` | `import` statement in modern browsers / bundlers |
-| UMD | `SmarkForm.umd.js` | `<script>` tag, CommonJS `require()`, AMD |
+| UMD | `SmarkForm.umd.js` | Browser `<script>` tag; exposes the `SmarkForm` global |
 
 ### Via CDN (quickest — good for demos and AI-generated playgrounds)
 
@@ -79,11 +77,8 @@ npm install smarkform
 ```
 
 ```javascript
-// ESM import (preferred in bundlers)
+// ESM import in a bundler project
 import SmarkForm from 'smarkform';
-
-// CommonJS (Node.js / older bundlers)
-const SmarkForm = require('smarkform/dist/SmarkForm.umd.js');
 ```
 
 The package ships `dist/SmarkForm.esm.js` and `dist/SmarkForm.umd.js` — no
