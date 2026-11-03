@@ -757,7 +757,7 @@ The `AGENTS/` directory at the repository root contains specialised knowledge fi
 | `AGENTS/Build-Computed-Data.md` | How the Rollup `computed_plugin` writes `docs/_data/computed.json` (bundle size, timestamps) and how Jekyll exposes it as `site.data.computed` |
 | `AGENTS/Documentation-Guidelines.md` | Authoring rules for the Jekyll/Just-the-Docs pages under `docs/` — vim fold markers around `{% capture %}` blocks, sampletabs structure, and other conventions |
 | `AGENTS/Release-Process.md` | Step-by-step guide for preparing a SmarkForm release (gather info, version bump, CHANGELOG, `RELEASE_PREP.md`, final squash commit on `main`) |
-| `AGENTS/Showcase-Restructure-Plan.md` | Record of the showcase consolidation (25 → 20 examples) and the removal/conversion decisions behind it |
+| `AGENTS/Showcase-Restructure-Plan.md` | Historical prior showcase consolidation (25 → 20 examples); superseded for the current docs migration by Step 16's source-to-destination decision map |
 
 **Agents should read the relevant `AGENTS/` files before making changes** to documentation examples, showcase forms, or anything involving SmarkForm component authoring.
 

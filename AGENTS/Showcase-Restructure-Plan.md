@@ -1,5 +1,13 @@
 # Showcase Page Restructure Plan
 
+> **Historical plan; superseded for the documentation refactor.** This records
+> an earlier 25 → 20 example restructure and includes uncommitted/gap notes
+> from that effort. Current source coverage, approved destinations, and
+> maintainer decisions are recorded in
+> [`16-showcase-audit-and-destination-decisions-transfer-map.md`](../spc/SmarkForm_docs_refact_steps/16-showcase-audit-and-destination-decisions-transfer-map.md).
+> Do not use this file's old “current flow” or “remaining gaps” as the final
+> Showcase plan. Keep it as historical context until the final migration review.
+
 ## Final State
 
 The 7-example plan was superseded by a conservative consolidation

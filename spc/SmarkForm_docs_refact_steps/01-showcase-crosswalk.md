@@ -1,6 +1,6 @@
 # Step 01 — Showcase Source Crosswalk
 
-**Status:** initial audit only. `showcase2.md` is a candidate, not the final Showcase; no legacy content is approved for deletion. Historical analysis and restructure records must be reconciled against current source and canonical pages.
+**Status:** initial audit only; superseded by the Step 16 transfer map. `showcase2.md` is a candidate, not the final Showcase; no legacy content is approved for deletion. Current claims, maintainer decisions, and source-to-destination dispositions are recorded in [`16-showcase-audit-and-destination-decisions-transfer-map.md`](16-showcase-audit-and-destination-decisions-transfer-map.md). Preserve the original inventory below as a baseline; do not treat its provisional destinations as current truth.
 
 ## Sources compared
 
