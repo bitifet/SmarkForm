@@ -491,8 +491,8 @@ myForm.onAll("beforeUnrender", async (ev) => {
     tests=false
 %}
 
-See the [Showcase — Animations]({{ "/showcase_examples/showcase" | relative_url }})
-for detailed notes and a more elaborate example.
+See the [Animations guide]({{ "/guides/animations" | relative_url }})
+for detailed notes and runnable examples.
 
 
 ### I try to select text in a field inside a sortable list, but it starts dragging instead
@@ -560,8 +560,8 @@ By default, SmarkForm skips empty items in variable-length lists when exporting
 to JSON. If you want those empty items included (e.g. `""` or `null`), set
 `{"export_empties": true}` in your list config.
 
-See the [Showcase]({{ "/showcase_examples/showcase" | relative_url }})
-for a worked example.
+See the [List reference]({{ "/component_reference/list" | relative_url }})
+for template roles, `export_empties`, and worked list examples.
 
 ### Why are my nested form fields named weirdly in the JSON?
 

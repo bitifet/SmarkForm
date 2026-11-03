@@ -1,20 +1,18 @@
 # Step 16 — Showcase Audit and Destination Decisions Transfer Map
 
-**Status:** The 20-example legacy Showcase and four-example candidate have been
-audited against the current canonical pages, implementation, specs, and existing
-tests. The candidate remains an in-progress source for Step 17; no legacy page
-has been deleted or changed. The maintainer approved three destinations that
-must land before Step 17 closes the transfer ledger: add the schedule-role
-example to List, add a tested deep-nesting/composition example to canonical
-references, and move the tested second calculator to Playground.
+**Status:** This records the Step 16 audit and maintainer decisions. Step 17 has
+landed the approved schedule-role and deep-nesting/composition examples in
+canonical references and moved the tested second calculator to Playground; see
+`17-final-showcase-transfer-map.md` for completion details. The 20-example
+legacy Showcase remains staged and unchanged; no legacy page has been deleted.
 
 ## Maintainer decisions
 
-| Material | Decision | Step 17 implementation requirement |
+| Material | Decision | Step 17 result |
 |---|---|---|
-| Legacy `schedule_list` (`separator` / `last_separator`) | Add as a runnable example to the canonical List reference, not as a fifth Showcase section. | Preserve its `schedule_list` sample ID and useful captures/demo data; explicitly declare the current list type/item type, cover min/max behavior, and wire a DOM/value test for both separator roles. |
-| `school_groups` and `nested_schedule_table` | Add a smaller tested example to canonical List/Mixin references. The candidate Race example is not equivalent; separate Form/List examples cover only part of this combined nesting/composition behavior. | Preserve the school → groups → students → grade-list value shape, cross-list move behavior, and the nested-mixin/slot lesson in one or more focused examples; adapt the original tests rather than merely mentioning the behavior. |
-| Legacy `supercalculator` | Move to the canonical Playground page as a second calculator example. | Keep the keyboard interaction test; review the global `keydown` interception and `eval` implementation and describe their scope accurately. The simple calculator remains the existing Playground example. |
+| Legacy `schedule_list` (`separator` / `last_separator`) | Add as a runnable example to the canonical List reference, not as a fifth Showcase section. | Landed as `schedule_list` with explicit List/Form roles and `schedule_list_tests` for both separators and bounds. |
+| `school_groups` and `nested_schedule_table` | Add smaller tested examples to canonical List/Mixin references. The candidate Race example is not equivalent; separate Form/List examples cover only part of this combined nesting/composition behavior. | Landed as `deep_school_groups` (nested Lists/Forms and tested cross-list moves) plus `mixin_nested_composition` (nested mixins/snippet slots and independent values). |
+| Legacy `supercalculator` | Move to the canonical Playground page as a second calculator example. | Landed as a second Playground sample with the original keyboard test, a field-scoped keyboard handler, and an arithmetic parser instead of `eval`. |
 | Legacy `dynamic_dropdown` | Reviewed not-retained. | The page is explicitly “under construction”; `htmlSource=dynamic_dropdown` refers to no capture and there is no runnable dropdown. The current Select page and API Interface page accurately mark dynamic options as planned, not implemented. Do not create a working claim from this stub. |
 
 All other source material has an exact current destination below. The old source

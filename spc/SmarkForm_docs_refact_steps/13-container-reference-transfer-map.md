@@ -74,3 +74,12 @@ unavailable here, so the docs collector and browser tests were not run.
   default; type overrides currently differ in their `undefined` handling.
 * Jekyll build and rendered public-link/fragment checks pass.
 * Node/npm and Playwright are unavailable; no browser test pass is claimed.
+
+## Step 17 Showcase transfer addendum
+
+Step 17 adds the approved `schedule_list` role/bounds demo and the
+`deep_school_groups` nested Form/List demo to the List reference. The new
+samples add 13 capture declarations and custom tests for role/boundary behavior
+and cross-list movement with nested score arrays. The List page now has seven
+sampletabs and 27 captures; the Step 13 five-sample/14-capture inventory above
+remains its baseline.

@@ -90,3 +90,14 @@ VoiceOver, or TalkBack outcomes.
 * Node/npm and Playwright are unavailable here; the docs collector and sample
   round-trip tests were not run. The new demoValue-backed sample is wired for
   the collector-generated test.
+
+## Step 17 Showcase transfer addendum
+
+Step 17 adds the legacy contacts/details example as `collapsible_sections` in
+Keyboard Navigation, retaining its full keyboard-navigation regression test;
+this is separate from the existing `nav-details` sample. Keyboard Navigation
+now has four sampletabs and 12 captures, with one custom test capture wired.
+The existing `hk-2ndlevel` Hotkeys sample now has an `hk_2ndlevel_tests` capture
+that checks nearest-context and Ctrl+Alt second-level hint exposure. Hotkeys
+now has 12 captures and one custom test. The earlier Step 11 inventories above
+remain the baseline, with Step 14 Label updates recorded separately.

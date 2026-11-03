@@ -12,10 +12,10 @@ description: "Explore runnable examples of SmarkForm markup, structured data, li
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_showcase_examples/showcase.md -->
 {% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
+{% raw %}<!-- BEGIN old PORTED TO docs/_showcase_examples/showcase.md -->{% endraw %}
 # {{ page.title }}
 
 <details class="chaptertoc">
@@ -23,20 +23,7 @@ description: "Explore runnable examples of SmarkForm markup, structured data, li
 <strong>📖 Table of Contents</strong>
 </summary>
 
-  {{ "
-<!-- vim-markdown-toc GitLab -->
-
-* [Just a Form](#just-a-form)
-    * [Features demonstrated](#features-demonstrated)
-* [Project Kanban Board](#project-kanban-board)
-    * [Features demonstrated](#features-demonstrated-1)
-* [Race Registration System](#race-registration-system)
-    * [Features demonstrated](#features-demonstrated-2)
-* [Product Configurator](#product-configurator)
-    * [Features demonstrated](#features-demonstrated-3)
-
-<!-- vim-markdown-toc -->
-       " | markdownify }}
+  {% include chaptertoc/showcase.html depth=3 %}
 
 </details>
 
@@ -116,6 +103,10 @@ Welcome to the SmarkForm Showcase — a visual catalogue of what SmarkForm
 can do.  Each example is a fully working form; explore the tabs to see the
 HTML, CSS, and JavaScript behind it.
 
+Each preview also includes the standard JSON playground controls: Export,
+Import, Reset, and Clear. See the [Playground guide]({{ "/showcase_examples/playground" | relative_url }})
+for how the editor scaffold isolates an example's values.
+
 ---
 
 ## Just a Form
@@ -135,10 +126,14 @@ initialization.  Try editing values in the preview or exporting to JSON.
     <input name='surname' data-smark>
   </p>
   <p>
+    <label data-smark>Age:</label>
+    <input name='age' type='number' data-smark>
+  </p>
+  <p>
     <label data-smark>Favourite colour:</label>
     <span data-smark='{"name":"colour","type":"color"}'>
       <input data-smark>
-      <button data-smark='{"action":"clear"}'>❌</button>
+      <button data-smark='{"action":"clear"}' title="Clear colour">❌</button>
     </span>
   </p>
 </div>{%
@@ -153,11 +148,12 @@ endcapture %}
 with the <code>name</code> option, while the inner input carries the bare <code>data-smark</code>
 attribute.  The ❌ button inside the singleton resolves its target implicitly.
 
-👉 **Label auto-linking.** A <code>&lt;label <strong>data-smark</strong>&gt;</code> is automatically
-associated with its adjacent field — no <code>for</code> or <code>id</code> attributes needed.
+👉 **Label auto-linking.** A <code>&lt;label <strong>data-smark</strong>&gt;</code> finds the next
+field in component-tree order — no <code>for</code> or <code>id</code> attributes needed here.
 
-👉 **Null values.** Unlike native HTML, a colour field with no selection exports
-<code>null</code> — try the ❌ button to see it.
+👉 **Type-specific values.** The Color field exports <code>null</code> when it has no
+selection, while empty text fields export <code>""</code> and Age exports a number.
+Try the ❌ button to see the Color field's nullable state.
 
 > See <a href="{{ "/start_here/quick_start" | relative_url }}">Quick Start</a>
 > to learn the basics, or check the **✏️ Edit** tab to see the full source.
@@ -165,16 +161,41 @@ associated with its adjacent field — no <code>for</code> or <code>id</code> at
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
-{}
+{"name":"Alice","surname":"Johnson","age":28,"colour":"#6366f1"}
 {%- endcapture %}
+
+{% raw %}<!-- just_form_js {{{ -->{% endraw %}
+{% capture just_form_js -%}
+// Marked fields are discovered automatically; no custom JavaScript is needed.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- just_form_tests {{{ -->{% endraw %}
+{% capture just_form_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('name', 'Alice');
+    await writeField('surname', 'Johnson');
+    await writeField('age', 28);
+    await writeField('colour', '#6366f1');
+
+    expect(await readField('name')).toBe('Alice');
+    expect(await readField('age')).toBe(28);
+    expect(await readField('colour')).toBe('#6366f1');
+
+    await root.locator('button[title="Clear colour"]').click();
+    expect(await readField('colour')).toBeNull();
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="just_form"
     htmlSource=just_form_example
+    jsSource=just_form_js
     notes=just_form_notes
+    demoValue=demoValue
     selected="preview"
     showEditor=true
-    tests=false
+    tests=just_form_tests
 %}
 
 ### Features demonstrated
@@ -218,9 +239,9 @@ associated with its adjacent field — no <code>for</code> or <code>id</code> at
 <div class="feature">
   <button class="feature-summary">Null values</button>
   <div class="feature-desc">
-  Empty inputs produce <code>null</code> in exported JSON.  The colour field
-  (<code>type="color"</code>) is a good example: when no colour is selected it exports
-  <code>null</code>, and the ❌ button demonstrates explicit clearing.
+  Empty values depend on the field type. The Color field (<code>type="color"</code>)
+  exports <code>null</code> when undefined; the text inputs export empty strings,
+  and Age exports a number or <code>null</code>.
 
   See <a href="{{ "/guides/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
   </div>
@@ -255,8 +276,8 @@ associated with its adjacent field — no <code>for</code> or <code>id</code> at
 
 ## Project Kanban Board
 
-A task management board with drag-and-drop columns, keyboard shortcuts,
-and entry / exit animations.  Drag tasks between **To Do**, **In Progress**,
+A task management board with drag-and-drop columns and keyboard shortcuts.
+Drag tasks between **To Do**, **In Progress**,
 and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
 
 {% raw %} <!-- kanban_html {{{ --> {% endraw %}
@@ -294,7 +315,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
     .kanban-mixin .card input { flex: 1; }
     .kanban-mixin .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
   </style>
-  <div data-smark='{"type":"list","sortable":true,"min_items":0,"movingDepth":1}' class="kanban-mixin">
+  <div data-smark='{"type":"list","sortable":true,"min_items":0,"moving_depth":1}' class="kanban-mixin">
     <div data-smark='{"role":"header"}'>
       <strong id="colLabel">Column</strong>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add task">➕</button>
@@ -311,8 +332,6 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
 
 {% raw %} <!-- kanban_js {{{ --> {% endraw %}
 {% capture kanban_js -%}
-const myForm = new SmarkForm(document.getElementById("myForm$$"));
-
 myForm.on("BeforeAction_removeItem", async (ev) => {
   // Never confirm for bulk operations (target:*) or preserve_non_empty
   if (
@@ -322,6 +341,44 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
   if (await ev.target?.isEmpty()) return;
   if (!window.confirm("Remove this task?")) ev.preventDefault();
 });
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- kanban_tests {{{ -->{% endraw %}
+{% capture kanban_tests -%}
+export default async ({ expect, root, readField, writeField, page }) => {
+    await expect(root).toBeVisible();
+    await writeField('/todo', [
+        { title: 'Write tests' },
+        { title: 'Review PR' },
+    ]);
+    await writeField('/progress', [{ title: 'Fix layout' }]);
+
+    await page.evaluate(async () => {
+        const source = myForm.find('/todo');
+        const target = myForm.find('/progress');
+        await source.move({
+            from: source.children[0],
+            target_list: target,
+            position: 'after',
+        });
+    });
+
+    expect(await readField('/todo')).toEqual([{ title: 'Review PR' }]);
+    expect(await readField('/progress')).toEqual([
+        { title: 'Fix layout' },
+        { title: 'Write tests' },
+    ]);
+
+    await page.evaluate(async () => {
+        await myForm.find('/done').addItem(
+            { title: '' }, { multiple: false, silent: true }
+        );
+    });
+    const done = await page.evaluate(() => myForm.find('/done').children.length);
+    expect(done).toBe(2);
+    await root.locator('.clear-empties').click();
+    expect(await page.evaluate(() => myForm.find('/done').children.length)).toBe(1);
+};
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- kanban_css {{{ --> {% endraw %}
@@ -349,18 +406,19 @@ button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
-{"todo":["Write documentation","Review PR"],"progress":["Fix layout bug"],"done":["Setup CI"]}
+{"todo":[{"title":"Write documentation"},{"title":"Review PR"}],"progress":[{"title":"Fix layout bug"}],"done":[{"title":"Setup CI"}]}
 {%- endcapture %}
 
 {% include components/sampletabs_tpl.md
     formId="kanban"
     htmlSource=kanban_html
     cssSource=kanban_css
-    jsHead=kanban_js
+    jsSource=kanban_js
     notes=kanban_notes
+    demoValue=demoValue
     selected="preview"
     showEditor=true
-    tests=false
+    tests=kanban_tests
 %}
 
 ### Features demonstrated
@@ -384,9 +442,10 @@ button { position: relative; }
 <div class="feature">
   <button class="feature-summary">Cross-list drag-and-drop</button>
   <div class="feature-desc">
-  Task cards can be dragged between columns.  Each list has <code>sortable:true</code>
-  and <code>movingDepth:1</code> — SmarkForm recognises that all three columns share
-  the same mixin template and allows unrestricted movement between them.
+  Task cards can be dragged between these three columns. Each list has
+  <code>sortable:true</code> and <code>moving_depth:1</code>. The lists share the
+  same mixin template, so SmarkForm treats them as compatible; other cross-list
+  moves still obey the configured sibling-distance limits on both lists.
 
   See <a href="{{ "/component_reference/list" | relative_url }}#sortable">List Type — sortable</a>.
   </div>
@@ -459,11 +518,11 @@ button { position: relative; }
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Scoped mixin CSS</button>
+  <button class="feature-summary">Class-prefixed mixin styles</button>
   <div class="feature-desc">
-  The mixin template includes its own <code>&lt;style&gt;</code> block.  Styles are scoped with
-  a <code>.kanban-mixin</code> class on the template root so they only affect the mixin's
-  content — demonstrating encapsulated component styling.
+  The mixin template includes a <code>&lt;style&gt;</code> block whose selectors
+  begin with <code>.kanban-mixin</code>. Mixin styles are injected globally, not
+  encapsulated; this class prefix limits where these rules match.
 
   See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>.
   </div>
@@ -490,8 +549,8 @@ Register a family for a race event.  Fill the first member, then ✨ duplicate
 for siblings — only edit what differs.  Each member gets a race bib, meal
 selection, and emergency contact.
 
-The form auto-validates age vs. distance, auto-numbers bibs, and exports
-structured JSON with coercion built in.
+The form auto-numbers bibs and exports structured data. Age uses native number
+input constraints; the example does not implement a race-distance business rule.
 
 {% raw %} <!-- race_html {{{ --> {% endraw %}
 {% capture race_html -%}
@@ -502,7 +561,7 @@ structured JSON with coercion built in.
     <button data-smark='{"action":"removeItem","context":"members","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty slots">🧹</button>
   </header>
 
-  <ul data-smark='{"type":"list","name":"members","sortable":true,"min_items":1,"exportEmpties":false}'>
+  <ul data-smark='{"type":"list","name":"members","sortable":true,"min_items":1,"max_items":5,"export_empties":false}'>
     <li>
       <div data-smark='{"type":"form"}'>
         <p>
@@ -594,7 +653,9 @@ button { position: relative; }
 
 👉 **Auto-numbered bibs.** <code>{"action":"position"}</code> numbers each member.
 
-👉 **Type coercion.** Age exports as a number; dates export as ISO strings; empty fields export <code>null</code>.
+👉 **Type-specific values.** Age exports as a number. Empty Number and Radio
+fields may export <code>null</code>; text and native select values can be empty
+strings. The Color field has an authored default value.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> — <code>+</code> adds a member, <code>-</code> removes, <code>*</code> duplicates, <code>Delete</code> clears empty slots.
 
@@ -604,17 +665,49 @@ button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
-{"members":[{"name":"Alice Johnson","age":34,"tshirt":"M","meal":"Vegetarian","emergency_name":"Bob Johnson","emergency_phone":"555-1234"}]}
+{"members":[{"name":"Alice Johnson","age":34,"sex":"F","emergency_name":"Bob Johnson","emergency_phone":"555-1234","tshirt":"M","tshirt_color":"#3498db","meal":"Vegetarian"}]}
 {%- endcapture %}
+
+{% raw %}<!-- race_js {{{ -->{% endraw %}
+{% capture race_js -%}
+// SmarkForm handles the field values, list actions, and position labels.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- race_tests {{{ -->{% endraw %}
+{% capture race_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('/members/0/name', 'Alice Johnson');
+    await writeField('/members/0/age', 34);
+    await writeField('/members/0/sex', 'F');
+    await writeField('/members/0/tshirt', 'M');
+    await writeField('/members/0/meal', 'Vegetarian');
+
+    const before = await readField('/members');
+    expect(before[0].age).toBe(34);
+    expect(before[0].sex).toBe('F');
+
+    await root.locator('button[title="Duplicate this member"]').click();
+    const duplicated = await readField('/members');
+    expect(duplicated).toHaveLength(2);
+    expect(duplicated[1]).toMatchObject(duplicated[0]);
+
+    await root.locator('li').nth(1).locator('button[title="Remove this member"]').click();
+    await expect(root.locator('li').first().locator('button[title="Remove this member"]')).toBeDisabled();
+    expect(await readField('/members')).toHaveLength(1);
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="race"
     htmlSource=race_html
     cssSource=race_css
+    jsSource=race_js
     notes=race_notes
+    demoValue=demoValue
     selected="preview"
     showEditor=true
-    tests=false
+    tests=race_tests
 %}
 
 ### Features demonstrated
@@ -660,8 +753,9 @@ button { position: relative; }
   <button class="feature-summary">Value coercion</button>
   <div class="feature-desc">
   The <strong>Age</strong> field (<code>type:"number"</code>) exports as a JavaScript
-  number, not a string.  Empty fields export <code>null</code>.  SmarkForm's coercion
-  layer ensures JSON round-trips with the correct types.
+  number, not a string. Empty Number/Radio values may be <code>null</code>, while
+  empty text/select values are strings. The list omits wholly empty rows through
+  <code>export_empties:false</code>.
 
   See <a href="{{ "/guides/value_coercion" | relative_url }}">Value Coercion</a>.
   </div>
@@ -689,10 +783,10 @@ button { position: relative; }
 </div>
 
 <div class="feature">
-  <button class="feature-summary"><code>min_items</code> / <code>exportEmpties</code></button>
+  <button class="feature-summary"><code>min_items</code> / <code>max_items</code> / <code>export_empties</code></button>
   <div class="feature-desc">
-  <code>min_items:1</code> ensures at least one member always exists.  <code>exportEmpties:false</code>
-  skips empty members from the JSON output — only members with data appear.
+  <code>min_items:1</code> keeps one member row, <code>max_items:5</code> caps the
+  list, and <code>export_empties:false</code> omits wholly empty members.
 
   See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
@@ -701,9 +795,9 @@ button { position: relative; }
 <div class="feature">
   <button class="feature-summary">Mixed input types</button>
   <div class="feature-desc">
-  The form demonstrates text, number, radio, select, color, and tel controls —
-  each handled by its inferred or explicitly selected SmarkForm field type. A
-  A native select control uses the `input` type.
+  The form demonstrates text, number, radio, native select, color, and tel
+  controls. Native Select uses the generic Input type and exports a string;
+  there is no separate SmarkForm Select type yet.
 
   See <a href="{{ "/component_reference/overview" | relative_url }}">Component Types Overview</a>.
   </div>
@@ -715,21 +809,65 @@ button { position: relative; }
 
 ## Product Configurator
 
-A product customizer with **mixin templates** for different product variants
-(Sedan, SUV, Sports) and **field masking** for price formatting.  Each variant
-template includes option choices and a price calculator.
+Reusable car cards show a **mixin template** and a **number-field mask** for
+price formatting. The cards share one structure and have independent values.
+
+{% raw %}<!-- configurator_js {{{ -->{% endraw %}
+{% capture configurator_js -%}
+// This factory is registered from the declarative script in the HTML capture.
+(node) => {
+  node.inputMode = "decimal";
+  node.placeholder = "0.00";
+  if (typeof IMask !== "function") {
+    console.warn("IMask did not load; the price field will remain unformatted.");
+    return null;
+  }
+  let imask;
+  try {
+    imask = new IMask(node, {
+      mask: Number,
+      scale: 2,
+      signed: false,
+      thousandsSeparator: " ",
+      radix: ".",
+      padFractionalZeros: true,
+      normalizeZeros: true,
+    });
+  } catch (error) {
+    console.warn("Could not initialize the price mask; using the number field without a mask.", error);
+    return null;
+  }
+  return {
+    get unmaskedValue() {
+      return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
+    },
+    set unmaskedValue(value) {
+      imask.unmaskedValue = value;
+      // This workaround is specific to the pinned IMask version below.
+      const length = node.value.length;
+      try { node.setSelectionRange(length, length); } catch (_error) {}
+      if ("_selection" in imask) {
+        imask._selection = { start: length, end: length };
+      }
+    },
+  };
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- configurator_html {{{ --> {% endraw %}
 {% capture configurator_html -%}
-<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputmask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+<script type="smark-mask" data-name="price">
+{{ configurator_js }}
+</script>
 
 <div id="myForm$$">
   <button data-smark='{"action":"addItem","context":"cars","hotkey":"+"}' title="Add car">➕ Add Model</button>
   <button data-smark='{"action":"removeItem","context":"cars","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty">🧹</button>
-  <ul data-smark='{"type":"list","name":"cars","sortable":true,"min_items":0,"exportEmpties":false}'>
+  <ul data-smark='{"type":"list","name":"cars","sortable":true,"min_items":0,"export_empties":false}'>
     <li data-smark='{"type":"#carModel"}'></li>
   </ul>
-  <p class="hint">💡 Try the Inputmask price field: type digits, see space grouping and 2 decimal places</p>
+  <p class="hint">💡 Type digits in a price field to see grouping and two decimal places.</p>
 </div>
 
 <template id="carModel">
@@ -749,47 +887,11 @@ template includes option choices and a price calculator.
     </p>
     <p>
       <label data-smark>Price:</label>
-      <input data-smark='{"type":"number","name":"price","mask":"price"}' placeholder="0.00">
+      <input data-smark='{"type":"number","name":"price","mask":"price"}' class="price" placeholder="0.00">
     </p>
     <button data-smark='{"action":"removeItem"}' title="Remove">➖</button>
   </div>
 </template>
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %} <!-- configurator_js {{{ --> {% endraw %}
-{% capture configurator_js -%}
-SmarkForm.registerMask("price", (node) => {
-  node.inputMode = "decimal";
-  node.placeholder = "0.00";
-  const imask = new IMask(node, {
-    mask: Number,
-    scale: 2,
-    signed: false,
-    thousandsSeparator: " ",
-    radix: ".",
-    padFractionalZeros: true,
-    normalizeZeros: true,
-  });
-  return {
-    get unmaskedValue() {
-      return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
-    },
-    set unmaskedValue(v) {
-      // Use IMask's top-level setter (syncs the DOM via updateControl).
-      imask.unmaskedValue = v;
-      // IMask diffs an `input` event against its last saved selection, which
-      // is only refreshed on focus/keydown. Since SmarkForm dispatches an
-      // `input` event after every import, a stale selection would make IMask
-      // read the imported value as a duplicate insertion. Sync caret and
-      // selection to the end instead.
-      const len = node.value.length;
-      node.setSelectionRange(len, len);
-      imask._selection = { start: len, end: len };
-    },
-  };
-});
-
-const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- configurator_css {{{ --> {% endraw %}
@@ -805,9 +907,14 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {% capture configurator_notes -%}
 👉 **Mixin templates.** <code>#carModel</code> is defined once via <code>&lt;template&gt;</code> and reused for every car entry. Each instance gets its own identity, data, and options.
 
-👉 **Field masking.** The price field uses [Inputmask](https://github.com/RobinHerbots/Inputmask) (loaded via CDN) — <code>SmarkForm.registerMask()</code> wraps Inputmask's API into SmarkForm's <code>unmaskedValue</code> contract.  Type digits to see automatic space grouping and 2-decimal formatting.
+👉 **Field masking.** A pinned IMask build is loaded from the CDN, and the
+<code>&lt;script type="smark-mask"&gt;</code> element registers a Number mask.
+Typing <code>34900</code> displays <code>34 900.00</code>; the number field exports
+the unmasked numeric value. If the library fails to load, the field remains a
+usable unformatted text input with numeric export.
 
-👉 **Sortable list.** Drag car models to reorder them.  <code>exportEmpties:false</code> skips empty entries.
+👉 **Sortable list.** Drag car models to reorder them.
+<code>export_empties:false</code> skips wholly empty entries.
 
 👉 **Hotkeys.** <code>Ctrl</code>+<code>+</code> adds a model, <code>Ctrl</code>+<code>-</code> removes.
 
@@ -816,20 +923,37 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
-{"cars":[{"model":"Model S","color":"Midnight Blue","price":"34900.00"},{"model":"Model X","color":"Pearl White","price":"42500.00"}]}
+{"cars":[{"model":"Model S","color":"Midnight Blue","price":34900},{"model":"Model X","color":"Pearl White","price":42500}]}
 {%- endcapture %}
+
+{% raw %}<!-- configurator_tests {{{ -->{% endraw %}
+{% capture configurator_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('/cars', [
+        { model: 'Model S', color: 'Midnight Blue', price: 34900 },
+        { model: 'Model X', color: 'Pearl White', price: 42500 },
+    ]);
+    expect(await readField('/cars')).toHaveLength(2);
+    expect(await readField('/cars/0/price')).toBe(34900);
+
+    const price = root.locator('input.price').first();
+    await expect(price).toHaveValue('34 900.00');
+    await writeField('/cars/0/price', 1234.5);
+    expect(await readField('/cars/0/price')).toBe(1234.5);
+    await expect(price).toHaveValue('1 234.50');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="configurator"
     htmlSource=configurator_html
     cssSource=configurator_css
-    jsHead=configurator_js
     notes=configurator_notes
-    smarkformOptions='{"smark_mixin_allowLocalScripts":"allow"}'
     selected="preview"
     showEditor=true
     demoValue=demoValue
-    tests=false
+    tests=configurator_tests
 %}
 
 ### Features demonstrated
@@ -837,22 +961,21 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 <div class="feature-index">
 
 <div class="feature">
-  <button class="feature-summary">Mixin template with scoped CSS</button>
+  <button class="feature-summary">Mixin template with class-prefixed CSS</button>
   <div class="feature-desc">
   The car model card is defined in a <code>&lt;template id="carModel"&gt;</code> with its own
-  <code>&lt;style&gt;</code> block.  The <code>.car-card</code> class scopes styles to the mixin's content
-  so they don't leak to other parts of the page.
+  <code>&lt;style&gt;</code> block. Mixin styles are injected globally; the
+  <code>.car-card</code> selector is a naming convention, not style encapsulation.
 
   See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Field masking (<code>registerMask</code> + CDN)</button>
+  <button class="feature-summary">Declarative IMask Number mask</button>
   <div class="feature-desc">
-  The price field uses [Inputmask](https://github.com/RobinHerbots/Inputmask)
-  loaded from a CDN.  <code>SmarkForm.registerMask("price", …)</code> wraps Inputmask in
-  SmarkForm's mask factory API.  Typing <code>34900</code> produces <code>3 4900.00</code> on screen.
+  The HTML's <code>smark-mask</code> script registers a pinned IMask Number
+  factory. Typing <code>34900</code> displays <code>34 900.00</code>.
 
   See <a href="{{ "/guides/field_masking" | relative_url }}">Field Masking</a>.
   </div>
@@ -861,9 +984,9 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 <div class="feature">
   <button class="feature-summary"><code>unmaskedValue</code> for clean export</button>
   <div class="feature-desc">
-  The mask factory returns an <code>unmaskedValue</code> getter/setter.  When SmarkForm
-  exports the form, it reads <code>unmaskedValue</code> — the price <code>"3 4900.00"</code> becomes
-  <code>34900.00</code> in JSON, ready for server processing.
+  The mask factory exposes <code>unmaskedValue</code>. The Number component
+  converts that value to a JavaScript number, so the displayed
+  <code>34 900.00</code> exports as <code>34900</code>.
 
   See <a href="{{ "/guides/field_masking" | relative_url }}#masks-and-external-libraries">Field Masking — unmaskedValue</a>.
   </div>
@@ -891,10 +1014,10 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Bulk clean‑up + <code>exportEmpties</code></button>
+  <button class="feature-summary">Bulk clean‑up + <code>export_empties</code></button>
   <div class="feature-desc">
   The <strong>🧹</strong> button with <code>preserve_non_empty:true</code> and
-  <code>target:"*"</code> removes all empty car models at once.  <code>exportEmpties:false</code>
+  <code>target:"*"</code> removes all empty car models at once. <code>export_empties:false</code>
   on the list skips empty entries when exporting the form.
 
   See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
@@ -911,4 +1034,4 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 > **Want the full feature set?** Each example above demonstrates a curated
 > subset of SmarkForm capabilities.  See the individual reference pages for
 > the complete API and advanced patterns.
-<!-- END old PORTED TO docs/_showcase_examples/showcase.md -->
+{% raw %}<!-- END old PORTED TO docs/_showcase_examples/showcase.md -->{% endraw %}

@@ -55,6 +55,128 @@ list. This template is mandatory.
   * `last_separator`: Like `separator` but used only before the last item. Falls back to `separator` if not provided.
   * `placeholder`: Visual placeholder slot used only when `max_items` is set. One placeholder is shown for each slot not yet occupied by a real item.
 
+{% raw %}<!-- BEGIN old PORTED TO docs/_component_reference/list.md -->{% endraw %}
+### Empty and separator roles
+
+Use `empty_list` to explain an empty collection and `separator` / `last_separator`
+to format inline lists. The final separator is distinct only when at least three
+items are present.
+
+{% raw %}<!-- hotkeys_reveal_css {{{ -->{% endraw %}
+{% capture hotkeys_reveal_css -%}
+{{""}}#myForm$$ [data-hotkey] { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute;
+    top: -1.5em;
+    left: 0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #333;
+    color: white;
+    font-size: .7em;
+    white-space: nowrap;
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- schedule_list_html {{{ -->{% endraw %}
+{% capture schedule_list -%}
+<div id="myForm$$">
+  <p class="schedule-controls">
+    <button data-smark='{"action":"removeItem","context":"schedule","hotkey":"-"}' title="Remove interval" type="button">➖</button>
+    <button data-smark='{"action":"addItem","context":"schedule","hotkey":"+"}' title="Add interval" type="button">➕</button>
+    <strong data-smark="label">Schedule:</strong>
+    <span data-smark='{"type":"list","name":"schedule","of":"form","min_items":0,"max_items":3,"export_empties":true}'>
+      <span>
+        <input class="small" data-smark type="time" name="start"> to
+        <input class="small" data-smark type="time" name="end">
+      </span>
+      <span data-smark-role="empty_list">(Closed)</span>
+      <span data-smark-role="separator">, </span>
+      <span data-smark-role="last_separator"> and </span>
+    </span>
+  </p>
+</div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- schedule_list_css {{{ -->{% endraw %}
+{% capture schedule_list_css -%}
+{{ hotkeys_reveal_css }}
+{{""}}#myForm$$ .schedule-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .35em; }
+{{""}}#myForm$$ input.small { width: 7.5em; }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- schedule_list_notes {{{ -->{% endraw %}
+{% capture schedule_list_notes -%}
+👉 **Three template roles.** `empty_list` shows **(Closed)** when there are no
+intervals. The first gap uses `separator` (a comma); the last uses
+`last_separator` (“and”). Try removing all rows, then add them back.
+
+👉 **Bounds.** The list permits zero through three intervals. SmarkForm disables
+the Add and Remove triggers automatically at the corresponding limits.
+
+👉 **Try it!** Remove an interval and watch the wording update. Hold **Ctrl** to
+see the optional `+` / `-` hotkeys.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- schedule_list_demoValue {{{ -->{% endraw %}
+{% capture schedule_list_demoValue -%}
+{
+  "schedule": [
+    {"start":"09:00:00","end":"12:00:00"},
+    {"start":"13:00:00","end":"15:00:00"},
+    {"start":"15:30:00","end":"18:00:00"}
+  ]
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- schedule_list_js {{{ -->{% endraw %}
+{% capture schedule_list_js -%}
+// The list, role templates, limits, and trigger behavior are declarative.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- schedule_list_tests {{{ -->{% endraw %}
+{% capture schedule_list_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('schedule', [
+        { start: '09:00:00', end: '12:00:00' },
+        { start: '13:00:00', end: '15:00:00' },
+        { start: '15:30:00', end: '18:00:00' },
+    ]);
+    expect(await readField('schedule')).toHaveLength(3);
+    await expect(root.locator('[data-role="separator"]')).toHaveCount(1);
+    await expect(root.locator('[data-role="last_separator"]')).toHaveCount(1);
+
+    const add = root.locator('button[title="Add interval"]');
+    const remove = root.locator('button[title="Remove interval"]');
+    await expect(add).toBeDisabled();
+    await remove.click();
+    await expect(add).toBeEnabled();
+    await add.click();
+    await expect(add).toBeDisabled();
+
+    await remove.click();
+    await remove.click();
+    await remove.click();
+    await expect(remove).toBeDisabled();
+    await expect(root.locator('[data-role="empty_list"]')).toBeVisible();
+    expect(await readField('schedule')).toEqual([]);
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="schedule_list"
+    htmlSource=schedule_list
+    cssSource=schedule_list_css
+    jsSource=schedule_list_js
+    notes=schedule_list_notes
+    demoValue=schedule_list_demoValue
+    showEditor=true
+    selected="preview"
+    tests=schedule_list_tests
+%}
+{% raw %}<!-- END old PORTED TO docs/_component_reference/list.md -->{% endraw %}
+
 👉 Likewise [forms]({{ "component_reference/form" | relative_url }}), *list*
 inputs can be created over any HTML tag <a aria-hidden="true" href="#example-simple_list" style="cursor:pointer" title="Search for «☛ 1» in the code comments">(☛ 1)</a>  **except for actual HTML form
 field elements** (`<input>`, `<textarea>`, `<select>`, `<button>`...).
@@ -315,6 +437,160 @@ endcapture %}
 > and two lines per usage site instead of repeating the full list markup.
 
 
+
+{% raw %}<!-- BEGIN old PORTED TO docs/_component_reference/list.md -->{% endraw %}
+#### Deep nested forms and cross-list moves
+
+This example combines groups, student forms, a nested grades form, and scalar
+score lists. Drag a student to another group; its grades move with it.
+
+{% raw %}<!-- deep_school_groups_html {{{ -->{% endraw %}
+{% capture deep_school_groups_html -%}
+<div id="myForm$$" class="deep-school">
+  <p>
+    <label data-smark>School:</label>
+    <input data-smark name="school" placeholder="School name">
+  </p>
+  <button data-smark='{"action":"addItem","context":"groups"}' type="button">Add group</button>
+  <ul data-smark='{"type":"list","name":"groups","of":"form","sortable":true,"min_items":0}'>
+    <li>
+      <div class="group-row">
+        <label data-smark-type="label" title="Drag to reorder groups">⠿</label>
+        <input data-smark name="name" placeholder="Group name">
+        <button data-smark-action="removeItem" type="button" title="Remove group">Remove</button>
+      </div>
+      <button data-smark='{"action":"addItem","context":"students"}' type="button">Add student</button>
+      <ul data-smark='{"type":"list","name":"students","of":"form","sortable":true,"moving_depth":2,"min_items":0}'>
+        <li>
+          <div class="student-row">
+            <label data-smark-type="label" title="Drag to reorder or move students">⠿</label>
+            <input data-smark name="name" placeholder="Student name">
+            <button data-smark-action="removeItem" type="button" title="Remove student">Remove</button>
+          </div>
+          <fieldset data-smark='{"type":"form","name":"grades"}'>
+            <legend>Scores (up to 3)</legend>
+            <ul data-smark='{"type":"list","name":"scores","of":"number","min_items":0,"max_items":3}'>
+              <li>
+                <input data-smark type="number" min="0" max="10" step="0.1">
+                <button data-smark-action="removeItem" type="button" title="Remove score">−</button>
+              </li>
+              <li data-smark-role="empty_list">No scores</li>
+            </ul>
+            <button data-smark='{"action":"addItem","context":"scores"}' type="button">Add score</button>
+          </fieldset>
+        </li>
+        <li data-smark-role="empty_list">No students</li>
+      </ul>
+    </li>
+    <li data-smark-role="empty_list">No groups</li>
+  </ul>
+</div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- deep_school_groups_css {{{ -->{% endraw %}
+{% capture deep_school_groups_css -%}
+{{""}}#myForm$$.deep-school { max-width: 560px; }
+{{""}}#myForm$$.deep-school ul { list-style: none; padding-left: 1em; }
+{{""}}#myForm$$.deep-school li { margin: .4em 0; }
+{{""}}#myForm$$.deep-school .group-row,
+{{""}}#myForm$$.deep-school .student-row { display: flex; align-items: center; gap: .4em; }
+{{""}}#myForm$$.deep-school input { min-width: 0; }
+{{""}}#myForm$$.deep-school fieldset { margin: .4em 0; }
+{{""}}#myForm$$.deep-school [data-smark-label] { cursor: grab; }
+{{""}}#myForm$$.deep-school [data-role="empty_list"] { color: #777; font-style: italic; }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- deep_school_groups_notes {{{ -->{% endraw %}
+{% capture deep_school_groups_notes -%}
+👉 **Nested data.** The export is a `school` object containing a `groups` array;
+each group contains a `students` array, and each student has a `grades.scores`
+array.
+
+👉 **Cross-list movement.** Drag a student handle between groups. Its score
+array moves with the student; the sibling distance between the student lists is
+2, so each list uses `moving_depth:2`.
+
+👉 **Try it!** Move Bart to Class B, then add a score. The JSON editor shows the
+updated nested value.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- deep_school_groups_demoValue {{{ -->{% endraw %}
+{% capture deep_school_groups_demoValue -%}
+{
+  "school": "Springfield Elementary",
+  "groups": [
+    {"name":"Class A","students":[
+      {"name":"Lisa Simpson","grades":{"scores":[9.5,8.0]}},
+      {"name":"Bart Simpson","grades":{"scores":[4.0]}}
+    ]},
+    {"name":"Class B","students":[
+      {"name":"Milhouse Van Houten","grades":{"scores":[6.0]}}
+    ]}
+  ]
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- deep_school_groups_js {{{ -->{% endraw %}
+{% capture deep_school_groups_js -%}
+// Lists, nested forms, and cross-list behavior are declarative.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- deep_school_groups_tests {{{ -->{% endraw %}
+{% capture deep_school_groups_tests -%}
+export default async ({ page, expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('/', {
+        school: 'Springfield Elementary',
+        groups: [
+            {name: 'Class A', students: [
+                {name: 'Lisa Simpson', grades: {scores: [9.5, 8.0]}},
+                {name: 'Bart Simpson', grades: {scores: [4.0]}},
+            ]},
+            {name: 'Class B', students: [
+                {name: 'Milhouse Van Houten', grades: {scores: [6.0]}},
+            ]},
+        ],
+    });
+
+    const before = await readField('/');
+    expect(before.groups[0].students[1].grades.scores).toEqual([4]);
+    await page.evaluate(async () => {
+        const source = myForm.find('/groups/0/students');
+        const target = myForm.find('/groups/1/students');
+        await source.move({
+            from: source.children[1],
+            target_list: target,
+            position: 'after',
+        });
+    });
+
+    let after = await readField('/');
+    expect(after.groups[0].students.map(item => item.name)).toEqual(['Lisa Simpson']);
+    expect(after.groups[1].students.map(item => item.name)).toEqual(['Milhouse Van Houten', 'Bart Simpson']);
+    expect(after.groups[1].students[1].grades.scores).toEqual([4]);
+
+    await page.evaluate(async () => {
+        await myForm.find('/groups/1/students/1/grades/scores').addItem(
+            9.0, { multiple: false, silent: true }
+        );
+    });
+    after = await readField('/');
+    expect(after.groups[1].students[1].grades.scores).toEqual([4, 9]);
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="deep_school_groups"
+    htmlSource=deep_school_groups_html
+    cssSource=deep_school_groups_css
+    jsSource=deep_school_groups_js
+    notes=deep_school_groups_notes
+    demoValue=deep_school_groups_demoValue
+    showEditor=true
+    selected="preview"
+    tests=deep_school_groups_tests
+    minHeight=45
+%}
+{% raw %}<!-- END old PORTED TO docs/_component_reference/list.md -->{% endraw %}
 
 For more information on using the List component and its available methods,
 please refer to the [API Reference](#api-reference).

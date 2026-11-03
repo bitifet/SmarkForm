@@ -473,6 +473,103 @@ already present in the stack.  If it is, a `MIXIN_CIRCULAR_DEPENDENCY` error
 is thrown.
 
 
+{% raw %}<!-- BEGIN old PORTED TO docs/_guides/mixin_types.md -->{% endraw %}
+#### Nested template composition example
+
+Here `#periodCard` uses the `#timeRange` mixin inside its own template. The
+outer form still exports a regular nested object; the mixins only define
+reusable markup.
+
+{% raw %}<!-- mixin_nested_composition_html {{{ -->{% endraw %}
+{% capture mixin_nested_composition_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"#periodCard","name":"morning"}'>
+    <span data-for="periodLabel">Morning</span>
+  </div>
+  <div data-smark='{"type":"#periodCard","name":"afternoon"}'>
+    <span data-for="periodLabel">Afternoon</span>
+  </div>
+</div>
+
+<template id="periodCard">
+  <fieldset data-smark='{"type":"form"}' class="period-card">
+    <legend><span id="periodLabel">Period</span></legend>
+    <div data-smark='{"type":"#timeRange","name":"hours"}'></div>
+  </fieldset>
+</template>
+
+<template id="timeRange">
+  <fieldset data-smark='{"type":"form"}' class="time-range">
+    <legend>Time range</legend>
+    <label>Start <input data-smark type="time" name="start"></label>
+    <label>End <input data-smark type="time" name="end"></label>
+  </fieldset>
+</template>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- mixin_nested_composition_css {{{ -->{% endraw %}
+{% capture mixin_nested_composition_css -%}
+{{""}}#myForm$$ { display: flex; flex-wrap: wrap; gap: .75rem; }
+{{""}}#myForm$$ .period-card { min-width: 14rem; }
+{{""}}#myForm$$ .time-range { display: grid; gap: .4rem; }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- mixin_nested_composition_js {{{ -->{% endraw %}
+{% capture mixin_nested_composition_js -%}
+// Mixin expansion and value binding are declarative; no custom JavaScript is needed.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- mixin_nested_composition_notes {{{ -->{% endraw %}
+{% capture mixin_nested_composition_notes -%}
+👉 **Nested mixins.** `#periodCard` contains a `#timeRange` reference, so the
+outer markup can reuse the composed component twice without repeating either
+fieldset structure.
+
+👉 **Snippet slots.** Each placeholder replaces `periodLabel` with its own
+heading. The two instances keep independent `morning` and `afternoon` values.
+
+👉 **Try it!** Change the start time for one period and inspect the nested JSON.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- mixin_nested_composition_demoValue {{{ -->{% endraw %}
+{% capture mixin_nested_composition_demoValue -%}
+{
+  "morning": {"hours": {"start": "09:00:00", "end": "12:00:00"}},
+  "afternoon": {"hours": {"start": "13:00:00", "end": "17:00:00"}}
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- mixin_nested_composition_tests {{{ -->{% endraw %}
+{% capture mixin_nested_composition_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('/', {
+        morning: {hours: {start: '09:00:00', end: '12:00:00'}},
+        afternoon: {hours: {start: '13:00:00', end: '17:00:00'}},
+    });
+    expect(await readField('/morning/hours/start')).toBe('09:00:00');
+    expect(await readField('/afternoon/hours/end')).toBe('17:00:00');
+
+    await writeField('/afternoon/hours/start', '14:30:00');
+    expect(await readField('/morning/hours/start')).toBe('09:00:00');
+    expect(await readField('/afternoon/hours/start')).toBe('14:30:00');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="mixin_nested_composition"
+    htmlSource=mixin_nested_composition_html
+    cssSource=mixin_nested_composition_css
+    jsSource=mixin_nested_composition_js
+    notes=mixin_nested_composition_notes
+    demoValue=mixin_nested_composition_demoValue
+    showEditor=true
+    selected="preview"
+    tests=mixin_nested_composition_tests
+    minHeight=35
+%}
+{% raw %}<!-- END old PORTED TO docs/_guides/mixin_types.md -->{% endraw %}
+
 ## List Placement Warning
 
 {: .warning }

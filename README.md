@@ -239,9 +239,8 @@ The `➕ Add` buttons carry no code — they are declared with `data-smark` and
 act on the list they can reach. Lists can be reordered and items can be moved
 between nested lists, and the data follows.
 
-▶ **[Try it live](https://smarkform.bitifet.net/showcase_examples/showcase)**
-in the interactive playground, with HTML, CSS, JS and the resulting JSON side
-by side.
+▶ **[Try the nested school/list example live](https://smarkform.bitifet.net/component_reference/list#deep-nested-forms-and-cross-list-moves)**
+with the component markup and exported JSON side by side.
 
 <!-- 🎞️ The snippet above, running for real (docs/assets/readme/nested_data.gif,
      built by media/readme/ against dist/SmarkForm.umd.js): adding groups,
@@ -255,17 +254,20 @@ by side.
 
 ## Real-world examples
 
-The [Showcase](https://smarkform.bitifet.net/showcase_examples/showcase) is a large set of
-runnable, editable examples. Some highlights:
-
-  * [Multiple-level nesting](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Deeply nested forms](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Nested lists and forms](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Smooth navigation](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Context-driven hotkeys](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Field masking](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Team Event Planner](https://smarkform.bitifet.net/showcase_examples/showcase)
-  * [Simple Calculator](https://smarkform.bitifet.net/showcase_examples/showcase)
+The [Showcase](https://smarkform.bitifet.net/showcase_examples/showcase) is a
+curated set of four runnable, editable examples:
+[Just a Form](https://smarkform.bitifet.net/showcase_examples/showcase#just-a-form),
+[Project Kanban](https://smarkform.bitifet.net/showcase_examples/showcase#project-kanban-board),
+[Race Registration](https://smarkform.bitifet.net/showcase_examples/showcase#race-registration-system),
+and [Product Configurator](https://smarkform.bitifet.net/showcase_examples/showcase#product-configurator).
+For individual patterns, see the [deep nested List example](https://smarkform.bitifet.net/component_reference/list#deep-nested-forms-and-cross-list-moves),
+[Keyboard Navigation](https://smarkform.bitifet.net/accessibility/keyboard_navigation),
+[Hotkeys](https://smarkform.bitifet.net/accessibility/hotkeys),
+[Field Masking](https://smarkform.bitifet.net/guides/field_masking), and
+[Animations](https://smarkform.bitifet.net/guides/animations). The
+[Team Event Planner](https://smarkform.bitifet.net/) is on the home page; the
+[calculators](https://smarkform.bitifet.net/showcase_examples/playground#simple-calculator)
+are in the Playground.
 
 Prefer to start from working code? Download any of the
 [ready-to-run examples](https://smarkform.bitifet.net/showcase_examples/examples) —
@@ -478,8 +480,8 @@ Semantic labelling remains the responsibility of your markup. Feedback and
 bug reports are welcome in the
 [A11Y discussion](https://github.com/bitifet/SmarkForm/discussions/25).
 
-👉 See [Smooth navigation](https://smarkform.bitifet.net/showcase_examples/showcase)
-and [Context-driven hotkeys](https://smarkform.bitifet.net/showcase_examples/showcase)
+👉 See [Smooth navigation](https://smarkform.bitifet.net/accessibility/keyboard_navigation)
+and [Context-driven hotkeys](https://smarkform.bitifet.net/accessibility/hotkeys)
 for keyboard-first examples.
 
 

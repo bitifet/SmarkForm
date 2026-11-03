@@ -2,11 +2,11 @@
 
 > **Historical analysis; superseded for current migration decisions.** This
 > pre-refactor inventory records proposed destinations from an earlier page
-> restructure. The Step 16 audit and destination map in
+> restructure. The Step 16 audit and Step 17 completion maps in
 > `spc/SmarkForm_docs_refact_steps/16-showcase-audit-and-destination-decisions-transfer-map.md`
-> is authoritative for current coverage and approved transfers. Keep this file
-> for historical context; do not treat its “What stays in the showcase” list as
-> the current final-page specification.
+> and `17-final-showcase-transfer-map.md` are authoritative for current coverage
+> and approved transfers. Keep this file for historical context; do not treat its
+> “What stays in the showcase” list as the current final-page specification.
 
 ## Sections that are pure documentation (no demo at all)
 

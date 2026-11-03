@@ -69,3 +69,11 @@ captures, demo values, or test wiring. No new playable examples were introduced.
 so the guide was corrected to match. Separately, existing rendering behavior and
 new warnings are recorded in the runtime source; this Step 10 changes no library
 code.
+
+## Step 17 Showcase transfer addendum
+
+Step 17 adds `mixin_nested_composition` (six capture declarations, including a
+custom test) to the Mixin Types guide. This exercises a template that references
+another mixin and keeps the two instance values independent. Current Mixin Types
+inventory: five sampletabs, 16 captures, and five wired custom-test captures;
+the 9/30 totals above remain the Step 10 baseline.

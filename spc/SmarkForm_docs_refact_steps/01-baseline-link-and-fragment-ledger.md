@@ -338,6 +338,19 @@
 | `index.md:422` | `/community/contributing` | `_community/contributing.md` | `—` |
 | `index.md:427` | `/community/license` | `_community/license.md` | `—` |
 
+## Step 17 Showcase link follow-up
+
+| Source | Baseline link/fragment | Step 17 destination/result |
+|---|---|---|
+| Root `README.md` school demo | Formerly linked to the final Showcase root. | Now links to `/component_reference/list#deep-nested-forms-and-cross-list-moves`. |
+| Root `README.md` feature highlights | Several unrelated features all linked to the Showcase root. | Replaced with links to the four current Showcase section anchors and their canonical details pages; Calculator links to Playground and Event Planner to the home page. |
+| Root `README.md` Accessibility links | Smooth navigation and context hotkeys linked to the Showcase root. | Now link directly to `/accessibility/keyboard_navigation` and `/accessibility/hotkeys`. |
+| `docs/_about/faq.md` animation example | Linked to the Showcase root as “Showcase — Animations.” | Now links to `/guides/animations`. |
+| `docs/_about/faq.md` empty list answer | Linked to the Showcase root for an `export_empties` example. | Now links to `/component_reference/list`. |
+
+The baseline inventory above remains the original source snapshot; rendered
+public links/fragments were checked after the Step 17 updates.
+
 ## Local fragment references
 
 | Source locator | Fragment as authored |

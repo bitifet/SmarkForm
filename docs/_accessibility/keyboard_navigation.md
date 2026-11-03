@@ -183,3 +183,541 @@ open body it folds the section and returns focus within its summary (to its
 first focusable child, or to the summary itself). `Alt+Enter`
 provides a separate way to navigate into a collapsed section. Use semantic
 markup and test focus and announcements with your target assistive technology.
+
+{% raw %}<!-- BEGIN old PORTED TO docs/_accessibility/keyboard_navigation.md -->{% endraw %}
+The contacts example below preserves the key field inside each collapsed
+summary. Its co-located test checks Space/Shift+Space, forward/backward list
+navigation, and `Alt`+`Enter` / `Alt`+`Shift`+`Enter` into hidden fields.
+
+{% raw %}<!-- collapsible_sections_html {{{ -->{% endraw %}
+{% capture collapsible_sections_html -%}
+<div id="myForm$$">
+  <div data-smark='{"name":"contacts","type":"list","min_items":1,"export_empties":false}'>
+    <details>
+      <summary>
+        <input data-smark type="text" name="fullname" placeholder="Full name">
+      </summary>
+      <div class="contact-details">
+        <input data-smark type="email" name="email" placeholder="Email">
+        <input data-smark type="tel" name="phone" placeholder="Phone">
+        <button data-smark='{"action":"removeItem","failback":"clear","hotkey":"Delete"}' title="Remove">🗑</button>
+      </div>
+    </details>
+  </div>
+  <button data-smark='{"action":"addItem","context":"contacts","hotkey":"+"}'>➕ Add contact</button>
+  <textarea data-smark name="notes" placeholder="Notes about this contact list"></textarea>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- collapsible_sections_css {{{ -->{% endraw %}
+{% capture collapsible_sections_css -%}
+{{""}}#myForm$$ {
+  font-family: sans-serif;
+}
+{{""}}#myForm$$ details {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 6px;
+  padding: 4px 8px;
+}
+{{""}}#myForm$$ summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+{{""}}#myForm$$ summary::before {
+  content: "▶";
+  font-size: .75em;
+  transition: transform .15s;
+  flex-shrink: 0;
+}
+{{""}}#myForm$$ details[open] > summary::before {
+  transform: rotate(90deg);
+}
+{{""}}#myForm$$ summary input {
+  flex: 1;
+  min-width: 0;
+  font-weight: bold;
+  border: none;
+  background: transparent;
+  outline: none;
+}
+{{""}}#myForm$$ .contact-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px 0 2px 1.2em;
+}
+{{""}}#myForm$$ .contact-details input {
+  flex: 1;
+  min-width: 120px;
+}
+{{""}}#myForm$$ .contact-details button {
+  margin-left: auto;
+}
+{{""}}#myForm$$ textarea[name="notes"] {
+  display: block;
+  width: 100%;
+  min-height: 60px;
+  margin-top: 8px;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+}
+/* Hold Ctrl to reveal hotkey hints. */
+#myForm$$ [data-hotkey] { position: relative; }
+#myForm$$ [data-hotkey]::after {
+  content: "Ctrl+" attr(data-hotkey);
+  position: absolute; top: -1.6em; left: 0;
+  font-size: .7em; background: #333; color: #fff;
+  padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- collapsible_sections_js {{{ -->{% endraw %}
+{% capture collapsible_sections_js -%}
+// Native details plus SmarkForm keyboard navigation; no custom JS is needed.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- collapsible_sections_notes {{{ -->{% endraw %}
+{% capture collapsible_sections_notes -%}
+**Try it:** Edit a contact name in the summary, expand its details, and use
+`Enter`, `Shift`+`Enter`, `Alt`+`Enter`, and `Alt`+`Shift`+`Enter` to test
+forward/backward navigation across collapsed list items.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- collapsible_sections_demoValue {{{ -->{% endraw %}
+{% capture collapsible_sections_demoValue -%}
+{
+  "contacts": [
+    {"fullname":"Alice Smith","email":"alice@example.com","phone":"+1 555 100 0001"},
+    {"fullname":"Bob Jones","email":"bob@example.com","phone":"+1 555 100 0002"},
+    {"fullname":"Carol White","email":"carol@example.com","phone":"+1 555 100 0003"}
+  ],
+  "notes": ""
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- collapsible_sections_tests {{{ -->{% endraw %}
+{% capture collapsible_sections_tests -%}
+export default async ({ page, expect, id, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+
+    const formSel = `#myForm-${id}`;
+    const addBtn = root.getByRole('button', { name: '➕ Add contact' });
+
+    // Set up: ensure we have 3 contacts for navigation tests.
+    // The form starts with 1 contact (min_items=1); add 2 more.
+    await addBtn.click();
+    await page.waitForTimeout(50);
+    await addBtn.click();
+    await page.waitForTimeout(50);
+
+    // ── Issue 1: Space key in <summary> input must NOT toggle <details> ──────
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        const firstSummaryInput = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        await firstSummaryInput.focus();
+        await page.waitForTimeout(30); // > IME_FOCUS_AGE_MS
+
+        // Press Space — must type a space, NOT close the <details>
+        await page.keyboard.press(' ');
+
+        const stillOpen = await page.evaluate(
+            s => document.querySelector(`${s} details`).open, formSel
+        );
+        expect(stillOpen, 'Space key in summary input must not toggle <details>').toBe(true);
+    }
+
+    // ── Shift+Space: toggle <details> but prevent space character from being typed
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        const firstSummaryInput = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        const valueBefore = await firstSummaryInput.inputValue();
+        await firstSummaryInput.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Space — must toggle the <details> but NOT type a space
+        await page.keyboard.press('Shift+ ');
+
+        const nowClosed = await page.evaluate(
+            s => !document.querySelector(`${s} details`).open, formSel
+        );
+        expect(nowClosed, 'Shift+Space must toggle (close) the <details>').toBe(true);
+
+        const valueAfter = await firstSummaryInput.inputValue();
+        expect(valueAfter, 'Shift+Space must not type a space into the input').toBe(valueBefore);
+    }
+
+    // ── Shift+Space from body field: fold + refocus to summary ───────────────
+    {
+        // Open the first contact's <details>
+        await page.evaluate(s => {
+            document.querySelector(`${s} details`).open = true;
+        }, formSel);
+
+        // Focus a field that is inside the body (not <summary>)
+        const firstBodyInput = root.locator('details').nth(0).locator('input[name="email"]');
+        await firstBodyInput.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Space from the body — must fold (close) the <details>
+        await page.keyboard.press('Shift+ ');
+
+        const nowClosed = await page.evaluate(
+            s => !document.querySelector(`${s} details`).open, formSel
+        );
+        expect(nowClosed, 'Shift+Space from body must fold (close) the <details>').toBe(true);
+
+        // Focus must have moved to a field inside <summary> (not lost)
+        const focusInSummary = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            return !!active.closest('summary');
+        }, formSel);
+        expect(focusInSummary, 'Shift+Space from body must refocus a field in <summary>').toBe(true);
+    }
+
+    // ── Issue 2: Enter in closed <summary> input → navigate to next item ─────
+    {
+        // Close all contacts
+        await page.evaluate(s => {
+            for (const d of document.querySelectorAll(`${s} details`)) d.open = false;
+        }, formSel);
+
+        const firstFullname = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        await firstFullname.focus();
+        await page.waitForTimeout(30);
+
+        // Enter must skip the hidden email/phone of contact[0] and go to
+        // the fullname (summary input) of contact[1]
+        await page.keyboard.press('Enter');
+
+        const focusedInSecond = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            if (!active.closest('summary')) return false;
+            const details = active.closest('details');
+            const allDetails = [...document.querySelectorAll(`${s} details`)];
+            return allDetails.indexOf(details) === 1;
+        }, formSel);
+
+        expect(
+            focusedInSecond,
+            'Enter in closed summary input must skip hidden fields and go to next item\'s summary field'
+        ).toBe(true);
+    }
+
+    // ── Alt+Enter: unfold closed <details> and navigate into hidden fields ────
+    {
+        // Close all contacts
+        await page.evaluate(s => {
+            for (const d of document.querySelectorAll(`${s} details`)) d.open = false;
+        }, formSel);
+
+        const firstFullname = root.locator('details').nth(0).locator('summary input[name="fullname"]');
+        await firstFullname.focus();
+        await page.waitForTimeout(30);
+
+        // Alt+Enter must open the first contact's <details> and navigate
+        // to the first hidden field (email) inside it
+        await page.keyboard.press('Alt+Enter');
+
+        const focusedOnEmail = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            return active.name === 'email'
+                && active.closest('details') === document.querySelector(`${s} details`);
+        }, formSel);
+
+        expect(
+            focusedOnEmail,
+            'Alt+Enter in closed summary must unfold the details and navigate to the first hidden field'
+        ).toBe(true);
+
+        const firstDetailOpen = await page.evaluate(
+            s => document.querySelector(`${s} details`).open, formSel
+        );
+        expect(firstDetailOpen, 'Alt+Enter must open the closed <details>').toBe(true);
+    }
+
+    // ── Issue 3: Enter from last field of last form-type list item ────────────
+    {
+        // Open all contacts so the phone fields are reachable
+        await page.evaluate(s => {
+            for (const d of document.querySelectorAll(`${s} details`)) d.open = true;
+        }, formSel);
+
+        const lastPhone = root.locator('details').last().locator('input[name="phone"]');
+        await lastPhone.focus();
+        await page.waitForTimeout(30);
+
+        // Enter must cross the list boundary and land on the notes textarea
+        await page.keyboard.press('Enter');
+
+        const focusedOnNotes = await page.evaluate(
+            s => document.activeElement === document.querySelector(`${s} [name="notes"]`),
+            formSel
+        );
+
+        expect(
+            focusedOnNotes,
+            'Enter from last field of last form-type list item must navigate to field after the list'
+        ).toBe(true);
+    }
+
+    // ── Backward navigation: Shift+Enter from a field after a list/form ──────
+    // All contacts are still open from the previous test.
+    {
+        const notesFld = root.locator('[name="notes"]');
+        await notesFld.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Enter from the textarea (no Ctrl needed for backward navigation)
+        await page.keyboard.press('Shift+Enter');
+
+        // Should land on 'phone' of the last contact (last field of last item),
+        // NOT on 'fullname' (which would happen if focus always dives to first child).
+        const focusedOnLastPhone = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            const details = document.querySelectorAll(`${s} details`);
+            const lastDetail = details[details.length - 1];
+            const phone = lastDetail?.querySelector('input[name="phone"]');
+            return active === phone;
+        }, formSel);
+
+        expect(
+            focusedOnLastPhone,
+            'Shift+Enter from field after list must land on last field (phone) of last list item'
+        ).toBe(true);
+    }
+
+    // ── Backward navigation: Shift+Enter from first field of a list item ─────
+    {
+        // Start on 'fullname' of contact[2] (last contact, first field)
+        const lastFullname = root.locator('details').last().locator('summary input[name="fullname"]');
+        await lastFullname.focus();
+        await page.waitForTimeout(30);
+
+        // Shift+Enter should cross the list item boundary and land on 'phone'
+        // of the previous item (contact[1]) — the last field of that item.
+        await page.keyboard.press('Shift+Enter');
+
+        const focusedOnPrevPhone = await page.evaluate(s => {
+            const active = document.activeElement;
+            if (!active) return false;
+            const details = document.querySelectorAll(`${s} details`);
+            const secondDetail = details[1]; // contact[1]
+            const phone = secondDetail?.querySelector('input[name="phone"]');
+            return active === phone;
+        }, formSel);
+
+        expect(
+            focusedOnPrevPhone,
+            'Shift+Enter from first field of a list item must land on last field of previous item'
+        ).toBe(true);
+    }
+
+    // ── Backward navigation into CLOSED (folded) items ───────────────────────
+    // Shift+Enter must SKIP closed items (symmetric with forward navigation).
+    // Alt+Shift+Enter must open a closed item and land on its last field.
+
+    // Close all contacts first.
+    await page.evaluate(s => {
+        document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
+    }, formSel);
+    await page.waitForTimeout(30);
+
+    {
+        // Plain Shift+Enter from notes must SKIP hidden fields and land on
+        // the last visible field of the last contact (fullname, in <summary>).
+        const notesFld = root.locator('[name="notes"]');
+        await notesFld.focus();
+        await page.waitForTimeout(30);
+
+        await page.keyboard.press('Shift+Enter');
+        await page.waitForTimeout(50);
+
+        const result = await page.evaluate(s => {
+            const active = document.activeElement;
+            const details = document.querySelectorAll(`${s} details`);
+            const lastDetail = details[details.length - 1];
+            return {
+                isOpen: lastDetail?.open,
+                focusedFullname: active === lastDetail?.querySelector('summary input[name="fullname"]'),
+                focusedPhone: active === lastDetail?.querySelector('input[name="phone"]'),
+            };
+        }, formSel);
+
+        expect(
+            result.isOpen,
+            'Plain Shift+Enter must NOT open a closed <details>'
+        ).toBe(false);
+        expect(
+            result.focusedFullname,
+            'Plain Shift+Enter into a closed item must land on its last VISIBLE field (fullname in summary)'
+        ).toBe(true);
+        expect(
+            result.focusedPhone,
+            'Plain Shift+Enter into a closed item must NOT land on the hidden phone field'
+        ).toBe(false);
+    }
+
+    // Close all again, then test Alt+Shift+Enter (should open and enter).
+    await page.evaluate(s => {
+        document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
+    }, formSel);
+    await page.waitForTimeout(30);
+
+    {
+        // Alt+Shift+Enter from notes must OPEN the last contact and land on its
+        // last field (phone).
+        const notesFld = root.locator('[name="notes"]');
+        await notesFld.focus();
+        await page.waitForTimeout(30);
+
+        await page.keyboard.press('Alt+Shift+Enter');
+        await page.waitForTimeout(50);
+
+        const result = await page.evaluate(s => {
+            const active = document.activeElement;
+            const details = document.querySelectorAll(`${s} details`);
+            const lastDetail = details[details.length - 1];
+            return {
+                isOpen: lastDetail?.open,
+                focusedPhone: active === lastDetail?.querySelector('input[name="phone"]'),
+            };
+        }, formSel);
+
+        expect(
+            result.isOpen,
+            'Alt+Shift+Enter into a closed item must open its <details>'
+        ).toBe(true);
+        expect(
+            result.focusedPhone,
+            'Alt+Shift+Enter into a closed item must land on its last field (phone)'
+        ).toBe(true);
+    }
+
+    // Close all again, then test crossing item boundary with plain Shift+Enter.
+    await page.evaluate(s => {
+        document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
+    }, formSel);
+    await page.waitForTimeout(30);
+
+    {
+        // Open last contact just enough to focus its fullname (in <summary>).
+        // Plain Shift+Enter must cross the item boundary and land on the last
+        // VISIBLE field of the middle contact (fullname in <summary>), NOT open it.
+        const lastDetails = root.locator('details').last();
+        await page.evaluate(s => {
+            const details = document.querySelectorAll(`${s} details`);
+            details[details.length - 1].open = true;
+        }, formSel);
+        await page.waitForTimeout(30);
+
+        const lastFullname = lastDetails.locator('summary input[name="fullname"]');
+        await lastFullname.focus();
+        await page.waitForTimeout(30);
+
+        await page.keyboard.press('Shift+Enter');
+        await page.waitForTimeout(50);
+
+        const result = await page.evaluate(s => {
+            const active = document.activeElement;
+            const details = document.querySelectorAll(`${s} details`);
+            const middleDetail = details[1]; // contact[1]
+            return {
+                isOpen: middleDetail?.open,
+                focusedFullname: active === middleDetail?.querySelector('summary input[name="fullname"]'),
+                focusedPhone: active === middleDetail?.querySelector('input[name="phone"]'),
+            };
+        }, formSel);
+
+        expect(
+            result.isOpen,
+            'Plain Shift+Enter crossing to a closed previous item must NOT open it'
+        ).toBe(false);
+        expect(
+            result.focusedFullname,
+            'Plain Shift+Enter crossing to a closed previous item must land on its last visible field (fullname)'
+        ).toBe(true);
+        expect(
+            result.focusedPhone,
+            'Plain Shift+Enter crossing to a closed previous item must NOT focus hidden phone'
+        ).toBe(false);
+    }
+
+    // Close all again, then test crossing boundary with Alt+Shift+Enter.
+    await page.evaluate(s => {
+        document.querySelectorAll(`${s} details`).forEach(d => d.open = false);
+    }, formSel);
+    await page.waitForTimeout(30);
+
+    {
+        // Open last contact, focus fullname.  Alt+Shift+Enter must open the
+        // middle contact and land on its last field (phone).
+        const lastDetails = root.locator('details').last();
+        await page.evaluate(s => {
+            const details = document.querySelectorAll(`${s} details`);
+            details[details.length - 1].open = true;
+        }, formSel);
+        await page.waitForTimeout(30);
+
+        const lastFullname = lastDetails.locator('summary input[name="fullname"]');
+        await lastFullname.focus();
+        await page.waitForTimeout(30);
+
+        await page.keyboard.press('Alt+Shift+Enter');
+        await page.waitForTimeout(50);
+
+        const result = await page.evaluate(s => {
+            const active = document.activeElement;
+            const details = document.querySelectorAll(`${s} details`);
+            const middleDetail = details[1]; // contact[1]
+            return {
+                isOpen: middleDetail?.open,
+                focusedPhone: active === middleDetail?.querySelector('input[name="phone"]'),
+            };
+        }, formSel);
+
+        expect(
+            result.isOpen,
+            'Alt+Shift+Enter crossing to a closed previous item must open it'
+        ).toBe(true);
+        expect(
+            result.focusedPhone,
+            'Alt+Shift+Enter crossing to a closed previous item must land on its last field (phone)'
+        ).toBe(true);
+    }
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="collapsible_sections"
+    htmlSource=collapsible_sections_html
+    cssSource=collapsible_sections_css
+    jsSource=collapsible_sections_js
+    notes=collapsible_sections_notes
+    demoValue=collapsible_sections_demoValue
+    selected="preview"
+    showEditor=true
+    tests=collapsible_sections_tests
+    minHeight=40
+%}
+{% raw %}<!-- END old PORTED TO docs/_accessibility/keyboard_navigation.md -->{% endraw %}

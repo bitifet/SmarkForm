@@ -366,12 +366,35 @@ this **suppresses inner hotkeys** and reveals the next level out.
 `Ctrl`+`-` removes a phone when focus is inside the `phones` list, but removes the whole entry when focus is outside it. Press `Ctrl`+`Alt` to reveal the 2nd-level `+` hotkey on the outer "Add entry" button.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %}<!-- BEGIN old PORTED TO docs/_accessibility/hotkeys.md -->{% endraw %}
+{% raw %}<!-- hk_2ndlevel_tests {{{ -->{% endraw %}
+{% capture hk_2ndlevel_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+    const phone = root.locator('input[type="tel"]').first();
+    const addPhone = root.locator('button[title="Add phone"]');
+    const addEntry = root.locator('button[title="Add entry"]');
+
+    await phone.focus();
+    await page.keyboard.down('Control');
+    await expect(addPhone).toHaveAttribute('data-hotkey', '+');
+    await expect(addEntry).not.toHaveAttribute('data-hotkey');
+
+    await page.keyboard.down('Alt');
+    await expect(addEntry).toHaveAttribute('data-hotkey', '+');
+    await page.keyboard.up('Alt');
+    await page.keyboard.up('Control');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+{% raw %}<!-- END old PORTED TO docs/_accessibility/hotkeys.md -->{% endraw %}
+
 {% include components/sampletabs_tpl.md
    formId="hk-2ndlevel"
    htmlSource=hk_2ndlevel_html
+   cssSource=hotkeys_context_sensitivity_css
    notes=hk_2ndlevel_notes
    selected="preview"
-   tests=false
+   tests=hk_2ndlevel_tests
 %}
 
 The [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) contains
