@@ -34,7 +34,7 @@ data (drafts, PDFs, images, …) as part of a SmarkForm form.
 - **Imports and Exports:** a `String` (a self-describing data URL) by default,
   or an `Object` when `"format":"json"` is set.
 - **Singleton Pattern:** supports the [Singleton
-  Pattern](/component_reference/overview#the-singleton-pattern) so a
+  Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}) so a
   whole `<div>` drop-zone can act as the field.
 - **Data Conversion:** binary payloads are always stored internally as base64;
   `encoding` only changes how the payload appears in JSON exports and bare

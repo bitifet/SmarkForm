@@ -1,459 +1,171 @@
 ---
+title: "Component Types Overview"
 layout: chapter
-description: "Overview of SmarkForm's core component types, including forms, lists, inputs, labels, triggers and their JSON values."
+description: "Map SmarkForm's built-in component types to their roles, value shapes and detailed references."
 permalink: "/component_reference/overview"
-migration_in_progress: true
-sitemap: false
 nav_order: 1
 redirect_from:
   - "/getting_started/core_component_types"
-title: "Component Types Overview"
 ---
 
-
-<!-- BEGIN old PORTED TO docs/_component_reference/overview.md -->
+{% include links.md %}
 {% include components/sampletabs_ctrl.md %}
 
-# Core Component Types
+# {{ page.title }} {#core-component-types}
 
-Core component types are the backbone of *SmarkForm*:
+SmarkForm enhances the HTML you author into a component tree. Forms represent
+objects, lists represent arrays, and fields provide values at the leaves. A
+trigger invokes an action on a component; a label associates text with a field
+or component. The pages below describe each type's options and behavior.
 
 <details class="chaptertoc">
-<summary>
-<strong>📖 Table of Contents</strong>
-</summary>
+<summary><strong>📖 Table of Contents</strong></summary>
 
-  {% include chaptertoc/core_component_types.html %}
+  {% include chaptertoc/overview.html depth=3 %}
 
 </details>
 
+## Complex field types {#complex-field-types}
 
-## Complex field types
+| Type | Role | Value shape | Reference |
+|---|---|---|---|
+| `form` | Groups named child components | JSON object | [Form]({{ "/component_reference/form" | relative_url }}) |
+| `list` | Repeats an item template | JSON array | [List]({{ "/component_reference/list" | relative_url }}) |
 
-### type: form and type: list
+## Scalar field types {#scalar-field-types}
 
-📋 [form]({{ "component_reference/form" | relative_url }}) and
-📋 [list]({{ "component_reference/list" | relative_url }}) provide the
-structure that allows to handle any possible JSON data including nested objects
-and arrays.
+Scalar types wrap native controls and normalize their values for import/export.
+Use the detailed references for accepted inputs, empty values, and options.
 
-  * *form* imports and exports plain JSON objects.
+### Input controls {#type-input}
 
-  * *list* imports and exports JSON arrays.
+| Type | Typical elements | Value shape | Reference |
+|---|---|---|---|
+| `input` | `<input>`, `<textarea>`, `<select>` | Usually a string; checkboxes export booleans; `format:"json"` parses JSON text | [Input]({{ "/component_reference/input" | relative_url }}) |
+| `radio` | A group of `<input type="radio">` elements | Selected value or `null` | [Radio]({{ "/component_reference/radio" | relative_url }}) |
 
+A native `<select>` is handled by `input`; it is not a separate built-in
+component type. Dynamic remote options are a separate proposal, not implemented;
+see [Select]({{ "/component_reference/select" | relative_url }}) and [The API
+Interface (planned)]({{ "/guides/the_api_interface" | relative_url }}).
 
-## Scalar field types
+### Number and date/time fields {#type-number-and-type-date}
 
-{: .hint}
-> Notice that the *SmarkForm* field types are not necessarily related to the
-> *type* attribute of `<input>` tags even they can limit it's allowed values.
-> 
-> This way a *SmarkForm* component of type *input* can be defined over either
-> `<select>`, a `<textarea>` or a `<input>` tag with any valid value of its
-> *type* property while, in the case of number, only a `<input>` tag with a
-> "number" as its *type* attribute is allowed (or with no *type* attribute in
-> which case it will be auto-filled).
-> 
-> And so on...
+| Type | Native element | Export shape | Reference |
+|---|---|---|---|
+| `number` | `<input type="number">` | Number or `null` | [Number]({{ "/component_reference/number" | relative_url }}) |
+| `date` | `<input type="date">` | ISO date string or `null` | [Date]({{ "/component_reference/date" | relative_url }}) |
+| `time` | `<input type="time">` | `HH:mm:ss` string or `null` | [Time]({{ "/component_reference/time" | relative_url }}) |
+| `datetime-local` | `<input type="datetime-local">` | Local date-time string or `null` | [DateTime-Local]({{ "/component_reference/datetime-local" | relative_url }}) |
 
+### Color fields {#type-color}
 
-### type: input
+| Type | Native element | Export shape | Reference |
+|---|---|---|---|
+| `color` | `<input type="color">` | Hex string or `null` | [Color]({{ "/component_reference/color" | relative_url }}) |
 
-The 📋 [input]({{ "component_reference/input" | relative_url }}) component
-type provide basic support for all HTML form fields (`<input>`, `<textarea>`
-and `select`) **no matter, in case of *inputs* its actual *type* attribute**.
+### File and media fields
 
-  * Imports and exports *String* like regular HTML form fields.
+These fields embed their selected bytes in the form value. They export a
+self-describing data URL by default, or a structured object with
+`format:"json"`; an empty field exports `null`.
 
-Other component types may provide more advanced behaviour, like
-importing/exporting appropriate data types, for specific input types, etc...
-But every present and future HTML *&lt;input&gt;* tag could be used as
-*SmarkForm* "input" component type.
+| Type | Native element | Specialization | Reference |
+|---|---|---|---|
+| `file` | Explicit `type:"file"` on an input or singleton | Whole-file picker, drop, paste and download | [File]({{ "/component_reference/file" | relative_url }}) |
+| `image` | `<img>` (inferred) or singleton | Decode validation and optional resize/format conversion | [Image]({{ "/component_reference/image" | relative_url }}) |
+| `video` | `<video>` (inferred) or singleton | Native playback plus picker and size validation | [Video]({{ "/component_reference/video" | relative_url }}) |
+| `audio` | `<audio>` (inferred) or singleton | Native playback plus picker and size validation | [Audio]({{ "/component_reference/audio" | relative_url }}) |
 
-**Example:**
+## Non-field component types {#non-field-component-types}
 
+### Trigger {#type-trigger}
 
-{% raw %} <!-- input_example {{{ --> {% endraw %}
-{% capture input_example -%}
+A trigger connects a button or other element to an action such as `clear`,
+`export`, `addItem`, or a registered custom action. See
+[Trigger]({{ "/component_reference/trigger" | relative_url }}).
+
+### Label {#type-label}
+
+A label associates native label text with a field or uses a non-native element
+to label a complex component. See [Label]({{ "/component_reference/label" | relative_url }})
+and [Accessible Labels and Names]({{ "/accessibility/accessible_labels_and_names" | relative_url }}).
+
+## Singleton Pattern {#the-singleton-pattern}
+
+A scalar field can use a non-field wrapper containing exactly one unnamed
+native field, with labels and triggers alongside it. This keeps the exported
+data tree scalar while allowing richer markup. See the [Singleton Pattern
+guide]({{ "/guides/the_singleton_pattern" | relative_url }}).
+
+## A small component tree
+
+The form below maps a project and its tasks to a nested object and array. The
+`demoValue` populates the example; choose **Show JSON** to inspect the exported
+shape. Use the controls to see how the list changes.
+
+{% raw %}<!-- component_tree_overview_html {{{ -->{% endraw %}
+{% capture component_tree_overview_html -%}
 <div id="myForm$$">
   <p>
-    <label data-smark>Name:</label>
-    <!-- Implicit (automatically inferred) component type: -->
-    <input type='text' name='name' data-smark>
+    <label data-smark>Project:</label>
+    <input name="project" data-smark type="text">
   </p>
-  <p>
-    <label data-smark>Surname:</label>
-    <!-- Explicitly specified component type: -->
-    <input type='text' name='surname' data-smark='{"type":"input"}'>
-  </p>
-  <p>
-    <label data-smark>User Name:</label>
-    <!-- Handy options-driven syntax:                                  -->
-    <!--   👉 type attribute ='text' is the default                    -->
-    <!--   👉 {"type":"input"} inferred by tag name and type attribute -->
-    <input data-smark='{"name":"user_name"}'>
-  </p>
-  <p>
-    <label data-smark>Phone:</label>
-    <!-- Explicit better than implicit:                                -->
-    <!--   👉 type='tel' is necessary here.                            -->
-    <!--   👉 {"type":"input"} may prevent an hypotetical future "tel" -->
-    <!--      component type from being inferred here.                 -->
-    <input type='tel' data-smark='{"type":"input","name":"phone"}'>
-  </p>
-  <p>
-    <label data-smark>Address:</label>
-    <!-- Non <input> fields:                                           -->
-    <textarea data-smark='{"type":"input","name":"address"}'></textarea>
-  </p>
-  <p>
-    <label data-smark>Email:</label>
-    <!-- Just another example:                                         -->
-    <input type='email' data-smark='{"type":"input","name":"email"}'>
-  </p>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
+  <fieldset>
+    <legend>Tasks</legend>
+    <ul data-smark='{"type":"list","name":"tasks","of":"form","min_items":0}'>
+      <li>
+        <label data-smark>Task:</label>
+        <input name="title" data-smark type="text">
+        <button data-smark='{"action":"removeItem"}' type="button">Remove</button>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"tasks"}' type="button">Add task</button>
+  </fieldset>
+  <button data-smark='{"action":"export"}' type="button">Show JSON</button>
+  <pre data-export aria-live="polite">Exported data appears here.</pre>
+</div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-{% capture demoValue -%}
+{% raw %}<!-- component_tree_overview_js {{{ -->{% endraw %}
+{% capture component_tree_overview_js -%}
+const output = myForm.targetNode.querySelector("[data-export]");
+myForm.on("AfterAction_export", (ev) => {
+  output.textContent = JSON.stringify(ev.data, null, 2);
+});
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- component_tree_overview_notes {{{ -->{% endraw %}
+{% capture component_tree_overview_notes -%}
+**Try it:** Edit the project or task names, add or remove a task, then choose
+**Show JSON**. The output shows a form object containing a `tasks` array of
+item objects.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- component_tree_overview_demoValue {{{ -->{% endraw %}
+{% capture component_tree_overview_demoValue -%}
 {
-    "name": "Jane",
-    "surname": "Smith",
-    "user_name": "jsmith",
-    "phone": "+1 555 234 5678",
-    "address": "123 Main St, Springfield",
-    "email": "jane.smith@example.com"
+  "project": "Website refresh",
+  "tasks": [
+    {"title": "Gather requirements"},
+    {"title": "Build the form"}
+  ]
 }
-{%- endcapture %}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
-    formId="input_example"
-    htmlSource=input_example
-    demoValue=demoValue
+    formId="component_tree_overview"
+    htmlSource=component_tree_overview_html
+    jsSource=component_tree_overview_js
+    notes=component_tree_overview_notes
+    demoValue=component_tree_overview_demoValue
     showEditor=true
     tests=false
+    minHeight=40
 %}
 
-
-
-#### The Singleton Pattern.
-
-All *Scalar field types* implement the so called **Singleton Pattern**.
-
-The *Singleton Pattern* consists in using a non-field html tag as a *SmarkForm*
-component of given *scalar* type.
-
-👉 This allow for complex HTML to work as a single field.
-
-👉 That HTML should contain **one and only one** HTML form field (`<input>`,
-`<textarea>` or `<select>`).
-
-
-{: .info}
-> This allow them to incorporate
-> [labels]({{ "component_reference/label" | relative_url }})
-> and [triggers]({{ "component_reference/trigger" | relative_url }})
-> which is specially convenient for the
-> [list]({{ "component_reference/list" | relative_url }}) component type since
-> it make possible to incorporate triggers for its actions in every list item
-> even for lists of scalars.
-
-
-**Example:**
-
-```html
-  <!-- ... -->
-  <li data-smark='{"type":"input"}'>
-    <input placeholder='Phone number' type='tel'/>
-    <button data-smark-action="removeItem">❌</button>
-  </li>
-  <!-- ... -->
-```
-
-{: .hint}
-> See
-> [Applying the singleton pattern]({{ "component_reference/list" | relative_url }}#applying-the-singleton-pattern)
-> in the *«list» Component Type* chapter for a more real-world example.
-
-
-The Singleton Pattern can also be used to avoid explicit context path
-specification for simple actions such as *clear* for field types like *number*
-or, specially, *color* (since native `<input type='color'>` doesn't allow not
-to specify any while *SmarkForm* component does.
-
-
-**Example:**
-
-👉 In the following example we need to explicitly specify the *context* path
-for the *clear* action since, otherwise, the whole form (its natural context)
-would be cleared.
-
-
-
-{% raw %} <!-- no_singleton_example {{{ --> {% endraw %}
-{% capture no_singleton_example -%}
-<div id="myForm$$">
-  <p>
-    <label data-smark>Pick a Color:</label>
-    <input type="color" name="color" data-smark>
-    <button data-smark='{"action":"clear","context":"color"}'>❌ Reset</button>
-  </p>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "color": "#3a7bd5"
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="no_singleton_example"
-    htmlSource=no_singleton_example
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-
-👉 Conversely, using the *Singleton Pattern*, not only the code looks clenaner
-but, also, **it could avoid future issues** in case of field name being changed
-(for instance after copying a block of code to reuse it somewhere else):
-
-
-{% raw %} <!-- singleton_color_example {{{ --> {% endraw %}
-{% capture singleton_color_example -%}
-<div id="myForm$$">
-  <p>
-    <label data-smark>Pick a Color:</label>
-    <span data-smark='{"type":"color", "name":"bgcolor"}'>
-      <input data-smark>
-      <button data-smark-action="clear">❌ Reset</button>
-    </span>
-  </p>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "bgcolor": "#e74c3c"
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="singleton_example"
-    htmlSource=singleton_color_example
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-
-### type: number and type: date
-
-The 📋 [number]({{ "component_reference/number" | relative_url }}) and
-📋 [date]({{ "component_reference/date" | relative_url }}) component type
-extends the [Input]({{ "component_reference/input" | relative_url }})
-component type providding extra sanitation (when importing) and formatting
-(when exporting).
-
-  * *number* imports and exports *Number*.
-
-  * *date* imports and exports *Date*.
-
-  * Having they inherit from *input*, both implement the [Singleton
-    Pattern.](#the-singleton-pattern).
-
-  * If inappropriate types (like *String*) are imported, they are properly
-    converted on the fly.
-
-**Example:**
-
-
-{% raw %} <!-- number_and_date_example {{{ --> {% endraw %}
-{% capture number_and_date_example -%}
-<div id="myForm$$">
-  <p>
-    <label data-smark>Price:</label>
-    <input data-smark='{"type":"number","name":"price"}'>
-  </p>
-  <p>
-    <label data-smark>Date:</label>
-    <input data-smark='{"type":"date","name":"date"}'>
-  </p>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "price": 49.99,
-    "date": "2025-06-15"
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="number_and_date_example"
-    htmlSource=number_and_date_example
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-
-### type: color
-
-Similar to [number and date](#type-number-and-type-date), the
-📋 [color]({{ "component_reference/color" | relative_url }}) component type
-extends the [Input]({{ "component_reference/input" | relative_url }})
-component type.
-
-  * *color* imports and exports (Hex `#rrggbb`) string or Null.
-  
-  * Invalid inputs are replaced by Null.
-
-  * Having it inherits from *input*, it implements the [Singleton
-    Pattern.](#the-singleton-pattern).
-
-
-However, unlike [them](#type-number-and-type-date), and as outlined in [its
-specification](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/color#value),
-`<input type="color">` HTML fields do not require additional sanitation or
-formatting.
-
-
-This is because `<input type="color">` ensures a consistently valid RGB color
-value and **even if the user does not interact with the field**, a valid value is
-always enforced.
-
-As a result, it can be difficult to determine whether the user intentionally
-selected pure black (#000000) or simply overlooked the field altogether.
-
-
-**Example:**
-
-
-{% raw %} <!-- color_example {{{ --> {% endraw %}
-{% capture color_example -%}
-<div id="myForm$$">
-  <p>
-    <label data-smark>Pick a Color:</label>
-    <span data-smark='{"type":"color", "name":"bgcolor"}'>
-      <input data-smark>
-      <button data-smark-action="clear">❌ Reset</button>
-    </span>
-  </p>
-</div>{%
-endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "bgcolor": "#27ae60"
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="color_example"
-    htmlSource=color_example
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-
-<blockquote class="hint">
-<p>The <i>clear</i> action can be used to clear all other field component types</p>
-
-<p><b>Example:</b></p>
-
-{% raw %} <!-- clear_others_example {{{ --> {% endraw %}
-{% capture clear_others_example -%}
-<div id="myForm$$">
-  <p>
-    <label data-smark>A Color:</label>
-    <span data-smark='{"type":"color", "name":"color"}'>
-      <input data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Reset</button>
-    </span>
-  </p>
-  <p>
-    <label data-smark>A Number:</label>
-    <span data-smark='{"type":"number", "name":"number"}'>
-      <input data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Reset</button>
-    </span>
-  </p>
-  <p>
-    <label data-smark>A Date:</label>
-    <span data-smark='{"type":"date", "name":"date"}'>
-      <input data-smark>
-      <button data-smark='{"action":"clear"}'>❌ Reset</button>
-    </span>
-  </p>
-</div>{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
-
-{% capture demoValue -%}
-{
-    "color": "#9b59b6",
-    "number": 42,
-    "date": "2025-03-20"
-}
-{%- endcapture %}
-
-{% include components/sampletabs_tpl.md
-    formId="clear_others_example"
-    htmlSource=clear_others_example
-    demoValue=demoValue
-    showEditor=true
-    tests=false
-%}
-
-</blockquote>
-
-
-### type: select
-
-The 📋 [select]({{ "component_reference/select" | relative_url }})
-compenent type **will** (🚧 since it is not yet implemented 🚧) provide support
-for advanced features like dynamic options loading and update, even reacting to
-changes of other fields in a really transparent manner thanks to the
-(future) "API interface".
-
-  * Will inmport and export array of *String*.
-
-  * Will allow configuration to expor arrays of different types.
-
-
-## Non field component types
-
-There are other component types with special mission that are not form field
-types:
-
-
-### type: trigger
-
-The 🕹️ [Trigger]({{ "component_reference/trigger" | relative_url }})s are used
-for buttons (or any other elements) to receive interaction events (mouse
-`click` by default, plus keyboard hotkeys) and trigger predefined *actions* on
-the appropriate components (e.g. adding or removing items to lists).
-
-  * The good thing about *triggers* is that **they usually don't need any extra
-    wiring to interact with their targeted components**. They just target them
-    by their own relative position in the *SmarkForm* form tree or, at most,
-    with *filesystem-like* relative paths when necessary.
-
-
-### type: label
-
-The 🏷️ [Label]({{ "component_reference/label" | relative_url }})s enhance
-regular `<label>` elements to properly resolve their association target from a
-*SmarkForm* relative path, ensuring the label always matches the correct field
-no matter whether it is at the root level or deep inside subforms and lists.
-<!-- END old PORTED TO docs/_component_reference/overview.md -->
+## Quick reference
+
+The [Developer Cheatsheet]({{ "/component_reference/cheatsheet" | relative_url }})
+collects common constructor options, component syntax, actions, paths, events,
+methods, and patterns in one place. Use the linked type references for complete
+options and edge cases.

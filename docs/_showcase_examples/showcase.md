@@ -200,7 +200,7 @@ associated with its adjacent field — no <code>for</code> or <code>id</code> at
   bare attribute.  This allows buttons and other elements to share the same
   field context without repeating the options.
 
-  See <a href="{{ "/component_reference/overview" | relative_url }}#the-singleton-pattern">Core Component Types</a>.
+  See <a href="{{ "/guides/the_singleton_pattern" | relative_url }}">Singleton Pattern</a>.
   </div>
 </div>
 
@@ -701,10 +701,11 @@ button { position: relative; }
 <div class="feature">
   <button class="feature-summary">Mixed input types</button>
   <div class="feature-desc">
-  The form demonstrates text, number, radio, select, color, and tel inputs —
-  all auto-registered as SmarkForm fields with their own coercion rules.
+  The form demonstrates text, number, radio, select, color, and tel controls —
+  each handled by its inferred or explicitly selected SmarkForm field type. A
+  A native select control uses the `input` type.
 
-  See <a href="{{ "/component_reference/overview" | relative_url }}">Core Component Types</a>.
+  See <a href="{{ "/component_reference/overview" | relative_url }}">Component Types Overview</a>.
   </div>
 </div>
 

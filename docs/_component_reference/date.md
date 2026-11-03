@@ -32,7 +32,7 @@ component type, providing specialized handling for date input fields with
 enhanced parsing and formatting capabilities.
 
 - **Imports and Exports:** ISO date string (`YYYY-MM-DD`) or `null` (when empty)
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 - **Data Conversion:** Converts between various date formats and ISO date strings
 
 ## Usage

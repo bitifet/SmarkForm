@@ -30,7 +30,7 @@ The *Singleton Pattern* (a.k.a. just "singleton") is a special behaviour of
 the *Scalar field types* (the ones deriving from
 [`input`]({{ "component_reference/input" | relative_url }}), such as
 [`number`]({{ "component_reference/number" | relative_url }}),
-[`date`]({{ "/component_reference/overview" | relative_url }}#type-number-and-type-date),
+[`date`]({{ "/component_reference/date" | relative_url }}),
 [`color`]({{ "component_reference/color" | relative_url }}) and
 [`file`]({{ "component_reference/file" | relative_url }})) that lets you use
 **any HTML tag** as the *SmarkForm* component of a given scalar type, instead

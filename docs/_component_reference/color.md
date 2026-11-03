@@ -44,7 +44,7 @@ its default value).
 
 - **Imports:** `String` (Valid "#RRGGBB" or "#RGB" Hex value) or null (meaning not selected).
 - **Exports:** `String` (Valid "#RRGGBB" Hex value) or null (when not selected).
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 - **Data Conversion:** None, but accepts null as value.
 
 ## Usage
@@ -93,14 +93,14 @@ But, in order to allow clearing the field from touch devices it's advisable to
 add a trigger button with the `clear` action.
 
 The following example uses the [Singleton
-Pattern](/component_reference/overview#the-singleton-pattern) to group
+Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}) to group
 the input field and the clear button:
 
 
 {% raw %} <!-- Notes {{{ --> {% endraw %}
 {% capture notes -%}
 👉 Without recurring to the [Singleton
-Pattern](/component_reference/overview#the-singleton-pattern), you
+Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}), you
 would have to specify the context in the button action, like this:
 
 ```html

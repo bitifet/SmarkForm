@@ -179,7 +179,7 @@ blueprints stored in `<template>` elements.  A mixin reference starts with `#`
 [Can I implement my own component types?](#can-i-implement-my-own-component-types)
 for a quick overview.
 
-See [Core Component Types]({{ "/component_reference/overview" | relative_url }})
+See [Component Types Overview]({{ "/component_reference/overview" | relative_url }})
 for the full reference.
 
 
@@ -289,7 +289,7 @@ especially useful for:
 - Grouping a label and its field as a single named component.
 
 See [Core Component Types — The Singleton Pattern](
-{{ "/component_reference/overview" | relative_url }}#the-singleton-pattern)
+{{ "/guides/the_singleton_pattern" | relative_url }})
 for a full walkthrough.
 
 

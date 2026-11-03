@@ -224,9 +224,7 @@ The wrapper holds the component options (name, type, mask, etc.); the inner
 field has only the bare `data-smark` attribute.  This pattern is useful for
 scoping trigger buttons and mask options without repeating configuration.
 
-Documented at
-`_getting_started/core_component_types.md` →
-[The Singleton Pattern]({{ "/component_reference/overview" | relative_url }}#the-singleton-pattern).
+Documented in the [Singleton Pattern guide]({{ "/guides/the_singleton_pattern" | relative_url }}).
 
 ### Collapsible section
 

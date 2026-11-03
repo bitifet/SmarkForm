@@ -1,17 +1,14 @@
 ---
-title: Developer Cheatsheet
+title: "Developer Cheatsheet"
 layout: chapter
-description: "A quick reference for SmarkForm constructor options, component types, actions, events, methods and JSON import/export."
+description: "Quick reference for SmarkForm built-in types, common options, actions, events, paths, methods and value shapes."
 permalink: "/component_reference/cheatsheet"
-migration_in_progress: true
-sitemap: false
 nav_order: 18
 redirect_from:
   - "/resources/cheatsheet"
 ---
 
 
-<!-- BEGIN old PORTED TO docs/_component_reference/cheatsheet.md -->
 {% include links.md %}
 
 # {{ page.title }}
@@ -30,26 +27,30 @@ redirect_from:
 ## Constructor Options
 
 ```javascript
-const form = new SmarkForm(element, options);
+const myForm = new SmarkForm(document.getElementById("myForm"), options);
 ```
 
-> **Note:** `find()` returns `null` until rendering completes — [`await form.rendered`]({{ "advanced_topics/the_smarkform_constructor" | relative_url }}#the-rendered-promise) first.  
-> See: [Full constructor reference]({{ "advanced_topics/the_smarkform_constructor" | relative_url }}#constructor-syntax)
+> **Note:** `find()` returns `null` until rendering completes — await
+> `myForm.rendered` before looking up components. Direct method calls use the
+> raw prototype method; triggers are required for action lifecycle events.
+> See: [Full constructor reference]({{ "/advanced_topics/the_smarkform_constructor" | relative_url }}#constructor-syntax)
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `value` | Object | `{}` | [Initial data]({{ "component_reference/form" | relative_url }}#value) |
-| `auto_id` | Boolean/String/Function | `false` | [Auto-generate element IDs]({{ "component_reference/form" | relative_url }}#auto_id) |
-| `smark_mixin_allow_external` | String | `"block"` | [External mixin fetching policy]({{ "guides/mixin_types" | relative_url }}#mixin-security-options) |
-| `smark_mixin_allow_local_scripts` | String | `"block"` | [Local mixin `<script>` policy]({{ "guides/mixin_types" | relative_url }}#mixin-security-options) |
-| `smark_mixin_allow_same_origin_scripts` | String | `"block"` | [Same-origin mixin script policy]({{ "guides/mixin_types" | relative_url }}#mixin-security-options) |
-| `smark_mixin_allow_cross_origin_scripts` | String | `"block"` | [Cross-origin mixin script policy]({{ "guides/mixin_types" | relative_url }}#mixin-security-options) |
-| `enable_json_encoding` | Boolean | `false` | [Enable `enctype`]({{ "component_reference/form" | relative_url }}#encoding-and-transport) |
-| `export_empties` | Boolean | `false` | [Export empty items]({{ "component_reference/list" | relative_url }}#export_empties) |
-| `key_style` | `"bracket"` / `"dot"` | `"bracket"` | [Form encoding key style]({{ "component_reference/form" | relative_url }}#data-flattening-options) |
-| `array_style` | `"repeat"` / `"index"` | `"repeat"` | [Form encoding array style]({{ "component_reference/form" | relative_url }}#data-flattening-options) |
-| `focus_on_click` | Boolean | `true` | [Focus containers on click]({{ "component_reference/form" | relative_url }}#focus_on_click) |
-| `on*` | Function | — | [Event handlers]({{ "/guides/events" | relative_url }}#registering-event-handlers) (`on_click`, `onLocal_AfterAction_export`, etc.) |
+| `value` | Any | Type-specific empty value | [Initial/default data]({{ "/component_reference/form" | relative_url }}#value) |
+| `auto_id` | Boolean/String/Function | `false` | [Generate IDs from paths]({{ "/component_reference/form" | relative_url }}#auto_id) |
+| `smark_mixin_allow_external` | String or origin map | `"block"` | [External mixin fetch policy]({{ "/guides/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mixin_allow_*_scripts` | String or origin map | `"block"` | [Mixin script policies]({{ "/guides/mixin_types" | relative_url }}#mixin-security-options) |
+| `smark_mask_throw_on_missing` | Boolean | `true` | [Missing mask behavior]({{ "/guides/field_masking" | relative_url }}#error-handling) |
+| `enable_json_encoding` | Boolean | `false` | [Enable JSON form submission]({{ "/component_reference/form" | relative_url }}#encoding-and-transport) |
+| `focus_on_click` | Boolean | `true` | Focus a form container when clicked · [Form]({{ "/component_reference/form" | relative_url }}#focus_on_click) |
+| `key_style` | `"bracket"` / `"dot"` | `"bracket"` | [Form encoding keys]({{ "/component_reference/form" | relative_url }}#data-flattening-options) |
+| `array_style` | `"repeat"` / `"index"` | `"repeat"` | [Form encoding arrays]({{ "/component_reference/form" | relative_url }}#data-flattening-options) |
+| `on*` | Function | — | [Constructor event handlers]({{ "/guides/events" | relative_url }}#via-options-declarative) |
+
+This is a quick selection of common root options, not the full constructor
+option list. List options such as `export_empties` inherit through the component
+tree; see the detailed references for their complete behavior.
 
 Register custom actions globally with `SmarkForm.registerCustomAction(name, handler)` before constructing forms that use them. This is not a constructor option; see [The SmarkForm Constructor]({{ "advanced_topics/the_smarkform_constructor" | relative_url }}).
 
@@ -62,11 +63,11 @@ Register custom actions globally with `SmarkForm.registerCustomAction(name, hand
 | Full JSON | `data-smark='{"type":"list","name":"items","of":"input"}'` | Full control |
 | Type shorthand | `data-smark="list"` | Defaults for that type |
 | Bare attribute | `data-smark` | Type/name inferred from HTML |
-| `data-smark="data-smark"` | `data-smark="data-smark"` | Treated as empty options |
+| Literal fallback | `data-smark="data-smark"` | Treated as empty options |
 
 **`data-smark` is optional on:** root element (implicit form type, also gets options from constructor), list item template (implicit for the item role, type inferred or set in the "of" option of the list).
 
-> See: [`data-smark` syntax]({{ "start_here/core_concepts" | relative_url }}#the-data-smark-attribute) · [Shorthand forms and prefixed-option limitations]({{ "start_here/core_concepts" | relative_url }}#shorthand-syntaxes)
+> See: [`data-smark` syntax]({{ "/start_here/core_concepts" | relative_url }}#the-data-smark-attribute) · [Shorthand forms and prefixed-option limitations]({{ "/start_here/core_concepts" | relative_url }}#shorthand-syntaxes)
 
 ---
 
@@ -74,19 +75,21 @@ Register custom actions globally with `SmarkForm.registerCustomAction(name, hand
 
 | Type | Data Type | Default | Tag Inference |
 |------|-----------|---------|---------------|
-| `form` | JSON object | `{}` | `<form>`, `<div>`, any container |
-| `list` | JSON array | `[]` | `<ul>`, `<ol>`, `<table>`, `<thead>`, `<tbody>`, `<tfoot>` |
-| `input` | String | `""` | `<input>`, `<textarea>`, `<select>` |
-| `file` | Data-URL string or object / `null` | `null` | `<input type="file">` or singleton container |
-| `number` | Number / `null` | `null` | `<input type="number">` |
-| `date` | ISO date / `null` | `null` | `<input type="date">` |
-| `time` | HH:mm:ss / `null` | `null` | `<input type="time">` |
-| `datetime-local` | ISO datetime / `null` | `null` | `<input type="datetime-local">` |
-| `color` | Hex color / `null` | `null` | `<input type="color">` |
-| `radio` | Selected value / `null` | `null` | Radio button group |
-| `trigger` | N/A | N/A | Any element with `action` property |
-| `label` | N/A | N/A | `<label>` |
-| mixin | Varies | Varies | `data-smark='{"type":"url#templateId"}'` |
+| `form` | JSON object | `{}` | Root form or container (default container type) |
+| `list` | JSON array | `[]` | `<ul>`, `<ol>`, `<table>` sections |
+| `input` | Usually string; checkbox boolean; optional JSON | `""` (text) | `<input>`, `<textarea>`, `<select>` |
+| `number` | Number or `null` | `null` | `<input type="number">` |
+| `date` | ISO date string or `null` | `null` | `<input type="date">` |
+| `time` | `HH:mm:ss` string or `null` | `null` | `<input type="time">` |
+| `datetime-local` | Local date-time string or `null` | `null` | `<input type="datetime-local">` |
+| `color` | Hex string or `null` | `null` | `<input type="color">` |
+| `radio` | Selected value or `null` | `null` | `<input type="radio">` group |
+| `file` | Data URL or JSON object / `null` | `null` | Explicit `type:"file"` on an input or singleton |
+| `image` | Data URL or JSON object / `null` | `null` | `<img>` (inferred) or singleton |
+| `video` | Data URL or JSON object / `null` | `null` | `<video>` (inferred) or singleton |
+| `audio` | Data URL or JSON object / `null` | `null` | `<audio>` (inferred) or singleton |
+| `trigger` | No form value | — | Element with an `action` option |
+| `label` | No form value | — | `<label>` (inferred) or explicit label type |
 
 **Singleton:** `input`-derived type on a container wraps exactly one real field:
 
@@ -97,13 +100,24 @@ Register custom actions globally with `SmarkForm.registerCustomAction(name, hand
 </li>
 ```
 
-> See: [Full type reference]({{ "component_reference/overview" | relative_url }}) · [Singleton pattern]({{ "component_reference/overview" | relative_url }}#the-singleton-pattern)
+> See: [Component Types Overview]({{ "/component_reference/overview" | relative_url }}) · [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
+
+**Native `<select>`:** It uses the built-in `input` type and exports its selected
+value. Dynamic remote options are a separate proposal, not implemented; see
+[Select]({{ "/component_reference/select" | relative_url }}) and [The API
+Interface (planned)]({{ "/guides/the_api_interface" | relative_url }}).
+
+**Mixins:** `"type":"#templateId"` and `"type":"url#templateId"` expand
+templates; mixins are a reusable-template feature, not an additional built-in
+component type. See [Mixin Types]({{ "/guides/mixin_types" | relative_url }}).
 
 ---
 
 ## List Template Roles
 
-Every direct child of a list is a template — removed from DOM on init. Set via `data-smark='{"role":"<role>"}'`.
+Every direct child of a list defines a template role and is removed from the
+initial DOM before the list renders. Set the role in `data-smark` or with a
+`data-smark-role` attribute.
 
 | Role | Purpose | Cloned? | Notes |
 |------|---------|---------|-------|
@@ -115,7 +129,7 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 | `separator` | Between adjacent items | Yes | Removed when only 1 item |
 | `last_separator` | Between 2nd-last & last | Yes | Falls back to `separator` |
 
-> See: [Template roles in type_list]({{ "component_reference/list" | relative_url }}#introduction)
+> See: [List template roles]({{ "/component_reference/list" | relative_url }}#introduction)
 
 ---
 
@@ -123,19 +137,23 @@ Every direct child of a list is a template — removed from DOM on init. Set via
 
 | Action | Target Type | Description |
 |--------|-------------|-------------|
-| `export` | Any | [Return current value]({{ "guides/data_import_and_export" | relative_url }}#the-export-action) as JSON |
-| `import` | Any | [Set value]({{ "guides/data_import_and_export" | relative_url }}#the-import-action) from JSON data |
-| `reset` | Any | [Restore `defaultValue`]({{ "guides/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
-| `clear` | Any | [Reset to type-level `emptyValue`]({{ "guides/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
-| `addItem` | list | [Add new item]({{ "component_reference/list" | relative_url }}#async-additem-action) |
-| `removeItem` | list | [Remove target item(s)]({{ "component_reference/list" | relative_url }}#async-removeitem-action) |
-| `submit` | form | [Submit form data]({{ "component_reference/form" | relative_url }}#async-submit-action) via HTTP |
-| `count` | list | [Get/set total item count]({{ "component_reference/list" | relative_url }}#count-action) |
-| `position` | list item | [Get/set 1-based index]({{ "component_reference/list" | relative_url }}#position-action) |
-| `move` | list (sortable) | [Move item]({{ "component_reference/list" | relative_url }}#sortable) within/across lists |
-| custom | any | Register with `SmarkForm.registerCustomAction(name, handler)` before form construction; see [The SmarkForm Constructor]({{ "advanced_topics/the_smarkform_constructor" | relative_url }}) |
+| `export` | Any | [Return current value]({{ "/guides/data_import_and_export" | relative_url }}#the-export-action) |
+| `import` | Any | [Set value]({{ "/guides/data_import_and_export" | relative_url }}#the-import-action) |
+| `reset` | Any | [Restore the default]({{ "/guides/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `clear` | Any | [Use the type-level empty value]({{ "/guides/data_import_and_export" | relative_url }}#default-values-clear-and-reset) |
+| `addItem` | list | [Add an item]({{ "/component_reference/list" | relative_url }}#async-additem-action) |
+| `removeItem` | list | [Remove item(s)]({{ "/component_reference/list" | relative_url }}#async-removeitem-action) |
+| `submit` | form | [Submit form data]({{ "/component_reference/form" | relative_url }}#async-submit-action) |
+| `count` | list | [Return item count]({{ "/component_reference/list" | relative_url }}#count-action) (or a derived count with `delta`) |
+| `position` | list | [Return a target item's 1-based position]({{ "/component_reference/list" | relative_url }}#position-action) (or an offset value) |
+| `download` | file-like field | Download embedded bytes · [File]({{ "/component_reference/file" | relative_url }}#downloading-a-file) |
+| `rename` | file-like field | Set the editable filename · [File]({{ "/component_reference/file" | relative_url }}) |
+| `pick` | video/audio | Open the native media picker · [Video]({{ "/component_reference/video" | relative_url }}) · [Audio]({{ "/component_reference/audio" | relative_url }}) |
+| custom | any | Register with `SmarkForm.registerCustomAction(name, handler)` before form construction; see [The SmarkForm Constructor]({{ "/advanced_topics/the_smarkform_constructor" | relative_url }}) |
 
-**Signature:** `async actionName(data, options = {})`
+**Trigger dispatch:** `async actionName(data, options = {})`. Trigger-dispatched
+actions emit `BeforeAction_*` / `AfterAction_*` events; direct calls such as
+`myForm.export()` call the raw method and do not emit those lifecycle events.
 
 ---
 
@@ -155,11 +173,11 @@ components that implement the action and skips the rest.
 <button data-smark='{"action":"export","context":"/shipping"}'>Export Shipping</button>
 ```
 
-> See: [Path syntax]({{ "guides/form_traversing" | relative_url }}#path-syntax-overview) · [Context & target]({{ "guides/form_traversing" | relative_url }}#context-and-target-in-actions)
+> See: [Path syntax]({{ "/guides/form_traversing" | relative_url }}#path-syntax-overview) · [Context & target]({{ "/guides/form_traversing" | relative_url }}#context-and-target-in-actions)
 
 | Path | Resolves to |
 |------|-------------|
-| `"name"` | Sibling component named "name" |
+| `"name"` | Child component named `name` under the current search base |
 | `"/"` | Root form |
 | `"."` | Current field |
 | `"../fieldname"` | Child named `fieldname` in the parent scope |
@@ -199,14 +217,14 @@ default applies when no target is set.
 | `component.onLocal(ev, handler)` | Only this component | Never |
 | `component.onAll(ev, handler)` | Component + ancestors | Always |
 
-> See: [Event system docs]({{ "guides/events" | relative_url }}#overview) · [Constructor shorthand]({{ "guides/events" | relative_url }}#via-options-declarative) · [Action lifecycle]({{ "guides/events" | relative_url }}#action-lifecycle-events)
+> See: [Event system docs]({{ "/guides/events" | relative_url }}#overview) · [Constructor shorthand]({{ "/guides/events" | relative_url }}#via-options-declarative) · [Action lifecycle]({{ "/guides/events" | relative_url }}#action-lifecycle-events)
 
 **DOM events** (capture-phase on root, dispatched to target): `keydown`, `keyup`, `input`, `change`, `focus`, `blur`, `click`, `dblclick`, `mousedown`, `mouseup` …  
 **Synthetic:** `focusenter`, `focusleave`, `BeforeAction_<name>` (preventable), `AfterAction_<name>`, `beforeRender`, `afterRender`, `beforeUnrender`, `removeItem_beforeRender`, `removeItem_afterRender`
 
 **Constructor shorthand:**
 ```javascript
-const f = new SmarkForm(element, {
+const myForm = new SmarkForm(document.getElementById("myForm"), {
   onLocal_AfterAction_export(ev) {},
   on_click(ev) {},
   onAll_focus(ev) {},
@@ -214,21 +232,23 @@ const f = new SmarkForm(element, {
 });
 ```
 
-**Modify data in BeforeAction:**
+**Modify data in a trigger-dispatched `BeforeAction`:**
 ```javascript
-component.onLocal("BeforeAction_import", (ev) => {
+myForm.on("BeforeAction_import", (ev) => {
   ev.data = transformData(ev.data);
 });
 ```
+
+Raw calls such as `myForm.import(data)` do not emit action lifecycle events.
 
 ---
 
 ## Data Import / Export
 
 ```javascript
-await form.export();                    // Full form
-await form.find("/username").export();  // Single field
-await form.import({ name: "Alice" });   // Import data
+await myForm.export();                    // Full form
+await myForm.find("/username").export();  // Single field
+await myForm.import({ name: "Alice" });   // Import data
 ```
 
 > See: [Full import/export docs]({{ "guides/data_import_and_export" | relative_url }}#overview)
@@ -237,16 +257,20 @@ await form.import({ name: "Alice" });   // Import data
 |------|-----------------|-------------------|
 | `import(data)` | Yes | `data` |
 | `import(data, {set_default:false})` | No | Previous default |
-| `import(undefined)` | No (skipped) | Current default |
+| `import(undefined)` | No | Imports the current default |
 | `clear()` | No | Default unchanged |
 | `reset()` | No | Current default |
 
 **`export_empties`** inherited from nearest ancestor that sets it:
 
 ```html
-<div data-smark='{"type":"list","name":"outer","export_empties":true}'>
-  <div data-smark='{"type":"list","name":"inner","export_empties":false}'></div>
-</div>
+<ul data-smark='{"type":"list","name":"sessions","of":"form","export_empties":true}'>
+  <li>
+    <ul data-smark='{"type":"list","name":"tags","of":"input","export_empties":false}'>
+      <li><input data-smark type="text"></li>
+    </ul>
+  </li>
+</ul>
 ```
 
 **Field-level JSON round-trips:** add `{"format":"json"}` (or legacy `encoding:"json"`) to any `<input>`,
@@ -258,13 +282,23 @@ to JSON text:
 ```
 
 Applies to the field's own import/export; other fields keep their raw values.
+Parsed falsey values currently export as `null`.
 > See: [JSON format]({{ "guides/value_coercion" | relative_url }}#json-format)
+
+Current JSON-mode export maps parsed falsey values (`0`, `false`, `""`, `null`)
+to `null`; see [Value Coercion]({{ "/guides/value_coercion" | relative_url }})
+before relying on those values to round-trip distinctly.
 
 **Copy pattern:**
 ```javascript
-const data = await form.find("/billing").export();
-await form.find("../shipping").import(data);
+const data = await myForm.find("/billing").export();
+await myForm.find("/shipping").import(data);
 ```
+
+For trigger-based copying, `target` resolves from the effective context; see
+[Context & Target Resolution](#context--target-resolution). For scalar
+conversion boundaries and JSON-formatted fields, see
+[Value Coercion]({{ "/guides/value_coercion" | relative_url }}).
 
 ---
 
@@ -287,7 +321,8 @@ await form.find("../shipping").import(data);
 | `smark_file_paste` | `true` | Paste |
 
 - **Export:** raw → `data:image/png;name=photo.png;size=123456;lastModified=1690000000000;base64,…`; json → structured object; empty → `null`.
-- **Import:** data-URL string, (partial) object, bare payload string, or JSON string — all accepted; `size` is recomputed from the payload.
+- **Import:** embedded data URL, URL string (fetched and embedded), partial
+  object, bare payload, or JSON string; `size` is recomputed from payload bytes.
 - **Download (action):** `{"action":"download","context":"/cv"}` triggers a real browser download of the stored bytes; empty field → no-op. Name precedence: `filename` trigger option > edited visible name > stored name.
 - **Singleton:** drop/paste detected over the whole container; download delegates to the inner field.
 - **Lists:** `{"type":"list","name":"photos","of":"file"}` — `addItem` opens a multi-file picker (`multiple:false` forces single); OS drops **append** items (list-level `file_drop:false` disables).
@@ -328,9 +363,36 @@ await form.find("../shipping").import(data);
 
 ---
 
+## Video and Audio Fields
+
+`video` and `audio` bind SmarkForm fields to native `<video>` and `<audio>`
+elements. Bare media elements are inferred; singleton wrappers can add controls
+and triggers around one unnamed media field. Both use the embedded-file value
+contract and support picker, drop/paste, and download behavior.
+
+- **Video:** Configure `video_max_size`, `smark_video_validate`,
+  `smark_video_click` (`auto` / `pick` / `play`), or `smark_video_auto_pick`.
+  Native `controls` remain the player; an explicit `pick` trigger works beside
+  them.
+- **Audio:** Configure `audio_max_size`, `smark_audio_validate`, and
+  `smark_audio_click` (`auto` / `pick` / `play`). Native controls remain the
+  player where enabled.
+- **Both:** An explicit `pick` action opens the native picker; size notices use
+  cancellable `smark:videoNotice` / `smark:audioNotice` events. Embedded imports
+  are trusted, as with `file`.
+
+SmarkForm does not capture video thumbnails or provide captions/transcripts.
+Authors provide suitable alternatives and reserve any required layout space.
+
+> See: [Video]({{ "/component_reference/video" | relative_url }}) ·
+> [Audio]({{ "/component_reference/audio" | relative_url }})
+
+---
+
 ## API Methods
 
-Every field component:
+Every component shares path lookup and event methods. Field components also
+provide import/export and empty-state methods:
 
 > See: [Import/export]({{ "guides/data_import_and_export" | relative_url }}#overview) · [Path traversal]({{ "guides/form_traversing" | relative_url }}) · [Events]({{ "guides/events" | relative_url }})
 
@@ -354,12 +416,13 @@ Every field component:
 | `moveTo()` | Scroll to and highlight |
 | `onRendered(callback)` | Run after render |
 | `on(ev, handler)` | Listen with bubbling |
-| `onLocal(ev, handler)` | [Listen target-phase only]({{ "guides/events" | relative_url }}#local-vs-all-handlers) |
-| `onAll(ev, handler)` | [Listen always-bubbling]({{ "guides/events" | relative_url }}#local-vs-all-handlers) |
+| `onLocal(ev, handler)` | [Listen on this component only]({{ "/guides/events" | relative_url }}#local-vs-all-handlers) |
+| `onAll(ev, handler)` | [Listen across the component subtree]({{ "/guides/events" | relative_url }}#local-vs-all-handlers) |
 | `emit(evType, data, preventable)` | Emit custom event |
 | `getTriggers(actionName, limit)` | Find triggers targeting this component |
 | `updateId()` | Auto-generate `id` from `auto_id` |
 | `inheritedOption(name, default)` | Walk ancestors for option value |
+| `move(options)` | On a list, move an item within/across sortable lists · [List]({{ "/component_reference/list" | relative_url }}#sortable) |
 
 ---
 
@@ -374,9 +437,14 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
 
 - Hints appear as `data-hotkey` attribute on trigger elements.
 - Style with CSS: `[data-hotkey]::after { content: attr(data-hotkey); }`
-- Triggers with hotkey defined get `tabindex="-1"` which excludes them from `Tab` navigation.
+- Hotkeyed list `addItem`/`removeItem` triggers get `tabindex="-1"` when no
+  value was authored; other hotkey triggers remain in normal Tab order.
 
-> See: [Hotkeys docs]({{ "accessibility/hotkeys" | relative_url }})
+The generated CSS hint is visual content and is not a substitute for visible,
+named controls for essential actions. SmarkForm uses Ctrl/Ctrl+Alt, not
+macOS Command/Meta.
+
+> See: [Hotkeys]({{ "/accessibility/hotkeys" | relative_url }})
 
 ---
 
@@ -391,7 +459,8 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
 ```
 
 - **Enter** navigates fields — does **not** submit.
-- Only explicit click on submit-type buttons triggers submission.
+- Use a native submit control or a `submit` trigger; Enter field navigation is
+  separate from the form submission action.
 - Supports `application/json` (`enable_json_encoding: true`).
 - Respects `formaction`, `formmethod`, `formenctype`, `formtarget`.
 
@@ -411,7 +480,7 @@ Triggers with a `hotkey` property reveal hints when **Ctrl** (level 1) or **Ctrl
   <button data-smark-action="clear">Clear</button>
   <button data-smark-action="export">Export</button>
 </div>
-<script>new SmarkForm(document.getElementById("myForm"));</script>
+<script>const myForm = new SmarkForm(document.getElementById("myForm"));</script>
 ```
 
 ### Nested form
@@ -484,4 +553,3 @@ A reusable mixin that wraps a field with a CSS-only tooltip:
   <span data-for="tipText">Enter your email address</span>
 </div>
 ```
-<!-- END old PORTED TO docs/_component_reference/cheatsheet.md -->

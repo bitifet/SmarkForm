@@ -32,7 +32,7 @@ component type, providing specialized handling for time input fields with
 enhanced parsing and formatting capabilities.
 
 - **Imports and Exports:** ISO time string (`HH:mm:ss`) or `null` (when empty)
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 - **Data Conversion:** Converts between various time formats and ISO time strings
 
 ## Usage

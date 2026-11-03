@@ -11,15 +11,16 @@ site and is the single source of truth for quick lookups.
 
 | Section | Contents |
 |---------|----------|
-| Constructor Options | All options accepted by `new SmarkForm(el, opts)` |
+| Constructor Options | Common root options accepted by `new SmarkForm(element, opts)`, with a link to the full constructor reference |
 | The `data-smark` Attribute | Attribute syntax, component mapping |
-| Component Types | `input`, `textarea`, `select`, `number`, `date`, `time`, `datetime-local`, `color`, `radio`, `form`, `list`, `trigger` |
+| Component Types | All registered built-ins: `form`, `list`, `input`, `number`, `date`, `time`, `datetime-local`, `color`, `radio`, `file`, `image`, `video`, `audio`, `trigger`, `label`. Native `<select>` uses `input`; dynamic remote Select options are planned, not implemented. Mixins are a template feature, not a registered built-in type. |
 | List Template Roles | `item`, `inline`, `prepend`, `append`, `empty` |
-| Actions | `reset`, `clear`, `export`, `import`, `submit`, `addItem`, `removeItem`, `sort` — signatures, options, behaviour |
+| Actions | `reset`, `clear`, `export`, `import`, `submit`, `addItem`, `removeItem`, `count`, `position`, `download`, `rename`, `pick`, custom actions |
 | Context & Target Resolution | How triggers find their context/target components |
 | Event System | `BeforeAction_*`, `AfterAction_*`, `@action` decorator, `silent` option |
 | Data Import / Export | `export()`, `import()`, options deep-dive |
-| API Methods | All public prototype methods grouped by purpose |
+| Video and Audio Fields | Compact media picker/player/value overview with links to both detailed type references |
+| API Methods | Common component methods; includes `move(options)` as a sortable-list method, not an action |
 
 ## How to use this file as an agent
 

@@ -202,7 +202,7 @@ cherry-pick which item we'd like to remove**.
 
 
 Thankfully, all *Scalar field types* implement the
-[Singleton Pattern]({{ "/component_reference/overview#the-singleton-pattern" | relative_url }})
+[Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 so that we can use any other html tag in place and just put the form field tag
 inside.
 

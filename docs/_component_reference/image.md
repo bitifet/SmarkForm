@@ -189,7 +189,7 @@ on **♻️ Reset** brings the URL-seeded demo value back.
 
 Wrapping the field in another element turns the whole wrap area into the field
 — the [Singleton
-Pattern](/component_reference/overview#the-singleton-pattern) — and
+Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}) — and
 applies **drop**, **paste** and **click** handlers over the *entire container*.
 A `<figure>` wrapper additionally turns a `figcaption contenteditable` into the
 editable file **name**:
@@ -707,6 +707,6 @@ logged and the value is left empty (`null`), rather than breaking the import.
 
 > **See also:** [`file`]({{ "component_reference/file" | relative_url }}) —
 > the underlying type and value contract; the [Singleton
-> Pattern](/component_reference/overview#the-singleton-pattern) and
+> Pattern]({{ "/guides/the_singleton_pattern" | relative_url }}) and
 > [Files in Lists]({{ "component_reference/file" | relative_url }}#files-in-lists-of-file)).
 <!-- END old PORTED TO docs/_component_reference/image.md -->

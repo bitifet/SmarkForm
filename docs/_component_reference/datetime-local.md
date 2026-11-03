@@ -32,7 +32,7 @@ component type, providing specialized handling for datetime-local input fields w
 enhanced parsing and formatting capabilities.
 
 - **Imports and Exports:** ISO datetime-local string (`YYYY-MM-DDTHH:mm:ss`) or `null` (when empty)
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 - **Data Conversion:** Converts between various datetime formats and ISO datetime-local strings
 
 ## Usage

@@ -30,7 +30,7 @@ redirect_from:
 The `number` component type extends the [Input](/component_reference/input) component type, providing additional sanitation (when importing) and formatting (when exporting).
 
 - **Imports and Exports:** `Number`
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 - **Data Conversion:** Converts inappropriate types (like `String`) to `Number` on the fly.
 
 ## Usage

@@ -30,7 +30,7 @@ redirect_from:
 The `input` component type is a fundamental building block for form elements in SmarkForm. It allows you to create and manage various types of input fields within your forms.
 
 - **Imports and Exports:** `String`
-- **Singleton Pattern:** Implements the [Singleton Pattern](/component_reference/overview#the-singleton-pattern)
+- **Singleton Pattern:** Implements the [Singleton Pattern]({{ "/guides/the_singleton_pattern" | relative_url }})
 - **Data Conversion:** No data conversion is performed. The value is returned as a `String`.
 
 
