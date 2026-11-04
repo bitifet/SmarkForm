@@ -438,89 +438,131 @@ endcapture %}
 
 #### Deep nested forms and cross-list moves
 
-This example combines groups, student forms, a nested grades form, and scalar
-score lists. Drag a student to another group; its grades move with it.
+Manage school groups, students, and subject grades. The accordions keep the
+three-level form compact; drag a student between classes to move their grades
+with them.
 
 {% raw %}<!-- deep_school_groups_html {{{ -->{% endraw %}
 {% capture deep_school_groups_html -%}
-<div id="myForm$$" class="deep-school">
-  <p>
-    <label data-smark>School:</label>
-    <input data-smark name="school" placeholder="School name">
-  </p>
-  <button data-smark='{"action":"addItem","context":"groups"}' type="button">Add group</button>
-  <ul data-smark='{"type":"list","name":"groups","of":"form","sortable":true,"min_items":0}'>
-    <li>
-      <div class="group-row">
-        <label data-smark-type="label" title="Drag to reorder groups">⠿</label>
-        <input data-smark name="name" placeholder="Group name">
-        <button data-smark-action="removeItem" type="button" title="Remove group">Remove</button>
-      </div>
-      <button data-smark='{"action":"addItem","context":"students"}' type="button">Add student</button>
-      <ul data-smark='{"type":"list","name":"students","of":"form","sortable":true,"moving_depth":2,"min_items":0}'>
-        <li>
-          <div class="student-row">
-            <label data-smark-type="label" title="Drag to reorder or move students">⠿</label>
-            <input data-smark name="name" placeholder="Student name">
-            <button data-smark-action="removeItem" type="button" title="Remove student">Remove</button>
-          </div>
-          <fieldset data-smark='{"type":"form","name":"grades"}'>
-            <legend>Scores (up to 3)</legend>
-            <ul data-smark='{"type":"list","name":"scores","of":"number","min_items":0,"max_items":3}'>
-              <li>
-                <input data-smark type="number" min="0" max="10" step="0.1">
-                <button data-smark-action="removeItem" type="button" title="Remove score">−</button>
-              </li>
-              <li data-smark-role="empty_list">No scores</li>
-            </ul>
-            <button data-smark='{"action":"addItem","context":"scores"}' type="button">Add score</button>
-          </fieldset>
-        </li>
-        <li data-smark-role="empty_list">No students</li>
-      </ul>
-    </li>
-    <li data-smark-role="empty_list">No groups</li>
-  </ul>
+<div id="myForm$$">
+  <div class="school-groups">
+    <div class="school-header">
+      <input name="name" placeholder="School name" type="text" data-smark>
+      <input name="level" placeholder="Level (e.g. Primary)" type="text" data-smark>
+      <input name="year" placeholder="Academic year" type="text" data-smark>
+    </div>
+    <ul data-smark='{"type":"list","name":"groups","sortable":true,"min_items":0}'>
+      <li data-smark='{"role":"empty_list"}' class="empty">No groups yet</li>
+      <li>
+        <div class="group-card">
+          <details>
+            <summary>
+              <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder groups">⠿</span>
+              <span data-smark='{"action":"position"}'>#</span>
+              <input name="name" placeholder="Group name" type="text" data-smark>
+              <button data-smark='{"action":"removeItem"}' title="Remove group">➖</button>
+            </summary>
+            <div class="group-body">
+              <label class="tutor">Tutor: <input name="tutor" placeholder="Tutor name" type="text" data-smark></label>
+              <div class="students">
+                <strong>Students</strong>
+                <ul data-smark='{"type":"list","name":"students","sortable":true,"moving_depth":2,"min_items":0}'>
+                  <li data-smark='{"role":"empty_list"}' class="empty">No students yet</li>
+                  <li>
+                    <details>
+                      <summary>
+                        <span data-smark='{"type":"label"}' class="handle" title="Drag to move between groups">⠿</span>
+                        <input name="name" placeholder="Student name" type="text" data-smark>
+                        <button data-smark='{"action":"removeItem"}' title="Remove student">➖</button>
+                      </summary>
+                      <div data-smark='{"type":"form","name":"grades"}' class="grades">
+                        <div class="grade-column">
+                          <strong>Math</strong>
+                          <ul data-smark='{"type":"list","name":"math","min_items":0}'><li><input name="grade" type="number" step="0.1" min="0" max="10" data-smark></li></ul>
+                          <button data-smark='{"action":"removeItem","context":"math"}' title="Remove grade">➖</button>
+                          <button data-smark='{"action":"addItem","context":"math"}' title="Add grade">➕</button>
+                        </div>
+                        <div class="grade-column">
+                          <strong>Literature</strong>
+                          <ul data-smark='{"type":"list","name":"literature","min_items":0}'><li><input name="grade" type="number" step="0.1" min="0" max="10" data-smark></li></ul>
+                          <button data-smark='{"action":"removeItem","context":"literature"}' title="Remove grade">➖</button>
+                          <button data-smark='{"action":"addItem","context":"literature"}' title="Add grade">➕</button>
+                        </div>
+                        <div class="grade-column">
+                          <strong>Science</strong>
+                          <ul data-smark='{"type":"list","name":"science","min_items":0}'><li><input name="grade" type="number" step="0.1" min="0" max="10" data-smark></li></ul>
+                          <button data-smark='{"action":"removeItem","context":"science"}' title="Remove grade">➖</button>
+                          <button data-smark='{"action":"addItem","context":"science"}' title="Add grade">➕</button>
+                        </div>
+                      </div>
+                    </details>
+                  </li>
+                </ul>
+                <button data-smark='{"action":"addItem","context":"students"}' title="Add student">➕ Add Student</button>
+              </div>
+            </div>
+          </details>
+        </div>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"groups"}' title="Add group">➕ Add Group</button>
+  </div>
 </div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_css {{{ -->{% endraw %}
 {% capture deep_school_groups_css -%}
-{{""}}#myForm$$.deep-school { max-width: 560px; }
-{{""}}#myForm$$.deep-school ul { list-style: none; padding-left: 1em; }
-{{""}}#myForm$$.deep-school li { margin: .4em 0; }
-{{""}}#myForm$$.deep-school .group-row,
-{{""}}#myForm$$.deep-school .student-row { display: flex; align-items: center; gap: .4em; }
-{{""}}#myForm$$.deep-school input { min-width: 0; }
-{{""}}#myForm$$.deep-school fieldset { margin: .4em 0; }
-{{""}}#myForm$$.deep-school [data-smark-label] { cursor: grab; }
-{{""}}#myForm$$.deep-school [data-role="empty_list"] { color: #777; font-style: italic; }
+{{""}}#myForm$$ .school-groups { max-width: 520px; font-size: .95em; }
+{{""}}#myForm$$ .school-groups ul { list-style: none; padding: 0; margin: 0; }
+{{""}}#myForm$$ .school-header { display: flex; gap: .5em; margin-bottom: .6em; flex-wrap: wrap; }
+{{""}}#myForm$$ .school-header input { flex: 1; min-width: 120px; padding: .35em .5em; }
+{{""}}#myForm$$ .group-card { border: 1px solid #ddd; border-radius: 8px; margin: .4em 0; background: #fafafa; overflow: hidden; }
+{{""}}#myForm$$ .group-card summary { display: flex; align-items: center; gap: .4em; padding: .35em .5em; background: #fff; }
+{{""}}#myForm$$ .group-card details[open] summary { border-bottom: 1px solid #eee; }
+{{""}}#myForm$$ .group-card summary input { flex: 1; min-width: 0; }
+{{""}}#myForm$$ .handle { cursor: grab; color: #999; user-select: none; }
+{{""}}#myForm$$ .group-body { padding: .4em .5em .2em 1.8em; }
+{{""}}#myForm$$ .tutor { display: flex; gap: .4em; margin-bottom: .3em; }
+{{""}}#myForm$$ .tutor input { flex: 1; min-width: 0; }
+{{""}}#myForm$$ .students { margin-top: .3em; }
+{{""}}#myForm$$ .students > strong { display: block; font-size: .85em; margin-bottom: .2em; }
+{{""}}#myForm$$ .students ul { max-height: 240px; overflow-y: auto; border: 1px solid #eee; border-radius: 4px; padding: .2em .3em; background: #fff; }
+{{""}}#myForm$$ .students li { margin: .15em 0; }
+{{""}}#myForm$$ .students summary { display: flex; align-items: center; gap: .3em; padding: .2em .3em; background: #fafafa; border: 1px solid #eee; }
+{{""}}#myForm$$ .students summary input { flex: 1; min-width: 0; }
+{{""}}#myForm$$ .grades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: .3em; }
+{{""}}#myForm$$ .grade-column { display: flex; flex-direction: column; gap: 2px; }
+{{""}}#myForm$$ .grade-column strong { text-align: center; font-size: .85em; border-bottom: 1px solid #ddd; }
+{{""}}#myForm$$ .grade-column input { width: 100%; box-sizing: border-box; }
+{{""}}#myForm$$ .empty { color: #999; font-style: italic; padding: .5em; }
+{{""}}#myForm$$ .school-groups button { padding: .2em .6em; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_notes {{{ -->{% endraw %}
 {% capture deep_school_groups_notes -%}
-👉 **Nested data.** The export is a `school` object containing a `groups` array;
-each group contains a `students` array, and each student has a `grades.scores`
-array.
+👉 **Nested data.** The export contains a school, groups, students, and separate
+lists of Math, Literature, and Science grades for each student.
 
-👉 **Cross-list movement.** Drag a student handle between groups. Its score
-array moves with the student; the sibling distance between the student lists is
-2, so each list uses `moving_depth:2`.
+👉 **Cross-list movement.** Drag a student handle between groups. Their grades
+move with them; the sibling distance between student lists is 2, so they use
+`moving_depth:2`.
 
-👉 **Try it!** Move Bart to Class B, then add a score. The JSON editor shows the
-updated nested value.
+👉 **Try it!** Open a class and student, move Bart to Class B, then add a grade.
+The JSON editor shows the updated nested value.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_demoValue {{{ -->{% endraw %}
 {% capture deep_school_groups_demoValue -%}
 {
-  "school": "Springfield Elementary",
+  "name": "Springfield Elementary",
+  "level": "Primary",
+  "year": "2025/2026",
   "groups": [
-    {"name":"Class A","students":[
-      {"name":"Lisa Simpson","grades":{"scores":[9.5,8.0]}},
-      {"name":"Bart Simpson","grades":{"scores":[4.0]}}
+    {"name":"Class A","tutor":"Mr. Smith","students":[
+      {"name":"Lisa Simpson","grades":{"math":[{"grade":9.5},{"grade":8.0}],"literature":[{"grade":7.3}],"science":[{"grade":8.8}]}},
+      {"name":"Bart Simpson","grades":{"math":[{"grade":4.0}],"literature":[{"grade":5.5}],"science":[{"grade":3.0}]}}
     ]},
-    {"name":"Class B","students":[
-      {"name":"Milhouse Van Houten","grades":{"scores":[6.0]}}
+    {"name":"Class B","tutor":"Ms. Johnson","students":[
+      {"name":"Milhouse Van Houten","grades":{"math":[{"grade":6.0}],"literature":[{"grade":7.0}],"science":[{"grade":6.5}]}}
     ]}
   ]
 }
@@ -536,20 +578,22 @@ updated nested value.
 export default async ({ page, expect, root, readField, writeField }) => {
     await expect(root).toBeVisible();
     await writeField('/', {
-        school: 'Springfield Elementary',
+        name: 'Springfield Elementary',
+        level: 'Primary',
+        year: '2025/2026',
         groups: [
-            {name: 'Class A', students: [
-                {name: 'Lisa Simpson', grades: {scores: [9.5, 8.0]}},
-                {name: 'Bart Simpson', grades: {scores: [4.0]}},
+            {name: 'Class A', tutor: 'Mr. Smith', students: [
+                {name: 'Lisa Simpson', grades: {math: [{grade: 9.5}, {grade: 8.0}], literature: [{grade: 7.3}], science: [{grade: 8.8}]}},
+                {name: 'Bart Simpson', grades: {math: [{grade: 4.0}], literature: [{grade: 5.5}], science: [{grade: 3.0}]}},
             ]},
-            {name: 'Class B', students: [
-                {name: 'Milhouse Van Houten', grades: {scores: [6.0]}},
+            {name: 'Class B', tutor: 'Ms. Johnson', students: [
+                {name: 'Milhouse Van Houten', grades: {math: [{grade: 6.0}], literature: [{grade: 7.0}], science: [{grade: 6.5}]}},
             ]},
         ],
     });
 
     const before = await readField('/');
-    expect(before.groups[0].students[1].grades.scores).toEqual([4]);
+    expect(before.groups[0].students[1].grades.math[0].grade).toBe(4);
     await page.evaluate(async () => {
         const source = myForm.find('/groups/0/students');
         const target = myForm.find('/groups/1/students');
@@ -563,15 +607,7 @@ export default async ({ page, expect, root, readField, writeField }) => {
     let after = await readField('/');
     expect(after.groups[0].students.map(item => item.name)).toEqual(['Lisa Simpson']);
     expect(after.groups[1].students.map(item => item.name)).toEqual(['Milhouse Van Houten', 'Bart Simpson']);
-    expect(after.groups[1].students[1].grades.scores).toEqual([4]);
-
-    await page.evaluate(async () => {
-        await myForm.find('/groups/1/students/1/grades/scores').addItem(
-            9.0, { multiple: false, silent: true }
-        );
-    });
-    after = await readField('/');
-    expect(after.groups[1].students[1].grades.scores).toEqual([4, 9]);
+    expect(after.groups[1].students[1].grades.math[0].grade).toBe(4);
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

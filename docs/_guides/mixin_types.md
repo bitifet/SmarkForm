@@ -565,7 +565,7 @@ export default async ({ expect, root, readField, writeField }) => {
     showEditor=true
     selected="preview"
     tests=mixin_nested_composition_tests
-    minHeight=35
+    minHeight=75
 %}
 
 ## List Placement Warning

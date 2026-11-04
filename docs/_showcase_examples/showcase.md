@@ -349,6 +349,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
         { title: 'Review PR' },
     ]);
     await writeField('/progress', [{ title: 'Fix layout' }]);
+    await writeField('/done', [{ title: 'Setup CI' }]);
 
     await page.evaluate(async () => {
         const source = myForm.find('/todo');
@@ -560,7 +561,7 @@ input constraints; the example does not implement a race-distance business rule.
 
   <ul data-smark='{"type":"list","name":"members","sortable":true,"min_items":1,"max_items":5,"export_empties":false}'>
     <li>
-      <div data-smark='{"type":"form"}'>
+      <div>
         <p>
           <span data-smark='{"action":"position"}' class="bib">#N</span>
           <label data-smark>Name:</label>

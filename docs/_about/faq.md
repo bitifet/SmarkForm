@@ -274,6 +274,7 @@ inside have it as their natural context:
     formId="faq_singleton_color"
     htmlSource=faq_singleton_color_html
     demoValue='{"bgcolor":"#6366f1"}'
+    showEditor=true
     tests=false
 %}
 
@@ -408,6 +409,7 @@ placeholder:
     htmlSource=faq_empty_list_html
     cssSource=faq_empty_list_css
     selected="preview"
+    showEditor=true
     tests=false
 %}
 
@@ -488,6 +490,7 @@ myForm.onAll("beforeUnrender", async (ev) => {
     cssSource=faq_animations_css
     jsSource=faq_animations_js
     demoValue='{"items":[{"value":"First item"},{"value":"Second item"}]}'
+    showEditor=true
     tests=false
 %}
 
@@ -1259,6 +1262,7 @@ of the named component without requiring an extra wrapper:
     htmlSource=faq_mixin_labeled_input_html
     demoValue='{"person":{"firstName":"Alice","lastName":"Smith"}}'
     smarkformOptions='{"smark_mixin_allow_local_scripts":"allow"}'
+    showEditor=true
     tests=false
 %}
 

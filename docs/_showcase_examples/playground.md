@@ -96,7 +96,7 @@ and the four basic operators; invalid expressions display `Error`.
 {% capture calculator -%}
 <div id="myForm$$">
     <div class="calculator" data-smark='{"type": "input", "name": "display"}'>
-        <input data-smark type="text" class="display" value="0" pattern="[0-9+\-*\/\(\).]+">
+        <input data-smark type="text" class="display" value="0" pattern="[0-9+\*\/\(\)\.\-]+">
         <div class="buttons">
             <button data-smark='{"action": "import", "data": "C", "hotkey": "c"}' class="clear">C</button>
             <button data-smark='{"action": "import", "data": "("}'>(</button>
@@ -240,7 +240,7 @@ evaluate arbitrary JavaScript or intercept keys outside the display field.
 {% capture supercalculator -%}
 <div id="myForm$$">
   <div class="calculator" data-smark='{"type":"input","name":"display"}'>
-    <input data-smark type="text" class="display" value="0" pattern="[0-9+\-*\/().]+">
+    <input data-smark type="text" class="display" value="0" pattern="[0-9+\*\/\(\)\.\-]+">
     <div class="buttons">
       <button data-smark='{"action":"import","data":"C"}' class="clear">C</button>
       <button data-smark='{"action":"import","data":"("}'>(</button>
@@ -291,7 +291,10 @@ myForm.rendered.then(() => {
     const displayNode = myForm.targetNode.querySelector('input.display');
     const field = myForm.getComponent(displayNode);
     let keyQueue = Promise.resolve();
-    field.targetFieldNode.addEventListener('keydown', (event) => {
+    // Window capture runs before SmarkForm's document-level Enter navigation
+    // listener, so the calculator can consume Enter instead of being preempted.
+    window.addEventListener('keydown', (event) => {
+        if (event.target !== field.targetFieldNode) return;
         if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
         const key = event.key;
         if (

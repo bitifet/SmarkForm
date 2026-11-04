@@ -84,7 +84,7 @@ redirect_from:
     const dldLnk = document.getElementById("dld_button");
     const sources = document.getElementsByClassName("example-source");
     function updateExample() {
-        // `value` is already a site-root URL, including any configured baseurl.
+        /* `value` is already a site-root URL, including any configured baseurl. */
         const exampleLink = switcher.value;
         iframe.src = exampleLink;
         fullScreenLnk.href = exampleLink;

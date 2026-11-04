@@ -501,6 +501,7 @@ scalar value rather than an object.
     formId="core_singleton_phones"
     htmlSource=core_singleton_phones_html
     demoValue='{"personal_data":{"name":"Alice","surname":"Smith","phones":["555-1234","555-5678"]}}'
+    showEditor=true
     tests=false
 %}
 
@@ -658,6 +659,7 @@ trigger placed inside a list item can act on that item:
     formId="core_remove_inside_item"
     htmlSource=core_remove_inside_item_html
     demoValue='{"pets":[{"species":"Cat","name":"Whiskers"},{"species":"Dog","name":"Rex"}]}'
+    showEditor=true
     tests=false
 %}
 

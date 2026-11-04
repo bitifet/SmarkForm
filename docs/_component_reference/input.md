@@ -60,6 +60,7 @@ keep the generic input/string behavior.
     formId="input_basic_usage"
     htmlSource=input_basic_usage_html
     demoValue='{"username":"alice"}'
+    showEditor=true
     tests=false
 %}
 

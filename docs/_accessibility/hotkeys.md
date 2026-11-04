@@ -181,6 +181,7 @@ button{position:relative}
     htmlSource=hotkeys_context_sensitivity_html
     cssSource=hotkeys_context_sensitivity_css
     demoValue='{"users":[{"name":"Alice","phones":[{"phone":"555-1234"}]},{"name":"Bob","phones":[{"phone":"555-5678"}]}]}'
+    showEditor=true
     tests=false
 %}
 

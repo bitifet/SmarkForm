@@ -381,6 +381,7 @@ to, so the button always acts on its immediate neighbours.
     htmlSource=form_trav_copy_adjacent_html
     cssSource=form_trav_copy_adjacent_css
     demoValue='{"plan":[{"day":"Monday","main":"Lasagna","side":"Garlic bread"},{"day":"Tuesday","main":"Tacos","side":"Guacamole"},{"day":"Wednesday","main":"Pizza","side":"Caesar salad"}]}'
+    showEditor=true
     tests=false
 %}
 
@@ -441,6 +442,7 @@ resolved — useful once an item grows its own navigation toolbar:
     htmlSource=form_trav_navigation_ui_html
     cssSource=form_trav_navigation_ui_css
     demoValue='{"itinerary":[{"day":"Friday","activity":"Arrival and hotel check-in"},{"day":"Saturday","activity":"Old town walking tour"},{"day":"Sunday","activity":"Museum day"}]}'
+    showEditor=true
     tests=false
 %}
 
@@ -670,6 +672,7 @@ This example demonstrates a practical implementation of sibling navigation for d
     formId="form_trav_practical_copy"
     htmlSource=form_trav_practical_copy_html
     demoValue='{"contacts":[{"name":"Alice","email":"alice@example.com","phone":"555-1234"},{"name":"Bob","email":"bob@example.com","phone":"555-5678"}]}'
+    showEditor=true
     tests=false
 %}
 

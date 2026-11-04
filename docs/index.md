@@ -316,7 +316,7 @@ A nested subform, a sortable list, context-driven hotkeys, and date/time coercio
     jsSource=event_planner_js
     selected="preview"
     demoValue=demoValue
-    showEditor=false
+    showEditor=true
     tests=false
 %}
 

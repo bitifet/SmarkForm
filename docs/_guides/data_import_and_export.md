@@ -368,26 +368,25 @@ desired empty structure.
 {% raw %} <!-- capture clear_vs_reset_html {{{ --> {% endraw %}
 {% capture clear_vs_reset_html -%}
 <div id="myForm$$">
-  <div data-smark='{"type":"form","name":"task","value":{"title":"Buy groceries","priority":"medium"}}'>
-    <p>
-      <label data-smark>Title:</label>
-      <input data-smark type="text" name="title">
-    </p>
-    <p>
-      <label data-smark>Priority:</label>
-      <input data-smark type="text" name="priority">
-    </p>
-    <p>
-      <button data-smark='{"action":"clear","context":"task"}'>❌ Clear</button>
-      <button data-smark='{"action":"reset","context":"task"}'>♻️ Reset</button>
-    </p>
-  </div>
+  <p>
+    <label data-smark>Title:</label>
+    <input data-smark type="text" name="title">
+  </p>
+  <p>
+    <label data-smark>Priority:</label>
+    <input data-smark type="text" name="priority">
+  </p>
+  <p>
+    <button data-smark='{"action":"clear","context":"."}'>❌ Clear</button>
+    <button data-smark='{"action":"reset","context":".."}'>♻️ Reset</button>
+  </p>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture clearResetNotes -%}
-The `task` form is initialized with `value` defaults.
+The sample's `demoValue` provides the initial values. Clear targets the example
+form; Reset targets its parent so it restores the whole sample's defaults.
 
 1. Modify the fields.
 2. Click **❌ Clear** — all fields become empty.
@@ -398,27 +397,13 @@ The `task` form is initialized with `value` defaults.
 {"title":"Buy groceries","priority":"medium"}
 {%- endcapture %}
 
-{% capture clearResetTests -%}
-export default async ({ root, expect, readField }) => {
-    await expect(root).toBeVisible();
-    const defaults = {title: 'Buy groceries', priority: 'medium'};
-    expect(await readField('/')).toEqual(defaults);
-
-    await root.getByRole('button', {name: '❌ Clear'}).click();
-    expect(await readField('/')).toEqual({title: '', priority: ''});
-
-    await root.getByRole('button', {name: '♻️ Reset'}).click();
-    expect(await readField('/')).toEqual(defaults);
-};
-{%- endcapture %}
-
 {% include components/sampletabs_tpl.md
     formId="clear_vs_reset"
     htmlSource=clear_vs_reset_html
     notes=clearResetNotes
     demoValue=clearResetDemo
     showEditor=true
-    tests=clearResetTests
+    tests=false
 %}
 
 

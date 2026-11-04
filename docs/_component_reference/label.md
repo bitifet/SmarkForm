@@ -81,14 +81,6 @@ of the first label.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 
-{% include components/sampletabs_tpl.md
-    formId="basic_examples"
-    htmlSource=basic_examples
-    notes=notes
-    showEditor=false
-    tests=basic_tests
-%}
-
 {% raw %} <!-- basic_tests {{{ --> {% endraw %}
 {% capture basic_tests -%}
 export default async ({ root, expect }) => {
@@ -108,6 +100,14 @@ export default async ({ root, expect }) => {
 };
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="basic_examples"
+    htmlSource=basic_examples
+    notes=notes
+    showEditor=false
+    tests=basic_tests
+%}
 
 
 

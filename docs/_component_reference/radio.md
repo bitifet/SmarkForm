@@ -63,6 +63,7 @@ To use the `radio` component type, create multiple `INPUT` elements of type `rad
     formId="radio_group_example"
     htmlSource=radio_group_example_html
     demoValue='{"gender":"female"}'
+    showEditor=true
     tests=false
 %}
 

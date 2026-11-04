@@ -158,7 +158,7 @@ item objects.
     jsSource=component_tree_overview_js
     notes=component_tree_overview_notes
     demoValue=component_tree_overview_demoValue
-    showEditor=true
+    showEditor=false
     tests=false
     minHeight=40
 %}
