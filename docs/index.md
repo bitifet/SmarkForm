@@ -159,7 +159,7 @@ endcapture %}
 {{""}}#myForm$$ [data-hotkey]{position:relative}
 {{""}}#myForm$$ [data-hotkey]::after{
     content:"Ctrl+" attr(data-hotkey);
-    position:absolute; top:-1.6em; left:0;
+    position:absolute; top:0.75em; left:0;
     font-size:0.7em;
     background:#333; color:#fff;
     padding:1px 4px; border-radius:3px;

@@ -167,6 +167,7 @@ click brings focus back to the input field.
 
 Evaluation uses a small arithmetic parser limited to numbers, parentheses,
 and the four basic operators; invalid expressions display `Error`.
+Hold `Ctrl` to reveal the keyboard shortcuts on the calculator buttons.
 
 {% raw %} <!-- calculator {{{ --> {% endraw %}
 {% capture calculator -%}
@@ -213,6 +214,13 @@ and the four basic operators; invalid expressions display `Error`.
 {{""}}#myForm$$ .equals:hover { background-color: #66bb6a; }
 {{""}}#myForm$$ .clear { background-color: #d32f2f; }
 {{""}}#myForm$$ .clear:hover { background-color: #ef5350; }
+{{""}}#myForm$$ button { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute; top: 0.75em; left: 0;
+    font-size: 0.7em; background: #333; color: #fff;
+    padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

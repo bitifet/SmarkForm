@@ -290,7 +290,7 @@ label associations and position counters are all built in.
     [data-hotkey] { position: relative; }
     [data-hotkey]::after {
       content: "Ctrl+" attr(data-hotkey);
-      position: absolute; top: -1.6em; left: 0;
+      position: absolute; top: 0.75em; left: 0;
       font-size: .7em; background: #333; color: #fff;
       padding: 1px 4px; border-radius: 3px;
       white-space: nowrap; pointer-events: none;
@@ -568,7 +568,7 @@ All form state and behaviour is wired up explicitly in JavaScript.
     [data-hotkey] { position: relative; }
     body.show-hotkeys [data-hotkey]::after {
       content: "Ctrl+" attr(data-hotkey);
-      position: absolute; top: -1.6em; left: 0;
+      position: absolute; top: 0.75em; left: 0;
       font-size: .7em; background: #333; color: #fff;
       padding: 1px 4px; border-radius: 3px;
       white-space: nowrap; pointer-events: none;
@@ -800,7 +800,7 @@ still need to be declared explicitly in JavaScript.
     [data-hotkey] { position: relative; }
     body.show-hotkeys [data-hotkey]::after {
       content: "Ctrl+" attr(data-hotkey);
-      position: absolute; top: -1.6em; left: 0;
+      position: absolute; top: 0.75em; left: 0;
       font-size: .7em; background: #333; color: #fff;
       padding: 1px 4px; border-radius: 3px;
       white-space: nowrap; pointer-events: none;

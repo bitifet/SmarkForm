@@ -102,6 +102,39 @@ context remain in `Tab` order, including an outer Add button.
 Press `Tab` through the form — the outer `➕ Add`/`🧹` buttons are reachable, but the inner `➖`/`➕` buttons inside each list item are skipped. Hold `Ctrl` to reveal their hotkey shortcuts instead.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
+{% raw %}<!-- nav_tabflow_css {{{ -->{% endraw %}
+{% capture nav_tabflow_css -%}
+{{""}}#myForm$$ [data-hotkey] { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+  content: "Ctrl+" attr(data-hotkey);
+  position: absolute; top: 0.75em; left: 0;
+  font-size: .7em; background: #333; color: #fff;
+  padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- nav_tabflow_tests {{{ -->{% endraw %}
+{% capture nav_tabflow_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+    const insert = root.getByTitle('Insert here').first();
+    await root.locator('input[name="item"]').first().focus();
+    await page.keyboard.down('Control');
+    await expect(insert).toHaveAttribute('data-hotkey', '+');
+    const badge = await insert.evaluate(button => {
+        const style = getComputedStyle(button, '::after');
+        return {
+            position: style.getPropertyValue('position'),
+            content: style.getPropertyValue('content'),
+        };
+    });
+    expect(badge.position).toBe('absolute');
+    expect(badge.content).toContain('Ctrl+');
+    await page.keyboard.up('Control');
+    await expect(insert).not.toHaveAttribute('data-hotkey');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
 {% raw %}<!-- nav_tabflow_demoValue {{{ -->{% endraw %}
 {% capture nav_tabflow_demoValue -%}
 {"items":[{"item":"Review the agenda"},{"item":"Confirm the venue"},{"item":"Send invitations"}]}
@@ -110,10 +143,11 @@ Press `Tab` through the form — the outer `➕ Add`/`🧹` buttons are reachabl
 {% include components/sampletabs_tpl.md
    formId="nav-tabflow"
    htmlSource=nav_tabflow_html
+   cssSource=nav_tabflow_css
    notes=nav_tabflow_notes
    demoValue=nav_tabflow_demoValue
+   tests=nav_tabflow_tests
    selected="preview"
-   tests=false
 %}
 
 {: .info :}
@@ -362,7 +396,7 @@ navigation, and `Alt`+`Enter` / `Alt`+`Shift`+`Enter` into hidden fields.
 #myForm$$ [data-hotkey] { position: relative; }
 #myForm$$ [data-hotkey]::after {
   content: "Ctrl+" attr(data-hotkey);
-  position: absolute; top: -1.6em; left: 0;
+  position: absolute; top: 0.75em; left: 0;
   font-size: .7em; background: #333; color: #fff;
   padding: 1px 4px; border-radius: 3px; white-space: nowrap;
 }
@@ -804,7 +838,6 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     notes=collapsible_sections_notes
     demoValue=collapsible_sections_demoValue
     selected="preview"
-    showEditor=true
     tests=collapsible_sections_tests
     minHeight=40
 %}

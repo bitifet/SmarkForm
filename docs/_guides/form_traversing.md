@@ -557,7 +557,7 @@ The board below is three independent lists laid out as columns, sharing a single
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
 {{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

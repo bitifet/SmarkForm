@@ -1125,6 +1125,17 @@ overridden per usage site directly on the placeholder's `data-smark` attribute.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %}<!-- mixin_inputlist_css {{{ -->{% endraw %}
+{% capture mixin_inputlist_css -%}
+{{""}}#myForm$$ button { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+  content: "Ctrl+" attr(data-hotkey);
+  position: absolute; top: 0.75em; left: 0;
+  font-size: .7em; background: #333; color: #fff;
+  padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
 {% raw %} <!-- capture mixin_inputlist_tests {{{ --> {% endraw %}
 {% capture mixin_inputlist_tests -%}
 export default async ({ page, expect, root }) => {
@@ -1164,6 +1175,7 @@ export default async ({ page, expect, root }) => {
 {% include components/sampletabs_tpl.md
     formId="mixin_inputlist"
     htmlSource=mixin_inputlist_html
+    cssSource=mixin_inputlist_css
     showEditor=true
     demoValue=demoValue
     tests=mixin_inputlist_tests

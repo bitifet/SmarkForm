@@ -387,7 +387,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
 {{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -637,7 +637,7 @@ input constraints; the example does not implement a race-distance business rule.
 {{""}}#myForm$$ .radio-group label { min-width: auto; font-weight: 400; cursor: pointer; }
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -897,7 +897,7 @@ price formatting. The cards share one structure and have independent values.
 {{""}}#myForm$$ { max-width: 500px; font-size: 0.95em; }
 {{""}}#myForm$$ ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5em; }
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
-{{""}}#myForm$$ button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: -1.4em; left: 0; font-size: 0.65em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+{{""}}#myForm$$ button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 {{""}}#myForm$$ button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

@@ -67,7 +67,7 @@ items are present.
 {{""}}#myForm$$ [data-hotkey]::after {
     content: "Ctrl+" attr(data-hotkey);
     position: absolute;
-    top: -1.5em;
+    top: 0.75em;
     left: 0;
     padding: 1px 4px;
     border-radius: 3px;

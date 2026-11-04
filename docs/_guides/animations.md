@@ -152,6 +152,13 @@ SmarkForm removes the item.
   opacity: 0;
   transition: opacity 250ms ease-in;
 }
+{{""}}#myForm$$ button { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+  content: "Ctrl+" attr(data-hotkey);
+  position: absolute; top: 0.75em; left: 0;
+  font-size: .7em; background: #333; color: #fff;
+  padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- anim_adv_js {{{ -->{% endraw %}
@@ -176,7 +183,7 @@ myForm.onAll("beforeUnrender", async (ev) => {
 
 {% raw %}<!-- anim_adv_notes {{{ -->{% endraw %}
 {% capture anim_adv_notes -%}
-Entry slides in from the left (`translateX` only, 300 ms). Exit fades out (`opacity` only, 250 ms) — the two effects are independent.
+Entry slides in from the left (`translateX` only, 300 ms). Exit fades out (`opacity` only, 250 ms) — the two effects are independent. Hold `Ctrl` to reveal the Add/Remove hotkeys.
 
 **Why separate effects instead of symmetric?**
 
