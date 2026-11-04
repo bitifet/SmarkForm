@@ -381,7 +381,7 @@ desired empty structure.
       <button data-smark='{"action":"clear","context":"task"}'>❌ Clear</button>
       <button data-smark='{"action":"reset","context":"task"}'>♻️ Reset</button>
     </p>
-</div>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -394,12 +394,31 @@ The `task` form is initialized with `value` defaults.
 3. Click **♻️ Reset** — the original defaults are restored.
 {%- endcapture %}
 
+{% capture clearResetDemo -%}
+{"title":"Buy groceries","priority":"medium"}
+{%- endcapture %}
+
+{% capture clearResetTests -%}
+export default async ({ root, expect, readField }) => {
+    await expect(root).toBeVisible();
+    const defaults = {title: 'Buy groceries', priority: 'medium'};
+    expect(await readField('/')).toEqual(defaults);
+
+    await root.getByRole('button', {name: '❌ Clear'}).click();
+    expect(await readField('/')).toEqual({title: '', priority: ''});
+
+    await root.getByRole('button', {name: '♻️ Reset'}).click();
+    expect(await readField('/')).toEqual(defaults);
+};
+{%- endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="clear_vs_reset"
     htmlSource=clear_vs_reset_html
     notes=clearResetNotes
+    demoValue=clearResetDemo
     showEditor=true
-    tests=false
+    tests=clearResetTests
 %}
 
 
