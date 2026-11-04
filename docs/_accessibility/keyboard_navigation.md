@@ -89,7 +89,7 @@ context remain in `Tab` order, including an outer Add button.
   <button data-smark='{"action":"removeItem","context":"items","hotkey":"Delete","preserve_non_empty":true}' title="Remove empty">🧹</button>
   <ul data-smark='{"type":"list","name":"items","min_items":1}'>
     <li>
-      <input data-smark type="text" placeholder="Item name">
+      <input data-smark type="text" name="item" placeholder="Item name">
       <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this">➖</button>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert here">➕</button>
     </li>
@@ -102,10 +102,16 @@ context remain in `Tab` order, including an outer Add button.
 Press `Tab` through the form — the outer `➕ Add`/`🧹` buttons are reachable, but the inner `➖`/`➕` buttons inside each list item are skipped. Hold `Ctrl` to reveal their hotkey shortcuts instead.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
+{% raw %}<!-- nav_tabflow_demoValue {{{ -->{% endraw %}
+{% capture nav_tabflow_demoValue -%}
+{"items":[{"item":"Review the agenda"},{"item":"Confirm the venue"},{"item":"Send invitations"}]}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
 {% include components/sampletabs_tpl.md
    formId="nav-tabflow"
    htmlSource=nav_tabflow_html
    notes=nav_tabflow_notes
+   demoValue=nav_tabflow_demoValue
    selected="preview"
    tests=false
 %}
