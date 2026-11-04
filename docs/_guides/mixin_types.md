@@ -508,8 +508,9 @@ reusable markup.
 
 {% raw %}<!-- mixin_nested_composition_css {{{ -->{% endraw %}
 {% capture mixin_nested_composition_css -%}
-{{""}}#myForm$$ { display: flex; flex-wrap: wrap; gap: .75rem; }
-{{""}}#myForm$$ .period-card { min-width: 14rem; }
+{{""}}#myForm$$ { display: flex; flex-direction: column; align-items: stretch; gap: .75rem; width: 100%; box-sizing: border-box; }
+{{""}}#myForm$$ > * { width: 100%; box-sizing: border-box; }
+{{""}}#myForm$$ .period-card { width: 100%; min-width: 0; box-sizing: border-box; }
 {{""}}#myForm$$ .time-range { display: grid; gap: .4rem; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

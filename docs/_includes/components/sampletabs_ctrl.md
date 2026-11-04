@@ -228,7 +228,7 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
 + '<textarea\n'
 + '    placeholder="JSON playground editor"\n'
 + '    data-smark=\'{"name":"editor","type":"input"}\'\n'
-+ '    style="resize: vertical; min-height: 8em; flex-grow: 1; width: 100%; box-sizing: border-box;"\n'
++ '    style="resize: vertical; min-height: 16em; flex-grow: 1; width: 100%; box-sizing: border-box;"\n'
 + '></textarea>\n'
 + '<button type="button" class="smarkform-editor-clear" aria-label="Clear JSON playground" title="Clear JSON playground">❌</button>\n'
 + '</div>\n'
@@ -254,7 +254,7 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
         + 'label{color:#e9e9e9!important}'
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
         + 'a{color:#8c7aff!important}';
-    var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:12em;}' : '';
+    var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:24em;}' : '';
     var S = 'script';
     var jsSrc = srcs.js || '';
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';
