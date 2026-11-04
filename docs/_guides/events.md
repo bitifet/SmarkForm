@@ -417,3 +417,110 @@ Per-event `bubbles` metadata intentionally mirrors native DOM behaviour:
 | Action events (`BeforeAction_*`, `AfterAction_*`) | `true` | N/A |
 
 Event handling is implemented in `src/lib/events.js`.
+
+## Practical Example: Animated Task List
+
+This task list uses `afterRender` to animate new rows into view and
+`beforeUnrender` to keep removed rows in the DOM until their exit transition
+finishes. Add a task, then remove one to see both lifecycle events in action.
+
+{% raw %}<!-- events_animated_tasks_html {{{ -->{% endraw %}
+{% capture events_animated_tasks_html -%}
+<div id="myForm$$">
+  <button data-smark='{"action":"addItem","context":"tasks"}' type="button">➕ Add task</button>
+  <ul class="task-list" data-smark='{"type":"list","name":"tasks","min_items":1,"max_items":8}'>
+    <li class="task-row">
+      <label>
+        <span data-smark='{"action":"position"}'>N</span>
+        <input data-smark type="text" name="title" placeholder="Task description">
+      </label>
+      <select data-smark name="priority">
+        <option value="Normal">Normal</option>
+        <option value="High">High</option>
+        <option value="Low">Low</option>
+      </select>
+      <button data-smark='{"action":"removeItem"}' type="button" title="Remove task">➖</button>
+    </li>
+  </ul>
+</div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- events_animated_tasks_css {{{ -->{% endraw %}
+{% capture events_animated_tasks_css -%}
+{{""}}#myForm$$ .task-list { list-style: none; padding: 0; }
+{{""}}#myForm$$ .task-row { display: flex; align-items: center; gap: .5rem; margin-block: .4rem; padding: .5rem; border: 1px solid #ccc; border-radius: .4rem; }
+{{""}}#myForm$$ .task-row label { display: flex; align-items: center; gap: .5rem; flex: 1; }
+{{""}}#myForm$$ .task-row input { flex: 1; min-width: 0; }
+{{""}}#myForm$$ .task-row.task-entering { transform: translateX(-2rem); opacity: 0; transition: transform 220ms ease-out, opacity 220ms ease-out; }
+{{""}}#myForm$$ .task-row.task-visible { transform: translateX(0); opacity: 1; }
+{{""}}#myForm$$ .task-row.task-leaving { transform: translateX(1rem); opacity: 0; transition: transform 220ms ease-in, opacity 220ms ease-in; }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- events_animated_tasks_js {{{ -->{% endraw %}
+{% capture events_animated_tasks_js -%}
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+myForm.onAll("afterRender", async (ev) => {
+    if (ev.context.parent?.options.type !== "list") return;
+    const row = ev.context.targetNode;
+    row.classList.add("task-entering");
+    await delay(1); // Let the browser paint the starting position first.
+    row.classList.add("task-visible");
+});
+
+myForm.onAll("beforeUnrender", async (ev) => {
+    if (ev.context.parent?.options.type !== "list") return;
+    ev.context.targetNode.classList.remove("task-visible");
+    ev.context.targetNode.classList.add("task-leaving");
+    await delay(220); // Keep the row attached until its CSS transition ends.
+});
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- events_animated_tasks_notes {{{ -->{% endraw %}
+{% capture events_animated_tasks_notes -%}
+Add and remove rows to see the transitions. `afterRender` runs after insertion,
+so the handler adds the initial state, yields briefly, then applies the visible
+state. `beforeUnrender` applies the exit state and returns a promise; SmarkForm
+waits for that promise before removing the row.
+
+The guard checks that the event target is a direct child of a list, so the
+handlers apply to task rows rather than every component in the form.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- events_animated_tasks_demoValue {{{ -->{% endraw %}
+{% capture events_animated_tasks_demoValue -%}
+{"tasks":[{"title":"Confirm the picnic site","priority":"High"},{"title":"Send invitations","priority":"Normal"}]}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- events_animated_tasks_tests {{{ -->{% endraw %}
+{% capture events_animated_tasks_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('/', {tasks: [
+        {title: 'Confirm the picnic site', priority: 'High'},
+        {title: 'Send invitations', priority: 'Normal'},
+    ]});
+
+    await root.getByRole('button', {name: '➕ Add task'}).click();
+    await root.locator('input[name="title"]').last().fill('Prepare the checklist');
+    expect((await readField('/tasks')).map(task => task.title)).toEqual([
+        'Confirm the picnic site', 'Send invitations', 'Prepare the checklist',
+    ]);
+
+    await root.getByTitle('Remove task').last().click();
+    expect((await readField('/tasks')).map(task => task.title)).toEqual([
+        'Confirm the picnic site', 'Send invitations',
+    ]);
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="events-animated-tasks"
+    htmlSource=events_animated_tasks_html
+    cssSource=events_animated_tasks_css
+    jsSource=events_animated_tasks_js
+    notes=events_animated_tasks_notes
+    demoValue=events_animated_tasks_demoValue
+    showEditor=true
+    selected="preview"
+    tests=events_animated_tasks_tests
+%}

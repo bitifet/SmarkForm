@@ -297,6 +297,10 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 - `test/examples_page.tests.js` protects the standalone Examples selector from
   inline-script minification regressions: Jekyll compacts the script, so `//`
   comments can swallow following code and leave an unexpected end of input.
+- `docs/_showcase_examples/playground.md` now starts with the `playground-guided-form` workflow and links representative interactive examples; the calculators and editor implementation are in appendices.
+- `docs/_guides/events.md` includes the tested `events-animated-tasks` example, which uses `afterRender` and `beforeUnrender` for CSS transitions.
+- `docs/_guides/mixin_types.md` keeps the `mixin_nested_composition` preview at full width and uses `minHeight=75` so the form and JSON editor have room.
+- The shared JSON editor has a 16em minimum height and a 24em maximum; update `docs/_includes/components/sampletabs_ctrl.md` and this note together if its sizing changes.
 - The final Showcase is at `docs/_showcase_examples/showcase.md` with `just_form`, `kanban`, `race`, and `configurator` examples; each has a demoValue and focused co-located test. Product Configurator uses a pinned IMask declarative mask. The Playground also keeps `playground-calculator` and the tested `supercalculator` keyboard example. Step 19 removed the temporary Showcase sources; see the Step 16/17 transfer maps for the retained dispositions.
 - `docs/_start_here/quick_start.md` has the `quick_start_first_success` sampletab with `demoValue`; its regular custom test is disabled, but the collector generates the standard demoValue round-trip smoke test.
 - `docs/_start_here/core_concepts.md` has the `components_paths` nested-model sampletab with `demoValue`; its custom test is disabled, but the collector generates the standard demoValue round-trip smoke test. Keep trigger paths in captured code relative when editor-wrapped.
