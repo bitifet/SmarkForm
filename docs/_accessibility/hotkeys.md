@@ -110,7 +110,9 @@ button { position: relative; }
 
 {% raw %} <!-- hk_reveal_notes {{{ --> {% endraw %}
 {% capture hk_reveal_notes -%}
-The `data-hotkey` attribute is added to hotkey-equipped trigger buttons while `Ctrl` is held. Style its `::after` pseudo-element to create a floating tooltip. The button must have `position: relative` for the absolute-positioned badge.
+The `data-hotkey` attribute is added to hotkey-equipped trigger buttons while
+`Ctrl` is held. This CSS places the `::after` badge over the button; the button
+must have `position: relative` for the absolute-positioned hint.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md

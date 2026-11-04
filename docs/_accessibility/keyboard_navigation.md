@@ -168,9 +168,8 @@ This allows you to keep optional sections collapsed by default while still
 being able to navigate into them when you need to fill data.
 
 Sequential Enter navigation follows **SmarkForm fields**, not the browser's
-native `<summary>` focus stop. If readers should be able to continue navigating
-after opening a section, make the `<details>` a SmarkForm form and put a
-SmarkForm field in its `<summary>`. A bare summary can still toggle the native
+native `<summary>` focus stop. Each address row below is a SmarkForm form in the
+list, with a field in its summary. A bare summary can still toggle the native
 disclosure, but focus there is not a field in SmarkForm's navigation tree; the
 next Enter cannot continue from that point into the section's fields.
 
@@ -185,24 +184,30 @@ next Enter cannot continue from that point into the section's fields.
     <label data-smark>Email:</label>
     <input data-smark type="email" name="email">
   </p>
-  <details data-smark='{"type":"form","name":"billing"}'>
-    <summary>
-      <span data-smark='{"type":"label"}'>Address label:</span>
-      <input data-smark type="text" name="label" placeholder="Home or work">
-    </summary>
-    <p>
-      <label data-smark>Street:</label>
-      <input data-smark type="text" name="street">
-    </p>
-    <p>
-      <label data-smark>City:</label>
-      <input data-smark type="text" name="city">
-    </p>
-    <p>
-      <label data-smark>ZIP:</label>
-      <input data-smark type="text" name="zip">
-    </p>
-  </details>
+  <fieldset>
+    <span data-smark='{"type":"label"}'>Addresses:</span>
+    <div class="addresses-list" data-smark='{"type":"list","name":"addresses","of":"form","min_items":1,"max_items":6}'>
+      <details data-smark='{"type":"form"}'>
+        <summary>
+          <input data-smark type="text" name="label" aria-label="Address label" placeholder="Home or work">
+          <button data-smark='{"action":"removeItem"}' type="button" title="Remove address">🗑️</button>
+        </summary>
+        <p>
+          <label data-smark>Street:</label>
+          <input data-smark type="text" name="street">
+        </p>
+        <p>
+          <label data-smark>City:</label>
+          <input data-smark type="text" name="city">
+        </p>
+        <p>
+          <label data-smark>ZIP:</label>
+          <input data-smark type="text" name="zip">
+        </p>
+      </details>
+    </div>
+    <button data-smark='{"action":"addItem","context":"addresses"}' type="button">➕ Add address</button>
+  </fieldset>
   <p>
     <label data-smark>Final comments:</label>
     <textarea data-smark name="final_comments" placeholder="Notes for the whole form"></textarea>
@@ -212,15 +217,17 @@ next Enter cannot continue from that point into the section's fields.
 
 {% raw %}<!-- nav_details_notes {{{ -->{% endraw %}
 {% capture nav_details_notes -%}
-With Billing Address collapsed, focus **Address label** and press `Enter`: focus
-moves to Final comments, skipping the hidden address fields. `Shift`+`Enter`
-moves back to Address label. From that field, `Alt`+`Enter` opens the section and
-focuses Street. `Shift`+`Space` from an address field folds it and returns focus
-to Address label; another `Shift`+`Space` opens it without losing that field.
+With the **Work** address collapsed, focus its summary input and press `Enter`:
+focus moves to Final comments, skipping the hidden address fields.
+`Shift`+`Enter` moves back to that address's summary. From there,
+`Alt`+`Enter` opens the address and focuses Street. `Shift`+`Space` from an
+address field folds it and returns focus to the summary input; another
+`Shift`+`Space` opens it without losing that field.
 
-The Address label input is deliberately inside `<summary>`. A native summary
-without a SmarkForm field can open and close the disclosure, but SmarkForm cannot
-resume sequential Enter navigation from its native focus stop.
+Each list item is a form, and the input in its `<summary>` keeps sequential
+navigation in SmarkForm's component tree. A native summary without a SmarkForm
+field can still toggle the disclosure, but Enter cannot resume from that native
+focus stop.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- nav_details_demoValue {{{ -->{% endraw %}
@@ -228,12 +235,10 @@ resume sequential Enter navigation from its native focus stop.
 {
   "name": "Taylor Morgan",
   "email": "taylor@example.com",
-  "billing": {
-    "label": "Home",
-    "street": "42 River Lane",
-    "city": "Brookside",
-    "zip": "12345"
-  },
+  "addresses": [
+    {"label":"Home","street":"42 River Lane","city":"Brookside","zip":"12345"},
+    {"label":"Work","street":"8 Market Street","city":"Brookside","zip":"12346"}
+  ],
   "final_comments": "Call before delivery."
 }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
@@ -245,41 +250,46 @@ export default async ({ page, expect, root, readField, writeField }) => {
     await writeField('/', {
         name: 'Taylor Morgan',
         email: 'taylor@example.com',
-        billing: {
-            label: 'Home', street: '42 River Lane', city: 'Brookside',
-            zip: '12345',
-        },
+        addresses: [
+            {label: 'Home', street: '42 River Lane', city: 'Brookside', zip: '12345'},
+            {label: 'Work', street: '8 Market Street', city: 'Brookside', zip: '12346'},
+        ],
         final_comments: 'Call before delivery.',
     });
 
     const details = root.locator('details');
-    const label = root.locator('input[name="label"]');
+    const labels = root.locator('input[name="label"]');
     const street = root.locator('input[name="street"]');
     const comments = root.locator('textarea[name="final_comments"]');
 
-    await label.focus();
+    await labels.nth(1).focus();
     await page.waitForTimeout(25); // Keep the deliberate keypress outside the IME focus guard window.
     await page.keyboard.press('Enter');
     await expect(comments).toBeFocused(); // Closed body fields are skipped.
+    await page.waitForTimeout(25);
     await page.keyboard.press('Shift+Enter');
-    await expect(label).toBeFocused();
+    await expect(labels.nth(1)).toBeFocused();
 
     await page.waitForTimeout(25);
     await page.keyboard.press('Alt+Enter');
-    await expect(details).toHaveAttribute('open', '');
-    await expect(street).toBeFocused();
+    await expect(details.nth(1)).toHaveAttribute('open', '');
+    await expect(street.nth(1)).toBeFocused();
 
     await page.keyboard.press('Shift+Space');
-    await expect(details).not.toHaveAttribute('open', '');
-    await expect(label).toBeFocused();
+    await expect(details.nth(1)).not.toHaveAttribute('open', '');
+    await expect(labels.nth(1)).toBeFocused();
     await page.keyboard.press('Shift+Space');
-    await expect(details).toHaveAttribute('open', '');
-    await expect(label).toBeFocused();
+    await expect(details.nth(1)).toHaveAttribute('open', '');
+    await expect(labels.nth(1)).toBeFocused();
     await page.waitForTimeout(25);
     await page.keyboard.press('Enter');
-    await expect(street).toBeFocused();
+    await expect(street.nth(1)).toBeFocused();
 
-    expect(await readField('/billing/label')).toBe('Home');
+    await root.getByTitle('Remove address').nth(1).click();
+    expect(await readField('/addresses')).toHaveLength(1);
+    await root.getByRole('button', {name: '➕ Add address'}).click();
+    await labels.last().fill('Office');
+    expect(await readField('/addresses/1/label')).toBe('Office');
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
