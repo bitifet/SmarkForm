@@ -105,7 +105,6 @@ export default async ({ root, expect }) => {
     formId="basic_examples"
     htmlSource=basic_examples
     notes=notes
-    showEditor=false
     tests=basic_tests
 %}
 
@@ -267,7 +266,6 @@ export default async ({ root, expect }) => {
     htmlSource=advanced_examples
     cssSource=advanced_examples_css
     notes=notes
-    showEditor=false
     tests=advanced_tests
 %}
 

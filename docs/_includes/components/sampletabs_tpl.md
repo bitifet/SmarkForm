@@ -10,7 +10,8 @@ Accepted arguments:
                       When provided, the generated default jsHead includes these options so that the interactive
                       preview, the regular smoke test and the demoValue round-trip test all see the same settings.
                       Collected by scripts/collect-docs-examples.js and used by test/co_located_tests.tests.js.
-  * showEditor: Whether to show the editor textarea or not (defaults to false)
+  * showEditor: Whether the JSON editor starts enabled (defaults to false). If omitted, the
+                editor can still be enabled from the toolbar; an explicit false disables that toggle.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * minHeight: Optional minimum iframe height as a percentage of the viewport (0–100).
                The iframe auto-sizes to its measured content height on the first render, never
@@ -140,7 +141,14 @@ myForm.rendered.then(function() {
 
 
 {% assign current_tab = include.selected | default: "html" %}
-{% assign showEditor = include.showEditor | default: false %}
+{% assign showEditor = false %}
+{% if include.showEditor == true or include.showEditor == 'true' %}
+  {% assign showEditor = true %}
+{% endif %}
+{% assign editorToggleDisabled = false %}
+{% if include.showEditor == false or include.showEditor == 'false' %}
+  {% assign editorToggleDisabled = true %}
+{% endif %}
 
 
 
@@ -255,7 +263,7 @@ endif %}{% if jsHidden != '-'
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    <label class="smarkform-editor-label" style="display:none"><input type="checkbox" class="smarkform-editor-toggle" disabled> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON playground editor is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused. In edit mode it is not included in the snippets by default, but you can add it back by checking this box. Note: for some examples the editor is intentionally excluded and this checkbox is disabled.">ℹ️</span></label>
+    <label class="smarkform-editor-label"><input type="checkbox" class="smarkform-editor-toggle" {% if showEditor == true %}checked{% endif %}{% if editorToggleDisabled %} disabled{% endif %}> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON editor starts enabled when showEditor=true and off when showEditor is omitted. Use this checkbox to include or remove it from the preview; it remains available outside Edit mode unless showEditor=false was explicitly set.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -302,20 +310,20 @@ endif %}{% if jsHidden != '-'
       <li data-bullet="👁️"><b>Preview:</b> Live, sandboxed rendering of the example — fully isolated from the page styles.</li>
       <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
     </ul>
-    {% if showEditor == true %}
-    <p>✨ In the <strong>Preview</strong> tab, a <em>JSON playground editor</em> is available with handy buttons:</p>
+    {% unless editorToggleDisabled %}
+    <p>✨ In the <strong>Preview</strong> tab, use the toolbar checkbox to include the JSON editor. It includes these buttons:</p>
     <ul>
       <li><code>⬇️ Export</code> to export the form data to the <em>JSON playground editor</em>.</li>
       <li><code>⬆️ Import</code> to import data from the <em>JSON playground editor</em> into the form.</li>
       <li><code>♻️ Reset</code> in forms prefilled with sample data, resets the form to its default values.</li>
       <li><code>❌ Clear</code> to clear the whole form.</li>
     </ul>
-    <p>💡 The <em>JSON playground editor</em> is part of the SmarkForm form itself — it is just omitted from the code snippets to keep the examples focused on what matters.</p>
-    {% endif %}
+    <p>💡 The editor starts included with <code>showEditor=true</code>. When the option is omitted it starts off but remains available from the toolbar. Set <code>showEditor=false</code> only when this example must not include it.</p>
+    {% endunless %}
     <p>🛠️ Between the tab labels and the content there is always an <strong>edit toolbar</strong>:</p>
     <ul>
       <li><code>✏️ Edit</code> — activates edit mode: each source tab turns into a syntax-highlighted code editor (powered by <a href="https://ace.c9.io/" target="_blank">Ace</a>) pre-filled with the full, merged source. Changes are sandboxed — the original example is not affected.</li>
-      <li><code>📋 Include playground editor</code> — (only visible in edit mode) controls whether the <em>JSON playground editor</em> is included in the preview. When toggled, the HTML and JS editors update instantly so you can see exactly what code is needed to add or remove it.{% if showEditor == false %} <em>Disabled for this example.</em>{% endif %}</li>
+      <li><code>📋 Include playground editor</code> — always visible; controls whether the JSON editor is included in the preview. When Edit is active, its HTML and JS source update with the toggle. It starts checked for <code>showEditor=true</code>, unchecked when omitted, and disabled only when <code>showEditor=false</code> is explicit.{% if editorToggleDisabled %} <em>Disabled for this example.</em>{% endif %}</li>
       <li><code>▶️ Run</code> — (only visible in edit mode) re-renders the Preview from the current editor contents and switches to the Preview tab.</li>
     </ul>
   </div>
@@ -332,6 +340,7 @@ endif %}{% if jsHidden != '-'
     "jsSource": {{ jsSource | jsonify | replace: "  ", "\u0020\u0020" | replace: "<", "\u003c" }},
     "demoValue": {{ demoValue | jsonify }},
     "showEditor": {{ showEditor | jsonify }},
+    "editorToggleDisabled": {{ editorToggleDisabled | jsonify }},
     "minHeight": {{ include.minHeight | plus: 0 }},
     "smarkformUrl": "{{ smarkform_umd_dld_link }}?v={{ site.time | date: '%s' }}"
   }

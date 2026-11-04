@@ -50,13 +50,15 @@ focus order; disabled controls and the form's authored markup affect that order.
 {% capture nav_enter_notes -%}
 Press `Enter` in a single-line field to move to the next one; `Shift`+`Enter`
 moves backward. In a textarea, plain `Enter` inserts a newline, `Ctrl`+`Enter`
-moves forward, and `Shift`+`Enter` moves backward.
+moves forward, and `Shift`+`Enter` moves backward. The shared JSON editor is
+disabled so its controls do not add extra steps to this navigation sequence.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
    formId="nav-enter"
    htmlSource=nav_enter_html
    notes=nav_enter_notes
+   showEditor=false
    selected="preview"
    tests=false
 %}
@@ -100,6 +102,9 @@ context remain in `Tab` order, including an outer Add button.
 {% raw %}<!-- nav_tabflow_notes {{{ -->{% endraw %}
 {% capture nav_tabflow_notes -%}
 Press `Tab` through the form — the outer `➕ Add`/`🧹` buttons are reachable, but the inner `➖`/`➕` buttons inside each list item are skipped. Hold `Ctrl` to reveal their hotkey shortcuts instead.
+
+The shared JSON editor is disabled because its controls would add unrelated
+stops to the Tab order being demonstrated.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- nav_tabflow_css {{{ -->{% endraw %}
@@ -147,6 +152,7 @@ export default async ({ page, expect, root }) => {
    notes=nav_tabflow_notes
    demoValue=nav_tabflow_demoValue
    tests=nav_tabflow_tests
+   showEditor=false
    selected="preview"
 %}
 
@@ -227,7 +233,8 @@ address field folds it and returns focus to the summary input; another
 Each list item is a form, and the input in its `<summary>` keeps sequential
 navigation in SmarkForm's component tree. A native summary without a SmarkForm
 field can still toggle the disclosure, but Enter cannot resume from that native
-focus stop.
+focus stop. The shared JSON editor is disabled so its controls do not extend
+the keyboard sequence shown here.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- nav_details_demoValue {{{ -->{% endraw %}
@@ -299,6 +306,7 @@ export default async ({ page, expect, root, readField, writeField }) => {
    notes=nav_details_notes
    demoValue=nav_details_demoValue
    tests=nav_details_tests
+   showEditor=false
    selected="preview"
 %}
 
@@ -422,6 +430,9 @@ navigation, and `Alt`+`Enter` / `Alt`+`Shift`+`Enter` into hidden fields.
 **Try it:** Edit a contact name in the summary, expand its details, and use
 `Enter`, `Shift`+`Enter`, `Alt`+`Enter`, and `Alt`+`Shift`+`Enter` to test
 forward/backward navigation across collapsed list items.
+
+The shared JSON editor is disabled because its controls would add extra fields
+and tab stops to this keyboard-navigation example.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- collapsible_sections_demoValue {{{ -->{% endraw %}
@@ -847,6 +858,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     jsSource=collapsible_sections_js
     notes=collapsible_sections_notes
     demoValue=collapsible_sections_demoValue
+    showEditor=false
     selected="preview"
     tests=collapsible_sections_tests
     minHeight=40

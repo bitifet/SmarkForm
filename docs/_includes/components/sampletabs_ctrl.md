@@ -454,13 +454,13 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!srcEl || !iframe) return;
         var data = JSON.parse(srcEl.textContent);
         var r = function(s) { return (s && s !== '-') ? s.replace(/\$\$/g, '') : ''; };
-        var withEditor = false;
+        var withEditor = !!data.showEditor;
         var editMode = false;
         var savedContents = {};
         var aceEditors = {};
         applyHashTab();
         var previewSrcs = function() {
-            var useEditor = editMode ? withEditor : !!data.showEditor;
+            var useEditor = withEditor;
             /* When editor is hidden, demoValue is passed directly as value: {...}.
                When editor is shown, demoValue is wrapped as value: {"demo": {...}} because
                the HTML wraps the form in a "demo" subform. This keeps the JS tab accurate
@@ -546,7 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
-        var editorLabel  = container.querySelector('.smarkform-editor-label');
         var editorToggle = container.querySelector('.smarkform-editor-toggle');
         var runBtn       = container.querySelector('.smarkform-run-btn');
         if (!editToggle || !runBtn) return;
@@ -555,16 +554,13 @@ document.addEventListener('DOMContentLoaded', function() {
             renderTask.canceled = true; /* cancel scheduled initial render if still pending */
             if (editMode) {
                 runBtn.style.display = '';
-                if (editorLabel) editorLabel.style.display = '';
-                if (editorToggle) editorToggle.disabled = !data.showEditor;
+                if (editorToggle) editorToggle.disabled = !!data.editorToggleDisabled;
                 savedContents = {};
                 populateEditable();
                 smarkformRenderIframe(iframe, data, previewSrcs());
             } else {
                 runBtn.style.display = 'none';
-                if (editorLabel) editorLabel.style.display = 'none';
-                if (editorToggle) { editorToggle.disabled = true; editorToggle.checked = false; }
-                withEditor = false;
+                if (editorToggle) editorToggle.disabled = !!data.editorToggleDisabled;
                 /* Destroy Ace editors and restore saved syntax-highlighted content */
                 Object.keys(aceEditors).forEach(function(k) { if (aceEditors[k] && typeof aceEditors[k].destroy === 'function') aceEditors[k].destroy(); });
                 aceEditors = {};

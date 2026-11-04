@@ -294,6 +294,7 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
 - `test/co_located_tests_validation.tests.js` guards the sampletab editor wrapper: examples with `showEditor=true` must not use absolute trigger `context`/`target` paths (nor absolute `myForm.find('/…')` calls in example JS) — the editor wraps content in a `demo` subform and those break with `UNKNOWN_ACTION` in the preview while co-located tests still pass.
+- Sampletab `showEditor` is tri-state: `true` starts checked, omission starts unchecked but leaves the always-visible toolbar toggle active, and explicit `false` locks it off. Reserve explicit false for real conflicts or behavior changes (custom import/export handlers, own editor/absolute targets, or a focus sequence being taught); visual/data-light examples can omit it and let readers opt in.
 - `test/examples_page.tests.js` protects the standalone Examples selector from
   inline-script minification regressions: Jekyll compacts the script, so `//`
   comments can swallow following code and leave an unexpected end of input.

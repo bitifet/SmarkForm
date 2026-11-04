@@ -301,6 +301,7 @@ myForm.on("AfterAction_export", async (ev) => {
     htmlSource=events_submit_example_html
     jsSource=events_submit_example_js
     demoValue='{"firstName":"Alice","lastName":"Smith"}'
+    showEditor=false
     tests=false
 %}
 
@@ -308,7 +309,8 @@ myForm.on("AfterAction_export", async (ev) => {
 > The `onAfterAction_export` handler runs when a trigger-dispatched export
 > completes. Direct calls to `myForm.export()` invoke the raw method and do not
 > emit lifecycle events. For trigger-driven exports, `ev.origin` identifies the
-> trigger component.
+> trigger component. The shared playground editor is disabled here so its own
+> Export control does not also invoke the example's submit handler.
 
 {: .info }
 > If you need to prevent the export from running at all (e.g. to display inline

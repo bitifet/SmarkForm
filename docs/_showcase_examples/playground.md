@@ -154,6 +154,10 @@ The following focused experiments illustrate individual patterns. The guided
 form above and the linked examples are better starting points for building a
 complete application form.
 
+The shared JSON editor is disabled for both calculators. Their custom
+`BeforeAction_import` handlers interpret imports as calculator key presses, so
+the generic JSON Import control would not replace the display value.
+
 ### Simple Calculator
 
 This example leverages the **singleton pattern** to avoid specifying the
@@ -307,6 +311,7 @@ myForm.on("BeforeAction_import", async (ev) => {
     jsSource=calculator_js
     cssSource=calculator_css
     selected="preview"
+    showEditor=false
     tests=false
 %}
 
@@ -431,6 +436,7 @@ export default async ({ page, expect, root, readField }) => {
     cssSource=supercalculator_css
     notes=supercalculator_notes
     selected="preview"
+    showEditor=false
     tests=supercalculator_tests
 %}
 

@@ -98,9 +98,16 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 | `cssSource` | `'-'` | CSS source string |
 | `jsHead` | (generated) | JS initialization code. Defaults to the simple constructor or a `demoValue` constructor. |
 | `notes` | `'-'` | Markdown/HTML notes shown below the example |
-| `showEditor` | `false` | Whether to show the JSON editor textarea for import/export |
+| `showEditor` | `false` | Initial JSON editor state. The toolbar toggle is always visible; omitted starts off but remains manually toggleable, while explicit `false` locks it off. |
 | `selected` | `'preview'` | Which tab is initially active |
  | `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport, **clamped to 25–90**. The iframe auto-sizes to its **measured** content on the **first render only**, never below this floor and never above 90% of the viewport. If omitted, a small absolute floor (75px) is used — the height is never guessed from the HTML source. |
+
+Use `showEditor=true` when the JSON editor should appear on initial preview.
+Omit the option when it is unnecessary for the example but readers may still
+benefit from it; the preview starts without it and the visible toolbar toggle can
+add it. Set `showEditor=false` only when adding the editor would conflict with
+the example (for example, when its own Import/Export handlers or focus sequence
+would be changed).
 
 ### `minHeight` and iframe Auto-sizing
 

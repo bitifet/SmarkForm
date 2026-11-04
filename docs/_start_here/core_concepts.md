@@ -618,13 +618,15 @@ endcapture %}
 {% capture notes -%}
 Use the field buttons to compare importing/exporting one value with doing the
 same for the whole form. The target editor is another field; see the Trigger
-reference for the exact `context` and `target` behavior.
+reference for the exact `context` and `target` behavior. This example uses its
+own editor and absolute target paths, so the shared playground editor stays off.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="context_comparsion_simple"
     htmlSource=context_comparsion_example_simple
     notes=notes
+    showEditor=false
     tests=false
 %}
 

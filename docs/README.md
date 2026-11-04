@@ -52,7 +52,8 @@ Parameters supported by `sampletabs_tpl.md` include:
   * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
-  * showEditor: Whether to show the editor textarea or not (defaults to false)
+  * showEditor: Whether the JSON editor starts enabled (defaults to false). If
+    omitted, the toolbar toggle remains available; explicit `false` disables it.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
 
@@ -94,7 +95,6 @@ setting `tests=false` in the include block.
 
 For a detailed explanation of how to write co-located custom tests, please see
 [CO_LOCATED_TESTS.md](CO_LOCATED_TESTS.md).
-
 
 
 
