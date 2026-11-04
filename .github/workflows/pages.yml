@@ -11,6 +11,7 @@ on:
     branches: ["stable"]
     paths:
       - "docs/**"
+      - "package.json"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -52,7 +53,6 @@ jobs:
         run: npm run build
       - name: Place built files
         run: |
-          cp -r ../package.json ./_data/
           bash ../scripts/sync_documentation_assets.sh
       - name: Generate chapter TOCs
         run: node ../scripts/generate-chaptertocs.js

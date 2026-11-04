@@ -14,7 +14,8 @@ docs/_data/computed.json
 # Jekyll
 docs/_site
 docs/.jekyll-cache/
-# NO (to trigger GitHub action every new version): docs/_data/package.json
+# Generated from the root manifest; Pages also triggers directly on package.json.
+docs/_data/package.json
 docs/resources/dist/
 docs/_showcase_examples/.example_sources/
 docs/dist/

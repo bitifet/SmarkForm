@@ -11,6 +11,10 @@ if [[ ! -d "${DIST_DIR}/examples" ]]; then
     exit 1
 fi
 
+# `site.data.package` drives the versioned CDN links. Keep this generated copy
+# available to local Jekyll builds without tracking a second package manifest.
+cp "${ROOT_DIR}/package.json" "${DOCS_DIR}/_data/package.json"
+
 # `/dist/` serves the downloadable-example selector. `/resources/dist/` is the
 # stable download URL space used by the CDN/Download pages and sampletab loader.
 mkdir -p \

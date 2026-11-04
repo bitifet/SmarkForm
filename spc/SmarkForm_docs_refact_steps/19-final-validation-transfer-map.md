@@ -39,8 +39,13 @@ transfer maps are historical audit records, not live file paths.
   static download URL space and is populated by the asset-sync helper.
 * Contact is unchanged: SHA-256
   `7eb3bda53f6d5c3db6c73a3be90002492cafee857e05ee9a2acccf26441d1590`, route
-  `/community/contact`, and `nav_order: 4`. The pre-existing
-  `docs/_data/package.json` modification was not touched or staged.
+  `/community/contact`, and `nav_order: 4`.
+* Confirmed `docs/_data/package.json` is a generated copy of the root manifest:
+  Rollup copies it, `site.data.package.version` consumes it, and the Pages
+  workflow copies it before Jekyll. Removed the tracked duplicate and ignored
+  the generated path; the Pages workflow now also triggers on root
+  `package.json` changes, and the local asset-sync helper repopulates the file
+  before Jekyll. The root `package.json` remains the source of truth.
 
 ## Redirect and route verification
 
@@ -60,8 +65,8 @@ transfer maps are historical audit records, not live file paths.
   at the stable `/resources/dist/` URLs. The selector uses site-root URLs, and
   `sync_documentation_assets.sh` populates both asset spaces and hidden source
   extracts from root `dist/`.
-* Contact and package-data protection were checked again after cleanup; only the
-  pre-existing `docs/_data/package.json` diff remains outside the Step 19 stage.
+* Contact and root package data were checked again after cleanup; only the
+  generated, gitignored `docs/_data/package.json` is recreated locally.
 
 ## Tests and environment limits
 
@@ -74,5 +79,4 @@ transfer maps are historical audit records, not live file paths.
   syncing them. The generated Getting SmarkForm TOC was refreshed locally; the
   remaining source-derived TOCs are unchanged. Browser/editor/mobile previews
   were not manually inspected.
-* The pre-existing `docs/_data/package.json` change remains unstaged and
-  untouched. No push was performed.
+* No push was performed.

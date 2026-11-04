@@ -294,6 +294,9 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
 - `test/co_located_tests_validation.tests.js` guards the sampletab editor wrapper: examples with `showEditor=true` must not use absolute trigger `context`/`target` paths (nor absolute `myForm.find('/…')` calls in example JS) — the editor wraps content in a `demo` subform and those break with `UNKNOWN_ACTION` in the preview while co-located tests still pass.
+- `test/examples_page.tests.js` protects the standalone Examples selector from
+  inline-script minification regressions: Jekyll compacts the script, so `//`
+  comments can swallow following code and leave an unexpected end of input.
 - The final Showcase is at `docs/_showcase_examples/showcase.md` with `just_form`, `kanban`, `race`, and `configurator` examples; each has a demoValue and focused co-located test. Product Configurator uses a pinned IMask declarative mask. The Playground also keeps `playground-calculator` and the tested `supercalculator` keyboard example. Step 19 removed the temporary Showcase sources; see the Step 16/17 transfer maps for the retained dispositions.
 - `docs/_start_here/quick_start.md` has the `quick_start_first_success` sampletab with `demoValue`; its regular custom test is disabled, but the collector generates the standard demoValue round-trip smoke test.
 - `docs/_start_here/core_concepts.md` has the `components_paths` nested-model sampletab with `demoValue`; its custom test is disabled, but the collector generates the standard demoValue round-trip smoke test. Keep trigger paths in captured code relative when editor-wrapped.
@@ -472,7 +475,9 @@ scripts/liveserve_all.sh
   `/resources/dist/` for stable download URLs; downloadable-example source
   extracts are copied into the hidden `.example_sources` folder beside the
   canonical Examples capture page by `scripts/sync_documentation_assets.sh`.
-- `package.json` copied to `docs/_data/` for Jekyll data files
+- The root `package.json` is copied to the ignored `docs/_data/package.json`
+  before local Jekyll builds and by the Pages workflow; the workflow also
+  triggers directly on root `package.json` changes.
 - The asset sync runs from the local docs build/serve helpers and the Pages
   workflow; it requires a built root `dist/` including `dist/examples/` (run
   `npm run bundle` first if that directory is missing).
@@ -617,6 +622,7 @@ npm run dev
 **Trigger conditions**:
 - Push to `stable` branch (not main)
 - Changes to `docs/**` paths
+- Changes to root `package.json` (which supplies the published version links)
 - Manual workflow dispatch
 
 **Key steps**:
