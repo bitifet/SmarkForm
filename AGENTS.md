@@ -294,7 +294,7 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 **Key details**:
 - Test files match pattern: `**/*.tests.js`
 - `test/co_located_tests_validation.tests.js` guards the sampletab editor wrapper: examples with `showEditor=true` must not use absolute trigger `context`/`target` paths (nor absolute `myForm.find('/…')` calls in example JS) — the editor wraps content in a `demo` subform and those break with `UNKNOWN_ACTION` in the preview while co-located tests still pass.
-- Sampletab `showEditor` is tri-state: `true` starts checked, omission starts unchecked but leaves the always-visible toolbar toggle active, and explicit `false` locks it off. Reserve explicit false for real conflicts or behavior changes (custom import/export handlers, own editor/absolute targets, or a focus sequence being taught); visual/data-light examples can omit it and let readers opt in.
+- Sampletab `showEditor` controls the preview-only “Show playground editor” checkbox: `true` starts checked, omission starts unchecked, and explicit `false` disables it. Edit mode has a separate “Include playground editor” checkbox that always starts unchecked; enabling it updates the editable HTML/JS and preview, without changing the Show checkbox's state. A small per-example `❓` toolbar link points to the Playground guide. Reserve explicit false for real conflicts or behavior changes (custom import/export handlers, own editor/absolute targets, or a focus sequence being taught); visual/data-light examples can omit it and let readers opt in.
 - `test/examples_page.tests.js` protects the standalone Examples selector from
   inline-script minification regressions: Jekyll compacts the script, so `//`
   comments can swallow following code and leave an unexpected end of input.
@@ -835,8 +835,10 @@ documented `on...` spelling. See
   code blocks wherever possible — they let readers edit and run examples live.
 - Each example needs three captures: `html`, `js`, and `notes`.
 - Use `{% raw %}<!-- mask_foo_html {{{ -->{% endraw %}` / `{% raw %}<!-- }}} -->{% endraw %}` markers around each capture to delimit them in the source.
-- Set `showEditor=true` and `tests=false` for documentation examples (tests are
-  defined in standalone test files under `test/`).
+- Set `showEditor=true` when a JSON playground should appear initially. Omit the
+  option when it is optional and leave `showEditor=false` only for examples where
+  editor inclusion conflicts with the example. Set `tests=false` for documentation
+  examples whose tests are defined in standalone files under `test/`.
 - **Always use `demoValue`** to preload data — never hardcode initial values in
   a custom `jsHead`. The `demoValue` parameter automatically handles the editor
   `demo` subform wrapping and the display/execution JS variants, keeps co-located
@@ -851,10 +853,12 @@ documented `on...` spelling. See
 - Use `minHeight=NN` (percentage of the viewport) to set a **minimum** iframe
   height; the preview auto-sizes to its **measured** content on the first render
   (re-sampling briefly after load so async examples settle), never above 90% of
-  the viewport, and keeps its size on re-renders. When omitted a small absolute
-  floor is used — the height is never guessed from the HTML line count. The old
-  `height=` parameter (a maximum cap) no longer exists. Doctabs keep their own
-  `height` parameter.
+  the viewport. Changing the playground editor inclusion remeasures the frame so
+  the example does not collapse under a taller editor; source edits keep the
+  established size. A manual resize is retained as a floor when the editor
+  toggles. When omitted a small absolute floor is used — the height is never
+  guessed from the HTML line count. The old `height=` parameter (a maximum cap)
+  no longer exists. Doctabs keep their own `height` parameter.
 
 ### Style & Vocabulary
 

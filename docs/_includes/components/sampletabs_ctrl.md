@@ -99,31 +99,44 @@ function smarkformMeasureContent(iframe) {
 }
 /* Apply a measured natural height to the iframe:
    finalHeight = max(minHeight, min(naturalH + slack, ceiling)) where minHeight is
-   the explicit floor (see smarkformMinHeightPx) and the ceiling is
-   SMARKFORM_AUTOSIZE_MAX_PCT of the viewport. */
-function smarkformApplySize(iframe, data, naturalH) {
-    var minH = smarkformMinHeightPx(data);
+   the explicit floor (see smarkformMinHeightPx), optionally raised to retain a
+   user-resized height, and the ceiling is SMARKFORM_AUTOSIZE_MAX_PCT. */
+function smarkformApplySize(iframe, data, naturalH, minHeightOverride) {
+    var minH = Math.max(smarkformMinHeightPx(data), minHeightOverride || 0);
     var maxH = Math.round(window.innerHeight * SMARKFORM_AUTOSIZE_MAX_PCT / 100);
     iframe.style.height = Math.max(minH, Math.min(naturalH + SMARKFORM_AUTOSIZE_SLACK, maxH)) + 'px';
 }
-/* Auto-size the iframe to its measured content height, at most once per iframe.
-   Runs on the first render (and on the initial preview-tab activation) but never
-   again afterwards, so re-renders from user edits keep the established height
-   stable and never clobber manual drag-resizes.
+/* Auto-size the iframe to its measured content height, at most once per mode.
+   Runs on the first render (and on the initial preview-tab activation). Source
+   edits keep the established height, but including/removing the playground
+   editor changes the content layout and must be measured again so the demo
+   cannot collapse underneath a taller JSON textarea. A manual resize is kept
+   as a lower bound during those editor-mode changes.
    The height is committed immediately from the first measurement, then re-sampled
    a few times (async examples grow right after load) keeping the largest value,
    and finally locked in by setting smarkformAutosized. */
-function smarkformAutosize(iframe, data) {
-    if (iframe.dataset.smarkformAutosized === '1' || iframe.__smarkformSizing) return;
+function smarkformAutosize(iframe, data, editorModeChanged = false) {
+    if (
+        (!editorModeChanged && iframe.dataset.smarkformAutosized === '1')
+        || (iframe.__smarkformSizing && !editorModeChanged)
+    ) return;
+    var sizeToken = (iframe.__smarkformSizeToken || 0) + 1;
+    iframe.__smarkformSizeToken = sizeToken;
+    var minHeightOverride = (
+        editorModeChanged && iframe.dataset.smarkformManualResize === '1'
+        ? iframe.clientHeight
+        : 0
+    );
     var naturalH = smarkformMeasureContent(iframe);
     if (naturalH <= 0) return; /* document not rendered yet — onload or the Preview tab will retry */
     iframe.__smarkformSizing = true;
-    smarkformApplySize(iframe, data, naturalH);
+    smarkformApplySize(iframe, data, naturalH, minHeightOverride);
     var remaining = SMARKFORM_AUTOSIZE_RETRIES;
     (function settle() {
         setTimeout(function() {
+            if (iframe.__smarkformSizeToken !== sizeToken) return;
             var nh = smarkformMeasureContent(iframe);
-            if (nh > naturalH) { naturalH = nh; smarkformApplySize(iframe, data, naturalH); }
+            if (nh > naturalH) { naturalH = nh; smarkformApplySize(iframe, data, naturalH, minHeightOverride); }
             if (--remaining > 0) { settle(); }
             else {
                 iframe.dataset.smarkformAutosized = '1';
@@ -241,6 +254,11 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
    render scheduler to know when a slot has freed up. */
 function smarkformRenderIframe(iframe, data, srcs, done) {
     var hasEditor = !!srcs.hasEditor;
+    var previousHasEditor = iframe.dataset.hasEditor;
+    iframe.__smarkformEditorModeChanged = (
+        previousHasEditor !== undefined
+        && previousHasEditor !== (hasEditor ? '1' : '')
+    );
     iframe.__smarkformData = data;
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
@@ -294,11 +312,13 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
                 });
             }
         } catch(e) {}
-        /* Auto-size to the content only on the first render (see smarkformAutosize).
-           Re-renders from user edits (run button, editor toggle) keep the established
-           height stable, so manual drag-resizes are never clobbered. */
+        /* Auto-size on the first render (see smarkformAutosize). Source edits keep
+           the established height. Adding/removing the JSON editor is a layout
+           change, so remeasure then; retain a manual resize as a floor. */
         try {
-            smarkformAutosize(this, data);
+            var editorModeChanged = !!this.__smarkformEditorModeChanged;
+            this.__smarkformEditorModeChanged = false;
+            smarkformAutosize(this, data, editorModeChanged);
         } catch(e) {}
         if (done) done();
     };
@@ -454,17 +474,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!srcEl || !iframe) return;
         var data = JSON.parse(srcEl.textContent);
         var r = function(s) { return (s && s !== '-') ? s.replace(/\$\$/g, '') : ''; };
-        var withEditor = !!data.showEditor;
+        var showEditor = !!data.showEditor;
+        var includeEditor = false;
         var editMode = false;
         var savedContents = {};
         var aceEditors = {};
         applyHashTab();
         var previewSrcs = function() {
-            var useEditor = withEditor;
+            var useEditor = editMode ? includeEditor : showEditor;
             /* When editor is hidden, demoValue is passed directly as value: {...}.
                When editor is shown, demoValue is wrapped as value: {"demo": {...}} because
                the HTML wraps the form in a "demo" subform. This keeps the JS tab accurate
-               and lets readers see the value morph as they toggle "Include editor". */
+               while editing the source and including the playground editor. */
             var jsHeadSrc = useEditor
                 ? (data.jsHeadDisplayWithEditor || data.jsHead)
                 : (data.jsHeadDisplay || data.jsHead);
@@ -537,6 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
           });
           resizeHandle.addEventListener('pointermove', function(e) {
             if (!rsDrag) return;
+            iframe.dataset.smarkformManualResize = '1';
             iframe.style.height = Math.max(75, rsStartH + (e.clientY - rsStartY)) + 'px';
           });
           resizeHandle.addEventListener('pointerup', function(e) {
@@ -546,21 +568,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         /* --- Controls --- */
         var editToggle   = container.querySelector('.smarkform-edit-toggle');
-        var editorToggle = container.querySelector('.smarkform-editor-toggle');
+        var showEditorToggle = container.querySelector('.smarkform-show-editor-toggle');
+        var includeEditorToggle = container.querySelector('.smarkform-include-editor-toggle');
         var runBtn       = container.querySelector('.smarkform-run-btn');
         if (!editToggle || !runBtn) return;
+        var syncEditorToggles = function() {
+            if (showEditorToggle) {
+                showEditorToggle.checked = showEditor;
+                showEditorToggle.closest('label').style.display = editMode ? 'none' : '';
+            }
+            if (includeEditorToggle) {
+                includeEditorToggle.checked = includeEditor;
+                includeEditorToggle.closest('label').style.display = editMode ? '' : 'none';
+            }
+        };
+        syncEditorToggles();
         editToggle.addEventListener('change', function() {
             editMode = this.checked;
+            if (editMode) includeEditor = false; /* source-edit mode starts without the playground scaffold */
             renderTask.canceled = true; /* cancel scheduled initial render if still pending */
+            syncEditorToggles();
             if (editMode) {
                 runBtn.style.display = '';
-                if (editorToggle) editorToggle.disabled = !!data.editorToggleDisabled;
                 savedContents = {};
                 populateEditable();
                 smarkformRenderIframe(iframe, data, previewSrcs());
             } else {
                 runBtn.style.display = 'none';
-                if (editorToggle) editorToggle.disabled = !!data.editorToggleDisabled;
                 /* Destroy Ace editors and restore saved syntax-highlighted content */
                 Object.keys(aceEditors).forEach(function(k) { if (aceEditors[k] && typeof aceEditors[k].destroy === 'function') aceEditors[k].destroy(); });
                 aceEditors = {};
@@ -574,29 +608,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 smarkformRenderIframe(iframe, data, previewSrcs());
             }
         });
-        if (editorToggle) {
-            editorToggle.addEventListener('change', function() {
-                withEditor = this.checked;
-                renderTask.canceled = true; /* cancel scheduled initial render if still pending */
-                if (editMode) {
-                    var srcs = previewSrcs();
-                    /* Update HTML and JS editors to reflect the changed editor inclusion */
-                    if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
-                    if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
-                    smarkformRenderIframe(iframe, data, srcs);
-                } else {
-                    smarkformRenderIframe(iframe, data, previewSrcs());
-                }
+        var rerenderWithCurrentEditorState = function(updateEditableSource) {
+            syncEditorToggles();
+            renderTask.canceled = true; /* cancel scheduled initial render if still pending */
+            if (editMode && updateEditableSource) {
+                var srcs = previewSrcs();
+                /* Update HTML and JS editors to reflect the changed editor inclusion */
+                if (aceEditors.html) aceEditors.html.setValue(srcs.html, -1);
+                if (aceEditors.js) aceEditors.js.setValue(srcs.js, -1);
+                smarkformRenderIframe(iframe, data, srcs);
+            } else {
+                smarkformRenderIframe(iframe, data, previewSrcs());
+            }
+        };
+        if (showEditorToggle) {
+            showEditorToggle.addEventListener('change', function() {
+                showEditor = this.checked;
+                rerenderWithCurrentEditorState(false);
+            });
+        }
+        if (includeEditorToggle) {
+            includeEditorToggle.addEventListener('change', function() {
+                includeEditor = this.checked;
+                rerenderWithCurrentEditorState(true);
             });
         }
         /* Hint icon: show tooltip as alert on tap/click (mobile accessibility) */
-        var hintIcon = container.querySelector('.smarkform-hint-icon');
-        if (hintIcon) {
+        container.querySelectorAll('.smarkform-hint-icon').forEach(function(hintIcon) {
             hintIcon.addEventListener('click', function(e) {
                 e.preventDefault();
                 window.alert(this.title);
             });
-        }
+        });
         runBtn.addEventListener('click', function() {
             renderTask.canceled = true; /* cancel scheduled initial render if still pending */
             var srcs = previewSrcs();
@@ -728,6 +771,19 @@ button[data-smark] {
     padding: 2px 10px;
     cursor: pointer;
     margin-left: auto;
+}
+
+.smarkform-playground-help {
+    margin-left: auto;
+    font-size: 0.72em;
+    line-height: 1;
+    text-decoration: none;
+    opacity: 0.7;
+}
+
+.smarkform-playground-help:hover,
+.smarkform-playground-help:focus-visible {
+    opacity: 1;
 }
 
 .smarkform-ace-editor {
@@ -930,8 +986,6 @@ button[data-smark] {
   .tab-content-js { order: 30; }
   .tab-content-preview { order: 40; }
   .tab-content-notes { order: 50; }
-  .tab-content-hint { display: none !important; }
-  
   /* Active tab always comes first */
   .tab-content.tab-active {
     order: 0 !important;

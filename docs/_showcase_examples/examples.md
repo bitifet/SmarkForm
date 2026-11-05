@@ -3,7 +3,7 @@ title: Examples
 layout: chapter
 description: "Browse ready-to-run SmarkForm examples, download complete forms and adapt them to your application."
 permalink: "/showcase_examples/examples"
-nav_order: 2
+nav_order: 3
 redirect_from:
   - "/resources/examples"
 ---

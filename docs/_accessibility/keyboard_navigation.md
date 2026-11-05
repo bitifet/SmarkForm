@@ -58,7 +58,6 @@ disabled so its controls do not add extra steps to this navigation sequence.
    formId="nav-enter"
    htmlSource=nav_enter_html
    notes=nav_enter_notes
-   showEditor=false
    selected="preview"
    tests=false
 %}
@@ -152,7 +151,6 @@ export default async ({ page, expect, root }) => {
    notes=nav_tabflow_notes
    demoValue=nav_tabflow_demoValue
    tests=nav_tabflow_tests
-   showEditor=false
    selected="preview"
 %}
 
@@ -306,7 +304,6 @@ export default async ({ page, expect, root, readField, writeField }) => {
    notes=nav_details_notes
    demoValue=nav_details_demoValue
    tests=nav_details_tests
-   showEditor=false
    selected="preview"
 %}
 
@@ -858,7 +855,6 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     jsSource=collapsible_sections_js
     notes=collapsible_sections_notes
     demoValue=collapsible_sections_demoValue
-    showEditor=false
     selected="preview"
     tests=collapsible_sections_tests
     minHeight=40

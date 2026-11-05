@@ -10,15 +10,14 @@ Accepted arguments:
                       When provided, the generated default jsHead includes these options so that the interactive
                       preview, the regular smoke test and the demoValue round-trip test all see the same settings.
                       Collected by scripts/collect-docs-examples.js and used by test/co_located_tests.tests.js.
-  * showEditor: Whether the JSON editor starts enabled (defaults to false). If omitted, the
-                editor can still be enabled from the toolbar; an explicit false disables that toggle.
+  * showEditor: Whether the JSON editor starts visible in the preview (defaults to false). If omitted,
+                the Show checkbox can still enable it; an explicit false disables both editor toggles.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * minHeight: Optional minimum iframe height as a percentage of the viewport (0–100).
-               The iframe auto-sizes to its measured content height on the first render, never
-               below this minimum, so examples that grow through user interaction (e.g. list
-               items) keep enough room. If omitted, a small absolute minimum is used — the
-               height is always derived from the truly rendered content, never guessed from
-               the HTML source.
+               The iframe auto-sizes to its measured content height on the first render and
+               when editor inclusion changes, never below this minimum. If omitted, a small
+               absolute minimum is used — the height is derived from rendered content, never
+               guessed from the HTML source.
 
 Additional arguments
 --------------------
@@ -168,10 +167,6 @@ myForm.rendered.then(function() {
 
 {% assign preview_source = partial_htmlSource %}
 
-
-
-
-
 {% comment %} ### ##################### ### {% endcomment %}
 {% comment %} ### Capture rendered HTML ### {% endcomment %}
 {% comment %} ### ##################### ### {% endcomment %}
@@ -181,8 +176,6 @@ myForm.rendered.then(function() {
 {{ partial_htmlSource }}
 ```
 {%- endcapture %}
-
-
 {% comment %} ### #################### ### {% endcomment %}
 {% comment %} ### Capture rendered CSS ### {% endcomment %}
 {% comment %} ### #################### ### {% endcomment %}
@@ -257,14 +250,13 @@ endif %}{% if jsHidden != '-'
         {% if current_tab == "notes" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
         <a href="#example{{ formId }}@notes" class="tab-label tab-label-right {{active_class}}" data-tab="notes" title="Notes">📝 Notes</a>
     {% endif %}
-    {% if current_tab == "hint" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-    {% if notes == '-' %}{% assign hint_right_class = "tab-label-right" %}{% else %}{% assign hint_right_class = "" %}{% endif %}
-    <a href="#example{{ formId }}@hint" class="tab-label {{hint_right_class}} {{active_class}}" data-tab="hint" title="Help">❓</a>
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>
-    <label class="smarkform-editor-label"><input type="checkbox" class="smarkform-editor-toggle" {% if showEditor == true %}checked{% endif %}{% if editorToggleDisabled %} disabled{% endif %}> 📋 Include playground editor <span class="smarkform-hint-icon" title="The JSON editor starts enabled when showEditor=true and off when showEditor is omitted. Use this checkbox to include or remove it from the preview; it remains available outside Edit mode unless showEditor=false was explicitly set.">ℹ️</span></label>
+    <label class="smarkform-editor-label smarkform-show-editor-label"><input type="checkbox" class="smarkform-show-editor-toggle" {% if showEditor == true %}checked{% endif %}{% if editorToggleDisabled %} disabled{% endif %}> 📋 Show playground editor <span class="smarkform-hint-icon" title="Show or hide the JSON editor in the preview. This does not change the HTML or JS source tabs.">ℹ️</span></label>
+    <label class="smarkform-editor-label smarkform-include-editor-label" style="display:none"><input type="checkbox" class="smarkform-include-editor-toggle"{% if editorToggleDisabled %} disabled{% endif %}> 📋 Include playground editor <span class="smarkform-hint-icon" title="Include or remove the playground editor in the preview and editable HTML/JS source.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
+    <a class="smarkform-playground-help" href="{{ '/showcase_examples/playground' | relative_url }}#interactive-examples" title="Learn how to use interactive examples" aria-label="Learn how to use interactive examples">❓</a>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
   <div class="tab-content tab-code tab-content-html {{active_class}}">
@@ -300,33 +292,6 @@ endif %}{% if jsHidden != '-'
         {{ notes | markdownify }}
     </div>
   {% endif %}
-  {% if current_tab == "hint" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}
-  <div class="tab-content tab-content-hint {{active_class}}">
-    <p>Every example in this section comes with many of the following tabs:</p>
-    <ul>
-      <li data-bullet="🗒️"><b>HTML:</b> HTML source code of the example.</li>
-      <li data-bullet="🎨"><b>CSS:</b> CSS applied (if any).</li>
-      <li data-bullet="⚙️ "><b>JS:</b> JavaScript source code of the example.</li>
-      <li data-bullet="👁️"><b>Preview:</b> Live, sandboxed rendering of the example — fully isolated from the page styles.</li>
-      <li data-bullet="📝"><b>Notes:</b> Additional notes and insights for better understanding. <b style="color:red">Don't miss it‼️</b></li>
-    </ul>
-    {% unless editorToggleDisabled %}
-    <p>✨ In the <strong>Preview</strong> tab, use the toolbar checkbox to include the JSON editor. It includes these buttons:</p>
-    <ul>
-      <li><code>⬇️ Export</code> to export the form data to the <em>JSON playground editor</em>.</li>
-      <li><code>⬆️ Import</code> to import data from the <em>JSON playground editor</em> into the form.</li>
-      <li><code>♻️ Reset</code> in forms prefilled with sample data, resets the form to its default values.</li>
-      <li><code>❌ Clear</code> to clear the whole form.</li>
-    </ul>
-    <p>💡 The editor starts included with <code>showEditor=true</code>. When the option is omitted it starts off but remains available from the toolbar. Set <code>showEditor=false</code> only when this example must not include it.</p>
-    {% endunless %}
-    <p>🛠️ Between the tab labels and the content there is always an <strong>edit toolbar</strong>:</p>
-    <ul>
-      <li><code>✏️ Edit</code> — activates edit mode: each source tab turns into a syntax-highlighted code editor (powered by <a href="https://ace.c9.io/" target="_blank">Ace</a>) pre-filled with the full, merged source. Changes are sandboxed — the original example is not affected.</li>
-      <li><code>📋 Include playground editor</code> — always visible; controls whether the JSON editor is included in the preview. When Edit is active, its HTML and JS source update with the toggle. It starts checked for <code>showEditor=true</code>, unchecked when omitted, and disabled only when <code>showEditor=false</code> is explicit.{% if editorToggleDisabled %} <em>Disabled for this example.</em>{% endif %}</li>
-      <li><code>▶️ Run</code> — (only visible in edit mode) re-renders the Preview from the current editor contents and switches to the Preview tab.</li>
-    </ul>
-  </div>
   <script type="application/json" class="smarkform-src-data">
   {
     "html": {{ preview_source | jsonify | replace: "  ", "\u0020\u0020" | replace: "<", "\u003c" }},

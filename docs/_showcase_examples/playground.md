@@ -1,26 +1,71 @@
 ---
 title: "Playground"
 layout: chapter
-description: "Try a complete SmarkForm example, inspect and edit its source, and use the JSON playground to import, export, reset, and clear form data."
+description: "Learn how SmarkForm's interactive documentation examples work, then try a complete form, inspect its source, and experiment with JSON data."
 permalink: "/showcase_examples/playground"
-nav_order: 3
+nav_order: 1
 redirect_from:
   - "/resources/playground"
 ---
 
+{% include links.md %}
+{% include components/sampletabs_ctrl.md %}
 
 # {{ page.title }}
 
-Use this page to try a complete form, change its data, and explore how the
-interactive examples elsewhere in the documentation work. Start with the form
-below, then follow the short workflow to export, edit, and re-import its JSON.
+Interactive examples let you try SmarkForm forms directly in the documentation.
+This page explains their tabs and controls, then gives you a complete form to
+experiment with.
+
+{: .hint}
+> **TL;DR:** Open **👁️ Preview** to interact with fields. Use **📋 Show playground
+> editor** to exchange JSON, or choose **✏️ Edit** → **▶️ Run** to try source changes.
+> Start with the [complete event-plan example](#try-a-complete-form).
 
 <details class="chaptertoc">
 <summary><strong>📖 Table of Contents</strong></summary>
 {% include chaptertoc/playground.html depth=3 %}
 </details>
 
-{% include components/sampletabs_ctrl.md %}
+## Interactive examples {#interactive-examples}
+
+Interactive examples combine a runnable form with its source code and
+example-specific guidance. Most offer some or all of these tabs:
+
+- **🗒️ HTML** shows the example's markup.
+- **🎨 CSS** shows its styles when the example has them.
+- **⚙️ JS** shows its JavaScript when the example has it.
+- **👁️ Preview** runs the example in an isolated, sandboxed frame.
+- **📝 Notes** gives guidance specific to that example.
+
+### Preview and the JSON playground
+
+Use **👁️ Preview** to edit fields and interact with the form. The **📋 Show
+playground editor** checkbox shows or hides a JSON editor alongside the form.
+
+The playground controls operate on the form data:
+
+- <code>⬇️ Export</code> copies the current form data into the JSON editor.
+- <code>⬆️ Import</code> applies the JSON editor's value to the form.
+- <code>♻️ Reset</code> restores the form's initial data and clears the JSON editor.
+- <code>❌ Clear</code> empties the form.
+
+Some examples disable the editor options when the JSON controls would conflict
+with the example's own behavior.
+
+### Editing an example
+
+Choose **✏️ Edit** to turn the available source tabs into syntax-highlighted
+code editors. They start with the example's original source. Changes affect
+only this preview; choose **▶️ Run** to render them. Leaving Edit mode discards
+those changes and restores the original source.
+
+{: .hint}
+> The JSON playground editor is itself a SmarkForm field. It sits in a larger
+> form with the example as a subform; that outer form is omitted from the source
+> shown by default so the focus stays on the example. To inspect the full source
+> and see how the editor uses SmarkForm, choose **✏️ Edit** and check
+> **📋 Include playground editor**.
 
 ## Try a complete form
 
@@ -78,17 +123,8 @@ data; change them freely.
 
 {% raw %}<!-- guided_form_notes {{{ -->{% endraw %}
 {% capture guided_form_notes -%}
-1. In **Preview**, change a field or add and remove guests.
-2. Choose **⬇️ Export** to put the current form data in the JSON editor. Edit
-   that JSON and choose **⬆️ Import** to load it back into the form.
-3. **❌ Clear** empties the example form. **♻️ Reset** restores the picnic data
-   and clears the editor.
-4. Use **HTML**, **CSS**, and **JS** to inspect each source, and **Notes** for
-   example-specific guidance. **❓ Help** explains the available controls.
-5. Choose **✏️ Edit** to try source changes. Select **▶️ Run** to preview them;
-   your edits affect only this preview. In edit mode, **📋 Include playground
-   editor** adds or removes the JSON controls from the generated example so you
-   can compare both versions.
+This tab contains additional notes or insights about the example. Some examples
+omit it when there is nothing extra to add.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- guided_form_demoValue {{{ -->{% endraw %}

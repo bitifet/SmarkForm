@@ -1,7 +1,7 @@
 ---
 layout: chapter
 permalink: "/showcase_examples/showcase"
-nav_order: 1
+nav_order: 2
 redirect_from:
   - "/about/showcase2"
   - "/about/showcase"

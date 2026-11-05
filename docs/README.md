@@ -52,8 +52,11 @@ Parameters supported by `sampletabs_tpl.md` include:
   * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
-  * showEditor: Whether the JSON editor starts enabled (defaults to false). If
-    omitted, the toolbar toggle remains available; explicit `false` disables it.
+  * showEditor: Whether the JSON editor starts visible in the preview (defaults
+    to false). The preview's **Show playground editor** checkbox affects only
+    the preview. Edit mode's **Include playground editor** checkbox always
+    starts unchecked and independently adds the scaffold to editable HTML/JS;
+    explicit `false` disables both checkboxes.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
 
