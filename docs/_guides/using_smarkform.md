@@ -124,7 +124,8 @@ resolve to a component that implements the action.
 The external **Add attendee** button uses `"context":"attendees"` to call
 `addItem` on the list. Each **Remove attendee** trigger sits inside an item: its
 natural context is the list, and its placement identifies the item to remove.
-These paths remain relative inside the playground's editor wrapper.
+These relative paths work in the example preview and when you use the JSON
+playground.
 
 `context` and `target` serve different roles. Context selects the component
 that performs an action; an explicit target is resolved from that effective

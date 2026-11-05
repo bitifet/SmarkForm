@@ -102,7 +102,7 @@ HTML, CSS, and JavaScript behind it.
 
 Each preview also includes the standard JSON playground controls: Export,
 Import, Reset, and Clear. See the [Playground guide]({{ "/showcase_examples/playground" | relative_url }})
-for how the editor scaffold isolates an example's values.
+for how to use these controls to inspect and change form data.
 
 ---
 

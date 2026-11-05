@@ -123,7 +123,9 @@ Set via `data-smark='{"role":"<role>"}'` or `data-smark-role="<role>"`:
 
 ### Buttons inside vs. outside a list
 
-Buttons (triggers) can be placed **outside** their target component using the `context` property with a path. The playground's Export/Import/Reset/Clear buttons are a canonical example — they live in the root form but target the `demo` subform via `context:"demo"`.
+Place a trigger **outside** its target component by setting `context` to that
+component's path. For example, an **Add item** button can sit outside a list and
+name the list as its context.
 
 ```html
 <!-- Buttons OUTSIDE the list with explicit context path -->

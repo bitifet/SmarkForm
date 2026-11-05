@@ -196,9 +196,8 @@ appends an item by default. List-specific `position`, `min_items`, and
 
 ## Try contexts and targets
 
-This runnable form combines a cross-field copy with list-item actions. All
-trigger paths are relative so the example also works when the playground wraps
-it in its editor subform.
+This runnable form combines a cross-field copy with list-item actions. The
+relative paths work both in the preview and when you use the JSON playground.
 
 {% raw %}<!-- trigger_context_target_html {{{ -->{% endraw %}
 {% capture trigger_context_target_html -%}

@@ -189,11 +189,10 @@ Use explicit absolute paths only when you intentionally need root-based
 addressing; see the [Trigger reference]({{ "/component_reference/trigger" | relative_url }}).
 
 {: .info}
-> When the JSON playground editor is shown, the example is wrapped in a `demo`
-> subform. **Absolute** trigger `context`/`target` paths and absolute
-> `myForm.find('/…')` calls then fail with `UNKNOWN_ACTION`/`RenderError` in the
-> live preview. Always use relative (or no) context in examples with the
-> playground editor.
+> With the JSON playground visible, absolute trigger `context`/`target` paths
+> and absolute `myForm.find('/…')` calls may not resolve in the live preview.
+> Use relative paths, or omit `context` when the trigger is already in the
+> component that handles the action.
 
 ## Color Reset Example (Singleton)
 
