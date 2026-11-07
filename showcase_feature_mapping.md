@@ -1,20 +1,25 @@
-# Original Showcase → New Showcase Feature Mapping
+# Showcase Feature Coverage
 
 Generated from `docs/showcase_backup.md` (the original 3500-line showcase).
 
-## Coverage Scorecard
+## Current Showcase Coverage
 
-| New Example | Features Covered |
+| Example | Features Covered |
 |-------------|-----------------|
 | **Just a Form** | auto-registration, nulls, triggers (import/export/clear), bare `data-smark` on `<label>`, context by DOM position, textarea auto-registration, field-level vs form-level actions |
-| **Kanban** | mixin templates, `data-for` slots, cross-list drag (`movingDepth`), sortable, `context:"*"`, hotkeys (Ctrl+key, 2nd-level Ctrl+Alt, reveal, context sensitivity, conflict resolution), template roles (`empty_list`, `separator`, `header`, `footer`), events (`afterRender`, `beforeUnrender`), `onAll()` global binding, CSS animations (1ms delay, await in `beforeUnrender`, graceful degradation), hidden buttons with hotkey hints, buttons excluded from Tab flow |
-| **Race Registration** | nested forms/lists, collapsible `<details>` with full keyboard nav (Space/Shift+Space/Enter/Alt+Enter across open/closed items and list boundaries), `exportEmpties` + inheritance, `source:".-1"` duplication, `position` action, `count` action, `preserve_non_empty`, `target:"*"`, `failback:"clear"`, date/time coercion, `min_items`/`max_items` auto-disable, `AfterAction_addItem` event |
-| **Product Configurator** | mixin templates, `data-for` slots, option overrides, `<style>` auto-deduplication, `registerMask()` API, declarative `mask` property, `unmaskedValue`, external library integration, sortable |
-| **NOT COVERED** | 47 features — see full report below |
+| **Kanban** | mixin templates, `data-for` slots, cross-list drag (`moving_depth`), sortable, `context:"*"`, hotkeys (Ctrl+key, 2nd-level Ctrl+Alt, reveal, context sensitivity, conflict resolution), template roles (`empty_list`, `separator`, `header`, `footer`), events (`afterRender`, `beforeUnrender`), `onAll()` global binding, CSS animations (1ms delay, await in `beforeUnrender`, graceful degradation), hidden buttons with hotkey hints, buttons excluded from Tab flow |
+| **Race Registration** | nested forms/lists, collapsible `<details>`, `source:".-1"` duplication, `position` action, `preserve_non_empty`, `target:"*"`, `failback:"clear"`, date/time coercion, number mask with `unmaskedValue` export and decimal mobile keypad |
+| **Hotel Schedule by Period** | date-ranged periods, multiple service intervals, closed-service state, duplicate previous period, sortable list, reusable service mixin |
+| **Simple Calculator** | singleton field, import triggers with data, `BeforeAction_import` interception, `pattern` validation, arithmetic parser, event scoping, focus return, Ctrl hotkeys |
+| **Keyboard Calculator** | direct keyboard input, scoped key handling, `preventDefault()`, programmatic import, caret styling, error-in-display behavior, arithmetic parser without `eval` |
 
-## NOT COVERED Features (47 items)
+## Historical Gap Audit
 
-### Calculator patterns (entirely uncovered)
+The following 47-item list was written before the final Showcase revisions. It
+is retained as historical planning material, not as a current coverage report;
+several of these items are now demonstrated above or intentionally replaced.
+
+### Calculator patterns
 | # | Feature | Original section |
 |---|---------|-----------------|
 | 1 | Singleton pattern (single field; no per-button context) | Simple Calculator |

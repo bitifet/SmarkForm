@@ -1,7 +1,10 @@
-# SmarkForm Showcase — Restructuring Plan
+# Historical Showcase Restructuring Plan
 
 > **Merged** from `old_showcase_examples_plan.md` (3-example, 71-feature draft)
-> and the current 4-example implementation.
+> and an earlier four-example Showcase snapshot. This planning record is
+> superseded by the current Showcase at `docs/_showcase_examples/showcase.md`:
+> Product Configurator has been replaced by the Hotel Schedule by Period, and
+> both calculator examples now live in the Showcase.
 
 ## Currently Implemented (all 4 examples pass smoke + demoValue round-trip)
 

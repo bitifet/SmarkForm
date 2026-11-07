@@ -6,7 +6,7 @@ redirect_from:
   - "/about/showcase2"
   - "/about/showcase"
 title: "Showcase"
-description: "Explore runnable examples of SmarkForm markup, structured data, lists, mixins, and form interactions."
+description: "Explore interactive SmarkForm examples including a Kanban board, race registration, hotel schedules, and calculators."
 ---
 
 
@@ -552,6 +552,39 @@ input constraints; the example does not implement a race-distance business rule.
 
 {% raw %} <!-- race_html {{{ --> {% endraw %}
 {% capture race_html -%}
+<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
+<script type="smark-mask" data-name="raceFee">
+(node) => {
+  node.inputMode = "decimal";
+  node.placeholder = "0.00";
+  if (typeof IMask !== "function") {
+    console.warn("IMask did not load; the fee field will remain unformatted.");
+    return null;
+  }
+  const imask = IMask(node, {
+    mask: Number,
+    scale: 2,
+    signed: false,
+    thousandsSeparator: " ",
+    radix: ".",
+    padFractionalZeros: true,
+    normalizeZeros: true,
+  });
+  return {
+    get unmaskedValue() {
+      return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
+    },
+    set unmaskedValue(value) {
+      imask.unmaskedValue = value;
+      const length = node.value.length;
+      try { node.setSelectionRange(length, length); } catch (_error) {}
+      if ("_selection" in imask) {
+        imask._selection = { start: length, end: length };
+      }
+    },
+  };
+}
+</script>
 <div id="myForm$$">
   <header>
     <h3>🏃 Race Registration</h3>
@@ -559,7 +592,7 @@ input constraints; the example does not implement a race-distance business rule.
     <button data-smark='{"action":"removeItem","context":"members","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty slots">🧹</button>
   </header>
 
-  <ul data-smark='{"type":"list","name":"members","sortable":true,"min_items":1,"max_items":5,"export_empties":false}'>
+  <ul data-smark='{"type":"list","name":"members","sortable":true,"max_items":5,"export_empties":false}'>
     <li>
       <div>
         <p>
@@ -576,6 +609,10 @@ input constraints; the example does not implement a race-distance business rule.
             <label><input type="radio" data-smark name="sex" value="F"> F</label>
           </span>
         </div>
+        <p class="row fee-row">
+          <label data-smark>Registration fee:</label>
+          <input data-smark='{"type":"number","name":"fee","mask":"raceFee"}' class="fee" placeholder="0.00">
+        </p>
         <details>
           <summary>Emergency Contact</summary>
           <p>
@@ -609,7 +646,7 @@ input constraints; the example does not implement a race-distance business rule.
           </span>
         </p>
         <button data-smark='{"action":"addItem","source":".-1","hotkey":"*"}' title="Duplicate this member">✨ Duplicate</button>
-        <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this member">➖</button>
+        <button data-smark='{"action":"removeItem","failback":"clear","hotkey":"-"}' title="Remove this member">➖</button>
       </div>
     </li>
   </ul>
@@ -627,6 +664,7 @@ input constraints; the example does not implement a race-distance business rule.
 {{""}}#myForm$$ li p { display: flex; align-items: center; gap: 0.5em; margin: 0.3em 0; }
 {{""}}#myForm$$ li label { font-weight: 500; min-width: 6em; }
 {{""}}#myForm$$ li input[type="text"], {{""}}#myForm$$ li input[type="tel"], {{""}}#myForm$$ li input[type="number"] { flex: 1; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+{{""}}#myForm$$ li input.fee { flex: 1; min-width: 0; }
 {{""}}#myForm$$ li select { padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
 {{""}}#myForm$$ li details { margin-top: 0.3em; }
 {{""}}#myForm$$ li summary { cursor: default; user-select: none; font-weight: 500; }
@@ -651,6 +689,10 @@ button { position: relative; }
 
 👉 **Auto-numbered bibs.** <code>{"action":"position"}</code> numbers each member.
 
+👉 **Formatted registration fee.** The fee shows grouped digits and two decimal
+places, while export keeps it as a number. On mobile, the field opens a decimal
+keypad.
+
 👉 **Type-specific values.** Age exports as a number. Empty Number and Radio
 fields may export <code>null</code>; text and native select values can be empty
 strings. The Color field has an authored default value.
@@ -663,7 +705,7 @@ strings. The Color field has an authored default value.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
-{"members":[{"name":"Alice Johnson","age":34,"sex":"F","emergency_name":"Bob Johnson","emergency_phone":"555-1234","tshirt":"M","tshirt_color":"#3498db","meal":"Vegetarian"}]}
+{"members":[{"name":"Alice Johnson","age":34,"fee":45.5,"sex":"F","emergency_name":"Bob Johnson","emergency_phone":"555-1234","tshirt":"M","tshirt_color":"#3498db","meal":"Vegetarian"}]}
 {%- endcapture %}
 
 {% raw %}<!-- race_js {{{ -->{% endraw %}
@@ -673,17 +715,18 @@ strings. The Color field has an authored default value.
 
 {% raw %}<!-- race_tests {{{ -->{% endraw %}
 {% capture race_tests -%}
-export default async ({ expect, root, readField, writeField }) => {
+export default async ({ expect, root, readField, page }) => {
     await expect(root).toBeVisible();
-    await writeField('/members/0/name', 'Alice Johnson');
-    await writeField('/members/0/age', 34);
-    await writeField('/members/0/sex', 'F');
-    await writeField('/members/0/tshirt', 'M');
-    await writeField('/members/0/meal', 'Vegetarian');
+    await root.locator('input[name="name"]').first().fill('Alice Johnson');
+    await root.locator('input[name="age"]').first().fill('34');
+    await root.evaluate(async () => {
+        await myForm.find('/members/0/fee').import(1234.5, {set_default: false});
+    });
 
     const before = await readField('/members');
     expect(before[0].age).toBe(34);
-    expect(before[0].sex).toBe('F');
+    expect(before[0].fee).toBe(1234.5);
+    await expect(root.locator('input.fee').first()).toHaveValue('1 234.50');
 
     await root.locator('button[title="Duplicate this member"]').click();
     const duplicated = await readField('/members');
@@ -691,7 +734,13 @@ export default async ({ expect, root, readField, writeField }) => {
     expect(duplicated[1]).toMatchObject(duplicated[0]);
 
     await root.locator('li').nth(1).locator('button[title="Remove this member"]').click();
-    await expect(root.locator('li').first().locator('button[title="Remove this member"]')).toBeDisabled();
+    await expect(root.locator('li')).toHaveCount(1);
+    const lastMember = root.locator('li').first();
+    const clearLastMember = lastMember.locator('button[title="Remove this member"]');
+    await expect(clearLastMember).toBeEnabled();
+    await clearLastMember.click();
+    await expect(root.locator('li')).toHaveCount(1);
+    await expect(lastMember.locator('input[name="name"]')).toHaveValue('');
     expect(await readField('/members')).toHaveLength(1);
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
@@ -781,10 +830,12 @@ export default async ({ expect, root, readField, writeField }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary"><code>min_items</code> / <code>max_items</code> / <code>export_empties</code></button>
+  <button class="feature-summary"><code>min_items</code> / <code>max_items</code> / <code>export_empties</code> and clear-at-minimum</button>
   <div class="feature-desc">
-  <code>min_items:1</code> keeps one member row, <code>max_items:5</code> caps the
-  list, and <code>export_empties:false</code> omits wholly empty members.
+  The default minimum keeps one member row, <code>max_items:5</code> caps the
+  list, and <code>export_empties:false</code> omits wholly empty members. When
+  only one member remains, <code>failback:"clear"</code> clears that row rather
+  than removing it.
 
   See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
@@ -801,186 +852,47 @@ export default async ({ expect, root, readField, writeField }) => {
   </div>
 </div>
 
-</div>
+<div class="feature">
+  <button class="feature-summary">Formatted fee and numeric export</button>
+  <div class="feature-desc">
+  The IMask Number factory groups digits and displays two decimal places. Its
+  <code>unmaskedValue</code> getter exports a number; for example,
+  <code>1234.5</code> displays as <code>1 234.50</code>. On mobile, the field
+  requests a decimal keypad.
 
----
-
-## Product Configurator
-
-Reusable car cards show a **mixin template** and a **number-field mask** for
-price formatting. The cards share one structure and have independent values.
-
-{% raw %}<!-- configurator_js {{{ -->{% endraw %}
-{% capture configurator_js -%}
-// This factory is registered from the declarative script in the HTML capture.
-(node) => {
-  node.inputMode = "decimal";
-  node.placeholder = "0.00";
-  if (typeof IMask !== "function") {
-    console.warn("IMask did not load; the price field will remain unformatted.");
-    return null;
-  }
-  let imask;
-  try {
-    imask = new IMask(node, {
-      mask: Number,
-      scale: 2,
-      signed: false,
-      thousandsSeparator: " ",
-      radix: ".",
-      padFractionalZeros: true,
-      normalizeZeros: true,
-    });
-  } catch (error) {
-    console.warn("Could not initialize the price mask; using the number field without a mask.", error);
-    return null;
-  }
-  return {
-    get unmaskedValue() {
-      return imask.masked.isComplete ? imask.masked.unmaskedValue : null;
-    },
-    set unmaskedValue(value) {
-      imask.unmaskedValue = value;
-      // This workaround is specific to the pinned IMask version below.
-      const length = node.value.length;
-      try { node.setSelectionRange(length, length); } catch (_error) {}
-      if ("_selection" in imask) {
-        imask._selection = { start: length, end: length };
-      }
-    },
-  };
-}
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %} <!-- configurator_html {{{ --> {% endraw %}
-{% capture configurator_html -%}
-<script src="https://cdn.jsdelivr.net/npm/imask@6.6.3"></script>
-<script type="smark-mask" data-name="price">
-{{ configurator_js }}
-</script>
-
-<div id="myForm$$">
-  <button data-smark='{"action":"addItem","context":"cars","hotkey":"+"}' title="Add car">➕ Add Model</button>
-  <button data-smark='{"action":"removeItem","context":"cars","target":"*","preserve_non_empty":true,"hotkey":"Delete"}' title="Remove empty">🧹</button>
-  <ul data-smark='{"type":"list","name":"cars","sortable":true,"min_items":0,"export_empties":false}'>
-    <li data-smark='{"type":"#carModel"}'></li>
-  </ul>
-  <p class="hint">💡 Type digits in a price field to see grouping and two decimal places.</p>
-</div>
-
-<template id="carModel">
-  <style>
-    .car-card { border: 1px solid #ddd; border-radius: 6px; padding: 0.6em; }
-    .car-card label { font-weight: 500; }
-  </style>
-  <div class="car-card">
-    <p><span data-smark='{"action":"position"}'>#N</span></p>
-    <p>
-      <label data-smark>Model name:</label>
-      <input data-smark type="text" name="model" placeholder="e.g. Model S">
-    </p>
-    <p>
-      <label data-smark>Color:</label>
-      <input data-smark type="text" name="color" placeholder="e.g. Midnight Blue">
-    </p>
-    <p>
-      <label data-smark>Price:</label>
-      <input data-smark='{"type":"number","name":"price","mask":"price"}' class="price" placeholder="0.00">
-    </p>
-    <button data-smark='{"action":"removeItem"}' title="Remove">➖</button>
+  See <a href="{{ "/guides/field_masking" | relative_url }}">Field Masking</a>,
+  <a href="{{ "/component_reference/number" | relative_url }}">Number Type</a>,
+  and <a href="{{ "/component_reference/input" | relative_url }}">Input Type</a>.
   </div>
-</template>
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+</div>
 
-{% raw %} <!-- configurator_css {{{ --> {% endraw %}
-{% capture configurator_css -%}
-{{""}}#myForm$$ { max-width: 500px; font-size: 0.95em; }
-{{""}}#myForm$$ ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5em; }
-{{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
-{{""}}#myForm$$ button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
-{{""}}#myForm$$ button { position: relative; }
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% raw %} <!-- configurator_notes {{{ --> {% endraw %}
-{% capture configurator_notes -%}
-👉 **Mixin templates.** <code>#carModel</code> is defined once via <code>&lt;template&gt;</code> and reused for every car entry. Each instance gets its own identity, data, and options.
-
-👉 **Field masking.** A pinned IMask build is loaded from the CDN, and the
-<code>&lt;script type="smark-mask"&gt;</code> element registers a Number mask.
-Typing <code>34900</code> displays <code>34 900.00</code>; the number field exports
-the unmasked numeric value. If the library fails to load, the field remains a
-usable unformatted text input with numeric export.
-
-👉 **Sortable list.** Drag car models to reorder them.
-<code>export_empties:false</code> skips wholly empty entries.
-
-👉 **Hotkeys.** <code>Ctrl</code>+<code>+</code> adds a model, <code>Ctrl</code>+<code>-</code> removes.
-
-> See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>,
-> <a href="{{ "/guides/field_masking" | relative_url }}">Field Masking</a>.
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% capture demoValue -%}
-{"cars":[{"model":"Model S","color":"Midnight Blue","price":34900},{"model":"Model X","color":"Pearl White","price":42500}]}
-{%- endcapture %}
-
-{% raw %}<!-- configurator_tests {{{ -->{% endraw %}
-{% capture configurator_tests -%}
-export default async ({ expect, root, readField, writeField }) => {
-    await expect(root).toBeVisible();
-    await writeField('/cars', [
-        { model: 'Model S', color: 'Midnight Blue', price: 34900 },
-        { model: 'Model X', color: 'Pearl White', price: 42500 },
-    ]);
-    expect(await readField('/cars')).toHaveLength(2);
-    expect(await readField('/cars/0/price')).toBe(34900);
-
-    const price = root.locator('input.price').first();
-    await expect(price).toHaveValue('34 900.00');
-    await writeField('/cars/0/price', 1234.5);
-    expect(await readField('/cars/0/price')).toBe(1234.5);
-    await expect(price).toHaveValue('1 234.50');
-};
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
-{% include components/sampletabs_tpl.md
-    formId="configurator"
-    htmlSource=configurator_html
-    cssSource=configurator_css
-    notes=configurator_notes
-    selected="preview"
-    showEditor=true
-    demoValue=demoValue
-    tests=configurator_tests
-%}
+</div>
 
 ---
 
-## 🏨 Seasonal Hotel Schedule
+## Hotel Schedule by Period
 
-Plan opening hours across summer and winter. Each season has its own service
-hours, with split shifts where needed. Open a season to change its dates and
-hours; remove all hours from a service to mark it closed for that season.
+Set hotel opening hours for date-based periods. Name each period, choose
+its date range, then set hours for each service. Open a period to edit its
+schedule; remove all a service's intervals to mark it closed for that period.
 
 {% raw %}<!-- hotel_schedule_html {{{ -->{% endraw %}
 {% capture hotel_schedule_html -%}
 <div id="myForm$$">
   <div class="hotel-planner">
-    <ul data-smark='{"type":"list","name":"seasons","of":"form","min_items":0,"max_items":6,"sortable":true}'>
-      <li data-smark-role="empty_list" class="no-seasons">No seasons yet. Add an operating period to get started.</li>
+    <ul data-smark='{"type":"list","name":"periods","of":"form","min_items":0,"max_items":6,"sortable":true}'>
+      <li data-smark-role="empty_list" class="no-periods">No periods yet. Add an operating period to get started.</li>
       <li>
-        <details class="season-card" open>
+        <details class="period-card" open>
           <summary>
-            <span data-smark='{"type":"label"}' class="season-handle" title="Drag to reorder seasons">⠿</span>
-            <span data-smark='{"action":"position"}' class="season-number">01</span>
-            <input data-smark type="text" name="name" class="season-name" placeholder="Season name">
-            <button data-smark='{"action":"removeItem"}' type="button" title="Remove season">🗑</button>
+            <span class="period-count"><span data-smark='{"action":"position"}'>1</span><span aria-hidden="true"> of </span><span data-smark='{"action":"count"}'>2</span></span>
+            <span data-smark='{"type":"label"}' class="period-handle" title="Drag to reorder periods">⠿</span>
+            <input data-smark type="text" name="name" class="period-name" placeholder="Period name">
+            <label class="period-summary-date">From <input data-smark type="date" name="start_date"></label>
+            <label class="period-summary-date">To <input data-smark type="date" name="end_date"></label>
+            <button data-smark='{"action":"removeItem"}' type="button" title="Remove period">🗑️</button>
           </summary>
-          <div class="season-content">
-            <div class="season-dates">
-              <label>From <input data-smark type="date" name="start_date"></label>
-              <label>To <input data-smark type="date" name="end_date"></label>
-            </div>
+          <div class="period-content">
             <div class="service-grid">
               <div data-smark='{"type":"#hotelService","name":"reception"}'>
                 <span data-for="serviceLabel">🛎️ Reception</span>
@@ -995,11 +907,14 @@ hours; remove all hours from a service to mark it closed for that season.
                 <span data-for="serviceLabel">🏊 Pool</span>
               </div>
             </div>
+            <div class="period-actions">
+              <button data-smark='{"action":"addItem","source":".-1"}' type="button" title="Duplicate this period">✨ Duplicate period</button>
+            </div>
           </div>
         </details>
       </li>
     </ul>
-    <button data-smark='{"action":"addItem","context":"seasons"}' type="button">➕ Add season</button>
+    <button data-smark='{"action":"addItem","context":"periods"}' type="button">➕ Add period</button>
   </div>
 </div>
 
@@ -1009,7 +924,7 @@ hours; remove all hours from a service to mark it closed for that season.
       <strong id="serviceLabel">Service</strong>
       <span>OPENING HOURS</span>
     </div>
-    <div data-smark='{"role":"empty_list"}' class="service-closed">Closed this season</div>
+    <div data-smark='{"role":"empty_list"}' class="service-closed">Closed this period</div>
     <div class="hours-row">
       <label>Opens <input data-smark type="time" name="start"></label>
       <label>Closes <input data-smark type="time" name="end"></label>
@@ -1024,19 +939,20 @@ hours; remove all hours from a service to mark it closed for that season.
 
 {% raw %}<!-- hotel_schedule_css {{{ -->{% endraw %}
 {% capture hotel_schedule_css -%}
-{{""}}#myForm$$ .hotel-planner { max-width: 100%; }
+{{""}}#myForm$$ .hotel-planner { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
 {{""}}#myForm$$ .hotel-planner ul { list-style: none; margin: 0; padding: 0; }
-{{""}}#myForm$$ .hotel-planner > ul { display: grid; gap: .75rem; }
-{{""}}#myForm$$ .no-seasons { padding: 1.25rem; text-align: center; color: #64748b; border: 1px dashed #94a3b8; border-radius: .75rem; }
-{{""}}#myForm$$ .season-card { overflow: hidden; border: 1px solid #cbd5e1; border-radius: .9rem; background: linear-gradient(135deg, #fff, #f4f7fb); box-shadow: 0 3px 12px rgba(15, 23, 42, .08); }
-{{""}}#myForm$$ .season-card > summary { display: grid; grid-template-columns: auto auto minmax(8rem, 1fr) auto; align-items: center; gap: .6rem; padding: .75rem 1rem; background: linear-gradient(100deg, #e0e7ff, #ecfeff); cursor: pointer; }
-{{""}}#myForm$$ .season-handle { cursor: grab; color: #475569; user-select: none; }
-{{""}}#myForm$$ .season-number { color: #4338ca; font-size: .8rem; font-weight: 700; }
-{{""}}#myForm$$ .season-name { min-width: 0; font-size: 1.05rem; font-weight: 700; }
-{{""}}#myForm$$ .season-content { padding: .85rem; }
-{{""}}#myForm$$ .season-dates { display: grid; grid-template-columns: repeat(2, minmax(9rem, 1fr)); gap: .75rem; margin-bottom: .85rem; }
-{{""}}#myForm$$ .season-dates label { display: grid; gap: .25rem; font-size: .85rem; font-weight: 600; }
-{{""}}#myForm$$ .season-dates input { min-width: 0; }
+{{""}}#myForm$$ .hotel-planner > ul { display: grid; width: 100%; min-width: 0; box-sizing: border-box; gap: .75rem; }
+{{""}}#myForm$$ .hotel-planner > ul > li { min-width: 0; }
+{{""}}#myForm$$ .no-periods { padding: 1.25rem; text-align: center; color: #64748b; border: 1px dashed #94a3b8; border-radius: .75rem; }
+{{""}}#myForm$$ .period-card { width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; border: 1px solid #cbd5e1; border-radius: .9rem; background: linear-gradient(135deg, #fff, #f4f7fb); box-shadow: 0 3px 12px rgba(15, 23, 42, .08); }
+{{""}}#myForm$$ .period-card > summary { display: flex; width: 100%; min-width: 0; box-sizing: border-box; flex-wrap: nowrap; align-items: center; gap: .5rem; padding: .75rem 1rem; background: linear-gradient(100deg, #e0e7ff, #ecfeff); cursor: pointer; white-space: nowrap; overflow: hidden; }
+{{""}}#myForm$$ .period-handle { cursor: grab; color: #475569; user-select: none; }
+{{""}}#myForm$$ .period-count { flex: 0 0 auto; color: #4338ca; font-size: .8rem; font-weight: 700; }
+{{""}}#myForm$$ .period-name { flex: 1 1 10rem; min-width: 7rem; font-size: 1.05rem; font-weight: 700; text-align: left; }
+{{""}}#myForm$$ .period-summary-date { flex: 0 1 10rem; min-width: 0; display: flex; align-items: center; gap: .25rem; font-size: .75rem; font-weight: 600; overflow: hidden; }
+{{""}}#myForm$$ .period-summary-date input { box-sizing: border-box; width: 100%; min-width: 0; }
+{{""}}#myForm$$ .period-card > summary > button { flex: 0 0 auto; margin-left: auto; }
+{{""}}#myForm$$ .period-content { padding: .85rem; }
 {{""}}#myForm$$ .service-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
 {{""}}#myForm$$ .hotel-service { min-width: 0; padding: .7rem; border: 1px solid #dbe3ed; border-radius: .7rem; background: rgba(255, 255, 255, .82); }
 {{""}}#myForm$$ .service-heading { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding-bottom: .45rem; border-bottom: 1px solid #e2e8f0; }
@@ -1049,26 +965,33 @@ hours; remove all hours from a service to mark it closed for that season.
 {{""}}#myForm$$ .hours-row button { padding: .25rem .45rem; }
 {{""}}#myForm$$ .service-footer { padding-top: .5rem; }
 {{""}}#myForm$$ .service-footer button { width: 100%; padding: .35rem; }
+{{""}}#myForm$$ .period-actions { display: flex; justify-content: flex-end; padding-top: .75rem; }
 {{""}}@media (max-width: 36rem) {
 {{""}}  #myForm$$ .service-grid { grid-template-columns: 1fr; }
-{{""}}  #myForm$$ .season-dates { grid-template-columns: 1fr 1fr; gap: .4rem; }
-{{""}}  #myForm$$ .season-card > summary { padding: .6rem; gap: .4rem; }
+{{""}}  #myForm$$ .period-card > summary { gap: .25rem; padding: .5rem .4rem; }
+{{""}}  #myForm$$ .period-count { font-size: .65rem; }
+{{""}}  #myForm$$ .period-name { flex: 1 1 3rem; min-width: 2.8rem; font-size: .75rem; }
+{{""}}  #myForm$$ .period-summary-date { flex: 0 1 4.2rem; min-width: 0; gap: .1rem; font-size: .55rem; overflow: hidden; }
+{{""}}  #myForm$$ .period-summary-date input { font-size: .55rem; padding: .1rem; }
+{{""}}  #myForm$$ .period-handle { font-size: .8rem; }
+{{""}}  #myForm$$ .period-card > summary > button { padding: .2rem .3rem; }
 {{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- hotel_schedule_notes {{{ -->{% endraw %}
 {% capture hotel_schedule_notes -%}
-Open a season to edit its dates and service hours. Add split shifts where a
-service closes during the day; remove all of a service's intervals to mark it
-closed for that season. Drag the ⠿ handle to reorder seasons.
+Open a period to edit its dates and service hours. Add split shifts where a
+service closes during the day; remove all intervals to mark it closed. Drag the
+⠿ handle to reorder periods, or choose **✨ Duplicate period** to copy the
+preceding period and adjust only what differs.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- hotel_schedule_demoValue {{{ -->{% endraw %}
 {% capture hotel_schedule_demoValue -%}
 {
-  "seasons": [
+  "periods": [
     {
-      "name": "Summer",
+      "name": "Peak",
       "start_date": "2026-04-01",
       "end_date": "2026-09-30",
       "reception": [{"start": "07:00:00", "end": "23:00:00"}],
@@ -1080,7 +1003,7 @@ closed for that season. Drag the ⠿ handle to reorder seasons.
       "pool": [{"start": "08:00:00", "end": "21:00:00"}]
     },
     {
-      "name": "Winter",
+      "name": "Off-peak",
       "start_date": "2026-10-01",
       "end_date": "2027-03-31",
       "reception": [{"start": "08:00:00", "end": "22:00:00"}],
@@ -1099,27 +1022,38 @@ closed for that season. Drag the ⠿ handle to reorder seasons.
 {% capture hotel_schedule_tests -%}
 export default async ({ expect, root, readField, writeField }) => {
     await expect(root).toBeVisible();
-    await writeField('/seasons', [
+    await writeField('/periods', [
         {
-            name: 'Summer', start_date: '2026-04-01', end_date: '2026-09-30',
+            name: 'Peak', start_date: '2026-04-01', end_date: '2026-09-30',
             reception: [{start: '07:00:00', end: '23:00:00'}],
             restaurant: [{start: '07:00:00', end: '10:30:00'}, {start: '19:00:00', end: '22:30:00'}],
             bar: [{start: '10:00:00', end: '23:00:00'}],
             pool: [{start: '08:00:00', end: '21:00:00'}],
         },
         {
-            name: 'Winter', start_date: '2026-10-01', end_date: '2027-03-31',
+            name: 'Off-peak', start_date: '2026-10-01', end_date: '2027-03-31',
             reception: [{start: '08:00:00', end: '22:00:00'}],
             restaurant: [{start: '07:30:00', end: '10:00:00'}, {start: '18:00:00', end: '21:00:00'}],
             bar: [], pool: [],
         },
     ]);
-    expect(await readField('/seasons/0/restaurant')).toHaveLength(2);
-    expect(await readField('/seasons/1/pool')).toEqual([]);
+    expect(await readField('/periods/0/restaurant')).toHaveLength(2);
+    expect(await readField('/periods/1/pool')).toEqual([]);
 
-    await root.getByRole('button', {name: '➕ Add season'}).click();
-    await root.locator('.season-name').last().fill('Spring');
-    expect(await readField('/seasons/2/name')).toBe('Spring');
+    const firstPeriod = root.locator('.period-card').first();
+    await expect(firstPeriod.locator('.period-count')).toContainText('1 of 2');
+    await firstPeriod.evaluate(details => { details.open = false; });
+    await expect(firstPeriod.locator('summary input[name="start_date"]')).toBeVisible();
+    await expect(firstPeriod.locator('summary input[name="end_date"]')).toBeVisible();
+
+    await root.locator('.period-card').nth(1).locator('button[title="Duplicate this period"]').click();
+    expect(await readField('/periods')).toHaveLength(3);
+    expect(await readField('/periods/2/name')).toBe('Off-peak');
+    expect(await readField('/periods/2/restaurant')).toHaveLength(2);
+
+    await root.getByRole('button', {name: '➕ Add period'}).click();
+    await root.locator('.period-name').last().fill('Spring');
+    expect(await readField('/periods/3/name')).toBe('Spring');
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -1140,66 +1074,62 @@ export default async ({ expect, root, readField, writeField }) => {
 <div class="feature-index">
 
 <div class="feature">
-  <button class="feature-summary">Mixin template with class-prefixed CSS</button>
+  <button class="feature-summary">Date-based periods</button>
   <div class="feature-desc">
-  The car model card is defined in a <code>&lt;template id="carModel"&gt;</code> with its own
-  <code>&lt;style&gt;</code> block. Mixin styles are injected globally; the
-  <code>.car-card</code> selector is a naming convention, not style encapsulation.
+  Each period has its own name, date range, and service hours. Fold a period
+  while keeping its name and dates visible in the summary.
 
-  See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>.
+  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Declarative IMask Number mask</button>
+  <button class="feature-summary">Split opening hours</button>
   <div class="feature-desc">
-  The HTML's <code>smark-mask</code> script registers a pinned IMask Number
-  factory. Typing <code>34900</code> displays <code>34 900.00</code>.
+  Add several intervals for a service to represent breaks, such as a restaurant
+  that closes between breakfast and dinner.
 
-  See <a href="{{ "/guides/field_masking" | relative_url }}">Field Masking</a>.
+  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary"><code>unmaskedValue</code> for clean export</button>
+  <button class="feature-summary">Closed services</button>
   <div class="feature-desc">
-  The mask factory exposes <code>unmaskedValue</code>. The Number component
-  converts that value to a JavaScript number, so the displayed
-  <code>34 900.00</code> exports as <code>34900</code>.
+  Remove all intervals for a service to mark it closed during that period. The
+  service remains visible and can be reopened by adding hours.
 
-  See <a href="{{ "/guides/field_masking" | relative_url }}#masks-and-external-libraries">Field Masking — unmaskedValue</a>.
+  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Sortable list</button>
+  <button class="feature-summary">Duplicate a period</button>
   <div class="feature-desc">
-  Car models can be reordered by dragging.  <code>sortable:true</code> on the list
-  enables drag-and-drop within the list; combined with <code>position</code> action
-  for automatic numbering.
+  Choose <strong>✨ Duplicate period</strong> to copy the preceding period, then
+  change just its dates or service hours.
+
+  See <a href="{{ "/component_reference/list" | relative_url }}#async-additem-action">List Type — addItem</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Reorder periods</button>
+  <div class="feature-desc">
+  Drag the ⠿ handle to rearrange periods. Each period keeps its own service
+  schedules when you move it.
 
   See <a href="{{ "/component_reference/list" | relative_url }}#sortable">List Type — sortable</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Mobile‑friendly input hints</button>
+  <button class="feature-summary">Reusable service schedules</button>
   <div class="feature-desc">
-  The price field sets <code>inputMode:"decimal"</code> via the mask factory — mobile
-  devices show a numeric keypad instead of the full keyboard.
+  Reception, restaurant, bar, and pool use the same schedule layout, but each
+  keeps independent hours for every period.
 
-  See <a href="{{ "/component_reference/input" | relative_url }}">Input Type</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">Bulk clean‑up + <code>export_empties</code></button>
-  <div class="feature-desc">
-  The <strong>🧹</strong> button with <code>preserve_non_empty:true</code> and
-  <code>target:"*"</code> removes all empty car models at once. <code>export_empties:false</code>
-  on the list skips empty entries when exporting the form.
-
-  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
+  See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>.
   </div>
 </div>
 
@@ -1213,3 +1143,292 @@ export default async ({ expect, root, readField, writeField }) => {
 > **Want the full feature set?** Each example above demonstrates a curated
 > subset of SmarkForm capabilities.  See the individual reference pages for
 > the complete API and advanced patterns.
+
+---
+
+## Calculators
+
+These compact calculators show two ways to build an interactive tool: one responds to keypad buttons, while the other also accepts keyboard input.
+
+The JSON playground is unavailable in both examples because their Import actions process calculator input rather than replacing the display from JSON.
+
+### Simple Calculator
+
+This example leverages the **singleton pattern** to avoid specifying the
+context for every button. A single import handler intercepts each button
+press and updates the display field.
+
+A single event handler on `BeforeAction_import` does all the work: it reads
+the current value, appends or evaluates the new input, and updates the
+display.  You can use the calculator buttons or type directly — every button
+click brings focus back to the input field.
+
+Evaluation uses a small arithmetic parser limited to numbers, parentheses,
+and the four basic operators; invalid expressions display `Error`.
+Hold `Ctrl` to reveal the keyboard shortcuts on the calculator buttons.
+
+{% raw %} <!-- calculator {{{ --> {% endraw %}
+{% capture calculator -%}
+<div id="myForm$$">
+    <div class="calculator" data-smark='{"type": "input", "name": "display"}'>
+        <input data-smark type="text" class="display" value="0" pattern="[0-9+\*\/\(\)\.\-]+">
+        <div class="buttons">
+            <button data-smark='{"action": "import", "data": "C", "hotkey": "c"}' class="clear">C</button>
+            <button data-smark='{"action": "import", "data": "("}'>(</button>
+            <button data-smark='{"action": "import", "data": ")"}'>)</button>
+            <button data-smark='{"action": "import", "data": "/", "hotkey": "/"}' class="operator">÷</button>
+            <button data-smark='{"action": "import", "data": "7"}'>7</button>
+            <button data-smark='{"action": "import", "data": "8"}'>8</button>
+            <button data-smark='{"action": "import", "data": "9"}'>9</button>
+            <button data-smark='{"action": "import", "data": "*", "hotkey": "*"}' class="operator">×</button>
+            <button data-smark='{"action": "import", "data": "4"}'>4</button>
+            <button data-smark='{"action": "import", "data": "5"}'>5</button>
+            <button data-smark='{"action": "import", "data": "6"}'>6</button>
+            <button data-smark='{"action": "import", "data": "-", "hotkey": "-"}' class="operator">-</button>
+            <button data-smark='{"action": "import", "data": "1"}'>1</button>
+            <button data-smark='{"action": "import", "data": "2"}'>2</button>
+            <button data-smark='{"action": "import", "data": "3"}'>3</button>
+            <button data-smark='{"action": "import", "data": "+", "hotkey": "+"}' class="operator">+</button>
+            <button data-smark='{"action": "import", "data": "0"}'>0</button>
+            <button data-smark='{"action": "import", "data": "."}'>.</button>
+            <button data-smark='{"action": "import", "data": "Del"}'>←</button>
+            <button data-smark='{"action": "import", "data": "=", "hotkey": "Enter"}' class="equals">=</button>
+        </div>
+    </div>
+</div>{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %} <!-- calculator_css {{{ --> {% endraw %}
+{% capture calculator_css -%}
+{{""}}#myForm$$ .calculator { background-color: #333; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 300px; }
+{{""}}#myForm$$ .display { width: 100%; box-sizing: border-box; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px; font-size: 24px; text-align: right; }
+{{""}}#myForm$$ .display:invalid { background-color: #fcc; }
+{{""}}#myForm$$ .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+{{""}}#myForm$$ button { padding: 15px; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; background-color: #555; color: white; }
+{{""}}#myForm$$ button:hover { background-color: #777; }
+{{""}}#myForm$$ .operator { background-color: #f9a825; }
+{{""}}#myForm$$ .operator:hover { background-color: #ffb300; }
+{{""}}#myForm$$ .equals { background-color: #4caf50; }
+{{""}}#myForm$$ .equals:hover { background-color: #66bb6a; }
+{{""}}#myForm$$ .clear { background-color: #d32f2f; }
+{{""}}#myForm$$ .clear:hover { background-color: #ef5350; }
+{{""}}#myForm$$ button { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
+    content: "Ctrl+" attr(data-hotkey);
+    position: absolute; top: 0.75em; left: 0;
+    font-size: 0.7em; background: #333; color: #fff;
+    padding: 1px 4px; border-radius: 3px; white-space: nowrap;
+}
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %}<!-- arithmetic_parser_js {{{ -->{% endraw %}
+{% capture arithmetic_parser_js -%}
+function evaluateArithmetic(source) {
+    const expression = String(source).trim();
+    const tokenPattern = /\s*([0-9]+(?:\.[0-9]*)?|\.[0-9]+|[()+\-*\/])/y;
+    const tokens = [];
+    let cursor = 0;
+    while (cursor < expression.length) {
+        tokenPattern.lastIndex = cursor;
+        const match = tokenPattern.exec(expression);
+        if (!match) throw new Error('Invalid expression');
+        tokens.push(match[1]);
+        cursor = tokenPattern.lastIndex;
+    }
+
+    let index = 0;
+    const primary = () => {
+        const token = tokens[index++];
+        if (token === '+') return primary();
+        if (token === '-') return -primary();
+        if (token === '(') {
+            const value = additive();
+            if (tokens[index++] !== ')') throw new Error('Missing )');
+            return value;
+        }
+        if (token == null || Number.isNaN(Number(token))) throw new Error('Expected a number');
+        return Number(token);
+    };
+    const multiplicative = () => {
+        let value = primary();
+        while (tokens[index] === '*' || tokens[index] === '/') {
+            const operator = tokens[index++];
+            const next = primary();
+            value = operator === '*' ? value * next : value / next;
+        }
+        return value;
+    };
+    const additive = () => {
+        let value = multiplicative();
+        while (tokens[index] === '+' || tokens[index] === '-') {
+            const operator = tokens[index++];
+            const next = multiplicative();
+            value = operator === '+' ? value + next : value - next;
+        }
+        return value;
+    };
+
+    const result = additive();
+    if (index !== tokens.length || !Number.isFinite(result)) {
+        throw new Error('Invalid expression');
+    }
+    return String(result);
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- calculator_js {{{ -->{% endraw %}
+{% capture calculator_js -%}
+{{ arithmetic_parser_js }}
+
+myForm.on("BeforeAction_import", async (ev) => {
+    const prevValue = await ev.context.export();
+    const key = ev.data;
+    switch (key) {
+        case "C": ev.data = "0"; break;
+        case "Del": ev.data = prevValue.slice(0, -1) || "0"; break;
+        case "=":
+            try { ev.data = evaluateArithmetic(prevValue); }
+            catch { ev.data = "Error"; }
+            break;
+        default:
+            if (prevValue.trim() === "0") ev.data = key;
+            else ev.data = prevValue + key;
+    }
+});
+{%- endcapture %}
+{% raw %} <!-- }}} --> {% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="calculator"
+    htmlSource=calculator
+    jsSource=calculator_js
+    cssSource=calculator_css
+    selected="preview"
+    showEditor=false
+    tests=false
+%}
+
+> The event handler uses `on()` to scope calculator behavior to the display.
+> See [Events]({{ "/guides/events" | relative_url }}) for more about event scoping.
+
+### Keyboard Calculator
+
+This variation accepts keyboard input as well as button clicks. Its arithmetic
+parser is limited to numbers, parentheses, and `+`, `-`, `*`, `/`; it does not
+evaluate arbitrary JavaScript or intercept keys outside the display field.
+
+{% raw %}<!-- supercalculator_html {{{ -->{% endraw %}
+{% capture supercalculator -%}
+<div id="myForm$$">
+  <div class="calculator" data-smark='{"type":"input","name":"display"}'>
+    <input data-smark type="text" class="display" value="0" pattern="[0-9+\*\/\(\)\.\-]+">
+    <div class="buttons">
+      <button data-smark='{"action":"import","data":"C"}' class="clear">C</button>
+      <button data-smark='{"action":"import","data":"("}'>(</button>
+      <button data-smark='{"action":"import","data":")"}'>)</button>
+      <button data-smark='{"action":"import","data":"/"}' class="operator">÷</button>
+      <button data-smark='{"action":"import","data":"7"}'>7</button>
+      <button data-smark='{"action":"import","data":"8"}'>8</button>
+      <button data-smark='{"action":"import","data":"9"}'>9</button>
+      <button data-smark='{"action":"import","data":"*"}' class="operator">×</button>
+      <button data-smark='{"action":"import","data":"4"}'>4</button>
+      <button data-smark='{"action":"import","data":"5"}'>5</button>
+      <button data-smark='{"action":"import","data":"6"}'>6</button>
+      <button data-smark='{"action":"import","data":"-"}' class="operator">−</button>
+      <button data-smark='{"action":"import","data":"1"}'>1</button>
+      <button data-smark='{"action":"import","data":"2"}'>2</button>
+      <button data-smark='{"action":"import","data":"3"}'>3</button>
+      <button data-smark='{"action":"import","data":"+"}' class="operator">+</button>
+      <button data-smark='{"action":"import","data":"0"}'>0</button>
+      <button data-smark='{"action":"import","data":"."}'>.</button>
+      <button data-smark='{"action":"import","data":"Backspace"}'>←</button>
+      <button data-smark='{"action":"import","data":"="}' class="equals">=</button>
+    </div>
+  </div>
+</div>{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- supercalculator_js {{{ -->{% endraw %}
+{% capture supercalculator_js -%}
+{{ arithmetic_parser_js }}
+
+function updateDisplay(previous, key) {
+    if (key === 'C' || key === 'Delete') return '0';
+    if (key === 'Backspace') return previous.slice(0, -1) || '0';
+    if (key === '=' || key === 'Enter') {
+        try { return evaluateArithmetic(previous); }
+        catch { return 'Error'; }
+    }
+    if (!/^[0-9.+\-*\/()]$/.test(key)) return previous;
+    if (previous === 'Error') previous = '0';
+    if (previous === '0' && /^[0-9]$/.test(key)) return key;
+    return previous + key;
+}
+
+myForm.on('BeforeAction_import', async (event) => {
+    event.data = updateDisplay(await event.context.export(), event.data);
+});
+
+myForm.rendered.then(() => {
+    const displayNode = myForm.targetNode.querySelector('input.display');
+    const field = myForm.getComponent(displayNode);
+    let keyQueue = Promise.resolve();
+    // Window capture runs before SmarkForm's document-level Enter navigation
+    // listener, so the calculator can consume Enter instead of being preempted.
+    window.addEventListener('keydown', (event) => {
+        if (event.target !== field.targetFieldNode) return;
+        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
+        const key = event.key;
+        if (
+            key !== 'Enter' && key !== 'Backspace' && key !== 'Delete'
+            && !/^[0-9.+\-*\/()]$/.test(key)
+        ) return;
+        event.preventDefault();
+        keyQueue = keyQueue.then(async () => {
+            await field.import(
+                updateDisplay(await field.export(), key),
+                {set_default: false}
+            );
+        }).catch((error) => console.error('Calculator key handling failed:', error));
+    }, true);
+});
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- supercalculator_css {{{ -->{% endraw %}
+{% capture supercalculator_css -%}
+{{ calculator_css }}
+{{""}}#myForm$$ .calculator input.display { caret-color: transparent; }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- supercalculator_notes {{{ -->{% endraw %}
+{% capture supercalculator_notes -%}
+👉 Use the buttons or type directly in the display. Keyboard handling is limited
+to the display and arithmetic keys; unrelated keys keep their normal behavior.
+
+👉 The parser evaluates only arithmetic tokens and parentheses. It does not use
+`eval` or execute arbitrary input.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- supercalculator_tests {{{ -->{% endraw %}
+{% capture supercalculator_tests -%}
+export default async ({ page, expect, root, readField }) => {
+    await expect(root).toBeVisible();
+    const display = root.locator('input.display');
+    await display.focus();
+    await page.keyboard.type('123+45');
+    await expect.poll(() => readField('display')).toBe('123+45');
+    await page.keyboard.press('Enter');
+    await expect.poll(() => readField('display')).toBe('168');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="supercalculator"
+    htmlSource=supercalculator
+    jsSource=supercalculator_js
+    cssSource=supercalculator_css
+    notes=supercalculator_notes
+    selected="preview"
+    showEditor=false
+    tests=supercalculator_tests
+%}
