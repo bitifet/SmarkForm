@@ -954,6 +954,187 @@ export default async ({ expect, root, readField, writeField }) => {
     tests=configurator_tests
 %}
 
+---
+
+## 🏨 Seasonal Hotel Schedule
+
+Plan opening hours across summer and winter. Each season has its own service
+hours, with split shifts where needed. Open a season to change its dates and
+hours; remove all hours from a service to mark it closed for that season.
+
+{% raw %}<!-- hotel_schedule_html {{{ -->{% endraw %}
+{% capture hotel_schedule_html -%}
+<div id="myForm$$">
+  <div class="hotel-planner">
+    <ul data-smark='{"type":"list","name":"seasons","of":"form","min_items":0,"max_items":6,"sortable":true}'>
+      <li data-smark-role="empty_list" class="no-seasons">No seasons yet. Add an operating period to get started.</li>
+      <li>
+        <details class="season-card" open>
+          <summary>
+            <span data-smark='{"type":"label"}' class="season-handle" title="Drag to reorder seasons">⠿</span>
+            <span data-smark='{"action":"position"}' class="season-number">01</span>
+            <input data-smark type="text" name="name" class="season-name" placeholder="Season name">
+            <button data-smark='{"action":"removeItem"}' type="button" title="Remove season">🗑</button>
+          </summary>
+          <div class="season-content">
+            <div class="season-dates">
+              <label>From <input data-smark type="date" name="start_date"></label>
+              <label>To <input data-smark type="date" name="end_date"></label>
+            </div>
+            <div class="service-grid">
+              <div data-smark='{"type":"#hotelService","name":"reception"}'>
+                <span data-for="serviceLabel">🛎️ Reception</span>
+              </div>
+              <div data-smark='{"type":"#hotelService","name":"restaurant"}'>
+                <span data-for="serviceLabel">🍽️ Restaurant</span>
+              </div>
+              <div data-smark='{"type":"#hotelService","name":"bar"}'>
+                <span data-for="serviceLabel">🍸 Bar</span>
+              </div>
+              <div data-smark='{"type":"#hotelService","name":"pool"}'>
+                <span data-for="serviceLabel">🏊 Pool</span>
+              </div>
+            </div>
+          </div>
+        </details>
+      </li>
+    </ul>
+    <button data-smark='{"action":"addItem","context":"seasons"}' type="button">➕ Add season</button>
+  </div>
+</div>
+
+<template id="hotelService">
+  <section class="hotel-service" data-smark='{"type":"list","min_items":0,"max_items":3}'>
+    <div data-smark='{"role":"header"}' class="service-heading">
+      <strong id="serviceLabel">Service</strong>
+      <span>OPENING HOURS</span>
+    </div>
+    <div data-smark='{"role":"empty_list"}' class="service-closed">Closed this season</div>
+    <div class="hours-row">
+      <label>Opens <input data-smark type="time" name="start"></label>
+      <label>Closes <input data-smark type="time" name="end"></label>
+      <button data-smark='{"action":"removeItem"}' type="button" title="Remove interval">➖</button>
+    </div>
+    <div data-smark='{"role":"footer"}' class="service-footer">
+      <button data-smark='{"action":"addItem"}' type="button">➕ Add hours</button>
+    </div>
+  </section>
+</template>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- hotel_schedule_css {{{ -->{% endraw %}
+{% capture hotel_schedule_css -%}
+{{""}}#myForm$$ .hotel-planner { max-width: 100%; }
+{{""}}#myForm$$ .hotel-planner ul { list-style: none; margin: 0; padding: 0; }
+{{""}}#myForm$$ .hotel-planner > ul { display: grid; gap: .75rem; }
+{{""}}#myForm$$ .no-seasons { padding: 1.25rem; text-align: center; color: #64748b; border: 1px dashed #94a3b8; border-radius: .75rem; }
+{{""}}#myForm$$ .season-card { overflow: hidden; border: 1px solid #cbd5e1; border-radius: .9rem; background: linear-gradient(135deg, #fff, #f4f7fb); box-shadow: 0 3px 12px rgba(15, 23, 42, .08); }
+{{""}}#myForm$$ .season-card > summary { display: grid; grid-template-columns: auto auto minmax(8rem, 1fr) auto; align-items: center; gap: .6rem; padding: .75rem 1rem; background: linear-gradient(100deg, #e0e7ff, #ecfeff); cursor: pointer; }
+{{""}}#myForm$$ .season-handle { cursor: grab; color: #475569; user-select: none; }
+{{""}}#myForm$$ .season-number { color: #4338ca; font-size: .8rem; font-weight: 700; }
+{{""}}#myForm$$ .season-name { min-width: 0; font-size: 1.05rem; font-weight: 700; }
+{{""}}#myForm$$ .season-content { padding: .85rem; }
+{{""}}#myForm$$ .season-dates { display: grid; grid-template-columns: repeat(2, minmax(9rem, 1fr)); gap: .75rem; margin-bottom: .85rem; }
+{{""}}#myForm$$ .season-dates label { display: grid; gap: .25rem; font-size: .85rem; font-weight: 600; }
+{{""}}#myForm$$ .season-dates input { min-width: 0; }
+{{""}}#myForm$$ .service-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+{{""}}#myForm$$ .hotel-service { min-width: 0; padding: .7rem; border: 1px solid #dbe3ed; border-radius: .7rem; background: rgba(255, 255, 255, .82); }
+{{""}}#myForm$$ .service-heading { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding-bottom: .45rem; border-bottom: 1px solid #e2e8f0; }
+{{""}}#myForm$$ .service-heading strong { color: #334155; }
+{{""}}#myForm$$ .service-heading span { color: #64748b; font-size: .65rem; font-weight: 700; letter-spacing: .08em; }
+{{""}}#myForm$$ .service-closed { padding: .7rem .25rem; color: #64748b; font-style: italic; text-align: center; }
+{{""}}#myForm$$ .hours-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: .4rem; padding: .45rem 0; border-bottom: 1px solid #eef2f7; }
+{{""}}#myForm$$ .hours-row label { display: grid; gap: .2rem; font-size: .75rem; }
+{{""}}#myForm$$ .hours-row input { box-sizing: border-box; width: 100%; min-width: 0; }
+{{""}}#myForm$$ .hours-row button { padding: .25rem .45rem; }
+{{""}}#myForm$$ .service-footer { padding-top: .5rem; }
+{{""}}#myForm$$ .service-footer button { width: 100%; padding: .35rem; }
+{{""}}@media (max-width: 36rem) {
+{{""}}  #myForm$$ .service-grid { grid-template-columns: 1fr; }
+{{""}}  #myForm$$ .season-dates { grid-template-columns: 1fr 1fr; gap: .4rem; }
+{{""}}  #myForm$$ .season-card > summary { padding: .6rem; gap: .4rem; }
+{{""}}}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- hotel_schedule_notes {{{ -->{% endraw %}
+{% capture hotel_schedule_notes -%}
+Open a season to edit its dates and service hours. Add split shifts where a
+service closes during the day; remove all of a service's intervals to mark it
+closed for that season. Drag the ⠿ handle to reorder seasons.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- hotel_schedule_demoValue {{{ -->{% endraw %}
+{% capture hotel_schedule_demoValue -%}
+{
+  "seasons": [
+    {
+      "name": "Summer",
+      "start_date": "2026-04-01",
+      "end_date": "2026-09-30",
+      "reception": [{"start": "07:00:00", "end": "23:00:00"}],
+      "restaurant": [
+        {"start": "07:00:00", "end": "10:30:00"},
+        {"start": "19:00:00", "end": "22:30:00"}
+      ],
+      "bar": [{"start": "10:00:00", "end": "23:00:00"}],
+      "pool": [{"start": "08:00:00", "end": "21:00:00"}]
+    },
+    {
+      "name": "Winter",
+      "start_date": "2026-10-01",
+      "end_date": "2027-03-31",
+      "reception": [{"start": "08:00:00", "end": "22:00:00"}],
+      "restaurant": [
+        {"start": "07:30:00", "end": "10:00:00"},
+        {"start": "18:00:00", "end": "21:00:00"}
+      ],
+      "bar": [],
+      "pool": []
+    }
+  ]
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- hotel_schedule_tests {{{ -->{% endraw %}
+{% capture hotel_schedule_tests -%}
+export default async ({ expect, root, readField, writeField }) => {
+    await expect(root).toBeVisible();
+    await writeField('/seasons', [
+        {
+            name: 'Summer', start_date: '2026-04-01', end_date: '2026-09-30',
+            reception: [{start: '07:00:00', end: '23:00:00'}],
+            restaurant: [{start: '07:00:00', end: '10:30:00'}, {start: '19:00:00', end: '22:30:00'}],
+            bar: [{start: '10:00:00', end: '23:00:00'}],
+            pool: [{start: '08:00:00', end: '21:00:00'}],
+        },
+        {
+            name: 'Winter', start_date: '2026-10-01', end_date: '2027-03-31',
+            reception: [{start: '08:00:00', end: '22:00:00'}],
+            restaurant: [{start: '07:30:00', end: '10:00:00'}, {start: '18:00:00', end: '21:00:00'}],
+            bar: [], pool: [],
+        },
+    ]);
+    expect(await readField('/seasons/0/restaurant')).toHaveLength(2);
+    expect(await readField('/seasons/1/pool')).toEqual([]);
+
+    await root.getByRole('button', {name: '➕ Add season'}).click();
+    await root.locator('.season-name').last().fill('Spring');
+    expect(await readField('/seasons/2/name')).toBe('Spring');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+    formId="hotel-schedule"
+    htmlSource=hotel_schedule_html
+    cssSource=hotel_schedule_css
+    notes=hotel_schedule_notes
+    demoValue=hotel_schedule_demoValue
+    selected="preview"
+    showEditor=true
+    tests=hotel_schedule_tests
+    minHeight=70
+%}
+
 ### Features demonstrated
 
 <div class="feature-index">
