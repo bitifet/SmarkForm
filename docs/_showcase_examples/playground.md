@@ -50,9 +50,6 @@ The playground controls operate on the form data:
 - <code>♻️ Reset</code> restores the form's initial data and clears the JSON editor.
 - <code>❌ Clear</code> empties the form.
 
-Some examples disable the editor options when the JSON controls would conflict
-with the example's own behavior.
-
 ### Editing an example
 
 Choose **✏️ Edit** to turn the available source tabs into syntax-highlighted
@@ -65,7 +62,8 @@ those changes and restores the original source.
 > form with the example as a subform; that outer form is omitted from the source
 > shown by default so the focus stays on the example. To inspect the full source
 > and see how the editor uses SmarkForm, choose **✏️ Edit** and check
-> **📋 Include playground editor**.
+> **📋 Include playground editor**. Some examples disable the editor controls
+> when they would conflict with the example's own behavior.
 
 ## Try a complete form
 
@@ -97,7 +95,7 @@ data; change them freely.
                 <option value="Vegan">Vegan</option>
               </select>
             </label>
-            <button data-smark='{"action":"removeItem"}' type="button" title="Remove guest">Remove</button>
+            <button data-smark='{"action":"removeItem","failback":"clear"}' type="button" title="Remove guest">Remove</button>
           </div>
         </li>
       </ul>
@@ -123,8 +121,9 @@ data; change them freely.
 
 {% raw %}<!-- guided_form_notes {{{ -->{% endraw %}
 {% capture guided_form_notes -%}
-This tab contains additional notes or insights about the example. Some examples
-omit it when there is nothing extra to add.
+The guest list keeps one required row. Removing the last guest clears that row
+instead of removing it. This tab can also include example-specific notes or
+insights; some examples omit it when there is nothing extra to add.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- guided_form_demoValue {{{ -->{% endraw %}
@@ -157,6 +156,13 @@ export default async ({ expect, root, readField, writeField }) => {
     await root.getByRole('button', {name: '➕ Add guest'}).click();
     await root.locator('input[name="name"]').nth(2).fill('Jordan Lee');
     expect(await readField('/guests/2/name')).toBe('Jordan Lee');
+
+    const removeGuest = root.locator('button[title="Remove guest"]');
+    await removeGuest.first().click();
+    await removeGuest.first().click();
+    await removeGuest.first().click();
+    expect(await root.locator('input[name="name"]').count()).toBe(1);
+    await expect(root.locator('input[name="name"]')).toHaveValue('');
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -174,17 +180,33 @@ export default async ({ expect, root, readField, writeField }) => {
 
 ## Explore more examples
 
-These examples show other useful combinations of SmarkForm features:
+Try these examples to see how forms help with common tasks:
 
-- [Nested forms and lists]({{ "/start_here/core_concepts" | relative_url }}#example-nested_forms) — build a structured value from nested fields and lists.
-- [Deep lists and cross-list moves]({{ "/component_reference/list" | relative_url }}#example-deep_school_groups) — move nested student forms, including their grades, between lists.
-- [Nested mixin composition]({{ "/guides/mixin_types" | relative_url }}#example-mixin_nested_composition) — compose reusable templates and fill their named slots.
-- [Copy data between adjacent items]({{ "/guides/form_traversing" | relative_url }}#example-form_trav_copy_adjacent) — use relative paths to copy values between list rows.
-- [Context-sensitive hotkeys]({{ "/accessibility/hotkeys" | relative_url }}#example-hotkeys_context_sensitivity) — let the same shortcut act on the nearest relevant list.
-- [Animated task list]({{ "/guides/events" | relative_url }}#example-events-animated-tasks) — coordinate CSS transitions with list lifecycle events.
-- [Image resizing and format conversion]({{ "/component_reference/image" | relative_url }}#example-image_resize_format) — validate and transform an uploaded image.
+- [Organize a profile and skill list]({{ "/start_here/core_concepts" | relative_url }}#example-nested_forms) — edit a profile while adding and removing skills.
+- [Move students between school groups]({{ "/component_reference/list" | relative_url }}#example-deep_school_groups) — keep each student's grades with them as you reorganize groups.
+- [Set morning and afternoon times]({{ "/guides/mixin_types" | relative_url }}#example-mixin_nested_composition) — enter independent time ranges for two periods.
+- [Copy details between list entries]({{ "/guides/form_traversing" | relative_url }}#example-form_trav_copy_adjacent) — copy values to a neighboring entry.
+- [Add or remove items with one shortcut]({{ "/accessibility/hotkeys" | relative_url }}#example-hotkeys_context_sensitivity) — use the same hotkey in whichever list is active.
+- [Animate a task list]({{ "/guides/events" | relative_url }}#example-events-animated-tasks) — see tasks animate as they are added or removed.
+- [Prepare an uploaded image]({{ "/component_reference/image" | relative_url }}#example-image_resize_format) — resize and convert an image before using it.
 
-## Appendix A: Standalone examples
+## Appendix A: How the editor is built
+
+The interactive controls surround the form shown in the **HTML** tab; they are
+not part of that example's source. This keeps the example focused on the form
+itself while still providing a reusable way to inspect and change its data.
+
+When enabled, the editor places the example inside a `demo` subform and adds a
+JSON textarea beside it. **Export** and **Import** target only the demo form, so
+the editor controls stay outside the data being edited. **Clear** clears the
+demo form; **Reset** restores the root form's initial value and empties the JSON
+textarea. The controls are ordinary SmarkForm components and triggers.
+
+The Edit toolbar can include or omit this generated editor in the preview source.
+This lets authors compare the compact form markup with the complete runnable
+version without changing the documented form itself.
+
+## Appendix B: Standalone examples
 
 The following focused experiments illustrate individual patterns. The guided
 form above and the linked examples are better starting points for building a
@@ -475,19 +497,3 @@ export default async ({ page, expect, root, readField }) => {
     showEditor=false
     tests=supercalculator_tests
 %}
-
-## Appendix B: How the editor is built
-
-The interactive controls surround the form shown in the **HTML** tab; they are
-not part of that example's source. This keeps the example focused on the form
-itself while still providing a reusable way to inspect and change its data.
-
-When enabled, the editor places the example inside a `demo` subform and adds a
-JSON textarea beside it. **Export** and **Import** target only the demo form, so
-the editor controls stay outside the data being edited. **Clear** clears the
-demo form; **Reset** restores the root form's initial value and empties the JSON
-textarea. The controls are ordinary SmarkForm components and triggers.
-
-The Edit toolbar can include or omit this generated editor in the preview source.
-This lets authors compare the compact form markup with the complete runnable
-version without changing the documented form itself.
