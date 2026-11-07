@@ -432,41 +432,45 @@ document.addEventListener('DOMContentLoaded', function() {
         var tabs = container.querySelectorAll('.tab-label');
         var contents = container.querySelectorAll('.tab-content');
         /* --- Tab switching --- */
-        tabs.forEach(function(tab, index) {
-            tab.addEventListener('click', function() {
-                tabs.forEach(function(t) { t.classList.remove('tab-label-active'); });
-                contents.forEach(function(c) { c.classList.remove('tab-active'); });
-                tab.classList.add('tab-label-active');
-                contents[index].classList.add('tab-active');
-                /* If the user explicitly opens the Preview tab, promote the render task
-                   to the highest priority so it starts immediately, even if queued. */
-                var frame = contents[index].querySelector('.smarkform-preview-frame');
-                if (frame) {
-                    smarkformRenderScheduler.activate(frame);
-                    /* Auto-size only if the first render hasn't sized it yet. Once
-                       smarkformAutosized is set the established height is final; the
-                       iframe's onload handles this when the render is still pending
-                       (autosize bails on a blank document and lets onload retry). */
-                    try {
-                        if (frame.dataset.smarkformAutosized !== '1' && frame.__smarkformData) {
-                            smarkformAutosize(frame, frame.__smarkformData);
-                        }
-                    } catch(e) {}
-                }                /* Resize any Ace editors in the newly visible tab (fixes layout when switching tabs) */
-                SMARKFORM_EDITOR_KINDS.forEach(function(k) {
-                    if (aceEditors[k] && aceEditors[k].resize) aceEditors[k].resize();
-                });
+        var selectTab = function(tab, index) {
+            tabs.forEach(function(t) { t.classList.remove('tab-label-active'); });
+            contents.forEach(function(c) { c.classList.remove('tab-active'); });
+            tab.classList.add('tab-label-active');
+            contents[index].classList.add('tab-active');
+            /* If the user explicitly opens the Preview tab, promote the render task
+               to the highest priority so it starts immediately, even if queued. */
+            var frame = contents[index].querySelector('.smarkform-preview-frame');
+            if (frame) {
+                smarkformRenderScheduler.activate(frame);
+                /* Auto-size only if the first render hasn't sized it yet. Once
+                   smarkformAutosized is set the established height is final; the
+                   iframe's onload handles this when the render is still pending
+                   (autosize bails on a blank document and lets onload retry). */
+                try {
+                    if (frame.dataset.smarkformAutosized !== '1' && frame.__smarkformData) {
+                        smarkformAutosize(frame, frame.__smarkformData);
+                    }
+                } catch(e) {}
+            }
+            /* Resize any Ace editors in the newly visible tab. */
+            SMARKFORM_EDITOR_KINDS.forEach(function(k) {
+                if (aceEditors[k] && aceEditors[k].resize) aceEditors[k].resize();
             });
+        };
+        tabs.forEach(function(tab, index) {
+            tab.addEventListener('click', function() { selectTab(tab, index); });
         });
         /* Hash-addressable tabs: #example-id:preview. Keep @ as a legacy alias. */
-        var applyHashTab = function() {
+        var applyHashTab = function(scrollToTab) {
             var marker = window.location.hash.slice(1);
             var tabName = marker === container.id ? container.dataset.defaultTab : null;
+            var isTabFragment = false;
             if (tabName === null) {
                 for (var separator of [':', '@']) {
                     var prefix = container.id + separator;
                     if (marker.indexOf(prefix) === 0) {
                         tabName = marker.slice(prefix.length);
+                        isTabFragment = true;
                         break;
                     }
                 }
@@ -475,9 +479,21 @@ document.addEventListener('DOMContentLoaded', function() {
             var tab = Array.prototype.find.call(tabs, function(candidate) {
                 return candidate.dataset.tab === tabName;
             });
-            if (tab && !tab.classList.contains('tab-label-active')) tab.click();
+            if (tab && !tab.classList.contains('tab-label-active')) {
+                selectTab(tab, Array.prototype.indexOf.call(tabs, tab));
+            }
+            /* A suffixed fragment (unlike #container.id) has no native anchor
+               target. Scroll only during initial page load; hash changes from
+               tab clicks should select the tab without moving the reader. */
+            if (scrollToTab && isTabFragment && tab) {
+                window.requestAnimationFrame(function() {
+                    window.requestAnimationFrame(function() {
+                        container.scrollIntoView({block: 'start'});
+                    });
+                });
+            }
         };
-        window.addEventListener('hashchange', applyHashTab);
+        window.addEventListener('hashchange', function() { applyHashTab(false); });
         /* --- Source data and preview iframe --- */
         var srcEl = container.querySelector('.smarkform-src-data');
         var iframe = container.querySelector('.smarkform-preview-frame');
@@ -489,7 +505,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var editMode = false;
         var savedContents = {};
         var aceEditors = {};
-        applyHashTab();
+        applyHashTab(true);
         var previewSrcs = function() {
             var useEditor = editMode ? includeEditor : showEditor;
             /* When editor is hidden, demoValue is passed directly as value: {...}.

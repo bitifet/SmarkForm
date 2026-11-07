@@ -121,9 +121,11 @@ source-only edits keep the established height, and a manual preview resize is
 retained as a floor when the editor is toggled.
 
 Tab links use `#example-<formId>:<tab>` (for example,
-`#example-contact:preview`). A bare `#example-<formId>` link opens that example's
-configured default tab. The controller still accepts the legacy `@` separator
-for existing links.
+`#example-contact:preview`). On an initial page load, a suffixed link scrolls to
+the example and selects that tab. Clicking a tab on the current page updates the
+hash and selection without scrolling. A bare `#example-<formId>` link scrolls
+to the example and selects its configured default tab. The controller still
+accepts the legacy `@` separator for existing links.
 
 ### `minHeight` and iframe Auto-sizing
 
