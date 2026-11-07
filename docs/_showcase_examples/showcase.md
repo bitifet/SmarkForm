@@ -1351,7 +1351,7 @@ function updateDisplay(prevValue, key) {
             break;
         default:
             if (!! key.match(invalidChars)) {
-                return prevValue; /* Keep existing data */
+                return null; /* Let the browser handle unrelated keys. */
             };
             if (prevValue.replace(/[0\s]+/, "") === "") {
                 return key; /* Replace 0 with new input */
@@ -1367,10 +1367,11 @@ myForm.on("BeforeAction_import", async (ev)=>{
 });
 
 myForm.on("keydown", async (ev)=>{
-    ev.preventDefault();
     const prevValue = await ev.context.export();
     const key = ev.originalEvent.key;
     const data = updateDisplay(prevValue, key);
+    if (data === null) return;
+    ev.preventDefault();
     await ev.context.import(data);
 });
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
@@ -1385,8 +1386,10 @@ myForm.on("keydown", async (ev)=>{
 {% capture supercalculator_notes -%}
 Type digits or operators directly, or use the buttons. The `keydown` handler
 prevents the browser from moving the caret or editing the text; every key is
-processed by `updateDisplay()` and imported as a new display value. `Enter` is
-an alias for `=`, `Delete` clears, and `Backspace` removes the last character.
+processed by `updateDisplay()`. Calculator keys are imported as a new display
+value; other keys are left to the browser, so Tab continues to move focus.
+`Enter` is an alias for `=`, `Delete` clears, and `Backspace` removes the last
+character.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- supercalculator_tests {{{ -->{% endraw %}
@@ -1395,6 +1398,11 @@ export default async ({ page, expect, root, readField }) => {
     await expect(root).toBeVisible();
     const display = root.locator('input.display');
     await display.focus();
+    await page.keyboard.press('Tab');
+    await expect(root.getByRole('button', {name: 'C'})).toBeFocused();
+    await page.keyboard.press('Shift+Tab');
+    await expect(display).toBeFocused();
+
     await root.getByRole('button', {name: '1'}).click();
     await page.keyboard.press('2');
     await root.getByRole('button', {name: '3'}).click();
