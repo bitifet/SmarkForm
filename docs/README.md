@@ -60,6 +60,9 @@ Parameters supported by `sampletabs_tpl.md` include:
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
 
+Example links can target a tab with `#example-<formId>:<tab>`. A link ending at
+`#example-<formId>` opens the tab selected by default.
+
 Every example automaically includes a JavaScript line to enhance a form with
 predefined `formId` So that *jsSource* can be omitted for simple examples.
 
@@ -98,6 +101,5 @@ setting `tests=false` in the include block.
 
 For a detailed explanation of how to write co-located custom tests, please see
 [CO_LOCATED_TESTS.md](CO_LOCATED_TESTS.md).
-
 
 

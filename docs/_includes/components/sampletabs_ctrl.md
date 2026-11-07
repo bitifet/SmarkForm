@@ -458,14 +458,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
         });
-        /* Hash-addressable tab aliases, e.g. #example-video_list@preview. */
+        /* Hash-addressable tabs: #example-id:preview. Keep @ as a legacy alias. */
         var applyHashTab = function() {
             var marker = window.location.hash.slice(1);
-            var prefix = container.id + '@';
-            if (marker.indexOf(prefix) !== 0) return;
-            var tab = container.querySelector('.tab-label[data-tab="'
-                + marker.slice(prefix.length) + '"]');
-            if (tab) tab.click();
+            var tabName = marker === container.id ? container.dataset.defaultTab : null;
+            if (tabName === null) {
+                for (var separator of [':', '@']) {
+                    var prefix = container.id + separator;
+                    if (marker.indexOf(prefix) === 0) {
+                        tabName = marker.slice(prefix.length);
+                        break;
+                    }
+                }
+            }
+            if (!tabName) return;
+            var tab = Array.prototype.find.call(tabs, function(candidate) {
+                return candidate.dataset.tab === tabName;
+            });
+            if (tab && !tab.classList.contains('tab-label-active')) tab.click();
         };
         window.addEventListener('hashchange', applyHashTab);
         /* --- Source data and preview iframe --- */

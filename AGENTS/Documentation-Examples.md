@@ -120,6 +120,11 @@ Toggling editor inclusion remeasures the iframe because its layout changes;
 source-only edits keep the established height, and a manual preview resize is
 retained as a floor when the editor is toggled.
 
+Tab links use `#example-<formId>:<tab>` (for example,
+`#example-contact:preview`). A bare `#example-<formId>` link opens that example's
+configured default tab. The controller still accepts the legacy `@` separator
+for existing links.
+
 ### `minHeight` and iframe Auto-sizing
 
 `minHeight` replaces the old `height` parameter (which was a **maximum** cap). The preview iframe now grows/shrinks to fit its **measured, rendered content** on the first render:
