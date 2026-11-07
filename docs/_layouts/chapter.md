@@ -237,24 +237,26 @@ layout: smarkform
 
 {% for collection in sorted_collections %}
   {% for document in collection.docs %}
-   {% assign pointer_url = document.url | relative_url %}
-   {% if shouldbreak %}
-    {% if next_url == nil %}
-     {% assign next_url = pointer_url %}
-     {% assign next_collection = site.just_the_docs.collections[collection.label].name %}
-     {% assign next_title = document.title %}
+   {% unless document.nav_exclude %}
+    {% assign pointer_url = document.url | relative_url %}
+    {% if shouldbreak %}
+     {% if next_url == nil %}
+      {% assign next_url = pointer_url %}
+      {% assign next_collection = site.just_the_docs.collections[collection.label].name %}
+      {% assign next_title = document.title %}
+     {% endif %}
+    {% else %}
+     {% if pointer_url == page_url %}
+      {% assign shouldbreak = true %}
+      {% assign prev_url = current_url %}
+      {% assign prev_collection = current_collection %}
+      {% assign prev_title = current_title %}
+     {% endif %}
+     {% assign current_url = pointer_url %}
+     {% assign current_collection = site.just_the_docs.collections[collection.label].name %}
+     {% assign current_title = document.title %}
     {% endif %}
-   {% else %}
-    {% if pointer_url == page_url %}
-     {% assign shouldbreak = true %}
-     {% assign prev_url = current_url %}
-     {% assign prev_collection = current_collection %}
-     {% assign prev_title = current_title %}
-    {% endif %}
-    {% assign current_url = pointer_url %}
-    {% assign current_collection = site.just_the_docs.collections[collection.label].name %}
-    {% assign current_title = document.title %}
-   {% endif %}
+   {% endunless %}
   {% endfor %}
 {% endfor %}
 
@@ -284,73 +286,102 @@ layout: smarkform
 .bottom-bar {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    bottom: 0;
-    left: 0;
-    width: 100%;
+    gap: 1rem;
+    margin: 2rem 0 1rem;
 }
 
 .bottom-bar .nav-link {
     display: flex;
     align-items: center;
-    background: #eee;
-    border-radius: .3em;
-    max-width: 45%;
+    flex: 1 1 0;
+    max-width: calc(50% - .5rem);
+    overflow: hidden;
+    background: var(--body-background-color, #fff);
+    border: 1px solid var(--border-color, #eeebee);
+    border-radius: .5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
 }
 .bottom-bar .nav-link:hover {
-    transform: translate(.1em, .1em);
+    transform: translateY(-2px);
+    border-color: var(--link-color, #7253ed);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .12);
 }
 
-.bottom-bar .nav-link:first-child .icon {
-    padding: .5rem .7rem .5rem 1.5rem;
-}
-.bottom-bar .nav-link:first-child .text {
-    padding: .5rem .5rem .5rem .7rem;
-    text-align: right;
-}
-.bottom-bar .nav-link:last-child .icon {
-    padding: .5rem 1.5rem .5rem .7rem;
-}
-.bottom-bar .nav-link:last-child .text {
-    padding: .5rem .7rem .5rem .5rem;
-    text-align: left;
-}
-
-.bottom-bar a
-, .bottom-bar a:link
-, .bottom-bar a:visited
-, .bottom-bar a:hover {
-    text-decoration: none;
+.bottom-bar .nav-link a {
     display: flex;
     align-items: center;
+    gap: .75rem;
+    width: 100%;
+    min-height: 4rem;
+    padding: .75rem 1rem;
+    border-radius: inherit;
+    color: var(--body-text-color, #5c5962);
+    text-decoration: none;
+}
+.bottom-bar .prev-page a {
+    justify-content: flex-start;
+}
+.bottom-bar .next-page a {
+    justify-content: flex-end;
+    text-align: right;
+}
+.bottom-bar .nav-link a:focus-visible {
+    outline: 2px solid var(--link-color, #7253ed);
+    outline-offset: -3px;
 }
 
 .bottom-bar .icon {
-    font-size: 2rem;
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: var(--link-color, #7253ed);
+    font-size: 1.5rem;
+    transition: transform .16s ease;
+}
+.bottom-bar .prev-page:hover .icon {
+    transform: translateX(-2px);
+}
+.bottom-bar .next-page:hover .icon {
+    transform: translateX(2px);
 }
 
 .bottom-bar .text {
     display: flex;
     flex-direction: column;
+    min-width: 0;
 }
 
 .bottom-bar .line {
     margin: 0;
     padding: 0;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
 }
 .bottom-bar .bold {
     font-weight: bold;
+    font-size: .78rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--link-color, #7253ed);
 }
 
-.bottom-bar .prev-page {
-    justify-content: flex-start;
-}
-
-.bottom-bar .next-page {
-    justify-content: flex-end;
+@media (max-width: 40rem) {
+    .bottom-bar {
+        gap: .5rem;
+    }
+    .bottom-bar .nav-link {
+        max-width: calc(50% - .25rem);
+    }
+    .bottom-bar .nav-link a {
+        gap: .4rem;
+        min-height: 3.5rem;
+        padding: .6rem .5rem;
+    }
+    .bottom-bar .icon {
+        font-size: 1.2rem;
+    }
 }
 
 @media print {
@@ -361,22 +392,22 @@ layout: smarkform
 </style>
 
 <div class="bottom-bar">
-    <div class="nav-link">
-        <a href="{{prev_url}}">
-            <div class="icon" role="img" aria-label="">{{ prev_icon }}</div>
+    <div class="nav-link prev-page">
+        <a href="{{prev_url}}" aria-label="Previous page: {{ prev_title }}">
+            <div class="icon" aria-hidden="true">{{ prev_icon }}</div>
             <div class="text">
                 <div class="line bold">{{ prev_collection }}</div>
                 <div class="line">{{ prev_title }}</div>
             </div>
         </a>
     </div>
-    <div class="nav-link">
-        <a href="{{next_url}}">
+    <div class="nav-link next-page">
+        <a href="{{next_url}}" aria-label="Next page: {{ next_title }}">
             <div class="text">
                 <div class="line bold">{{ next_collection }}</div>
                 <div class="line">{{ next_title }}</div>
             </div>
-            <div class="icon" role="img" aria-label="">{{ next_icon }}</div>
+            <div class="icon" aria-hidden="true">{{ next_icon }}</div>
         </a>
     </div>
 </div>
@@ -472,4 +503,3 @@ layout: smarkform
 
     };
 </script>
-
