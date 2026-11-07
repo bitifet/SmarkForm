@@ -458,19 +458,32 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         };
         tabs.forEach(function(tab, index) {
-            tab.addEventListener('click', function() { selectTab(tab, index); });
+            tab.addEventListener('click', function(event) {
+                if (tab.hasAttribute('href')) {
+                    event.preventDefault();
+                    /* Tabs are view state, not separate history stops. Keep the
+                       deep link shareable without making Back revisit each tab. */
+                    var href = tab.getAttribute('href');
+                    if (window.location.hash !== href) {
+                        window.history.replaceState(window.history.state, '', href);
+                    }
+                }
+                selectTab(tab, index);
+            });
         });
-        /* Hash-addressable tabs: #example-id:preview. Keep @ as a legacy alias. */
+        /* Hash-addressable tabs: #example-id:preview. The new colon-style
+           fragments have real anchor targets in sampletabs_tpl.md; @ remains
+           a legacy alias that needs the scroll fallback below. */
         var applyHashTab = function(scrollToTab) {
             var marker = window.location.hash.slice(1);
             var tabName = marker === container.id ? container.dataset.defaultTab : null;
-            var isTabFragment = false;
+            var isLegacyTabFragment = false;
             if (tabName === null) {
                 for (var separator of [':', '@']) {
                     var prefix = container.id + separator;
                     if (marker.indexOf(prefix) === 0) {
                         tabName = marker.slice(prefix.length);
-                        isTabFragment = true;
+                        isLegacyTabFragment = separator === '@';
                         break;
                     }
                 }
@@ -482,10 +495,10 @@ document.addEventListener('DOMContentLoaded', function() {
             if (tab && !tab.classList.contains('tab-label-active')) {
                 selectTab(tab, Array.prototype.indexOf.call(tabs, tab));
             }
-            /* A suffixed fragment (unlike #container.id) has no native anchor
-               target. Scroll only during initial page load; hash changes from
-               tab clicks should select the tab without moving the reader. */
-            if (scrollToTab && isTabFragment && tab) {
+            /* Legacy @ fragments have no native anchor target. Scroll only
+               during initial load; in-page tab changes should never move the
+               reader. New colon fragments use their actual tab anchors. */
+            if (scrollToTab && isLegacyTabFragment && tab) {
                 window.requestAnimationFrame(function() {
                     window.requestAnimationFrame(function() {
                         container.scrollIntoView({block: 'start'});

@@ -41,7 +41,10 @@ example-specific guidance. Most offer some or all of these tabs:
 Link to an example's default tab with its anchor, or add a tab name after a
 colon to open that tab directly—for example, `#example-simple_number:preview`
 or `#example-simple_number:html`. The available suffixes are `html`, `css`,
-`js`, `preview`, and `notes`.
+`js`, `preview`, and `notes`. A deep link is also a real anchor, so the browser
+scrolls directly to the tab row. Clicking a tab updates the fragment without
+scrolling or adding a browser-history stop; **Back** returns to the previous
+page rather than stepping through every tab.
 
 ### Preview and the JSON playground
 
