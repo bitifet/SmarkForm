@@ -40,18 +40,6 @@ The data model can be read as a tree:
   - `skills` — a list component whose value is an array.
     - Each item follows the list template and is typed here as `input`.
 
-The matching value is:
-
-```json
-{
-  "profile": {
-    "name": "Ada Lovelace",
-    "contact": { "email": "ada@example.com" }
-  },
-  "skills": ["mathematics", "computing"]
-}
-```
-
 {% raw %}<!-- core_concepts_model_html {{{ -->{% endraw %}
 {% capture core_concepts_model_html -%}
 <div id="myForm$$">
@@ -82,7 +70,7 @@ The matching value is:
 {% raw %}<!-- core_concepts_model_notes {{{ -->{% endraw %}
 {% capture core_concepts_model_notes -%}
 **Try it:** Change the profile fields or add/remove skills, then choose **Export**
-to see how named forms and list items map into the object above.
+to see how named forms and list items map into the value below.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- core_concepts_model_demoValue {{{ -->{% endraw %}
@@ -105,6 +93,18 @@ to see how named forms and list items map into the object above.
     showEditor=true
     tests=false
 %}
+
+With the example's prefilled data, **Export** returns this value:
+
+```json
+{
+  "profile": {
+    "name": "Ada Lovelace",
+    "contact": { "email": "ada@example.com" }
+  },
+  "skills": ["mathematics", "computing"]
+}
+```
 
 For programmatic work, wait until rendering completes before looking up
 components. A named subform can be found and exported like this:
