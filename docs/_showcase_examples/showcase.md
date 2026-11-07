@@ -104,6 +104,9 @@ Each preview also includes the standard JSON playground controls: Export,
 Import, Reset, and Clear. See the [Playground guide]({{ "/showcase_examples/playground" | relative_url }})
 for how to use these controls to inspect and change form data.
 
+{: .info :}
+> Some of the examples in this page may feel unrealistic or contrived.  They are designed to demonstrate SmarkForm features, not to be production-ready applications.
+
 ---
 
 ## Just a Form
@@ -1146,26 +1149,24 @@ export default async ({ expect, root, readField, writeField }) => {
 
 ---
 
-## Calculators
+## Calculator
 
-These compact calculators show two ways to build an interactive tool: one responds to keypad buttons, while the other also accepts keyboard input.
+The first example shows how little code a working calculator needs. Its buttons
+dispatch SmarkForm `import` actions to one display field. The enclosing element
+is an SmarkForm **input singleton**, so each button automatically uses that
+field as its context. One `BeforeAction_import` handler reads the current
+display and changes the incoming data; no calculator-specific code is needed
+for each button.
 
-The JSON playground is unavailable in both examples because their Import actions process calculator input rather than replacing the display from JSON.
+Digits can also be typed directly into the display. Buttons with hotkeys show
+their Ctrl shortcuts when you hold **Ctrl**; the other buttons remain clickable.
+The JSON playground is disabled because its Import action would be interpreted
+as a calculator key.
 
-### Simple Calculator
-
-This example leverages the **singleton pattern** to avoid specifying the
-context for every button. A single import handler intercepts each button
-press and updates the display field.
-
-A single event handler on `BeforeAction_import` does all the work: it reads
-the current value, appends or evaluates the new input, and updates the
-display.  You can use the calculator buttons or type directly — every button
-click brings focus back to the input field.
-
-Evaluation uses a small arithmetic parser limited to numbers, parentheses,
-and the four basic operators; invalid expressions display `Error`.
-Hold `Ctrl` to reveal the keyboard shortcuts on the calculator buttons.
+The handler replaces the initial zero, appends characters, deletes the last
+character, clears the display, or evaluates the expression. For brevity, this
+demo uses `eval` after removing characters outside the arithmetic set, so even
+`2**10` works. Do not use that shortcut to evaluate general or untrusted input.
 
 {% raw %} <!-- calculator {{{ --> {% endraw %}
 {% capture calculator -%}
@@ -1222,82 +1223,53 @@ Hold `Ctrl` to reveal the keyboard shortcuts on the calculator buttons.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
-{% raw %}<!-- arithmetic_parser_js {{{ -->{% endraw %}
-{% capture arithmetic_parser_js -%}
-function evaluateArithmetic(source) {
-    const expression = String(source).trim();
-    const tokenPattern = /\s*([0-9]+(?:\.[0-9]*)?|\.[0-9]+|[()+\-*\/])/y;
-    const tokens = [];
-    let cursor = 0;
-    while (cursor < expression.length) {
-        tokenPattern.lastIndex = cursor;
-        const match = tokenPattern.exec(expression);
-        if (!match) throw new Error('Invalid expression');
-        tokens.push(match[1]);
-        cursor = tokenPattern.lastIndex;
-    }
-
-    let index = 0;
-    const primary = () => {
-        const token = tokens[index++];
-        if (token === '+') return primary();
-        if (token === '-') return -primary();
-        if (token === '(') {
-            const value = additive();
-            if (tokens[index++] !== ')') throw new Error('Missing )');
-            return value;
-        }
-        if (token == null || Number.isNaN(Number(token))) throw new Error('Expected a number');
-        return Number(token);
-    };
-    const multiplicative = () => {
-        let value = primary();
-        while (tokens[index] === '*' || tokens[index] === '/') {
-            const operator = tokens[index++];
-            const next = primary();
-            value = operator === '*' ? value * next : value / next;
-        }
-        return value;
-    };
-    const additive = () => {
-        let value = multiplicative();
-        while (tokens[index] === '+' || tokens[index] === '-') {
-            const operator = tokens[index++];
-            const next = multiplicative();
-            value = operator === '+' ? value + next : value - next;
-        }
-        return value;
-    };
-
-    const result = additive();
-    if (index !== tokens.length || !Number.isFinite(result)) {
-        throw new Error('Invalid expression');
-    }
-    return String(result);
-}
-{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
-
 {% raw %}<!-- calculator_js {{{ -->{% endraw %}
 {% capture calculator_js -%}
-{{ arithmetic_parser_js }}
+const invalidChars = /[^0-9+\-*\/().]+/g;
 
-myForm.on("BeforeAction_import", async (ev) => {
+myForm.on("BeforeAction_import", async (ev)=>{
     const prevValue = await ev.context.export();
     const key = ev.data;
     switch (key) {
-        case "C": ev.data = "0"; break;
-        case "Del": ev.data = prevValue.slice(0, -1) || "0"; break;
+        case "C":
+            ev.data = "0"; /* Clear display */
+            break;
+        case "Del":
+            ev.data = prevValue.slice(0, -1) || "0"; /* Remove last character */
+            break;
         case "=":
-            try { ev.data = evaluateArithmetic(prevValue); }
-            catch { ev.data = "Error"; }
+            try {
+                /* Evaluate expression */
+                const sanitized = prevValue.replace(invalidChars, '');
+                ev.data = eval(sanitized);
+            } catch (e) {
+                alert("Invalid expression");
+                ev.preventDefault(); /* Keep existing data */
+            }
             break;
         default:
-            if (prevValue.trim() === "0") ev.data = key;
-            else ev.data = prevValue + key;
-    }
+            if (prevValue.trim() === "0") {
+                ev.data = key; /* Replace 0 with new input */
+            } else {
+                ev.data = prevValue + key; /* Append to existing value */
+            };
+    };
 });
-{%- endcapture %}
-{% raw %} <!-- }}} --> {% endraw %}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- calculator_tests {{{ -->{% endraw %}
+{% capture calculator_tests -%}
+export default async ({ expect, root, readField }) => {
+    const display = root.locator('input.display');
+    await expect(display).toHaveValue('0');
+    await display.fill('123');
+    await root.getByRole('button', {name: '+'}).click();
+    await expect.poll(() => readField('display')).toBe('123+');
+    await display.pressSequentially('45');
+    await root.getByRole('button', {name: '='}).click();
+    await expect.poll(() => readField('display')).toBe('168');
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% include components/sampletabs_tpl.md
     formId="calculator"
@@ -1306,17 +1278,23 @@ myForm.on("BeforeAction_import", async (ev) => {
     cssSource=calculator_css
     selected="preview"
     showEditor=false
-    tests=false
+    tests=calculator_tests
 %}
 
-> The event handler uses `on()` to scope calculator behavior to the display.
-> See [Events]({{ "/guides/events" | relative_url }}) for more about event scoping.
+> `myForm.on()` catches the display field’s import action through event bubbling.
+> With only one field, the handler has no unrelated imports to intercept. See
+> [Events]({{ "/guides/events" | relative_url }}) for more about event scope.
 
-### Keyboard Calculator
+**A keyboard-friendly refinement.** The first version lets the browser type
+digits into the display and uses Ctrl hotkeys for the other operations. This
+version also handles keystrokes through SmarkForm’s `keydown` event: `Enter`
+acts like `=`, `Delete` clears, and `Backspace` deletes the last character. It
+prevents the input’s native editing and cursor movement, so the display behaves
+more like a physical calculator.
 
-This variation accepts keyboard input as well as button clicks. Its arithmetic
-parser is limited to numbers, parentheses, and `+`, `-`, `*`, `/`; it does not
-evaluate arbitrary JavaScript or intercept keys outside the display field.
+The same `updateDisplay()` function handles both button imports and keyboard
+input, keeping the calculator logic in one small place. The JSON playground is
+disabled here for the same reason as in the first example.
 
 {% raw %}<!-- supercalculator_html {{{ -->{% endraw %}
 {% capture supercalculator -%}
@@ -1350,47 +1328,50 @@ evaluate arbitrary JavaScript or intercept keys outside the display field.
 
 {% raw %}<!-- supercalculator_js {{{ -->{% endraw %}
 {% capture supercalculator_js -%}
-{{ arithmetic_parser_js }}
+var invalidChars = /[^0-9+\-*\/().]+/g;
 
-function updateDisplay(previous, key) {
-    if (key === 'C' || key === 'Delete') return '0';
-    if (key === 'Backspace') return previous.slice(0, -1) || '0';
-    if (key === '=' || key === 'Enter') {
-        try { return evaluateArithmetic(previous); }
-        catch { return 'Error'; }
-    }
-    if (!/^[0-9.+\-*\/()]$/.test(key)) return previous;
-    if (previous === 'Error') previous = '0';
-    if (previous === '0' && /^[0-9]$/.test(key)) return key;
-    return previous + key;
-}
+function updateDisplay(prevValue, key) {
+    switch (key.toLowerCase()) {
+        case "c":
+        case "delete":
+            return "0"; /* Clear display */
+            break;
+        case "backspace":
+            return prevValue.slice(0, -1) || "0"; /* Remove last character */
+            break;
+        case "=":
+        case "enter": /* Keyboard enter key */
+            try {
+                /* Evaluate expression */
+                const sanitized = prevValue.replaceAll(invalidChars, '');
+                return eval(sanitized);
+            } catch (e) {
+                return "Error!";
+            }
+            break;
+        default:
+            if (!! key.match(invalidChars)) {
+                return prevValue; /* Keep existing data */
+            };
+            if (prevValue.replace(/[0\s]+/, "") === "") {
+                return key; /* Replace 0 with new input */
+            };
+            return prevValue + key; /* Append to existing value */
+    };
+};
 
-myForm.on('BeforeAction_import', async (event) => {
-    event.data = updateDisplay(await event.context.export(), event.data);
+myForm.on("BeforeAction_import", async (ev)=>{
+    const prevValue = await ev.context.export();
+    const key = ev.data;
+    ev.data = updateDisplay(prevValue, key);
 });
 
-myForm.rendered.then(() => {
-    const displayNode = myForm.targetNode.querySelector('input.display');
-    const field = myForm.getComponent(displayNode);
-    let keyQueue = Promise.resolve();
-    // Window capture runs before SmarkForm's document-level Enter navigation
-    // listener, so the calculator can consume Enter instead of being preempted.
-    window.addEventListener('keydown', (event) => {
-        if (event.target !== field.targetFieldNode) return;
-        if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey) return;
-        const key = event.key;
-        if (
-            key !== 'Enter' && key !== 'Backspace' && key !== 'Delete'
-            && !/^[0-9.+\-*\/()]$/.test(key)
-        ) return;
-        event.preventDefault();
-        keyQueue = keyQueue.then(async () => {
-            await field.import(
-                updateDisplay(await field.export(), key),
-                {set_default: false}
-            );
-        }).catch((error) => console.error('Calculator key handling failed:', error));
-    }, true);
+myForm.on("keydown", async (ev)=>{
+    ev.preventDefault();
+    const prevValue = await ev.context.export();
+    const key = ev.originalEvent.key;
+    const data = updateDisplay(prevValue, key);
+    await ev.context.import(data);
 });
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -1402,11 +1383,10 @@ myForm.rendered.then(() => {
 
 {% raw %}<!-- supercalculator_notes {{{ -->{% endraw %}
 {% capture supercalculator_notes -%}
-👉 Use the buttons or type directly in the display. Keyboard handling is limited
-to the display and arithmetic keys; unrelated keys keep their normal behavior.
-
-👉 The parser evaluates only arithmetic tokens and parentheses. It does not use
-`eval` or execute arbitrary input.
+Type digits or operators directly, or use the buttons. The `keydown` handler
+prevents the browser from moving the caret or editing the text; every key is
+processed by `updateDisplay()` and imported as a new display value. `Enter` is
+an alias for `=`, `Delete` clears, and `Backspace` removes the last character.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- supercalculator_tests {{{ -->{% endraw %}
@@ -1415,8 +1395,16 @@ export default async ({ page, expect, root, readField }) => {
     await expect(root).toBeVisible();
     const display = root.locator('input.display');
     await display.focus();
-    await page.keyboard.type('123+45');
-    await expect.poll(() => readField('display')).toBe('123+45');
+    await root.getByRole('button', {name: '1'}).click();
+    await page.keyboard.press('2');
+    await root.getByRole('button', {name: '3'}).click();
+    expect(await readField('display')).toBe('123');
+
+    await root.getByRole('button', {name: '+'}).click();
+    await page.keyboard.press('4');
+    await root.getByRole('button', {name: '5'}).click();
+    expect(await readField('display')).toBe('123+45');
+
     await page.keyboard.press('Enter');
     await expect.poll(() => readField('display')).toBe('168');
 };
