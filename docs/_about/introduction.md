@@ -36,11 +36,8 @@ item templates become array elements; forms and lists can nest to any depth.
 Importing or exporting the root therefore moves ordinary structured data in
 and out of the UI.
 
-That is the whole core idea. The [Quick Start]({{ "/start_here/quick_start" |
-relative_url }}) shows it in one screen, [Core Concepts]({{
-"/start_here/core_concepts" | relative_url }}) explains the model in detail, and
-[Using SmarkForm]({{ "/guides/using_smarkform" | relative_url }}) walks through
-a full form.
+👉 For a more detailed overview of what the library can do, see [Features]({{
+"/about/features" | relative_url }}).
 
 ## The problem it addresses {#motivation}
 
@@ -75,31 +72,11 @@ Three broad approaches are common:
 * **DOM-first form controllers** such as SmarkForm keep the markup but add a
   structured value model and form-level actions.
 
-None of these is universally better. The choice depends on where the form's
-structure comes from, who owns the markup and styles, how the rest of the
+None of these approaches is universally better. The choice depends on where the
+form's structure comes from, who owns the markup and styles, how the rest of the
 application manages state, and whether you need a validation or schema layer.
-[When SmarkForm Fits]({{ "/about/when_smarkform_fits" | relative_url }}) expands
-these trade-offs and includes an illustrative worked comparison.
-
-## When SmarkForm fits
-
-SmarkForm is usually a good fit when:
-
-* you already own the HTML and CSS, including server-rendered or static pages;
-* the form data is naturally nested objects and variable-length lists;
-* you want the form structure to stay visible in the markup;
-* you need plain JSON import/export without adopting a UI framework.
-
-Another approach may fit better when:
-
-* the form UI itself must be generated from a schema;
-* the form must participate fully in a virtual-DOM application's state model;
-* you need a built-in validation rule engine rather than application-level
-  checks;
-* you require an official, maintained adapter for a specific framework.
-
-Read [When SmarkForm Fits]({{ "/about/when_smarkform_fits" | relative_url }}) for
-the fuller decision guide.
+See [When SmarkForm Fits]({{ "/about/when_smarkform_fits" | relative_url }}) for
+a fuller decision guide and worked comparison.
 
 ## Current status and scope
 

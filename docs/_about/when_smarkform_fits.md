@@ -3,7 +3,7 @@ title: "When SmarkForm Fits"
 layout: chapter
 description: "A neutral guide to when SmarkForm's markup-first, structured-value model fits, and when a UI framework or schema-rendered form library may be a better choice."
 permalink: "/about/when_smarkform_fits"
-nav_order: 2
+nav_order: 3
 ---
 
 {% include links.md %}

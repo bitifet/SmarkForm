@@ -3,7 +3,7 @@ title: FAQ
 layout: chapter
 description: "Answers to common questions about SmarkForm behavior, component types, lists, data import/export, masking and media fields."
 permalink: "/about/faq"
-nav_order: 5
+nav_order: 4
 ---
 
 

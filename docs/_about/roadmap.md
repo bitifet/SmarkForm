@@ -3,7 +3,7 @@ title: Roadmap
 layout: chapter
 description: "See planned SmarkForm improvements across component types, the API, documentation, tooling and future integrations."
 permalink: "/about/roadmap"
-nav_order: 6
+nav_order: 5
 ---
 
 

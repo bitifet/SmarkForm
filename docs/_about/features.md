@@ -3,7 +3,7 @@ title: Features
 layout: chapter
 description: "SmarkForm's core HTML-to-component-tree model, developer-facing benefits, additional capabilities, and deliberate limits."
 permalink: "/about/features"
-nav_order: 3
+nav_order: 2
 ---
 
 {% include links.md %}
@@ -65,7 +65,9 @@ date/time fields export as `null`, which keeps “missing” distinct from `0` o
 The progression is intentional: start with the least noisy attribute, use
 `data-smark-*` for simple options, and use the JSON object when you need
 structured configuration. Prefixed attributes override matching keys in the
-JSON object. See [Core Concepts]({{ "/start_here/core_concepts" | relative_url }})
+JSON object.
+
+👉 See [Core Concepts]({{ "/start_here/core_concepts" | relative_url }})
 for the syntax rules.
 
 ### Nested forms {#nestable-forms}
@@ -104,7 +106,7 @@ methods. With `sortable: true`, items can be reordered by drag and drop (and
 between nested lists with `moving_depth`). Automatic sorting by field value is
 **not implemented**; the current feature is manual drag-and-drop sorting.
 
-See the [List reference]({{ "/component_reference/list" | relative_url }}) for
+👉 See the [List reference]({{ "/component_reference/list" | relative_url }}) for
 item templates, position metadata, `min_items`/`max_items`, and sortable-list
 behavior.
 
@@ -126,7 +128,9 @@ field or subform:
 ```
 
 Objects map to forms, arrays map to lists, and scalar values map to fields. You
-can export the whole form or just one branch. See [Data Import and
+can export the whole form or just one branch.
+
+👉 See [Data Import and
 Export]({{ "/guides/data_import_and_export" | relative_url }}).
 
 ### Address fields by path, not DOM position {#directory-like-addressability}
@@ -139,9 +143,10 @@ the DOM nesting introduced by layout wrappers. Actions and API calls can use:
 * absolute paths from the root, such as `/organizer/email`;
 * wildcard contexts for operations that apply to many matching fields.
 
-Triggers themselves do not count as path nodes. See [Form
-Traversing]({{ "/guides/form_traversing" | relative_url }}) and the [Trigger
-reference]({{ "/component_reference/trigger" | relative_url }}).
+Triggers themselves do not count as path nodes.
+
+👉 See [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) and
+the [Trigger reference]({{ "/component_reference/trigger" | relative_url }}).
 
 ### Declarative actions and context {#easy-to-use-low-code}
 
@@ -158,7 +163,7 @@ selection, and more. You can also call `.import()` and `.export()` directly
 from application code, and listen to `BeforeAction_*` and `AfterAction_*`
 events when you need to intervene.
 
-See [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for
+👉 See [Form Traversing]({{ "/guides/form_traversing" | relative_url }}) for
 `context` and path resolution, and the [Trigger
 reference]({{ "/component_reference/trigger" | relative_url }}) for `target` and
 action options.
@@ -177,7 +182,11 @@ reachable from the user's current field:
 ```
 
 Holding `Ctrl` reveals the available shortcuts without leaving the keyboard.
-See [Hotkeys]({{ "/accessibility/hotkeys" | relative_url }}).
+Because hotkeys are resolved from the focused context, the same convenient key
+can be reused in different parts of a form without conflict. SmarkForm reveals
+the shortcuts that are reachable from the current focus.
+
+👉 See [Hotkeys]({{ "/accessibility/hotkeys" | relative_url }}).
 
 ### Consistent keyboard navigation {#consistent-user-experience}
 
@@ -188,7 +197,7 @@ focus order, and configured hotkeys provide additional actions. Lists receive
 announcements have not been verified. Authors still own focus order, visible
 focus styling, and custom keyboard interactions.
 
-See [Keyboard Navigation]({{ "/accessibility/keyboard_navigation" |
+👉 See [Keyboard Navigation]({{ "/accessibility/keyboard_navigation" |
 relative_url }}).
 
 ### Automatic list guardrails {#automatic-enablement}
@@ -205,7 +214,7 @@ Custom component types can be registered with
 a reusable component blueprint that is expanded in place, including external
 templates with controlled fetch and script policies.
 
-See [Mixin Types]({{ "/guides/mixin_types" | relative_url }}) and [Field
+👉 See [Mixin Types]({{ "/guides/mixin_types" | relative_url }}) and [Field
 Masking]({{ "/guides/field_masking" | relative_url }}) when you need behavior
 beyond the built-in types.
 
@@ -231,7 +240,12 @@ resulting screen-reader announcements have not been verified.
 
 It cannot make arbitrary markup accessible. Authors remain responsible for
 meaningful labels, semantic grouping, contrast, focus styling, error
-announcements, and media alternatives. See [Accessibility]({{
+announcements, and media alternatives.
+
+If you are an accessibility specialist—or have questions or concerns—join the
+[SmarkForm accessibility discussion](https://github.com/bitifet/SmarkForm/discussions/25).
+
+👉 See [Accessibility]({{
 "/accessibility/keyboard_navigation" | relative_url }}) and [Accessible Labels
 and Names]({{ "/accessibility/accessible_labels_and_names" | relative_url }}).
 
@@ -242,7 +256,7 @@ native pickers, drag and drop, paste, validation hooks, and download actions.
 They follow the same import/export shapes as other fields, so a file can be part
 of a nested object or a list item without special-casing the form model.
 
-See [File]({{ "/component_reference/file" | relative_url }}), [Image]({{
+👉 See [File]({{ "/component_reference/file" | relative_url }}), [Image]({{
 "/component_reference/image" | relative_url }}), [Video]({{
 "/component_reference/video" | relative_url }}), and [Audio]({{
 "/component_reference/audio" | relative_url }}).
@@ -256,7 +270,9 @@ a promise about every build: the exact size depends on version, selected
 artifact, enabled features, and server compression.
 
 The library is transpiled with Babel for compatibility and tested across
-Chromium, Firefox, and WebKit, including a mobile-emulation project. See the
+Chromium, Firefox, and WebKit, including a mobile-emulation project.
+
+👉 See the
 [FAQ]({{ "/about/faq" | relative_url }}#which-browsers-has-smarkform-been-tested-on)
 for the current browser-support statement.
 
@@ -267,7 +283,7 @@ skill, an advanced-internals skill, and agent-oriented usage pages. These are
 aids for generating SmarkForm code from a description, not a runtime
 dependency.
 
-See [AI Agents]({{ "/ai_agents/smarkform_forms" | relative_url }}) and the
+👉 See [AI Agents]({{ "/ai_agents/smarkform_forms" | relative_url }}) and the
 [Developer Cheatsheet]({{ "/component_reference/cheatsheet" | relative_url }}).
 
 ## What SmarkForm does not do
