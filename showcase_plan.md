@@ -4,7 +4,8 @@
 > and an earlier four-example Showcase snapshot. This planning record is
 > superseded by the current Showcase at `docs/_showcase_examples/showcase.md`:
 > Product Configurator has been replaced by the Hotel Schedule by Period, and
-> both calculator examples now live in the Showcase.
+> both calculator examples now live in the `Beyond Forms` guide at
+> `docs/_guides/beyond_forms.md`.
 
 ## Currently Implemented (all 4 examples pass smoke + demoValue round-trip)
 

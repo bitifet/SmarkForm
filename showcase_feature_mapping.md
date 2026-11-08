@@ -10,14 +10,17 @@ Generated from `docs/showcase_backup.md` (the original 3500-line showcase).
 | **Kanban** | mixin templates, `data-for` slots, cross-list drag (`moving_depth`), sortable, `context:"*"`, hotkeys (Ctrl+key, 2nd-level Ctrl+Alt, reveal, context sensitivity, conflict resolution), template roles (`empty_list`, `separator`, `header`, `footer`), events (`afterRender`, `beforeUnrender`), `onAll()` global binding, CSS animations (1ms delay, await in `beforeUnrender`, graceful degradation), hidden buttons with hotkey hints, buttons excluded from Tab flow |
 | **Race Registration** | nested forms/lists, collapsible `<details>`, `source:".-1"` duplication, `position` action, `preserve_non_empty`, `target:"*"`, `failback:"clear"`, date/time coercion, number mask with `unmaskedValue` export and decimal mobile keypad |
 | **Hotel Schedule by Period** | date-ranged periods, multiple service intervals, closed-service state, duplicate previous period, sortable list, reusable service mixin |
-| **Simple Calculator** | singleton field, import triggers with data, `BeforeAction_import` interception, `pattern` validation, arithmetic parser, event scoping, focus return, Ctrl hotkeys |
-| **Keyboard Calculator** | direct keyboard input, scoped key handling, `preventDefault()`, programmatic import, caret styling, error-in-display behavior, arithmetic parser without `eval` |
+
+The calculator examples are in [`docs/_guides/beyond_forms.md`](docs/_guides/beyond_forms.md),
+not in the Showcase: the first demonstrates a singleton and minimal import-event
+logic; the second adds keyboard handling and preserves native Tab navigation.
 
 ## Historical Gap Audit
 
 The following 47-item list was written before the final Showcase revisions. It
 is retained as historical planning material, not as a current coverage report;
-several of these items are now demonstrated above or intentionally replaced.
+some items are now demonstrated in the current Showcase or the Beyond Forms
+guide, while others were intentionally replaced or omitted.
 
 ### Calculator patterns
 | # | Feature | Original section |

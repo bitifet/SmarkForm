@@ -255,13 +255,14 @@ with the component markup and exported JSON side by side.
 ## Real-world examples
 
 The [Showcase](https://smarkform.bitifet.net/showcase_examples/showcase) is a
-curated set of runnable, editable examples:
+curated set of runnable, editable form examples:
 [Just a Form](https://smarkform.bitifet.net/showcase_examples/showcase#just-a-form),
 [Project Kanban](https://smarkform.bitifet.net/showcase_examples/showcase#project-kanban-board),
 [Race Registration](https://smarkform.bitifet.net/showcase_examples/showcase#race-registration-system),
-[Hotel Schedule by Period](https://smarkform.bitifet.net/showcase_examples/showcase#hotel-schedule-by-period),
-[Simple Calculator](https://smarkform.bitifet.net/showcase_examples/showcase#example-calculator), and
-[Keyboard Calculator](https://smarkform.bitifet.net/showcase_examples/showcase#example-supercalculator).
+[Hotel Schedule by Period](https://smarkform.bitifet.net/showcase_examples/showcase#hotel-schedule-by-period).
+For an example beyond forms, see the
+[Simple Calculator](https://smarkform.bitifet.net/guides/beyond_forms#example-calculator:preview)
+and [Keyboard Calculator](https://smarkform.bitifet.net/guides/beyond_forms#example-supercalculator:preview).
 For individual patterns, see the [deep nested List example](https://smarkform.bitifet.net/component_reference/list#deep-nested-forms-and-cross-list-moves),
 [Keyboard Navigation](https://smarkform.bitifet.net/accessibility/keyboard_navigation),
 [Hotkeys](https://smarkform.bitifet.net/accessibility/hotkeys),

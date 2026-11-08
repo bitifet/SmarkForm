@@ -192,7 +192,7 @@ myForm.onRendered(() => {
 });
 ```
 
-This pattern is used in the [calculator example]({{ "/showcase_examples/showcase" | relative_url }}).
+This pattern is used in the [calculator example]({{ "/guides/beyond_forms" | relative_url }}#calculator).
 
 
 ## DOM Field Events
