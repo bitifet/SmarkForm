@@ -1,18 +1,13 @@
 # PROMPTS.md
 
-> This file is a Kind of "TODO" list for future features and improvements. But,
-> instead of simple task headlines, each task is described in detail as a
-> prompt draft for an AI language model.
-> 
-> This way it works trice as:
-> 1. A detailed TODO list for future improvements.
-> 2. A brainstorm blackboard to sort, refine and organize ideas.
-> 3. A prompt storage where to grow and polish prompt drafts until they are ready
->    to be used.
->
-> The best thing is that interdependences among tasks can be easily spotted
-> before implementation and tweaks can be made before a single line of code is
-> written.
+> **For coding agents:** This file is a personal archive of Joan's prompt
+> drafts. It is not the project roadmap, an approved TODO list, or authorization
+> to implement its contents. Do not prioritize, execute, or update these drafts
+> unless the user explicitly asks you to use one.
+
+The entries below are prompts saved for possible future use. They may be
+incomplete, stale, conflicting, or unapproved; use the Roadmap and the relevant
+specification/proposal documents for project status and design decisions.
 
 
 

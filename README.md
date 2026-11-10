@@ -501,16 +501,9 @@ so it never becomes the reason you need another framework in your page.
 SmarkForm is at **0.x**: the implemented features are stable and in active use,
 but the public API may still change before 1.0.
 
-Not implemented yet — on the roadmap, not committed to a release:
-
-  * Built-in validation and interoperability with JSON Schema.
-  * TypeScript declarations for the public API.
-  * A machine-readable, generated API reference.
-  * Shareable, URL-addressable playground examples.
-
-SmarkForm is also deliberately **framework-agnostic**: there is no React / Vue /
-Svelte wrapper, and none is planned as a first-class dependency. A small set of
-integration recipes may come later.
+Planned library capabilities are listed in the
+[Roadmap](https://smarkform.bitifet.net/about/roadmap). Roadmap entries describe
+directions, not release commitments.
 
 
 ## Usage and Documentation

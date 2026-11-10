@@ -1,58 +1,17 @@
-Testing TODO List
-=================
+## Remaining Test Follow-up
 
-(If tests not yet implemented, having them listed will, at least, help in
- remembering to check...)
+The former checklist referenced pre-refactor documentation paths and behaviors
+that already have coverage. In particular, the List `count` action is tested in
+`test/type_list.tests.js`, Number coercion/export/singleton behavior is covered
+in `test/type_number.tests.js`, and Date coercion has a co-located test in
+`docs/_component_reference/date.md`.
 
+### List hotkey-trigger tab order
 
-Co-located Tests for Documentation Examples
--------------------------------------------
-
-Remove `tests=false` from documentation examples and add custom tests unless
-not appropriate.
-
-Files to review::
-- `docs/_about/showcase.md` (22 examples)
-- `docs/_component_types/type_color.md` (3 examples)
-- `docs/_component_types/type_date.md` (2 examples)
-- `docs/_component_types/type_form.md` (1 example)
-- `docs/_component_types/type_label.md` (3 examples)
-- `docs/_component_types/type_list.md` (4 examples)
-- `docs/_component_types/type_number.md` (2 examples)
-- `docs/_getting_started/core_component_types.md` (6 examples)
-- `docs/_getting_started/core_concepts.md` (6 examples)
-- `docs/_getting_started/quick_start.md` (13 examples)
-- `docs/index.md` (1 example)
-
-
-List component type
--------------------
-
-  * Check list's "count" action triggers to be updated.
-
-  * Check list's addItem and removeItem triggers to be non navegable.
-
-
-Number component type
----------------------
-
-  * Check import coercion.
-
-  * Check it exports number.
-
-  * Check works as singleton.
-
-
-Date component type
--------------------
-
-  * Check import coercion.
-
-  * Check it exports valid ISO Date.
-
-  * Check works as singleton.
-
-
-
-
-
+`src/types/list.type.js` assigns `tabindex="-1"` to hotkey-equipped `addItem` /
+`removeItem` triggers placed inside list context. The commented test in
+`test/type_list.tests.js` does not currently verify this: it only checks the
+tabindex when the author already supplied the attribute. Replace it with a
+rendered fixture that asserts the generated `tabindex`, confirms ordinary
+triggers retain their normal tab order, and verifies authored tabindex values
+are preserved.

@@ -73,7 +73,8 @@ usable by everyone.
 A modern form library should offer advanced features such as manual list
 sorting, handling dynamic data, and providing complex form interactions
 without the need for extensive custom coding. Automatic sorting by field value
-is not a current feature; it remains a roadmap idea.
+is not implemented and is not currently scheduled; manual drag-and-drop sorting
+is the supported behavior.
 
 
 ##  Not interfere with the actual HTML and CSS design.

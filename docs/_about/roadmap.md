@@ -1,7 +1,7 @@
 ---
 title: Roadmap
 layout: chapter
-description: "See planned SmarkForm improvements across component types, the API, documentation, tooling and future integrations."
+description: "See proposed library capabilities for data binding, validation integration, conditional components, undo, and recursive lists."
 permalink: "/about/roadmap"
 nav_order: 5
 ---
@@ -24,11 +24,14 @@ nav_order: 5
 
 ## Current Status
 
-SmarkForm is pre-1.0 and actively developed. **The items below are plans, not
-current features.** Implemented behavior is documented in [Features]({{
-"/about/features" | relative_url }}) and the [Component
-Reference]({{ "/component_reference/overview" | relative_url }}); if a capability
-is not described there, do not assume it exists.
+SmarkForm is pre-1.0 and actively developed. Items in **Planned** and **Later**
+are library capabilities that are not current features; **Brainstorm** entries
+are uncommitted ideas. None are release commitments. Implemented behavior is
+documented in [Features]({{ "/about/features" | relative_url }}) and the
+[Component Reference]({{ "/component_reference/overview" | relative_url }}); if
+a capability is not described there, do not assume it exists. This Roadmap is
+limited to library capabilities; documentation-site work and release-process
+proposals belong elsewhere.
 
 Manual drag-and-drop list sorting (`sortable: true`) is already implemented.
 Automatic sorting by field value is not scheduled.
@@ -70,14 +73,29 @@ defined options (such as a default "please choose…" entry) will also be
 supported.
 
 
-### Conditional forms
+### Conditional component enablement
 
-A mechanism to enable or disable a field (which can itself be a form or a
-list) based on the values of other fields.
+A field, form, or list could be enabled or disabled based on the values of other
+fields. This could support choosing among alternative subforms (the earlier
+“multiforms” idea), for example by enabling the active subform and disabling the
+others.
 
-The idea is to specify one or more paths to other fields and an optional
-callback to transform them. Whenever any of those fields changes, the callback
-is evaluated and the field becomes enabled or disabled accordingly.
+An explicit `enable` action is also under consideration. One possible API would
+accept an optional boolean `value`: `true` enables, `false` disables, and an
+omitted value toggles the current state. Conditions could refer to other field
+paths and optionally transform their values. The action name, condition syntax,
+and how disabled state propagates through forms/lists still need design.
+
+This is separate from validation: the library would control whether a component
+is available, not decide whether its value is valid.
+
+### Validation integrations
+
+Provide facilities to connect existing validation libraries or application
+validation tools to SmarkForm fields and actions, perhaps through an opt-in
+validator factory/hook like the mask integration. The intent is **not** to build
+a SmarkForm validation engine or require a particular validator. The integration
+API, error presentation, and lifecycle hooks still need design.
 
 
 ## Later
@@ -106,33 +124,26 @@ Infinite lists with lazy loading through [the API Interface](#the-api-interface)
     template when reached.
 
 
+### Explicit null state
+
+A separate action could set a field or form's value to `null` to represent
+“not provided,” distinct from disabling a component, clearing its fields, or
+resetting defaults. This is described as future behavior in the [Form
+reference]({{ "/component_reference/form" | relative_url }}#future-null-action);
+its exact scope and interaction with field types remain to be decided.
+
+
 ## Brainstorm
 
-The following are spare and not-yet-mature ideas for possible future
-components. They are not commitments — in most cases they would be pluggable
-components in their own repository rather than core features.
+Ideas in this section are **not plans, commitments, or supported APIs**. Keep an
+idea here only while it has a plausible connection to a reusable library
+capability; many UI conveniences are better left to application code or plugins.
 
 
-### «hint» component type
+### Download exported form data
 
-  * Displays hints in a designated location using the `title` attribute of
-    trigger components.
-  * Intercepts `mouseover` events to show hints when the mouse passes over
-    triggers (excluding subcontexts with their own hint component).
-  * Could alternatively be implemented as a new action for forms.
-
-
-### Table Of Contents component
-
-  * Scans a targeted component recursively and refreshes on every structural
-    change (items added or removed).
-  * Shows only components with a `toc-section` property.
-  * Allows navigation via full-path ids and provides a "return to TOC" action.
-
-
-### Download action
-
-  * Relies on each type's `export` action to serialise data.
-  * Downloads exported JSON by default, with optional transformation filters
-    for other formats.
-  * Allows specifying (or prompting for) the file name.
+Consider an action that downloads the current form's exported value as JSON or
+another transformed format. This is distinct from the implemented file-field
+`download` action, which saves a field's original bytes. Assess whether this
+convenience belongs in core or is better implemented by application code or a
+plugin; no API is proposed here.

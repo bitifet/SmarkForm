@@ -23,17 +23,16 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 
 - **Make step commits**: When several steps are specified in the task, make at least one commit per each step. In case of bug fixes, a commit with failing tests should come first, then a commit with the fix, and finally a commit with documentation updates, etc... if needed. These are minimums: There can be more intermediate commits if it makes sense to break down the work into smaller steps or there is something that needs to be fix in an already committed change, but there should not be fewer than one commit per step.
 
-### Reference to Future Work
+### Project Plans and Prompt Drafts
 
-To ensure coding agents (and contributors alike) make the best decisions while solving current tasks, we maintain a detailed **PROMPTS.md** file. This file serves as:
+The Roadmap in `docs/_about/roadmap.md` is the user-facing list of planned
+library capabilities; entries are not release commitments. Technical designs
+and unresolved implementation details belong in the relevant `spc/` specs or
+proposal files.
 
-  1. A detailed **TODO list** for future work and improvements.
-  2. A **brainstorming space** where ideas can be drafted, refined, and polished into implementable tasks.
-  3. A **prompt storage** space for developing AI-assisted tasks and identifying interdependencies between them before starting code implementation.
-
-Contributors and agents are encouraged to review the PROMPTS.md file when tackling significant changes or planning enhancements. This ensures all work aligns with upcoming goals and avoids duplication or divergent strategies.
-
-Find the file at: PROMPTS.md
+`PROMPTS.md` is a personal archive of prompt drafts, not a roadmap or TODO list.
+Agents must not treat its contents as approved work or implement them unless
+the user explicitly directs them to a specific prompt.
 
 ## Quick checklist (update AGENTS.md when these change)
 
