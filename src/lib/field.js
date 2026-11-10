@@ -50,13 +50,4 @@ export class SmarkField extends SmarkComponent {
         // Reset reverts to the configured default values (including any prepopulated defaults)
         await this.import(undefined, {silent: true, ...options});
     };//}}}
-    // Note: Future 'null' action would explicitly set the entire form/field to null.
-    // For nested forms, this would set the form value to null rather than clearing fields.
-    // Implementation placeholder for when null action is needed:
-    // @action
-    // async null(_data, options = {}) {
-    //     // Set the entire form/field to null (not clearing individual fields)
-    //     await this.import(null, {silent: true, ...options});
-    // }
 };
-

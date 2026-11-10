@@ -480,13 +480,13 @@ These options can be set via `data-smark` on the root form element:
 </form>
 ```
 
-#### Future: null (Action)
+#### Null value (brainstorm only)
 
-**Note:** This action is planned for future implementation.
+An early proposal considered an action that sets a field or Form value to `null`
+to represent “not provided,” distinct from `clear` (type-level empty state) and
+`reset` (the saved default). **This action is not implemented or planned.**
 
-See [Roadmap — Explicit null state]({{ "/about/roadmap" | relative_url }}#explicit-null-state)
-for its current status.
-
-The `null` action would explicitly set an entire form or field to `null`, representing an intentionally "not provided" state. This differs from `clear` (which empties fields) and `reset` (which restores defaults).
-
-For nested forms, this would set the entire form value to `null` rather than clearing individual fields. This is useful for optional form sections where you want to distinguish between "empty but provided" and "not provided at all".
+The old Form-level sketch cannot be implemented as `form.import(null)`: Form
+imports currently require a plain object or JSON string. Any future design must
+first define how a nullable Form fits the component-tree import/export contract.
+See [Roadmap — Brainstorm]({{ "/about/roadmap" | relative_url }}#brainstorm).

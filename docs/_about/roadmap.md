@@ -124,15 +124,6 @@ Infinite lists with lazy loading through [the API Interface](#the-api-interface)
     template when reached.
 
 
-### Explicit null state
-
-A separate action could set a field or form's value to `null` to represent
-“not provided,” distinct from disabling a component, clearing its fields, or
-resetting defaults. This is described as future behavior in the [Form
-reference]({{ "/component_reference/form" | relative_url }}#future-null-action);
-its exact scope and interaction with field types remain to be decided.
-
-
 ## Brainstorm
 
 Ideas in this section are **not plans, commitments, or supported APIs**. Keep an
@@ -147,3 +138,13 @@ another transformed format. This is distinct from the implemented file-field
 `download` action, which saves a field's original bytes. Assess whether this
 convenience belongs in core or is better implemented by application code or a
 plugin; no API is proposed here.
+
+### Explicit null-value state
+
+An early sketch proposed setting a field or form value to `null` to distinguish
+“not provided” from a cleared value or a reset default. This is **not planned**.
+In particular, current Form imports require a plain object or JSON string, so
+the old sketch of implementing this as `form.import(null)` does not work. A
+future design would first need to define whether a nullable Form is compatible
+with the component-tree value contract and how its parent should import/export
+that state.
