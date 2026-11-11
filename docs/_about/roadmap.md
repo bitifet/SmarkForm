@@ -75,19 +75,39 @@ supported.
 
 ### Conditional component enablement
 
-A field, form, or list could be enabled or disabled based on the values of other
-fields. This could support choosing among alternative subforms (the earlier
-“multiforms” idea), for example by enabling the active subform and disabling the
-others.
+A generic `enable` action could enable or disable an input, form, or list. A
+candidate API has an optional boolean `value`: `true` enables, `false` disables,
+and an omitted value toggles the current state. The same state could also be
+driven by other field values, supporting dependent fields and choosing among
+alternative subforms (the earlier “multiforms” idea). This is about component
+availability, not validation or automatic hiding.
 
-An explicit `enable` action is also under consideration. One possible API would
-accept an optional boolean `value`: `true` enables, `false` disables, and an
-omitted value toggles the current state. Conditions could refer to other field
-paths and optionally transform their values. The action name, condition syntax,
-and how disabled state propagates through forms/lists still need design.
+The current behavior proposal is:
 
-This is separate from validation: the library would control whether a component
-is available, not decide whether its value is valid.
+- A form or list is **disableable** only when it contains at least one `enable`
+  trigger.
+- A disabled form or list retains its internal value but exports `null`; enabling
+  it again restores that value.
+- Importing `null` into a disableable form or list disables it. For these
+  components, `undefined` is treated the same way.
+- Importing a valid object into a disableable Form or an array into a disableable
+  List enables it and imports the new value.
+- For a disableable Form, scalar imports are also treated as `null`. A List keeps
+  its existing scalar-to-array coercion instead, so a scalar import enables it
+  with one item.
+- Forms and lists without an `enable` trigger are not nullable: `null`,
+  `undefined`, or an invalid shape should leave them empty, as if cleared. Valid
+  list scalars still use the existing array coercion.
+
+This design still needs decisions about how enableability is detected, how a
+disabled nested Form/List is represented during parent imports, and how the new
+`undefined` behavior coexists with `reset()` (which must continue restoring
+defaults), as well as what disabling means for a scalar field's export. For
+Lists, malformed non-scalar inputs and the interaction with `min_items` also
+need definition.
+
+This capability does not provide validation: it controls whether a component is
+available, not whether its value is valid.
 
 ### Validation integrations
 
@@ -138,13 +158,3 @@ another transformed format. This is distinct from the implemented file-field
 `download` action, which saves a field's original bytes. Assess whether this
 convenience belongs in core or is better implemented by application code or a
 plugin; no API is proposed here.
-
-### Explicit null-value state
-
-An early sketch proposed setting a field or form value to `null` to distinguish
-“not provided” from a cleared value or a reset default. This is **not planned**.
-In particular, current Form imports require a plain object or JSON string, so
-the old sketch of implementing this as `form.import(null)` does not work. A
-future design would first need to define whether a nullable Form is compatible
-with the component-tree value contract and how its parent should import/export
-that state.

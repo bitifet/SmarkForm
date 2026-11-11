@@ -480,13 +480,11 @@ These options can be set via `data-smark` on the root form element:
 </form>
 ```
 
-#### Null value (brainstorm only)
+#### Conditional enable/disable (planned)
 
-An early proposal considered an action that sets a field or Form value to `null`
-to represent “not provided,” distinct from `clear` (type-level empty state) and
-`reset` (the saved default). **This action is not implemented or planned.**
-
-The old Form-level sketch cannot be implemented as `form.import(null)`: Form
-imports currently require a plain object or JSON string. Any future design must
-first define how a nullable Form fits the component-tree import/export contract.
-See [Roadmap — Brainstorm]({{ "/about/roadmap" | relative_url }}#brainstorm).
+Forms do not currently support a disabled state that exports `null`. A proposed
+`enable` action could make a Form or List disableable while retaining its
+internal value. This would be distinct from `clear` (type-level empty state) and
+`reset` (the saved default); there is no separate `null` action in the current
+proposal. See [Roadmap — Conditional component enablement]({{
+"/about/roadmap" | relative_url }}#conditional-component-enablement).
