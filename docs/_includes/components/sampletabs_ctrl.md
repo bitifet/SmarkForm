@@ -215,7 +215,7 @@ function smarkformReindentHtml(content, spaces) {
 function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
     var p = smarkformExtractWrapperAndInner(htmlSrc);
     return (p.before || '') + p.openTag + '\n'
-        + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em; width: 100%; box-sizing: border-box">\n'
+        + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em; width: 98vw; box-sizing: border-box">\n'
         + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
         + smarkformReindentHtml(p.inner, 8)
         + '        </div>\n'
@@ -241,7 +241,7 @@ function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
 + '<textarea\n'
 + '    placeholder="JSON playground editor"\n'
 + '    data-smark=\'{"name":"editor","type":"input"}\'\n'
-+ '    style="resize: vertical; min-height: 16em; flex-grow: 1; width: 100%; box-sizing: border-box;"\n'
++ '    style="resize: vertical; min-height: 16em; flex-grow: 1; width: 98vw; box-sizing: border-box;"\n'
 + '></textarea>\n'
 + '<button type="button" class="smarkform-editor-clear" aria-label="Clear JSON playground" title="Clear JSON playground">❌</button>\n'
 + '</div>\n'
@@ -263,7 +263,7 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-     var baseCss = '#myForm{width:100%;box-sizing:border-box;}'
+     var baseCss = '#myForm{width:98vw;box-sizing:border-box;}'
          + 'button[data-smark]{padding:.5em;margin:0 4px;}'
          + '.smarkform-json-editor{position:relative;}'
          + '.smarkform-editor-clear{position:absolute;right:.45rem;bottom:.45rem;width:1.5rem;height:1.5rem;margin:0;padding:0;border:0;border-radius:50%;background:#c62828;color:#fff;font-size:.8rem;line-height:1;opacity:0;pointer-events:none;transition:opacity .15s ease;}'

@@ -394,6 +394,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
 {{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 button { position: relative; }
+{{""}}#myForm$$ .kanban input{ width: 4em; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- kanban_notes {{{ --> {% endraw %}
