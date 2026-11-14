@@ -491,18 +491,20 @@ reusable markup.
 </div>
 
 <template id="periodCard">
-  <fieldset data-smark='{"type":"form"}' class="period-card">
-    <legend><span id="periodLabel">Period</span></legend>
+  <section data-smark='{"type":"form"}' class="period-card">
+    <header class="period-heading">
+      <span aria-hidden="true">🕒</span>
+      <h4><span id="periodLabel">Period</span></h4>
+    </header>
     <div data-smark='{"type":"#timeRange","name":"hours"}'></div>
-  </fieldset>
+  </section>
 </template>
 
 <template id="timeRange">
-  <fieldset data-smark='{"type":"form"}' class="time-range">
-    <legend>Time range</legend>
-    <label>Start <input data-smark type="time" name="start"></label>
-    <label>End <input data-smark type="time" name="end"></label>
-  </fieldset>
+  <div data-smark='{"type":"form"}' class="time-range">
+    <label>Start time<input data-smark type="time" name="start"></label>
+    <label>End time<input data-smark type="time" name="end"></label>
+  </div>
 </template>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -510,8 +512,13 @@ reusable markup.
 {% capture mixin_nested_composition_css -%}
 {{""}}#myForm$$ { display: flex; flex-direction: column; align-items: stretch; gap: .75rem; width: 100%; box-sizing: border-box; }
 {{""}}#myForm$$ > * { width: 100%; box-sizing: border-box; }
-{{""}}#myForm$$ .period-card { width: 100%; min-width: 0; box-sizing: border-box; }
-{{""}}#myForm$$ .time-range { display: grid; gap: .4rem; }
+{{""}}#myForm$$ .period-card { min-width: 0; padding: .65rem .8rem; border-left: 3px solid #6366f1; border-radius: .45rem; background: #f8fafc; }
+{{""}}#myForm$$ .period-heading { display: flex; align-items: center; gap: .45rem; margin-bottom: .45rem; color: #4338ca; }
+{{""}}#myForm$$ .period-heading h4 { margin: 0; font-size: 1rem; font-weight: 650; }
+{{""}}#myForm$$ .time-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+{{""}}#myForm$$ .time-range label { display: grid; gap: .2rem; color: #475569; font-size: .8rem; }
+{{""}}#myForm$$ .time-range input { width: 100%; min-width: 0; box-sizing: border-box; }
+{{""}}@media (max-width: 26rem) { #myForm$$ .time-range { grid-template-columns: 1fr; } }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mixin_nested_composition_js {{{ -->{% endraw %}
@@ -522,13 +529,16 @@ reusable markup.
 {% raw %}<!-- mixin_nested_composition_notes {{{ -->{% endraw %}
 {% capture mixin_nested_composition_notes -%}
 👉 **Nested mixins.** `#periodCard` contains a `#timeRange` reference, so the
-outer markup can reuse the composed component twice without repeating either
-fieldset structure.
+outer markup can reuse the composed component twice without repeating the
+period card or time-input layout.
 
 👉 **Snippet slots.** Each placeholder replaces `periodLabel` with its own
 heading. The two instances keep independent `morning` and `afternoon` values.
 
 👉 **Try it!** Change the start time for one period and inspect the nested JSON.
+Mixins only reuse the markup; each period still exports as a normal nested
+object. See the [List reference]({{ "/component_reference/list" | relative_url }})
+for nested Form/List values.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- mixin_nested_composition_demoValue {{{ -->{% endraw %}

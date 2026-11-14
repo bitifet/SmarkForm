@@ -144,30 +144,60 @@ re-used in different parts of the form without conflict:
 {% raw %} <!-- hotkeys_context_sensitivity {{{ --> {% endraw %}
 {% capture hotkeys_context_sensitivity_html -%}
 <div id="myForm$$">
-  <ul data-smark='{"type":"list","name":"users"}'>
-    <li>
-      <input data-smark type="text" name="name" placeholder="User name">
-      <ul data-smark='{"type":"list","name":"phones"}'>
-        <li>
-          <input type="tel" data-smark name="phone" placeholder="Phone">
-          <!-- Ctrl+- removes a phone when focus is inside the phones list -->
-          <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Phone</button>
-        </li>
-      </ul>
-      <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}'>➕ Add phone</button>
-      <!-- Ctrl+- removes a user when focus is at the user level (outside phones) -->
-      <button data-smark='{"action":"removeItem","hotkey":"-"}'>➖ Remove user</button>
-    </li>
-  </ul>
-  <button data-smark='{"action":"addItem","context":"users","hotkey":"+"}'>➕ Add user</button>
+  <div class="phonebook">
+    <ul data-smark='{"type":"list","name":"users"}' class="contact-list">
+      <li>
+        <article class="contact-card">
+          <header class="contact-heading">
+            <strong>Contact <span data-smark-action="position">1</span></strong>
+            <button data-smark='{"action":"removeItem","hotkey":"-"}' type="button" title="Remove contact" aria-label="Remove contact">🗑</button>
+          </header>
+          <div class="contact-fields">
+            <label>Name<input data-smark type="text" name="name" placeholder="First name"></label>
+            <label>Surname<input data-smark type="text" name="surname" placeholder="Last name"></label>
+          </div>
+          <section class="phone-section">
+            <strong>Phone numbers</strong>
+            <ul data-smark='{"type":"list","name":"phones"}' class="phone-list">
+              <li class="phone-row">
+                <label data-smark class="phone-label">📞 Telephone <span data-smark-action="position">1</span></label>
+                <input type="tel" data-smark name="phone" placeholder="Phone number">
+                <button data-smark='{"action":"removeItem","hotkey":"-"}' type="button" title="Remove phone" aria-label="Remove phone">✕</button>
+              </li>
+            </ul>
+            <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' type="button" title="Add phone" aria-label="Add phone">➕ Phone</button>
+          </section>
+        </article>
+      </li>
+    </ul>
+    <footer class="phonebook-footer">
+      <span>Total contacts: <strong data-smark='{"action":"count","context":"users"}'>0</strong></span>
+      <button data-smark='{"action":"addItem","context":"users","hotkey":"+"}' type="button" title="Add contact" aria-label="Add contact">➕ Contact</button>
+    </footer>
+  </div>
 </div>{%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- hotkeys_context_sensitivity_css {{{ --> {% endraw %}
 {% capture hotkeys_context_sensitivity_css -%}
+{{""}}#myForm$$ .phonebook { max-width: 34rem; font-family: system-ui, sans-serif; }
+{{""}}#myForm$$ .contact-list, {{""}}#myForm$$ .phone-list { list-style: none; margin: 0; padding: 0; }
+{{""}}#myForm$$ .contact-list { display: grid; gap: .65rem; }
+{{""}}#myForm$$ .contact-card { padding: .55rem .75rem .75rem; border: 1px solid #d7dfeb; border-radius: .65rem; background: linear-gradient(135deg, #fff, #f8fafc); }
+{{""}}#myForm$$ .contact-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; color: #334155; }
+{{""}}#myForm$$ .contact-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+{{""}}#myForm$$ .contact-fields label { display: grid; gap: .2rem; color: #475569; font-size: .8rem; }
+{{""}}#myForm$$ .contact-fields input, {{""}}#myForm$$ .phone-row input { width: 100%; min-width: 0; box-sizing: border-box; }
+{{""}}#myForm$$ .phone-section { margin-top: .65rem; padding-top: .55rem; border-top: 1px solid #e2e8f0; }
+{{""}}#myForm$$ .phone-section > strong { display: block; margin-bottom: .25rem; color: #475569; font-size: .85rem; }
+{{""}}#myForm$$ .phone-row { display: grid; grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr) auto; align-items: center; gap: .4rem; padding: .25rem 0; }
+{{""}}#myForm$$ .phone-label { color: #475569; white-space: nowrap; }
+{{""}}#myForm$$ .phonebook button { padding: .25rem .5rem; }
+{{""}}#myForm$$ .phonebook-footer { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-top: .55rem; color: #64748b; font-size: .85rem; }
+{{""}}@media (max-width: 26rem) { #myForm$$ .contact-fields { grid-template-columns: 1fr; } #myForm$$ .phone-row { grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr) auto; gap: .25rem; } }
 /* Hold Ctrl to reveal hotkey hints */
-button{position:relative}
-[data-hotkey]::after{
+{{""}}#myForm$$ button { position: relative; }
+{{""}}#myForm$$ [data-hotkey]::after {
     content:"Ctrl+" attr(data-hotkey);
     position:absolute; top:0.75em; left:0;
     font-size:0.7em;
@@ -178,19 +208,29 @@ button{position:relative}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %}<!-- hotkeys_context_sensitivity_notes {{{ -->{% endraw %}
+{% capture hotkeys_context_sensitivity_notes -%}
+👉 **Try it!** Focus a phone number and hold **Ctrl**: `-` removes that phone.
+Focus a contact name instead and the same shortcut removes the contact. The
+`+` shortcut adds a phone within its list or a contact at the outer level.
+
+> See [List Type]({{ "/component_reference/list" | relative_url }}) for nested
+> lists and [Conflict Resolution](#conflict-resolution) for hotkey priority.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% capture hotkeys_context_sensitivity_demoValue -%}
+{"users":[{"name":"Alice","surname":"Johnson","phones":[{"phone":"555-0142"},{"phone":"555-0188"}]},{"name":"Sam","surname":"Rivera","phones":[{"phone":"555-0126"}]}]}
+{%- endcapture %}
+
 {% include components/sampletabs_tpl.md
     formId="hotkeys_context_sensitivity"
     htmlSource=hotkeys_context_sensitivity_html
     cssSource=hotkeys_context_sensitivity_css
-    demoValue='{"users":[{"name":"Alice","phones":[{"phone":"555-1234"}]},{"name":"Bob","phones":[{"phone":"555-5678"}]}]}'
+    notes=hotkeys_context_sensitivity_notes
+    demoValue=hotkeys_context_sensitivity_demoValue
     showEditor=true
     tests=false
 %}
-
-When the focus is inside the `phones` list, pressing `Ctrl+-` removes a phone.
-When focus is at the user level (but not inside `phones`), `Ctrl+-` removes the
-user instead.
-
 
 ## Conflict Resolution
 
@@ -257,19 +297,21 @@ keeping their hotkeys working.
 {% raw %} <!-- hk_hidden_html {{{ --> {% endraw %}
 {% capture hk_hidden_html -%}
 <div id="myForm$$">
-  <p>
-    <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' title="Add a phone">➕ Add phone</button>
-    <button data-smark='{"action":"removeItem","context":"phones","hotkey":"-"}' title="Remove the last phone">➖ Remove phone</button>
-    <strong data-smark="label">Phones:</strong>
-  </p>
-  <ul data-smark='{"type":"list","name":"phones","of":"input"}'>
-    <li>
-      <label data-smark>📞 Telephone</label>
-      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this phone">➖</button>
-      <input type="tel" data-smark placeholder="Phone number">
-      <button data-smark='{"action":"addItem","hotkey":"+"}' title="Insert a phone here">➕</button>
-    </li>
-  </ul>
+  <div class="simple-phones">
+    <div class="phone-controls">
+      <strong data-smark="label">📞 Phones</strong>
+      <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' type="button" title="Add phone">➕ Add</button>
+      <button data-smark='{"action":"removeItem","context":"phones","hotkey":"-"}' type="button" title="Remove last phone">➖ Remove</button>
+    </div>
+    <ul data-smark='{"type":"list","name":"phones","of":"input"}' class="phone-number-list">
+      <li class="phone-row">
+        <label data-smark>📞 Telephone <span data-smark-action="position">1</span></label>
+        <input type="tel" data-smark placeholder="Phone number">
+        <button data-smark='{"action":"removeItem","hotkey":"-"}' type="button" title="Remove this phone" aria-label="Remove this phone">➖</button>
+        <button data-smark='{"action":"addItem","hotkey":"+"}' type="button" title="Insert a phone here" aria-label="Insert a phone here">➕</button>
+      </li>
+    </ul>
+  </div>
 </div>
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
@@ -285,6 +327,13 @@ keeping their hotkeys working.
     padding: 1px 4px; border-radius: 3px;
     white-space: nowrap;
 }
+{{""}}#myForm$$ .simple-phones { max-width: 32rem; font-family: system-ui, sans-serif; }
+{{""}}#myForm$$ .phone-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-bottom: .3rem; color: #334155; }
+{{""}}#myForm$$ .phone-controls strong { margin-right: auto; }
+{{""}}#myForm$$ .phone-number-list { list-style: none; margin: 0; padding: 0; }
+{{""}}#myForm$$ .phone-row { display: grid; grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr) auto auto; align-items: center; gap: .4rem; padding: .3rem 0; border-bottom: 1px solid #e2e8f0; }
+{{""}}#myForm$$ .phone-row label { color: #475569; white-space: nowrap; }
+{{""}}#myForm$$ .phone-row input { min-width: 0; box-sizing: border-box; }
 /* Hide the per-row ➕/➖ buttons, but keep their hotkeys and hints alive */
 {{""}}#myForm$$ li button[data-smark] {
     visibility: hidden;
@@ -298,9 +347,13 @@ keeping their hotkeys working.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% capture hk_hidden_notes -%}
-Hold `Ctrl`: the `+`/`-` hints appear where the per-row buttons used to be —
-even though those buttons are now hidden. The always-visible buttons at the top
-let touch users add or remove phones (at the end of the list).
+Hold `Ctrl`: the `+`/`-` hints appear on the per-row controls, even though those
+buttons are hidden. The always-visible controls add or remove phones at the end
+of the list; the numbered labels keep each row easy to identify.
+
+> See [Hotkey Reveal](#hotkey-reveal-ctrl-discovery) for how the hints appear and
+> [Accessible Labels]({{ "/accessibility/accessible_labels_and_names" | relative_url }})
+> for naming controls.
 {%- endcapture %}
 
 {% include components/sampletabs_tpl.md
@@ -345,38 +398,69 @@ this **suppresses inner hotkeys** and reveals the next level out.
 {% raw %} <!-- hk_2ndlevel_html {{{ --> {% endraw %}
 {% capture hk_2ndlevel_html -%}
 <div id="myForm$$">
-  <div data-smark='{"type":"list","name":"phonelist"}'>
-    <fieldset>
-      <legend>
-        <input name="name" data-smark placeholder="Name">
-        <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
-      </legend>
-      <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' title="Add phone">➕ Add phone</button>
-      <ul data-smark='{"type":"list","name":"phones"}'>
-        <li>
-          <input type="tel" data-smark placeholder="Phone">
-          <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
-        </li>
-      </ul>
-    </fieldset>
+  <div class="phonebook">
+    <ul data-smark='{"type":"list","name":"phonelist"}' class="contact-list">
+      <li>
+        <article class="contact-card">
+          <header class="contact-heading">
+            <strong>Contact <span data-smark-action="position">1</span></strong>
+            <button data-smark='{"action":"removeItem","hotkey":"-"}' type="button" title="Remove contact" aria-label="Remove contact">🗑</button>
+          </header>
+          <div class="contact-fields">
+            <label>Name<input data-smark type="text" name="name" placeholder="First name"></label>
+            <label>Surname<input data-smark type="text" name="surname" placeholder="Last name"></label>
+          </div>
+          <section class="phone-section">
+            <strong>Phone numbers</strong>
+            <ul data-smark='{"type":"list","name":"phones"}' class="phone-list">
+              <li class="phone-row">
+                <label data-smark class="phone-label">📞 Telephone <span data-smark-action="position">1</span></label>
+                <input type="tel" data-smark name="phone" placeholder="Phone number">
+                <button data-smark='{"action":"removeItem","hotkey":"-"}' type="button" title="Remove phone" aria-label="Remove phone">✕</button>
+              </li>
+            </ul>
+            <button data-smark='{"action":"addItem","context":"phones","hotkey":"+"}' type="button" title="Add phone" aria-label="Add phone">➕ Phone</button>
+          </section>
+        </article>
+      </li>
+    </ul>
+    <footer class="phonebook-footer">
+      <span>Total contacts: <strong data-smark='{"action":"count","context":"phonelist"}'>0</strong></span>
+      <button data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}' type="button" title="Add contact" aria-label="Add contact">➕ Contact</button>
+    </footer>
   </div>
-  <button data-smark='{"action":"addItem","context":"phonelist","hotkey":"+"}' title="Add entry">➕ Add entry</button>
 </div>
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% raw %} <!-- hk_2ndlevel_notes {{{ --> {% endraw %}
 {% capture hk_2ndlevel_notes -%}
-`Ctrl`+`-` removes a phone when focus is inside the `phones` list, but removes the whole entry when focus is outside it. Press `Ctrl`+`Alt` to reveal the 2nd-level `+` hotkey on the outer "Add entry" button.
+👉 **Try it!** With focus in a phone number, `Ctrl`+`-` removes that phone and
+`Ctrl`+`+` adds another. Press **Ctrl**+**Alt** to reveal the outer `+` shortcut;
+then press `+` to add a contact. Numbered phone labels and the contact count
+make the changing list structure easy to follow.
+
+> See [Context Sensitivity](#context-sensitivity) for the first-level behavior
+> and [List Type]({{ "/component_reference/list" | relative_url }}) for nested
+> lists and item actions.
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
+
+{% capture hk_2ndlevel_demoValue -%}
+{"phonelist":[{"name":"Alex","surname":"Morgan","phones":[{"phone":"555-0142"},{"phone":"555-0188"}]},{"name":"Jamie","surname":"Lee","phones":[{"phone":"555-0126"}]}]}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- hk_2ndlevel_tests {{{ -->{% endraw %}
 {% capture hk_2ndlevel_tests -%}
 export default async ({ page, expect, root }) => {
     await expect(root).toBeVisible();
+    await expect(root.locator('.contact-list > li')).toHaveCount(1);
+    await expect(root.locator('.phone-label').nth(0)).toContainText('Telephone 1');
+    await expect(root.locator('.phonebook-footer')).toContainText('1');
     const phone = root.locator('input[type="tel"]').first();
-    const addPhone = root.locator('button[title="Add phone"]');
-    const addEntry = root.locator('button[title="Add entry"]');
+    const addPhone = root.locator('button[title="Add phone"]').first();
+    const addEntry = root.locator('button[title="Add contact"]');
 
+    await addPhone.click();
+    await expect(root.locator('.phone-label').nth(1)).toContainText('Telephone 2');
     await phone.focus();
     await page.keyboard.down('Control');
     await expect(addPhone).toHaveAttribute('data-hotkey', '+');
@@ -394,6 +478,8 @@ export default async ({ page, expect, root }) => {
    htmlSource=hk_2ndlevel_html
    cssSource=hotkeys_context_sensitivity_css
    notes=hk_2ndlevel_notes
+   demoValue=hk_2ndlevel_demoValue
+   showEditor=true
    selected="preview"
    tests=hk_2ndlevel_tests
 %}

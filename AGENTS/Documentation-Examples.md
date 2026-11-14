@@ -241,6 +241,14 @@ JSON editor appear as a narrow column. Keep these shared viewport-relative width
 rules in `sampletabs_ctrl.md`; custom example CSS may still override them
 intentionally.
 
+When relocating or consolidating an example, preserve its visual appeal and
+realistic cues as well as its behavior. Prefer domain-specific labels (for
+example, numbered telephone rows), compact accessible controls, and light
+visual grouping over verbose button text, default list bullets, or unnecessary
+nested frames. Use the sample's Notes tab for a short “Try it” prompt and links
+to related features rather than stripping those features out solely to keep the
+example minimal.
+
 ## Co-located Tests
 
 Tests are JavaScript strings captured in Liquid and passed via `tests=`:
