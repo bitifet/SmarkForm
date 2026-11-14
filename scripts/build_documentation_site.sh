@@ -27,6 +27,10 @@ fi
 echo "Generating chapter TOCs..."
 node ../scripts/generate-chaptertocs.js
 
+# Collect documentation tests and generate the curated Showcase examples include.
+echo "Collecting documentation examples..."
+node ../scripts/collect-docs-examples.js
+
 # Build the Jekyll site
 echo "Building the Jekyll site..."
 bundle exec jekyll build --trace

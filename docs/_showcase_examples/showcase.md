@@ -1149,3 +1149,12 @@ export default async ({ expect, root, readField, writeField }) => {
 > **Want the full feature set?** Each example above demonstrates a curated
 > subset of SmarkForm capabilities.  See the individual reference pages for
 > the complete API and advanced patterns.
+
+## More examples from the documentation
+
+The Showcase above is a curated selection. Many other examples live beside the
+guides and references that explain them. This collection brings selected
+examples together for browsing; use each **Original** link to open it in its
+full documentation context.
+
+{% include showcase_examples.md %}

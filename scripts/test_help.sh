@@ -64,11 +64,11 @@ topic_co_located() {
   title "Co-located Documentation Example Tests"
 
   say "Every playable example in docs/*.md (via {% include sampletabs_tpl %})"
-  say "gets an auto-generated test page.  The collector scans the docs, extracts"
-  say "parameters, and writes a manifest to test/.cache/docs_examples.json."
+  say "gets an auto-generated test page. The collector writes a test manifest"
+  say "and builds the ordered Showcase include from showcase_order parameters."
 
   hdr "Flow"
-  bullet "scripts/collect-docs-examples.js  →  scans docs/ for includes"
+  bullet "scripts/collect-docs-examples.js  →  test manifest + Showcase include"
   bullet "test/co_located_tests.tests.js    →  reads manifest, generates pages"
   bullet "test/co_located_tests_smoke.include.js  →  basic smoke assertions"
   bullet "test/co_located_tests_validation.tests.js → manifest integrity checks"
@@ -223,7 +223,7 @@ topic_files() {
   printf "  %-45s %s\n" "test/co_located_tests.tests.js" "Co-located test runner (read for helpers)"
   printf "  %-45s %s\n" "test/co_located_tests_smoke.include.js" "Smoke check assertions"
   printf "  %-45s %s\n" "test/co_located_tests_validation.tests.js" "Manifest validation"
-  printf "  %-45s %s\n" "scripts/collect-docs-examples.js" "Docs example scanner"
+  printf "  %-45s %s\n" "scripts/collect-docs-examples.js" "Docs test + Showcase example collector"
   printf "  %-45s %s\n" "scripts/validate-cheatsheet.js" "Cheatsheet integrity checker"
   printf "  %-45s %s\n" "scripts/test_quick.sh" "Pick a random browser + run"
   printf "  %-45s %s\n" "scripts/test_pick.sh" "Interactive test file picker"

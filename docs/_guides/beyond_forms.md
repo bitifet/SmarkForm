@@ -290,6 +290,7 @@ export default async ({ page, expect, root, readField }) => {
 
 {% include components/sampletabs_tpl.md
     formId="supercalculator"
+    showcase_order=13
     htmlSource=supercalculator
     jsSource=supercalculator_js
     cssSource=supercalculator_css

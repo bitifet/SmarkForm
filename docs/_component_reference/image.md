@@ -462,6 +462,7 @@ from your disk and watch it become a 200×200 square.
 
 {% include components/sampletabs_tpl.md
     formId="image_resize_format"
+    showcase_order=12
     htmlSource=image_resize_format_html
     cssSource=image_resize_format_css
     notes=image_resize_format_notes

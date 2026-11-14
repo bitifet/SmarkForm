@@ -52,6 +52,8 @@ Parameters supported by `sampletabs_tpl.md` include:
   * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
+  * showcase_order: Optional number that includes the sample in the generated Showcase
+    collection. Examples are sorted numerically and link back to their original page.
   * showEditor: Whether the JSON editor starts visible in the preview (defaults
     to false). The preview's **Show playground editor** checkbox affects only
     the preview. Edit mode's **Include playground editor** checkbox always
@@ -59,6 +61,11 @@ Parameters supported by `sampletabs_tpl.md` include:
     explicit `false` disables both checkboxes.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * addLoadSaveButtons: Whether to add the "Load" and "Save" buttons (defaults to false)
+
+Examples with a numeric `showcase_order` are copied into the curated collection
+at the bottom of the Showcase page by `scripts/collect-docs-examples.js`. The
+collector uses the nearest preceding Markdown heading, orders the copies by
+number, selects Preview, and adds a link back to the original sampletab.
 
 Example links can target a tab with `#example-<formId>:<tab>`. A link ending at
 `#example-<formId>` opens the tab selected by default.
@@ -101,5 +108,3 @@ setting `tests=false` in the include block.
 
 For a detailed explanation of how to write co-located custom tests, please see
 [CO_LOCATED_TESTS.md](CO_LOCATED_TESTS.md).
-
-

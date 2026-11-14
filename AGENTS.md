@@ -7,7 +7,7 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 ## Overview
 
 - **Playwright test runner**: end-to-end and co-located docs example tests.
-- **Collector**: script that extracts docs examples into a manifest used by tests.
+- **Collector**: script that extracts docs examples into a test manifest and a generated, orderable sampletab collection for the Showcase.
 - **Chapter TOC generator**: build-time script that generates the per-page chapter TOC include files with real kramdown-GFM anchors.
 - **Build & bundle agents**: rollup-based bundling and scripts to produce dist/.
 - **Documentation build and deploy**: Jekyll site, built locally or via GitHub Pages workflow.
@@ -328,7 +328,7 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 
 ### Collector Script
 
-**What it does**: Extracts documentation examples into a manifest file that Playwright tests use to validate examples.
+**What it does**: Extracts documentation examples into a manifest file for Playwright and generates a curated cross-document Showcase include.
 
 **Location**: `scripts/collect-docs-examples.js`
 
@@ -340,7 +340,13 @@ node scripts/collect-docs-examples.js
 **Key details**:
 - Runs automatically as part of `npm run pretest`
 - Scans docs/ for co-located examples
-- Creates a manifest used by test suite
+- Creates `test/.cache/docs_examples.json` for the test suite
+- For sampletabs with a numeric `showcase_order`, writes the ignored
+  `docs/_includes/showcase_examples.md` partial. It sorts by that number,
+  uses the closest preceding Markdown heading, forces the Preview tab, and links
+  back to the original sampletab anchor.
+- Also runs before local Jekyll builds, in the docs watcher, and in the Pages
+  workflow; the partial is build-generated and must not be committed.
 
 **Troubleshooting**:
 - If tests can't find examples, re-run the collector
@@ -358,7 +364,7 @@ node scripts/validate-cheatsheet.js
 ```
 
 **Key details**:
-- Runs automatically as part of `npm run pretest` (after the TOC generator, before the collector)
+- Runs automatically as part of `npm run pretest` (after the TOC generator and before the collector)
 - Requires the cheatsheet to use the generated `{% include chaptertoc/cheatsheet.html depth=3 %}` tag (no hand-written TOCs)
 - When `docs/_includes/chaptertoc/cheatsheet.html` exists (i.e. the generator has run), cross-checks every TOC link against the computed GFM heading ids and every in-depth heading against the TOC links
 - Uses the same `gfmId`/`reduceRawText`/`extractHeadings` functions as `scripts/generate-chaptertocs.js` (imported, so both can never drift), including `{#custom-id}` heading IAL overrides
@@ -390,7 +396,7 @@ node scripts/generate-chaptertocs.js
 - Explicit kramdown id overrides (`## Heading {#custom-id}`) are honored: the id IAL is stripped from the TOC label and used verbatim as the anchor, so renamed headings can preserve legacy fragment links
 - `depth=N` truncates the tree (default 4); pages that only list h2 (or h2+h3) declare `depth=2` (or `depth=3`) on their include tag
 - Only rewrites a generated file when its content actually changed, so watchers and `jekyll serve --watch` are not forced into spurious rebuilds
-- **Dev watch mode**: `scripts/watch-chaptertocs.js` (started by `npm run servedoc` and `npm run dev` alongside Jekyll) reruns the generator whenever any docs `.md` changes; Jekyll then rebuilds the page, so TOCs update live without restarting the dev server. It debounces (250 ms) and serializes runs, ignores anything outside `.md` (generated `.html` includes never trigger it), and filters `.jekyll-cache`/dotfiles
+- **Dev watch mode**: `scripts/watch-chaptertocs.js` (started by `npm run servedoc` and `npm run dev` alongside Jekyll) reruns the TOC and example collectors whenever any docs `.md` changes; Jekyll then rebuilds affected pages, so TOCs and the Showcase example list update live without restarting the dev server. It debounces (250 ms) and serializes runs, ignores anything outside `.md` (generated `.html` includes never trigger it), and filters `.jekyll-cache`/dotfiles.
 - Scans skip fenced code, `{% raw %}`/`{% capture %}`/`{% comment %}` regions, the `chaptertoc` wrapper, raw `<pre>/<script>/<style>` blocks, and `_includes`/`_layouts`/`_data`/`_sass`/`assets`/`node_modules` dirs
 - Generated files are git-ignored (`docs/_includes/chaptertoc/`) — never commit them; stale files for removed includes are pruned automatically
 
@@ -481,7 +487,7 @@ scripts/liveserve_all.sh
 **Key details**:
 - Jekyll site in `docs/` directory
 - Reader-facing collections follow the documentation IA under `_showcase_examples`, `_start_here`, `_guides`, `_accessibility`, `_component_reference`, `_advanced_topics`, `_about`, `_for_end_users`, `_ai_agents`, and `_community`. Step 19 removed all temporary `_old_*` collections; `/resources/dist/` remains a static download path, not a reader-facing Resources section.
-- Generates chapter TOCs first (`node ../scripts/generate-chaptertocs.js` fills the git-ignored `docs/_includes/chaptertoc/` directory from the pages' include tags)
+- Generates chapter TOCs and the ordered Showcase example include before Jekyll (`node ../scripts/generate-chaptertocs.js` and `node ../scripts/collect-docs-examples.js`)
 - Built package copied to `/dist/` for the Examples selector and to
   `/resources/dist/` for stable download URLs; downloadable-example source
   extracts are copied into the hidden `.example_sources` folder beside the
@@ -614,7 +620,7 @@ npm run dev
 - Uses `concurrently` to run multiple processes
 - Library changes trigger automatic rebuilds
 - **Documentation server provides browser auto-reload**: Jekyll serves internally on port 4001 while `browser-sync` proxies it on the public port **4000** and injects its reload snippet, so edits reload the open browser automatically. Jekyll's `--livereload` (removed in `2f7cb353`) could not be re-enabled: its `eventmachine` native dep fails to load against OpenSSL 3 (`undefined symbol: SSL_get_peer_certificate`) and the pure-Ruby reactor crashes on Ruby 3.2 — hence the Node-based reloader
-- `npm run servedoc` / `npm run dev` also start the chapter-TOC watcher (`scripts/watch-chaptertocs.js`), so editing markdown headings updates the generated TOC includes and Jekyll rebuilds the page live — no dev-server restart needed
+- `npm run servedoc` / `npm run dev` also start `scripts/watch-chaptertocs.js`, which regenerates TOCs and the Showcase sampletab index when docs Markdown changes — no dev-server restart needed
 - **Automatically stops any previously running instance** on startup — running `npm run dev` in a different branch or worktree always cleanly terminates the previous server first, so you never accidentally test against the wrong build
 - Stop with **Ctrl+C** in the terminal where it was started
 
@@ -642,8 +648,9 @@ npm run dev
 3. Install npm dependencies (from docs directory with working-directory: docs)
 4. Build package with `npm run build` (executed from docs directory)
 5. Copy built files from parent directory to docs structure
-6. Build Jekyll site
-7. Upload and deploy to GitHub Pages
+6. Generate chapter TOCs and the Showcase example include
+7. Build Jekyll site
+8. Upload and deploy to GitHub Pages
 
 Note: The workflow sets `working-directory: docs` as the default, so npm commands execute from the docs directory.
 
@@ -730,7 +737,7 @@ cd media/hero
 | GitHub Actions | `.github/workflows/pages.yml` |
 | Dependabot | `.github/dependabot.yml` |
 | npm scripts | `package.json` (scripts section) |
-| Example collector | `scripts/collect-docs-examples.js` |
+| Example collector | `scripts/collect-docs-examples.js` — test manifest plus ignored Showcase partial `docs/_includes/showcase_examples.md` |
 | Chapter TOC generator | `scripts/generate-chaptertocs.js`, `scripts/watch-chaptertocs.js` (dev live-regen) — output: git-ignored `docs/_includes/chaptertoc/` |
 | Documentation assets | `scripts/sync_documentation_assets.sh` — copies root `dist/` to `/dist/` and `/resources/dist/`, and populates hidden Examples capture inputs |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |

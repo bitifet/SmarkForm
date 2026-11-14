@@ -850,6 +850,7 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
 
 {% include components/sampletabs_tpl.md
     formId="collapsible_sections"
+    showcase_order=6
     htmlSource=collapsible_sections_html
     cssSource=collapsible_sections_css
     jsSource=collapsible_sections_js

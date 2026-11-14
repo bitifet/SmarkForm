@@ -568,6 +568,7 @@ export default async ({ expect, root, readField, writeField }) => {
 
 {% include components/sampletabs_tpl.md
     formId="mixin_nested_composition"
+    showcase_order=7
     htmlSource=mixin_nested_composition_html
     cssSource=mixin_nested_composition_css
     jsSource=mixin_nested_composition_js

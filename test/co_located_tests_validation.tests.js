@@ -26,6 +26,35 @@ test.describe('Co-located Tests Infrastructure', () => {
     expect(Array.isArray(manifest)).toBe(true);
     expect(manifest.length).toBeGreaterThan(0);
   });
+
+  test('Showcase collection is ordered, previews examples, and links to their source', () => {
+    const showcasePath = path.join(__dirname, '..', 'docs', '_includes', 'showcase_examples.md');
+    const showcase = fs.readFileSync(showcasePath, 'utf-8');
+    const showcasePage = fs.readFileSync(
+      path.join(__dirname, '..', 'docs', '_showcase_examples', 'showcase.md'),
+      'utf-8'
+    );
+    expect(showcasePage).toContain('{% include showcase_examples.md %}');
+    const entries = [...showcase.matchAll(
+      /<!-- showcase_order=([\d.]+) source=([^\s]+)#example-([^\s]+) heading_level=(\d+) -->\n(#{1,6}) /g
+    )];
+
+    expect(entries.length).toBeGreaterThan(0);
+    const orders = entries.map(entry => Number(entry[1]));
+    expect(orders).toEqual([...orders].sort((a, b) => a - b));
+
+    entries.forEach((entry, index) => {
+      const [, , sourcePath, sourceFormId, level, heading] = entry;
+      expect(heading.length).toBe(Number(level));
+      const blockStart = entry.index + entry[0].length;
+      const blockEnd = entries[index + 1]?.index ?? showcase.length;
+      const block = showcase.slice(blockStart, blockEnd);
+      expect(block).toContain('selected="preview"');
+      expect(block).toContain(`| relative_url }}#example-${sourceFormId})`);
+      expect(block).not.toContain(`#example-${sourceFormId}:`);
+      expect(sourcePath).toMatch(/\.md$/);
+    });
+  });
   
   test('all examples should have a tests property', () => {
     for (const example of manifest) {

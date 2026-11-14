@@ -24,6 +24,7 @@ docs/.bundle/
 
 # Generated chapter TOCs (created by scripts/generate-chaptertocs.js)
 docs/_includes/chaptertoc/
+docs/_includes/showcase_examples.md
 
 # Temporary files
 tmp

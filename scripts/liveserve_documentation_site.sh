@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-# Generate the initial TOCs, then serve the docs with browser auto-reload.
+# Generate the initial TOCs and Showcase collection, then serve docs with auto-reload.
 #
 # Jekyll serves on the internal port 4001; browser-sync proxies it on the
 # public port 4000 and injects its reload client into every page, so the
 # browser reloads automatically whenever `_site` changes (markdown edits,
-# regenerated TOC includes, rebuilt dist assets, config tweaks...).
+# regenerated includes, rebuilt dist assets, config tweaks...).
 #
 # Older layout: `jekyll serve --livereload` (removed in commit 2f7cb353).
 # Its eventmachine native dependency fails to load against OpenSSL 3
@@ -14,6 +14,7 @@
 cd docs \
     && bash ../scripts/sync_documentation_assets.sh \
     && node ../scripts/generate-chaptertocs.js \
+    && node ../scripts/collect-docs-examples.js \
     && bundle install \
     && npx concurrently \
         -k \

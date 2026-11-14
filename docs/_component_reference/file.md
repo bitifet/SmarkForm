@@ -307,6 +307,7 @@ editing the visible text field and export again.
 
 {% include components/sampletabs_tpl.md
     formId="file_basic_usage"
+    showcase_order=11
     htmlSource=file_basic_usage_html
     cssSource=file_basic_usage_css
     notes=file_basic_usage_notes

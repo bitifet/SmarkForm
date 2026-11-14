@@ -186,17 +186,11 @@ export default async ({ expect, root, readField, writeField }) => {
     tests=guided_form_tests
 %}
 
-## Explore more examples
+## Examples across the documentation
 
-Try these examples to see how forms help with common tasks:
-
-- [Organize a profile and skill list]({{ "/start_here/core_concepts" | relative_url }}#example-nested_forms:preview) — edit a profile while adding and removing skills.
-- [Move students between school groups]({{ "/component_reference/list" | relative_url }}#example-deep_school_groups:preview) — keep each student's grades with them as you reorganize groups.
-- [Set morning and afternoon times]({{ "/guides/mixin_types" | relative_url }}#example-mixin_nested_composition:preview) — enter independent time ranges for two periods.
-- [Copy details between list entries]({{ "/guides/form_traversing" | relative_url }}#example-form_trav_copy_adjacent:preview) — copy values to a neighboring entry.
-- [Add or remove items with one shortcut]({{ "/accessibility/hotkeys" | relative_url }}#example-hotkeys_context_sensitivity:preview) — use the same hotkey in whichever list is active.
-- [Animate a task list]({{ "/guides/events" | relative_url }}#example-events-animated-tasks:preview) — see tasks animate as they are added or removed.
-- [Prepare an uploaded image]({{ "/component_reference/image" | relative_url }}#example-image_resize_format:preview) — resize and convert an image before using it.
+Interactive examples live throughout the guides and component references, beside
+the concepts and features they demonstrate. For a curated selection of the most
+useful examples in one place, visit the [Showcase]({{ "/showcase_examples/showcase" | relative_url }}).
 
 ## How the editor is built
 

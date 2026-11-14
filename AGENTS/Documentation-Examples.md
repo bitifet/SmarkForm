@@ -99,8 +99,15 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 | `jsHead` | (generated) | JS initialization code. Defaults to the simple constructor or a `demoValue` constructor. |
 | `notes` | `'-'` | Markdown/HTML notes shown below the example |
 | `showEditor` | `false` | Initial preview-only JSON editor state. “Show playground editor” starts checked for `true` and unchecked when omitted; explicit `false` disables it. Edit mode's separate “Include playground editor” checkbox always starts unchecked and is also disabled by explicit `false`. |
-| `selected` | `'preview'` | Which tab is initially active |
+| `selected` | `'html'` | Which tab is initially active |
 | `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport, **clamped to 25–90**. The iframe auto-sizes to its **measured** content on the first render and remeasures when the playground editor is included or removed, never below this floor and never above 90% of the viewport. If omitted, a small absolute floor (75px) is used — the height is never guessed from the HTML source. |
+| `showcase_order` | omitted | Numeric order in the generated Showcase collection. Only marked examples appear there; each is rendered with the Preview tab selected and links back to its original example anchor. Equal values are ordered by source path and document order. |
+
+The collector resolves the example's captures, finds the closest preceding
+Markdown heading, and writes a generated Liquid/Markdown include at
+`docs/_includes/showcase_examples.md`. That include is rendered at the bottom
+of the Showcase page. Do not edit it directly; rerun
+`node scripts/collect-docs-examples.js` after changing marked examples.
 
 Use `showEditor=true` when the JSON editor should appear on initial preview.
 Omit the option when it is unnecessary for the example but readers may still
@@ -248,6 +255,11 @@ visual grouping over verbose button text, default list bullets, or unnecessary
 nested frames. Use the sample's Notes tab for a short “Try it” prompt and links
 to related features rather than stripping those features out solely to keep the
 example minimal.
+
+Set `showcase_order=<number>` only for examples that belong in the curated
+cross-document collection at the bottom of the Showcase page. The collector
+reads the closest preceding Markdown heading and links back to the original
+sampletab without a tab suffix, preserving that page's default-tab behavior.
 
 ## Co-located Tests
 

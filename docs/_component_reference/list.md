@@ -165,6 +165,7 @@ export default async ({ expect, root, readField, writeField }) => {
 
 {% include components/sampletabs_tpl.md
     formId="schedule_list"
+    showcase_order=2
     htmlSource=schedule_list
     cssSource=schedule_list_css
     jsSource=schedule_list_js
@@ -613,6 +614,7 @@ export default async ({ page, expect, root, readField, writeField }) => {
 
 {% include components/sampletabs_tpl.md
     formId="deep_school_groups"
+    showcase_order=4
     htmlSource=deep_school_groups_html
     cssSource=deep_school_groups_css
     jsSource=deep_school_groups_js

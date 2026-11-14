@@ -56,6 +56,8 @@ jobs:
           bash ../scripts/sync_documentation_assets.sh
       - name: Generate chapter TOCs
         run: node ../scripts/generate-chaptertocs.js
+      - name: Collect docs examples and build Showcase index
+        run: node ../scripts/collect-docs-examples.js
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"

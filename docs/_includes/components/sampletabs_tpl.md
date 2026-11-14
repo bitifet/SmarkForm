@@ -14,10 +14,13 @@ Accepted arguments:
                 the Show checkbox can still enable it; an explicit false disables both editor toggles.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
   * minHeight: Optional minimum iframe height as a percentage of the viewport (0–100).
-               The iframe auto-sizes to its measured content height on the first render and
-               when editor inclusion changes, never below this minimum. If omitted, a small
-               absolute minimum is used — the height is derived from rendered content, never
-               guessed from the HTML source.
+                The iframe auto-sizes to its measured content height on the first render and
+                when editor inclusion changes, never below this minimum. If omitted, a small
+                absolute minimum is used — the height is derived from rendered content, never
+                guessed from the HTML source.
+  * showcase_order: Optional numeric position in the generated Showcase collection. The
+                     collector includes only examples with this parameter, sorts them by
+                     number, and links each copy back to this page's sampletab.
 
 Additional arguments
 --------------------

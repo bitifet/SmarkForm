@@ -306,8 +306,9 @@ input:invalid {
 }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
-{% include components/sampletabs_tpl.md 
+{% include components/sampletabs_tpl.md
    formId="mask-cc"
+   showcase_order=10
    htmlSource=mask_cc_html
    jsHead=mask_cc_js
    cssSource=mask_cc_css
