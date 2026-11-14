@@ -215,7 +215,7 @@ function smarkformReindentHtml(content, spaces) {
 function smarkformBuildEditorHtml(htmlSrc, hasDemoValue) {
     var p = smarkformExtractWrapperAndInner(htmlSrc);
     return (p.before || '') + p.openTag + '\n'
-        + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em">\n'
+        + '    <div style="display: flex; flex-direction: column; align-items: stretch; gap: 1em; width: 100%; box-sizing: border-box">\n'
         + '        <div data-smark=\'{"name":"demo"}\' style="flex-grow: 1">\n'
         + smarkformReindentHtml(p.inner, 8)
         + '        </div>\n'
@@ -263,7 +263,8 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
     var spinner = iframe.closest('.smarkform_example') ? iframe.closest('.smarkform_example').querySelector('.smarkform-preview-spinner') : null;
     if (spinner) spinner.style.display = 'flex';
     iframe.style.display = 'none';
-     var baseCss = 'button[data-smark]{padding:.5em;margin:0 4px;}'
+     var baseCss = '#myForm{width:100%;box-sizing:border-box;}'
+         + 'button[data-smark]{padding:.5em;margin:0 4px;}'
          + '.smarkform-json-editor{position:relative;}'
          + '.smarkform-editor-clear{position:absolute;right:.45rem;bottom:.45rem;width:1.5rem;height:1.5rem;margin:0;padding:0;border:0;border-radius:50%;background:#c62828;color:#fff;font-size:.8rem;line-height:1;opacity:0;pointer-events:none;transition:opacity .15s ease;}'
          + '.smarkform-json-editor:hover .smarkform-editor-clear{opacity:1;pointer-events:auto;}'
@@ -272,7 +273,7 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
         + 'label{color:#e9e9e9!important}'
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
         + 'a{color:#8c7aff!important}';
-    var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:24em;}' : '';
+     var editorCss = hasEditor ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}#myForm>div{height:100%;width:100%;box-sizing:border-box;overflow:hidden;}#myForm>div>div:first-child{overflow-y:auto;flex:1 1 0;min-height:0;}#myForm textarea[data-smark]{flex-grow:0;max-height:24em;}' : '';
     var S = 'script';
     var jsSrc = srcs.js || '';
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';

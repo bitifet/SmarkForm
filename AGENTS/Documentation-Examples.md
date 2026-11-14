@@ -235,6 +235,12 @@ The playground renders a root SmarkForm with two children:
 
 The ⬇️ Export and ⬆️ Import buttons target `context:"demo"` to operate on the demo subform only. The ♻️ Reset button has no context and targets the root form. The ❌ Clear button targets `context:"demo"` to clear the demo subform only.
 
+The preview root (`#myForm`) fills the iframe's available width in both normal
+and editor modes. The generated editor stack also explicitly fills that width,
+so a short or intrinsically narrow example does not make the form, controls, and
+JSON editor appear as a narrow column. Keep these shared width rules in
+`sampletabs_ctrl.md`; custom example CSS may still override them intentionally.
+
 ## Co-located Tests
 
 Tests are JavaScript strings captured in Liquid and passed via `tests=`:
