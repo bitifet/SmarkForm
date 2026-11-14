@@ -113,8 +113,14 @@ For an example applying SmarkForm beyond forms, see [Beyond Forms]({{ "/guides/b
 
 ## Just a Form
 
-Fields auto-register from HTML attributes — no JavaScript beyond
-initialization.  Try editing values in the preview or exporting to JSON.
+Edit a personal profile, add a photo, and attach an optional PDF résumé. Fields
+auto-register from HTML attributes — no JavaScript beyond initialization. Try
+editing values in the preview or exporting to JSON.
+
+{% raw %}<!-- just_form_photo_placeholder {{{ -->{% endraw %}
+{% capture just_form_photo_placeholder -%}
+data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5NiIgaGVpZ2h0PSI5NiIgdmlld0JveD0iMCAwIDk2IDk2Ij48cmVjdCB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHJ4PSI0OCIgZmlsbD0iI2U4ZWRmNCIvPjxjaXJjbGUgY3g9IjQ4IiBjeT0iMzQiIHI9IjE3IiBmaWxsPSIjODc5NGE1Ii8+PHBhdGggZD0iTTE0IDkwYzItMjAgMTUtMzIgMzQtMzJzMzIgMTIgMzQgMzIiIGZpbGw9IiM4Nzk0YTUiLz48L3N2Zz4=
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- just_form_example {{{ --> {% endraw %}
 {% capture just_form_example -%}
@@ -138,9 +144,37 @@ initialization.  Try editing values in the preview or exporting to JSON.
       <button data-smark='{"action":"clear"}' title="Clear colour">❌</button>
     </span>
   </p>
+  <div class="profile-media">
+    <div class="media-field">
+      <label data-smark="label">Profile photo:</label>
+      <img
+        data-smark='{"type":"image","name":"photo","placeholder":"{{ just_form_photo_placeholder }}"}'
+        class="profile-photo"
+        width="96" height="96"
+        alt="Profile photo"
+      >
+    </div>
+    <div class="media-field resume-field">
+      <label data-smark="label">Résumé (PDF):</label>
+      <input
+        type="file"
+        data-smark='{"type":"file","name":"cv","accept":"application/pdf"}'
+        placeholder="Choose or drop a PDF résumé"
+      >
+    </div>
+  </div>
 </div>{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
+
+{% raw %}<!-- just_form_css {{{ -->{% endraw %}
+{% capture just_form_css -%}
+{{""}}#myForm$$ .profile-media { display: grid; grid-template-columns: 7rem minmax(0, 1fr); align-items: start; gap: 1rem; margin-top: .75rem; }
+{{""}}#myForm$$ .media-field { display: grid; gap: .35rem; min-width: 0; }
+{{""}}#myForm$$ .profile-photo { display: block; width: 96px; height: 96px; max-width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 50%; background: #e8edf4; object-fit: cover; }
+{{""}}#myForm$$ .resume-field input { width: 100%; min-width: 0; box-sizing: border-box; }
+{{""}}@media (max-width: 28rem) { #myForm$$ .profile-media { grid-template-columns: 1fr; } }
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- just_form_notes {{{ --> {% endraw %}
 {% capture just_form_notes -%}
@@ -157,13 +191,18 @@ field in component-tree order — no <code>for</code> or <code>id</code> attribu
 selection, while empty text fields export <code>""</code> and Age exports a number.
 Try the ❌ button to see the Color field's nullable state.
 
-> See <a href="{{ "/start_here/quick_start" | relative_url }}">Quick Start</a>
-> to learn the basics, or check the **✏️ Edit** tab to see the full source.
+👉 **Media fields.** No photo or résumé is preloaded. The profile picture shows
+the custom silhouette placeholder; choose a photo or PDF to fill either field.
+Both values are <code>null</code> until you add a file.
+
+> See <a href="{{ "/component_reference/image" | relative_url }}">Image</a> and
+> <a href="{{ "/component_reference/file" | relative_url }}">File</a> for media
+> field options, or check the **✏️ Edit** tab to see the full source.
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
 {% capture demoValue -%}
-{"name":"Alice","surname":"Johnson","age":28,"colour":"#6366f1"}
+{"name":"Alice","surname":"Johnson","age":28,"colour":"#6366f1","photo":null,"cv":null}
 {%- endcapture %}
 
 {% raw %}<!-- just_form_js {{{ -->{% endraw %}
@@ -180,6 +219,14 @@ export default async ({ expect, root, readField, writeField }) => {
     await writeField('age', 28);
     await writeField('colour', '#6366f1');
 
+    await expect(root.locator('.profile-photo'))
+        .toHaveAttribute('src', /^data:image\/svg\+xml;base64,/);
+    await expect.poll(
+        () => root.locator('.profile-photo').evaluate(img => img.naturalWidth)
+    ).toBe(96);
+    expect(await readField('photo')).toBeNull();
+    expect(await readField('cv')).toBeNull();
+
     expect(await readField('name')).toBe('Alice');
     expect(await readField('age')).toBe(28);
     expect(await readField('colour')).toBe('#6366f1');
@@ -192,6 +239,7 @@ export default async ({ expect, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="just_form"
     htmlSource=just_form_example
+    cssSource=just_form_css
     jsSource=just_form_js
     notes=just_form_notes
     demoValue=demoValue
@@ -269,6 +317,27 @@ export default async ({ expect, root, readField, writeField }) => {
   <strong>Import</strong> to see the form react — everything in sync without code.
 
   See <a href="{{ "/showcase_examples/playground" | relative_url }}">Playground</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Image field and placeholder</button>
+  <div class="feature-desc">
+  The profile picture is an <code>image</code> field with a custom SVG
+  <code>placeholder</code>. It starts empty, shows the silhouette, and exports
+  <code>null</code> until a photo is chosen.
+
+  See <a href="{{ "/component_reference/image" | relative_url }}">Image Type</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">PDF résumé field</button>
+  <div class="feature-desc">
+  The résumé field accepts PDFs and embeds a selected file in the exported data.
+  It starts empty, so the profile can be saved without a résumé.
+
+  See <a href="{{ "/component_reference/file" | relative_url }}">File Type</a>.
   </div>
 </div>
 
