@@ -518,6 +518,7 @@ export default async ({ expect, root, readField, writeField }) => {
 {% include components/sampletabs_tpl.md
     formId="events-animated-tasks"
     showcase_order=9
+    title="Track tasks and set each task's priority"
     htmlSource=events_animated_tasks_html
     cssSource=events_animated_tasks_css
     jsSource=events_animated_tasks_js

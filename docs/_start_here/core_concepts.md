@@ -87,6 +87,7 @@ to see how named forms and list items map into the value below.
 {% include components/sampletabs_tpl.md
     formId="components_paths"
     showcase_order=1
+    title="Edit a profile and its skill list"
     htmlSource=core_concepts_model_html
     jsSource=core_concepts_model_js
     notes=core_concepts_model_notes

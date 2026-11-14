@@ -50,6 +50,7 @@ Parameters supported by `sampletabs_tpl.md` include:
   * jsHead: JS initialization code.
   * jsHidden: JS source already discussed (not shown in the "JS Source" tab).
   * jsSource: Actual JS example code to be rendered in the "JS Source" tab.
+  * title: Optional short description of what the example form does; displayed in its Notes tab.
   * notes: Optional notes for further clarifications.
   * selected: Default selected tab (defaults to "html").
   * showcase_order: Optional number that includes the sample in the generated Showcase
@@ -64,8 +65,9 @@ Parameters supported by `sampletabs_tpl.md` include:
 
 Examples with a numeric `showcase_order` are copied into the curated collection
 at the bottom of the Showcase page by `scripts/collect-docs-examples.js`. The
-collector uses the nearest preceding Markdown heading, orders the copies by
-number, selects Preview, and adds a link back to the original sampletab.
+collector uses `title` for the heading (or the nearest preceding Markdown
+heading as a fallback), orders copies by number, selects Preview, and links back
+to the original sampletab.
 
 Example links can target a tab with `#example-<formId>:<tab>`. A link ending at
 `#example-<formId>` opens the tab selected by default.

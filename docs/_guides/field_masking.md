@@ -309,6 +309,7 @@ input:invalid {
 {% include components/sampletabs_tpl.md
    formId="mask-cc"
    showcase_order=10
+   title="Enter a payment card number"
    htmlSource=mask_cc_html
    jsHead=mask_cc_js
    cssSource=mask_cc_css

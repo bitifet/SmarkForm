@@ -253,6 +253,7 @@ and placement to identify its target.
 {% include components/sampletabs_tpl.md
     formId="trigger_context_target"
     showcase_order=3
+    title="Manage billing, shipping, and pets"
     htmlSource=trigger_context_target_html
     jsSource=trigger_context_target_js
     notes=trigger_context_target_notes

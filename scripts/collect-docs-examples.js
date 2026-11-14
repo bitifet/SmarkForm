@@ -228,10 +228,15 @@ function generateShowcaseInclude(examples) {
     const generatedFormId = `${prefix}-${example.formId.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
     const sourceAnchor = `#example-${example.formId}`;
     const headingPrefix = '#'.repeat(example.heading.level);
-    const heading = example.heading.text.trim() || example.pageTitle || 'Example';
+    const rawTitle = example.params.title?.trim();
+    const explicitTitle = rawTitle && rawTitle !== '-' ? rawTitle : '';
+    const heading = explicitTitle
+      || example.heading.text.trim()
+      || example.pageTitle
+      || 'Example';
 
     output.push(
-      `<!-- showcase_order=${example.order} source=${example.file}${sourceAnchor} heading_level=${example.heading.level} -->`,
+      `<!-- showcase_order=${example.order} source=${example.file}${sourceAnchor} heading_level=${example.heading.level} title_param=${explicitTitle ? 1 : 0} heading=${JSON.stringify(heading)} -->`,
       `${headingPrefix} ${heading}`,
       '',
     );
@@ -245,6 +250,7 @@ function generateShowcaseInclude(examples) {
       ['jsHidden', 'jsHidden'],
       ['jsSource', 'jsSource'],
       ['notes', 'notes'],
+      ['title', 'title'],
       ['demoValue', 'demoValue'],
       ['showEditor', 'showEditor'],
       ['showEditorSource', 'showEditorSource'],

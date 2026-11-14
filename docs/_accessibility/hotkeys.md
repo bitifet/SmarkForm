@@ -225,6 +225,7 @@ Focus a contact name instead and the same shortcut removes the contact. The
 {% include components/sampletabs_tpl.md
     formId="hotkeys_context_sensitivity"
     showcase_order=5
+    title="Keep contacts with multiple phone numbers"
     htmlSource=hotkeys_context_sensitivity_html
     cssSource=hotkeys_context_sensitivity_css
     notes=hotkeys_context_sensitivity_notes

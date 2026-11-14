@@ -540,6 +540,7 @@ data to the shipping address with no JavaScript required.
 {% include components/sampletabs_tpl.md
     formId="pipe_example"
     showcase_order=8
+    title="Copy a billing address into a shipping address"
     htmlSource=pipe_example_html
     notes=pipe_example_notes
     showEditor=true

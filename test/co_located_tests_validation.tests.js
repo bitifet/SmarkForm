@@ -34,9 +34,14 @@ test.describe('Co-located Tests Infrastructure', () => {
       path.join(__dirname, '..', 'docs', '_showcase_examples', 'showcase.md'),
       'utf-8'
     );
+    const sampletabsTemplate = fs.readFileSync(
+      path.join(__dirname, '..', 'docs', '_includes', 'components', 'sampletabs_tpl.md'),
+      'utf-8'
+    );
     expect(showcasePage).toContain('{% include showcase_examples.md %}');
+    expect(sampletabsTemplate).toContain('include.title | escape');
     const entries = [...showcase.matchAll(
-      /<!-- showcase_order=([\d.]+) source=([^\s]+)#example-([^\s]+) heading_level=(\d+) -->\n(#{1,6}) /g
+      /<!-- showcase_order=([\d.]+) source=([^\s]+)#example-([^\s]+) heading_level=(\d+) title_param=([01]) heading=("(?:[^"\\]|\\.)*") -->\n(#{1,6}) ([^\n]*)/g
     )];
 
     expect(entries.length).toBeGreaterThan(0);
@@ -44,14 +49,19 @@ test.describe('Co-located Tests Infrastructure', () => {
     expect(orders).toEqual([...orders].sort((a, b) => a - b));
 
     entries.forEach((entry, index) => {
-      const [, , sourcePath, sourceFormId, level, heading] = entry;
+      const [, , sourcePath, sourceFormId, level, titleParam, headingJson, heading, headingText] = entry;
       expect(heading.length).toBe(Number(level));
+      expect(headingText).toBe(JSON.parse(headingJson));
       const blockStart = entry.index + entry[0].length;
       const blockEnd = entries[index + 1]?.index ?? showcase.length;
       const block = showcase.slice(blockStart, blockEnd);
       expect(block).toContain('selected="preview"');
       expect(block).toContain(`| relative_url }}#example-${sourceFormId})`);
       expect(block).not.toContain(`#example-${sourceFormId}:`);
+      if (titleParam === '1') {
+        const prefix = `showcase_${String(index + 1).padStart(2, '0')}_title`;
+        expect(block).toContain(`{% capture ${prefix} -%}\n${headingText}\n{%- endcapture %}`);
+      }
       expect(sourcePath).toMatch(/\.md$/);
     });
   });

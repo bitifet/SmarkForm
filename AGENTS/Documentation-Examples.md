@@ -98,6 +98,7 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 | `cssSource` | `'-'` | CSS source string |
 | `jsHead` | (generated) | JS initialization code. Defaults to the simple constructor or a `demoValue` constructor. |
 | `notes` | `'-'` | Markdown/HTML notes shown below the example |
+| `title` | omitted | Short description of what the example's form does. Prepended to its Notes tab and used as the heading in the generated Showcase collection. |
 | `showEditor` | `false` | Initial preview-only JSON editor state. “Show playground editor” starts checked for `true` and unchecked when omitted; explicit `false` disables it. Edit mode's separate “Include playground editor” checkbox always starts unchecked and is also disabled by explicit `false`. |
 | `selected` | `'html'` | Which tab is initially active |
 | `minHeight` | auto | Minimum preview iframe height as a percentage of the viewport, **clamped to 25–90**. The iframe auto-sizes to its **measured** content on the first render and remeasures when the playground editor is included or removed, never below this floor and never above 90% of the viewport. If omitted, a small absolute floor (75px) is used — the height is never guessed from the HTML source. |
@@ -257,9 +258,11 @@ to related features rather than stripping those features out solely to keep the
 example minimal.
 
 Set `showcase_order=<number>` only for examples that belong in the curated
-cross-document collection at the bottom of the Showcase page. The collector
-reads the closest preceding Markdown heading and links back to the original
-sampletab without a tab suffix, preserving that page's default-tab behavior.
+cross-document collection at the bottom of the Showcase page. Provide a concise
+`title` describing the form itself; the collector uses it for the gallery
+heading and the sample's Notes tab. If the title is omitted, it uses the closest
+preceding Markdown heading. The source link omits the tab suffix, preserving the
+original sample's default-tab behavior.
 
 ## Co-located Tests
 

@@ -13,6 +13,8 @@ Accepted arguments:
   * showEditor: Whether the JSON editor starts visible in the preview (defaults to false). If omitted,
                 the Show checkbox can still enable it; an explicit false disables both editor toggles.
   * showEditorSource: Whether to show or not the Editor implementation (defaults to false)
+  * title: Optional short description of the example. Appears in its Notes tab
+           and, when `showcase_order` is set, becomes its generated Showcase heading.
   * minHeight: Optional minimum iframe height as a percentage of the viewport (0–100).
                 The iframe auto-sizes to its measured content height on the first render and
                 when editor inclusion changes, never below this minimum. If omitted, a small
@@ -139,6 +141,20 @@ myForm.rendered.then(function() {
 {% assign jsHidden = include.jsHidden | default: default_jsHidden %}
 {% assign jsSource = include.jsSource | default: default_jsSource %}
 {% assign notes = include.notes | default: default_notes %}
+{% if include.title and include.title != '-' %}
+  {% if notes == '-' %}
+    {% capture titled_notes -%}
+**{{ include.title | escape }}**
+{%- endcapture %}
+  {% else %}
+    {% capture titled_notes -%}
+**{{ include.title | escape }}**
+
+{{ notes }}
+{%- endcapture %}
+  {% endif %}
+  {% assign notes = titled_notes %}
+{% endif %}
 {% assign demoValue = include.demoValue | default: default_demoValue %}
 
 
