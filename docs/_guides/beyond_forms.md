@@ -21,12 +21,7 @@ Forms remain the most convenient use: HTML controls naturally represent user
 input, and their exported value is a useful application state. Hidden fields can
 also hold internal state that does not need a visible control.
 
-<details class="chaptertoc">
-<summary><strong>📖 Table of Contents</strong></summary>
-{% include chaptertoc/beyond_forms.html depth=2 %}
-</details>
-
-## Calculator
+## Example: Building a Calculator
 
 Here, the display value is the application's state. Buttons send `import`
 actions to one field, and a small handler transforms each key using the previous

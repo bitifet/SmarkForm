@@ -1169,10 +1169,8 @@ The API interface is a **planned future feature** for dynamic data — think
 fetching options for a `<select>` component from a server, or loading list
 items on demand. It is **not yet implemented**.
 
-See [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }})
-for the current implementation status and the
-[Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface) for the
-proposal's current direction.
+See the [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface)
+for the current proposal and status.
 
 ### Is SmarkForm's API stable? Will upgrading break my code?
 

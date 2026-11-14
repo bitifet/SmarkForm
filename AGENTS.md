@@ -26,9 +26,12 @@ This document describes the automated agents, CI/CD workflows, test runners, and
 ### Project Plans and Prompt Drafts
 
 The Roadmap in `docs/_about/roadmap.md` is the user-facing list of planned
-library capabilities; entries are not release commitments. Technical designs
-and unresolved implementation details belong in the relevant `spc/` specs or
-proposal files.
+capabilities to implement in the SmarkForm library itself; entries are not
+release commitments. Do not include documentation work, guides, examples, or
+framework wrappers as Roadmap items. Keep this scope as an internal authoring
+rule; the Roadmap does not need to explain its scope to readers. Technical
+designs and unresolved implementation details belong in the relevant `spc/`
+specs or proposal files.
 
 `PROMPTS.md` is a personal archive of prompt drafts, not a roadmap or TODO list.
 Agents must not treat its contents as approved work or implement them unless

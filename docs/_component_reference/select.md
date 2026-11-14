@@ -28,8 +28,7 @@ redirect_from:
 > **Planned, not implemented:** SmarkForm currently treats `<select>` as an
 > ordinary `input` field. It does not process a `src` option, fetch option data,
 > or update options when another field changes. See
-> [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }})
-> and the [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface).
+> the [Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface).
 
 **Proposal sketch only (not runnable):**
 

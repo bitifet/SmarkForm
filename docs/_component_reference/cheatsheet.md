@@ -104,8 +104,8 @@ Register custom actions globally with `SmarkForm.registerCustomAction(name, hand
 
 **Native `<select>`:** It uses the built-in `input` type and exports its selected
 value. Dynamic remote options are a separate proposal, not implemented; see
-[Select]({{ "/component_reference/select" | relative_url }}) and [The API
-Interface (planned)]({{ "/guides/the_api_interface" | relative_url }}).
+[Select]({{ "/component_reference/select" | relative_url }}) and the [Roadmap]({{
+"/about/roadmap" | relative_url }}#the-api-interface).
 
 **Mixins:** `"type":"#templateId"` and `"type":"url#templateId"` expand
 templates; mixins are a reusable-template feature, not an additional built-in

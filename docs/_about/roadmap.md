@@ -4,6 +4,9 @@ layout: chapter
 description: "See proposed library capabilities for data binding, validation integration, conditional components, undo, and recursive lists."
 permalink: "/about/roadmap"
 nav_order: 5
+redirect_from:
+  - "/guides/the_api_interface"
+  - "/working_with_forms/the_api_interface"
 ---
 
 
@@ -29,12 +32,7 @@ are library capabilities that are not current features; **Brainstorm** entries
 are uncommitted ideas. None are release commitments. Implemented behavior is
 documented in [Features]({{ "/about/features" | relative_url }}) and the
 [Component Reference]({{ "/component_reference/overview" | relative_url }}); if
-a capability is not described there, do not assume it exists. This Roadmap is
-limited to library capabilities; documentation-site work and release-process
-proposals belong elsewhere.
-
-Manual drag-and-drop list sorting (`sortable: true`) is already implemented.
-Automatic sorting by field value is not scheduled.
+a capability is not described there, do not assume it exists.
 
   * **Last Updated:** {{ site.data.computed.lastUpdated }}.
 
@@ -47,7 +45,15 @@ Automatic sorting by field value is not scheduled.
 The *API interface* will allow components to fetch data from remote endpoints
 and automatically update when dependent field values change.
 
-> **Status:** This proposal is not implemented. See [The API Interface (Planned)]({{ "/guides/the_api_interface" | relative_url }}) for the current status and the existing integration alternatives.
+> **Status: planned, not implemented.** There is no `src` option, declarative
+> API binding, or automatic dependency watching today. Do not use the proposed
+> syntax in production forms.
+
+Until a library binding is designed, application code can fetch data and pass
+it to SmarkForm with `import()`, then submit or export values through triggers
+and event handlers. See [Data Import and Export]({{
+"/guides/data_import_and_export" | relative_url }}) and [Events]({{
+"/guides/events" | relative_url }}).
 
 The `src` property will accept a URL string, or an array with the endpoint,
 optional arguments, and HTTP method. Arguments can reference other fields in
@@ -158,3 +164,22 @@ another transformed format. This is distinct from the implemented file-field
 `download` action, which saves a field's original bytes. Assess whether this
 convenience belongs in core or is better implemented by application code or a
 plugin; no API is proposed here.
+
+### Automatic list sorting
+
+Sorting imported data before calling `import()` is straightforward application
+code. Continuously sorting a list as fields change is harder: an event listener
+could export, sort, and re-import the list (silently to avoid recursion), but
+that rebuilds items and may disturb focus or scrolling. `change` can also fire
+while a user is still editing a nested item, making an immediate reorder
+surprising.
+
+A possible library primitive is `list.sort(compareFn)`, which computes the
+desired order and moves existing item nodes in place, ideally with the fewest
+moves. An application could call it from a `change` listener. The existing
+`list.move()` path removes and recreates an item, so it cannot preserve the item
+instance, exact focus target, or selection. Before planning this feature, define
+stable ordering, event timing, interaction with manual sorting, and whether a
+changed item can be repositioned alone. A generic automatic-sort policy is not
+proposed; this remains a design candidate for an in-place sorting primitive,
+not a commitment.

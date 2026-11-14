@@ -46,8 +46,8 @@ Use the detailed references for accepted inputs, empty values, and options.
 
 A native `<select>` is handled by `input`; it is not a separate built-in
 component type. Dynamic remote options are a separate proposal, not implemented;
-see [Select]({{ "/component_reference/select" | relative_url }}) and [The API
-Interface (planned)]({{ "/guides/the_api_interface" | relative_url }}).
+see [Select]({{ "/component_reference/select" | relative_url }}) and the
+[Roadmap]({{ "/about/roadmap" | relative_url }}#the-api-interface).
 
 ### Number and date/time fields {#type-number-and-type-date}
 

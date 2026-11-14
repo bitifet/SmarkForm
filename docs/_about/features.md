@@ -10,14 +10,14 @@ nav_order: 2
 
 # {{ page.title }}
 
-
-<div class="chaptertoc toplevel">
-<p>What SmarkForm adds to ordinary HTML, and what it deliberately leaves to you.</p>
+<details class="chaptertoc">
+<summary>
+<strong>📖 Table of Contents</strong>
+</summary>
 
   {% include chaptertoc/features.html depth=3 %}
 
-</div>
-
+</details>
 
 ## The core model
 
@@ -242,8 +242,9 @@ It cannot make arbitrary markup accessible. Authors remain responsible for
 meaningful labels, semantic grouping, contrast, focus styling, error
 announcements, and media alternatives.
 
-If you are an accessibility specialist—or have questions or concerns—join the
-[SmarkForm accessibility discussion](https://github.com/bitifet/SmarkForm/discussions/25).
+{: .hint :}
+> If you are an accessibility specialist—or have questions or concerns—join the
+> [SmarkForm accessibility discussion](https://github.com/bitifet/SmarkForm/discussions/25).
 
 👉 See [Accessibility]({{
 "/accessibility/keyboard_navigation" | relative_url }}) and [Accessible Labels
