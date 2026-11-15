@@ -8,17 +8,11 @@ nav_exclude: true
 
 <h1>Page not found</h1>
 <p>The page you requested does not exist or may have moved.</p>
-<p>Try one of these useful starting points:</p>
-<ul>
-  <li><a href="{{ '/' | relative_url }}">SmarkForm home</a></li>
-  <li><a href="{{ '/start_here/quick_start' | relative_url }}">Quick Start</a></li>
-  <li><a href="{{ '/showcase_examples/showcase' | relative_url }}">Interactive Showcase</a></li>
-  <li><a href="{{ '/showcase_examples/examples' | relative_url }}">Ready-to-run examples</a></li>
-</ul>
 
 <figure class="not-found-demo">
   <img
-    id="not-found-nested-data"
+    id="not-found-animation-image-control"
+    class="not-found-animation-image"
     src="{{ '/assets/readme/nested_data-poster.png' | relative_url }}"
     data-static-src="{{ '/assets/readme/nested_data-poster.png' | relative_url }}"
     data-animated-src="{{ '/assets/readme/nested_data.gif' | relative_url }}"
@@ -26,44 +20,66 @@ nav_exclude: true
     height="487"
     loading="lazy"
     decoding="async"
-    alt="A school form with a group of students and their grades beside the nested JSON it exports."
+    alt=""
   >
-  <figcaption>
-    <span>Forms and lists can compose into structured data.</span>
-    <a href="{{ '/component_reference/list' | relative_url }}#example-deep_school_groups">Explore the nested list example</a>
-    <button class="not-found-animation-toggle" type="button" aria-controls="not-found-nested-data" aria-pressed="false" hidden>Play demo animation</button>
-  </figcaption>
+  <div class="not-found-demo-controls">
+    <button
+      id="not-found-animation-text-control"
+      class="not-found-animation-text-control"
+      type="button"
+      aria-controls="not-found-animation-image-control"
+      aria-pressed="false"
+      hidden
+    >Play the demo</button>
+  </div>
 </figure>
+
+<p>Try one of these starting points:</p>
+<ul>
+  <li><a href="{{ '/' | relative_url }}">SmarkForm home</a></li>
+  <li><a href="{{ '/start_here/quick_start' | relative_url }}">Quick Start</a></li>
+  <li><a href="{{ '/showcase_examples/showcase' | relative_url }}">Interactive Showcase</a></li>
+  <li><a href="{{ '/showcase_examples/examples' | relative_url }}">Ready-to-run examples</a></li>
+</ul>
 
 <style>
   .not-found-demo {
     max-width: 880px;
     margin: 1.5rem auto;
   }
-  .not-found-demo img {
+  .not-found-animation-image {
     display: block;
     width: 100%;
-    height: auto;
     border-radius: .75rem;
   }
-  .not-found-demo figcaption {
+  .not-found-animation-image.is-controllable {
+    cursor: pointer;
+  }
+  .not-found-animation-image:focus-visible {
+    outline: 3px solid #4b6fff;
+    outline-offset: 4px;
+  }
+  .not-found-demo-controls {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: .75rem;
+    justify-content: flex-end;
     margin-top: .6rem;
   }
-  .not-found-animation-toggle {
-    padding: .35rem .7rem;
+  .not-found-animation-text-control {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #365acb;
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
   }
 </style>
 
 <script>
 (() => {
-  const image = document.getElementById('not-found-nested-data');
-  const button = document.querySelector('.not-found-animation-toggle');
-  if (!image || !button) return;
+  const image = document.getElementById('not-found-animation-image-control');
+  const textControl = document.getElementById('not-found-animation-text-control');
+  if (!image || !textControl) return;
 
   const motionPreference = window.matchMedia
     ? window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -73,16 +89,30 @@ nav_exclude: true
   const update = () => {
     const src = playing ? image.dataset.animatedSrc : image.dataset.staticSrc;
     if (image.getAttribute('src') !== src) image.setAttribute('src', src);
-    button.textContent = playing ? 'Pause demo animation' : 'Play demo animation';
-    button.setAttribute('aria-pressed', String(playing));
+    const label = playing ? 'Pause the demo' : 'Play the demo';
+    image.classList.add('is-controllable');
+    image.setAttribute('role', 'button');
+    image.setAttribute('tabindex', '0');
+    image.title = label;
+    image.setAttribute('aria-label', label);
+    image.setAttribute('aria-pressed', String(playing));
+    textControl.textContent = label;
+    textControl.setAttribute('aria-pressed', String(playing));
   };
 
-  button.hidden = false;
+  textControl.hidden = false;
   update();
-  button.addEventListener('click', () => {
+  const toggle = () => {
     playing = !playing;
     update();
+  };
+  image.addEventListener('click', toggle);
+  image.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    toggle();
   });
+  textControl.addEventListener('click', toggle);
 
   const respectReducedMotion = event => {
     if (event.matches && playing) {

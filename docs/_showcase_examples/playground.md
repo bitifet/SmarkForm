@@ -65,13 +65,14 @@ code editors. They start with the example's original source. Changes affect
 only this preview; choose **▶️ Run** to render them. Leaving Edit mode discards
 those changes and restores the original source.
 
-{: .hint}
+{: .info}
 > The JSON playground editor is itself a SmarkForm field. It sits in a larger
 > form with the example as a subform; that outer form is omitted from the source
-> shown by default so the focus stays on the example. To inspect the full source
-> and see how the editor uses SmarkForm, choose **✏️ Edit** and check
-> **📋 Include playground editor**. Some examples disable the editor controls
-> when they would conflict with the example's own behavior.
+> shown by default so the focus stays on the example.
+>
+> To inspect the full source and see how the editor uses SmarkForm, choose
+> **✏️Edit** and check **📋 Include playground editor**. Some examples disable the
+> editor controls when they would conflict with the example's own behavior.
 
 ## Try a complete form
 
@@ -186,9 +187,11 @@ export default async ({ expect, root, readField, writeField }) => {
     tests=guided_form_tests
 %}
 
-## Explore more examples
 
-Interactive examples live throughout the guides and component references, beside
+{: .hint}
+> **Explore more examples:**
+>
+> Interactive examples live throughout the guides and component references, beside
 the concepts and features they demonstrate. For a curated selection of the most
 useful examples in one place, visit the [Showcase]({{ "/showcase_examples/showcase" | relative_url }}).
 

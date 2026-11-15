@@ -125,27 +125,29 @@ data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIH
 {% raw %} <!-- just_form_example {{{ --> {% endraw %}
 {% capture just_form_example -%}
 <div id="myForm$$">
-  <p>
-    <label data-smark>Name:</label>
-    <input name='name' data-smark>
-  </p>
-  <p>
-    <label data-smark>Surname:</label>
-    <input name='surname' data-smark>
-  </p>
-  <p>
-    <label data-smark>Age:</label>
-    <input name='age' type='number' data-smark>
-  </p>
-  <p>
-    <label data-smark>Favourite colour:</label>
-    <span data-smark='{"name":"colour","type":"color"}'>
-      <input data-smark>
-      <button data-smark='{"action":"clear"}' title="Clear colour">❌</button>
-    </span>
-  </p>
-  <div class="profile-media">
-    <div class="media-field">
+  <div class="profile-form">
+    <div class="profile-fields">
+      <p>
+        <label data-smark>Name:</label>
+        <input name='name' data-smark>
+      </p>
+      <p>
+        <label data-smark>Surname:</label>
+        <input name='surname' data-smark>
+      </p>
+      <p>
+        <label data-smark>Age:</label>
+        <input name='age' type='number' data-smark>
+      </p>
+      <p>
+        <label data-smark>Profile color:</label>
+        <span data-smark='{"name":"colour","type":"color"}'>
+          <input data-smark>
+          <button data-smark='{"action":"clear"}' title="Clear profile color">❌</button>
+        </span>
+      </p>
+    </div>
+    <div class="media-field profile-photo-field">
       <label data-smark="label">Profile photo:</label>
       <img
         data-smark='{"type":"image","name":"photo","placeholder":"{{ just_form_photo_placeholder }}"}'
@@ -169,27 +171,33 @@ endcapture %}
 
 {% raw %}<!-- just_form_css {{{ -->{% endraw %}
 {% capture just_form_css -%}
-{{""}}#myForm$$ .profile-media { display: grid; grid-template-columns: 7rem minmax(0, 1fr); align-items: start; gap: 1rem; margin-top: .75rem; }
+{{""}}#myForm$$ .profile-form { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; grid-template-areas: "fields photo" "resume resume"; align-items: start; gap: .35rem 1rem; }
+{{""}}#myForm$$ .profile-fields { grid-area: fields; min-width: 0; }
+{{""}}#myForm$$ .profile-fields p { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); align-items: center; gap: .45rem; margin: 0 0 .4rem; }
+{{""}}#myForm$$ .profile-fields p > span { display: flex; align-items: center; gap: .25rem; min-width: 0; }
+{{""}}#myForm$$ .profile-fields p > span input { flex: 1; min-width: 0; }
 {{""}}#myForm$$ .media-field { display: grid; gap: .35rem; min-width: 0; }
+{{""}}#myForm$$ .profile-photo-field { grid-area: photo; justify-items: center; }
 {{""}}#myForm$$ .profile-photo { display: block; width: 96px; height: 96px; max-width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 50%; background: #e8edf4; object-fit: cover; }
+{{""}}#myForm$$ .resume-field { grid-area: resume; }
 {{""}}#myForm$$ .resume-field input { width: 100%; min-width: 0; box-sizing: border-box; }
-{{""}}@media (max-width: 28rem) { #myForm$$ .profile-media { grid-template-columns: 1fr; } }
+{{""}}@media (max-width: 28rem) { #myForm$$ .profile-form { grid-template-columns: minmax(0, 1fr) 6.5rem; column-gap: .5rem; } #myForm$$ .profile-fields p { grid-template-columns: 5rem minmax(0, 1fr); gap: .25rem; } }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- just_form_notes {{{ --> {% endraw %}
 {% capture just_form_notes -%}
 👉 Fields auto-register from <code>data-smark</code> attributes — no per-field JavaScript.
 
-👉 **Singleton pattern.** The colour field uses a <code>&lt;span data-smark&gt;</code> wrapper
+👉 **Singleton pattern.** The profile color field uses a <code>&lt;span data-smark&gt;</code> wrapper
 with the <code>name</code> option, while the inner input carries the bare <code>data-smark</code>
 attribute.  The ❌ button inside the singleton resolves its target implicitly.
 
 👉 **Label auto-linking.** A <code>&lt;label <strong>data-smark</strong>&gt;</code> finds the next
 field in component-tree order — no <code>for</code> or <code>id</code> attributes needed here.
 
-👉 **Type-specific values.** The Color field exports <code>null</code> when it has no
+👉 **Type-specific values.** The profile color field exports <code>null</code> when it has no
 selection, while empty text fields export <code>""</code> and Age exports a number.
-Try the ❌ button to see the Color field's nullable state.
+Try the ❌ button to see its nullable state.
 
 👉 **Media fields.** No photo or résumé is preloaded. The profile picture shows
 the custom silhouette placeholder; choose a photo or PDF to fill either field.
@@ -224,6 +232,21 @@ export default async ({ expect, root, readField, writeField }) => {
     await expect.poll(
         () => root.locator('.profile-photo').evaluate(img => img.naturalWidth)
     ).toBe(96);
+    const photoPlacement = await root.evaluate(root => {
+        const photo = root.querySelector('.profile-photo').getBoundingClientRect();
+        const fields = root.querySelector('.profile-fields').getBoundingClientRect();
+        return {
+            photoLeft: photo.left,
+            photoRight: photo.right,
+            photoTop: photo.top,
+            fieldsLeft: fields.left,
+            fieldsRight: fields.right,
+            fieldsBottom: fields.bottom,
+        };
+    });
+    expect(photoPlacement.photoLeft).toBeGreaterThan(photoPlacement.fieldsLeft);
+    expect(photoPlacement.photoRight).toBeGreaterThan(photoPlacement.fieldsRight);
+    expect(photoPlacement.photoTop).toBeLessThan(photoPlacement.fieldsBottom);
     expect(await readField('photo')).toBeNull();
     expect(await readField('cv')).toBeNull();
 
@@ -231,7 +254,7 @@ export default async ({ expect, root, readField, writeField }) => {
     expect(await readField('age')).toBe(28);
     expect(await readField('colour')).toBe('#6366f1');
 
-    await root.locator('button[title="Clear colour"]').click();
+    await root.locator('button[title="Clear profile color"]').click();
     expect(await readField('colour')).toBeNull();
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
@@ -266,7 +289,7 @@ export default async ({ expect, root, readField, writeField }) => {
 <div class="feature">
   <button class="feature-summary">Singleton pattern</button>
   <div class="feature-desc">
-  The colour field wraps the actual input in a <code>&lt;span data-smark='{"name":"colour","type":"color"}'&gt;</code>
+  The profile color field wraps the actual input in a <code>&lt;span data-smark='{"name":"colour","type":"color"}'&gt;</code>
   that holds the component options, while the inner <code>&lt;input data-smark&gt;</code> carries the
   bare attribute.  This allows buttons and other elements to share the same
   field context without repeating the options.
@@ -280,7 +303,7 @@ export default async ({ expect, root, readField, writeField }) => {
   <div class="feature-desc">
   A <code>&lt;label <strong>data-smark</strong>&gt;</code> is automatically associated by SmarkForm with
   its adjacent field — no <code>for</code> or <code>id</code> attributes needed.  The label
-  next to the colour field is enhanced and linked without any explicit wiring.
+  next to the profile color field is enhanced and linked without any explicit wiring.
 
   See <a href="{{ "/component_reference/label" | relative_url }}">Label Component Type</a>.
   </div>
@@ -289,7 +312,7 @@ export default async ({ expect, root, readField, writeField }) => {
 <div class="feature">
   <button class="feature-summary">Null values</button>
   <div class="feature-desc">
-  Empty values depend on the field type. The Color field (<code>type="color"</code>)
+  Empty values depend on the field type. The profile color field (<code>type="color"</code>)
   exports <code>null</code> when undefined; the text inputs export empty strings,
   and Age exports a number or <code>null</code>.
 
@@ -301,7 +324,7 @@ export default async ({ expect, root, readField, writeField }) => {
   <button class="feature-summary">Trigger buttons</button>
   <div class="feature-desc">
   Buttons with <code>data-smark</code> attributes trigger SmarkForm actions —
-  the ❌ button inside the colour field's singleton wrapper demonstrates the
+  the ❌ button inside the profile color field's singleton wrapper demonstrates the
   <code>clear</code> action.  Because the button is inside the singleton span,
   its target resolves implicitly — no explicit <code>target</code> needed.
 

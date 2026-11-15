@@ -35,10 +35,11 @@ JSON updating live), rather than repeating it.
 rebuilds a constant 10 fps animation from them. The cursor is a synthetic overlay
 (headless browsers draw none). Frames live in the git-ignored `work/`.
 
-The 404 page uses the animation when motion is allowed and provides a Play/Pause
-control. It starts with `nested_data-poster.png`, which remains the fallback when
-JavaScript is unavailable or the visitor prefers reduced motion. The poster is
-extracted from a later GIF frame so it shows both populated form fields and JSON.
+The 404 page uses the animation when motion is allowed. Visitors can pause or
+resume it by activating the image or its link-style Play/Pause control. It starts
+with `nested_data-poster.png`, which remains visible when JavaScript is
+unavailable or the visitor prefers reduced motion. The poster is extracted from
+a later GIF frame so it shows both populated form fields and JSON.
 
 ## Rebuild
 
