@@ -3,7 +3,7 @@
 #
 #   ./build.sh            both
 #   ./build.sh field      field_model.svg   (animated SVG, ~0.3 s)
-#   ./build.sh nested     nested_data.gif   (browser capture + GIF, ~1 min)
+#   ./build.sh nested     nested_data.gif + nested_data-poster.png (capture + GIF, ~1 min)
 #
 # Requires: python3 + fontTools, ffmpeg, Node with the repo's Playwright
 # (npm install at the repo root) and a built dist/SmarkForm.umd.js.
@@ -22,7 +22,10 @@ nested() {
   ffmpeg -v error -y -f concat -safe 0 -i work/nested_data/frames.txt -filter_complex \
     "fps=10,scale=880:-1:flags=lanczos,split[a][b];[a]palettegen=max_colors=128:stats_mode=diff[p];[b][p]paletteuse=dither=bayer:bayer_scale=4:diff_mode=rectangle" \
     "$OUT/nested_data.gif"
-  ls -la "$OUT/nested_data.gif"
+  # Use a populated form/JSON frame as the static 404 and reduced-motion poster.
+  ffmpeg -v error -y -i "$OUT/nested_data.gif" -vf "select='eq(n,180)'" \
+    -vsync 0 -frames:v 1 "$OUT/nested_data-poster.png"
+  ls -la "$OUT/nested_data.gif" "$OUT/nested_data-poster.png"
 }
 
 case "${1:-all}" in

@@ -227,7 +227,10 @@ function generateShowcaseInclude(examples) {
     const prefix = `showcase_${String(index + 1).padStart(2, '0')}`;
     const generatedFormId = `${prefix}-${example.formId.replace(/[^a-zA-Z0-9_-]/g, '-')}`;
     const sourceAnchor = `#example-${example.formId}`;
-    const headingPrefix = '#'.repeat(example.heading.level);
+    // The Showcase's generated TOC stops at h3. Keep each collected example at
+    // h4 so the catalog has a consistent visual hierarchy without flooding TOC.
+    const headingLevel = 4;
+    const headingPrefix = '#'.repeat(headingLevel);
     const rawTitle = example.params.title?.trim();
     const explicitTitle = rawTitle && rawTitle !== '-' ? rawTitle : '';
     const heading = explicitTitle
@@ -236,7 +239,7 @@ function generateShowcaseInclude(examples) {
       || 'Example';
 
     output.push(
-      `<!-- showcase_order=${example.order} source=${example.file}${sourceAnchor} heading_level=${example.heading.level} title_param=${explicitTitle ? 1 : 0} heading=${JSON.stringify(heading)} -->`,
+      `<!-- showcase_order=${example.order} source=${example.file}${sourceAnchor} heading_level=${headingLevel} source_heading_level=${example.heading.level} title_param=${explicitTitle ? 1 : 0} heading=${JSON.stringify(heading)} -->`,
       `${headingPrefix} ${heading}`,
       '',
     );

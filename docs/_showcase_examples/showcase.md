@@ -1222,8 +1222,10 @@ export default async ({ expect, root, readField, writeField }) => {
 ## More examples from the documentation
 
 The Showcase above is a curated selection. Many other examples live beside the
-guides and references that explain them. This collection brings selected
-examples together for browsing; use each **Original** link to open it in its
-full documentation context.
+guides and references that explain them. The following collection brings
+selected examples together for browsing; use each **Original** link to open it
+in its full documentation context.
+
+### The examples
 
 {% include showcase_examples.md %}

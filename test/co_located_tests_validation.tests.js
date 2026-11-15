@@ -34,14 +34,21 @@ test.describe('Co-located Tests Infrastructure', () => {
       path.join(__dirname, '..', 'docs', '_showcase_examples', 'showcase.md'),
       'utf-8'
     );
+    const showcaseToc = fs.readFileSync(
+      path.join(__dirname, '..', 'docs', '_includes', 'chaptertoc', 'showcase.html'),
+      'utf-8'
+    );
     const sampletabsTemplate = fs.readFileSync(
       path.join(__dirname, '..', 'docs', '_includes', 'components', 'sampletabs_tpl.md'),
       'utf-8'
     );
     expect(showcasePage).toContain('{% include showcase_examples.md %}');
+    expect(showcaseToc).toContain('href="#more-examples-from-the-documentation"');
+    expect(showcaseToc).toContain('href="#the-examples"');
+    expect(showcaseToc).not.toContain('href="#edit-a-profile-and-its-skill-list"');
     expect(sampletabsTemplate).toContain('include.title | escape');
     const entries = [...showcase.matchAll(
-      /<!-- showcase_order=([\d.]+) source=([^\s]+)#example-([^\s]+) heading_level=(\d+) title_param=([01]) heading=("(?:[^"\\]|\\.)*") -->\n(#{1,6}) ([^\n]*)/g
+      /<!-- showcase_order=([\d.]+) source=([^\s]+)#example-([^\s]+) heading_level=(\d+) source_heading_level=(\d+) title_param=([01]) heading=("(?:[^"\\]|\\.)*") -->\n(#{1,6}) ([^\n]*)/g
     )];
 
     expect(entries.length).toBeGreaterThan(0);
@@ -49,8 +56,10 @@ test.describe('Co-located Tests Infrastructure', () => {
     expect(orders).toEqual([...orders].sort((a, b) => a - b));
 
     entries.forEach((entry, index) => {
-      const [, , sourcePath, sourceFormId, level, titleParam, headingJson, heading, headingText] = entry;
-      expect(heading.length).toBe(Number(level));
+      const [, , sourcePath, sourceFormId, headingLevel, sourceHeadingLevel, titleParam, headingJson, heading, headingText] = entry;
+      expect(heading.length).toBe(4);
+      expect(Number(headingLevel)).toBe(4);
+      expect(Number(sourceHeadingLevel)).toBeGreaterThanOrEqual(1);
       expect(headingText).toBe(JSON.parse(headingJson));
       const blockStart = entry.index + entry[0].length;
       const blockEnd = entries[index + 1]?.index ?? showcase.length;

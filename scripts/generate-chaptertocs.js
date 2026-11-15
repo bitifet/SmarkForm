@@ -214,7 +214,14 @@ function extractHeadings(text) {
     if (/{%-?\s*comment\s*-?%}/.test(line)) { inComment = true; continue; }
     if (/^<!--\s*vim-markdown-toc\s+GitLab\s*-->/.test(line)) { inLegacyToc = true; continue; }
     if (/^\s*<(details|div)\s+class="chaptertoc/.test(line)) { inChaptertoc = true; continue; }
-    if (/^\s*<(pre|script|style)\b/.test(line)) { inHtmlBlock = /^\s*<(\w+)\b/.exec(line)[1]; continue; }
+    const htmlBlockMatch = /^\s*<(pre|script|style)\b/i.exec(line);
+    if (htmlBlockMatch) {
+      const tagName = htmlBlockMatch[1].toLowerCase();
+      // A one-line element such as `<script src="..."></script>` is already
+      // closed. Do not leave the parser in skip mode and hide later headings.
+      if (!new RegExp(`</${tagName}\\s*>`, 'i').test(line)) inHtmlBlock = tagName;
+      continue;
+    }
 
     const m = HEADING_RE.exec(line);
     if (!m) continue;

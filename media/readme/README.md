@@ -7,6 +7,7 @@ display as images (`<video>` is stripped there). Outputs go to `docs/assets/read
 |--------|----------------|--------|
 | `field_model.svg` | *Everything is a field* | `field_model.py` |
 | `nested_data.gif` | *Nested data and dynamic lists* | `nested_data.html` + `nested_data.mjs` |
+| `nested_data-poster.png` | 404 page / reduced-motion fallback | Frame 180 of `nested_data.gif` |
 
 ## `field_model.svg`
 
@@ -33,6 +34,11 @@ JSON updating live), rather than repeating it.
 `nested_data.mjs` screenshots continuously and records real timestamps; ffmpeg
 rebuilds a constant 10 fps animation from them. The cursor is a synthetic overlay
 (headless browsers draw none). Frames live in the git-ignored `work/`.
+
+The 404 page uses the animation when motion is allowed and provides a Play/Pause
+control. It starts with `nested_data-poster.png`, which remains the fallback when
+JavaScript is unavailable or the visitor prefers reduced motion. The poster is
+extracted from a later GIF frame so it shows both populated form fields and JSON.
 
 ## Rebuild
 

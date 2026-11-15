@@ -186,7 +186,7 @@ export default async ({ expect, root, readField, writeField }) => {
     tests=guided_form_tests
 %}
 
-## Examples across the documentation
+## Explore more examples
 
 Interactive examples live throughout the guides and component references, beside
 the concepts and features they demonstrate. For a curated selection of the most
