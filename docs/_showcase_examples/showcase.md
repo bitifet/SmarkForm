@@ -65,9 +65,9 @@ description: "Explore interactive SmarkForm examples including a Kanban board, r
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      width: 2.8em;
-      height: 2.8em;
-      font-size: 1.5em;
+      width: 1.3em;
+      height: 1.3em;
+      font-size: 1.2em;
       border-radius: 50%;
       background: rgba(114, 83, 237, 0.1);
       margin-right: 0.25em;
@@ -100,14 +100,15 @@ Welcome to the SmarkForm Showcase — a visual catalogue of what SmarkForm
 can do.  Each example is a fully working form; explore the tabs to see the
 HTML, CSS, and JavaScript behind it.
 
-Each preview also includes the standard JSON playground controls: Export,
-Import, Reset, and Clear. See the [Playground guide]({{ "/showcase_examples/playground" | relative_url }})
-for how to use these controls to inspect and change form data.
-
 For an example applying SmarkForm beyond forms, see [Beyond Forms]({{ "/guides/beyond_forms" | relative_url }}).
 
 {: .info :}
 > Some of the examples in this page may feel unrealistic or contrived.  They are designed to demonstrate SmarkForm features, not to be production-ready applications.
+>
+> Each preview also includes a JSON playground editor with Export, Import, Reset,
+> and Clear controls. The editor is a documentation tool, not a SmarkForm feature;
+> see [Preview and the JSON playground]({{ "/showcase_examples/playground" | relative_url }}#preview-and-the-json-playground)
+> for how to use it.
 
 ---
 
@@ -276,11 +277,23 @@ export default async ({ expect, root, readField, writeField }) => {
 <div class="feature-index">
 
 <div class="feature">
+  <button class="feature-summary">Specialized field types</button>
+  <div class="feature-desc">
+  SmarkForm provides specialized field types for common data. Here, Age exports
+  as a number and Profile color as a color value or <code>null</code>; empty text
+  fields remain strings.
+
+  See <a href="{{ "/component_reference/overview" | relative_url }}">Component Types Overview</a>.
+  </div>
+</div>
+
+<div class="feature">
   <button class="feature-summary">Auto-registration</button>
   <div class="feature-desc">
-  Fields are discovered automatically from HTML <code>data-smark</code> attributes — no
-  JavaScript wiring needed.  Any element with <code>data-smark</code> becomes a SmarkForm
-  field component whose name is taken from its <code>name</code> attribute.
+  SmarkForm discovers marked components from <code>data-smark</code> and infers
+  common types from their elements. Named data fields take their key from the
+  HTML <code>name</code> attribute or a SmarkForm <code>name</code> option; labels
+  and triggers are components too, but do not add data fields.
 
   See <a href="{{ "/start_here/core_concepts" | relative_url }}">Core Concepts</a>.
   </div>
@@ -310,57 +323,51 @@ export default async ({ expect, root, readField, writeField }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Null values</button>
+  <button class="feature-summary">Import and export JSON data</button>
   <div class="feature-desc">
-  Empty values depend on the field type. The profile color field (<code>type="color"</code>)
-  exports <code>null</code> when undefined; the text inputs export empty strings,
-  and Age exports a number or <code>null</code>.
+  Fields import and export their values; forms compose named values into objects
+  and lists compose items into arrays. Use the <a href="{{ "/showcase_examples/playground" | relative_url }}#preview-and-the-json-playground">playground editor</a>
+  to inspect and edit this form's JSON interactively. The editor is a documentation
+  tool, not a SmarkForm feature.
 
-  See <a href="{{ "/guides/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
+  See <a href="{{ "/guides/data_import_and_export" | relative_url }}">Importing and Exporting Data</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Trigger buttons</button>
+  <button class="feature-summary">Declarative triggers</button>
   <div class="feature-desc">
-  Buttons with <code>data-smark</code> attributes trigger SmarkForm actions —
-  the ❌ button inside the profile color field's singleton wrapper demonstrates the
-  <code>clear</code> action.  Because the button is inside the singleton span,
-  its target resolves implicitly — no explicit <code>target</code> needed.
+  Components can declare actions in their SmarkForm options. The ❌ trigger
+  inside the profile color field's singleton wrapper runs <code>clear</code> on
+  its nearest field, so no explicit <code>target</code> is needed.
 
-  See <a href="{{ "/component_reference/trigger" | relative_url }}">Triggers</a>,
-  <a href="{{ "/guides/data_import_and_export" | relative_url }}">Data Import &amp; Export</a>.
+  See <a href="{{ "/component_reference/trigger" | relative_url }}">Triggers</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">JSON playground</button>
+  <button class="feature-summary">File fields</button>
   <div class="feature-desc">
-  The editor tab shows the form's current state as JSON.  Edit it and click
-  <strong>Import</strong> to see the form react — everything in sync without code.
-
-  See <a href="{{ "/showcase_examples/playground" | relative_url }}">Playground</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">Image field and placeholder</button>
-  <div class="feature-desc">
-  The profile picture is an <code>image</code> field with a custom SVG
-  <code>placeholder</code>. It starts empty, shows the silhouette, and exports
-  <code>null</code> until a photo is chosen.
-
-  See <a href="{{ "/component_reference/image" | relative_url }}">Image Type</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">PDF résumé field</button>
-  <div class="feature-desc">
-  The résumé field accepts PDFs and embeds a selected file in the exported data.
-  It starts empty, so the profile can be saved without a résumé.
+  The <code>file</code> type imports and exports complete file contents: a
+  self-describing, base64 data URL by default, or a structured object with
+  <code>format:"json"</code>. The résumé field here accepts PDFs and remains
+  <code>null</code> until a file is selected.
 
   See <a href="{{ "/component_reference/file" | relative_url }}">File Type</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Specialized media fields</button>
+  <div class="feature-desc">
+  Dedicated <code>image</code>, <code>audio</code>, and <code>video</code> types
+  add media-specific behavior while sharing the file fields' embedded-value
+  contract. This form's profile picture is an <code>image</code> field with a
+  custom SVG silhouette placeholder; it stays empty until a photo is chosen.
+
+  See <a href="{{ "/component_reference/image" | relative_url }}">Image</a>,
+  <a href="{{ "/component_reference/audio" | relative_url }}">Audio</a>, and
+  <a href="{{ "/component_reference/video" | relative_url }}">Video</a>.
   </div>
 </div>
 
@@ -548,24 +555,23 @@ button { position: relative; }
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Multi-component triggers (<code>context:"*"</code>)</button>
+  <button class="feature-summary">Wildcard action dispatch</button>
   <div class="feature-desc">
-  The <strong>🧹</strong> button at the bottom uses <code>context:"*"</code> to dispatch
-  <code>removeItem</code> with <code>preserve_non_empty:true</code> to <em>all</em> list components
-  in the form at once — clearing empty tasks from every column with a single
-  click.
+  The <strong>🧹</strong> trigger uses <code>context:"*"</code> to find all lists
+  and <code>target:"*"</code> to address their items. With
+  <code>preserve_non_empty:true</code>, one action removes only empty tasks from
+  every column.
 
   See <a href="{{ "/guides/form_traversing" | relative_url }}#wildcard-context-multi-dispatch">Form Traversing — Wildcard Context</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Event-driven confirmation</button>
+  <button class="feature-summary">Cancelable action events</button>
   <div class="feature-desc">
-  A <code>BeforeAction_removeItem</code> listener on the root form checks whether the
-  task is empty.  If it has content, <code>window.confirm()</code> is shown; if the user
-  cancels, <code>ev.preventDefault()</code> stops the removal.  Bulk operations
-  (<code>target:"*"</code> / <code>preserve_non_empty</code>) skip the prompt.
+  A <code>BeforeAction_removeItem</code> listener checks whether a task has data
+  and calls <code>ev.preventDefault()</code> if the user cancels its removal.
+  Bulk cleanup skips the prompt.
 
   See <a href="{{ "/guides/events" | relative_url }}#beforeaction-events">Events — BeforeAction</a>.
   </div>
@@ -583,55 +589,37 @@ button { position: relative; }
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Empty-list placeholders</button>
+  <button class="feature-summary">List template roles</button>
   <div class="feature-desc">
-  Each column has <code>min_items:0</code> and a <code>role:"empty_list"</code> template slot.
-  When a column has no tasks the placeholder message is shown; it disappears
-  as soon as the first task is added.
+  Every list needs an <code>item</code> template; <code>item</code> is the default
+  and required role. Optional roles include <code>header</code>,
+  <code>footer</code>, <code>empty_list</code>,
+  <code>placeholder</code>, <code>separator</code>, and <code>last_separator</code>.
+  These columns use <code>header</code> for their title and Add button and
+  <code>empty_list</code> to show “No tasks”.
 
-  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
+  See <a href="{{ "/component_reference/list" | relative_url }}#empty-and-separator-roles">List Type — template roles</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Header template role</button>
+  <button class="feature-summary">Label components as drag handles</button>
   <div class="feature-desc">
-  The column heading and Add button live inside a <code>role:"header"</code> slot —
-  rendered once at the top of each list component, not repeated per item.
-
-  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">Sortable handles</button>
-  <div class="feature-desc">
-  The <strong>☰</strong> icon uses <code>type:"label"</code> — a lightweight component
-  that can act as a drag handle without being a data field.
+  The <strong>☰</strong> icon is a <code>label</code> component, which carries no
+  value of its own. With list sorting enabled, it marks where dragging starts.
 
   See <a href="{{ "/component_reference/label" | relative_url }}">Label Type</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Class-prefixed mixin styles</button>
+  <button class="feature-summary">Styles in mixin templates</button>
   <div class="feature-desc">
-  The mixin template includes a <code>&lt;style&gt;</code> block whose selectors
-  begin with <code>.kanban-mixin</code>. Mixin styles are injected globally, not
-  encapsulated; this class prefix limits where these rules match.
+  Mixin templates can include a <code>&lt;style&gt;</code> block. SmarkForm
+  injects and deduplicates it globally, not as scoped CSS; this template prefixes
+  its selectors with <code>.kanban-mixin</code> to limit where they match.
 
   See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">Flexible drop target</button>
-  <div class="feature-desc">
-  CSS flex layout makes each column's list root fill the available height,
-  so dropping a task anywhere in the empty area below the last card works
-  as an "append" — no need to precisely target the last item.
-
-  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
@@ -860,11 +848,11 @@ export default async ({ expect, root, readField, page }) => {
 <div class="feature-index">
 
 <div class="feature">
-  <button class="feature-summary">List + nested form</button>
+  <button class="feature-summary">Nested forms in lists</button>
   <div class="feature-desc">
-  Each family member is a nested form (<code>type:"form"</code>) inside a list item.
-  The JSON export produces <code>{"members": [{name:..., age:...}, ...]}</code> — the
-  list becomes a JSON array, each form becomes a nested object.
+  Each member list item is a Form by default, so the <code>members</code> list
+  exports an array of objects. The result is a structured family roster rather
+  than a flat sequence of controls.
 
   See <a href="{{ "/component_reference/form" | relative_url }}">Form Type</a>,
   <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
@@ -872,7 +860,7 @@ export default async ({ expect, root, readField, page }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Item duplication (<code>source:".-1"</code>)</button>
+  <button class="feature-summary">Copy data from a previous item</button>
   <div class="feature-desc">
   The ✨ <strong>Duplicate</strong> button copies the previous sibling's data
   into a new member.  <code>source:".-1"</code> on <code>addItem</code> tells SmarkForm to export
@@ -884,18 +872,18 @@ export default async ({ expect, root, readField, page }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Collapsible sections</button>
+  <button class="feature-summary">Keyboard navigation through collapsed sections</button>
   <div class="feature-desc">
-  Emergency Contact details live inside a native <code>&lt;details&gt;</code> / <code>&lt;summary&gt;</code>
-  element.  Press <kbd>Alt</kbd>+<kbd>Enter</kbd> to open a collapsed section
-  and navigate into its hidden fields.
+  Native <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> elements
+  provide the disclosure. SmarkForm navigation can open a collapsed section
+  and move into its hidden fields with <kbd>Alt</kbd>+<kbd>Enter</kbd>.
 
   See <a href="{{ "/accessibility/keyboard_navigation" | relative_url }}">Keyboard Navigation</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Value coercion</button>
+  <button class="feature-summary">Type-specific JSON values</button>
   <div class="feature-desc">
   The <strong>Age</strong> field (<code>type:"number"</code>) exports as a JavaScript
   number, not a string. Empty Number/Radio values may be <code>null</code>, while
@@ -917,18 +905,18 @@ export default async ({ expect, root, readField, page }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Bulk clean‑up (<code>preserve_non_empty</code> + <code>target:"*"</code>)</button>
+  <button class="feature-summary">Wildcard list actions</button>
   <div class="feature-desc">
-  The <strong>🧹</strong> button removes every empty member at once.
-  <code>preserve_non_empty:true</code> skips members that have data; <code>target:"*"</code>
-  matches all children of the context list.
+  The <strong>🧹</strong> button targets every member with <code>target:"*"</code>.
+  <code>preserve_non_empty:true</code> skips items that contain data, so one
+  action clears only the empty rows.
 
   See <a href="{{ "/component_reference/list" | relative_url }}#async-removeitem-action">List Type — removeItem</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary"><code>min_items</code> / <code>max_items</code> / <code>export_empties</code> and clear-at-minimum</button>
+  <button class="feature-summary">List bounds and empty-value export</button>
   <div class="feature-desc">
   The default minimum keeps one member row, <code>max_items:5</code> caps the
   list, and <code>export_empties:false</code> omits wholly empty members. When
@@ -940,23 +928,23 @@ export default async ({ expect, root, readField, page }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Mixed input types</button>
+  <button class="feature-summary">Native control types</button>
   <div class="feature-desc">
-  The form demonstrates text, number, radio, native select, color, and tel
-  controls. Native Select uses the generic Input type and exports a string;
-  there is no separate SmarkForm Select type yet.
+  SmarkForm manages text, number, radio, native select, color, and telephone
+  controls. The radio field exports its selected value or <code>null</code>. A
+  native <code>&lt;select&gt;</code> uses the generic Input type and exports a
+  string; it is not a separate SmarkForm type.
 
   See <a href="{{ "/component_reference/overview" | relative_url }}">Component Types Overview</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Formatted fee and numeric export</button>
+  <button class="feature-summary">Declarative mask integration</button>
   <div class="feature-desc">
-  The IMask Number factory groups digits and displays two decimal places. Its
-  <code>unmaskedValue</code> getter exports a number; for example,
-  <code>1234.5</code> displays as <code>1 234.50</code>. On mobile, the field
-  requests a decimal keypad.
+  The mask registry connects an IMask Number factory to the fee field through
+  <code>data-smark</code>. It formats the visible value while exporting a number;
+  <code>inputMode</code> requests a decimal keypad on mobile.
 
   See <a href="{{ "/guides/field_masking" | relative_url }}">Field Masking</a>,
   <a href="{{ "/component_reference/number" | relative_url }}">Number Type</a>,
@@ -1172,62 +1160,69 @@ export default async ({ expect, root, readField, writeField }) => {
 <div class="feature-index">
 
 <div class="feature">
-  <button class="feature-summary">Date-based periods</button>
+  <button class="feature-summary">Native date and time fields</button>
   <div class="feature-desc">
-  Each period has its own name, date range, and service hours. Fold a period
-  while keeping its name and dates visible in the summary.
+  SmarkForm can manage native <code>date</code> and <code>time</code> inputs in
+  nested forms and lists. Each period stores its own date range and service hours.
+
+  See <a href="{{ "/component_reference/date" | relative_url }}">Date Type</a>,
+  <a href="{{ "/component_reference/time" | relative_url }}">Time Type</a>, and
+  <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Empty-list templates</button>
+  <div class="feature-desc">
+  A list's <code>empty_list</code> role provides content to show when it has no
+  items. Here, each service displays “Closed this period” until hours are added.
 
   See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Split opening hours</button>
+  <button class="feature-summary">Source-based item duplication</button>
   <div class="feature-desc">
-  Add several intervals for a service to represent breaks, such as a restaurant
-  that closes between breakfast and dinner.
-
-  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">Closed services</button>
-  <div class="feature-desc">
-  Remove all intervals for a service to mark it closed during that period. The
-  service remains visible and can be reopened by adding hours.
-
-  See <a href="{{ "/component_reference/list" | relative_url }}">List Type</a>.
-  </div>
-</div>
-
-<div class="feature">
-  <button class="feature-summary">Duplicate a period</button>
-  <div class="feature-desc">
-  Choose <strong>✨ Duplicate period</strong> to copy the preceding period, then
-  change just its dates or service hours.
+  <strong>✨ Duplicate period</strong> uses <code>addItem</code>'s
+  <code>source: ".-1"</code> option to copy the previous list item, then you can
+  change only its dates or service hours.
 
   See <a href="{{ "/component_reference/list" | relative_url }}#async-additem-action">List Type — addItem</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Reorder periods</button>
+  <button class="feature-summary">Manual list sorting</button>
   <div class="feature-desc">
-  Drag the ⠿ handle to rearrange periods. Each period keeps its own service
-  schedules when you move it.
+  Set <code>sortable:true</code> to let people drag list items into a new order.
+  Each period keeps its service schedules when it moves.
 
   See <a href="{{ "/component_reference/list" | relative_url }}#sortable">List Type — sortable</a>.
   </div>
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Reusable service schedules</button>
+  <button class="feature-summary">Reusable component templates</button>
   <div class="feature-desc">
-  Reception, restaurant, bar, and pool use the same schedule layout, but each
-  keeps independent hours for every period.
+  A mixin template defines a component's structure once and can be reused with
+  independent values and options. This example uses <code>#hotelService</code>
+  for Reception, Restaurant, Bar, and Pool; <code>data-for</code> fills each
+  service label.
 
   See <a href="{{ "/guides/mixin_types" | relative_url }}">Mixin Types</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Position and count actions</button>
+  <div class="feature-desc">
+  The period summary combines <code>position</code> and <code>count</code> to
+  show where the current period sits in the list, such as “1 of 2”. The position
+  changes when periods are reordered; the count changes when periods are added
+  or removed.
+
+  See <a href="{{ "/component_reference/list" | relative_url }}#actions">List Type — actions</a>.
   </div>
 </div>
 
