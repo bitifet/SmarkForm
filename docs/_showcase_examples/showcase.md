@@ -700,11 +700,10 @@ input constraints; the example does not implement a race-distance business rule.
           <input data-smark='{"type":"number","name":"fee","mask":"raceFee"}' class="fee" placeholder="0.00">
         </p>
         <details>
-          <summary>Emergency Contact</summary>
-          <p>
-            <label data-smark>Contact name:</label>
+          <summary>
+            <span data-smark="label">Emergency Contact:</span>
             <input data-smark name="emergency_name" type="text">
-          </p>
+          </summary>
           <p>
             <label data-smark>Phone:</label>
             <input data-smark name="emergency_phone" type="tel">
@@ -754,6 +753,11 @@ input constraints; the example does not implement a race-distance business rule.
 {{""}}#myForm$$ li select { padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
 {{""}}#myForm$$ li details { margin-top: 0.3em; }
 {{""}}#myForm$$ li summary { cursor: default; user-select: none; font-weight: 500; }
+{{""}}#myForm$$ li details > summary { display: flex; align-items: center; gap: 0.4em; list-style: none; }
+{{""}}#myForm$$ li details > summary::-webkit-details-marker { display: none; }
+{{""}}#myForm$$ li details > summary::before { content: "▸"; flex: 0 0 auto; transition: transform .15s; }
+{{""}}#myForm$$ li details[open] > summary::before { transform: rotate(90deg); }
+{{""}}#myForm$$ li details > summary input[name="emergency_name"] { flex: 1; min-width: 0; }
 {{""}}#myForm$$ li details[open] { border: 1px solid #eee; border-radius: 4px; padding: 0.3em 0.5em; }
 {{""}}#myForm$$ .bib { font-weight: bold; min-width: 1.5em; text-align: center; background: #f0f0f0; border-radius: 4px; padding: 0.1em 0.4em; }
 {{""}}#myForm$$ .row { display: flex; gap: 0.5em; align-items: center; margin: 0.3em 0; flex-wrap: wrap; }
@@ -803,6 +807,19 @@ strings. The Color field has an authored default value.
 {% capture race_tests -%}
 export default async ({ expect, root, readField, page }) => {
     await expect(root).toBeVisible();
+    const summarySizing = await root.locator('details > summary').evaluate(summary => {
+        const summaryRect = summary.getBoundingClientRect();
+        const inputRect = summary.querySelector('input[name="emergency_name"]').getBoundingClientRect();
+        return {
+            summaryWidth: summaryRect.width,
+            inputWidth: inputRect.width,
+            inputRight: inputRect.right,
+            summaryRight: summaryRect.right,
+        };
+    });
+    expect(summarySizing.inputWidth).toBeGreaterThan(summarySizing.summaryWidth * 0.35);
+    expect(summarySizing.inputRight).toBeLessThanOrEqual(summarySizing.summaryRight + 1);
+
     await root.locator('input[name="name"]').first().fill('Alice Johnson');
     await root.locator('input[name="age"]').first().fill('34');
     await root.evaluate(async () => {
@@ -877,6 +894,15 @@ export default async ({ expect, root, readField, page }) => {
   Native <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> elements
   provide the disclosure. SmarkForm navigation can open a collapsed section
   and move into its hidden fields with <kbd>Alt</kbd>+<kbd>Enter</kbd>.
+
+  The summary field stays in the normal <kbd>Tab</kbd> order; while the section
+  is closed, its hidden body fields are skipped by <kbd>Tab</kbd> /
+  <kbd>Shift</kbd>+<kbd>Tab</kbd> and SmarkForm's <kbd>Enter</kbd> /
+  <kbd>Shift</kbd>+<kbd>Enter</kbd> navigation. Use <kbd>Alt</kbd>+<kbd>Enter</kbd>
+  to open the section and navigate forward into its fields, or
+  <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> to navigate backward into it.
+  <kbd>Shift</kbd>+<kbd>Space</kbd> toggles the section from a summary field; from
+  a field in the open body, it closes the section and returns focus to the summary.
 
   See <a href="{{ "/accessibility/keyboard_navigation" | relative_url }}">Keyboard Navigation</a>.
   </div>
