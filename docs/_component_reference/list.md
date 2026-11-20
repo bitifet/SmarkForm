@@ -459,10 +459,16 @@ with them.
         <div class="group-card">
           <details>
             <summary>
-              <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder groups">⠿</span>
               <span data-smark='{"action":"position"}'>#</span>
               <input name="name" placeholder="Group name" type="text" data-smark>
-              <button data-smark='{"action":"removeItem"}' title="Remove group">➖</button>
+              <div class="card-actions">
+                <button type="button" class="card-menu-trigger" aria-expanded="false" title="Group actions" aria-label="Group actions">☰</button>
+                <div class="card-menu" data-card-menu role="group" aria-label="Group actions">
+                  <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one group"><span aria-hidden="true">↑</span> Move Up</button>
+                  <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one group"><span aria-hidden="true">↓</span> Move Down</button>
+                  <button type="button" data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove group"><span aria-hidden="true">➖</span> Remove Group</button>
+                </div>
+              </div>
             </summary>
             <div class="group-body">
               <label class="tutor">Tutor: <input name="tutor" placeholder="Tutor name" type="text" data-smark></label>
@@ -473,9 +479,17 @@ with them.
                   <li>
                     <details>
                       <summary>
-                        <span data-smark='{"type":"label"}' class="handle" title="Drag to move between groups">⠿</span>
                         <input name="name" placeholder="Student name" type="text" data-smark>
-                        <button data-smark='{"action":"removeItem"}' title="Remove student">➖</button>
+                        <div class="card-actions">
+                          <button type="button" class="card-menu-trigger" aria-expanded="false" title="Student actions" aria-label="Student actions">☰</button>
+                          <div class="card-menu" data-card-menu role="group" aria-label="Student actions">
+                            <button type="button" data-smark='{"action":"next","depth":2,"hotkey":"]"}' title="Move to the next class"><span aria-hidden="true">→</span> Go Next</button>
+                            <button type="button" data-smark='{"action":"previous","depth":2,"hotkey":"["}' title="Move to the previous class"><span aria-hidden="true">←</span> Go Previous</button>
+                            <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one student"><span aria-hidden="true">↑</span> Move Up</button>
+                            <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one student"><span aria-hidden="true">↓</span> Move Down</button>
+                            <button type="button" data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove student"><span aria-hidden="true">➖</span> Remove Student</button>
+                          </div>
+                        </div>
                       </summary>
                       <div data-smark='{"type":"form","name":"grades"}' class="grades">
                         <div class="grade-column">
@@ -521,7 +535,6 @@ with them.
 {{""}}#myForm$$ .group-card summary { display: flex; align-items: center; gap: .4em; padding: .35em .5em; background: #fff; }
 {{""}}#myForm$$ .group-card details[open] summary { border-bottom: 1px solid #eee; }
 {{""}}#myForm$$ .group-card summary input { flex: 1; min-width: 0; }
-{{""}}#myForm$$ .handle { cursor: grab; color: #999; user-select: none; }
 {{""}}#myForm$$ .group-body { padding: .4em .5em .2em 1.8em; }
 {{""}}#myForm$$ .tutor { display: flex; gap: .4em; margin-bottom: .3em; }
 {{""}}#myForm$$ .tutor input { flex: 1; min-width: 0; }
@@ -537,6 +550,28 @@ with them.
 {{""}}#myForm$$ .grade-column input { width: 100%; box-sizing: border-box; }
 {{""}}#myForm$$ .empty { color: #999; font-style: italic; padding: .5em; }
 {{""}}#myForm$$ .school-groups button { padding: .2em .6em; }
+{{""}}#myForm$$ .card-actions { position: relative; display: flex; flex-shrink: 0; }
+{{""}}#myForm$$ .card-menu-trigger { padding: 0 .4em; }
+{{""}}#myForm$$ .card-menu {
+{{""}}  display: none; position: absolute; top: 100%; right: 0; z-index: 10;
+{{""}}  min-width: 13em; padding: .25em;
+{{""}}  background: Canvas; color: CanvasText;
+{{""}}  border: 1px solid ButtonBorder; border-radius: 4px;
+{{""}}  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+{{""}}}
+{{""}}#myForm$$ .card-actions.menu-open .card-menu,
+{{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
+{{""}}#myForm$$ .card-menu button {
+{{""}}  display: block; width: 100%; text-align: left;
+{{""}}  border: 0; background: transparent; padding: .35em .5em;
+{{""}}}
+{{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
+{{""}}#myForm$$ .group-card,
+{{""}}#myForm$$ .students li { cursor: grab; }
+{{""}}#myForm$$ .school-groups input,
+{{""}}#myForm$$ .school-groups button { cursor: auto; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_notes {{{ -->{% endraw %}
@@ -544,12 +579,13 @@ with them.
 👉 **Nested data.** The export contains a school, groups, students, and separate
 lists of Math, Literature, and Science grades for each student.
 
-👉 **Cross-list movement.** Drag a student handle between groups. Their grades
-move with them; the sibling distance between student lists is 2, so they use
-`moving_depth:2`.
+👉 **Keyboard and drag movement.** Use a student's <kbd>☰</kbd> menu to move
+between classes or reorder students; drag from the card background also works.
+The sibling distance between student lists is 2, so cross-class actions use
+`moving_depth:2`. Group order has its own depth-zero menu actions.
 
-👉 **Try it!** Open a class and student, move Bart to Class B, then add a grade.
-The JSON editor shows the updated nested value.
+👉 **Try it!** Open a class and student, use **Go Next** to move Bart to Class B,
+then add a grade. The JSON editor shows the updated nested value.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_demoValue {{{ -->{% endraw %}
@@ -572,7 +608,105 @@ The JSON editor shows the updated nested value.
 
 {% raw %}<!-- deep_school_groups_js {{{ -->{% endraw %}
 {% capture deep_school_groups_js -%}
-// Lists, nested forms, and cross-list behavior are declarative.
+/* Per-item disclosures stay author-side; the action buttons remain ordinary
+ * SmarkForm triggers. */
+{
+  const root = myForm.targetNode;
+  let openEntry = null;
+  let menuSeq = 0;
+  const entries = [];
+  const registered = new WeakMap();
+  const syncEntry = entry => {
+    const expanded = (
+      entry.wrapper.classList.contains("menu-open")
+      || !! entry.menu.querySelector("[data-hotkey]")
+    );
+    entry.trigger.setAttribute("aria-expanded", String(expanded));
+    for (const action of entry.menu.querySelectorAll("button[data-smark]")) {
+      action.tabIndex = expanded && !action.disabled ? 0 : -1;
+    };
+  };
+  const registerMenu = trigger => {
+    if (registered.has(trigger)) return registered.get(trigger);
+    const menu = trigger.nextElementSibling;
+    if (! menu?.matches("[data-card-menu]")) return null;
+    const actionNode = menu.querySelector("button[data-smark]");
+    const actionComponent = actionNode && myForm.getComponent(actionNode);
+    if (actionComponent?.targetNode !== actionNode) return null;
+    menu.id ||= `list-card-menu-${++menuSeq}`;
+    trigger.setAttribute("aria-controls", menu.id);
+    const entry = {trigger, menu, wrapper: trigger.parentElement};
+    registered.set(trigger, entry);
+    entries.push(entry);
+    syncEntry(entry);
+    return entry;
+  };
+  const ensureMenus = () => {
+    for (const trigger of root.querySelectorAll(".card-menu-trigger")) registerMenu(trigger);
+  };
+  const syncAll = () => {
+    ensureMenus();
+    for (let i = entries.length - 1; i >= 0; i--) {
+      if (! entries[i].wrapper.isConnected) {
+        if (openEntry === entries[i]) openEntry = null;
+        entries.splice(i, 1);
+      } else syncEntry(entries[i]);
+    };
+  };
+  const closeMenu = (entry = openEntry, {returnFocus = false} = {}) => {
+    if (! entry) return;
+    entry.wrapper.classList.remove("menu-open");
+    if (openEntry === entry) openEntry = null;
+    syncEntry(entry);
+    if (returnFocus) entry.trigger.focus();
+  };
+
+  ensureMenus();
+  root.addEventListener("click", ev => {
+    const trigger = ev.target.closest?.(".card-menu-trigger");
+    if (! trigger || ! root.contains(trigger)) return;
+    ev.stopPropagation();
+    const entry = registerMenu(trigger);
+    if (! entry) return;
+    if (openEntry === entry) {
+      closeMenu(entry);
+      return;
+    };
+    closeMenu();
+    entry.wrapper.classList.add("menu-open");
+    openEntry = entry;
+    syncEntry(entry);
+  });
+
+  for (const eventName of ["keydown", "keyup", "focusin", "focusout"]) {
+    root.addEventListener(eventName, syncAll);
+  };
+  new MutationObserver(syncAll).observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-smark", "data-sm-src", "disabled", "data-hotkey"],
+  });
+  document.addEventListener("keydown", ev => {
+    if (openEntry && ev.key === "Escape") {
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeMenu(openEntry, {returnFocus: true});
+    };
+  });
+  document.addEventListener("pointerdown", ev => {
+    if (openEntry && ! openEntry.wrapper.contains(ev.target)) closeMenu(openEntry);
+  });
+  for (const actionName of ["next", "previous", "removeItem"]) {
+    myForm.on(`AfterAction_${actionName}`, ev => {
+      const origin = ev.origin?.targetNode;
+      const entry = entries.find(candidate => candidate.menu.contains(origin))
+        || (openEntry?.menu.contains(origin) ? openEntry : null);
+      if (entry) closeMenu(entry);
+      syncAll();
+    });
+  };
+};
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_tests {{{ -->{% endraw %}
@@ -596,20 +730,24 @@ export default async ({ page, expect, root, readField, writeField }) => {
 
     const before = await readField('/');
     expect(before.groups[0].students[1].grades.math[0].grade).toBe(4);
-    await page.evaluate(async () => {
-        const source = myForm.find('/groups/0/students');
-        const target = myForm.find('/groups/1/students');
-        await source.move({
-            from: source.children[1],
-            target_list: target,
-            position: 'after',
-        });
-    });
+    await root.locator('.group-card details').first().evaluate(details => { details.open = true; });
+    const studentLists = root.locator('.students > ul[data-smark]');
+    const bart = studentLists.nth(0).locator(':scope > li').nth(1);
+    await bart.getByRole('button', { name: 'Student actions' }).click();
+    await bart.locator('[data-card-menu]').getByRole('button', { name: /Go Next/ }).click();
 
     let after = await readField('/');
     expect(after.groups[0].students.map(item => item.name)).toEqual(['Lisa Simpson']);
     expect(after.groups[1].students.map(item => item.name)).toEqual(['Milhouse Van Houten', 'Bart Simpson']);
     expect(after.groups[1].students[1].grades.math[0].grade).toBe(4);
+
+    const groups = root.locator('.school-groups > ul[data-smark]');
+    const firstGroup = groups.locator('li').first();
+    await firstGroup.getByRole('button', { name: 'Group actions' }).click();
+    await firstGroup.locator('[data-card-menu]').getByRole('button', { name: /Move Down/ }).click();
+    after = await readField('/');
+    expect(after.groups.map(group => group.name)).toEqual(['Class B', 'Class A']);
+    expect(after.groups[0].students[1].grades.math[0].grade).toBe(4);
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
