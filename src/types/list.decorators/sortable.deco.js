@@ -271,14 +271,36 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                     [sym_mutex_key]: ongoingKey,
                 });
 
+                const restoreSource = async () => {
+                    const restoreTarget = me.children[fromi] || null;
+                    const restoredItem = await me.addItem(null, {
+                        target: restoreTarget,
+                        position: restoreTarget ? "before" : "after",
+                        silent: true,
+                        focus: false,
+                        [sym_mutex_key]: ongoingKey,
+                    });
+                    await restoredItem?.import(data, {silent: true, set_default: false});
+                };
+
                 // 3. Insert into destination
-                const newItem = await destList.addItem(null, {
-                    target: to,
-                    position,
-                    silent: true,
-                    focus: false,
-                    ...(destList === me ? { [sym_mutex_key]: ongoingKey } : {}),
-                });
+                let newItem;
+                try {
+                    newItem = await destList.addItem(null, {
+                        target: to,
+                        position,
+                        silent: true,
+                        focus: false,
+                        ...(destList === me ? { [sym_mutex_key]: ongoingKey } : {}),
+                    });
+                } catch (error) {
+                    if (destList !== me) await restoreSource();
+                    throw error;
+                };
+                if (!newItem) {
+                    if (destList !== me) await restoreSource();
+                    return;
+                };
 
                 // 4. Restore data into the new item
                 await newItem.import(data, {silent: true, set_default: false});
