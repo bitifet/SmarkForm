@@ -15,6 +15,9 @@ block mainForm
           button.prev(
             data-smark={action:"previous", depth:2, hotkey:"["}
           ) previous
+          button.too-deep(
+            data-smark={action:"next", depth:3}
+          ) too deep
 `);// }}}
 
 const flatPug = (// {{{
@@ -29,7 +32,7 @@ block mainForm
     li
       input(data-smark, name="v")
       button.next(data-smark={action:"next", depth:0}) next
-      button.prev(data-smark={action:"previous", depth:0}) previous
+      button.prev(data-smark={action:"previous"}) previous
 `);// }}}
 
 const depthZeroPug = (// {{{
@@ -60,6 +63,18 @@ block mainForm
       input(data-smark, name="v")
       button.next(data-smark={action:"next", depth:0, cycle:true}) next
       button.prev(data-smark={action:"previous", depth:0, cycle:true}) previous
+`);// }}}
+
+const capacityPug = (// {{{
+`extends layout.pug
+block mainForm
+  div(data-smark={type:"list", name:"groups", min_items:3, max_items:3})
+    fieldset
+      input(data-smark, name="groupName")
+      ul(data-smark={type:"list", name:"tasks", sortable:true, moving_depth:2, min_items:0, max_items:2})
+        li
+          input(data-smark, name="v")
+          button.next(data-smark={action:"next", depth:2}) next
 `);// }}}
 
 async function open(page, src, title) {
@@ -94,19 +109,16 @@ test.describe('List next/previous actions', () => {
         }
     });
 
-    test('cycle wraps depth 0 moves', async ({ page }) => {
+test('depth 0 stays disabled at either end, even with an extra cycle option', async ({ page }) => {
         const rendered = await open(page, cyclePug, 'ListNextPreviousCycle');
         try {
             await page.evaluate(async () => {
                 await form.import({ items: [{ v: 'A' }, { v: 'B' }, { v: 'C' }] });
             });
             const list = page.locator('ul[data-smark]');
-            await expect(list.locator('li').nth(0).locator('.prev')).toBeEnabled();
+            await expect(list.locator('li').nth(0).locator('.prev')).toBeDisabled();
+            await expect(list.locator('li').nth(2).locator('.next')).toBeDisabled();
             await list.locator('li').nth(2).locator('.next').click();
-            expect(await page.evaluate(() => form.export())).toEqual({
-                items: [{ v: 'C' }, { v: 'A' }, { v: 'B' }],
-            });
-            await list.locator('li').nth(0).locator('.prev').click();
             expect(await page.evaluate(() => form.export())).toEqual({
                 items: [{ v: 'A' }, { v: 'B' }, { v: 'C' }],
             });
@@ -143,6 +155,7 @@ test.describe('List next/previous actions', () => {
 
             const lists = page.locator('ul[data-smark]');
             await expect(lists.first().locator('li').first().locator('.prev')).toBeDisabled();
+            await expect(lists.first().locator('li').first().locator('.too-deep')).toBeDisabled();
 
             // First move reaches the next reachable list; a second move from
             // the same item would be needed to go any further.
@@ -160,6 +173,34 @@ test.describe('List next/previous actions', () => {
                 groups: [
                     { tasks: [{ v: 'B' }, { v: 'A' }] },
                     { tasks: [{ v: 'C' }] },
+                ],
+            });
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
+    test('skips full candidate lists and appends to the next available list', async ({ page }) => {
+        const rendered = await open(page, capacityPug, 'ListNextPreviousCapacity');
+        try {
+            await page.evaluate(async () => {
+                await form.import({
+                    groups: [
+                        { groupName: 'A', tasks: [{ v: 'A' }] },
+                        { groupName: 'B', tasks: [{ v: 'B' }, { v: 'C' }] },
+                        { groupName: 'C', tasks: [{ v: 'D' }] },
+                    ],
+                });
+            });
+
+            const lists = page.locator('ul[data-smark]');
+            await expect(lists.nth(0).locator('li').first().locator('.next')).toBeEnabled();
+            await lists.nth(0).locator('li').first().locator('.next').click();
+            expect(await page.evaluate(() => form.export())).toEqual({
+                groups: [
+                    { groupName: 'A', tasks: [] },
+                    { groupName: 'B', tasks: [{ v: 'B' }, { v: 'C' }] },
+                    { groupName: 'C', tasks: [{ v: 'D' }, { v: 'A' }] },
                 ],
             });
         } finally {
