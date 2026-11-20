@@ -1028,103 +1028,54 @@ endcapture %}
 
 {% raw %} <!-- capture cross_list_drag_js {{{ --> {% endraw %}
 {% capture cross_list_drag_js -%}
-/* The disclosures are author-side; SmarkForm owns each action and hotkey. */
+/* SmarkForm owns the actions/hotkeys; this only toggles the disclosure. */
 {
   const root = myForm.targetNode;
-  let openEntry = null;
-  let menuSeq = 0;
-  const entries = [];
-  const registered = new WeakMap();
-  const syncEntry = entry => {
-    const expanded = (
-      entry.wrapper.classList.contains("menu-open")
-      || !! entry.menu.querySelector("[data-hotkey]")
-    );
-    entry.trigger.setAttribute("aria-expanded", String(expanded));
-    for (const action of entry.menu.querySelectorAll("button[data-smark]")) {
-      action.tabIndex = expanded && !action.disabled ? 0 : -1;
+  const sync = () => {
+    for (const actions of root.querySelectorAll(".card-actions")) {
+      const expanded = (
+        actions.classList.contains("menu-open")
+        || !! actions.querySelector("[data-hotkey]")
+      );
+      actions.querySelector(".card-menu-trigger")
+        ?.setAttribute("aria-expanded", String(expanded));
+      for (const action of actions.querySelectorAll(".card-menu button[data-smark]")) {
+        action.tabIndex = expanded ? 0 : -1;
+      };
     };
   };
-  const registerMenu = trigger => {
-    if (registered.has(trigger)) return registered.get(trigger);
-    const menu = trigger.nextElementSibling;
-    if (! menu?.matches("[data-card-menu]")) return null;
-    const actionNode = menu.querySelector("button[data-smark]");
-    const actionComponent = actionNode && myForm.getComponent(actionNode);
-    if (actionComponent?.targetNode !== actionNode) return null;
-    menu.id ||= `employee-menu-${++menuSeq}`;
-    trigger.setAttribute("aria-controls", menu.id);
-    const entry = {trigger, menu, wrapper: trigger.parentElement};
-    registered.set(trigger, entry);
-    entries.push(entry);
-    syncEntry(entry);
-    return entry;
+  const close = () => {
+    root.querySelectorAll(".card-actions.menu-open")
+      .forEach(actions => actions.classList.remove("menu-open"));
+    sync();
   };
-  const ensureMenus = () => {
-    for (const trigger of root.querySelectorAll(".card-menu-trigger")) registerMenu(trigger);
-  };
-  const syncAll = () => {
-    ensureMenus();
-    for (let i = entries.length - 1; i >= 0; i--) {
-      if (! entries[i].wrapper.isConnected) {
-        if (openEntry === entries[i]) openEntry = null;
-        entries.splice(i, 1);
-      } else syncEntry(entries[i]);
-    };
-  };
-  const closeMenu = (entry = openEntry, {returnFocus = false} = {}) => {
-    if (! entry) return;
-    entry.wrapper.classList.remove("menu-open");
-    if (openEntry === entry) openEntry = null;
-    syncEntry(entry);
-    if (returnFocus) entry.trigger.focus();
-  };
-
-  ensureMenus();
   root.addEventListener("click", ev => {
     const trigger = ev.target.closest?.(".card-menu-trigger");
-    if (! trigger || ! root.contains(trigger)) return;
-    ev.stopPropagation();
-    const entry = registerMenu(trigger);
-    if (! entry) return;
-    if (openEntry === entry) {
-      closeMenu(entry);
+    if (trigger && root.contains(trigger)) {
+      const actions = trigger.parentElement;
+      const opening = actions.classList.toggle("menu-open");
+      if (opening) root.querySelectorAll(".card-actions.menu-open")
+        .forEach(other => { if (other !== actions) other.classList.remove("menu-open"); });
+      sync();
       return;
     };
-    closeMenu();
-    entry.wrapper.classList.add("menu-open");
-    openEntry = entry;
-    syncEntry(entry);
+    if (! ev.target.closest?.(".card-actions.menu-open")) close();
   });
-
   for (const eventName of ["keydown", "keyup", "focusin", "focusout"]) {
-    root.addEventListener(eventName, syncAll);
+    root.addEventListener(eventName, sync);
   };
-  new MutationObserver(syncAll).observe(root, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ["data-smark", "data-sm-src", "disabled", "data-hotkey"],
-  });
-  document.addEventListener("keydown", ev => {
-    if (openEntry && ev.key === "Escape") {
-      ev.preventDefault();
-      ev.stopPropagation();
-      closeMenu(openEntry, {returnFocus: true});
-    };
+  root.addEventListener("keydown", ev => {
+    if (ev.key !== "Escape") return;
+    const trigger = root.querySelector(".card-actions.menu-open .card-menu-trigger");
+    if (!trigger) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    close();
+    trigger.focus();
   });
   document.addEventListener("pointerdown", ev => {
-    if (openEntry && ! openEntry.wrapper.contains(ev.target)) closeMenu(openEntry);
+    if (!root.contains(ev.target)) close();
   });
-  for (const actionName of ["next", "previous", "removeItem"]) {
-    myForm.on(`AfterAction_${actionName}`, ev => {
-      const origin = ev.origin?.targetNode;
-      const entry = entries.find(candidate => candidate.menu.contains(origin))
-        || (openEntry?.menu.contains(origin) ? openEntry : null);
-      if (entry) closeMenu(entry);
-      syncAll();
-    });
-  };
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
