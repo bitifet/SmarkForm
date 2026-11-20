@@ -18,6 +18,9 @@ block mainForm
           button.too-deep(
             data-smark={action:"next", depth:3}
           ) too deep
+          button.non-numeric(
+            data-smark={action:"next", depth:true}
+          ) non-numeric
 `);// }}}
 
 const flatPug = (// {{{
@@ -38,6 +41,7 @@ block mainForm
 const depthZeroPug = (// {{{
 `extends layout.pug
 block mainForm
+  button.outside(type="button") Outside
   ul(data-smark={
     type:"list",
     name:"items",
@@ -87,6 +91,18 @@ block mainForm
         button.next(data-smark={action:"next", depth:1}) next
   div(data-smark={type:"#column", name:"source"})
   div(data-smark={type:"#column", name:"target", moving_depth:0})
+`);// }}}
+
+const sourceMinimumPug = (// {{{
+`extends layout.pug
+block mainForm
+  div(data-smark={type:"list", name:"groups", min_items:0})
+    fieldset
+      input(data-smark, name="groupName")
+      ul(data-smark={type:"list", name:"tasks", sortable:true, moving_depth:2, min_items:1})
+        li
+          input(data-smark, name="v")
+          button.next(data-smark={action:"next", depth:2}) next
 `);// }}}
 
 async function open(page, src, title) {
@@ -167,6 +183,7 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
             const lists = page.locator('ul[data-smark]');
             await expect(lists.first().locator('li').first().locator('.prev')).toBeDisabled();
             await expect(lists.first().locator('li').first().locator('.too-deep')).toBeDisabled();
+            await expect(lists.first().locator('li').first().locator('.non-numeric')).toBeDisabled();
 
             // First move reaches the next reachable list; a second move from
             // the same item would be needed to go any further.
@@ -230,6 +247,96 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
                 });
             });
             await expect(page.locator('button.next').first()).toBeDisabled();
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
+    test('does not offer or perform a cross-list move that violates source min_items', async ({ page }) => {
+        const rendered = await open(page, sourceMinimumPug, 'ListNextPreviousSourceMinimum');
+        try {
+            await page.evaluate(async () => {
+                await form.import({
+                    groups: [
+                        { groupName: 'A', tasks: [{ v: 'A' }] },
+                        { groupName: 'B', tasks: [{ v: 'B' }] },
+                    ],
+                });
+            });
+
+            const sourceList = page.locator('ul[data-smark]').first();
+            const action = sourceList.locator(':scope > li').first().locator('.next');
+            await expect(action).toBeDisabled();
+            const before = await page.evaluate(async () => {
+                const source = form.find('/groups/0/tasks');
+                const destination = form.find('/groups/1/tasks');
+                await source.move({
+                    from: source.children[0],
+                    target_list: destination,
+                    position: 'after',
+                });
+                return await form.export();
+            });
+            expect(before.groups.map(group => group.tasks)).toEqual([
+                [{ v: 'A' }], [{ v: 'B' }],
+            ]);
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
+    test('does not remove an item if a direct move targets a full list', async ({ page }) => {
+        const rendered = await open(page, capacityPug, 'ListNextPreviousDirectFullTarget');
+        try {
+            await page.evaluate(async () => {
+                await form.import({
+                    groups: [
+                        { groupName: 'A', tasks: [{ v: 'A' }] },
+                        { groupName: 'B', tasks: [{ v: 'B' }, { v: 'C' }] },
+                        { groupName: 'C', tasks: [{ v: 'D' }] },
+                    ],
+                });
+            });
+            await page.evaluate(async () => {
+                const source = form.find('/groups/0/tasks');
+                const full = form.find('/groups/1/tasks');
+                await source.move({
+                    from: source.children[0],
+                    target_list: full,
+                    position: 'after',
+                });
+            });
+            expect(await page.evaluate(() => form.export())).toEqual({
+                groups: [
+                    { groupName: 'A', tasks: [{ v: 'A' }] },
+                    { groupName: 'B', tasks: [{ v: 'B' }, { v: 'C' }] },
+                    { groupName: 'C', tasks: [{ v: 'D' }] },
+                ],
+            });
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
+    test('focus:false keeps focus on the caller after a same-list move', async ({ page }) => {
+        const rendered = await open(page, depthZeroPug, 'ListNextPreviousFocusFalse');
+        try {
+            await page.evaluate(async () => {
+                await form.import({ items: [{ v: 'A' }, { v: 'B' }] });
+            });
+            const focusedOutside = await page.evaluate(async () => {
+                const list = form.find('/items');
+                const outside = document.querySelector('.outside');
+                outside.focus();
+                await list.move({
+                    from: list.children[0],
+                    to: list.children[1],
+                    position: 'after',
+                    focus: false,
+                });
+                return document.activeElement === outside;
+            });
+            expect(focusedOutside).toBe(true);
         } finally {
             await rendered.onClosed();
         }
