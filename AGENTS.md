@@ -102,7 +102,8 @@ unlimited sentinels. The action depth must not exceed the source list's
 `moving_depth`, the source must remain at/above `min_items`, and each destination
 must permit the actual move and have `max_items` capacity. The shared `move()`
 rechecks source and destination bounds before removing an item, restores the
-source if a concurrent transfer fills the destination, and honors `focus:false`.
+source after a capacity race or destination import failure, and honors
+`focus:false`.
 The same-mixin compatibility exception used by drag movement counts as one
 keyboard candidate step. Movement-action availability is refreshed across live
 peer lists when lists render or their contents change; do not move candidate
