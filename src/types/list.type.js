@@ -4,13 +4,13 @@
 import {SmarkField} from "../lib/field.js";
 import {smartdisabling} from "./list.decorators/smartdisabling.deco.js";
 import {focusretention} from "./list.decorators/focusretention.deco.js";
+import {moveActions} from "./list.decorators/move_actions.deco.js";
 import {action} from "./trigger.type.js";
 import {sortable} from "./list.decorators/sortable.deco.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
-import {mutex, sym_mutex_key} from "../decorators/mutex.deco.js";
+import {mutex} from "../decorators/mutex.deco.js";
 import {makeRoom, getRoots, parseJSON, setTabIndex, collectPrefixedOptions} from "../lib/helpers.js";
-import {normalizeDirection, normalizeCycle, normalizeMoveDepth} from "./list.decorators/move_options.js";
 
 // Private helpers:
 // ----------------
@@ -66,41 +66,10 @@ function loadTemplates(me) {//{{{
     return templates;
 };//}}}
 
-// Shared implementation of the `next` / `previous` actions:
-async function moveByDirection(list, direction, options) {//{{{
-    const target = (
-        Array.isArray(options.target)
-        ? options.target[0]
-        : options.target
-    );
-    const from = list.children.find(child => (
-        child === target
-        || (
-            target?.targetNode
-            && child.targetNode.contains(target.targetNode)
-        )
-    )) || null;
-    const candidate = list._moveCandidate(from, {
-        depth: normalizeMoveDepth(options.depth ?? 0, list.moving_depth),
-        direction: normalizeDirection(direction),
-        cycle: normalizeCycle(options.cycle),
-    });
-    if (! candidate) return;
-    return await list.move({
-        from,
-        to: candidate.to,
-        target_list: candidate.list,
-        position: candidate.position,
-        focus: options.focus,
-        silent: options.silent,
-        [sym_mutex_key]: options[sym_mutex_key],
-    });
-};//}}}
-
-
 // List component type:
 // --------------------
 
+@moveActions
 @sortable
 @smartdisabling
 export class list extends SmarkField {
@@ -130,7 +99,6 @@ export class list extends SmarkField {
             : Infinity
         );
         me.children = [];
-        me._isList = true;
         me.templates = loadTemplates(me);
         me.placeholders = [];
         const tplOptions = me.getNodeOptions(
@@ -198,8 +166,6 @@ export class list extends SmarkField {
         switch (action) {
             case "addItem":
             case "removeItem":
-            case "next":
-            case "previous":
                 if (
                     // Placed inside
                     (1 + [...origin.parents].findIndex(p=>Object.is(p, context)))
@@ -548,18 +514,6 @@ export class list extends SmarkField {
             };
             // }}}
         };
-    };//}}}
-    @action
-    @mutex("list_mutating")
-    @smartdisabling
-    async next(_data, options = {}) {//{{{
-        return await moveByDirection(this, 1, options);
-    };//}}}
-    @action
-    @mutex("list_mutating")
-    @smartdisabling
-    async previous(_data, options = {}) {//{{{
-        return await moveByDirection(this, -1, options);
     };//}}}
     async _addFiles(filesList, options = {}) {//{{{
         const me = this;

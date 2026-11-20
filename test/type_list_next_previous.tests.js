@@ -47,7 +47,7 @@ block mainForm
     li
       input(data-smark, name="v")
       button.next(data-smark={action:"next", depth:0}) next
-      button.prev(data-smark={action:"previous", depth:0}) previous
+      button.prev(data-smark={action:"previous"}) previous
 `);// }}}
 
 const cyclePug = (// {{{
@@ -75,6 +75,18 @@ block mainForm
         li
           input(data-smark, name="v")
           button.next(data-smark={action:"next", depth:2}) next
+`);// }}}
+
+const unwillingDestinationPug = (// {{{
+`extends layout.pug
+block mainForm
+  template#column
+    ul(data-smark={type:"list", sortable:true, moving_depth:1, min_items:0})
+      li
+        input(data-smark, name="v")
+        button.next(data-smark={action:"next", depth:1}) next
+  div(data-smark={type:"#column", name:"source"})
+  div(data-smark={type:"#column", name:"target", moving_depth:0})
 `);// }}}
 
 async function open(page, src, title) {
@@ -118,7 +130,6 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
             const list = page.locator('ul[data-smark]');
             await expect(list.locator('li').nth(0).locator('.prev')).toBeDisabled();
             await expect(list.locator('li').nth(2).locator('.next')).toBeDisabled();
-            await list.locator('li').nth(2).locator('.next').click();
             expect(await page.evaluate(() => form.export())).toEqual({
                 items: [{ v: 'A' }, { v: 'B' }, { v: 'C' }],
             });
@@ -203,6 +214,22 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
                     { groupName: 'C', tasks: [{ v: 'D' }, { v: 'A' }] },
                 ],
             });
+            await expect(lists.nth(2).locator('li').nth(1).locator('.next')).toBeDisabled();
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
+    test('does not offer a destination whose moving_depth does not allow the move', async ({ page }) => {
+        const rendered = await open(page, unwillingDestinationPug, 'ListNextPreviousDestinationDepth');
+        try {
+            await page.evaluate(async () => {
+                await form.import({
+                    source: [{ v: 'A' }],
+                    target: [],
+                });
+            });
+            await expect(page.locator('button.next').first()).toBeDisabled();
         } finally {
             await rendered.onClosed();
         }
