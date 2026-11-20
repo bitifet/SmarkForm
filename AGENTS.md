@@ -130,10 +130,11 @@ Escape/outside-pointer closing and ensure actions stay out of the Tab sequence
 while the disclosure is closed.
 
 The Showcase Kanban additionally loads the pinned `@dragdroptouch/drag-drop-touch`
-ES module inside that sample's isolated iframe, with press-hold mode enabled so
-ordinary touch swipes can still scroll. This is example-only; do not load the
-polyfill globally or add it to SmarkForm's runtime bundle without a separate
-design decision. Its co-located test simulates a touch drag on mobile projects.
+ES module asynchronously inside that sample's isolated iframe, and only on
+touch-capable devices. Press-hold mode lets ordinary touch swipes scroll. This
+is example-only; do not load the polyfill globally or add it to SmarkForm's
+runtime bundle without a separate design decision. Its co-located test simulates
+a touch drag on mobile projects.
 
 ### File Field Type
 
