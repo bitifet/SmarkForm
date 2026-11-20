@@ -383,16 +383,6 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
 
 {% raw %} <!-- kanban_html {{{ --> {% endraw %}
 {% capture kanban_html -%}
-<script type="module">
-  import {enableDragDropTouch} from "https://cdn.jsdelivr.net/npm/@dragdroptouch/drag-drop-touch@2.0.3/dist/drag-drop-touch.esm.min.js";
-  enableDragDropTouch(document, document, {
-    isPressHoldMode: true,
-    pressHoldDelayMS: 400,
-    pressHoldMargin: 25,
-    pressHoldThresholdPixels: 5,
-  });
-  window.kanbanTouchDragReady = true;
-</script>
 <div id="myForm$$">
   <div class="kanban">
     <div class="column">
@@ -460,6 +450,23 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
   if (await ev.target?.isEmpty()) return;
   if (!window.confirm("Remove this task?")) ev.preventDefault();
 });
+
+/* Load the touch-only polyfill asynchronously so the preview doesn't wait on the CDN. */
+if (navigator.maxTouchPoints > 0) {
+  import("https://cdn.jsdelivr.net/npm/@dragdroptouch/drag-drop-touch@2.0.3/dist/drag-drop-touch.esm.min.js")
+    .then(({enableDragDropTouch}) => {
+      enableDragDropTouch(document, document, {
+        isPressHoldMode: true,
+        pressHoldDelayMS: 400,
+        pressHoldMargin: 25,
+        pressHoldThresholdPixels: 5,
+      });
+      window.kanbanTouchDragReady = true;
+    })
+    .catch(error => console.warn("Could not load touch drag support", error));
+} else {
+  window.kanbanTouchDragReady = true;
+};
 
 /* SmarkForm owns the actions/hotkeys; this only toggles the disclosure. */
 {
@@ -726,6 +733,9 @@ button { position: relative; }
 {% raw %} <!-- kanban_notes {{{ --> {% endraw %}
 {% capture kanban_notes -%}
 👉 **Move by keyboard or drag.** Open a task's <kbd>☰</kbd> actions disclosure to move it to the next/previous column or reorder it within the current column. You can also drag from the card background; inputs and buttons remain interactive. On touch screens, press and hold before dragging so normal swipes can scroll.
+
+The touch-only drag polyfill loads in the background from a pinned CDN version;
+it does not delay the preview iframe's initial render.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 
