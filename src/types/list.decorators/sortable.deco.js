@@ -293,17 +293,26 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                         focus: false,
                         ...(destList === me ? { [sym_mutex_key]: ongoingKey } : {}),
                     });
+                    if (!newItem) {
+                        await restoreSource();
+                        return;
+                    };
+
+                    // 4. Restore the data. Keep this inside the transaction so
+                    // an import failure removes the partial destination row
+                    // and reinstates the original source item.
+                    await newItem.import(data, {silent: true, set_default: false});
                 } catch (error) {
-                    if (destList !== me) await restoreSource();
+                    if (newItem) await destList.removeItem(null, {
+                        target: newItem,
+                        silent: true,
+                        focus: false,
+                        failback: "none",
+                        ...(destList === me ? { [sym_mutex_key]: ongoingKey } : {}),
+                    });
+                    await restoreSource();
                     throw error;
                 };
-                if (!newItem) {
-                    if (destList !== me) await restoreSource();
-                    return;
-                };
-
-                // 4. Restore data into the new item
-                await newItem.import(data, {silent: true, set_default: false});
 
                 // 5. Restore focus to the moved item
                 if (
