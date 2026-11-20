@@ -237,6 +237,11 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                 // Cross-list: enforce sibling distance limits
                 if (destList !== me) {
+                    // A transfer must preserve the source list's lower bound
+                    // and must not remove the item before a full target rejects
+                    // insertion.
+                    if (me.children.length <= me.min_items) return;
+                    if (destList.children.length >= destList.max_items) return;
                     const dist = siblingDistance(me, destList);
                     if (dist > srcDepthNum || dist > dstDepthNum) return;
                     // Force append when destination is not sortable
@@ -279,7 +284,11 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                 await newItem.import(data, {silent: true, set_default: false});
 
                 // 5. Restore focus to the moved item
-                if (me.renderedSync && !options.silent) newItem?.focus();
+                if (
+                    me.renderedSync
+                    && !options.silent
+                    && options.focus !== false
+                ) newItem?.focus();
 
             };//}}}
             async renum() {//{{{

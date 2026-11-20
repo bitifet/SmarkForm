@@ -5,9 +5,12 @@
 // options arrive as strings, so every consumer must interpret them identically.
 
 export function normalizeMoveDepth(value) {//{{{
-    if (value === true || value === "true") return Infinity;
-    const depth = Number(value);
-    if (! Number.isFinite(depth) || depth < 0) return 0;
+    const depth = (
+        typeof value === "number" ? value
+        : typeof value === "string" && value.trim() !== "" ? Number(value)
+        : NaN
+    );
+    if (! Number.isFinite(depth) || depth < 0) return null;
     return depth;
 };//}}}
 
