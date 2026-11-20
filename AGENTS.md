@@ -97,12 +97,15 @@ The `list` type exposes `next` and `previous` actions through the
 `moveActions` class decorator in `src/types/list.decorators/move_actions.deco.js`.
 `depth:0` moves one position within a `sortable:true` list; positive depths
 step one eligible sibling list at a time and append the item to the destination.
-The action depth must not exceed the source list's `moving_depth`, and each
-destination must permit the actual move and have `max_items` capacity. The
-same-mixin compatibility exception used by drag movement counts as one
-keyboard candidate step. Movement-action availability is refreshed across live
-peer lists when lists render or their contents change; do not move candidate
-rules back into `list.type.js` or the sortable drag decorator.
+Depth accepts finite non-negative numbers (or numeric strings); booleans are not
+unlimited sentinels. The action depth must not exceed the source list's
+`moving_depth`, the source must remain at/above `min_items`, and each destination
+must permit the actual move and have `max_items` capacity. The shared `move()`
+rechecks source and destination bounds before removing an item, and honors
+`focus:false`. The same-mixin compatibility exception used by drag movement
+counts as one keyboard candidate step. Movement-action availability is
+refreshed across live peer lists when lists render or their contents change; do
+not move candidate rules back into `list.type.js` or the sortable drag decorator.
 
 **Configuration file locations**:
 - Tests: `test/type_list_next_previous.tests.js`; documentation menu examples
