@@ -91,6 +91,39 @@ references and the Step 14 transfer map. These four type overrides do not
 currently honor a direct field-local default through `import(undefined)`;
 enclosing Form defaults supplied as explicit values still work.
 
+### List Keyboard Movement
+
+The `list` type exposes `next` and `previous` actions through the
+`moveActions` class decorator in `src/types/list.decorators/move_actions.deco.js`.
+`depth:0` moves one position within a `sortable:true` list; positive depths
+step one eligible sibling list at a time and append the item to the destination.
+The action depth must not exceed the source list's `moving_depth`, and each
+destination must permit the actual move and have `max_items` capacity. The
+same-mixin compatibility exception used by drag movement counts as one
+keyboard candidate step. Movement-action availability is refreshed across live
+peer lists when lists render or their contents change; do not move candidate
+rules back into `list.type.js` or the sortable drag decorator.
+
+**Configuration file locations**:
+- Tests: `test/type_list_next_previous.tests.js`; documentation menu examples
+  also have co-located coverage in `test/co_located_tests.tests.js`.
+- Implementation: `src/types/list.decorators/move_actions.deco.js` (actions,
+  candidate discovery and trigger state), `src/types/list.decorators/move_options.js`
+  (depth parsing), `src/types/list.decorators/sortable.deco.js` (shared
+  `siblingDistance()` and the transfer primitive), and
+  `src/types/list.decorators/smartdisabling.deco.js` (refresh hook).
+- Documentation: List actions and the `deep_school_groups` /
+  `cross_list_drag` examples in `docs/_component_reference/list.md`; Kanban
+  menus in `docs/_showcase_examples/showcase.md` and
+  `docs/_guides/form_traversing.md`.
+
+The documentation menus are authored as native disclosure buttons controlling
+ordinary button groups, not `role="menu"` widgets. Their author-side JavaScript
+keeps `aria-expanded` synchronized when SmarkForm reveals `data-hotkey` hints;
+CSS uses `:has([data-hotkey])` to reveal the group while Ctrl is held. Keep
+Escape/outside-pointer closing and ensure actions stay out of the Tab sequence
+while the disclosure is closed.
+
 ### File Field Type
 
 SmarkForm's `file` field type turns a field into a whole-file uploader with a
