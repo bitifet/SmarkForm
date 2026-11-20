@@ -587,14 +587,21 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await root.locator('.clear-empties').click();
     await expect(menuTrigger).toHaveAttribute('aria-expanded', 'false');
 
-    /* Ctrl reveals the menu and SmarkForm's configured hotkey performs Go Next. */
-    await firstTask.locator('input').focus();
-    await page.keyboard.down('Control');
-    await expect(menu).toBeVisible();
-    await expect(menuTrigger).toHaveAttribute('aria-expanded', 'true');
-    await expect(menu.getByRole('button', { name: /Go Next/ })).toHaveAttribute('data-hotkey', ']');
-    await page.keyboard.press(']');
-    await page.keyboard.up('Control');
+    const coarsePointer = await page.evaluate(() => matchMedia('(pointer: coarse)').matches);
+    if (coarsePointer) {
+        // Touch emulation has no physical Ctrl key; the disclosure still works.
+        await menuTrigger.click();
+        await menu.getByRole('button', { name: /Go Next/ }).click();
+    } else {
+        /* Ctrl reveals the menu and SmarkForm's configured hotkey performs Go Next. */
+        await firstTask.locator('input').focus();
+        await page.keyboard.down('Control');
+        await expect(menu).toBeVisible();
+        await expect(menuTrigger).toHaveAttribute('aria-expanded', 'true');
+        await expect(menu.getByRole('button', { name: /Go Next/ })).toHaveAttribute('data-hotkey', ']');
+        await page.keyboard.press(']');
+        await page.keyboard.up('Control');
+    };
 
     expect(await readField('/todo')).toEqual([{ title: 'Review PR' }]);
     expect(await readField('/progress')).toEqual([
@@ -604,10 +611,16 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
     /* A manually opened menu also exposes regular depth-zero action buttons. */
     const progress = root.locator('.column').nth(1);
+    const runMenuAction = async (row, actionName) => {
+        const trigger = row.getByRole('button', { name: 'Task actions' });
+        await trigger.focus();
+        await page.keyboard.press('Enter');
+        const action = row.locator('[data-card-menu]').getByRole('button', { name: actionName });
+        await action.focus();
+        await page.keyboard.press('Enter');
+    };
     let movedTask = progress.locator('.card').nth(1);
-    let movedMenu = movedTask.locator('[data-card-menu]');
-    await movedTask.getByRole('button', { name: 'Task actions' }).click();
-    await movedMenu.getByRole('button', { name: /Move Up/ }).click();
+    await runMenuAction(movedTask, /Move Up/);
     expect(await readField('/progress')).toEqual([
         { title: 'Write tests' },
         { title: 'Fix layout' },
@@ -615,9 +628,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
     /* Go Previous steps back one column and appends to the destination list. */
     movedTask = progress.locator('.card').first();
-    movedMenu = movedTask.locator('[data-card-menu]');
-    await movedTask.getByRole('button', { name: 'Task actions' }).click();
-    await movedMenu.getByRole('button', { name: /Go Previous/ }).click();
+    await runMenuAction(movedTask, /Go Previous/);
     expect(await readField('/todo')).toEqual([
         { title: 'Review PR' },
         { title: 'Write tests' },
@@ -626,9 +637,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
     const todo = root.locator('.column').first();
     let taskToMove = todo.locator('.card').nth(1);
-    let taskMenu = taskToMove.locator('[data-card-menu]');
-    await taskToMove.getByRole('button', { name: 'Task actions' }).click();
-    await taskMenu.getByRole('button', { name: /Move Up/ }).click();
+    await runMenuAction(taskToMove, /Move Up/);
     expect(await readField('/todo')).toEqual([
         { title: 'Write tests' },
         { title: 'Review PR' },
@@ -636,18 +645,18 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
     /* Move Down restores the order; Remove uses the existing confirmation hook. */
     taskToMove = todo.locator('.card').first();
-    taskMenu = taskToMove.locator('[data-card-menu]');
-    await taskToMove.getByRole('button', { name: 'Task actions' }).click();
-    await taskMenu.getByRole('button', { name: /Move Down/ }).click();
+    await runMenuAction(taskToMove, /Move Down/);
     expect(await readField('/todo')).toEqual([
         { title: 'Review PR' },
         { title: 'Write tests' },
     ]);
     taskToMove = todo.locator('.card').nth(1);
-    taskMenu = taskToMove.locator('[data-card-menu]');
-    await taskToMove.getByRole('button', { name: 'Task actions' }).click();
+    await taskToMove.getByRole('button', { name: 'Task actions' }).focus();
+    await page.keyboard.press('Enter');
     page.once('dialog', dialog => dialog.accept());
-    await taskMenu.getByRole('button', { name: /Remove/ }).click();
+    const removeAction = taskToMove.locator('[data-card-menu]').getByRole('button', { name: /Remove/ });
+    await removeAction.focus();
+    await page.keyboard.press('Enter');
     expect(await readField('/todo')).toEqual([{ title: 'Review PR' }]);
 
     await page.evaluate(async () => {
