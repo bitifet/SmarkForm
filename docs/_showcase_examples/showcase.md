@@ -584,7 +584,9 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
     await menuTrigger.click();
     await expect(menu).toBeVisible();
-    await root.locator('.clear-empties').click();
+    await page.evaluate(() => document.body.dispatchEvent(
+        new PointerEvent('pointerdown', { bubbles: true })
+    ));
     await expect(menuTrigger).toHaveAttribute('aria-expanded', 'false');
 
     const coarsePointer = await page.evaluate(() => matchMedia('(pointer: coarse)').matches);
