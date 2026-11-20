@@ -9,6 +9,8 @@ authored documentation examples that use `moving_depth` for cross-list moves.
 The following behavior is settled:
 
 - The actions accept numeric `depth`, defaulting to `0`.
+- Non-numeric depth values are not unlimited sentinels; invalid values do not
+  make a movement action available.
 - At depth `0`, they move the selected item by one position in the same list.
   They are disabled when `sortable` is false, and at the corresponding end of
   the list. There is no wrapping/cycling behavior.
@@ -21,6 +23,10 @@ The following behavior is settled:
   same-mixin compatibility rule remains part of that distance calculation.
 - A positive action depth greater than the source list's `moving_depth` disables
   that trigger; it must not be silently clamped to a smaller depth.
+- A cross-list move cannot take its source below `min_items`. The shared transfer
+  operation rechecks both source minimum and destination capacity before
+  removing the item, so stale trigger state cannot duplicate or lose data.
+- `focus:false` is respected by the shared move operation.
 - Per-item menu removal uses the existing `removeItem` action. SmarkForm hotkeys
   require Ctrl; menu shortcuts should avoid Ctrl+Arrow so they do not collide
   with caret navigation. The examples will use `[` / `]` for cross-list
@@ -67,7 +73,8 @@ depth-zero `sortable` gating; honor destination willingness/capacity; and keep
 cross-list moves append-only. Add or refine focused Playwright tests for default
 depth, depth overflow, source/destination limits, one-candidate-at-a-time
 ordering, skipped full/incompatible destinations, append order, end boundaries,
-sortable gating, and refreshed disabled states.
+sortable gating, source `min_items`, numeric depth validation, `focus:false`,
+and refreshed disabled states.
 
 **Expected files:**
 
