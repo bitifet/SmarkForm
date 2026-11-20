@@ -1,15 +1,49 @@
 // types/list.decorators/smartdisabling.deco.js
 // ============================================
 
-async function updateTriggers(context) {
-    for (const tg of context.getTriggers(["removeItem", "addItem"])) {
-        tg.targetNode.disabled = (
-            tg.options.action == "removeItem" ? (
-                context.children.length <= context.min_items
-                && tg.options.failback != "clear" // Unless clearing function
-            )
-            : context.children.length >= context.max_items
-        );
+import {normalizeCycle, normalizeDirection, normalizeMoveDepth} from "./move_options.js";
+
+export async function updateTriggers(context) {
+    for (
+        const tg of context.getTriggers([
+            "removeItem", "addItem", "next", "previous",
+        ])
+    ) {
+        const options = tg.getTriggerArgs() || {};
+        switch (options.action) {
+            case "removeItem":
+                tg.targetNode.disabled = (
+                    context.children.length <= context.min_items
+                    && options.failback != "clear" // Unless clearing function
+                );
+                break;
+            case "addItem":
+                tg.targetNode.disabled = (
+                    context.children.length >= context.max_items
+                );
+                break;
+            default: { // "next" / "previous"
+                const target = (
+                    Array.isArray(options.target)
+                    ? options.target[0]
+                    : options.target
+                );
+                const from = context.children.find(child => (
+                    child === target
+                    || (
+                        target?.targetNode
+                        && child.targetNode.contains(target.targetNode)
+                    )
+                )) || null;
+                tg.targetNode.disabled = ! context._moveCandidate(from, {
+                    depth: normalizeMoveDepth(options.depth ?? 0, context.moving_depth),
+                    direction: normalizeDirection(
+                        options.action === "previous" ? -1 : 1
+                    ),
+                    cycle: normalizeCycle(options.cycle),
+                });
+            };
+        };
     };
 };
 

@@ -32,6 +32,21 @@ block mainForm
       button.prev(data-smark={action:"previous", depth:0}) previous
 `);// }}}
 
+const depthZeroPug = (// {{{
+`extends layout.pug
+block mainForm
+  ul(data-smark={
+    type:"list",
+    name:"items",
+    sortable:true,
+    min_items:0,
+  })
+    li
+      input(data-smark, name="v")
+      button.next(data-smark={action:"next", depth:0}) next
+      button.prev(data-smark={action:"previous", depth:0}) previous
+`);// }}}
+
 const cyclePug = (// {{{
 `extends layout.pug
 block mainForm
@@ -55,14 +70,14 @@ async function open(page, src, title) {
 
 test.describe('List next/previous actions', () => {
     test('depth 0 reorders within a sortable list and disables at the ends', async ({ page }) => {
-        const rendered = await open(page, cyclePug, 'ListNextPreviousDepthZero');
+        const rendered = await open(page, depthZeroPug, 'ListNextPreviousDepthZero');
         try {
             await page.evaluate(async () => {
                 await form.import({ items: [{ v: 'A' }, { v: 'B' }, { v: 'C' }] });
             });
             const list = page.locator('ul[data-smark]');
             await expect(list.locator('li').nth(0).locator('.prev')).toBeDisabled();
-            await expect(list.locator('li').nth(2).locator('.next')).toBeEnabled();
+            await expect(list.locator('li').nth(2).locator('.next')).toBeDisabled();
 
             await list.locator('li').nth(0).locator('.next').click();
             expect(await page.evaluate(() => form.export())).toEqual({
@@ -89,7 +104,7 @@ test.describe('List next/previous actions', () => {
             await expect(list.locator('li').nth(0).locator('.prev')).toBeEnabled();
             await list.locator('li').nth(2).locator('.next').click();
             expect(await page.evaluate(() => form.export())).toEqual({
-                items: [{ v: 'B' }, { v: 'C' }, { v: 'A' }],
+                items: [{ v: 'C' }, { v: 'A' }, { v: 'B' }],
             });
             await list.locator('li').nth(0).locator('.prev').click();
             expect(await page.evaluate(() => form.export())).toEqual({

@@ -2,6 +2,8 @@
 // ======================================
 
 import {mutex, sym_mutex_key} from "../../decorators/mutex.deco.js";
+import {updateTriggers} from "./smartdisabling.deco.js";
+import {normalizeCycle, normalizeDirection, normalizeMoveDepth} from "./move_options.js";
 
 // Selector for interactive fields where a drag should not start.
 const INTERACTIVE_FIELDS_SELECTOR = "input, textarea, select, button, a, [contenteditable='true']";
@@ -280,6 +282,120 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                 // 5. Restore focus to the moved item
                 if (me.renderedSync && !options.silent) newItem?.focus();
+
+                // 6. Refresh smart-disabled move triggers on both sides.
+                await updateTriggers(me);
+                if (destList !== me) await updateTriggers(destList);
+            };//}}}
+            _allLists() {//{{{
+                // All rendered list components in document order.  Reading the
+                // DOM keeps `next` / `previous` aligned with what authors and
+                // keyboard users perceive as the visual order of candidates.
+                const me = this;
+                const root = me.root;
+                const nodes = [
+                    root.targetNode,
+                    ...root.targetNode.querySelectorAll("[data-smark]"),
+                ];
+                const lists = [];
+                for (const node of nodes) {
+                    const comp = root.getComponent(node);
+                    if (comp?._isList && ! lists.includes(comp)) lists.push(comp);
+                };
+                return lists;
+            };//}}}
+            _candidateDistance(other) {//{{{
+                // `_siblingDistance` deliberately treats mixin clones of the
+                // same template as distance 0 so drag can cross them even
+                // without moving_depth.  For keyboard stepping, those are
+                // distinct candidate lists, so expose them as distance 1.
+                const me = this;
+                if (other === me) return 0;
+                const distance = _siblingDistance(me, other);
+                if (distance !== 0) return distance;
+                const tpl = me.targetNode?.dataset?.sfTpl;
+                if (tpl && tpl === other.targetNode?.dataset?.sfTpl) return 1;
+                return distance;
+            };//}}}
+            _listIsWilling(destination, depth) {//{{{
+                const me = this;
+                const distance = me._candidateDistance(destination);
+                return (
+                    distance > 0
+                    && distance <= depth
+                    && distance <= me.moving_depth
+                    && distance <= destination.moving_depth
+                    && destination.children.length < destination.max_items
+                );
+            };//}}}
+            _moveCandidate(from, options = {}) {//{{{
+                // Returns the next move described by `direction` (+1/-1), or
+                // null when no destination is available.  Depth 0 is an
+                // in-place reorder; depth > 0 steps to the nearest reachable
+                // list in document order.
+                const me = this;
+                if (! from || ! me.children.includes(from)) return null;
+
+                const depth = normalizeMoveDepth(options.depth ?? 0, me.moving_depth);
+                const direction = normalizeDirection(options.direction ?? 1);
+                const cycle = normalizeCycle(options.cycle);
+
+                if (depth === 0) {
+                    if (! me.sortable || me.children.length < 2) return null;
+                    const index = me.children.indexOf(from);
+                    let targetIndex = index + direction;
+                    const wrapped = (
+                        targetIndex < 0 || targetIndex >= me.children.length
+                    );
+                    if (wrapped) {
+                        if (! cycle) return null;
+                        targetIndex = (
+                            direction > 0 ? 0 : me.children.length - 1
+                        );
+                    };
+                    if (targetIndex === index) return null;
+                    return {
+                        list: me,
+                        to: me.children[targetIndex],
+                        // A wrapped forward move lands at the very top; a
+                        // wrapped backward move lands at the very bottom.
+                        position: (
+                            wrapped
+                            ? (direction > 0 ? "before" : "after")
+                            : (direction > 0 ? "after" : "before")
+                        ),
+                    };
+                };
+
+                const lists = me._allLists();
+                const anchor = lists.indexOf(me);
+                if (anchor < 0) return null;
+
+                const scan = (start) => {
+                    for (
+                        let index = start;
+                        index >= 0 && index < lists.length;
+                        index += direction
+                    ) {
+                        const destination = lists[index];
+                        if (
+                            destination !== me
+                            && me._listIsWilling(destination, depth)
+                        ) return {
+                            list: destination,
+                            to: null,
+                            position: "after",
+                        };
+                    };
+                    return null;
+                };
+
+                return (
+                    scan(anchor + direction)
+                    || (cycle
+                        ? scan(direction > 0 ? 0 : lists.length - 1)
+                        : null)
+                );
             };//}}}
             async renum() {//{{{
                 const me = this;
