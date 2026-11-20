@@ -105,6 +105,18 @@ block mainForm
           button.next(data-smark={action:"next", depth:2}) next
 `);// }}}
 
+const concurrentMovesPug = (// {{{
+`extends layout.pug
+block mainForm
+  template#column
+    ul(data-smark={type:"list", sortable:true, moving_depth:1, min_items:0, max_items:1})
+      li
+        input(data-smark, name="v")
+  div(data-smark={type:"#column", name:"sourceA"})
+  div(data-smark={type:"#column", name:"sourceB"})
+  div(data-smark={type:"#column", name:"target"})
+`);// }}}
+
 async function open(page, src, title) {
     const rendered = await renderPug({ title, src });
     await page.goto(rendered.url);
@@ -313,6 +325,39 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
                     { groupName: 'C', tasks: [{ v: 'D' }] },
                 ],
             });
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
+    test('restores the source when concurrent moves race for the destination last slot', async ({ page }) => {
+        const rendered = await open(page, concurrentMovesPug, 'ListNextPreviousConcurrentMoves');
+        try {
+            await page.evaluate(async () => {
+                await form.import({
+                    sourceA: [{ v: 'A' }],
+                    sourceB: [{ v: 'B' }],
+                    target: [],
+                });
+            });
+            const result = await page.evaluate(async () => {
+                const sourceA = form.find('/sourceA');
+                const sourceB = form.find('/sourceB');
+                const target = form.find('/target');
+                await Promise.all([
+                    sourceA.move({from: sourceA.children[0], target_list: target}).catch(() => null),
+                    sourceB.move({from: sourceB.children[0], target_list: target}).catch(() => null),
+                ]);
+                return await form.export();
+            });
+            const remaining = [
+                ...result.sourceA.map(item => item.v),
+                ...result.sourceB.map(item => item.v),
+                ...result.target.map(item => item.v),
+            ].sort();
+            expect(remaining).toEqual(['A', 'B']);
+            expect(result.target).toHaveLength(1);
+            expect(result.sourceA.length + result.sourceB.length).toBe(1);
         } finally {
             await rendered.onClosed();
         }
