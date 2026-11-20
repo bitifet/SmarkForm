@@ -284,6 +284,10 @@ skill, an advanced-internals skill, and agent-oriented usage pages. These are
 aids for generating SmarkForm code from a description, not a runtime
 dependency.
 
+{: .hint :}
+> SmarkForm’s clean, declarative API makes it a natural fit for AI-assisted
+> development
+
 👉 See [AI Agents]({{ "/ai_agents/smarkform_forms" | relative_url }}) and the
 [Developer Cheatsheet]({{ "/component_reference/cheatsheet" | relative_url }}).
 
