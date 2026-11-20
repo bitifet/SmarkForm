@@ -672,14 +672,16 @@ Establishes the maximum number of items allowed.
 
 #### sortable
 
-Controls wether the list can be user sorted by dragging and dropping list items.
+Controls whether the list can be user-sorted by dragging and dropping list
+items. It also enables the `next` and `previous` actions at `depth:0`.
 
   * **Type:** Boolean
   * **Default value:** false
 
-When `sortable` is `true` without setting [`moving_depth`](#moving_depth-cross-list-drag-scope),
-only same-list reordering is allowed.  Cross-list drag requires `moving_depth`
-on at least one of the lists involved.
+When `sortable` is `true` without setting
+[`moving_depth`](#moving_depth-cross-list-drag-scope), only same-list
+reordering is allowed. Cross-list movement requires the source and destination
+lists to permit the move through `moving_depth`.
 
 Sorting relies on the browser's native HTML drag-and-drop API.  Each list item
 becomes a drag source (or exposes drag handles — see below), and the list
@@ -735,17 +737,18 @@ original behaviour: the entire item root is draggable (backward compatible).
 > [DragDropTouch library](https://github.com/drag-drop-touch-js/dragdroptouch):
 
 
-#### moving_depth (Cross-List Drag scope)
+#### moving_depth (Cross-List Movement scope) {#moving_depth-cross-list-drag-scope}
 
-Controls cross-list drag-and-drop by enforcing a maximum *sibling distance*
-between source and destination lists.
+Controls cross-list drag-and-drop and the `next` / `previous` actions by
+enforcing a maximum *sibling distance* between source and destination lists.
 
   * **Type:** Number \| true \| false
   * **Default value:** 0 (disabled)
 
 When `moving_depth` is set to a positive number or `true` on a list, its items
 become draggable even if `sortable` is `false`. However, same-list reordering
-is only allowed when `sortable` is enabled.
+and the depth-zero `next` / `previous` actions are only allowed when `sortable`
+is enabled.
 
 **Sibling distance** is the number of nesting levels from the first divergent
 list-item ancestor between two lists.  For example, in a `departments →
@@ -757,13 +760,22 @@ A cross-list move is only allowed when the sibling distance between the source
 and destination list is **less than or equal to** `moving_depth` on **both**
 lists.  A value of `true` grants unlimited reach.
 
+The `next` and `previous` actions provide a keyboard-friendly alternative to
+dragging. Their positive `depth` option limits which candidate lists they can
+reach; each activation moves to only the next eligible list in rendered order,
+and appends the item there. A candidate must also accept the move under its own
+`moving_depth` and `max_items` settings. The actions are disabled when no
+eligible candidate remains in that direction.
+For candidate sequencing, distinct lists using the same mixin template count as
+one keyboard step, matching the existing same-template drag compatibility rule.
+
 {: .info}
 > **Sortable vs moving_depth**
 >
 > | `sortable` | `moving_depth` | Behaviour |
 > |---|---|---|
 > | `false` (default) | `0` (default) | Static list — no drag at all |
-> | `true` | `0` (default) | Same-list reorder only (legacy) |
+> | `true` | `0` (default) | Same-list drag and depth-zero action reorder only |
 > | `false` | `1+` or `true` | Items draggable; same-list drops ignored; cross-list allowed up to distance limit |
 > | `true` | `1+` or `true` | Same-list reorder AND cross-list up to distance limit |
 
@@ -1093,6 +1105,57 @@ minimum rows are reset to their own defaults.
   * **autoscroll:**  (= "elegant" / "self" / "parent" / *falsy*)
   * **preserve_non_empty:** (boolean)
   * **failback:** (= "none" / "clear" / "throw" )
+
+
+#### (Async) next (Action)
+
+Moves the selected item one step forward. With the default `depth:0`, it moves
+the item down one position in the same list. A positive depth moves it to the
+next eligible candidate list in rendered order and appends it to that list. It
+does not wrap at the end of a list or candidate sequence.
+
+The selected item is inferred when the trigger is inside that item. A trigger
+outside an item must specify `target` to identify the item to move.
+
+##### Options (next)
+
+  * **action:** (= "next")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * **target:** The item to move; normally inferred from a trigger inside that
+    item.
+  * **depth:** (non-negative number, default `0`) At `0`, requires
+    `sortable:true` and is disabled for the last item. Above `0`, the value must
+    not exceed the source list's `moving_depth`. The action chooses the next
+    destination whose sibling distance is no greater than `depth`, whose
+    `moving_depth` permits the move, and whose `max_items` has room. Ineligible
+    candidates are skipped.
+  * **focus:** (boolean, default `true` when triggered)
+
+
+#### (Async) previous (Action)
+
+Moves the selected item one step backward. With the default `depth:0`, it moves
+the item up one position in the same list. A positive depth moves it to the
+previous eligible candidate list in rendered order and appends it to that list.
+
+The selected item is inferred when the trigger is inside that item. A trigger
+outside an item must specify `target` to identify the item to move.
+
+##### Options (previous)
+
+  * **action:** (= "previous")
+  * {{ site.data.definitions.actions.options.origin }}
+  * {{ site.data.definitions.actions.options.context }}
+  * **target:** The item to move; normally inferred from a trigger inside that
+    item.
+  * **depth:** (non-negative number, default `0`) At `0`, requires
+    `sortable:true` and is disabled for the first item. Above `0`, the value
+    must not exceed the source list's `moving_depth`. The action chooses the
+    previous destination whose sibling distance is no greater than `depth`,
+    whose `moving_depth` permits the move, and whose `max_items` has room.
+    Ineligible candidates are skipped.
+  * **focus:** (boolean, default `true` when triggered)
 
 
 #### count (Action)
