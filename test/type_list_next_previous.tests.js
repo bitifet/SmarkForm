@@ -68,7 +68,7 @@ block mainForm
 const capacityPug = (// {{{
 `extends layout.pug
 block mainForm
-  div(data-smark={type:"list", name:"groups", min_items:3, max_items:3})
+  div(data-smark={type:"list", name:"groups", min_items:0, max_items:3})
     fieldset
       input(data-smark, name="groupName")
       ul(data-smark={type:"list", name:"tasks", sortable:true, moving_depth:2, min_items:0, max_items:2})

@@ -50,7 +50,7 @@ export const moveActions = function list_move_actions_decorator(target, {kind}) 
         async render(...args) {//{{{
             const retv = await super.render(...args);
             this._isList = true;
-            await this._updateMovementTriggers();
+            await this._refreshMovementTriggers();
             return retv;
         };//}}}
         onTriggerRender(args) {//{{{
@@ -155,6 +155,17 @@ export const moveActions = function list_move_actions_decorator(target, {kind}) 
                     depth: normalizeMoveDepth(options.depth ?? 0),
                     direction: options.action === "previous" ? -1 : 1,
                 });
+            };
+        };//}}}
+        async _refreshMovementTriggers() {//{{{
+            // A newly rendered or resized destination can change the disabled
+            // state of actions in another list. Refresh every live list so
+            // those actions never retain stale eligibility.
+            for (const list of this._allLists()) {
+                if (
+                    Array.isArray(list.children)
+                    && typeof list._updateMovementTriggers == "function"
+                ) await list._updateMovementTriggers();
             };
         };//}}}
         @action

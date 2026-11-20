@@ -14,7 +14,9 @@ export async function updateTriggers(context) {
     };
     // Movement actions own their candidate/disabled-state rules. This hook
     // keeps the generic add/remove decorator independent of those rules.
-    if (typeof context._updateMovementTriggers == "function") {
+    if (typeof context._refreshMovementTriggers == "function") {
+        await context._refreshMovementTriggers();
+    } else if (typeof context._updateMovementTriggers == "function") {
         await context._updateMovementTriggers();
     };
 };
