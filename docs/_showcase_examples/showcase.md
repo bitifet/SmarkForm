@@ -383,6 +383,16 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
 
 {% raw %} <!-- kanban_html {{{ --> {% endraw %}
 {% capture kanban_html -%}
+<script type="module">
+  import {enableDragDropTouch} from "https://cdn.jsdelivr.net/npm/@dragdroptouch/drag-drop-touch@2.0.3/dist/drag-drop-touch.esm.min.js";
+  enableDragDropTouch(document, document, {
+    isPressHoldMode: true,
+    pressHoldDelayMS: 400,
+    pressHoldMargin: 25,
+    pressHoldThresholdPixels: 5,
+  });
+  window.kanbanTouchDragReady = true;
+</script>
 <div id="myForm$$">
   <div class="kanban">
     <div class="column">
@@ -401,7 +411,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
       </div>
     </div>
   </div>
-  <p class="hint">💡 Use each task's <kbd>☰</kbd> actions menu to move it by keyboard, or drag from the card background. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
+  <p class="hint">💡 Use each task's <kbd>☰</kbd> actions menu to move it by keyboard, or drag from the card background. Touch users: press and hold to drag. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
   <button
     data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true,"autoscroll":"elegant"}'
     title="Clear empty tasks from all columns"
@@ -606,6 +616,69 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await page.keyboard.press('Enter');
     expect(await readField('/todo')).toEqual([{ title: 'Review PR' }]);
 
+    if (await page.evaluate(() => navigator.maxTouchPoints > 0)) {
+        await expect.poll(() => page.evaluate(() => window.kanbanTouchDragReady)).toBe(true);
+        await writeField('/todo', [
+            { title: 'Touch first' },
+            { title: 'Touch second' },
+        ]);
+        await root.locator('.column').evaluateAll(columns => {
+            for (const column of columns) {
+                column.style.minWidth = '0';
+                column.style.flex = '1 1 0';
+            };
+        });
+        const touchOrder = await page.evaluate(async () => {
+            const list = myForm.find('/todo');
+            const destination = myForm.find('/progress');
+            const source = list.children[0].targetNode;
+            const target = destination.children[0].targetNode;
+            const sourceRect = source.getBoundingClientRect();
+            const targetRect = target.getBoundingClientRect();
+            const start = {x: sourceRect.left + 2, y: sourceRect.top + 2};
+            const end = {x: targetRect.left + 2, y: targetRect.top + targetRect.height * 0.75};
+            const fireTouch = (type, point) => {
+                const touch = new Touch({
+                    identifier: 1,
+                    target: source,
+                    clientX: point.x,
+                    clientY: point.y,
+                    pageX: point.x + window.scrollX,
+                    pageY: point.y + window.scrollY,
+                    screenX: point.x,
+                    screenY: point.y,
+                });
+                const active = type === 'touchend' ? [] : [touch];
+                source.dispatchEvent(new TouchEvent(type, {
+                    bubbles: true,
+                    cancelable: true,
+                    touches: active,
+                    targetTouches: active,
+                    changedTouches: [touch],
+                }));
+            };
+
+            fireTouch('touchstart', start);
+            await new Promise(resolve => setTimeout(resolve, 450));
+            fireTouch('touchmove', end);
+            fireTouch('touchend', end);
+            for (let i = 0; i < 50; i++) {
+                const sourceValue = await list.export(null, {silent: true, export_empties: true});
+                const destinationValue = await destination.export(null, {silent: true, export_empties: true});
+                if (destinationValue.at(-1)?.title === 'Touch first') {
+                    return {source: sourceValue, destination: destinationValue};
+                };
+                await new Promise(resolve => setTimeout(resolve, 20));
+            };
+            return {
+                source: await list.export(null, {silent: true, export_empties: true}),
+                destination: await destination.export(null, {silent: true, export_empties: true}),
+            };
+        });
+        expect(touchOrder.source.map(task => task.title)).toEqual(['Touch second']);
+        expect(touchOrder.destination.map(task => task.title)).toEqual(['Fix layout', 'Touch first']);
+    };
+
     await page.evaluate(async () => {
         await myForm.find('/done').addItem(
             { title: '' }, { multiple: false, silent: true }
@@ -652,7 +725,7 @@ button { position: relative; }
 
 {% raw %} <!-- kanban_notes {{{ --> {% endraw %}
 {% capture kanban_notes -%}
-👉 **Move by keyboard or drag.** Open a task's <kbd>☰</kbd> actions disclosure to move it to the next/previous column or reorder it within the current column. You can also drag from the card background; inputs and buttons remain interactive.
+👉 **Move by keyboard or drag.** Open a task's <kbd>☰</kbd> actions disclosure to move it to the next/previous column or reorder it within the current column. You can also drag from the card background; inputs and buttons remain interactive. On touch screens, press and hold before dragging so normal swipes can scroll.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 
