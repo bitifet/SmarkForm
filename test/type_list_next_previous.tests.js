@@ -363,6 +363,48 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
         }
     });
 
+    test('rolls back when importing into the destination item fails', async ({ page }) => {
+        const rendered = await open(page, capacityPug, 'ListNextPreviousImportRollback');
+        try {
+            await page.evaluate(async () => {
+                await form.import({
+                    groups: [
+                        { groupName: 'A', tasks: [{ v: 'A' }] },
+                        { groupName: 'B', tasks: [{ v: 'B' }] },
+                        { groupName: 'C', tasks: [] },
+                    ],
+                });
+            });
+            const result = await page.evaluate(async () => {
+                const source = form.find('/groups/0/tasks');
+                const destination = form.find('/groups/1/tasks');
+                const addItem = destination.addItem.bind(destination);
+                destination.addItem = async (...args) => {
+                    const item = await addItem(...args);
+                    if (item) item.import = async () => { throw new Error('simulated import failure'); };
+                    return item;
+                };
+                let failed = false;
+                try {
+                    await source.move({
+                        from: source.children[0],
+                        target_list: destination,
+                        position: 'after',
+                    });
+                } catch (_error) {
+                    failed = true;
+                };
+                return {failed, value: await form.export()};
+            });
+            expect(result.failed).toBe(true);
+            expect(result.value.groups.map(group => group.tasks)).toEqual([
+                [{ v: 'A' }], [{ v: 'B' }], [],
+            ]);
+        } finally {
+            await rendered.onClosed();
+        }
+    });
+
     test('focus:false keeps focus on the caller after a same-list move', async ({ page }) => {
         const rendered = await open(page, depthZeroPug, 'ListNextPreviousFocusFalse');
         try {
