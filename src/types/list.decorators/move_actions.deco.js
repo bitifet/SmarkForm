@@ -21,7 +21,7 @@ function selectedItem(list, target) {//{{{
 async function moveByDirection(list, direction, options) {//{{{
     const from = selectedItem(list, options.target);
     const candidate = list._moveCandidate(from, {
-        depth: options.depth ?? 0,
+        depth: options.depth === undefined ? 0 : options.depth,
         direction: normalizeDirection(direction),
     });
     if (! candidate) return;
@@ -110,7 +110,9 @@ export const moveActions = function list_move_actions_decorator(target, {kind}) 
         _moveCandidate(from, options = {}) {//{{{
             if (! from || ! this.children.includes(from)) return null;
 
-            const depth = normalizeMoveDepth(options.depth ?? 0);
+            const depth = normalizeMoveDepth(
+                options.depth === undefined ? 0 : options.depth
+            );
             if (depth === null) return null;
             const direction = normalizeDirection(options.direction ?? 1);
             const movingDepth = this.moving_depth === true
@@ -154,7 +156,7 @@ export const moveActions = function list_move_actions_decorator(target, {kind}) 
                 const options = trigger.getTriggerArgs() || {};
                 const from = selectedItem(this, options.target);
                 trigger.targetNode.disabled = ! this._moveCandidate(from, {
-                    depth: options.depth ?? 0,
+                    depth: options.depth === undefined ? 0 : options.depth,
                     direction: options.action === "previous" ? -1 : 1,
                 });
             };
