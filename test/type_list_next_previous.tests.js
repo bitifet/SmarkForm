@@ -21,6 +21,9 @@ block mainForm
           button.non-numeric(
             data-smark={action:"next", depth:true}
           ) non-numeric
+          button.null-depth(
+            data-smark={action:"next", depth:null}
+          ) null depth
 `);// }}}
 
 const flatPug = (// {{{
@@ -196,6 +199,7 @@ test('depth 0 stays disabled at either end, even with an extra cycle option', as
             await expect(lists.first().locator('li').first().locator('.prev')).toBeDisabled();
             await expect(lists.first().locator('li').first().locator('.too-deep')).toBeDisabled();
             await expect(lists.first().locator('li').first().locator('.non-numeric')).toBeDisabled();
+            await expect(lists.first().locator('li').first().locator('.null-depth')).toBeDisabled();
 
             // First move reaches the next reachable list; a second move from
             // the same item would be needed to go any further.
