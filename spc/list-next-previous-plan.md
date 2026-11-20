@@ -26,6 +26,8 @@ The following behavior is settled:
 - A cross-list move cannot take its source below `min_items`. The shared transfer
   operation rechecks both source minimum and destination capacity before
   removing the item, so stale trigger state cannot duplicate or lose data.
+- If independent transfers race for the destination's last `max_items` slot, a
+  transfer that cannot insert restores the source item instead of losing it.
 - `focus:false` is respected by the shared move operation.
 - Per-item menu removal uses the existing `removeItem` action. SmarkForm hotkeys
   require Ctrl; menu shortcuts should avoid Ctrl+Arrow so they do not collide
@@ -74,7 +76,7 @@ cross-list moves append-only. Add or refine focused Playwright tests for default
 depth, depth overflow, source/destination limits, one-candidate-at-a-time
 ordering, skipped full/incompatible destinations, append order, end boundaries,
 sortable gating, source `min_items`, numeric depth validation, `focus:false`,
-and refreshed disabled states.
+concurrent last-slot transfers, and refreshed disabled states.
 
 **Expected files:**
 
