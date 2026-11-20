@@ -934,11 +934,11 @@ await sourceList.move({
 
 **Example — Cross-list drag between nested lists:**
 
-In this example the outer `departments` list has `sortable: true` (same-level
-reorder only), while each inner `employees` list has both `sortable: true` and
-`moving_depth: 2`.  This allows employees to be dragged between
-departments — the sibling distance between two employee lists is 2 (department
-item → employees → employee) — while still permitting same-list reordering.
+In this example, the outer `departments` list has `sortable:true` (same-level
+reorder), while each inner `employees` list has `sortable:true` and
+`moving_depth:2`. Use each row's actions menu to reorder departments or
+employees by keyboard, and to move employees between departments. The sibling
+distance between employee lists is 2 (department item → employees → employee).
 
 {% raw %} <!-- capture cross_list_drag_example {{{ --> {% endraw %}
 {% capture cross_list_drag_example -%}
@@ -948,19 +948,32 @@ item → employees → employee) — while still permitting same-list reordering
       <li>
         <div class="cdd-dept">
           <div class="cdd-dept-head">
-            <span data-smark-type="label" class="cdd-handle">
-              <span data-smark-action="position">N</span> ⠿
-            </span>
+            <span data-smark-action="position">N</span>
             <input name='name' placeholder='Dept. name' type='text' data-smark/>
-            <button data-smark-action="removeItem" title='Remove department'>➖</button>
+            <div class="card-actions">
+              <button type="button" class="card-menu-trigger" aria-expanded="false" title="Department actions" aria-label="Department actions">☰</button>
+              <div class="card-menu" data-card-menu role="group" aria-label="Department actions">
+                <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one department"><span aria-hidden="true">↑</span> Move Up</button>
+                <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one department"><span aria-hidden="true">↓</span> Move Down</button>
+                <button type="button" data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove department"><span aria-hidden="true">➖</span> Remove Department</button>
+              </div>
+            </div>
           </div>
           <div class="cdd-employees">
             <ul data-smark='{"type":"list","name":"employees","sortable":true,"moving_depth":2,"min_items":0}'>
               <li data-smark-role="empty_list" class="cdd-empty">No employees yet</li>
               <li>
-                <label data-smark title="Drag to reorder or move between departments">⠿</label>
                 <input name='value' placeholder='Employee name' type='text' data-smark>
-                <button data-smark-action="removeItem" title='Remove employee'>➖</button>
+                <div class="card-actions">
+                  <button type="button" class="card-menu-trigger" aria-expanded="false" title="Employee actions" aria-label="Employee actions">☰</button>
+                  <div class="card-menu" data-card-menu role="group" aria-label="Employee actions">
+                    <button type="button" data-smark='{"action":"next","depth":2,"hotkey":"]"}' title="Move to the next department"><span aria-hidden="true">→</span> Go Next</button>
+                    <button type="button" data-smark='{"action":"previous","depth":2,"hotkey":"["}' title="Move to the previous department"><span aria-hidden="true">←</span> Go Previous</button>
+                    <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one employee"><span aria-hidden="true">↑</span> Move Up</button>
+                    <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one employee"><span aria-hidden="true">↓</span> Move Down</button>
+                    <button type="button" data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove employee"><span aria-hidden="true">➖</span> Remove Employee</button>
+                  </div>
+                </div>
               </li>
             </ul>
             <button data-smark='{"action":"addItem","context":"employees"}' title='Add employee'>➕ Add Employee</button>
@@ -989,7 +1002,6 @@ endcapture %}
     border-bottom: 1px solid #eee;
     background: rgba(168, 168, 168, .25); border-radius: 6px 6px 0 0;
 }
-{{""}}#myForm$$ .cdd-handle { cursor: grab; color: #aaa; font-size: 1.1em; user-select: none; }
 {{""}}#myForm$$ .cdd-dept-head input[type="text"] {
     flex: 1; padding: 0.25em 0.4em;
     border: 1px solid #ccc; border-radius: 4px;
@@ -1001,7 +1013,6 @@ endcapture %}
 {{""}}#myForm$$ .cdd-employees ul li {
     display: flex; align-items: center; gap: 0.4em; padding: 0.1em 0;
 }
-{{""}}#myForm$$ .cdd-employees ul li label { cursor: grab; color: #aaa; user-select: none; }
 {{""}}#myForm$$ .cdd-employees ul li input[type="text"] {
     flex: 1; padding: 0.2em 0.4em;
     border: 1px solid #ccc; border-radius: 4px;
@@ -1011,7 +1022,28 @@ endcapture %}
     padding: 0.15em 0.6em; border: 1px solid #ccc; border-radius: 4px;
     background: #fff; cursor: pointer; line-height: 1.5;
 }
-{{""}}#myForm$$ .cdd button:disabled { opacity: 0.4; }{%
+{{""}}#myForm$$ .cdd button:disabled { opacity: 0.4; }
+{{""}}#myForm$$ .card-actions { position: relative; display: flex; flex-shrink: 0; }
+{{""}}#myForm$$ .card-menu-trigger { padding: 0 .4em; }
+{{""}}#myForm$$ .card-menu {
+{{""}}  display: none; position: absolute; top: 100%; right: 0; z-index: 10;
+{{""}}  min-width: 13em; padding: .25em; background: Canvas; color: CanvasText;
+{{""}}  border: 1px solid ButtonBorder; border-radius: 4px;
+{{""}}  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+{{""}}}
+{{""}}#myForm$$ .card-actions.menu-open .card-menu,
+{{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
+{{""}}#myForm$$ .card-menu button {
+{{""}}  display: block; width: 100%; text-align: left; border: 0;
+{{""}}  background: transparent; padding: .35em .5em;
+{{""}}}
+{{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
+{{""}}#myForm$$ .cdd-dept,
+{{""}}#myForm$$ .cdd-employees ul li { cursor: grab; }
+{{""}}#myForm$$ .cdd input,
+{{""}}#myForm$$ .cdd button { cursor: auto; }
+button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button { position: relative; }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -1042,6 +1074,120 @@ endcapture %}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
+{% raw %} <!-- capture cross_list_drag_js {{{ --> {% endraw %}
+{% capture cross_list_drag_js -%}
+/* The disclosures are author-side; SmarkForm owns each action and hotkey. */
+{
+  const root = myForm.targetNode;
+  let openEntry = null;
+  let menuSeq = 0;
+  const entries = [];
+  const registered = new WeakMap();
+  const syncEntry = entry => {
+    const expanded = (
+      entry.wrapper.classList.contains("menu-open")
+      || !! entry.menu.querySelector("[data-hotkey]")
+    );
+    entry.trigger.setAttribute("aria-expanded", String(expanded));
+    for (const action of entry.menu.querySelectorAll("button[data-smark]")) {
+      action.tabIndex = expanded && !action.disabled ? 0 : -1;
+    };
+  };
+  const registerMenu = trigger => {
+    if (registered.has(trigger)) return registered.get(trigger);
+    const menu = trigger.nextElementSibling;
+    if (! menu?.matches("[data-card-menu]")) return null;
+    const actionNode = menu.querySelector("button[data-smark]");
+    const actionComponent = actionNode && myForm.getComponent(actionNode);
+    if (actionComponent?.targetNode !== actionNode) return null;
+    menu.id ||= `employee-menu-${++menuSeq}`;
+    trigger.setAttribute("aria-controls", menu.id);
+    const entry = {trigger, menu, wrapper: trigger.parentElement};
+    registered.set(trigger, entry);
+    entries.push(entry);
+    syncEntry(entry);
+    return entry;
+  };
+  const ensureMenus = () => {
+    for (const trigger of root.querySelectorAll(".card-menu-trigger")) registerMenu(trigger);
+  };
+  const syncAll = () => {
+    ensureMenus();
+    for (let i = entries.length - 1; i >= 0; i--) {
+      if (! entries[i].wrapper.isConnected) {
+        if (openEntry === entries[i]) openEntry = null;
+        entries.splice(i, 1);
+      } else syncEntry(entries[i]);
+    };
+  };
+  const closeMenu = (entry = openEntry, {returnFocus = false} = {}) => {
+    if (! entry) return;
+    entry.wrapper.classList.remove("menu-open");
+    if (openEntry === entry) openEntry = null;
+    syncEntry(entry);
+    if (returnFocus) entry.trigger.focus();
+  };
+
+  ensureMenus();
+  root.addEventListener("click", ev => {
+    const trigger = ev.target.closest?.(".card-menu-trigger");
+    if (! trigger || ! root.contains(trigger)) return;
+    ev.stopPropagation();
+    const entry = registerMenu(trigger);
+    if (! entry) return;
+    if (openEntry === entry) {
+      closeMenu(entry);
+      return;
+    };
+    closeMenu();
+    entry.wrapper.classList.add("menu-open");
+    openEntry = entry;
+    syncEntry(entry);
+  });
+
+  for (const eventName of ["keydown", "keyup", "focusin", "focusout"]) {
+    root.addEventListener(eventName, syncAll);
+  };
+  new MutationObserver(syncAll).observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-smark", "data-sm-src", "disabled", "data-hotkey"],
+  });
+  document.addEventListener("keydown", ev => {
+    if (openEntry && ev.key === "Escape") {
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeMenu(openEntry, {returnFocus: true});
+    };
+  });
+  document.addEventListener("pointerdown", ev => {
+    if (openEntry && ! openEntry.wrapper.contains(ev.target)) closeMenu(openEntry);
+  });
+  for (const actionName of ["next", "previous", "removeItem"]) {
+    myForm.on(`AfterAction_${actionName}`, ev => {
+      const origin = ev.origin?.targetNode;
+      const entry = entries.find(candidate => candidate.menu.contains(origin))
+        || (openEntry?.menu.contains(origin) ? openEntry : null);
+      if (entry) closeMenu(entry);
+      syncAll();
+    });
+  };
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %} <!-- capture cross_list_drag_notes {{{ --> {% endraw %}
+{% capture cross_list_drag_notes -%}
+👉 **Move by keyboard or drag.** Department menus reorder departments; employee
+menus reorder employees or move them to the next/previous department. Cross-list
+actions step one destination at a time and append the employee.
+
+👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use
+<kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> to move between
+departments, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to
+reorder, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
 {% raw %} <!-- capture cross_list_drag_tests {{{ --> {% endraw %}
 {% capture cross_list_drag_tests -%}
 export default async ({ page, expect, id, root, readField, writeField }) => {
@@ -1058,45 +1204,45 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
         });
     });
 
-    // Cross-list move: "Alice Johnson" (Engineering[0]) → before "Carol White" (Design[0])
-    await page.evaluate(async () => {
-        const engEmps = myForm.find('/departments/0/employees');
-        const desEmps = myForm.find('/departments/1/employees');
-        await engEmps.move({
-            from: engEmps.children[0],  // Alice Johnson
-            to: desEmps.children[0],    // Carol White
-            target_list: desEmps,
-            position: 'before',
-        });
-    });
-
-    expect(
-        await readField('departments'),
-        'Alice Johnson moved from Engineering to Design (before Carol White)'
-    ).toEqual([
+    const employeeLists = root.locator('.cdd-employees > ul[data-smark]');
+    const alice = employeeLists.nth(0).locator(':scope > li').first();
+    await alice.getByRole('button', { name: 'Employee actions' }).click();
+    await alice.locator('[data-card-menu]').getByRole('button', { name: /Go Next/ }).click();
+    expect(await readField('departments')).toEqual([
         {name: 'Engineering', employees: [{value: 'Bob Smith'}]},
-        {name: 'Design', employees: [{value: 'Alice Johnson'}, {value: 'Carol White'}, {value: 'Dave Brown'}]},
+        {name: 'Design', employees: [{value: 'Carol White'}, {value: 'Dave Brown'}, {value: 'Alice Johnson'}]},
         {name: 'Marketing', employees: []},
     ]);
 
-    // Cross-list move without `to`: "Dave Brown" (Design[2]) → end of Engineering
-    await page.evaluate(async () => {
-        const engEmps = myForm.find('/departments/0/employees');
-        const desEmps = myForm.find('/departments/1/employees');
-        await desEmps.move({
-            from: desEmps.children[2],  // Dave Brown
-            target_list: engEmps,
-            position: 'after',
-        });
-    });
+    // A second activation advances one more list and again appends the employee.
+    const designAlice = employeeLists.nth(1).locator(':scope > li').nth(2);
+    await designAlice.getByRole('button', { name: 'Employee actions' }).click();
+    await designAlice.locator('[data-card-menu]').getByRole('button', { name: /Go Next/ }).click();
+    expect(await readField('departments')).toEqual([
+        {name: 'Engineering', employees: [{value: 'Bob Smith'}]},
+        {name: 'Design', employees: [{value: 'Carol White'}, {value: 'Dave Brown'}]},
+        {name: 'Marketing', employees: [{value: 'Alice Johnson'}]},
+    ]);
 
-    expect(
-        await readField('departments'),
-        'Dave Brown moved from Design to Engineering (append)'
-    ).toEqual([
-        {name: 'Engineering', employees: [{value: 'Bob Smith'}, {value: 'Dave Brown'}]},
-        {name: 'Design', employees: [{value: 'Alice Johnson'}, {value: 'Carol White'}]},
+    const marketingAlice = employeeLists.nth(2).locator(':scope > li').first();
+    await marketingAlice.getByRole('button', { name: 'Employee actions' }).click();
+    await marketingAlice.locator('[data-card-menu]').getByRole('button', { name: /Go Previous/ }).click();
+    const designAliceAgain = employeeLists.nth(1).locator(':scope > li').nth(2);
+    await designAliceAgain.getByRole('button', { name: 'Employee actions' }).click();
+    await designAliceAgain.locator('[data-card-menu]').getByRole('button', { name: /Go Previous/ }).click();
+    expect(await readField('departments')).toEqual([
+        {name: 'Engineering', employees: [{value: 'Bob Smith'}, {value: 'Alice Johnson'}]},
+        {name: 'Design', employees: [{value: 'Carol White'}, {value: 'Dave Brown'}]},
         {name: 'Marketing', employees: []},
+    ]);
+    expect((await readField('departments'))[0].employees[1].value).toBe('Alice Johnson');
+
+    const departments = root.locator('.cdd > ul[data-smark]');
+    const engineering = departments.locator(':scope > li').first();
+    await engineering.getByRole('button', { name: 'Department actions' }).click();
+    await engineering.locator('[data-card-menu]').getByRole('button', { name: /Move Down/ }).click();
+    expect((await readField('departments')).map(department => department.name)).toEqual([
+        'Design', 'Engineering', 'Marketing',
     ]);
 };
 {%- endcapture %}
@@ -1107,6 +1253,8 @@ export default async ({ page, expect, id, root, readField, writeField }) => {
     htmlSource=cross_list_drag_example
     minHeight=60
     cssSource=cross_list_drag_css
+    jsSource=cross_list_drag_js
+    notes=cross_list_drag_notes
     demoValue=cross_list_drag_demoValue
     showEditor=true
     tests=cross_list_drag_tests
