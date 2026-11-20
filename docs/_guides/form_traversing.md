@@ -519,7 +519,7 @@ The board below is three independent lists laid out as columns, sharing a single
       </div>
     </div>
   </div>
-  <p class="hint">💡 Hold <kbd>Ctrl</kbd> to discover shortcuts — drag ☰ handles to reorder or move between columns</p>
+  <p class="hint">💡 Use each task's <kbd>☰</kbd> actions menu to move it by keyboard, or drag from the card background. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
   <button
     data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true,"autoscroll":"elegant"}'
     title="Clear empty tasks from all columns"
@@ -541,9 +541,17 @@ The board below is three independent lists laid out as columns, sharing a single
     </div>
     <div data-smark='{"role":"empty_list"}' class="empty">No tasks</div>
     <div class="card">
-      <span data-smark='{"type":"label"}' class="handle" title="Drag to reorder">☰</span>
       <input data-smark type="text" name="title" placeholder="Task title...">
-      <button data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove">➖</button>
+      <div class="card-actions">
+        <button type="button" class="card-menu-trigger" aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
+        <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
+          <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Go to the next column"><span aria-hidden="true">→</span> Go Next</button>
+          <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Go to the previous column"><span aria-hidden="true">←</span> Go Previous</button>
+          <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one position"><span aria-hidden="true">↑</span> Move Up</button>
+          <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one position"><span aria-hidden="true">↓</span> Move Down</button>
+          <button type="button" data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove this task"><span aria-hidden="true">➖</span> Remove</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -559,6 +567,25 @@ The board below is three independent lists laid out as columns, sharing a single
 {{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
 button { position: relative; }
+{{""}}#myForm$$ .card-actions { position: relative; display: flex; }
+{{""}}#myForm$$ .card-menu-trigger { padding: 0 0.4em; }
+{{""}}#myForm$$ .card-menu {
+{{""}}  display: none; position: absolute; top: 100%; right: 0; z-index: 10;
+{{""}}  min-width: 13em; padding: 0.25em;
+{{""}}  background: Canvas; color: CanvasText;
+{{""}}  border: 1px solid ButtonBorder; border-radius: 4px;
+{{""}}  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+{{""}}}
+{{""}}#myForm$$ .card-actions.menu-open .card-menu,
+{{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
+{{""}}#myForm$$ .card-menu button {
+{{""}}  display: block; width: 100%; text-align: left;
+{{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
+{{""}}}
+{{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
+{{""}}#myForm$$ .card { cursor: grab; }
+{{""}}#myForm$$ .card input,
+{{""}}#myForm$$ .card button { cursor: auto; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- form_trav_kanban_js {{{ --> {% endraw %}
@@ -572,6 +599,105 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
   if (await ev.target?.isEmpty()) return;
   if (!window.confirm("Remove this task?")) ev.preventDefault();
 });
+
+/* The menu is authored in HTML; SmarkForm owns each action and its hotkey. */
+{
+  const root = myForm.targetNode;
+  let openEntry = null;
+  let menuSeq = 0;
+  const entries = [];
+  const registered = new WeakMap();
+  const syncEntry = entry => {
+    const expanded = (
+      entry.wrapper.classList.contains("menu-open")
+      || !! entry.menu.querySelector("[data-hotkey]")
+    );
+    entry.trigger.setAttribute("aria-expanded", String(expanded));
+    for (const action of entry.menu.querySelectorAll("button[data-smark]")) {
+      action.tabIndex = expanded && !action.disabled ? 0 : -1;
+    };
+  };
+  const registerMenu = trigger => {
+    if (registered.has(trigger)) return registered.get(trigger);
+    const menu = trigger.nextElementSibling;
+    if (! menu?.matches("[data-card-menu]")) return null;
+    const actionNode = menu.querySelector("button[data-smark]");
+    const actionComponent = actionNode && myForm.getComponent(actionNode);
+    if (actionComponent?.targetNode !== actionNode) return null;
+    menu.id ||= `card-menu-${++menuSeq}`;
+    trigger.setAttribute("aria-controls", menu.id);
+    const entry = {trigger, menu, wrapper: trigger.parentElement};
+    registered.set(trigger, entry);
+    entries.push(entry);
+    syncEntry(entry);
+    return entry;
+  };
+  const ensureMenus = () => {
+    for (const trigger of root.querySelectorAll(".card-menu-trigger")) registerMenu(trigger);
+  };
+  const syncAll = () => {
+    ensureMenus();
+    for (let i = entries.length - 1; i >= 0; i--) {
+      if (! entries[i].wrapper.isConnected) {
+        if (openEntry === entries[i]) openEntry = null;
+        entries.splice(i, 1);
+      } else syncEntry(entries[i]);
+    };
+  };
+  const closeMenu = (entry = openEntry, {returnFocus = false} = {}) => {
+    if (! entry) return;
+    entry.wrapper.classList.remove("menu-open");
+    if (openEntry === entry) openEntry = null;
+    syncEntry(entry);
+    if (returnFocus) entry.trigger.focus();
+  };
+
+  ensureMenus();
+  root.addEventListener("click", ev => {
+    const trigger = ev.target.closest?.(".card-menu-trigger");
+    if (! trigger || ! root.contains(trigger)) return;
+    ev.stopPropagation();
+    const entry = registerMenu(trigger);
+    if (! entry) return;
+    if (openEntry === entry) {
+      closeMenu(entry);
+      return;
+    };
+    closeMenu();
+    entry.wrapper.classList.add("menu-open");
+    openEntry = entry;
+    syncEntry(entry);
+  });
+
+  for (const eventName of ["keydown", "keyup", "focusin", "focusout"]) {
+    root.addEventListener(eventName, syncAll);
+  };
+  new MutationObserver(syncAll).observe(root, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ["data-smark", "data-sm-src", "disabled", "data-hotkey"],
+  });
+  document.addEventListener("keydown", ev => {
+    if (openEntry && ev.key === "Escape") {
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeMenu(openEntry, {returnFocus: true});
+    };
+  });
+  document.addEventListener("pointerdown", ev => {
+    if (openEntry && ! openEntry.wrapper.contains(ev.target)) closeMenu(openEntry);
+  });
+  for (const actionName of ["next", "previous", "removeItem"]) {
+    myForm.on(`AfterAction_${actionName}`, ev => {
+      const origin = ev.origin?.targetNode;
+      const entry = entries.find(candidate => candidate.menu.contains(origin))
+        || (openEntry?.menu.contains(origin) ? openEntry : null);
+      if (entry) closeMenu(entry);
+      syncAll();
+    });
+  };
+};
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture form_trav_kanban_demoValue -%}
@@ -595,12 +721,15 @@ click dispatches `removeItem` to *all* three lists at once — `preserve_non_emp
 leaves the filled tasks untouched.  **Try it!** Add a couple of cards, then clear
 the empty slots in one go.
 
-👉 **Drag between columns.** All three lists have `sortable:true` — drag any task
-card to another column to move it.
+👉 **Move by keyboard or drag.** Open a task's <kbd>☰</kbd> actions disclosure
+to move it to the next/previous column or reorder it within the current column.
+You can also drag from the card background; inputs and buttons remain interactive.
 
-👉 **Hotkeys.** Hold <code>Ctrl</code> to discover <code>+</code> (add task) and
-<code>-</code> (remove task) on each column.  The same hotkeys adapt to the column
-you are working in (context sensitivity).
+👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use
+<kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous
+column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up,
+and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused
+task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 
 > See <a href="{{ "/accessibility/hotkeys" | relative_url }}">Hotkeys</a>
 > for the full keyboard-shortcut reference.
