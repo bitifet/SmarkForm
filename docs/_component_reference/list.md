@@ -897,6 +897,8 @@ the same employees list have distance 0.
 A cross-list move is only allowed when the sibling distance between the source
 and destination list is **less than or equal to** `moving_depth` on **both**
 lists.  A value of `true` grants unlimited reach.
+Cross-list movement also preserves the source's `min_items` and is refused when
+the destination has reached `max_items`.
 
 The `next` and `previous` actions provide a keyboard-friendly alternative to
 dragging. Their positive `depth` option limits which candidate lists they can
@@ -921,7 +923,7 @@ one keyboard step, matching the existing same-template drag compatibility rule.
 
 You can still trigger a cross-list move programmatically via `move()` by
 passing a `target_list` option pointing to the destination list instance.  The
-same distance guard applies:
+same distance, source-minimum, and destination-capacity guards apply:
 
 ```js
 await sourceList.move({
@@ -1410,13 +1412,15 @@ outside an item must specify `target` to identify the item to move.
   * {{ site.data.definitions.actions.options.context }}
   * **target:** The item to move; normally inferred from a trigger inside that
     item.
-  * **depth:** (non-negative number, default `0`) At `0`, requires
+  * **depth:** (finite non-negative number, default `0`; numeric strings are
+    accepted). Invalid values do not enable movement. At `0`, requires
     `sortable:true` and is disabled for the last item. Above `0`, the value must
-    not exceed the source list's `moving_depth`. The action chooses the next
-    destination whose sibling distance is no greater than `depth`, whose
-    `moving_depth` permits the move, and whose `max_items` has room. Ineligible
-    candidates are skipped.
-  * **focus:** (boolean, default `true` when triggered)
+    not exceed the source list's `moving_depth`; the source must also remain at
+    or above `min_items`. The action chooses the next destination whose sibling
+    distance is no greater than `depth`, whose `moving_depth` permits the move,
+    and whose `max_items` has room. Ineligible candidates are skipped.
+  * **focus:** (boolean, default `true` when triggered); set `false` to leave
+    focus where it is.
 
 
 #### (Async) previous (Action)
@@ -1435,13 +1439,15 @@ outside an item must specify `target` to identify the item to move.
   * {{ site.data.definitions.actions.options.context }}
   * **target:** The item to move; normally inferred from a trigger inside that
     item.
-  * **depth:** (non-negative number, default `0`) At `0`, requires
+  * **depth:** (finite non-negative number, default `0`; numeric strings are
+    accepted). Invalid values do not enable movement. At `0`, requires
     `sortable:true` and is disabled for the first item. Above `0`, the value
-    must not exceed the source list's `moving_depth`. The action chooses the
-    previous destination whose sibling distance is no greater than `depth`,
-    whose `moving_depth` permits the move, and whose `max_items` has room.
-    Ineligible candidates are skipped.
-  * **focus:** (boolean, default `true` when triggered)
+    must not exceed the source list's `moving_depth`; the source must also remain
+    at or above `min_items`. The action chooses the previous destination whose
+    sibling distance is no greater than `depth`, whose `moving_depth` permits
+    the move, and whose `max_items` has room. Ineligible candidates are skipped.
+  * **focus:** (boolean, default `true` when triggered); set `false` to leave
+    focus where it is.
 
 
 #### count (Action)
