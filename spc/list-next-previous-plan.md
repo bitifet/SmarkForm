@@ -28,6 +28,8 @@ The following behavior is settled:
   removing the item, so stale trigger state cannot duplicate or lose data.
 - If independent transfers race for the destination's last `max_items` slot, a
   transfer that cannot insert restores the source item instead of losing it.
+- If destination item import fails after insertion, remove the partial destination
+  row and restore the source before propagating the error.
 - `focus:false` is respected by the shared move operation.
 - Per-item menu removal uses the existing `removeItem` action. SmarkForm hotkeys
   require Ctrl; menu shortcuts should avoid Ctrl+Arrow so they do not collide
@@ -76,7 +78,8 @@ cross-list moves append-only. Add or refine focused Playwright tests for default
 depth, depth overflow, source/destination limits, one-candidate-at-a-time
 ordering, skipped full/incompatible destinations, append order, end boundaries,
 sortable gating, source `min_items`, numeric depth validation, `focus:false`,
-concurrent last-slot transfers, and refreshed disabled states.
+concurrent last-slot transfers, import-failure rollback, and refreshed disabled
+states.
 
 **Expected files:**
 
