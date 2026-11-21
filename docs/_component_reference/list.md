@@ -566,8 +566,7 @@ with them.
 {{""}}  border: 0; background: transparent; padding: .35em .5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .group-card,
-{{""}}#myForm$$ .students li { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
 {{""}}#myForm$$ .school-groups input,
 {{""}}#myForm$$ .school-groups button { cursor: auto; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
@@ -778,32 +777,32 @@ container is the drop target.
 
 **Drag handles**
 
-When a list item contains one or more *SmarkForm label components* (any element
-rendered with `data-smark` and resolved as type `label` — including native
-`<label>`, `<legend>`, or any other tag with `data-smark-type="label"`),
-SmarkForm automatically designates those labels as drag handles. It also
-recognizes an element explicitly marked with `data-sf-drag-handle`:
+SmarkForm chooses drag handles per list item:
 
-- The item root is the native drag source, but drag starts are accepted only
-  when the gesture starts on one of the item's handles.
-- SmarkForm marks rendered label handles with `data-smark-label`; explicit
-  handles retain the `data-sf-drag-handle` marker. The marker also works on the
-  item root itself. Use either selector to style the grab affordance.
+- Any *SmarkForm label component* (an element rendered with `data-smark` and
+  resolved as type `label`, including `<label>`, `<legend>`, or another tag
+  explicitly typed as `label`) is automatically a handle.
+- Any element with `data-sf-drag-handle` is also a handle. This marker works on
+  the list-item root itself.
+- When one or more handles are present, the item root remains the native drag
+  source, but a drag can start only from one of those handles. SmarkForm marks
+  label handles with `data-smark-label`; explicit handles retain
+  `data-sf-drag-handle`. Use either selector to style the grab affordance.
 
-If no label or explicit handles are found inside a list item, SmarkForm falls
-back to the original behaviour: the entire item root is a drag handle
-(backward compatible). Interactive fields and controls remain excluded as
-drag-start targets.
+If an item has no label or explicit handles on its root or descendants,
+SmarkForm falls back to the original behaviour: the entire item root is a drag
+handle (backward compatible). Interactive fields and controls remain excluded
+as drag-start targets.
 
 **Interactive drag handles**
 
 Mark an interactive control itself with `data-sf-drag-handle` when that control
 also serves as the drag affordance—for example, a native menu button. The marked
-control can start a drag without losing its normal click or keyboard behavior.
-The same exception applies when an interactive element is itself a SmarkForm
-label handle. SmarkForm still blocks interactive descendants inside a marked
-wrapper, such as an input inside a drag region. This attribute does not create
-a SmarkForm component or change the element's semantics.
+control itself can start a drag, including when it is also a SmarkForm label
+handle. The marker does not change the control's semantics or its click and
+keyboard behavior when the user is not dragging. SmarkForm still blocks
+interactive descendants inside a marked wrapper, such as an input inside a
+drag region.
 
 ```html
 <button type="button" data-sf-drag-handle aria-label="Task actions">☰</button>
@@ -840,7 +839,10 @@ a SmarkForm component or change the element's semantics.
 > Test target platforms if touch reordering is required.
 >
 > A polyfill can emulate the interaction; one option is the
-> [DragDropTouch library](https://github.com/drag-drop-touch-js/dragdroptouch):
+> [DragDropTouch library](https://github.com/drag-drop-touch-js/dragdroptouch).
+> The [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board)
+> demonstrates loading it in an isolated preview iframe and warming its cache
+> with a page-scoped `modulepreload` hint.
 
 
 #### moving_depth (Cross-List Movement scope) {#moving_depth-cross-list-drag-scope}
@@ -1008,8 +1010,7 @@ endcapture %}
 {{""}}  background: transparent; padding: .35em .5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .cdd-dept,
-{{""}}#myForm$$ .cdd-employees ul li { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
 {{""}}#myForm$$ .cdd input,
 {{""}}#myForm$$ .cdd button { cursor: auto; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
