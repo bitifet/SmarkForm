@@ -6,6 +6,11 @@
 <meta name="robots" content="noindex, follow">
 {% endif %}
 
+{% if page.preload_dragdroptouch %}
+<!-- Warm the module's HTTP cache for the touch-drag example loaded in an iframe. -->
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@dragdroptouch/drag-drop-touch@2.0.3/dist/drag-drop-touch.esm.min.js" crossorigin="anonymous">
+{% endif %}
+
 <!-- Auto Color Scheme CSS -->
 <link rel="stylesheet" href="{{ '/assets/css/auto-color-scheme.css' | relative_url }}">
 

@@ -7,6 +7,7 @@ redirect_from:
   - "/about/showcase"
 title: "Showcase"
 description: "Explore interactive SmarkForm examples including a Kanban board, race registration, and hotel schedules."
+preload_dragdroptouch: true
 ---
 
 
@@ -383,6 +384,18 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
 
 {% raw %} <!-- kanban_html {{{ --> {% endraw %}
 {% capture kanban_html -%}
+<script type="module">
+  import { enableDragDropTouch } from "https://cdn.jsdelivr.net/npm/@dragdroptouch/drag-drop-touch@2.0.3/dist/drag-drop-touch.esm.min.js";
+  if (navigator.maxTouchPoints > 0) {
+    enableDragDropTouch(document, document, {
+      isPressHoldMode: true,
+      pressHoldDelayMS: 400,
+      pressHoldMargin: 25,
+      pressHoldThresholdPixels: 5,
+    });
+  };
+  window.kanbanTouchDragReady = true;
+</script>
 <div id="myForm$$">
   <div class="kanban">
     <div class="column">
@@ -450,23 +463,6 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
   if (await ev.target?.isEmpty()) return;
   if (!window.confirm("Remove this task?")) ev.preventDefault();
 });
-
-/* Load the touch-only polyfill asynchronously so the preview doesn't wait on the CDN. */
-if (navigator.maxTouchPoints > 0) {
-  import("https://cdn.jsdelivr.net/npm/@dragdroptouch/drag-drop-touch@2.0.3/dist/drag-drop-touch.esm.min.js")
-    .then(({enableDragDropTouch}) => {
-      enableDragDropTouch(document, document, {
-        isPressHoldMode: true,
-        pressHoldDelayMS: 400,
-        pressHoldMargin: 25,
-        pressHoldThresholdPixels: 5,
-      });
-      window.kanbanTouchDragReady = true;
-    })
-    .catch(error => console.warn("Could not load touch drag support", error));
-} else {
-  window.kanbanTouchDragReady = true;
-};
 
 /* SmarkForm owns the actions/hotkeys; this only toggles the disclosure. */
 {
@@ -726,7 +722,7 @@ button { position: relative; }
 {{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .card { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
 {{""}}#myForm$$ .card input,
 {{""}}#myForm$$ .card button { cursor: auto; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
@@ -735,8 +731,11 @@ button { position: relative; }
 {% capture kanban_notes -%}
 👉 **Move by keyboard or drag.** Use a task's <kbd>☰</kbd> button to open its actions disclosure or drag the task. On touch screens, press and hold the button before dragging so normal swipes can scroll. Inputs and other buttons remain interactive.
 
-The touch-only drag polyfill loads in the background from a pinned CDN version;
-it does not delay the preview iframe's initial render.
+The Showcase page preloads the pinned polyfill module in its document head. The
+example then imports it normally inside the preview iframe and enables it only
+on touch-capable devices. The hint lets the iframe reuse the fetched bytes from
+the browser's HTTP cache without enabling the polyfill on the Showcase page
+itself; cache policy or browser behavior can still cause a later fetch.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 

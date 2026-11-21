@@ -83,6 +83,16 @@ const myForm = new SmarkForm(document.getElementById("myForm$$"));
 
 **CDN `<script>` tags** for external libraries (e.g. IMask) should be placed **before** the `id="myForm$$"` wrapper, not inside it. The test runner's `isFormRoot()` function now skips leading `<script>` tags when detecting the root wrapper, so `htmlSource` starting with `<script>` followed by `<div id="myForm$$">` is correctly recognised as having a root — no extra wrapper is added.
 
+For an external ES module needed only inside the preview iframe, a page-scoped
+`<link rel="modulepreload">` can warm the browser's HTTP cache while keeping a
+normal static module import in the example. Mark only the pages containing that
+example in front matter and condition the hint in `docs/_includes/head_custom.html`;
+avoid site-wide preloads for example-only dependencies. Match the exact module
+URL and CORS credentials mode (`crossorigin="anonymous"` for public CDNs). The
+preloaded document's module map is separate from the iframe's, so this helps
+through the shared HTTP cache rather than sharing an evaluated module; caching
+is still subject to the browser and CDN response headers.
+
 **Why this matters:** When `showEditor=true`, the playground wraps the example in a "demo" subform. The `smarkformBuildEditorHtml()` function in the controller extracts the wrapper (found by `id="myForm$$"`) and inserts the demo subform inside it. A custom ID breaks this extraction, causing incorrect export nesting (e.g. `{cardNumber: null}` instead of `{payment: {cardNumber: null}}`).
 
 **The `demo` wrapper also shifts *inline trigger buttons* one level deeper**, so any example-local trigger (`data-smark` with `action`) that targets a sibling field must use a **relative `context`** (e.g. `"context":"report"`), NOT an absolute path (`"/report"`). Absolute paths resolve from the whole form root and fail with `UNKNOWN_ACTION` in the editor preview even though the co-located tests (which do not use the editor wrapper) pass. This bit the `file` chapter's `download` buttons. Example-local buttons that precede/contain the field are unaffected. The sampletab's own `export`/`import`/`clear` controls already use relative `context:"demo"` for the same reason.
