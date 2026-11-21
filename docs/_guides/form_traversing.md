@@ -583,7 +583,7 @@ button { position: relative; }
 {{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .card { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
 {{""}}#myForm$$ .card input,
 {{""}}#myForm$$ .card button { cursor: auto; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
