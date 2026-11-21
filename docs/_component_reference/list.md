@@ -787,8 +787,8 @@ recognizes an element explicitly marked with `data-sf-drag-handle`:
 - The item root is the native drag source, but drag starts are accepted only
   when the gesture starts on one of the item's handles.
 - SmarkForm marks rendered label handles with `data-smark-label`; explicit
-  handles retain the `data-sf-drag-handle` marker. Use either selector to style
-  the grab affordance.
+  handles retain the `data-sf-drag-handle` marker. The marker also works on the
+  item root itself. Use either selector to style the grab affordance.
 
 If no label or explicit handles are found inside a list item, SmarkForm falls
 back to the original behaviour: the entire item root is a drag handle
@@ -800,9 +800,10 @@ drag-start targets.
 Mark an interactive control itself with `data-sf-drag-handle` when that control
 also serves as the drag affordance—for example, a native menu button. The marked
 control can start a drag without losing its normal click or keyboard behavior.
-SmarkForm still blocks interactive descendants inside a marked wrapper, such as
-an input inside a drag region. This attribute does not create a SmarkForm
-component or change the element's semantics.
+The same exception applies when an interactive element is itself a SmarkForm
+label handle. SmarkForm still blocks interactive descendants inside a marked
+wrapper, such as an input inside a drag region. This attribute does not create
+a SmarkForm component or change the element's semantics.
 
 ```html
 <button type="button" data-sf-drag-handle aria-label="Task actions">☰</button>

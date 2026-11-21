@@ -227,3 +227,6 @@ recognition/guard), `test/type_list.tests.js` (interactive handle regression),
 four authored movement examples in the documentation. The Kanban touch test
 must start from the marked control and exercise the touch polyfill. Keep the
 example edits in the same independently scoped commits required above.
+Handle discovery and cursor styling also include the item root itself, not only
+marked descendants; tests distinguish the exact interactive handle from
+interactive controls nested inside a handle wrapper.

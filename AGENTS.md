@@ -131,8 +131,9 @@ while the disclosure is closed.
 
 Sortable lists normally use SmarkForm label components as drag handles. For a
 dual-purpose interactive handle (such as the native Kanban menu button), mark
-the exact control with `data-sf-drag-handle`. The sorter permits that control to
-start a drag but still blocks interactive descendants inside a marked wrapper.
+the exact control with `data-sf-drag-handle`; the marker may be on the item root
+itself. The sorter permits that control to start a drag but still blocks
+interactive descendants inside a marked wrapper.
 
 The Showcase Kanban additionally loads the pinned `@dragdroptouch/drag-drop-touch`
 ES module asynchronously inside that sample's isolated iframe, and only on
