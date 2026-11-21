@@ -401,7 +401,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
       </div>
     </div>
   </div>
-  <p class="hint">💡 Use each task's <kbd>☰</kbd> actions menu to move it by keyboard, or drag from the card background. Touch users: press and hold to drag. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
+  <p class="hint">💡 Use each task's <kbd>☰</kbd> button as an actions menu or drag handle. Touch users: press and hold it before dragging. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
   <button
     data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true,"autoscroll":"elegant"}'
     title="Clear empty tasks from all columns"
@@ -425,7 +425,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
     <div class="card">
       <input data-smark type="text" name="title" placeholder="Task title...">
       <div class="card-actions">
-        <button type="button" class="card-menu-trigger" aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
+        <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
         <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
           <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Go to the next column"><span aria-hidden="true">→</span> Go Next</button>
           <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Go to the previous column"><span aria-hidden="true">←</span> Go Previous</button>
@@ -639,15 +639,16 @@ export default async ({ expect, root, readField, writeField, page }) => {
             const list = myForm.find('/todo');
             const destination = myForm.find('/progress');
             const source = list.children[0].targetNode;
+            const handle = source.querySelector('[data-sf-drag-handle]');
             const target = destination.children[0].targetNode;
-            const sourceRect = source.getBoundingClientRect();
+            const sourceRect = handle.getBoundingClientRect();
             const targetRect = target.getBoundingClientRect();
             const start = {x: sourceRect.left + 2, y: sourceRect.top + 2};
             const end = {x: targetRect.left + 2, y: targetRect.top + targetRect.height * 0.75};
             const fireTouch = (type, point) => {
                 const touch = new Touch({
                     identifier: 1,
-                    target: source,
+                    target: handle,
                     clientX: point.x,
                     clientY: point.y,
                     pageX: point.x + window.scrollX,
@@ -656,7 +657,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
                     screenY: point.y,
                 });
                 const active = type === 'touchend' ? [] : [touch];
-                source.dispatchEvent(new TouchEvent(type, {
+                handle.dispatchEvent(new TouchEvent(type, {
                     bubbles: true,
                     cancelable: true,
                     touches: active,
@@ -732,7 +733,7 @@ button { position: relative; }
 
 {% raw %} <!-- kanban_notes {{{ --> {% endraw %}
 {% capture kanban_notes -%}
-👉 **Move by keyboard or drag.** Open a task's <kbd>☰</kbd> actions disclosure to move it to the next/previous column or reorder it within the current column. You can also drag from the card background; inputs and buttons remain interactive. On touch screens, press and hold before dragging so normal swipes can scroll.
+👉 **Move by keyboard or drag.** Use a task's <kbd>☰</kbd> button to open its actions disclosure or drag the task. On touch screens, press and hold the button before dragging so normal swipes can scroll. Inputs and other buttons remain interactive.
 
 The touch-only drag polyfill loads in the background from a pinned CDN version;
 it does not delay the preview iframe's initial render.
