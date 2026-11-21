@@ -519,7 +519,7 @@ The board below is three independent lists laid out as columns, sharing a single
       </div>
     </div>
   </div>
-  <p class="hint">💡 Use each task's <kbd>☰</kbd> actions menu to move it by keyboard, or drag from the card background. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
+  <p class="hint">💡 Use each task's <kbd>☰</kbd> button as an actions menu or drag handle. Touch users: press and hold it before dragging. Hold <kbd>Ctrl</kbd> to reveal shortcuts.</p>
   <button
     data-smark='{"action":"removeItem","context":"*","target":"*","preserve_non_empty":true,"autoscroll":"elegant"}'
     title="Clear empty tasks from all columns"
@@ -543,7 +543,7 @@ The board below is three independent lists laid out as columns, sharing a single
     <div class="card">
       <input data-smark type="text" name="title" placeholder="Task title...">
       <div class="card-actions">
-        <button type="button" class="card-menu-trigger" aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
+        <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
         <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
           <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Go to the next column"><span aria-hidden="true">→</span> Go Next</button>
           <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Go to the previous column"><span aria-hidden="true">←</span> Go Previous</button>
@@ -672,9 +672,9 @@ click dispatches `removeItem` to *all* three lists at once — `preserve_non_emp
 leaves the filled tasks untouched.  **Try it!** Add a couple of cards, then clear
 the empty slots in one go.
 
-👉 **Move by keyboard or drag.** Open a task's <kbd>☰</kbd> actions disclosure
-to move it to the next/previous column or reorder it within the current column.
-You can also drag from the card background; inputs and buttons remain interactive.
+👉 **Move by keyboard or drag.** Use a task's <kbd>☰</kbd> button to open its
+actions disclosure or drag the task. On touch screens, press and hold the button
+before dragging so normal swipes can scroll. Inputs and other buttons remain interactive.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use
 <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous
