@@ -2,12 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
-This changelog was generated from [GitHub Releases](https://github.com/bitifet/SmarkForm/releases)
-and associated tags. The project is currently pre-1.0.0; note-keeping policy and formatting
-conventions may change when 1.0.0 is reached. Older release history will be archived into
+Published entries correspond to [GitHub Releases](https://github.com/bitifet/SmarkForm/releases)
+and their tags; `[Unreleased]` tracks changes on `main` that are not published yet.
+The project is currently pre-1.0.0; note-keeping policy and formatting conventions may
+change when 1.0.0 is reached. Older release history will be archived into
 `docs/changelog-archive/*.md` at that point.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+
+---
+
+## 0.26.0 — 2026-11-21
+
+⌨️ Keyboard-accessible list movement · 🧲 Interactive drag handles · 📚 Documentation refactor
+
+The 0.26.0 version adds `next` and `previous` list actions for keyboard-first reordering and sibling-list movement, plus explicit drag handles that allow interactive controls such as menu buttons to initiate a drag. List movement validates source/destination bounds and rolls back failed transfers. The documentation adds an accessible Kanban menu, a touch-drag example, and a responsive maximizable playground.
+
+### Features
+
+- **List `next` / `previous` actions**: move an item one position within a sortable list, or one eligible sibling list at a time with a numeric `depth`. The actions disable when movement is out of bounds, exceeds `moving_depth`, or violates source/destination list constraints.
+- **Explicit interactive drag handles**: `data-sf-drag-handle` lets a specific interactive control (for example, a menu button) serve as the drag grip while preserving its normal click and keyboard behavior. Existing SmarkForm label handles remain supported.
+
+### Bug Fixes
+
+- **Safer cross-list transfers**: movement rechecks source and destination constraints and restores the source item when the destination fills during a move or rejects an imported value.
+- **Movement state stays current**: `next` / `previous` availability refreshes as sibling lists render or change.
+
+### Documentation
+
+- Reorganized the documentation around reader paths, with a short Quick Start, task guides, a detailed component reference, accessibility guidance, and a concise Showcase.
+- Added an accessible Kanban task menu and documented touch drag in the Showcase without adding the polyfill to SmarkForm's runtime.
+- Added a responsive, maximizable playground with reduced-motion support.
+
+### Other
+
+- Updated development dependencies. No runtime dependencies were added.
 
 ---
 
