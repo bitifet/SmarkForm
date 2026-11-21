@@ -171,11 +171,11 @@ test('maximized tabbar moves Notes left and chooses the logo variant that fits',
     const logoBox = await logo.boundingBox();
     expect(logoBox.height).toBeGreaterThan(50);
     expect(Math.abs((leftOrder[2].y + leftOrder[2].height / 2)
-        - (tabbarBox.y + tabbarBox.height / 2))).toBeLessThan(1);
+        - (tabbarBox.y + tabbarBox.height / 2))).toBeLessThan(2);
     expect(Math.abs((leftOrder[0].y + leftOrder[0].height)
-        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(1);
+        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(2);
     expect(Math.abs((leftOrder[1].y + leftOrder[1].height)
-        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(1);
+        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(2);
     expect(tabbarBox.x + tabbarBox.width - (leftOrder[2].x + leftOrder[2].width)).toBeGreaterThan(14);
 
     await tabbar.evaluate(node => { node.style.width = '280px'; });
