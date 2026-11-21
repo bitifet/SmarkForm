@@ -308,6 +308,10 @@ items, count labels, etc.) alongside the heading text.
 
 When `sortable:true`, list items can be reordered by dragging.
 
+Touch devices may need a drag-and-drop polyfill such as
+[DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch); see it in
+action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
+
 ### export_empties
 
 By default, `export_empties` is `false`: empty items are stripped from

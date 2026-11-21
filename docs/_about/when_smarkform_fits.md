@@ -302,6 +302,10 @@ label associations and position counters are all built in.
 
 {% include components/doctabs_tpl.md tabId="sf-event-planner" docSource=sf_doc height=65 %}
 
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 
 ---
 

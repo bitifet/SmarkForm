@@ -586,6 +586,11 @@ The sibling distance between student lists is 2, so cross-class actions use
 
 👉 **Try it!** Open a class and student, use **Go Next** to move Bart to Class B,
 then add a grade. The JSON editor shows the updated nested value.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- deep_school_groups_demoValue {{{ -->{% endraw %}
@@ -1109,6 +1114,11 @@ actions step one destination at a time and append the employee.
 <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> to move between
 departments, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to
 reorder, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- capture cross_list_drag_tests {{{ --> {% endraw %}

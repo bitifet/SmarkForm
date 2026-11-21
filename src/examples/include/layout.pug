@@ -29,6 +29,12 @@ html(style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");
                 block mainForm
                 include ./templates.pug
                 // END SmarkForm sample
+
+                if touchDragHint
+                    p.smarkform-touch-hint
+                        | Touch devices may need a drag-and-drop polyfill such as
+                        | #[a(href="https://github.com/drag-drop-touch-js/dragdroptouch", target="_blank", rel="noopener noreferrer") DragDropTouch].
+                        | See it in action in the #[a(href="https://smarkform.bitifet.net/showcase_examples/showcase#project-kanban-board") Showcase Kanban].
                 
                 footer.smarkform-badge-footer
                     a(href="https://smarkform.bitifet.net/for_end_users/user_guide",

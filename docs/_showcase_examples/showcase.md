@@ -1030,6 +1030,11 @@ strings. The Color field has an authored default value.
 > See <a href="{{ "/component_reference/form" | relative_url }}">Form Nesting</a>,
 > <a href="{{ "/component_reference/list" | relative_url }}">List Types</a>,
 > <a href="{{ "/guides/value_coercion" | relative_url }}">Value Coercion</a>.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
@@ -1334,6 +1339,11 @@ Open a period to edit its dates and service hours. Add split shifts where a
 service closes during the day; remove all intervals to mark it closed. Drag the
 ⠿ handle to reorder periods, or choose **✨ Duplicate period** to copy the
 preceding period and adjust only what differs.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- hotel_schedule_demoValue {{{ -->{% endraw %}

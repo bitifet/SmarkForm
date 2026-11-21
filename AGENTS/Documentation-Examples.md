@@ -28,6 +28,11 @@ These are full-page forms built as Pug templates and compiled by Rollup to `dist
 
 **File: `docs/_data/examples.csv`** is consumed by Jekyll in `docs/_showcase_examples/examples.md` via `{% for item in site.data.examples %}`. Every row becomes an `<option>` in the example selector dropdown.
 
+Standalone examples with sortable lists set `touchDragHint = true` in their
+Pug properties block. The shared `src/examples/include/layout.pug` then adds a
+brief touch-polyfill hint after the form. Do not load the polyfill in these
+examples; the Showcase Kanban is the sole live demonstration.
+
 ### 2. Inline Jekyll Playground Examples (co-located in `.md` docs)
 
 These are embedded directly inside Markdown documentation pages using the `sampletabs_tpl.md` Liquid include. They render a tabbed preview+editor widget right inside the doc page.

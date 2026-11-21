@@ -534,6 +534,11 @@ macOS Command/Meta.
 </ul>
 ```
 
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
+
 ### Tooltip mixin with CSS
 
 A reusable mixin that wraps a field with a CSS-only tooltip:

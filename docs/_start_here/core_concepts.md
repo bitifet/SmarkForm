@@ -426,6 +426,11 @@ endcapture %}
 
 🚀 The list can also be matched directly with `[data-smark-sortable="true"]`,
    so the custom `.sortable` class is only needed for your own styling.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 

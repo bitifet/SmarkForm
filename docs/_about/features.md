@@ -106,6 +106,11 @@ methods. With `sortable: true`, items can be reordered by drag and drop (and
 between nested lists with `moving_depth`). Automatic sorting by field value is
 **not implemented**; the current feature is manual drag-and-drop sorting.
 
+Touch devices may need a drag-and-drop polyfill such as
+[DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch); the
+[Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board)
+demonstrates it in action.
+
 👉 See the [List reference]({{ "/component_reference/list" | relative_url }}) for
 item templates, position metadata, `min_items`/`max_items`, and sortable-list
 behavior.

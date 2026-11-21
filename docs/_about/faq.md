@@ -416,6 +416,11 @@ placeholder:
 👉 **Try it:** press 🧹 to drop the empty slot and watch the *(None)*
 placeholder appear, then use ➕ to add phone numbers.
 
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
+
 
 ### How do I add animations to list items?
 
@@ -505,51 +510,60 @@ level. When the entire item is draggable, the browser intercepts mouse
 click-drag gestures to start a drag instead of performing a text selection
 inside the input.
 
-**The fix: add a SmarkForm label component inside each list item as a drag handle.**
+**The fix: give each list item a clear drag handle.** Use a SmarkForm label
+component or mark another element with `data-sf-drag-handle`.
 
-SmarkForm detects whether a list item contains any rendered label components
-(`<label data-smark>`, `<legend data-smark>`, or any element with
-`data-smark='{"type":"label"}'`). When labels are found:
+SmarkForm detects rendered label components (`<label data-smark>`, `<legend
+data-smark>`, or another element with `data-smark='{"type":"label"}'`) and
+explicit `[data-sf-drag-handle]` markers. When a list item has one or more
+handles:
 
-1. The item root is made **non-draggable** — mouse gestures inside inputs and
-   textareas work normally.
-2. Only the label nodes are made **draggable** — they act as drag handles.
-3. Dragging from an interactive control (input, textarea, select, button, link)
-   is always blocked, even if the event somehow reaches a draggable label.
+1. The item root remains the native drag source, but dragging may start only
+   from a designated handle.
+2. A handle can be the item root itself. An interactive element that is itself a
+   handle (such as a marked menu button or a button label) may start a drag;
+   interactive descendants inside a handle wrapper remain blocked.
+3. Without a label or explicit marker, the whole item is the fallback handle,
+   while interactive controls remain excluded as drag-start targets.
 
 **Minimal example:**
 
 ```html
 <ul data-smark='{"type":"list","name":"items","sortable":true}'>
   <li>
-    <label data-smark title="Drag to reorder">☰</label>
+    <button type="button" data-sf-drag-handle aria-label="Drag to reorder">☰</button>
     <input data-smark name="value" placeholder="…">
     <button data-smark-action="removeItem">✕</button>
   </li>
 </ul>
 ```
 
-Apply `cursor: grab` to the handle via CSS:
+Apply `cursor: grab` to the marked handle via CSS:
 
 ```css
-[data-smark-label] { cursor: grab; }
+[data-sf-drag-handle] { cursor: grab; }
 ```
 
-SmarkForm automatically adds the `data-smark-label` attribute to every rendered
-label component, so the selector always works.
+SmarkForm automatically adds `data-smark-label` to rendered label handles; use
+that selector when using labels instead of an explicit marker.
 
 **Design notes:**
 
-- The label content is entirely up to you — a hamburger icon (☰), a drag-dots
-  icon, an `<img>`, or an inner `<span>` all work.  A label is
-  `user-select: none` by default, which is ideal for a drag handle.
-- If you need selectable text *and* a drag handle, add a second, dedicated
-  label just for the handle.
-- List items that consist of a single input field and no label fall back to the
-  original "entire item is draggable" behaviour.  The recommended pattern for
-  single-field sortable lists is to use the [Singleton
+- The handle's visual content is up to you — a hamburger icon (☰), drag dots, or
+  an `<img>` can make the affordance clear. SmarkForm labels do not allow text
+  selection by default, which is ideal for a drag handle.
+- An interactive control can also be the drag handle when that exact control is
+  marked; interactive descendants inside the handle remain excluded.
+- List items that consist of a single input field and no designated handle fall
+  back to the original "entire item is draggable" behaviour. The recommended
+  pattern for single-field sortable lists is to use the [Singleton
   pattern]({{ "/about/faq#what-is-the-singleton-pattern" | relative_url }})
   with a label handle in the wrapping item template.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 
 For more details see the [sortable option
 documentation]({{ "/component_reference/list#sortable" | relative_url }}).

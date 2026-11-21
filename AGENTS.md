@@ -135,13 +135,14 @@ the exact control with `data-sf-drag-handle`; the marker may be on the item root
 itself. The sorter permits that control to start a drag but still blocks
 interactive descendants inside a marked wrapper.
 
-The Showcase Kanban imports the pinned `@dragdroptouch/drag-drop-touch` ES module
-inside its isolated iframe, enabling it only on touch-capable devices. A
+Only the Showcase Kanban imports the pinned `@dragdroptouch/drag-drop-touch` ES
+module inside its isolated iframe, enabling it only on touch-capable devices. A
 page-specific `modulepreload` in `docs/_includes/head_custom.html` warms the
-browser cache without executing the polyfill in the Showcase page. Press-hold
-mode lets ordinary touch swipes scroll. This is example-only; do not load the
-polyfill globally or add it to SmarkForm's runtime bundle without a separate
-design decision. Its co-located test simulates a touch drag on mobile projects.
+browser cache without executing the polyfill in the Showcase page. Other
+sortable/moving examples link to the polyfill and this Kanban instead of loading
+it. Press-hold mode lets ordinary touch swipes scroll. Do not load the polyfill
+globally or add it to SmarkForm's runtime bundle without a separate design
+decision. Its co-located test simulates a touch drag on mobile projects.
 
 ### File Field Type
 
@@ -493,7 +494,9 @@ scripts/livebuild_dev_smarkform.sh
 - Shared example helpers: `src/examples/include/layout.pug` (base layout),
   `src/examples/include/mixins.pug` (Pug convenience wrappers),
   `src/examples/include/templates.pug` (SmarkForm native mixin `<template>`
-  elements included at body level by the layout)
+  elements included at body level by the layout). Set `touchDragHint = true` in
+  an example's properties block to show the touch-polyfill guidance for sortable
+  examples; only the Showcase Kanban loads the polyfill.
 - Each `src/examples/*.pug` page supplies a `description`; the shared example
   layout emits it as standard, Open Graph and X metadata for direct example links.
 - The examples rollup entry (`src/examples/index.js`) is a pure file-generation

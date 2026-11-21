@@ -320,6 +320,11 @@ A nested subform, a sortable list, context-driven hotkeys, and date/time coercio
     tests=false
 %}
 
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
+
 ## What you get
 
 **The core model**

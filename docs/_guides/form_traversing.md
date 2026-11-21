@@ -684,6 +684,11 @@ task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 
 > See <a href="{{ "/accessibility/hotkeys" | relative_url }}">Hotkeys</a>
 > for the full keyboard-shortcut reference.
+
+{: .hint}
+> Touch devices may need a drag-and-drop polyfill such as
+> [DragDropTouch](https://github.com/drag-drop-touch-js/dragdroptouch). See it
+> in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 {%- endcapture %}
 
 {% include components/sampletabs_tpl.md

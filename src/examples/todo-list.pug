@@ -5,6 +5,7 @@ include include/autobackground.pug
 block append properties
     -
         var title = "TODO-List Example";
+        var touchDragHint = true;
         var description = `
             This example shows how to create a complete TO-DO list interface
             with just a few HTML lines.
@@ -59,5 +60,4 @@ block mainForm
             #[span(role='img', aria-label='') 🧹] Clear empty
         button(data-smark='{"action":"addItem","context":"tasklist"}').
             #[span(role='img', aria-label='') ➕] Add new task
-
 
