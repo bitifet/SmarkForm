@@ -537,6 +537,72 @@ test.describe('Sortable List – move reorder integrity', () => {
     });
 });
 
+const interactiveDragHandlePugSrc = `extends layout.pug
+block mainForm
+    ul(data-smark={type:"list", name:"items", sortable:true, min_items:0})
+        li
+            button.menu-handle(type="button", data-sf-drag-handle="") Menu
+            div.handle-wrapper(data-sf-drag-handle="")
+                button.nested-button(type="button") Nested control
+            input(data-smark, name="value")
+`;
+
+test('an explicitly marked interactive handle can drag, but its interactive child cannot', async ({ page }) => {
+    let onClosed;
+    try {
+        const rendered = await renderPug({
+            title: 'Interactive Drag Handle',
+            src: interactiveDragHandlePugSrc,
+        });
+        onClosed = rendered.onClosed;
+        await page.goto(rendered.url);
+        await page.evaluate(async () => {
+            await form.import({items: [{value: 'A'}, {value: 'B'}]});
+        });
+
+        const result = await page.evaluate(async () => {
+            const list = form.find('/items');
+            const source = list.children[0].targetNode;
+            const target = list.children[1].targetNode;
+            const dataTransfer = {setDragImage() {}};
+            const fire = (type, node, clientY = 0) => {
+                const event = new Event(type, {bubbles: true, cancelable: true});
+                Object.defineProperty(event, 'dataTransfer', {value: dataTransfer});
+                Object.defineProperty(event, 'clientY', {value: clientY});
+                Object.defineProperty(event, 'offsetX', {value: 0});
+                node.dispatchEvent(event);
+            };
+
+            // The nested button is interactive content inside a marked handle,
+            // so it must not accidentally start a drag.
+            fire('mousedown', source.querySelector('.nested-button'));
+            fire('dragstart', source);
+            fire('dragover', target);
+            fire('drop', target);
+            fire('dragend', source);
+
+            // The marked button itself is both the menu control and drag grip.
+            const targetRect = target.getBoundingClientRect();
+            fire('mousedown', source.querySelector('.menu-handle'));
+            fire('dragstart', source);
+            fire('dragover', target, targetRect.bottom - 1);
+            fire('drop', target, targetRect.bottom - 1);
+            fire('dragend', source);
+
+            for (let i = 0; i < 40; i++) {
+                const values = await list.export(null, {silent: true, export_empties: true});
+                if (values[0]?.value === 'B') return values;
+                await new Promise(resolve => setTimeout(resolve, 25));
+            };
+            return await list.export(null, {silent: true, export_empties: true});
+        });
+
+        expect(result).toEqual([{value: 'B'}, {value: 'A'}]);
+    } finally {
+        if (onClosed) await onClosed();
+    }
+});
+
 // ─── Cross-list drag between nested sortable lists (moving_depth) ──────────────
 //
 // Regression for the showcase "school_groups" example: the students lists are

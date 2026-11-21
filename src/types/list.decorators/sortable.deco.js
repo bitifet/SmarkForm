@@ -6,8 +6,10 @@ import {mutex, sym_mutex_key} from "../../decorators/mutex.deco.js";
 // Selector for interactive fields where a drag should not start.
 const INTERACTIVE_FIELDS_SELECTOR = "input, textarea, select, button, a, [contenteditable='true']";
 
-// Selector for SmarkForm label components (marked during render).
-const SMARK_LABEL_SELECTOR = "[data-smark-label]";
+// A SmarkForm label is the default drag handle. Authors may also mark a
+// different element explicitly, including an interactive control that serves
+// a second purpose such as opening an action menu.
+const DRAG_HANDLE_SELECTOR = "[data-smark-label], [data-sf-drag-handle]";
 
 // Module-level cross-list drag state.  Set by the source list during
 // dragstart, extended by the target list during drop, consumed by the
@@ -83,13 +85,15 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                                 itemRoot = itemRoot.parentElement;
                             };
 
-                            const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
+                            const handles = itemRoot.querySelectorAll(DRAG_HANDLE_SELECTOR);
                             if (handles.length > 0) {
-                                if (!lastMousedownTarget?.closest(SMARK_LABEL_SELECTOR)) {
+                                const handle = lastMousedownTarget?.closest(DRAG_HANDLE_SELECTOR);
+                                if (!handle) {
                                     e.preventDefault();
                                     return;
                                 };
-                                if (lastMousedownTarget?.closest(INTERACTIVE_FIELDS_SELECTOR)) {
+                                const interactive = lastMousedownTarget?.closest(INTERACTIVE_FIELDS_SELECTOR);
+                                if (interactive && interactive !== handle) {
                                     e.preventDefault();
                                     return;
                                 };
@@ -357,7 +361,7 @@ function _applyDraggable(me, itemRoot) {
     // Item root is always the draggable element.
     itemRoot.setAttribute("draggable", "true");
     // Apply grab cursor to any label handles as a visual hint.
-    const handles = itemRoot.querySelectorAll(SMARK_LABEL_SELECTOR);
+    const handles = itemRoot.querySelectorAll(DRAG_HANDLE_SELECTOR);
     handles.forEach(h => _applyCursorGrab(h));
 };
 
