@@ -275,6 +275,7 @@ endif %}{% if jsHidden != '-'
     <label class="smarkform-editor-label smarkform-show-editor-label"><input type="checkbox" class="smarkform-show-editor-toggle" {% if showEditor == true %}checked{% endif %}{% if editorToggleDisabled %} disabled{% endif %}> 📋 Show playground editor <span class="smarkform-hint-icon" title="Show or hide the JSON editor in the preview. This does not change the HTML or JS source tabs.">ℹ️</span></label>
     <label class="smarkform-editor-label smarkform-include-editor-label" style="display:none"><input type="checkbox" class="smarkform-include-editor-toggle"{% if editorToggleDisabled %} disabled{% endif %}> 📋 Include playground editor <span class="smarkform-hint-icon" title="Include or remove the playground editor in the preview and editable HTML/JS source.">ℹ️</span></label>
     <button class="smarkform-run-btn" style="display:none">▶️ Run</button>
+    <button type="button" class="smarkform-maximize-btn" title="Maximize" aria-label="Maximize" aria-pressed="false">🗖 </button>
     <a class="smarkform-playground-help" href="{{ '/showcase_examples/playground' | relative_url }}#interactive-examples" title="Learn how to use interactive examples" aria-label="Learn how to use interactive examples">❓</a>
   </div>
   {% if current_tab == "html" %}{% assign active_class = "tab-active" %}{% else %}{% assign active_class = "" %}{% endif %}

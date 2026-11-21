@@ -58,6 +58,12 @@ The playground controls operate on the form data:
 - <code>♻️ Reset</code> restores the form's initial data and clears the JSON editor.
 - <code>❌ Clear</code> empties the form.
 
+Use **🗖 Maximize** beside the help link to expand an example over the viewport.
+Choose **🗗 Restore** or press **Escape** to return to the page. The maximized
+preview keeps the editor beside the form in landscape; in portrait, it stacks
+below. In landscape, the Export/Import/Reset/Clear controls rotate into a
+vertical rail between the form and editor.
+
 ### Editing an example
 
 Choose **✏️ Edit** to turn the available source tabs into syntax-highlighted
