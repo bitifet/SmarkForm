@@ -920,7 +920,7 @@ distance between employee lists is 2 (department item → employees → employee
             <span data-smark-action="position">N</span>
             <input name='name' placeholder='Dept. name' type='text' data-smark/>
             <div class="card-actions">
-              <button type="button" class="card-menu-trigger" aria-expanded="false" title="Department actions" aria-label="Department actions">☰</button>
+              <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Department actions" aria-label="Department actions">☰</button>
               <div class="card-menu" data-card-menu role="group" aria-label="Department actions">
                 <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one department"><span aria-hidden="true">↑</span> Move Up</button>
                 <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one department"><span aria-hidden="true">↓</span> Move Down</button>
@@ -934,7 +934,7 @@ distance between employee lists is 2 (department item → employees → employee
               <li>
                 <input name='value' placeholder='Employee name' type='text' data-smark>
                 <div class="card-actions">
-                  <button type="button" class="card-menu-trigger" aria-expanded="false" title="Employee actions" aria-label="Employee actions">☰</button>
+                  <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Employee actions" aria-label="Employee actions">☰</button>
                   <div class="card-menu" data-card-menu role="group" aria-label="Employee actions">
                     <button type="button" data-smark='{"action":"next","depth":2,"hotkey":"]"}' title="Move to the next department"><span aria-hidden="true">→</span> Go Next</button>
                     <button type="button" data-smark='{"action":"previous","depth":2,"hotkey":"["}' title="Move to the previous department"><span aria-hidden="true">←</span> Go Previous</button>
@@ -1099,7 +1099,8 @@ endcapture %}
 {% raw %} <!-- capture cross_list_drag_notes {{{ --> {% endraw %}
 {% capture cross_list_drag_notes -%}
 👉 **Move by keyboard or drag.** Department menus reorder departments; employee
-menus reorder employees or move them to the next/previous department. Cross-list
+menus reorder employees or move them to the next/previous department. The <kbd>☰</kbd>
+button is also the drag handle; on touch, press and hold before moving. Cross-list
 actions step one destination at a time and append the employee.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use
