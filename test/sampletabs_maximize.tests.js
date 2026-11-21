@@ -71,7 +71,7 @@ function sampletabsFixture() {
         </div>
       </div>
       <div class="tab-content tab-content-html tab-code"><pre>Example source</pre></div>
-      <div class="tab-content tab-content-notes">Notes</div>
+      <div class="tab-content tab-content-notes"><p>Notes text should remain readable in a wide preview. This paragraph represents a longer note with enough content to show the intended line-length limit.</p></div>
       <script type="application/json" class="smarkform-src-data">${JSON.stringify(data)}</script>
     </div>
   </main>
@@ -180,6 +180,15 @@ test('maximized tabbar moves Notes left and chooses the logo variant that fits',
 
     await tabbar.evaluate(node => { node.style.width = '280px'; });
     await expect(logo).toHaveAttribute('src', dark ? fixture.logoUrls.compactDark : fixture.logoUrls.compactLight);
+
+    await notes.click();
+    const noteLayout = await container.locator('.tab-content-notes p').evaluate(paragraph => ({
+        width: paragraph.getBoundingClientRect().width,
+        maxWidth: parseFloat(getComputedStyle(paragraph).maxWidth),
+        panelWidth: paragraph.parentElement.getBoundingClientRect().width,
+    }));
+    expect(noteLayout.maxWidth).toBeLessThan(noteLayout.panelWidth);
+    expect(noteLayout.width).toBeLessThanOrEqual(noteLayout.maxWidth + 1);
 });
 
 test('sampletab geometry animation is skipped when reduced motion is requested', async ({ page }) => {
