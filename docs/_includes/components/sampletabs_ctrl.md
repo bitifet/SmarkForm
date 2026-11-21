@@ -1214,13 +1214,13 @@ body.smarkform-has-maximized-sampletab {
 
 .tab-container.smarkform-maximized .tab-labels {
   flex: 0 0 auto;
-  align-items: center;
+  align-items: flex-end;
   min-width: 0;
 }
 
 .tab-container.smarkform-maximized .smarkform-tab-label-group {
   flex: 0 1 auto;
-  align-items: center;
+  align-items: flex-end;
   min-width: 0;
   overflow-x: auto;
 }
@@ -1295,6 +1295,10 @@ body.smarkform-has-maximized-sampletab {
 
 .tab-container.smarkform-maximized .tab-content pre.highlight {
   max-height: calc(100dvh - 10rem);
+}
+
+.tab-content-notes > * {
+  max-width: 72ch;
 }
 
 .smarkform-preview-spinner::after {
