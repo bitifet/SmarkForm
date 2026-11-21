@@ -46,6 +46,85 @@ var SMARKFORM_MAX_CONCURRENT_RENDERS = 3;
 var SMARKFORM_MAXIMIZED_CONTAINER = null;
 var SMARKFORM_MAXIMIZED_INERT_STATE = [];
 var SMARKFORM_MAXIMIZED_SCROLL = null;
+function smarkformAnimateMaximizedGeometry(container, before, after) {
+    if (
+        !container.animate
+        || !before
+        || !after.width
+        || !after.height
+        || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    ) return;
+    var dx = before.left - after.left;
+    var dy = before.top - after.top;
+    var sx = before.width / after.width;
+    var sy = before.height / after.height;
+    container.animate([
+        {
+            transformOrigin: 'top left',
+            transform: 'translate(' + dx + 'px,' + dy + 'px) scale(' + sx + ',' + sy + ')',
+        },
+        {transformOrigin: 'top left', transform: 'none'},
+    ], {
+        duration: 280,
+        easing: 'cubic-bezier(.2,.8,.2,1)',
+    });
+}
+function smarkformSyncMaximizedLogo(container) {
+    if (!container || !container.classList.contains('smarkform-maximized')) return;
+    var bar = container.querySelector('.tab-labels');
+    var group = container.querySelector('.smarkform-tab-label-group');
+    var brand = container.querySelector('.smarkform-maximized-brand');
+    var logo = brand && brand.querySelector('img');
+    if (!bar || !group || !brand || !logo) return;
+
+    var tabsWidth = Array.prototype.reduce.call(group.children, function(total, tab) {
+        var style = window.getComputedStyle(tab);
+        return total + tab.offsetWidth
+            + (parseFloat(style.marginLeft) || 0)
+            + (parseFloat(style.marginRight) || 0);
+    }, 0);
+    var height = logo.offsetHeight || 30;
+    var freeWidth = bar.clientWidth - tabsWidth - 12;
+    var compact = freeWidth < height * 4.1;
+    var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var source = compact
+        ? (dark ? logo.dataset.compactDark : logo.dataset.compactLight)
+        : (dark ? logo.dataset.fullDark : logo.dataset.fullLight);
+    if (source && logo.getAttribute('src') !== source) logo.setAttribute('src', source);
+    brand.classList.toggle('smarkform-maximized-brand-compact', compact);
+}
+function smarkformObserveMaximizedLogo(container, observe) {
+    if (!container) return;
+    if (!observe) {
+        if (container.__smarkformLogoResizeObserver) {
+            container.__smarkformLogoResizeObserver.disconnect();
+            container.__smarkformLogoResizeObserver = null;
+        }
+        return;
+    }
+    var bar = container.querySelector('.tab-labels');
+    if (!bar || typeof ResizeObserver === 'undefined') return;
+    if (!container.__smarkformLogoResizeObserver) {
+        container.__smarkformLogoResizeObserver = new ResizeObserver(function() {
+            smarkformSyncMaximizedLogo(container);
+        });
+    }
+    container.__smarkformLogoResizeObserver.observe(bar);
+}
+window.addEventListener('resize', function() {
+    smarkformSyncMaximizedLogo(SMARKFORM_MAXIMIZED_CONTAINER);
+});
+if (window.matchMedia) {
+    var smarkformColorScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    var smarkformUpdateMaximizedLogo = function() {
+        smarkformSyncMaximizedLogo(SMARKFORM_MAXIMIZED_CONTAINER);
+    };
+    if (smarkformColorScheme.addEventListener) {
+        smarkformColorScheme.addEventListener('change', smarkformUpdateMaximizedLogo);
+    } else if (smarkformColorScheme.addListener) {
+        smarkformColorScheme.addListener(smarkformUpdateMaximizedLogo);
+    }
+}
 function smarkformGetFocusable(root) {
     if (!root || !root.querySelectorAll) return [];
     return Array.prototype.filter.call(
@@ -97,6 +176,7 @@ function smarkformSetMaximized(container, maximized, restoreFocus) {
             smarkformSetMaximized(SMARKFORM_MAXIMIZED_CONTAINER, false, false);
         }
         if (container.classList.contains('smarkform-maximized')) return;
+        var before = container.getBoundingClientRect();
         SMARKFORM_MAXIMIZED_CONTAINER = container;
         SMARKFORM_MAXIMIZED_SCROLL = {x: window.scrollX, y: window.scrollY};
         container.classList.add('smarkform-maximized');
@@ -108,11 +188,15 @@ function smarkformSetMaximized(container, maximized, restoreFocus) {
         smarkformSetBackgroundInert(container);
         smarkformSyncMaximizeButton(container, true);
         smarkformSyncFrameMaximized(container, true);
+        smarkformSyncMaximizedLogo(container);
+        smarkformObserveMaximizedLogo(container, true);
+        smarkformAnimateMaximizedGeometry(container, before, container.getBoundingClientRect());
         var maximizeButton = container.querySelector('.smarkform-maximize-btn');
         if (maximizeButton) maximizeButton.focus();
         return;
     }
     if (!container.classList.contains('smarkform-maximized')) return;
+    var before = container.getBoundingClientRect();
     container.classList.remove('smarkform-maximized');
     container.removeAttribute('role');
     container.removeAttribute('aria-modal');
@@ -122,6 +206,7 @@ function smarkformSetMaximized(container, maximized, restoreFocus) {
     smarkformRestoreBackgroundInert();
     smarkformSyncMaximizeButton(container, false);
     smarkformSyncFrameMaximized(container, false);
+    smarkformObserveMaximizedLogo(container, false);
     if (SMARKFORM_MAXIMIZED_CONTAINER === container) SMARKFORM_MAXIMIZED_CONTAINER = null;
     var iframe = container.querySelector('.smarkform-preview-frame');
     if (
@@ -133,6 +218,7 @@ function smarkformSetMaximized(container, maximized, restoreFocus) {
     SMARKFORM_MAXIMIZED_SCROLL = null;
     window.requestAnimationFrame(function() {
         if (restoreFocus && savedScroll) window.scrollTo(savedScroll.x, savedScroll.y);
+        smarkformAnimateMaximizedGeometry(container, before, container.getBoundingClientRect());
         if (!restoreFocus) return;
         var button = container.querySelector('.smarkform-maximize-btn');
         if (!button) return;
@@ -929,6 +1015,16 @@ document.addEventListener('DOMContentLoaded', function() {
   justify-content: flex-start;
 }
 
+.smarkform-tab-label-group {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.smarkform-maximized-brand {
+  display: none;
+}
+
 .tab-label {
   flex-grow: 0;
   cursor: pointer;
@@ -1114,7 +1210,39 @@ body.smarkform-has-maximized-sampletab {
 
 .tab-container.smarkform-maximized .tab-labels {
   flex: 0 0 auto;
+  min-width: 0;
+}
+
+.tab-container.smarkform-maximized .smarkform-tab-label-group {
+  flex: 0 1 auto;
+  min-width: 0;
   overflow-x: auto;
+}
+
+.tab-container.smarkform-maximized .tab-label.tab-label-right {
+  margin-left: 0;
+  margin-right: 5px;
+}
+
+.tab-container.smarkform-maximized .tab-label {
+  flex-shrink: 0;
+}
+
+.tab-container.smarkform-maximized .smarkform-maximized-brand {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: auto;
+  padding-left: .5rem;
+}
+
+.tab-container.smarkform-maximized .smarkform-maximized-brand img {
+  display: block;
+  width: auto;
+  height: 1.85rem;
+  max-width: none;
+  object-fit: contain;
 }
 
 .tab-container.smarkform-maximized .smarkform-edit-toolbar {

@@ -253,6 +253,7 @@ endif %}{% if jsHidden != '-'
 <div id="example{{ formId }}" class="tab-container" data-default-tab="{{ current_tab }}">
   <a href="#example{{ formId }}" class="link-anchor" title="Link">🔗</a>
   <div class="tab-labels">
+    <div class="smarkform-tab-label-group">
     {% if current_tab == "html" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
      <a id="example{{ formId }}:html" href="#example{{ formId }}:html" class="tab-label {{active_class}}" data-tab="html" title="HTML Source">🗒️ HTML</a>
     {% if current_tab == "css" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
@@ -269,6 +270,14 @@ endif %}{% if jsHidden != '-'
         {% if current_tab == "notes" %}{% assign active_class = "tab-label-active" %}{% else %}{% assign active_class = "" %}{% endif %}
         <a id="example{{ formId }}:notes" href="#example{{ formId }}:notes" class="tab-label tab-label-right {{active_class}}" data-tab="notes" title="Notes">📝 Notes</a>
     {% endif %}
+    </div>
+    <div class="smarkform-maximized-brand">
+      <img alt="SmarkForm"
+        data-full-light="{{ '/assets/logo/smarkform.svg' | relative_url }}"
+        data-full-dark="{{ '/assets/logo/smarkform_dark.svg' | relative_url }}"
+        data-compact-light="{{ '/assets/logo/smarkform_compact.svg' | relative_url }}"
+        data-compact-dark="{{ '/assets/logo/smarkform_dark_compact.svg' | relative_url }}">
+    </div>
   </div>
   <div class="smarkform-edit-toolbar">
     <label><input type="checkbox" class="smarkform-edit-toggle"> ✏️ Edit</label>

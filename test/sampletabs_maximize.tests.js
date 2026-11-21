@@ -13,6 +13,15 @@ if (!controllerScript || !controllerStyles) {
 }
 
 function sampletabsFixture() {
+    const logoSvg = (width, height) => `data:image/svg+xml,${encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"></svg>`
+    )}`;
+    const logoUrls = {
+        fullLight: logoSvg(410, 100),
+        fullDark: logoSvg(410, 100),
+        compactLight: logoSvg(111, 100),
+        compactDark: logoSvg(111, 100),
+    };
     const data = {
         html: '<div id="myForm$$"><p>Preview content</p></div>',
         htmlSource: '<div id="myForm$$"><p>Preview content</p></div>',
@@ -30,15 +39,21 @@ function sampletabsFixture() {
         smarkformUrl: 'data:text/javascript,',
     };
 
-    return `<!doctype html>
+    return {logoUrls, html: `<!doctype html>
 <html><head><style>${controllerStyles}</style></head><body>
   <main>
     <div id="background-content">Page content behind the preview</div>
     <div id="example-max" class="tab-container" data-default-tab="preview">
       <a class="link-anchor" href="#example-max">Link</a>
       <div class="tab-labels">
-        <a class="tab-label tab-label-active" data-tab="preview">Preview</a>
-        <a class="tab-label" data-tab="html">HTML</a>
+        <div class="smarkform-tab-label-group">
+          <a class="tab-label tab-label-active" href="#example-max:preview" data-tab="preview">Preview</a>
+          <a class="tab-label" href="#example-max:html" data-tab="html">HTML</a>
+          <a class="tab-label tab-label-right" href="#example-max:notes" data-tab="notes">Notes</a>
+        </div>
+        <div class="smarkform-maximized-brand"><img alt="SmarkForm"
+          data-full-light="${logoUrls.fullLight}" data-full-dark="${logoUrls.fullDark}"
+          data-compact-light="${logoUrls.compactLight}" data-compact-dark="${logoUrls.compactDark}"></div>
       </div>
       <div class="smarkform-edit-toolbar">
         <label><input type="checkbox" class="smarkform-edit-toggle"> Edit</label>
@@ -56,16 +71,17 @@ function sampletabsFixture() {
         </div>
       </div>
       <div class="tab-content tab-content-html tab-code"><pre>Example source</pre></div>
+      <div class="tab-content tab-content-notes">Notes</div>
       <script type="application/json" class="smarkform-src-data">${JSON.stringify(data)}</script>
     </div>
   </main>
   <script>${controllerScript}</script>
-</body></html>`;
+</body></html>`};
 }
 
 test('sampletabs maximize toggles the viewport overlay and restores with Escape', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.setContent(sampletabsFixture());
+    await page.setContent(sampletabsFixture().html);
 
     const container = page.locator('#example-max');
     const button = container.locator('.smarkform-maximize-btn');
@@ -94,7 +110,7 @@ test('sampletabs maximize toggles the viewport overlay and restores with Escape'
     const frame = page.frameLocator('.smarkform-preview-frame');
     await frame.locator('.smarkform-editor-clear').focus();
     await frame.locator('.smarkform-editor-clear').press('Tab');
-    await expect(container.locator('.smarkform-edit-toggle')).toBeFocused();
+    await expect(container.locator('.tab-label[data-tab="preview"]')).toBeFocused();
     await frame.locator('.smarkform-editor-clear').focus();
     await page.keyboard.press('Escape');
     await expect(container).not.toHaveClass(/smarkform-maximized/);
@@ -104,7 +120,7 @@ test('sampletabs maximize toggles the viewport overlay and restores with Escape'
 
 test('sampletabs maximized editor moves to the right and rotates its action rail in landscape', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.setContent(sampletabsFixture());
+    await page.setContent(sampletabsFixture().html);
     const container = page.locator('#example-max');
     await container.locator('.smarkform-maximize-btn').click();
 
@@ -121,11 +137,63 @@ test('sampletabs maximized editor moves to the right and rotates its action rail
 
 test('sampletabs keeps the editor stacked in a maximized portrait preview', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.setContent(sampletabsFixture());
+    await page.setContent(sampletabsFixture().html);
     await page.locator('.smarkform-maximize-btn').click();
 
     const frame = page.frameLocator('.smarkform-preview-frame');
     const stack = frame.locator('.smarkform-editor-stack');
     await expect.poll(() => stack.evaluate(node => getComputedStyle(node).display)).toBe('flex');
     await expect.poll(() => frame.locator('.smarkform-editor-actions').evaluate(node => getComputedStyle(node).transform)).toBe('none');
+});
+
+test('maximized tabbar moves Notes left and chooses the logo variant that fits', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    const fixture = sampletabsFixture();
+    await page.setContent(fixture.html);
+    const container = page.locator('#example-max');
+    const button = container.locator('.smarkform-maximize-btn');
+    const tabbar = container.locator('.tab-labels');
+    const notes = container.locator('.tab-label[data-tab="notes"]');
+    const preview = container.locator('.tab-label[data-tab="preview"]');
+    const brand = container.locator('.smarkform-maximized-brand');
+    const logo = brand.locator('img');
+
+    await expect(brand).toBeHidden();
+    await button.click();
+    const dark = await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
+    await expect(logo).toHaveAttribute('src', dark ? fixture.logoUrls.fullDark : fixture.logoUrls.fullLight);
+    const leftOrder = await Promise.all([
+        preview.boundingBox(), notes.boundingBox(), brand.boundingBox(),
+    ]);
+    expect(leftOrder[0].x).toBeLessThan(leftOrder[1].x);
+    expect(leftOrder[1].x + leftOrder[1].width).toBeLessThan(leftOrder[2].x);
+    expect(leftOrder[2].x + leftOrder[2].width).toBeGreaterThan(
+        await brand.evaluate(node => node.parentElement.getBoundingClientRect().right) - 5
+    );
+
+    await tabbar.evaluate(node => { node.style.width = '280px'; });
+    await expect(logo).toHaveAttribute('src', dark ? fixture.logoUrls.compactDark : fixture.logoUrls.compactLight);
+});
+
+test('sampletab geometry animation is skipped when reduced motion is requested', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.setContent(sampletabsFixture().html);
+    await page.evaluate(() => {
+        const animate = Element.prototype.animate;
+        window.__sampletabAnimations = [];
+        Element.prototype.animate = function(...args) {
+            window.__sampletabAnimations.push(args);
+            return animate.apply(this, args);
+        };
+    });
+    await page.emulateMedia({reducedMotion: 'no-preference'});
+    const container = page.locator('#example-max');
+    const button = container.locator('.smarkform-maximize-btn');
+    await button.click();
+    await expect.poll(() => page.evaluate(() => window.__sampletabAnimations.length)).toBe(1);
+
+    await page.emulateMedia({reducedMotion: 'reduce'});
+    await button.click();
+    await expect(container).not.toHaveClass(/smarkform-maximized/);
+    expect(await page.evaluate(() => window.__sampletabAnimations.length)).toBe(1);
 });

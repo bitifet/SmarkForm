@@ -62,7 +62,9 @@ Use **🗖 Maximize** beside the help link to expand an example over the viewpor
 Choose **🗗 Restore** or press **Escape** to return to the page. The maximized
 preview keeps the editor beside the form in landscape; in portrait, it stacks
 below. In landscape, the Export/Import/Reset/Clear controls rotate into a
-vertical rail between the form and editor.
+vertical rail between the form and editor. Notes moves beside the other tabs,
+and a SmarkForm logo fills the right side of the tabbar, switching to its compact
+version when space is tight. The transition respects reduced-motion settings.
 
 ### Editing an example
 

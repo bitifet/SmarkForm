@@ -143,7 +143,10 @@ The adjacent Maximize/Restore button expands the entire sampletab over the
 viewport, makes the background inert, and supports Escape to close. In a
 maximized landscape preview, the playground editor moves to a right-hand pane
 and the Export/Import/Reset/Clear rail rotates counterclockwise; portrait keeps
-the editor stacked. The outer layout and iframe each carry their own
+the editor stacked. Notes moves alongside the other tabs, while a color-scheme-
+aware SmarkForm logo occupies the right edge and switches between full and
+compact assets based on available width. The transition honors reduced-motion
+preferences. The outer layout and iframe each carry their own
 `smarkform-maximized` state class so their CSS can adapt together.
 Toggling editor inclusion remeasures the iframe because its layout changes;
 source-only edits keep the established height, and a manual preview resize is
