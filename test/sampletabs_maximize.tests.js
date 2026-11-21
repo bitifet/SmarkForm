@@ -167,9 +167,12 @@ test('maximized tabbar moves Notes left and chooses the logo variant that fits',
     ]);
     expect(leftOrder[0].x).toBeLessThan(leftOrder[1].x);
     expect(leftOrder[1].x + leftOrder[1].width).toBeLessThan(leftOrder[2].x);
-    expect(leftOrder[2].x + leftOrder[2].width).toBeGreaterThan(
-        await brand.evaluate(node => node.parentElement.getBoundingClientRect().right) - 5
-    );
+    const tabbarBox = await tabbar.boundingBox();
+    const logoBox = await logo.boundingBox();
+    expect(logoBox.height).toBeGreaterThan(50);
+    expect(Math.abs((leftOrder[2].y + leftOrder[2].height / 2)
+        - (tabbarBox.y + tabbarBox.height / 2))).toBeLessThan(1);
+    expect(tabbarBox.x + tabbarBox.width - (leftOrder[2].x + leftOrder[2].width)).toBeGreaterThan(14);
 
     await tabbar.evaluate(node => { node.style.width = '280px'; });
     await expect(logo).toHaveAttribute('src', dark ? fixture.logoUrls.compactDark : fixture.logoUrls.compactLight);

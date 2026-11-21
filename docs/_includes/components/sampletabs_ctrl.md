@@ -83,8 +83,12 @@ function smarkformSyncMaximizedLogo(container) {
             + (parseFloat(style.marginLeft) || 0)
             + (parseFloat(style.marginRight) || 0);
     }, 0);
+    var brandStyle = window.getComputedStyle(brand);
     var height = logo.offsetHeight || 30;
-    var freeWidth = bar.clientWidth - tabsWidth - 12;
+    var freeWidth = bar.clientWidth - tabsWidth
+        - (parseFloat(brandStyle.paddingLeft) || 0)
+        - (parseFloat(brandStyle.marginRight) || 0)
+        - 4;
     var compact = freeWidth < height * 4.1;
     var dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
     var source = compact
@@ -1210,11 +1214,13 @@ body.smarkform-has-maximized-sampletab {
 
 .tab-container.smarkform-maximized .tab-labels {
   flex: 0 0 auto;
+  align-items: center;
   min-width: 0;
 }
 
 .tab-container.smarkform-maximized .smarkform-tab-label-group {
   flex: 0 1 auto;
+  align-items: center;
   min-width: 0;
   overflow-x: auto;
 }
@@ -1234,13 +1240,14 @@ body.smarkform-has-maximized-sampletab {
   align-items: center;
   justify-content: flex-end;
   margin-left: auto;
+  margin-right: 1em;
   padding-left: .5rem;
 }
 
 .tab-container.smarkform-maximized .smarkform-maximized-brand img {
   display: block;
   width: auto;
-  height: 1.85rem;
+  height: 3.7rem;
   max-width: none;
   object-fit: contain;
 }
