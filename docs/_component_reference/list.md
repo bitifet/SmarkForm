@@ -776,21 +776,37 @@ Sorting relies on the browser's native HTML drag-and-drop API.  Each list item
 becomes a drag source (or exposes drag handles — see below), and the list
 container is the drop target.
 
-**Label-based drag handles**
+**Drag handles**
 
 When a list item contains one or more *SmarkForm label components* (any element
 rendered with `data-smark` and resolved as type `label` — including native
 `<label>`, `<legend>`, or any other tag with `data-smark-type="label"`),
-SmarkForm automatically designates those labels as the drag handles:
+SmarkForm automatically designates those labels as drag handles. It also
+recognizes an element explicitly marked with `data-sf-drag-handle`:
 
-- The item root node is made **non-draggable** so that mouse gestures inside
-  input fields or textareas work normally (text selection is restored).
-- The label nodes are made **draggable**, and `cursor: grab` should be applied
-  to them via CSS (SmarkForm adds the `data-smark-label` attribute to every
-  rendered label, so you can use the `[data-smark-label]` selector).
+- The item root is the native drag source, but drag starts are accepted only
+  when the gesture starts on one of the item's handles.
+- SmarkForm marks rendered label handles with `data-smark-label`; explicit
+  handles retain the `data-sf-drag-handle` marker. Use either selector to style
+  the grab affordance.
 
-If no label components are found inside a list item, SmarkForm falls back to the
-original behaviour: the entire item root is draggable (backward compatible).
+If no label or explicit handles are found inside a list item, SmarkForm falls
+back to the original behaviour: the entire item root is a drag handle
+(backward compatible). Interactive fields and controls remain excluded as
+drag-start targets.
+
+**Interactive drag handles**
+
+Mark an interactive control itself with `data-sf-drag-handle` when that control
+also serves as the drag affordance—for example, a native menu button. The marked
+control can start a drag without losing its normal click or keyboard behavior.
+SmarkForm still blocks interactive descendants inside a marked wrapper, such as
+an input inside a drag region. This attribute does not create a SmarkForm
+component or change the element's semantics.
+
+```html
+<button type="button" data-sf-drag-handle aria-label="Task actions">☰</button>
+```
 
 {: .hint}
 > **Recommended layout for sortable lists with inputs:** Add a `<label
