@@ -85,7 +85,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
                                 itemRoot = itemRoot.parentElement;
                             };
 
-                            const handles = itemRoot.querySelectorAll(DRAG_HANDLE_SELECTOR);
+                            const handles = _dragHandles(itemRoot);
                             if (handles.length > 0) {
                                 const handle = lastMousedownTarget?.closest(DRAG_HANDLE_SELECTOR);
                                 if (!handle) {
@@ -361,9 +361,16 @@ function _applyDraggable(me, itemRoot) {
     // Item root is always the draggable element.
     itemRoot.setAttribute("draggable", "true");
     // Apply grab cursor to any label handles as a visual hint.
-    const handles = itemRoot.querySelectorAll(DRAG_HANDLE_SELECTOR);
+    const handles = _dragHandles(itemRoot);
     handles.forEach(h => _applyCursorGrab(h));
 };
+
+function _dragHandles(itemRoot) {
+    return [
+        ...(itemRoot.matches(DRAG_HANDLE_SELECTOR) ? [itemRoot] : []),
+        ...itemRoot.querySelectorAll(DRAG_HANDLE_SELECTOR),
+    ];
+}
 
 /**
  * Set cursor:grab on a drag-handle element unless the cursor has already
