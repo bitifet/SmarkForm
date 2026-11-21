@@ -462,7 +462,7 @@ with them.
               <span data-smark='{"action":"position"}'>#</span>
               <input name="name" placeholder="Group name" type="text" data-smark>
               <div class="card-actions">
-                <button type="button" class="card-menu-trigger" aria-expanded="false" title="Group actions" aria-label="Group actions">☰</button>
+                <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Group actions" aria-label="Group actions">☰</button>
                 <div class="card-menu" data-card-menu role="group" aria-label="Group actions">
                   <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one group"><span aria-hidden="true">↑</span> Move Up</button>
                   <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one group"><span aria-hidden="true">↓</span> Move Down</button>
@@ -481,7 +481,7 @@ with them.
                       <summary>
                         <input name="name" placeholder="Student name" type="text" data-smark>
                         <div class="card-actions">
-                          <button type="button" class="card-menu-trigger" aria-expanded="false" title="Student actions" aria-label="Student actions">☰</button>
+                          <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Student actions" aria-label="Student actions">☰</button>
                           <div class="card-menu" data-card-menu role="group" aria-label="Student actions">
                             <button type="button" data-smark='{"action":"next","depth":2,"hotkey":"]"}' title="Move to the next class"><span aria-hidden="true">→</span> Go Next</button>
                             <button type="button" data-smark='{"action":"previous","depth":2,"hotkey":"["}' title="Move to the previous class"><span aria-hidden="true">←</span> Go Previous</button>
@@ -579,8 +579,9 @@ button { position: relative; }
 👉 **Nested data.** The export contains a school, groups, students, and separate
 lists of Math, Literature, and Science grades for each student.
 
-👉 **Keyboard and drag movement.** Use a student's <kbd>☰</kbd> menu to move
-between classes or reorder students; drag from the card background also works.
+👉 **Keyboard and drag movement.** Use a student's <kbd>☰</kbd> button to open
+the actions menu or drag the student. On touch screens, press and hold the
+button before dragging; other fields and controls remain interactive.
 The sibling distance between student lists is 2, so cross-class actions use
 `moving_depth:2`. Group order has its own depth-zero menu actions.
 
