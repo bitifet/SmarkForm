@@ -73,8 +73,10 @@ lowercases attribute names, and there is no camelCase or kebab-case conversion.
 Use prefixed attributes for supported options, and use JSON `data-smark` for
 structured values unless an option documents a specific prefixed-value parser.
 Prefixed attributes can identify a component by themselves and override the
-same option key in the JSON object. Their values are strings; describe only the
-type normalization that the implementation actually supports.
+same option key in the JSON object. The `role` option is the exception: a
+role-only annotation does not make an element a component. Their values are
+strings; describe only the type normalization that the implementation actually
+supports.
 
 
 The documentation uses the Just-the-docs theme's built-in callout styles for important notes, warnings, and tips. The syntax is:

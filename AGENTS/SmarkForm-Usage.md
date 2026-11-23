@@ -204,7 +204,7 @@ Exceptions:
 
 ## List Component — Critical Rules
 
-**Every direct child of a list container is treated as a template node.** There is no notion of "regular children" — valid role templates are **removed from the DOM** during initialization (stored internally). Native `<template>` elements are not valid list-role templates; a direct child raises `LIST_CONTAINS_HTML_TEMPLATE` so it cannot be silently consumed before mixin expansion. This is done by `loadTemplates()` in `src/types/list.type.js`.
+**Every direct child of a list container is treated as a template node.** There is no notion of "regular children" — valid role templates are **removed from the DOM** during initialization (stored internally). Native `<template>` elements are not valid list-role templates; a direct child raises `LIST_CONTAINS_HTML_TEMPLATE` so it cannot be silently consumed before mixin expansion. `role` on these children selects a list-template role; elsewhere, role-only annotations such as `data-smark-role="drag-handle"` do not create components. See `docs/_guides/roles.md`. This is implemented by `loadTemplates()` in `src/types/list.type.js` and component discovery in `src/lib/helpers.js`.
 
 ### Template Roles
 

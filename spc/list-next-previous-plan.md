@@ -218,8 +218,8 @@ After touch testing, the Kanban disclosure button is also the visible drag
 affordance. The sortable drag guard must therefore allow an interactive element
 when that exact element is explicitly marked as a handle, while continuing to
 reject interactive descendants inside a handle. SmarkForm labels remain the
-default handles; `data-sf-drag-handle` marks another exact handle (for example,
-the native menu button) without turning it into a field label.
+default handles; `data-smark-role="drag-handle"` marks another exact handle
+(for example, the native menu button) without turning it into a field label.
 
 **Additional files:** `src/types/list.decorators/sortable.deco.js` (handle
 recognition/guard), `test/type_list.tests.js` (interactive handle regression),

@@ -15,14 +15,37 @@ export function collectPrefixedOptions(node) {//{{{
 };//}}}
 
 function hasSmarkAttribute(node){//{{{
-    // Return true when the node carries the canonical data-smark attribute or
-    // any data-smark-<option> prefixed attribute.  Used for initial discovery
-    // because a CSS selector cannot match an arbitrary attribute-name prefix.
-    if (node.hasAttribute("data-smark")) return true;
-    for (const attr of node.attributes) {
-        if (attr.name.startsWith(SMARK_ATTR_PREFIX)) return true;
-    }
-    return false;
+    // Return true when the node carries a component declaration, excluding
+    // role-only annotations. Used for initial discovery because a CSS selector
+    // cannot match an arbitrary data-smark-<option> attribute name.
+    const prefixedOptions = collectPrefixedOptions(node);
+    const hasDataSmark = node.hasAttribute("data-smark");
+    if (
+        !hasDataSmark
+        && !Object.prototype.hasOwnProperty.call(prefixedOptions, "role")
+    ) {
+        return Object.keys(prefixedOptions).length > 0;
+    };
+    const rawOptions = (node.getAttribute("data-smark") || "").trim();
+    // A bare `data-smark` is an explicit component declaration even when
+    // prefixed metadata such as `data-smark-role` is also present.
+    if (hasDataSmark && !rawOptions) return true;
+    const explicitOptions = parseJSON(rawOptions);
+    if (
+        hasDataSmark
+        && rawOptions
+        && (!explicitOptions || typeof explicitOptions !== "object" || Array.isArray(explicitOptions))
+    ) return true;
+    const options = {...explicitOptions, ...prefixedOptions};
+    // `role` is passive SmarkForm metadata by itself.  It does not turn an
+    // otherwise ordinary element into a component, and descendants of the
+    // annotated element must still be considered for component discovery.
+    if (
+        Object.keys(options).length === 1
+        && Object.prototype.hasOwnProperty.call(options, "role")
+    ) return false;
+    if (hasDataSmark) return true;
+    return Object.keys(prefixedOptions).length > 0;
 };//}}}
 export {hasSmarkAttribute};
 

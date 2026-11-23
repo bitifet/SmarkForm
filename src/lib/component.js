@@ -415,12 +415,13 @@ export class SmarkComponent {
 
     };//}}}
     getComponent(target) {//{{{
-        const me = this;
-        return (
-            target[sym_smart]
-            || target.parentElement?.closest(me.selector)[sym_smart]
-            || null
-        );
+        // Walk to the nearest rendered component rather than the nearest
+        // `[data-smark]` node: role-only annotations may carry that attribute
+        // but are deliberately not components.
+        for (let node = target; node; node = node.parentElement) {
+            if (node[sym_smart]) return node[sym_smart];
+        };
+        return null;
     };//}}}
     getPath() {//{{{
         const me = this;

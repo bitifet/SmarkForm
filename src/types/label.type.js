@@ -232,8 +232,12 @@ export class label extends SmarkComponent {
                 let found = false;
                 for (const childName in candidates) {
                     if (found) {
-                        let targetComponent = me.getComponent(candidates[childName]);
-                        if (targetComponent?._isField) {
+                        const candidate = candidates[childName];
+                        const targetComponent = me.getComponent(candidate);
+                        if (
+                            targetComponent?.targetNode === candidate
+                            && targetComponent?._isField
+                        ) {
                             target = targetComponent;
                             break;
                         };

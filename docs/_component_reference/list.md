@@ -462,7 +462,7 @@ with them.
               <span data-smark='{"action":"position"}'>#</span>
               <input name="name" placeholder="Group name" type="text" data-smark>
               <div class="card-actions">
-                <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Group actions" aria-label="Group actions">☰</button>
+                <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" title="Group actions" aria-label="Group actions">☰</button>
                 <div class="card-menu" data-card-menu role="group" aria-label="Group actions">
                   <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one group"><span aria-hidden="true">↑</span> Move Up</button>
                   <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one group"><span aria-hidden="true">↓</span> Move Down</button>
@@ -481,7 +481,7 @@ with them.
                       <summary>
                         <input name="name" placeholder="Student name" type="text" data-smark>
                         <div class="card-actions">
-                          <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Student actions" aria-label="Student actions">☰</button>
+                          <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" title="Student actions" aria-label="Student actions">☰</button>
                           <div class="card-menu" data-card-menu role="group" aria-label="Student actions">
                             <button type="button" data-smark='{"action":"next","depth":2,"hotkey":"]"}' title="Move to the next class"><span aria-hidden="true">→</span> Go Next</button>
                             <button type="button" data-smark='{"action":"previous","depth":2,"hotkey":"["}' title="Move to the previous class"><span aria-hidden="true">←</span> Go Previous</button>
@@ -566,7 +566,7 @@ with them.
 {{""}}  border: 0; background: transparent; padding: .35em .5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
 {{""}}#myForm$$ .school-groups input,
 {{""}}#myForm$$ .school-groups button { cursor: auto; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
@@ -787,30 +787,38 @@ SmarkForm chooses drag handles per list item:
 - Any *SmarkForm label component* (an element rendered with `data-smark` and
   resolved as type `label`, including `<label>`, `<legend>`, or another tag
   explicitly typed as `label`) is automatically a handle.
-- Any element with `data-sf-drag-handle` is also a handle. This marker works on
-  the list-item root itself.
+- Any element inside an item with the `drag-handle` role is also a handle. Set
+  it with `data-smark-role="drag-handle"` or the `role` property in `data-smark`
+  JSON. Role-only annotations do not make ordinary elements into components.
 - When one or more handles are present, the item root remains the native drag
   source, but a drag can start only from one of those handles. SmarkForm marks
-  label handles with `data-smark-label`; explicit handles retain
-  `data-sf-drag-handle`. Use either selector to style the grab affordance.
+  label handles with `data-smark-label`. Use the `data-smark-role` shorthand or
+  a class to style an explicit handle.
 
-If an item has no label or explicit handles on its root or descendants,
-SmarkForm falls back to the original behaviour: the entire item root is a drag
-handle (backward compatible). Interactive fields and controls remain excluded
-as drag-start targets.
+If an item has no label or explicit `drag-handle` role inside it, SmarkForm
+falls back to the original behaviour: the entire item root is a drag handle
+(backward compatible). Interactive fields and controls remain excluded as
+drag-start targets.
+
+Direct children of a list are exclusively list templates, so `drag-handle` is
+not a valid role on those children. Put an explicit handle inside the item
+template; otherwise the item root is the fallback. See the
+[SmarkForm Roles guide]({{ "/guides/roles" | relative_url }}) for role discovery
+and the other supported role contexts.
 
 **Interactive drag handles**
 
-Mark an interactive control itself with `data-sf-drag-handle` when that control
-also serves as the drag affordance—for example, a native menu button. The marked
-control itself can start a drag, including when it is also a SmarkForm label
-handle. The marker does not change the control's semantics or its click and
-keyboard behavior when the user is not dragging. SmarkForm still blocks
-interactive descendants inside a marked wrapper, such as an input inside a
-drag region.
+Mark an interactive control itself with `data-smark-role="drag-handle"` when
+that control also serves as the drag affordance—for example, a native menu
+button. The marked control itself can start a drag, including when it is also a
+SmarkForm label handle. The role does not change the control's semantics or its
+click and keyboard behavior when the user is not dragging. SmarkForm still
+blocks interactive descendants inside a marked wrapper, such as an input inside
+a drag region. `drag-handle` roles belong inside the item; the item root is
+otherwise the fallback drag surface.
 
 ```html
-<button type="button" data-sf-drag-handle aria-label="Task actions">☰</button>
+<button type="button" data-smark-role="drag-handle" aria-label="Task actions">☰</button>
 ```
 
 {: .hint}
@@ -928,7 +936,7 @@ distance between employee lists is 2 (department item → employees → employee
             <span data-smark-action="position">N</span>
             <input name='name' placeholder='Dept. name' type='text' data-smark/>
             <div class="card-actions">
-              <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Department actions" aria-label="Department actions">☰</button>
+              <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" title="Department actions" aria-label="Department actions">☰</button>
               <div class="card-menu" data-card-menu role="group" aria-label="Department actions">
                 <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one department"><span aria-hidden="true">↑</span> Move Up</button>
                 <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move down one department"><span aria-hidden="true">↓</span> Move Down</button>
@@ -942,7 +950,7 @@ distance between employee lists is 2 (department item → employees → employee
               <li>
                 <input name='value' placeholder='Employee name' type='text' data-smark>
                 <div class="card-actions">
-                  <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Employee actions" aria-label="Employee actions">☰</button>
+                  <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" title="Employee actions" aria-label="Employee actions">☰</button>
                   <div class="card-menu" data-card-menu role="group" aria-label="Employee actions">
                     <button type="button" data-smark='{"action":"next","depth":2,"hotkey":"]"}' title="Move to the next department"><span aria-hidden="true">→</span> Go Next</button>
                     <button type="button" data-smark='{"action":"previous","depth":2,"hotkey":"["}' title="Move to the previous department"><span aria-hidden="true">←</span> Go Previous</button>
@@ -1015,7 +1023,7 @@ endcapture %}
 {{""}}  background: transparent; padding: .35em .5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
 {{""}}#myForm$$ .cdd input,
 {{""}}#myForm$$ .cdd button { cursor: auto; }
 button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }

@@ -438,7 +438,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
     <div class="card">
       <input data-smark type="text" name="title" placeholder="Task title...">
       <div class="card-actions">
-        <button type="button" class="card-menu-trigger" data-sf-drag-handle aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
+        <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
         <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
           <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Go to the next column"><span aria-hidden="true">→</span> Go Next</button>
           <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Go to the previous column"><span aria-hidden="true">←</span> Go Previous</button>
@@ -635,7 +635,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
             const list = myForm.find('/todo');
             const destination = myForm.find('/progress');
             const source = list.children[0].targetNode;
-            const handle = source.querySelector('[data-sf-drag-handle]');
+            const handle = source.querySelector('[data-smark-role="drag-handle"]');
             const target = destination.children[0].targetNode;
             const sourceRect = handle.getBoundingClientRect();
             const targetRect = target.getBoundingClientRect();
@@ -722,7 +722,7 @@ button { position: relative; }
 {{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .card-menu-trigger[data-sf-drag-handle] { cursor: grab; }
+{{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
 {{""}}#myForm$$ .card input,
 {{""}}#myForm$$ .card button { cursor: auto; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}

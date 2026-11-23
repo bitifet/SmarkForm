@@ -2,14 +2,41 @@
 // ======================================
 
 import {mutex, sym_mutex_key} from "../../decorators/mutex.deco.js";
+import {collectPrefixedOptions, parseJSON} from "../../lib/helpers.js";
 
 // Selector for interactive fields where a drag should not start.
 const INTERACTIVE_FIELDS_SELECTOR = "input, textarea, select, button, a, [contenteditable='true']";
 
-// A SmarkForm label is the default drag handle. Authors may also mark a
-// different element explicitly, including an interactive control that serves
-// a second purpose such as opening an action menu.
-const DRAG_HANDLE_SELECTOR = "[data-smark-label], [data-sf-drag-handle]";
+// A SmarkForm label is the default drag handle. Authors may assign the
+// `drag-handle` role to another element, including an interactive control.
+const DRAG_HANDLE_CANDIDATE_SELECTOR = [
+    "[data-smark-label]",
+    "[data-smark]",
+    "[data-smark-role]",
+].join(", ");
+
+function _hasRole(node, role) {//{{{
+    const options = {
+        ...(parseJSON(node.getAttribute("data-smark")) || {}),
+        ...collectPrefixedOptions(node),
+    };
+    return options.role === role;
+};//}}}
+
+function _isDragHandle(node) {//{{{
+    return node.hasAttribute("data-smark-label")
+        || _hasRole(node, "drag-handle");
+};//}}}
+
+function _closestDragHandle(target, itemRoot) {//{{{
+    let node = target?.nodeType === 1 ? target : target?.parentElement;
+    while (node) {
+        if (_isDragHandle(node)) return node;
+        if (node === itemRoot) break;
+        node = node.parentElement;
+    };
+    return null;
+};//}}}
 
 // Module-level cross-list drag state.  Set by the source list during
 // dragstart, extended by the target list during drop, consumed by the
@@ -87,7 +114,7 @@ export const sortable = function list_sortable_decorator(target, {kind}) {
 
                             const handles = _dragHandles(itemRoot);
                             if (handles.length > 0) {
-                                const handle = lastMousedownTarget?.closest(DRAG_HANDLE_SELECTOR);
+                                const handle = _closestDragHandle(lastMousedownTarget, itemRoot);
                                 if (!handle) {
                                     e.preventDefault();
                                     return;
@@ -367,9 +394,9 @@ function _applyDraggable(me, itemRoot) {
 
 function _dragHandles(itemRoot) {
     return [
-        ...(itemRoot.matches(DRAG_HANDLE_SELECTOR) ? [itemRoot] : []),
-        ...itemRoot.querySelectorAll(DRAG_HANDLE_SELECTOR),
-    ];
+        ...(_isDragHandle(itemRoot) ? [itemRoot] : []),
+        ...itemRoot.querySelectorAll(DRAG_HANDLE_CANDIDATE_SELECTOR),
+    ].filter(_isDragHandle);
 }
 
 /**

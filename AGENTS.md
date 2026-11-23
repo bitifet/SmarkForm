@@ -131,8 +131,11 @@ while the disclosure is closed.
 
 Sortable lists normally use SmarkForm label components as drag handles. For a
 dual-purpose interactive handle (such as the native Kanban menu button), mark
-the exact control with `data-sf-drag-handle`; the marker may be on the item root
-itself. The sorter permits that control to start a drag but still blocks
+the exact control with `data-smark-role="drag-handle"`. A role-only annotation
+does not create a component; adding another SmarkForm option still does. List
+direct children are reserved for template roles, so an item template root is
+the fallback drag surface when no explicit handle is present inside it. The
+sorter permits the marked control itself to start a drag but still blocks
 interactive descendants inside a marked wrapper.
 
 Only the Showcase Kanban imports the pinned `@dragdroptouch/drag-drop-touch` ES
@@ -879,9 +882,10 @@ not translate kebab-case or camelCase. Use prefixed attributes for supported
 options; values arrive as strings and only known common or option-specific
 normalizers convert them. Use JSON for structured values unless an option
 documents a prefixed-value parser. Prefixed attributes can mark a component
-without bare `data-smark` and override the same key in JSON. Action identifiers
-(for example, `addItem`) are separate from option names and retain their
-documented spelling. Function-valued JavaScript event hooks retain their
+without bare `data-smark` and override the same key in JSON, except that
+`role` by itself is passive metadata and does not create a component. Action
+identifiers (for example, `addItem`) are separate from option names and retain
+their documented spelling. Function-valued JavaScript event hooks retain their
 documented `on...` spelling. See
 [`AGENTS/Documentation-Guidelines.md`](AGENTS/Documentation-Guidelines.md).
 

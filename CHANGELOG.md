@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## Unreleased
+
+### Changed
+
+- **Role annotations and drag handles**: `role` alone is passive metadata and does not create a SmarkForm component. Use `data-smark-role="drag-handle"` (or the `role` property in `data-smark` JSON) for explicit sortable handles.
+- Added `docs/_guides/roles.md` to explain role discovery, list-template roles, and drag-handle roles.
+
 ## 0.26.0 — 2026-11-21
 
 ⌨️ Keyboard-accessible list movement · 🧲 Interactive drag handles · 📚 Documentation refactor
@@ -21,7 +28,7 @@ The 0.26.0 version adds `next` and `previous` list actions for keyboard-first re
 ### Features
 
 - **List `next` / `previous` actions**: move an item one position within a sortable list, or one eligible sibling list at a time with a numeric `depth`. The actions disable when movement is out of bounds, exceeds `moving_depth`, or violates source/destination list constraints.
-- **Explicit interactive drag handles**: `data-sf-drag-handle` lets a specific interactive control (for example, a menu button) serve as the drag grip while preserving its normal click and keyboard behavior. Existing SmarkForm label handles remain supported.
+- **Explicit interactive drag handles**: a specific interactive control (for example, a menu button) can serve as the drag grip while preserving its normal click and keyboard behavior. Existing SmarkForm label handles remain supported.
 
 ### Bug Fixes
 

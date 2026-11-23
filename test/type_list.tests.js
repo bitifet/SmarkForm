@@ -541,11 +541,31 @@ const interactiveDragHandlePugSrc = `extends layout.pug
 block mainForm
     ul(data-smark={type:"list", name:"items", sortable:true, min_items:0})
         li
-            button.menu-handle(type="button", data-sf-drag-handle="") Menu
-            div.handle-wrapper(data-sf-drag-handle="")
+            button.menu-handle(type="button", data-smark-role="drag-handle", data-smark-action="removeItem") Menu
+            div.handle-wrapper(data-smark={role:"drag-handle"})
                 button.nested-button(type="button") Nested control
-            input(data-smark, name="value")
+                input(data-smark, name="value")
+            span.shorthand-role-only(data-smark-role="drag-handle") Shorthand handle
 `;
+
+test('drag-handle is not a list-template role', async ({ page }) => {
+    let onClosed;
+    try {
+        const rendered = await renderPug({
+            title: 'Role Context',
+            src: `extends layout.pug
+block mainForm
+    ul(data-smark={type:"list", name:"items", sortable:true})
+        li(data-smark-role="drag-handle") Invalid list template role
+`,
+        });
+        onClosed = rendered.onClosed;
+        await page.goto(rendered.url);
+        await expect(page.getByText('LIST_UNKNOWN_TEMPLATE_ROLE')).toBeVisible();
+    } finally {
+        if (onClosed) await onClosed();
+    }
+});
 
 test('an explicitly marked interactive handle can drag, but its interactive child cannot', async ({ page }) => {
     let onClosed;
@@ -564,6 +584,14 @@ test('an explicitly marked interactive handle can drag, but its interactive chil
             const list = form.find('/items');
             const source = list.children[0].targetNode;
             const target = list.children[1].targetNode;
+            const roleOnlyWrapper = source.querySelector('.handle-wrapper');
+            const menuHandle = source.querySelector('.menu-handle');
+            const discovery = {
+                roleOnlyNodeResolvesToItem: list.getComponent(roleOnlyWrapper) === list.children[0],
+                shorthandRoleOnlyNodeResolvesToItem: list.getComponent(source.querySelector('.shorthand-role-only')) === list.children[0],
+                componentRole: list.getComponent(menuHandle)?.options?.role,
+                nestedField: !!list.getComponent(source.querySelector('input')),
+            };
             const dataTransfer = {setDragImage() {}};
             const fire = (type, node, clientY = 0) => {
                 const event = new Event(type, {bubbles: true, cancelable: true});
@@ -592,17 +620,26 @@ test('an explicitly marked interactive handle can drag, but its interactive chil
 
             for (let i = 0; i < 40; i++) {
                 const values = await list.export(null, {silent: true, export_empties: true});
-                if (values[0]?.value === 'B') return {afterNestedControl, afterMarkedHandle: values};
+                if (values[0]?.value === 'B') {
+                    return {afterNestedControl, afterMarkedHandle: values, discovery};
+                };
                 await new Promise(resolve => setTimeout(resolve, 25));
             };
             return {
                 afterNestedControl,
                 afterMarkedHandle: await list.export(null, {silent: true, export_empties: true}),
+                discovery,
             };
         });
 
         expect(result.afterNestedControl).toEqual([{value: 'A'}, {value: 'B'}]);
         expect(result.afterMarkedHandle).toEqual([{value: 'B'}, {value: 'A'}]);
+        expect(result.discovery).toEqual({
+            roleOnlyNodeResolvesToItem: true,
+            shorthandRoleOnlyNodeResolvesToItem: true,
+            componentRole: 'drag-handle',
+            nestedField: true,
+        });
     } finally {
         if (onClosed) await onClosed();
     }
@@ -611,10 +648,10 @@ test('an explicitly marked interactive handle can drag, but its interactive chil
 const rootDragHandlePugSrc = `extends layout.pug
 block mainForm
     ul(data-smark={type:"list", name:"rows", sortable:true, min_items:0})
-        button(type="button", data-sf-drag-handle="") Row
+        div Row
 `;
 
-test('an item root explicitly marked as a drag handle can start a drag', async ({ page }) => {
+test('an item root remains the fallback drag target when it has no explicit handles', async ({ page }) => {
     let onClosed;
     try {
         const rendered = await renderPug({

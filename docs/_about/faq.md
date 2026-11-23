@@ -511,18 +511,17 @@ click-drag gestures to start a drag instead of performing a text selection
 inside the input.
 
 **The fix: give each list item a clear drag handle.** Use a SmarkForm label
-component or mark another element with `data-sf-drag-handle`.
+component or assign `role: "drag-handle"` with `data-smark-role`.
 
 SmarkForm detects rendered label components (`<label data-smark>`, `<legend
 data-smark>`, or another element with `data-smark='{"type":"label"}'`) and
-explicit `[data-sf-drag-handle]` markers. When a list item has one or more
-handles:
+explicit `drag-handle` roles. A role-only annotation does not create a
+SmarkForm component. When a list item has one or more handles:
 
 1. The item root remains the native drag source, but dragging may start only
    from a designated handle.
-2. A handle can be the item root itself. An interactive element that is itself a
-   handle (such as a marked menu button or a button label) may start a drag;
-   interactive descendants inside a handle wrapper remain blocked.
+2. An interactive element that is itself a handle (such as a menu button) may
+   start a drag; interactive descendants inside a handle wrapper remain blocked.
 3. Without a label or explicit marker, the whole item is the fallback handle,
    while interactive controls remain excluded as drag-start targets.
 
@@ -531,7 +530,7 @@ handles:
 ```html
 <ul data-smark='{"type":"list","name":"items","sortable":true}'>
   <li>
-    <button type="button" data-sf-drag-handle aria-label="Drag to reorder">☰</button>
+    <button type="button" data-smark-role="drag-handle" aria-label="Drag to reorder">☰</button>
     <input data-smark name="value" placeholder="…">
     <button data-smark-action="removeItem">✕</button>
   </li>
@@ -541,19 +540,20 @@ handles:
 Apply `cursor: grab` to the marked handle via CSS:
 
 ```css
-[data-sf-drag-handle] { cursor: grab; }
+[data-smark-role="drag-handle"] { cursor: grab; }
 ```
 
 SmarkForm automatically adds `data-smark-label` to rendered label handles; use
-that selector when using labels instead of an explicit marker.
+that selector when using labels instead of an explicit role.
 
 **Design notes:**
 
 - The handle's visual content is up to you — a hamburger icon (☰), drag dots, or
   an `<img>` can make the affordance clear. SmarkForm labels do not allow text
   selection by default, which is ideal for a drag handle.
-- An interactive control can also be the drag handle when that exact control is
-  marked; interactive descendants inside the handle remain excluded.
+- An interactive control can also be the drag handle when that exact control has
+  the `drag-handle` role; interactive descendants inside the handle remain
+  excluded.
 - List items that consist of a single input field and no designated handle fall
   back to the original "entire item is draggable" behaviour. The recommended
   pattern for single-field sortable lists is to use the [Singleton
@@ -566,7 +566,8 @@ that selector when using labels instead of an explicit marker.
 > in action in the [Showcase Kanban]({{ "/showcase_examples/showcase" | relative_url }}#project-kanban-board).
 
 For more details see the [sortable option
-documentation]({{ "/component_reference/list#sortable" | relative_url }}).
+documentation]({{ "/component_reference/list#sortable" | relative_url }}) and
+the [SmarkForm Roles guide]({{ "/guides/roles" | relative_url }}).
 
 
 ## Data: Import, Export & Reset
