@@ -83,9 +83,10 @@ purpose is solely to hold the blueprint markup.
 
 {: .info }
 > Place `<template>` elements at document level (e.g., directly inside
-> `<body>`, or in `<head>` when the browser allows it) — **not** as direct
-> children of a SmarkForm `list` container.  See the
-> [List Placement Warning](#list-placement-warning) section.
+> `<body>`, or in `<head>` when the browser allows it), not as direct children
+> of a SmarkForm `list`. A direct child raises
+> `LIST_CONTAINS_HTML_TEMPLATE`; see
+> [Mixin Templates and Lists](#mixin-templates-and-lists).
 
 
 ## Using a Mixin Type
@@ -581,20 +582,13 @@ export default async ({ expect, root, readField, writeField }) => {
     minHeight=75
 %}
 
-## List Placement Warning
+## Mixin Templates and Lists
 
-{: .warning }
-> **Do not place `<template>` nodes as direct children of a SmarkForm `list`
-> container.**
->
-> A `list` component treats **every direct child** as a role template (such as
-> `item`, `empty-list`, `add-item`, etc.) and removes those children from the
-> DOM during initialisation.  A `<template>` element placed there will be
-> silently consumed and will never be available for mixin expansion.
->
-> **Recommendation:** Define mixin templates outside any SmarkForm list, for
-> example at the top level of `<body>`, inside `<head>` (where browsers
-> permit), or in a dedicated `<div>` that is itself not managed by SmarkForm.
+A native `<template>` element cannot be a direct child of a SmarkForm `list`.
+The list reserves its direct children for role templates, so SmarkForm now
+rejects this markup with the `LIST_CONTAINS_HTML_TEMPLATE` render error instead
+of silently consuming the mixin definition. Define mixin templates outside the
+list (for example, at the document level) and reference them from a list item.
 
 ```html
 <!-- ✅ Safe: template defined at document level -->
@@ -616,9 +610,9 @@ export default async ({ expect, root, readField, writeField }) => {
 ```
 
 ```html
-<!-- ❌ Antipattern: template as direct child of list -->
+<!-- ❌ Rejected: native template as direct child of list -->
 <ul data-smark='{"name":"phones"}'>
-  <template id="phoneEntry"> ... </template>   <!-- consumed by list! -->
+  <template id="phoneEntry"> ... </template>   <!-- LIST_CONTAINS_HTML_TEMPLATE -->
   <li data-smark-role="item"> ... </li>
 </ul>
 ```

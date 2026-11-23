@@ -19,6 +19,10 @@ function loadTemplates(me) {//{{{
     const templates = {};
     const prefix = "data-smark-";
     for (const child of [...me.targetNode.children]) {
+        if (child.tagName.toLowerCase() === "template") throw me.renderError(
+            'LIST_CONTAINS_HTML_TEMPLATE'
+            , `Native <template> elements cannot be direct children of a list; list children are reserved for role templates.`
+        );
         const options = {
             ...(parseJSON(child.getAttribute("data-smark")) || {}),
             ...collectPrefixedOptions(child),

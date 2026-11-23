@@ -128,6 +128,17 @@ remove the `name` from the duplicate and rely on the auto-generated name).
 
 ## List
 
+### `LIST_CONTAINS_HTML_TEMPLATE`
+
+A native `<template>` element appears as a direct child of a `list`. Lists
+reserve direct children for their role templates; a native template element
+cannot be used as one.
+
+**Fix:** Move the mixin definition outside the list and reference it from the
+list's item template.
+
+---
+
 ### `LIST_DUPLICATE_TEMPLATE`
 
 Two children of a `list` component declare the same template role

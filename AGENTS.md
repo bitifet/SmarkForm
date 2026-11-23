@@ -321,8 +321,9 @@ into the clone, and replacing the placeholder in place.
   `smark_mixin_allow_local_scripts`, `smark_mixin_allow_same_origin_scripts`,
   `smark_mixin_allow_cross_origin_scripts` (`block`|`noscript`|`allow`, or object)
   control top-level template `<script>` execution.
-- **Gotcha**: never place `<template>` nodes as direct children of a SmarkForm
-  `list` — a list consumes every direct child as a role template.
+- Native `<template>` elements as direct children of a SmarkForm `list` raise
+  `LIST_CONTAINS_HTML_TEMPLATE`; define mixins outside lists and reference them
+  from item templates.
 
 **Configuration file locations**:
 - Tests: `test/mixin_types.tests.js`

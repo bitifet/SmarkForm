@@ -79,13 +79,12 @@ The referenced `<template>` must satisfy:
   `MIXIN_TEMPLATE_ROOT_HAS_NAME`. The name belongs to the placeholder.
 - The root subtree must **not** contain any `<script>` element (nested
   scripts are forbidden) → `MIXIN_NESTED_SCRIPT_DISALLOWED`.
+- A native `<template>` element must not be a direct child of a SmarkForm
+  `list`; list children are reserved for role templates. This raises
+  `LIST_CONTAINS_HTML_TEMPLATE` during rendering. Define mixin templates
+  outside the list and reference them from an item template.
 
 Non-element nodes (text/comments) directly inside the `<template>` are ignored.
-
-> **List placement warning:** do not place `<template>` elements as direct
-> children of a SmarkForm `list` container — the list consumes its direct
-> children as role templates. Define templates at document level (or in a
-> non-SmarkForm container).
 
 ---
 
@@ -381,5 +380,4 @@ Both ids come from the same counter but are assigned in independent scopes
 | Cross-list drag from the same template | `src/types/list.decorators/sortable.deco.js` (`data-sf-tpl`) |
 | Tests | `test/mixin_types.tests.js` |
 | User guide | `docs/_advanced_concepts/mixin_types.md` (and `field_masking.md` for scoped masks) |
-
 

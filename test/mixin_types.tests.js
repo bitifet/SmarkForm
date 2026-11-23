@@ -401,6 +401,25 @@ test.describe('Mixin Types — nested mixin expansion', () => {
 // ---------------------------------------------------------------------------
 test.describe('Mixin Types — error codes', () => {
 
+    test('LIST_CONTAINS_HTML_TEMPLATE: native template is rejected as a direct list child', async ({ page: pg }) => {//{{{
+        let onClosed;
+        try {
+            const { url, onClosed: oc } = await renderHtml(page(`
+<form id="myForm">
+  <ul data-smark='{"name":"entries"}'>
+    <template id="entryMixin"><li data-smark></li></template>
+    <li data-smark></li>
+  </ul>
+</form>
+`));
+            onClosed = oc;
+            await pg.goto(url);
+            await expect(pg.getByText('LIST_CONTAINS_HTML_TEMPLATE')).toBeVisible({ timeout: 3000 });
+        } finally {
+            if (onClosed) await onClosed();
+        }
+    });//}}}
+
     test('MIXIN_TYPE_MISSING_FRAGMENT: type "#" has empty fragment', async ({ page: pg }) => {//{{{
         let onClosed;
         try {
@@ -1625,5 +1644,4 @@ ${fetchSpy}
     });//}}}
 
 });
-
 
