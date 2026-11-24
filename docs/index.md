@@ -365,7 +365,7 @@ A nested subform, a sortable list, context-driven hotkeys, and date/time coercio
 **See it**
 
 * [Showcase]({{ "/showcase_examples/showcase" | relative_url }}) — interactive examples at a glance.
-* [Downloadable examples]({{ "/showcase_examples/examples" | relative_url }}) — run and edit them locally.
+* [Examples]({{ "/showcase_examples/examples" | relative_url }}) — explore full, interactive project examples.
 * [Playground]({{ "/showcase_examples/playground" | relative_url }}) — experiment in the browser.
 
 **Use it now**

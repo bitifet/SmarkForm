@@ -1518,6 +1518,11 @@ guides and references that explain them. The following collection brings
 selected examples together for browsing; use each **Original** link to open it
 in its full documentation context.
 
+{: .hint }
+> Looking for fuller, more realistic projects? The
+> [Examples page]({{ "/showcase_examples/examples" | relative_url }}) continues
+> the tour with complete, playable forms.
+
 ### The examples
 
 {% include showcase_examples.md %}

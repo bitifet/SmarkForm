@@ -46,9 +46,9 @@ or UMD file from its `dist/` directory.
 *SmarkForm* is a layout-agnostic library, so you are free to design your layout
 and styles to your liking.
 
-If you want to reuse the layout and styles from our
-[Downloadable Examples]({{ "/showcase_examples/examples" | relative_url }}),
-download these CSS files:
+The layout and stylesheets below are optional examples from the
+[Legacy Examples archive]({{ "/showcase_examples/legacy_examples" | relative_url }}).
+SmarkForm does not require them.
 
   * Layout: <a href="{{ smarkform_css_layout_dld_link }}" download="{{ smarkform_css_layout_dld_name }}">⤵️ {{ smarkform_css_layout_dld_name }}</a>
   * Styles: <a href="{{ smarkform_css_styles_dld_link }}" download="{{ smarkform_css_styles_dld_name }}">⤵️ {{ smarkform_css_styles_dld_name }}</a>
@@ -56,7 +56,7 @@ download these CSS files:
 
 {: .hint}
 > To learn how to use these styles, inspect the
-> [Downloadable Examples]({{ "/showcase_examples/examples" | relative_url }}) source.
+> [Legacy Examples]({{ "/showcase_examples/legacy_examples" | relative_url }}) source.
 
 
 ### Boilerplate Template
@@ -67,8 +67,10 @@ Alternatively, start with the empty boilerplate template:
 
 
 {: .info}
-> The template loads SmarkForm (UMD) and the example CSS from their CDN URLs.
-> See the [CDN guide]({{ "/start_here/cdn" | relative_url }}) for versioned and latest links.
+> The template loads SmarkForm (UMD) from jsDelivr and references the sample
+> stylesheets by filename. Keep the template and CSS files together to use those
+> styles. See the [CDN guide]({{ "/start_here/cdn" | relative_url }}) for
+> versioned and latest library links.
 > 
 > This mean that you don't need to worry about downloading them or adjusting
 > any url.

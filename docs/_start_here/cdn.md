@@ -52,26 +52,15 @@ published package version. Avoid them in production:
 
 ### CSS
 
-As discussed in the
-[Download Section]({{ "start_here/download" | relative_url }}), you can also
-find the CSS used in our
-[Examples Section]({{ "showcase_examples/examples" | relative_url }}) as CDN resources.
+The optional layout and style sheets archived with the
+[Legacy Examples]({{ "showcase_examples/legacy_examples" | relative_url }})
+are static files hosted by this documentation site; they are separate from the
+SmarkForm JavaScript library.
 
 Just insert the following lines in your `<head>` section.
 
 
 ```html
-    <link rel='stylesheet' href='{{ css_layout_cdn_current }}'>
-    <link rel='stylesheet' href='{{ css_styles_cdn_current }}'>
-```
-
-
-### Latest sample CSS:
-
-As for SmarkForm modules, if you want to always get the latest available
-example CSS files, you can use the following links instead:
-
-```html
-    <link rel='stylesheet' href='{{ css_layout_cdn_latest }}'>
-    <link rel='stylesheet' href='{{ css_styles_cdn_latest }}'>
+    <link rel='stylesheet' href='{{ css_layout_site_url }}'>
+    <link rel='stylesheet' href='{{ css_styles_site_url }}'>
 ```

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
+  <head>
+    <title>Beach Surveillance Example</title>
+    <meta name='description' content='
+    This example mocks a form to collect data about beaches&apos; available
+    surveillance services every time during a whole season.
+
+    For real-life implementation it would require moving observation
+    points data outside of periods and a few dynamic tweaks that are
+    outside of the scope of this demonstration example.
+'>
+    <meta property='og:title' content='Beach Surveillance Example'>
+    <meta property='og:description' content='
+    This example mocks a form to collect data about beaches&apos; available
+    surveillance services every time during a whole season.
+
+    For real-life implementation it would require moving observation
+    points data outside of periods and a few dynamic tweaks that are
+    outside of the scope of this demonstration example.
+'>
+    <meta property='og:type' content='website'>
+    <meta name='twitter:card' content='summary'>
+    <meta name='twitter:title' content='Beach Surveillance Example'>
+    <meta name='twitter:description' content='
+    This example mocks a form to collect data about beaches&apos; available
+    surveillance services every time during a whole season.
+
+    For real-life implementation it would require moving observation
+    points data outside of periods and a few dynamic tweaks that are
+    outside of the scope of this demonstration example.
+'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
+      });
+    </script>
+    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.26.0/dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // <!-- BEGIN controller sample-->
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
+          );
+      
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on clear action
+          myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+      
+              // Ask for confirmation:
+              if (
+                  context.getPath() == "/"      // Only for the whole form
+                  && ! await context.isEmpty()  // Don't even ask if already empty
+                  && ! confirm("Are you sure?")
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
+          const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+          myForm.on("afterRender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.add("animated_item");
+              await delay(1); /* Important: Allow DOM to update */
+              item.classList.add("ongoing");
+          });
+          myForm.on("beforeUnrender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.remove("ongoing");
+              /* Await for transition to be finished before item removal: */
+              await delay(150);
+          });
+      
+          // <!-- END controller sample-->
+      
+      });
+    </script>
+  </head>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>Beach Surveillance Example</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: 1em 1.5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://smarkform.bitifet.net'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example mocks a form to collect data about beaches' available
+    surveillance services every time during a whole season.
+
+    For real-life implementation it would require moving observation
+    points data outside of periods and a few dynamic tweaks that are
+    outside of the scope of this demonstration example.
+</p>
+            <ul>
+              <li>
+                Complete documentation at
+                <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/showcase_examples/examples'>https://smarkform.bitifet.net/showcase_examples/examples</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm</a>.
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
+              </li>
+              <li> <a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
+        </header>
+        <!-- BEGIN SmarkForm sample-->
+        <h2>General data</h2>
+        <div class='form-group'>
+          <div class='form-group'>
+            <label data-smark>Name:</label>
+            <input data-smark type='text' name='name' placeholder='Beach Name'>
+          </div>
+          <div class='form-group'>
+            <label data-smark>Risk Level:</label>
+            <select data-smark name='risk' style='max-width: 8em'>
+              <option value='low'>Low</option>
+              <option value='medium'>Medium</option>
+              <option value='high'>High</option>
+            </select>
+          </div>
+        </div>
+        <div class='form-group'>
+          <div class='form-group'>
+            <label data-smark>Municipality:</label>
+            <input data-smark type='text' name='municipality'>
+          </div>
+          <div class='form-group'>
+            <label data-smark>Coordinates:</label>
+            <input data-smark type='text' name='coordinates' placeholder='Lat, Lng'>
+          </div>
+        </div>
+        <h2>Surveillance Periods</h2>
+        <div data-smark='{"type":"list","name":"periods","export_empties":true}'>
+          <section>
+            <div class='form-group aside'>
+              <h2>Period <span data-smark='{"action":"position"}'>N</span></h2>
+              <button class='inline' data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this period'><span role='img' aria-label='Remove this item'>➖</span></button>
+            </div>
+            <div class='form-group'>
+              <div class='form-group'>
+                <label data-smark>Start Date:</label>
+                <input data-smark type='date' name='start_date'>
+              </div>
+              <div class='form-group'>
+                <label data-smark>End Date:</label>
+                <input data-smark type='date' name='end_date'>
+              </div>
+            </div>
+            <h3>Schedule</h3>
+            <div class='form-group'>
+              <button data-smark='{"action":"removeItem","hotkey":"-","context":"surveillance_schedule"}' title='Less intervals'><span role='img' aria-label='Remove interval'>➖</span></button>
+              <button data-smark='{"action":"addItem","hotkey":"+","context":"surveillance_schedule"}' title='More intervals'><span role='img' aria-label='Add new interval'>➕</span></button>
+              <label>Surveillance:</label><span data-smark='{"type":"list","name":"surveillance_schedule","min_items":0,"max_items":3}'><span>
+                  <input class='small' data-smark type='time' name='start'>to
+                  <input class='small' data-smark type='time' name='end'></span><span data-smark='{"role":"empty_list"}'>(No Surveillance)</span><span data-smark='{"role":"separator"}'>, </span><span data-smark='{"role":"last_separator"}'> and </span></span>
+            </div>
+            <div class='form-group'>
+              <button data-smark='{"action":"removeItem","hotkey":"-","context":"boat_schedule"}' title='Less intervals'><span role='img' aria-label='Remove interval'>➖</span></button>
+              <button data-smark='{"action":"addItem","hotkey":"+","context":"boat_schedule"}' title='More intervals'><span role='img' aria-label='Add new interval'>➕</span></button>
+              <label>Boat:</label><span data-smark='{"type":"list","name":"boat_schedule","min_items":0,"max_items":3}'><span>
+                  <input class='small' data-smark type='time' name='start'>-
+                  <input class='small' data-smark type='time' name='end'></span><span data-smark='{"role":"empty_list"}'>(No Boat Service)</span><span data-smark='{"role":"separator"}'>, </span><span data-smark='{"role":"last_separator"}'> and </span></span>
+            </div>
+            <div class='form-group aside'>
+              <h3>Observation Points</h3>
+              <button class='inline' data-smark='{"action":"removeItem","hotkey":"-","context":"observers"}' title='Less points'><span role='img' aria-label='Remove observation point'>➖</span></button>
+              <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"observers"}' title='More points'><span role='img' aria-label='Add new observation point'>➕</span></button>
+            </div>
+            <div class='form-group' data-smark='{"type":"list","name":"observers","sortable":true}'>
+              <fieldset class='form-group'>
+                <div class='form-group'>
+                  <label data-smark>Type:</label>
+                  <select data-smark name='type' style='max-width: 12em'>
+                    <option value='tower'>Tower</option>
+                    <option value='station'>Lifeguard Station</option>
+                    <option value='post'>Surveillance Post</option>
+                    <option value='other'>Other</option>
+                  </select>
+                </div>
+                <div class='form-group'>
+                  <label data-smark>Color:</label><span data-smark='{"type":"color","name":"color"}'>
+                    <!-- ,'value':'#ffff00' (...won&apos;t work here YET)-->
+                    <input data-smark>
+                    <button data-smark='{"action":"clear"}'>❌</button></span>
+                  <!-- input(data-smark=&apos;{'type':'color','name':'color','value':'#ffff00'}&apos;)-->
+                  <!-- button(data-smark=&apos;{'action':'clear','context':'color'}&apos;) ❌-->
+                </div>
+                <div class='form-group'>
+                  <label data-smark>Name:</label>
+                  <input data-smark type='text' name='name' placeholder='(Optional)'>
+                </div>
+                <div class='form-group'>
+                  <label data-smark>Position:</label>
+                  <input data-smark type='text' name='position' placeholder='Latitude, Longitude'>
+                </div>
+                <div class='form-group full-width'>
+                  <div style='display: block'>
+                    <div class='input-group'><strong data-smark='label'>Telephones</strong>
+                      <div data-smark='{"type":"#inputlist","name":"phones","max_items":3}'>
+                        <input data-smark='data-smark' data-for='listInput' type='tel' placeholder='Telephone'/>
+                      </div>
+                    </div>
+                  </div>
+                  <div class='form-group'>
+                    <label data-smark>Indications:</label>
+                    <textarea rows='4' data-smark name='indications' placeholder='Where it is'></textarea>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class='form-group aside'><span></span>
+              <button class='inline' data-smark='{"action":"addItem","source":".-1","hotkey":"+"}' style='float: right'><span role='img' aria-label='Duplicate this item'>✨</span>Clone this Period</button>
+            </div>
+          </section>
+        </div>
+        <div class='form-group aside reverse'>
+          <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"periods"}'><span role='img' alt>➕</span>   Add new Period</button>
+        </div>
+        <p>&nbsp;</p>
+        <div class='form-group aside reverse'>
+          <button class='inline' data-smark='{"action":"export"}'>💾 Submit</button>
+          <button class='inline' data-smark='{"action":"clear"}'>❌ Clear</button>
+        </div>
+        <template id='inputlist'>
+          <div data-smark='{"type":"list","of":"input"}'>
+            <div class='singleton'>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item' id='removeBtn'><span role='img' aria-label='Remove this item'>➖</span></button>
+              <input data-smark id='listInput'>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+            </div>
+          </div>
+        </template>
+        <!-- END SmarkForm sample-->
+        <p class='smarkform-touch-hint'>
+          Touch devices may need a drag-and-drop polyfill such as
+          <a href='https://github.com/drag-drop-touch-js/dragdroptouch' target='_blank' rel='noopener noreferrer'>DragDropTouch</a>.
+          See it in action in the <a href='https://smarkform.bitifet.net/showcase_examples/showcase#project-kanban-board'>Showcase Kanban</a>.
+        </p>
+        <footer class='smarkform-badge-footer'><a href='https://smarkform.bitifet.net/for_end_users/user_guide' title='Learn about SmarkForm-powered forms' target='_blank' rel='noopener noreferrer'><img src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg' alt='Powered by SmarkForm' height='24'></a></footer>
+      </div>
+    </div>
+  </body>
+</html>

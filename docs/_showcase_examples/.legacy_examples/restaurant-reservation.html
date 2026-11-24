@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
+  <head>
+    <title>Restaurant Reservation + Preorder</title>
+    <meta name='description' content='
+    This example models a restaurant table reservation form with an
+    optional preorder section. Guests can specify party size, dietary
+    preferences, and pre-select courses for each diner to help the
+    kitchen prepare in advance.
+'>
+    <meta property='og:title' content='Restaurant Reservation + Preorder'>
+    <meta property='og:description' content='
+    This example models a restaurant table reservation form with an
+    optional preorder section. Guests can specify party size, dietary
+    preferences, and pre-select courses for each diner to help the
+    kitchen prepare in advance.
+'>
+    <meta property='og:type' content='website'>
+    <meta name='twitter:card' content='summary'>
+    <meta name='twitter:title' content='Restaurant Reservation + Preorder'>
+    <meta name='twitter:description' content='
+    This example models a restaurant table reservation form with an
+    optional preorder section. Guests can specify party size, dietary
+    preferences, and pre-select courses for each diner to help the
+    kitchen prepare in advance.
+'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
+      });
+    </script>
+    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.26.0/dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // <!-- BEGIN controller sample-->
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
+          );
+      
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on clear action
+          myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+      
+              // Ask for confirmation:
+              if (
+                  context.getPath() == "/"      // Only for the whole form
+                  && ! await context.isEmpty()  // Don't even ask if already empty
+                  && ! confirm("Are you sure?")
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
+          const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+          myForm.on("afterRender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.add("animated_item");
+              await delay(1); /* Important: Allow DOM to update */
+              item.classList.add("ongoing");
+          });
+          myForm.on("beforeUnrender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.remove("ongoing");
+              /* Await for transition to be finished before item removal: */
+              await delay(150);
+          });
+      
+          // <!-- END controller sample-->
+      
+      });
+    </script>
+  </head>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>Restaurant Reservation + Preorder</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: 1em 1.5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://smarkform.bitifet.net'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example models a restaurant table reservation form with an
+    optional preorder section. Guests can specify party size, dietary
+    preferences, and pre-select courses for each diner to help the
+    kitchen prepare in advance.
+</p>
+            <ul>
+              <li>
+                Complete documentation at
+                <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/showcase_examples/examples'>https://smarkform.bitifet.net/showcase_examples/examples</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm</a>.
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
+              </li>
+              <li> <a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
+        </header>
+        <!-- BEGIN SmarkForm sample-->
+        <section>
+          <div class='form-group h1'>Reservation Details</div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Guest Name</label>
+              <input data-smark name='guest_name' type='text' placeholder='Full name'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Phone</label>
+              <input data-smark name='phone' type='tel' placeholder='+1 234 567 8900'>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Email</label>
+              <input data-smark name='email' type='email' placeholder='email@example.com'>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Date</label>
+              <input data-smark name='reservation_date' type='date'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Time</label>
+              <select data-smark name='reservation_time'>
+                <option value=''>— Select time —</option>
+                <option value='12:00'>12:00 — Lunch</option>
+                <option value='13:00'>13:00</option>
+                <option value='14:00'>14:00</option>
+                <option value='19:00'>19:00 — Dinner</option>
+                <option value='20:00'>20:00</option>
+                <option value='21:00'>21:00</option>
+              </select>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Party Size</label>
+              <input data-smark name='party_size' type='number' min='1' max='20' placeholder='Number of guests'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Seating Preference</label>
+              <select data-smark name='seating'>
+                <option value=''>— No preference —</option>
+                <option value='indoor'>Indoor</option>
+                <option value='outdoor'>Outdoor / Terrace</option>
+                <option value='private'>Private Room</option>
+                <option value='bar'>Bar Area</option>
+              </select>
+            </div>
+          </div>
+          <div class='input-group'><strong data-smark='label'>Dietary Requirements</strong>
+            <div data-smark='{"type":"#inputlist","name":"dietary_requirements","min_items":0,"max_items":10}'>
+              <input data-smark='data-smark' data-for='listInput' type='text' placeholder='e.g. Vegetarian, Gluten-free, Halal'/>
+              <button data-smark='{"action":"removeItem","failback":"clear","hotkey":"-"}' data-for='removeBtn' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
+            </div>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Special Requests</label>
+            <textarea data-smark name='special_requests' placeholder='Occasion, accessibility needs, high chairs, etc.' rows='2'></textarea>
+          </div>
+        </section>
+        <section>
+          <details open>
+            <summary class='form-group h2'><span><span>Preorder (</span><span data-smark='{"action":"count","context":"preorders"}'></span><span>guests)</span></span>
+              <div class='form-group'>
+                <div class='spacer'></div>
+                <button data-smark='{"action":"addItem","hotkey":"+","context":"preorders","autoscroll":"self"}' title='Add guest preorder'><span role='img' aria-label='Add guest preorder'>➕</span></button>
+                <button data-smark='{"action":"removeItem","hotkey":"-","context":"preorders","preserve_non_empty":true}' title='Remove guest preorder'><span role='img' aria-label='Remove guest preorder'>➖</span></button>
+                <button data-smark='{"action":"removeItem","hotkey":"*","context":"preorders","target":"*","preserve_non_empty":true}' title='Clear empty preorders'><span role='img' aria-label='Remove empty preorders'>🧹</span></button>
+              </div>
+            </summary>
+            <div class='form-group'>
+              <div class='form-group' data-smark='{"name":"preorders","type":"list","min_items":0,"export_empties":false,"sortable":true}'>
+                <fieldset class='full-width form-group aside reverse' data-smark='{"export_empties":false}'>
+                  <button class='inline' data-smark='{"action":"removeItem","hotkey":"Delete","failback":"clear"}' title='Remove this guest preorder'><span role='img' aria-label='Remove this guest preorder'>❌</span></button>
+                  <div class='form-group spacer'>
+                    <div class='form-group h3'><span>Guest <span data-smark='{"action":"position"}'></span></span></div>
+                    <div class='form-group'>
+                      <div class='input-group'>
+                        <label data-smark>Guest Name / Label</label>
+                        <input data-smark name='guest_label' placeholder='e.g. Guest 1 or Alice'>
+                      </div>
+                      <div class='input-group'>
+                        <label data-smark>Dietary Notes</label>
+                        <input data-smark name='dietary_notes' placeholder='e.g. Vegan, Nut allergy'>
+                      </div>
+                    </div>
+                    <div class='form-group h3'>Courses</div>
+                    <div class='form-group' data-smark='{"type":"form","name":"courses"}'>
+                      <div class='form-group'>
+                        <div class='input-group'>
+                          <label data-smark>Starter</label>
+                          <select data-smark name='starter'>
+                            <option value=''>— None —</option>
+                            <option value='soup'>Soup of the Day</option>
+                            <option value='salad'>Garden Salad</option>
+                            <option value='bruschetta'>Bruschetta</option>
+                            <option value='shrimp_cocktail'>Shrimp Cocktail</option>
+                            <option value='charcuterie'>Charcuterie Board</option>
+                          </select>
+                        </div>
+                        <div class='input-group'>
+                          <label data-smark>Main Course</label>
+                          <select data-smark name='main'>
+                            <option value=''>— None —</option>
+                            <option value='steak'>Grilled Steak</option>
+                            <option value='salmon'>Pan-Seared Salmon</option>
+                            <option value='pasta'>Pasta Primavera</option>
+                            <option value='risotto'>Mushroom Risotto</option>
+                            <option value='chicken'>Roasted Chicken</option>
+                            <option value='veggie_burger'>Veggie Burger</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class='form-group'>
+                        <div class='input-group'>
+                          <label data-smark>Dessert</label>
+                          <select data-smark name='dessert'>
+                            <option value=''>— None —</option>
+                            <option value='tiramisu'>Tiramisu</option>
+                            <option value='cheesecake'>Cheesecake</option>
+                            <option value='sorbet'>Lemon Sorbet</option>
+                            <option value='brownie'>Chocolate Brownie</option>
+                            <option value='fruit'>Seasonal Fruit</option>
+                          </select>
+                        </div>
+                        <div class='input-group'>
+                          <label data-smark>Drink</label>
+                          <select data-smark name='drink'>
+                            <option value=''>— None —</option>
+                            <option value='water'>Still Water</option>
+                            <option value='sparkling'>Sparkling Water</option>
+                            <option value='juice'>Juice</option>
+                            <option value='wine_red'>Red Wine</option>
+                            <option value='wine_white'>White Wine</option>
+                            <option value='beer'>Beer</option>
+                            <option value='soft'>Soft Drink</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class='input-group'>
+                      <label data-smark>Additional Course Notes</label>
+                      <textarea data-smark name='course_notes' placeholder='e.g. Steak medium-rare, sauce on the side...' rows='2'></textarea>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class='form-group f2'>
+              <div class='spacer'></div>
+              <button data-smark='{"action":"addItem","hotkey":"+","context":"preorders","autoscroll":"elegant"}' title='Add guest preorder'>➕</button>
+            </div>
+          </details>
+        </section>
+        <section>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"import","hotkey":"i"}' title='Import (JSON) data'><span role='img' aria-label=''>📂</span> Import</button>
+            <button data-smark='{"action":"clear","hotkey":"x"}' title='Clear form data'><span role='img' aria-label=''>❌</span> Cancel</button>
+            <button data-smark='{"action":"export","hotkey":"s"}' title='Confirm reservation and preorder'><span role='img' aria-label=''>💾</span> Confirm Reservation</button>
+          </div>
+        </section>
+        <template id='inputlist'>
+          <div data-smark='{"type":"list","of":"input"}'>
+            <div class='singleton'>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item' id='removeBtn'><span role='img' aria-label='Remove this item'>➖</span></button>
+              <input data-smark id='listInput'>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+            </div>
+          </div>
+        </template>
+        <!-- END SmarkForm sample-->
+        <p class='smarkform-touch-hint'>
+          Touch devices may need a drag-and-drop polyfill such as
+          <a href='https://github.com/drag-drop-touch-js/dragdroptouch' target='_blank' rel='noopener noreferrer'>DragDropTouch</a>.
+          See it in action in the <a href='https://smarkform.bitifet.net/showcase_examples/showcase#project-kanban-board'>Showcase Kanban</a>.
+        </p>
+        <footer class='smarkform-badge-footer'><a href='https://smarkform.bitifet.net/for_end_users/user_guide' title='Learn about SmarkForm-powered forms' target='_blank' rel='noopener noreferrer'><img src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg' alt='Powered by SmarkForm' height='24'></a></footer>
+      </div>
+    </div>
+  </body>
+</html>

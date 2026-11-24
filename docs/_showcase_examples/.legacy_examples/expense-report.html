@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
+  <head>
+    <title>Expense Report / Reimbursement</title>
+    <meta name='description' content='
+    This example demonstrates an employee expense report and reimbursement
+    request form. Employees can log individual expense line items across
+    multiple categories, attach notes, and submit for approval.
+'>
+    <meta property='og:title' content='Expense Report / Reimbursement'>
+    <meta property='og:description' content='
+    This example demonstrates an employee expense report and reimbursement
+    request form. Employees can log individual expense line items across
+    multiple categories, attach notes, and submit for approval.
+'>
+    <meta property='og:type' content='website'>
+    <meta name='twitter:card' content='summary'>
+    <meta name='twitter:title' content='Expense Report / Reimbursement'>
+    <meta name='twitter:description' content='
+    This example demonstrates an employee expense report and reimbursement
+    request form. Employees can log individual expense line items across
+    multiple categories, attach notes, and submit for approval.
+'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
+      });
+    </script>
+    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.26.0/dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // <!-- BEGIN controller sample-->
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
+          );
+      
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on clear action
+          myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+      
+              // Ask for confirmation:
+              if (
+                  context.getPath() == "/"      // Only for the whole form
+                  && ! await context.isEmpty()  // Don't even ask if already empty
+                  && ! confirm("Are you sure?")
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
+          const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+          myForm.on("afterRender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.add("animated_item");
+              await delay(1); /* Important: Allow DOM to update */
+              item.classList.add("ongoing");
+          });
+          myForm.on("beforeUnrender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.remove("ongoing");
+              /* Await for transition to be finished before item removal: */
+              await delay(150);
+          });
+      
+          // <!-- END controller sample-->
+      
+      });
+    </script>
+  </head>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>Expense Report / Reimbursement</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: 1em 1.5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://smarkform.bitifet.net'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example demonstrates an employee expense report and reimbursement
+    request form. Employees can log individual expense line items across
+    multiple categories, attach notes, and submit for approval.
+</p>
+            <ul>
+              <li>
+                Complete documentation at
+                <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/showcase_examples/examples'>https://smarkform.bitifet.net/showcase_examples/examples</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm</a>.
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
+              </li>
+              <li> <a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
+        </header>
+        <!-- BEGIN SmarkForm sample-->
+        <section>
+          <div class='form-group h1'>Report Information</div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Employee Name</label>
+              <input data-smark name='employee_name' type='text' placeholder='Full name'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Department</label>
+              <input data-smark name='department' type='text' placeholder='Department or team'>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Report Period — Start</label>
+              <input data-smark name='period_start' type='date'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Report Period — End</label>
+              <input data-smark name='period_end' type='date'>
+            </div>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Purpose / Project</label>
+            <input data-smark name='purpose' type='text' placeholder='Business purpose or project name'>
+          </div>
+        </section>
+        <section>
+          <details open>
+            <summary class='form-group h2'><span><span>Expense Items (</span><span data-smark='{"action":"count","context":"expenses"}'></span><span>)</span></span>
+              <div class='form-group'>
+                <div class='spacer'></div>
+                <button data-smark='{"action":"addItem","hotkey":"+","context":"expenses","autoscroll":"self"}' title='Add expense'><span role='img' aria-label='Add expense'>➕</span></button>
+                <button data-smark='{"action":"removeItem","hotkey":"-","context":"expenses","preserve_non_empty":true}' title='Remove expense'><span role='img' aria-label='Remove expense'>➖</span></button>
+                <button data-smark='{"action":"removeItem","hotkey":"*","context":"expenses","target":"*","preserve_non_empty":true}' title='Clear empty expenses'><span role='img' aria-label='Remove empty expenses'>🧹</span></button>
+              </div>
+            </summary>
+            <div class='form-group'>
+              <div class='form-group' data-smark='{"name":"expenses","type":"list","export_empties":true,"sortable":true,"min_items":1}'>
+                <fieldset class='full-width form-group aside reverse' data-smark='{"export_empties":false}'>
+                  <button class='inline' data-smark='{"action":"removeItem","hotkey":"Delete","failback":"clear"}' title='Remove this expense'><span role='img' aria-label='Remove this expense'>❌</span></button>
+                  <div class='form-group spacer'>
+                    <div class='form-group'>
+                      <div class='input-group'>
+                        <label data-smark>Date</label>
+                        <input data-smark name='date' type='date'>
+                      </div>
+                      <div class='input-group'>
+                        <label data-smark>Category</label>
+                        <select data-smark name='category'>
+                          <option value='travel'>Travel</option>
+                          <option value='meals'>Meals & Entertainment</option>
+                          <option value='accommodation'>Accommodation</option>
+                          <option value='office'>Office Supplies</option>
+                          <option value='software'>Software / Subscriptions</option>
+                          <option value='other'>Other</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class='form-group'>
+                      <div class='input-group'>
+                        <label data-smark>Description</label>
+                        <input data-smark name='description' placeholder='Brief description of the expense'>
+                      </div>
+                      <div class='input-group'>
+                        <label data-smark>Amount</label>
+                        <input data-smark name='amount' type='number' min='0' step='0.01' placeholder='0.00'>
+                      </div>
+                    </div>
+                    <div class='form-group'>
+                      <div class='input-group'>
+                        <label data-smark>Currency</label>
+                        <select data-smark name='currency'>
+                          <option value='USD'>USD — US Dollar</option>
+                          <option value='EUR'>EUR — Euro</option>
+                          <option value='GBP'>GBP — British Pound</option>
+                          <option value='CAD'>CAD — Canadian Dollar</option>
+                          <option value='AUD'>AUD — Australian Dollar</option>
+                          <option value='other'>Other</option>
+                        </select>
+                      </div>
+                      <div class='input-group'>
+                        <label data-smark>Receipt Ref.</label>
+                        <input data-smark name='receipt_ref' placeholder='Receipt number or filename'>
+                      </div>
+                    </div>
+                    <div class='input-group'>
+                      <label data-smark>Notes</label>
+                      <textarea data-smark name='notes' placeholder='Additional details...' rows='2'></textarea>
+                    </div>
+                  </div>
+                </fieldset>
+              </div>
+            </div>
+            <div class='form-group f2'>
+              <div class='spacer'></div>
+              <button data-smark='{"action":"addItem","hotkey":"+","context":"expenses","autoscroll":"elegant"}' title='Add expense'>➕</button>
+              <button data-smark='{"action":"removeItem","hotkey":"-","context":"expenses","preserve_non_empty":true,"autoscroll":"elegant"}' title='Remove expense'><span role='img' aria-label='Shrink expense list'>➖</span></button>
+            </div>
+          </details>
+        </section>
+        <section>
+          <div class='form-group h2'>Approval</div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Manager / Approver</label>
+              <input data-smark name='approver' type='text' placeholder='Approver name'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Submission Date</label>
+              <input data-smark name='submission_date' type='date'>
+            </div>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Additional Comments</label>
+            <textarea data-smark name='comments' placeholder='Any additional information for the approver...' rows='3'></textarea>
+          </div>
+        </section>
+        <section>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"import","hotkey":"i"}' title='Import (JSON) data'><span role='img' aria-label=''>📂</span> Import</button>
+            <button data-smark='{"action":"clear","hotkey":"x"}' title='Clear form data'><span role='img' aria-label=''>❌</span> Cancel</button>
+            <button data-smark='{"action":"export","hotkey":"s"}' title='Submit expense report'><span role='img' aria-label=''>💾</span> Submit Report</button>
+          </div>
+        </section>
+        <template id='inputlist'>
+          <div data-smark='{"type":"list","of":"input"}'>
+            <div class='singleton'>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item' id='removeBtn'><span role='img' aria-label='Remove this item'>➖</span></button>
+              <input data-smark id='listInput'>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+            </div>
+          </div>
+        </template>
+        <!-- END SmarkForm sample-->
+        <p class='smarkform-touch-hint'>
+          Touch devices may need a drag-and-drop polyfill such as
+          <a href='https://github.com/drag-drop-touch-js/dragdroptouch' target='_blank' rel='noopener noreferrer'>DragDropTouch</a>.
+          See it in action in the <a href='https://smarkform.bitifet.net/showcase_examples/showcase#project-kanban-board'>Showcase Kanban</a>.
+        </p>
+        <footer class='smarkform-badge-footer'><a href='https://smarkform.bitifet.net/for_end_users/user_guide' title='Learn about SmarkForm-powered forms' target='_blank' rel='noopener noreferrer'><img src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg' alt='Powered by SmarkForm' height='24'></a></footer>
+      </div>
+    </div>
+  </body>
+</html>

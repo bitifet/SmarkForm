@@ -8,7 +8,6 @@
 wt
 
 # Generated files
-dist/examples/*.html
 docs/_data/computed.json
 
 # Jekyll
@@ -18,6 +17,7 @@ docs/.jekyll-cache/
 docs/_data/package.json
 docs/resources/dist/
 docs/_showcase_examples/.example_sources/
+docs/assets/legacy-examples/
 docs/dist/
 docs/vendor/
 docs/.bundle/

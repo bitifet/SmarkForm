@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
+  <head>
+    <title>Medical Appointment Intake</title>
+    <meta name='description' content='
+    This example models a patient intake form for a medical appointment,
+    capturing personal details, medical history, current medications,
+    allergies, and the reason for the visit.
+'>
+    <meta property='og:title' content='Medical Appointment Intake'>
+    <meta property='og:description' content='
+    This example models a patient intake form for a medical appointment,
+    capturing personal details, medical history, current medications,
+    allergies, and the reason for the visit.
+'>
+    <meta property='og:type' content='website'>
+    <meta name='twitter:card' content='summary'>
+    <meta name='twitter:title' content='Medical Appointment Intake'>
+    <meta name='twitter:description' content='
+    This example models a patient intake form for a medical appointment,
+    capturing personal details, medical history, current medications,
+    allergies, and the reason for the visit.
+'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
+      });
+    </script>
+    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.26.0/dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // <!-- BEGIN controller sample-->
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
+          );
+      
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on clear action
+          myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+      
+              // Ask for confirmation:
+              if (
+                  context.getPath() == "/"      // Only for the whole form
+                  && ! await context.isEmpty()  // Don't even ask if already empty
+                  && ! confirm("Are you sure?")
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
+          const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+          myForm.on("afterRender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.add("animated_item");
+              await delay(1); /* Important: Allow DOM to update */
+              item.classList.add("ongoing");
+          });
+          myForm.on("beforeUnrender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.remove("ongoing");
+              /* Await for transition to be finished before item removal: */
+              await delay(150);
+          });
+      
+          // <!-- END controller sample-->
+      
+      });
+    </script>
+  </head>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>Medical Appointment Intake</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: 1em 1.5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://smarkform.bitifet.net'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example models a patient intake form for a medical appointment,
+    capturing personal details, medical history, current medications,
+    allergies, and the reason for the visit.
+</p>
+            <ul>
+              <li>
+                Complete documentation at
+                <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/showcase_examples/examples'>https://smarkform.bitifet.net/showcase_examples/examples</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm</a>.
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
+              </li>
+              <li> <a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
+        </header>
+        <!-- BEGIN SmarkForm sample-->
+        <section>
+          <div class='form-group h1'>Patient Information</div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>First Name</label>
+              <input data-smark name='first_name' type='text' placeholder='First name'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Last Name</label>
+              <input data-smark name='last_name' type='text' placeholder='Last name'>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Date of Birth</label>
+              <input data-smark name='dob' type='date'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Sex</label>
+              <select data-smark name='sex'>
+                <option value=''>— Select —</option>
+                <option value='male'>Male</option>
+                <option value='female'>Female</option>
+                <option value='other'>Other / Prefer not to say</option>
+              </select>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Phone</label>
+              <input data-smark name='phone' type='tel' placeholder='+1 234 567 8900'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Email</label>
+              <input data-smark name='email' type='email' placeholder='email@example.com'>
+            </div>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Address</label>
+            <textarea data-smark name='address' placeholder='Street address, city, state, ZIP' rows='2'></textarea>
+          </div>
+        </section>
+        <section>
+          <div class='form-group h2'>Emergency Contact</div>
+          <div class='form-group' data-smark='{"type":"form","name":"emergency_contact"}'>
+            <div class='form-group'>
+              <div class='input-group'>
+                <label data-smark>Name</label>
+                <input data-smark name='name' type='text' placeholder='Full name'>
+              </div>
+              <div class='input-group'>
+                <label data-smark>Relationship</label>
+                <input data-smark name='relationship' type='text' placeholder='e.g. Spouse, Parent'>
+              </div>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Phone</label>
+              <input data-smark name='phone' type='tel' placeholder='+1 234 567 8900'>
+            </div>
+          </div>
+        </section>
+        <section>
+          <div class='form-group h2'><span>Current Medications</span>
+            <div class='form-group'>
+              <div class='spacer'></div>
+              <button data-smark='{"action":"addItem","hotkey":"+","context":"medications","autoscroll":"self"}' title='Add medication'><span role='img' aria-label='Add medication'>➕</span></button>
+              <button data-smark='{"action":"removeItem","hotkey":"-","context":"medications","preserve_non_empty":true}' title='Remove medication'><span role='img' aria-label='Remove medication'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group' data-smark='{"name":"medications","type":"list","min_items":0,"export_empties":false}'>
+            <div class='full-width form-group aside'>
+              <label class='inline'><span data-smark='{"action":"position"}'></span><span>&nbsp;💊</span></label>
+              <div class='form-group spacer'>
+                <div class='form-group'>
+                  <input style='flex:4' data-smark name='name' placeholder='Medication name'>
+                  <input style='flex:2' data-smark name='dose' placeholder='Dose (e.g. 10mg)'>
+                  <input style='flex:3' data-smark name='frequency' placeholder='Frequency (e.g. twice daily)'>
+                </div>
+              </div>
+              <button class='inline' data-smark='{"action":"removeItem"}' title='Remove this medication' style='margin-left:auto'><span role='img' aria-label='Remove this medication'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"medications","autoscroll":"elegant"}'><span role='img' aria-label=''>➕</span> Add Medication</button>
+          </div>
+        </section>
+        <section>
+          <div class='form-group h2'><span>Allergies</span>
+            <div class='form-group'>
+              <div class='spacer'></div>
+              <button data-smark='{"action":"addItem","hotkey":"+","context":"allergies","autoscroll":"self"}' title='Add allergy'><span role='img' aria-label='Add allergy'>➕</span></button>
+              <button data-smark='{"action":"removeItem","hotkey":"-","context":"allergies","preserve_non_empty":true}' title='Remove allergy'><span role='img' aria-label='Remove allergy'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group' data-smark='{"name":"allergies","type":"list","min_items":0,"export_empties":false}'>
+            <div class='full-width form-group aside'>
+              <label class='inline'><span data-smark='{"action":"position"}'></span><span>&nbsp;⚠️</span></label>
+              <div class='form-group spacer'>
+                <div class='form-group'>
+                  <input style='flex:4' data-smark name='allergen' placeholder='Allergen (e.g. Penicillin, Peanuts)'>
+                  <select style='flex:3' data-smark name='reaction'>
+                    <option value=''>— Reaction type —</option>
+                    <option value='rash'>Rash / Hives</option>
+                    <option value='anaphylaxis'>Anaphylaxis</option>
+                    <option value='nausea'>Nausea / Vomiting</option>
+                    <option value='respiratory'>Respiratory issues</option>
+                    <option value='other'>Other</option>
+                  </select>
+                </div>
+              </div>
+              <button class='inline' data-smark='{"action":"removeItem"}' title='Remove this allergy' style='margin-left:auto'><span role='img' aria-label='Remove this allergy'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"allergies","autoscroll":"elegant"}'><span role='img' aria-label=''>➕</span> Add Allergy</button>
+          </div>
+        </section>
+        <section>
+          <div class='form-group h2'>Medical History</div>
+          <div class='form-group'>
+            <label data-smark>Do you have any chronic conditions?</label>
+            <label>
+              <input data-smark type='radio' name='chronic_conditions' value='yes'> Yes
+            </label>
+            <label>
+              <input data-smark type='radio' name='chronic_conditions' value='no'> No
+            </label>
+          </div>
+          <div class='input-group'><strong data-smark='label'>Known Conditions</strong>
+            <div data-smark='{"type":"#inputlist","name":"conditions","min_items":0,"max_items":20}'>
+              <input data-smark='data-smark' data-for='listInput' type='text' placeholder='e.g. Diabetes, Hypertension'/>
+              <button data-smark='{"action":"removeItem","failback":"clear","hotkey":"-"}' data-for='removeBtn' title='Remove this item'><span role='img' aria-label='Remove this item'>➖</span></button>
+            </div>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Previous Surgeries or Hospitalizations</label>
+            <textarea data-smark name='surgery_history' placeholder='Briefly describe any past surgeries or hospital stays...' rows='3'></textarea>
+          </div>
+        </section>
+        <section>
+          <div class='form-group h2'>Reason for Visit</div>
+          <div class='input-group'>
+            <label data-smark>Chief Complaint</label>
+            <textarea data-smark name='chief_complaint' placeholder='Please describe your main concern or reason for today&apos;s appointment...' rows='3'></textarea>
+          </div>
+          <div class='form-group'>
+            <div class='input-group'>
+              <label data-smark>Symptoms Since</label>
+              <input data-smark name='symptoms_since' type='date'>
+            </div>
+            <div class='input-group'>
+              <label data-smark>Pain Level (0–10)</label>
+              <input data-smark name='pain_level' type='number' min='0' max='10' placeholder='0'>
+            </div>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Additional Notes</label>
+            <textarea data-smark name='notes' placeholder='Anything else you&apos;d like the doctor to know...' rows='3'></textarea>
+          </div>
+        </section>
+        <section>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"import","hotkey":"i"}' title='Import (JSON) data'><span role='img' aria-label=''>📂</span> Import</button>
+            <button data-smark='{"action":"clear","hotkey":"x"}' title='Clear form data'><span role='img' aria-label=''>❌</span> Cancel</button>
+            <button data-smark='{"action":"export","hotkey":"s"}' title='Submit intake form'><span role='img' aria-label=''>💾</span> Submit</button>
+          </div>
+        </section>
+        <template id='inputlist'>
+          <div data-smark='{"type":"list","of":"input"}'>
+            <div class='singleton'>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item' id='removeBtn'><span role='img' aria-label='Remove this item'>➖</span></button>
+              <input data-smark id='listInput'>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+            </div>
+          </div>
+        </template>
+        <!-- END SmarkForm sample-->
+        <footer class='smarkform-badge-footer'><a href='https://smarkform.bitifet.net/for_end_users/user_guide' title='Learn about SmarkForm-powered forms' target='_blank' rel='noopener noreferrer'><img src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg' alt='Powered by SmarkForm' height='24'></a></footer>
+      </div>
+    </div>
+  </body>
+</html>

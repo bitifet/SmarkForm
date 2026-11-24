@@ -1,8 +1,8 @@
 ---
-title: "Internal Example Source Capture"
+title: "Internal Legacy Example Source Capture"
 layout: default
 nav_order: 1000
-permalink: "/showcase_examples/examples.capture"
+permalink: "/showcase_examples/legacy_examples.capture"
 sitemap: false
 nav_exclude: true
 search_exclude: true
@@ -10,16 +10,16 @@ noindex: true
 ---
 
 
-{% assign current_directory = ".example_sources" %}
+{% assign current_directory = ".legacy_examples/" %}
 
 {% assign html_sources = "" %}
 {% assign js_sources = "" %}
 
 
-{% for item in site.data.examples %}
+{% for item in site.data.legacy_examples %}
 
 {% capture full_html_content -%}
-{% include_relative {{ current_directory }}{{ item.url }} %}
+{% include_relative {{ current_directory }}{{ item.filename }} %}
 {%- endcapture %}
 
 

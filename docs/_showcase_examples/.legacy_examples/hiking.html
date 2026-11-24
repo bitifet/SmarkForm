@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html style='--background-image-url: url("https://picsum.photos/id/972/800.jpg");'>
+  <head>
+    <title>Adventure Tracking Example</title>
+    <meta name='description' content='
+    This example is a draft for an excursion planning form that allows
+    users to provide location, date, start and end times, and route
+    details. Participants can receive personal tracking links for
+    automatic position updates during the excursion, ensuring a safer
+    experience and enabling quick rescue in emergencies.
+'>
+    <meta property='og:title' content='Adventure Tracking Example'>
+    <meta property='og:description' content='
+    This example is a draft for an excursion planning form that allows
+    users to provide location, date, start and end times, and route
+    details. Participants can receive personal tracking links for
+    automatic position updates during the excursion, ensuring a safer
+    experience and enabling quick rescue in emergencies.
+'>
+    <meta property='og:type' content='website'>
+    <meta name='twitter:card' content='summary'>
+    <meta name='twitter:title' content='Adventure Tracking Example'>
+    <meta name='twitter:description' content='
+    This example is a draft for an excursion planning form that allows
+    users to provide location, date, start and end times, and route
+    details. Participants can receive personal tracking links for
+    automatic position updates during the excursion, ensuring a safer
+    experience and enabling quick rescue in emergencies.
+'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+    <link rel='stylesheet' href='smarkform_layout_sample.css'>
+    <link rel='stylesheet' href='smarkform_styles_sample.css'>
+    <script>
+      const bgImg = `https://picsum.photos/id/${1+Math.floor(Math.random()*1084)}/800.jpg`;
+      document.documentElement.style.setProperty('--background-image-url', `url("${bgImg}")`);
+      document.addEventListener("DOMContentLoaded", function() {
+          const backgroundAnchor = document.getElementById("background-anchor");
+          if (backgroundAnchor) backgroundAnchor.href = bgImg;
+      });
+    </script>
+    <script defer src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@0.26.0/dist/SmarkForm.umd.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+      
+          // <!-- BEGIN controller sample-->
+      
+          // Essential:
+          // ==========
+      
+          // SmarkForm instantiation:
+          const myForm = new SmarkForm(document.querySelector("#main-form"));
+      
+      
+          // Import / Export data handling:
+          // ==============================
+      
+          // Do Something on export action:
+          myForm.on("AfterAction_export"
+              , ({data})=>alert (JSON.stringify(data, null, 4))
+          );
+      
+          // Fetching data on import action (example):
+          myForm.on("BeforeAction_import", (options) => {
+              let data = prompt('Provide JSON data');
+              try {
+                  options.data = JSON.parse(data);
+              } catch (err) {
+                  if (data.length) {
+                      alert ('⚠️  Invalid JSON!!');
+                      data = null; // Emulate prompt cancel.
+                  } else {
+                      data = {}; // Drop form contents
+                  };
+              };
+              if (data === null) options.preventDefault();
+          });
+      
+      
+          // Aesthetic enhancements:
+          // =======================
+      
+          // Ask for confirm on clear action
+          myForm.on("BeforeAction_clear", async ({context, preventDefault}) => {
+      
+              // Ask for confirmation:
+              if (
+                  context.getPath() == "/"      // Only for the whole form
+                  && ! await context.isEmpty()  // Don't even ask if already empty
+                  && ! confirm("Are you sure?")
+              ) preventDefault(); // Abort if user cancelled
+          });
+      
+          // Allow for list items addition/removal CSS animation:
+          // (Propperly and/remove "animated_item" and "ongoing" CSS classes)
+          const delay = ms=>new Promise(resolve=>setTimeout(resolve, ms));
+          myForm.on("afterRender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.add("animated_item");
+              await delay(1); /* Important: Allow DOM to update */
+              item.classList.add("ongoing");
+          });
+          myForm.on("beforeUnrender", async function(ev) {
+              if (ev.context.parent?.options.type !== "list") return; /* Only for list items */
+              const item = ev.context.targetNode;
+              item.classList.remove("ongoing");
+              /* Await for transition to be finished before item removal: */
+              await delay(150);
+          });
+      
+          // <!-- END controller sample-->
+      
+      });
+    </script>
+  </head>
+  <body>
+    <div class='main-container'>
+      <div class='smarkForm' id='main-form'>
+        <header>
+          <h1>Adventure Tracking Example</h1>
+          <style>
+            .credits {
+                background: rgba(255, 255, 255, .7);
+                padding: 1em 1.5em;
+                margin: .3em;
+                font-size: small;
+            }
+            .credits, .credits a {
+                color: darkblue;
+            }
+            .credits .subtitle, .credits .subtitle a {
+                color: darkgrey;
+                font-weight: bold;
+            }
+            .credits .description {
+                color: black;
+            }
+            .credits ul {
+                margin-left: .2em;
+                list-style-type: none;
+            }
+            .credits li::before {
+                content: "👉";
+                margin-right: 5px;
+            }
+          </style>
+          <div class='credits'>
+            <p class='subtitle'>This is an <a href='https://smarkform.bitifet.net'>SmarkForm</a> demonstration page.</p>
+            <p class='description'>
+    This example is a draft for an excursion planning form that allows
+    users to provide location, date, start and end times, and route
+    details. Participants can receive personal tracking links for
+    automatic position updates during the excursion, ensuring a safer
+    experience and enabling quick rescue in emergencies.
+</p>
+            <ul>
+              <li>
+                Complete documentation at
+                <a href='https://smarkform.bitifet.net'>https://smarkform.bitifet.net</a>.
+              </li>
+              <li>
+                Latest version and more examples at
+                <a href='https://smarkform.bitifet.net/showcase_examples/examples'>https://smarkform.bitifet.net/showcase_examples/examples</a>
+              </li>
+              <li>
+                GitHub:
+                <a href='https://github.com/bitifet/SmarkForm'>https://github.com/bitifet/SmarkForm</a>.
+              </li>
+              <li>
+                NPM:
+                <a href='https://www.npmjs.com/package/smarkform'>https://www.npmjs.com/package/smarkform</a>.
+              </li>
+              <li> <a id='background-anchor' href='#'>Background image</a>
+                courtesy of 
+                <a href='https://picsum.photos/'>Lorem Picsum</a>
+              </li>
+            </ul>
+          </div>
+        </header>
+        <!-- BEGIN SmarkForm sample-->
+        <section>
+          <h2>Activity</h2>
+          <div class='form-group'>
+            <label data-smark>Title</label>
+            <input data-smark name='activity_name' type='text' placeholder='Name your planned activity...'>
+          </div>
+          <div class='input-group'>
+            <label data-smark>Description</label>
+            <textarea data-smark name='activity_description' placeholder='Brief description of your activity'></textarea>
+          </div>
+          <h2>Planning</h2>
+          <h3 data-smark='label'>Origin</h3>
+          <div class='form-group' data-smark='{"type":"form","name":"origin"}'>
+            <label class='inline'><span>0</span><span role='img' aria-label=''>&nbsp;📌</span></label>
+            <input data-smark name='coordinates' type='text' placeholder='Lat, Lng'>
+            <input data-smark name='date' type='date' placeholder='dd/mm/yyyy'>
+            <input data-smark name='time' type='time' placeholder='hh:mm'>
+            <input data-smark name='place' placeholder='Place name or address'>
+            <input data-smark name='city' placeholder='City'>
+          </div>
+          <h3 data-smark='label'>Stops</h3>
+          <div class='form-group' data-smark='{"type":"list","name":"stops","min_items":0,"export_empties":false}'>
+            <div class='full-width form-group aside'>
+              <label class='inline'><span data-smark='{"action":"position"}'></span><span role='img' aria-label=''>&nbsp;📌</span></label>
+              <div class='form-group'>
+                <input data-smark name='coordinates' type='text' placeholder='Lat, Lng'>
+                <input data-smark name='date' type='date' placeholder='dd/mm/yyyy'>
+                <input data-smark name='time' type='time' placeholder='hh:mm'>
+                <input data-smark name='place' placeholder='Place name or address'>
+                <input data-smark name='city' placeholder='City'>
+              </div>
+              <button class='inline' data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove stop place' style='margin-left:auto'><span role='img' aria-label='Remove stop place'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"stops"}'><span role='img' aria-label=''>➕</span> Add Stop Place</button>
+          </div>
+          <h3 data-smark='label'>Destination</h3>
+          <div class='form-group' data-smark='{"type":"form","name":"destination"}'>
+            <label class='inline'><span data-smark='{"action":"count","context":"../stops","delta":1}'>N</span><span role='img' aria-label=''>&nbsp;📌</span></label>
+            <input data-smark name='coordinates' type='text' placeholder='Lat, Lng'>
+            <input data-smark name='date' type='date' placeholder='dd/mm/yyyy'>
+            <input data-smark name='time' type='time' placeholder='hh:mm'>
+            <input data-smark name='place' placeholder='Place name or address'>
+            <input data-smark name='city' placeholder='City'>
+          </div>
+        </section>
+        <section>
+          <h2>Participants</h2>
+          <h3 data-smark='label'>Organizers</h3>
+          <div class='form-group' data-smark='{"type":"list","name":"organizers","export_empties":false}'>
+            <div class='full-width form-group aside'>
+              <label class='inline'><span data-smark='{"action":"position"}'></span><span role='img' aria-label=''>&nbsp;🧑‍💼</span></label>
+              <div class='form-group spacer'>
+                <div class='form-group'>
+                  <input style='flex: 6' data-smark name='name' placeholder='Name'>
+                  <input style='flex: 2' data-smark name='phone' type='tel' placeholder='Phone number'>
+                </div>
+              </div>
+              <button class='inline' data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove organizer' style='margin-left:auto'><span role='img' aria-label='Remove organizer'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"organizers"}'><span role='img' aria-label=''>➕</span> Add Organizer</button>
+          </div>
+          <h3 data-smark='label'>Participants</h3>
+          <div class='form-group' data-smark='{"type":"list","name":"participants","min_items":0,"export_empties":false}'>
+            <div class='full-width form-group aside'>
+              <label class='inline'><span data-smark='{"action":"position"}'></span><span role='img' aria-label=''>&nbsp;🏃</span></label>
+              <div class='form-group spacer'>
+                <div class='form-group'>
+                  <input style='flex: 6' data-smark name='name' placeholder='Name'>
+                  <input style='flex: 2' data-smark name='phone' type='tel' placeholder='Phone number'>
+                </div>
+              </div>
+              <button class='inline' data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove participant' style='margin-left:auto'><span role='img' aria-label='Remove participant'>➖</span></button>
+            </div>
+          </div>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button class='inline' data-smark='{"action":"addItem","hotkey":"+","context":"participants"}'><span role='img' aria-label=''>➕</span> Add Participant</button>
+          </div>
+        </section>
+        <section>
+          <div class='form-group'>
+            <div class='spacer'></div>
+            <button data-smark='{"action":"import"}' title='Import (JSON) data'><span role='img' aria-label=''>📂</span> Import</button>
+            <button data-smark='{"action":"clear"}' title='Clear form data'><span role='img' aria-label=''>❌</span> Cancel</button>
+            <button data-smark='{"action":"export"}' title='Submit form data'><span role='img' aria-label=''>💾</span> Submit</button>
+          </div>
+        </section>
+        <template id='inputlist'>
+          <div data-smark='{"type":"list","of":"input"}'>
+            <div class='singleton'>
+              <button data-smark='{"action":"removeItem","hotkey":"-"}' title='Remove this item' id='removeBtn'><span role='img' aria-label='Remove this item'>➖</span></button>
+              <input data-smark id='listInput'>
+              <button data-smark='{"action":"addItem","hotkey":"+"}' title='Add new item below'><span role='img' aria-label='Add new item'>➕</span></button>
+            </div>
+          </div>
+        </template>
+        <!-- END SmarkForm sample-->
+        <footer class='smarkform-badge-footer'><a href='https://smarkform.bitifet.net/for_end_users/user_guide' title='Learn about SmarkForm-powered forms' target='_blank' rel='noopener noreferrer'><img src='https://cdn.jsdelivr.net/gh/bitifet/SmarkForm@main/docs/assets/logo/smarkform_compact.svg' alt='Powered by SmarkForm' height='24'></a></footer>
+      </div>
+    </div>
+  </body>
+</html>
