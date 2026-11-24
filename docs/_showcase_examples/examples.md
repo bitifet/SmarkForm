@@ -40,7 +40,7 @@ card.
       <div class="sprint-status"><span class="status-dot"></span> Sprint 14 · 9 days left</div>
     </header>
 
-    <div class="kanban-board" aria-label="Release 1.0.0 task board">
+    <div class="kanban-board" role="region" aria-label="Release 1.0.0 task board" tabindex="0">
       <section class="kanban-column column-todo" aria-label="To do">
         <header class="column-heading">
           <div><span class="column-indicator"></span><h3>To do</h3></div>
@@ -81,6 +81,16 @@ card.
         <summary class="task-summary">
           <span class="task-position" data-smark-action="position"></span>
           <input data-smark name="title" type="text" placeholder="Untitled task" aria-label="Task title">
+          <div class="card-actions">
+            <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" aria-label="Task actions" title="Task actions">☰</button>
+            <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
+              <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move task up"><span aria-hidden="true">↑</span> Move Up</button>
+              <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move task down"><span aria-hidden="true">↓</span> Move Down</button>
+              <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Move to previous column"><span aria-hidden="true">←</span> Previous Column</button>
+              <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Move to next column"><span aria-hidden="true">→</span> Next Column</button>
+              <button type="button" data-smark-action="removeItem" title="Remove task"><span aria-hidden="true">×</span> Remove Task</button>
+            </div>
+          </div>
         </summary>
         <div class="task-details">
           <label class="task-description">Description
@@ -109,13 +119,15 @@ card.
 
           <section class="task-section">
             <div class="section-heading"><h4>Tags</h4><span class="section-hint">Keep related work discoverable</span></div>
-            <div class="tag-list" data-smark='{"type":"list","name":"tags","of":"input","min_items":0,"max_items":6}'>
-              <input data-smark-role="item" type="text" placeholder="tag">
-              <span class="tags-empty" data-smark-role="empty_list">No tags</span>
-            </div>
+            <ul class="tag-list" data-smark='{"type":"list","name":"tags","of":"input","min_items":0,"max_items":6}'>
+              <li class="tag-item" data-smark-role="item">
+                <input data-smark type="text" placeholder="tag">
+                <button type="button" data-smark-action="removeItem" aria-label="Remove tag">✖️</button>
+              </li>
+              <li class="tags-empty" data-smark-role="empty_list">No tags</li>
+            </ul>
             <div class="section-actions">
               <button type="button" data-smark='{"action":"addItem","context":"tags"}'>＋ Add tag</button>
-              <button type="button" data-smark='{"action":"removeItem","context":"tags"}'>− Last tag</button>
             </div>
           </section>
 
@@ -169,14 +181,6 @@ card.
         </div>
       </details>
 
-      <div class="task-actions" aria-label="Task actions">
-        <button type="button" data-smark-role="drag-handle" class="drag-grip" aria-label="Drag task" title="Drag to reorder">⠿</button>
-        <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' aria-label="Move task up" title="Move up">↑</button>
-        <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' aria-label="Move task down" title="Move down">↓</button>
-        <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' aria-label="Move task to previous column" title="Previous column">←</button>
-        <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' aria-label="Move to the next status column" title="Next column">→</button>
-        <button type="button" data-smark-action="removeItem" aria-label="Remove task" title="Remove task">×</button>
-      </div>
     </article>
     <div class="task-list-empty" data-smark-role="empty_list">No tasks in this column. Add a card or move one here.</div>
   </div>
@@ -198,7 +202,7 @@ card.
 {{""}}#myForm$$ .project-eyebrow { color: #56687b; font-size: .7rem; font-weight: 800; letter-spacing: .13em; }
 {{""}}#myForm$$ .sprint-status { flex: 0 0 auto; padding: .5rem .8rem; border: 1px solid #ccd7df; border-radius: 99px; background: white; color: #3b5063; font-size: .8rem; font-weight: 700; }
 {{""}}#myForm$$ .status-dot { display: inline-block; width: .55rem; height: .55rem; margin-right: .35rem; border-radius: 50%; background: #2f855a; }
-{{""}}#myForm$$ .kanban-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .8rem; align-items: start; }
+{{""}}#myForm$$ .kanban-board { display: grid; grid-template-columns: repeat(3, minmax(15rem, 1fr)); gap: .65rem; align-items: start; max-height: 70vh; overflow: auto; overscroll-behavior: contain; padding-bottom: .35rem; }
 {{""}}#myForm$$ .kanban-column { --accent: #43556a; --wash: #f4f6f8; min-width: 0; padding: .65rem; border: 1px solid var(--line); border-radius: .9rem; background: linear-gradient(155deg, var(--wash), white 72%); }
 {{""}}#myForm$$ .column-todo { --accent: #8a2c2c; --wash: #fff0ee; border-color: #e5b7b2; }
 {{""}}#myForm$$ .column-progress { --accent: #78540b; --wash: #fff7df; border-color: #e5d39a; }
@@ -214,31 +218,33 @@ card.
 {{""}}#myForm$$ button { font: inherit; }
 {{""}}#myForm$$ .task-list-toolbar button, #myForm$$ .section-actions button { padding: .25rem .5rem; border: 1px solid #cbd5dc; border-radius: .45rem; background: white; color: var(--ink); font-size: .75rem; cursor: pointer; }
 {{""}}#myForm$$ .task-card { min-width: 0; padding: .6rem; border: 1px solid #dbe2e8; border-left: .25rem solid var(--accent); border-radius: .7rem; background: var(--card); box-shadow: 0 .2rem .6rem #1f29370c; }
-{{""}}#myForm$$ .task-summary { display: flex; align-items: center; gap: .45rem; min-width: 0; cursor: pointer; list-style: none; }
+{{""}}#myForm$$ .task-summary { display: flex; align-items: center; gap: .35rem; min-width: 0; cursor: pointer; list-style: none; }
 {{""}}#myForm$$ .task-summary::-webkit-details-marker { display: none; }
-{{""}}#myForm$$ .task-summary::before { content: "▸"; color: var(--accent); transition: transform .15s; }
+{{""}}#myForm$$ .task-summary::before { content: "▸"; flex: 0 0 auto; color: var(--accent); transition: transform .15s; }
 {{""}}#myForm$$ details[open] > .task-summary::before { transform: rotate(90deg); }
 {{""}}#myForm$$ .task-position { flex: 0 0 auto; color: var(--accent); font-size: .75rem; font-weight: 800; }
-{{""}}#myForm$$ .task-summary input { width: 100%; min-width: 0; padding: .25rem; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 700; }
+{{""}}#myForm$$ .task-summary input { flex: 1 1 auto; width: 4em; max-width: 12em; min-width: 0; padding: .2rem; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 700; }
 {{""}}#myForm$$ .task-details { padding: .55rem .1rem .1rem; }
 {{""}}#myForm$$ .task-details label { display: grid; gap: .2rem; color: #44576a; font-size: .75rem; font-weight: 700; }
 {{""}}#myForm$$ .task-details input:not([type="checkbox"]), #myForm$$ .task-details select, #myForm$$ .task-details textarea { width: 100%; min-width: 0; padding: .4rem .5rem; border: 1px solid #d4dde4; border-radius: .4rem; background: white; color: var(--ink); font: .82rem/1.4 system-ui, sans-serif; }
 {{""}}#myForm$$ .task-description textarea { resize: vertical; }
-{{""}}#myForm$$ .task-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; margin-top: .5rem; }
-{{""}}#myForm$$ .task-fields label:last-child { grid-column: 1 / -1; }
+{{""}}#myForm$$ .task-fields { display: grid; grid-template-columns: 1fr; gap: .4rem; margin-top: .5rem; }
 {{""}}#myForm$$ .task-section { margin-top: .7rem; padding-top: .55rem; border-top: 1px solid #e8edf1; }
 {{""}}#myForm$$ .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: .4rem; margin-bottom: .3rem; }
 {{""}}#myForm$$ .section-heading h4 { margin: 0; color: var(--ink); font-size: .8rem; }
 {{""}}#myForm$$ .section-hint { color: var(--muted); font-size: .65rem; text-align: right; }
-{{""}}#myForm$$ .tag-list { display: flex; flex-wrap: wrap; gap: .3rem; min-height: 1.8rem; }
-{{""}}#myForm$$ .tag-list input { flex: 0 1 6em; width: 6em; padding: .2rem .4rem !important; border-radius: 99px !important; background: #edf3f6 !important; font-size: .7rem !important; }
+{{""}}#myForm$$ .tag-list { display: flex; flex-wrap: wrap; gap: .3rem; min-height: 1.8rem; margin: 0; padding: 0; list-style: none; }
+{{""}}#myForm$$ .tag-item { display: inline-flex; align-items: center; gap: .15rem; max-width: 100%; padding: .1rem .25rem .1rem .45rem; border-radius: 99px; background: #edf3f6; }
+{{""}}#myForm$$ .tag-item input { flex: 0 1 7em; width: 7em; min-width: 3.5em; padding: .15rem 0 !important; border: 0 !important; background: transparent !important; font-size: .7rem !important; }
+{{""}}#myForm$$ .tag-item button { padding: .1rem .15rem; border: 0; background: transparent; color: #5c6d7d; cursor: pointer; font-size: .7rem; }
+{{""}}#myForm$$ .tag-item button:hover { color: #9b3731; }
 {{""}}#myForm$$ .tags-empty, #myForm$$ .checklist-empty, #myForm$$ .activity-empty, #myForm$$ .attachments-empty { color: var(--muted); font-size: .75rem; font-style: italic; }
 {{""}}#myForm$$ .section-actions { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .35rem; }
 {{""}}#myForm$$ .checklist { display: grid; gap: .25rem; margin: 0; padding: 0; list-style: none; }
 {{""}}#myForm$$ .checklist-item { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: .35rem; }
 {{""}}#myForm$$ .checklist-item input[type="checkbox"] { accent-color: var(--accent); }
 {{""}}#myForm$$ .checklist-item input[type="text"] { padding: .25rem .35rem; font-size: .75rem; }
-{{""}}#myForm$$ .checklist-item button, #myForm$$ .task-actions button { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
+{{""}}#myForm$$ .checklist-item button { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
 {{""}}#myForm$$ .activity-scroll { max-height: 9rem; overflow-y: auto; overscroll-behavior: contain; padding: .25rem .35rem; border: 1px solid #e0e7ec; border-radius: .45rem; background: #f8fafb; }
 {{""}}#myForm$$ .activity-list { display: grid; gap: .4rem; }
 {{""}}#myForm$$ .activity-entry { padding-bottom: .35rem; border-bottom: 1px solid #e5ebef; }
@@ -247,35 +253,89 @@ card.
 {{""}}#myForm$$ .activity-entry textarea { min-height: 2.4rem; padding: .2rem !important; border: 0 !important; background: transparent !important; font-size: .72rem !important; }
 {{""}}#myForm$$ .attachments { display: grid; gap: .25rem; }
 {{""}}#myForm$$ .attachment-item input { padding: .3rem !important; font-size: .7rem !important; }
-{{""}}#myForm$$ .task-actions { display: flex; align-items: center; justify-content: flex-end; gap: .2rem; margin-top: .45rem; padding-top: .3rem; border-top: 1px solid #edf0f2; }
-{{""}}#myForm$$ .task-actions button { min-width: 1.8rem; min-height: 1.8rem; border-radius: .35rem; font-size: .82rem; }
-{{""}}#myForm$$ .task-actions button:hover { background: #edf2f5; color: var(--ink); }
-{{""}}#myForm$$ .task-actions .drag-grip { cursor: grab; color: var(--accent); font-size: 1rem; }
-{{""}}#myForm$$ .task-actions button[aria-label="Remove task"] { color: #9b3731; }
+{{""}}#myForm$$ .card-actions { position: relative; display: flex; flex: 0 0 auto; }
+{{""}}#myForm$$ .card-menu-trigger { min-width: 1.8rem; min-height: 1.8rem; border: 1px solid #dbe2e8; border-radius: .4rem; background: white; color: var(--accent); cursor: grab; }
+{{""}}#myForm$$ .card-menu { display: none; position: absolute; top: calc(100% + .2rem); right: 0; z-index: 10; min-width: 11.5rem; padding: .25rem; border: 1px solid #ccd6de; border-radius: .55rem; background: white; box-shadow: 0 .4rem 1rem #20304424; }
+{{""}}#myForm$$ .card-actions.menu-open .card-menu,
+{{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
+{{""}}#myForm$$ .card-menu button { display: block; width: 100%; padding: .35rem .45rem; border: 0; border-radius: .3rem; background: transparent; color: var(--ink); text-align: left; cursor: pointer; font-size: .75rem; }
+{{""}}#myForm$$ .card-menu button:hover { background: #edf2f5; }
+{{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
 {{""}}#myForm$$ .task-list-empty { padding: 1rem .5rem; border: 1px dashed #b8c2ca; border-radius: .6rem; color: var(--muted); font-size: .8rem; text-align: center; }
 {{""}}#myForm$$ .board-footnote { margin: .8rem 0 0; color: #586a79; font-size: .75rem; }
 {{""}}#myForm$$ [data-hotkey] { position: relative; }
 {{""}}#myForm$$ [data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; bottom: 100%; left: 0; padding: 1px 3px; border-radius: 3px; background: #243546; color: white; font-size: .55rem; white-space: nowrap; }
-{{""}}@media (max-width: 68rem) { #myForm$$ .kanban-board { grid-template-columns: 1fr; } }
 {{""}}@media (max-width: 36rem) {
 {{""}}  #myForm$$ .project-header { align-items: flex-start; flex-direction: column; }
-{{""}}  #myForm$$ .task-fields { grid-template-columns: 1fr; }
-{{""}}  #myForm$$ .task-fields label:last-child { grid-column: 1; }
+{{""}}  #myForm$$ .kanban-column { padding: .45rem; }
 {{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- examples_kanban_js {{{ -->{% endraw %}
 {% capture examples_kanban_js -%}
-/* The task model, lists, fields, movement actions, and file acquisition are declarative. */
+/* SmarkForm owns the actions and hotkeys; this manages the task-action disclosure. */
+{
+    const root = myForm.targetNode;
+    const syncMenus = () => {
+        for (const actions of root.querySelectorAll('.card-actions')) {
+            const expanded = (
+                actions.classList.contains('menu-open')
+                || !! actions.querySelector('[data-hotkey]')
+            );
+            actions.querySelector('.card-menu-trigger')
+                ?.setAttribute('aria-expanded', String(expanded));
+            for (const action of actions.querySelectorAll('.card-menu button[data-smark]')) {
+                action.tabIndex = expanded ? 0 : -1;
+            };
+        };
+    };
+    const closeMenus = () => {
+        root.querySelectorAll('.card-actions.menu-open')
+            .forEach(actions => actions.classList.remove('menu-open'));
+        syncMenus();
+    };
+
+    root.addEventListener('click', event => {
+        const trigger = event.target.closest?.('.card-menu-trigger');
+        if (trigger && root.contains(trigger)) {
+            event.preventDefault();
+            const actions = trigger.parentElement;
+            const opening = actions.classList.toggle('menu-open');
+            if (opening) {
+                root.querySelectorAll('.card-actions.menu-open')
+                    .forEach(other => { if (other !== actions) other.classList.remove('menu-open'); });
+            };
+            syncMenus();
+            return;
+        };
+        if (! event.target.closest?.('.card-actions.menu-open')) closeMenus();
+    });
+
+    for (const eventName of ['keydown', 'keyup', 'focusin', 'focusout']) {
+        root.addEventListener(eventName, syncMenus);
+    };
+    root.addEventListener('keydown', event => {
+        if (event.key !== 'Escape') return;
+        const trigger = root.querySelector('.card-actions.menu-open .card-menu-trigger');
+        if (! trigger) return;
+        event.preventDefault();
+        event.stopPropagation();
+        closeMenus();
+        trigger.focus();
+    });
+    document.addEventListener('pointerdown', event => {
+        if (! root.contains(event.target)) closeMenus();
+    });
+};
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- examples_kanban_notes {{{ -->{% endraw %}
 {% capture examples_kanban_notes -%}
-**Try it:** Expand a task to inspect its full record. Edit its fields, add a
-checklist step or tag, and scroll the activity history. Attach a text or PDF
-file with the picker (or drop files onto the attachments list). Use the arrows
-to reorder a task or move it to an adjacent column; the position number updates
-with its new place.
+**Try it:** Each compact card shows its position, editable title, and task-action
+handle. Use the native disclosure arrow to expand the task record. Open the
+handle's menu to reorder the card or move it to an adjacent column. In the
+details, edit its fields, add a checklist step or tag, scroll the activity
+history, and attach a text or PDF file. The position number follows the card.
 
 The status colors are deliberately pale behind white cards, with dark text and
 stronger colored headings for contrast. Touch devices may need a drag-and-drop
@@ -386,7 +446,7 @@ this Examples page does not load that polyfill globally.
 
 {% raw %}<!-- examples_kanban_tests {{{ -->{% endraw %}
 {% capture examples_kanban_tests -%}
-export default async ({ expect, root, readField, writeField }) => {
+export default async ({ expect, root, readField, writeField, page }) => {
     await expect(root).toBeVisible();
 
     const task = (title, overrides = {}) => ({
@@ -421,10 +481,33 @@ export default async ({ expect, root, readField, writeField }) => {
     expect(await readField('/project/todo/0/attachments')).toHaveLength(1);
     await expect(root.locator('.column-todo .task-position')).toHaveText(['1', '2']);
     await expect(root.locator('.column-progress .task-position')).toHaveText(['1']);
+    const columnTops = await root.locator('.kanban-column').evaluateAll(columns =>
+        columns.map(column => column.getBoundingClientRect().top)
+    );
+    expect(Math.max(...columnTops) - Math.min(...columnTops)).toBeLessThan(2);
 
     const firstCard = root.locator('.column-todo .task-card').first();
-    await firstCard.locator('details').evaluate(details => { details.open = true; });
+    const taskDetails = firstCard.locator('details');
+    const menuTrigger = firstCard.getByRole('button', {name: 'Task actions'});
+    const menu = firstCard.locator('[data-card-menu]');
+    await expect(taskDetails).not.toHaveAttribute('open', '');
+    await menuTrigger.click();
+    await expect(menu).toBeVisible();
+    await expect(taskDetails).not.toHaveAttribute('open', '');
+    await page.keyboard.press('Escape');
+    await expect(menu).not.toBeVisible();
+    await expect(menuTrigger).toHaveAttribute('aria-expanded', 'false');
+
+    await firstCard.locator('summary').focus();
+    await page.keyboard.press('Enter');
+    await expect(taskDetails).toHaveAttribute('open', '');
     await expect(firstCard.locator('textarea[name="description"]')).toBeVisible();
+    const boardScrollsVertically = await root.locator('.kanban-board').evaluate(board => {
+        board.style.maxHeight = '12rem';
+        return getComputedStyle(board).overflowY === 'auto'
+            && board.scrollHeight > board.clientHeight;
+    });
+    expect(boardScrollsVertically).toBe(true);
     await expect(firstCard.locator('.activity-scroll')).toHaveCSS('overflow-y', 'auto');
     const activityScrolls = await firstCard.locator('.activity-scroll').evaluate(el =>
         el.scrollHeight > el.clientHeight
@@ -432,11 +515,14 @@ export default async ({ expect, root, readField, writeField }) => {
     expect(activityScrolls).toBe(true);
 
     await firstCard.getByRole('button', {name: /Add tag/}).click();
-    const tagInputs = firstCard.locator('.tag-list input');
+    const tagInputs = firstCard.locator('.tag-item input');
     await expect(tagInputs).toHaveCount(3);
     await tagInputs.last().fill('audit');
     await expect.poll(() => readField('/project/todo/0/tags')).toEqual(['release', 'docs', 'audit']);
-    await firstCard.getByRole('button', {name: 'Move to the next status column'}).click();
+    await firstCard.locator('.tag-item').first().getByRole('button', {name: 'Remove tag'}).click();
+    await expect.poll(() => readField('/project/todo/0/tags')).toEqual(['docs', 'audit']);
+    await menuTrigger.click();
+    await menu.getByRole('button', {name: /Next Column/}).click();
     await expect.poll(() => readField('/project/todo')).toHaveLength(1);
     await expect.poll(() => readField('/project/progress')).toHaveLength(2);
     await expect.poll(() => readField('/project/progress/1/title')).toBe('Publish the migration guide');
