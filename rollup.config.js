@@ -1,8 +1,6 @@
 import { babel } from '@rollup/plugin-babel';
 import cleanup from 'rollup-plugin-cleanup';
 import terser from '@rollup/plugin-terser';
-import pug from './rollup-plugins/rollup-plugin-pug.js';
-import sass from './rollup-plugins/rollup-plugin-sass.js';
 import del from 'rollup-plugin-del'
 import copy from 'rollup-plugin-copy'
 import { readFileSync, promises as fs } from 'fs';
@@ -12,20 +10,15 @@ import path from 'path';
 ///-> Importing JSON modules is an experimental feature and might change at any time
 const pkg = JSON.parse(readFileSync('./package.json'));
 
-const isProduction = process.env.BUILD === 'production';
-
-
 const delTargets = [
     "dist/*",
     "docs/resources/dist",
-    "docs/_showcase_examples/.example_sources/dist/examples",
     "docs/_data/package.json",
 ];
 
 const copyTargets = [
     { src: "package.json", dest: "docs/_data/" },
     { src: "dist/*", dest: "docs/resources/dist" },
-    { src: "dist/examples/*", dest: "docs/_showcase_examples/.example_sources/dist/examples" },
 ];
 
 
@@ -94,6 +87,7 @@ export default [
             cleanup(),
             terser(),
             watch_package_json(),
+            computed_plugin(),
             copy({
                 targets: copyTargets,
                 copySync: true,
@@ -130,39 +124,5 @@ export default [
                 copySync: true,
             }),
         ]
-    },
-    {
-        input: 'src/examples/index.js',
-        output: {
-            file: 'tmp/index.js',
-        },
-        // The examples "build" is a file-generation pipeline: the pug/sass
-        // plugins compile every imported .pug/.scss into dist/examples/*.html
-        // and *.css. The JS entry itself is only a side-effect container
-        // (moduleSideEffects: false), so the emitted chunk is empty by design.
-        // Filter exactly that one warning; every other warning still shows.
-        onwarn: (warning, warn) => {
-            if (warning.code === 'EMPTY_BUNDLE') return;
-            warn(warning);
-        },
-        plugins: [
-            computed_plugin(),
-            sass({
-                outputStyle: "expanded",
-                outputDir: "dist/examples",
-            }),
-            pug({
-                pretty: true,
-                outputDir: "dist/examples",
-                locals: {
-                    isProduction,
-                    pkg,
-                },
-            }),
-            copy({
-                targets: copyTargets,
-                copySync: true,
-            }),
-        ],
     },
 ];

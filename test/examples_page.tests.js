@@ -10,7 +10,7 @@ const examplesPage = readFileSync(
     'utf8'
 );
 const legacyCapture = readFileSync(
-    new URL('../docs/_showcase_examples/examples.capture.md', import.meta.url),
+    new URL('../docs/_showcase_examples/legacy_examples.capture.md', import.meta.url),
     'utf8'
 );
 const legacyExamplesData = readFileSync(
@@ -49,6 +49,10 @@ test('Legacy Examples are archived as static generated files', () => {
     ]) {
         expect(existsSync(new URL(name, archiveDir)), `${name} is in the legacy archive`).toBe(true);
     };
+    const archivedHtml = readFileSync(new URL('company.html', archiveDir), 'utf8');
+    expect(archivedHtml).toContain('sitemap: false');
+    expect(archivedHtml).toContain("name='robots' content='noindex'");
+    expect(archivedHtml).toContain("href='smarkform_layout_sample.css'");
     expect(legacyCapture).toContain('site.data.legacy_examples');
     expect(legacyCapture).toContain('.legacy_examples/');
     expect(legacyExamplesData).toContain('/assets/legacy-examples/');

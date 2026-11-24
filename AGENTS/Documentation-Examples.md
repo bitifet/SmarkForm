@@ -4,34 +4,27 @@ This document describes how the Jekyll documentation example playground works an
 
 ## Two Kinds of Examples
 
-There are **two distinct kinds** of examples in this project. They serve different purposes and use different mechanisms.
+The site has a read-only archive of the original standalone forms and actively
+maintained sampletab examples. They serve different purposes and use different
+mechanisms.
 
-### 1. Standalone Complete Examples (`src/examples/*.pug`)
+### 1. Legacy standalone examples (read-only archive)
 
-These are full-page forms built as Pug templates and compiled by Rollup to `dist/examples/*.html`. They are displayed in the **`/showcase_examples/examples`** page via an `<iframe>` switcher.
+The original Pug sources and their Rollup/Sass build were retired. Their
+generated HTML and CSS are preserved in
+`docs/_showcase_examples/.legacy_examples/`; the public
+`/showcase_examples/legacy_examples` page uses `docs/_data/legacy_examples.csv`
+to browse them. `scripts/sync_documentation_assets.sh` copies that committed
+archive to the public static path `docs/assets/legacy-examples/`.
 
-**How to add a new standalone example:**
+Do not add new examples to this archive or restore its old compiler pipeline.
+The legacy page is intentionally excluded from navigation, search, and the
+sitemap; the current Examples page links to it for historical reference. The
+download page and CDN guide still use the archived stylesheet and blank-template
+assets. Pug remains a development dependency because Playwright fixture helpers
+use it, not to build the archived pages; Sass is no longer a root npm dependency.
 
-1. Create `src/examples/<name>.pug` extending `include/layout.pug` and setting `title`/`description` in `block append properties`, then provide form markup in `block mainForm`. Follow the conventions of `company.pug`, `beach.pug`, etc.
-
-2. Import the new file in `src/examples/index.js` so Rollup compiles it:
-   ```js
-   import "./my-new-example.pug";
-   ```
-
-3. **⚠️ IMPORTANT — Register in `docs/_data/examples.csv`:**  
-    Add a row to `docs/_data/examples.csv` so the example appears in the dropdown on the `/showcase_examples/examples` page. Without this step the HTML file is built but never shown in the documentation.
-   ```csv
-   "/dist/examples/my-new-example.html","My Example Title","A short description"
-   ```
-   The CSV columns are `url`, `title`, `details` (first row in the file is the header).
-
-**File: `docs/_data/examples.csv`** is consumed by Jekyll in `docs/_showcase_examples/examples.md` via `{% for item in site.data.examples %}`. Every row becomes an `<option>` in the example selector dropdown.
-
-Standalone examples with sortable lists set `touchDragHint = true` in their
-Pug properties block. The shared `src/examples/include/layout.pug` then adds a
-brief touch-polyfill hint after the form. Do not load the polyfill in these
-examples; the Showcase Kanban is the sole live demonstration.
+### 2. Inline Jekyll Playground examples (co-located in `.md` docs)
 
 ### 2. Inline Jekyll Playground Examples (co-located in `.md` docs)
 

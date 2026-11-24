@@ -51,7 +51,7 @@ visit the [Examples page]({{ "/showcase_examples/examples" | relative_url }}).
 </style>
 
 {% capture void -%}
-{% include_relative examples.capture.md %}
+{% include_relative legacy_examples.capture.md %}
 {%- endcapture %}
 
 

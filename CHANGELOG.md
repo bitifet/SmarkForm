@@ -17,6 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - **Role annotations and drag handles**: `role` alone is passive metadata and does not create a SmarkForm component. Use `data-smark-role="drag-handle"` (or the `role` property in `data-smark` JSON) for explicit sortable handles.
+- **Examples**: replaced the old selector page with a realistic, playable Examples page; retained the original standalone forms in a hidden, noindex legacy archive and retired their Pug/Sass build pipeline. Pug remains a test-fixture dependency; the unused root Sass dependency is removed.
 - Added `docs/_guides/roles.md` to explain role discovery, list-template roles, and drag-handle roles.
 
 ## 0.26.0 — 2026-11-21

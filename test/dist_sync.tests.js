@@ -74,6 +74,10 @@ test.describe('Distribution Directory Synchronization Tests', () => {
         return dirs.sort();
     }
 
+    test('Standalone legacy examples are no longer generated into dist', () => {
+        expect(fs.existsSync(path.join(distPath, 'examples'))).toBe(false);
+    });
+
     test('Both dist and docs/resources/dist directories should exist', () => {
         expect(
             fs.existsSync(distPath) && fs.statSync(distPath).isDirectory(),

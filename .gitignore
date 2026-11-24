@@ -16,7 +16,6 @@ docs/.jekyll-cache/
 # Generated from the root manifest; Pages also triggers directly on package.json.
 docs/_data/package.json
 docs/resources/dist/
-docs/_showcase_examples/.example_sources/
 docs/assets/legacy-examples/
 docs/dist/
 docs/vendor/

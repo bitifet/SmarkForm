@@ -43,7 +43,7 @@ When you change or add any of the following, please update this file to reflect 
 - package.json scripts (build, test, pretest, dev)
 - playwright.config.js or files under test/
 - scripts/* (collector, build scripts, live-serve helpers)
-- rollup.config.js or rollup-plugins/
+- rollup.config.js or Rollup-related dependencies/scripts
 - docs/ content, co-located examples, or test collection logic
 - skills/* (installable AI skill specifications)
 - .github/workflows/* (CI / Pages deployment)
@@ -356,9 +356,10 @@ npm run test:quick  # one randomly-chosen browser (fast, non-deterministic)
 - Sampletab `showEditor` controls the preview-only “Show playground editor” checkbox: `true` starts checked, omission starts unchecked, and explicit `false` disables it. Edit mode has a separate “Include playground editor” checkbox that always starts unchecked; enabling it updates the editable HTML/JS and preview, without changing the Show checkbox's state. The toolbar has a Maximize/Restore toggle immediately before the per-example `❓` link; Escape restores, maximized previews lock background interaction, and the geometry transition respects reduced-motion settings. The maximized tabbar moves Notes with the other tabs and shows a full or compact color-scheme-aware SmarkForm logo at the right. Reserve explicit false for real conflicts or behavior changes (custom import/export handlers, own editor/absolute targets, or a focus sequence being taught); visual/data-light examples can omit it and let readers opt in.
 - Sampletab previews size the root form and generated editor stack to `98vw` within the iframe; their shared CSS is in `docs/_includes/components/sampletabs_ctrl.md`. The Showcase Kanban also sets a bounded input width to prevent long task inputs from forcing column overflow.
 - When examples move between pages, preserve their domain-specific labels and visual appeal; prefer concise accessible controls, light grouping, and Notes-tab links over stripping useful related features. See `AGENTS/Documentation-Examples.md`.
-- `test/examples_page.tests.js` protects the standalone Examples selector from
-  inline-script minification regressions: Jekyll compacts the script, so `//`
-  comments can swallow following code and leave an unexpected end of input.
+- `test/examples_page.tests.js` protects the legacy Examples selector from
+  inline-script minification regressions and verifies the archive/noindex
+  contract. The new Examples page is sampletab-based and covered by
+  `test/co_located_tests.tests.js`.
 - `test/404_page.tests.js` checks the nested-data media controls and verifies that
   the static poster is used for reduced motion and that playback can be paused.
 - `docs/_showcase_examples/playground.md` starts with the `playground-guided-form` workflow and links representative interactive examples; the two calculator examples live in `docs/_guides/beyond_forms.md`, while the Playground explains how to use and inspect the JSON editor.
@@ -469,7 +470,7 @@ node scripts/generate-chaptertocs.js
 
 **What they do**: Bundle the source code using Rollup to produce ESM and UMD distributions in `dist/`.
 
-**Configuration**: `rollup.config.js`, `rollup-plugins/`
+**Configuration**: `rollup.config.js`
 
 **How to run locally**:
 ```bash
@@ -494,22 +495,11 @@ scripts/livebuild_dev_smarkform.sh
 - Uses Babel for transpilation with decorators support
 - Minification via Terser
 - Cleanup plugin for code formatting
-- Custom Pug and Sass plugins for examples
 - Generates computed metadata (bundle size, last updated)
-- Shared example helpers: `src/examples/include/layout.pug` (base layout),
-  `src/examples/include/mixins.pug` (Pug convenience wrappers),
-  `src/examples/include/templates.pug` (SmarkForm native mixin `<template>`
-  elements included at body level by the layout). Set `touchDragHint = true` in
-  an example's properties block to show the touch-polyfill guidance for sortable
-  examples; only the Showcase Kanban loads the polyfill.
-- Each `src/examples/*.pug` page supplies a `description`; the shared example
-  layout emits it as standard, Open Graph and X metadata for direct example links.
-- The examples rollup entry (`src/examples/index.js`) is a pure file-generation
-  pipeline: its `import`s are `.pug`/`.scss` sources compiled to
-  `dist/examples/*.html` and `*.css` by the custom plugins, and the emitted JS
-  chunk is empty **by design** (the plugins mark those imports
-  `moduleSideEffects: false`). The examples config therefore filters the
-  `EMPTY_BUNDLE` warning via `onwarn`; library builds keep all warnings.
+- The Examples page is authored with Jekyll sampletabs and collected by
+  `scripts/collect-docs-examples.js`; there is no standalone Pug/Sass examples
+  build. The original generated HTML and CSS are preserved in
+  `docs/_showcase_examples/.legacy_examples/` as a read-only archive.
 - `nextSourceId`/`stampSourceIds` live in their own module
   (`src/lib/source_ids.js`) — not in `component.js` — to avoid a circular
   import between `component.js` and `mixin.js`.
@@ -518,7 +508,7 @@ scripts/livebuild_dev_smarkform.sh
 - If build fails, check Node.js version compatibility
 - Ensure all devDependencies are installed: `npm install`
 - Check rollup.config.js for plugin configuration issues
-- Review rollup-plugins/ for custom plugin errors
+- Review the Rollup configuration and package dependencies for build errors
 
 ### Documentation Build and Deploy
 
@@ -550,21 +540,20 @@ scripts/liveserve_all.sh
 - Jekyll site in `docs/` directory
 - Reader-facing collections follow the documentation IA under `_showcase_examples`, `_start_here`, `_guides`, `_accessibility`, `_component_reference`, `_advanced_topics`, `_about`, `_for_end_users`, `_ai_agents`, and `_community`. Step 19 removed all temporary `_old_*` collections; `/resources/dist/` remains a static download path, not a reader-facing Resources section.
 - Generates chapter TOCs and the ordered Showcase example include before Jekyll (`node ../scripts/generate-chaptertocs.js` and `node ../scripts/collect-docs-examples.js`)
-- Built package copied to `/dist/` for the Examples selector and to
-  `/resources/dist/` for stable download URLs; downloadable-example source
-  extracts are copied into the hidden `.example_sources` folder beside the
-  canonical Examples capture page by `scripts/sync_documentation_assets.sh`.
+- Built library bundles are copied to `/dist/` and `/resources/dist/`;
+  `scripts/sync_documentation_assets.sh` also publishes the committed Legacy
+  Examples archive from `docs/_showcase_examples/.legacy_examples/` under
+  `docs/assets/legacy-examples/`.
 - The root `package.json` is copied to the ignored `docs/_data/package.json`
   before local Jekyll builds and by the Pages workflow; the workflow also
   triggers directly on root `package.json` changes.
 - The asset sync runs from the local docs build/serve helpers and the Pages
-  workflow; it requires a built root `dist/` including `dist/examples/` (run
-  `npm run bundle` first if that directory is missing).
+  workflow; it requires the root library `dist/` (run `npm run build` first).
 - `jekyll-redirect-from` is enabled through `docs/Gemfile` and `docs/_config.yml` for clean-URL migration aliases; verify redirects and the sitemap in the built site.
 - No temporary `/old/` pages or migration controls remain after Step 19. Keep
-  only intentional non-discovery pages (for example, the hidden Examples
-  capture source) out of the sitemap and marked noindex; redirects stay aliases,
-  not sitemap entries.
+  only intentional non-discovery pages (for example, the hidden Legacy Examples
+  archive and source capture) out of the sitemap and marked noindex; redirects
+  stay aliases, not sitemap entries.
 - Social link previews use the theme's `jekyll-seo-tag`: `docs/_config.yml` sets
   the canonical site `url` and `twitter.username` (`smarkform`). Any page can set
   front-matter `description` and `image` (`path`, `width`, `height`, `alt`) to
@@ -796,21 +785,19 @@ cd media/hero
 | Component | Configuration File(s) |
 |-----------|----------------------|
 | Playwright | `playwright.config.js` |
-| Rollup | `rollup.config.js`, `rollup-plugins/*` |
+| Rollup | `rollup.config.js` |
 | Jekyll | `docs/_config.yml`, `docs/Gemfile` |
 | GitHub Actions | `.github/workflows/pages.yml` |
 | Dependabot | `.github/dependabot.yml` |
 | npm scripts | `package.json` (scripts section) |
 | Example collector | `scripts/collect-docs-examples.js` — test manifest plus ignored Showcase partial `docs/_includes/showcase_examples.md` |
 | Chapter TOC generator | `scripts/generate-chaptertocs.js`, `scripts/watch-chaptertocs.js` (dev live-regen) — output: git-ignored `docs/_includes/chaptertoc/` |
-| Documentation assets | `scripts/sync_documentation_assets.sh` — copies root `dist/` to `/dist/` and `/resources/dist/`, and populates hidden Examples capture inputs |
+| Documentation assets | `scripts/sync_documentation_assets.sh` — copies library `dist/` to `/dist/` and `/resources/dist/`, then publishes the committed Legacy Examples archive under `docs/assets/legacy-examples/` |
 | Cheatsheet validation | `scripts/validate-cheatsheet.js` |
 | Just-The-Docs Sass shadow | `scripts/update_just_the_docs_sass_shadow.sh` → generated `docs/_sass/` |
 | Hero video (media project) | `media/hero/timeline.py`, `media/hero/build.sh`, `media/hero/setup.sh` — output: `docs/assets/hero/` |
 | Auto color scheme | `docs/assets/css/auto-color-scheme.css`, `docs/assets/js/auto-logo-switcher.js`, `docs/_includes/head_custom.html` |
-| Example Pug layout | `src/examples/include/layout.pug` |
-| Example Pug mixins | `src/examples/include/mixins.pug` |
-| Example SmarkForm mixin templates | `src/examples/include/templates.pug` |
+| Legacy Examples archive | `docs/_showcase_examples/legacy_examples.md`, `docs/_showcase_examples/.legacy_examples/`, `docs/_data/legacy_examples.csv` |
 | Core AI skill spec | `skills/SmarkForm-Form-Builder.skill.md`, `skills/smarkform-form-builder/SKILL.md` |
 | Advanced AI skill spec | `skills/SmarkForm-Advanced-Internals.skill.md`, `skills/smarkform-advanced-internals/SKILL.md` |
 
@@ -826,7 +813,7 @@ npm run pretest            # Validate cheatsheet, build, and collect examples (r
 
 # Building
 npm run build              # Build production library
-npm run bundle             # Build library and examples
+npm run bundle             # Run tests, build the library, and build docs
 npm run watch              # Watch mode for library
 
 # Documentation

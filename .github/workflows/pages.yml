@@ -49,7 +49,7 @@ jobs:
         uses: actions/configure-pages@v6
       - name: Install dependencies
         run: npm install
-      - name: Build package and samples
+      - name: Build package
         run: npm run build
       - name: Place built files
         run: |

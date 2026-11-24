@@ -80,7 +80,7 @@ card.
       <details class="task-fold">
         <summary class="task-summary">
           <span class="task-position" data-smark-action="position"></span>
-          <input data-smark name="title" type="text" placeholder="Untitled task">
+          <input data-smark name="title" type="text" placeholder="Untitled task" aria-label="Task title">
         </summary>
         <div class="task-details">
           <label class="task-description">Description

@@ -1,5 +1,5 @@
 ---
-title: "Internal Legacy Example Source Capture"
+title: "Internal Legacy Examples Source Capture"
 layout: default
 nav_order: 1000
 permalink: "/showcase_examples/legacy_examples.capture"
