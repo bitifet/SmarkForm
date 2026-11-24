@@ -144,6 +144,18 @@ test('sampletabs keeps the editor stacked in a maximized portrait preview', asyn
     const stack = frame.locator('.smarkform-editor-stack');
     await expect.poll(() => stack.evaluate(node => getComputedStyle(node).display)).toBe('flex');
     await expect.poll(() => frame.locator('.smarkform-editor-actions').evaluate(node => getComputedStyle(node).transform)).toBe('none');
+    const portraitEditorLayout = await frame.locator('body').evaluate(body => {
+        const editor = body.querySelector('.smarkform-json-editor');
+        const demo = body.querySelector('.smarkform-editor-demo');
+        return {
+            viewportHeight: document.documentElement.clientHeight,
+            editorHeight: editor.getBoundingClientRect().height,
+            demoHeight: demo.getBoundingClientRect().height,
+        };
+    });
+    expect(portraitEditorLayout.editorHeight)
+        .toBeLessThanOrEqual(portraitEditorLayout.viewportHeight * 0.4 + 2);
+    expect(portraitEditorLayout.demoHeight).toBeGreaterThan(100);
 });
 
 test('maximized tabbar moves Notes left and chooses the logo variant that fits', async ({ page }) => {
@@ -162,6 +174,10 @@ test('maximized tabbar moves Notes left and chooses the logo variant that fits',
     await button.click();
     const dark = await page.evaluate(() => matchMedia('(prefers-color-scheme: dark)').matches);
     await expect(logo).toHaveAttribute('src', dark ? fixture.logoUrls.fullDark : fixture.logoUrls.fullLight);
+    await expect.poll(() => logo.evaluate(image => image.complete && image.naturalWidth > 0)).toBe(true);
+    await page.evaluate(() => new Promise(resolve =>
+        requestAnimationFrame(() => requestAnimationFrame(resolve))
+    ));
     const leftOrder = await Promise.all([
         preview.boundingBox(), notes.boundingBox(), brand.boundingBox(),
     ]);
@@ -170,12 +186,13 @@ test('maximized tabbar moves Notes left and chooses the logo variant that fits',
     const tabbarBox = await tabbar.boundingBox();
     const logoBox = await logo.boundingBox();
     expect(logoBox.height).toBeGreaterThan(50);
+    const alignmentTolerance = 3; // Allow fractional CSS-pixel rounding after responsive image load.
     expect(Math.abs((leftOrder[2].y + leftOrder[2].height / 2)
-        - (tabbarBox.y + tabbarBox.height / 2))).toBeLessThan(2);
+        - (tabbarBox.y + tabbarBox.height / 2))).toBeLessThan(alignmentTolerance);
     expect(Math.abs((leftOrder[0].y + leftOrder[0].height)
-        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(2);
+        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(alignmentTolerance);
     expect(Math.abs((leftOrder[1].y + leftOrder[1].height)
-        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(2);
+        - (tabbarBox.y + tabbarBox.height))).toBeLessThan(alignmentTolerance);
     expect(tabbarBox.x + tabbarBox.width - (leftOrder[2].x + leftOrder[2].width)).toBeGreaterThan(14);
 
     await tabbar.evaluate(node => { node.style.width = '280px'; });

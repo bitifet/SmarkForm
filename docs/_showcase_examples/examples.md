@@ -202,7 +202,7 @@ card.
 {{""}}#myForm$$ .project-eyebrow { color: #56687b; font-size: .7rem; font-weight: 800; letter-spacing: .13em; }
 {{""}}#myForm$$ .sprint-status { flex: 0 0 auto; padding: .5rem .8rem; border: 1px solid #ccd7df; border-radius: 99px; background: white; color: #3b5063; font-size: .8rem; font-weight: 700; }
 {{""}}#myForm$$ .status-dot { display: inline-block; width: .55rem; height: .55rem; margin-right: .35rem; border-radius: 50%; background: #2f855a; }
-{{""}}#myForm$$ .kanban-board { display: grid; grid-template-columns: repeat(3, minmax(15rem, 1fr)); gap: .65rem; align-items: start; max-height: 70vh; overflow: auto; overscroll-behavior: contain; padding-bottom: .35rem; }
+{{""}}#myForm$$ .kanban-board { display: grid; grid-template-columns: repeat(3, minmax(15rem, 1fr)); gap: .65rem; align-items: start; max-height: 70vh; overflow: auto; overscroll-behavior: contain; padding: 1rem .5rem 10rem .5rem; }
 {{""}}#myForm$$ .kanban-column { --accent: #43556a; --wash: #f4f6f8; min-width: 0; padding: .65rem; border: 1px solid var(--line); border-radius: .9rem; background: linear-gradient(155deg, var(--wash), white 72%); }
 {{""}}#myForm$$ .column-todo { --accent: #8a2c2c; --wash: #fff0ee; border-color: #e5b7b2; }
 {{""}}#myForm$$ .column-progress { --accent: #78540b; --wash: #fff7df; border-color: #e5d39a; }
@@ -226,7 +226,7 @@ card.
 {{""}}#myForm$$ .task-summary input { flex: 1 1 auto; width: 4em; max-width: 12em; min-width: 0; padding: .2rem; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 700; }
 {{""}}#myForm$$ .task-details { padding: .55rem .1rem .1rem; }
 {{""}}#myForm$$ .task-details label { display: grid; gap: .2rem; color: #44576a; font-size: .75rem; font-weight: 700; }
-{{""}}#myForm$$ .task-details input:not([type="checkbox"]), #myForm$$ .task-details select, #myForm$$ .task-details textarea { width: 100%; min-width: 0; padding: .4rem .5rem; border: 1px solid #d4dde4; border-radius: .4rem; background: white; color: var(--ink); font: .82rem/1.4 system-ui, sans-serif; }
+{{""}}#myForm$$ .task-details input:not([type="checkbox"]), #myForm$$ .task-details select, #myForm$$ .task-details textarea { width: 95%; min-width: 0; padding: .4rem .5rem; border: 1px solid #d4dde4; border-radius: .4rem; background: white; color: var(--ink); font: .82rem/1.4 system-ui, sans-serif; }
 {{""}}#myForm$$ .task-description textarea { resize: vertical; }
 {{""}}#myForm$$ .task-fields { display: grid; grid-template-columns: 1fr; gap: .4rem; margin-top: .5rem; }
 {{""}}#myForm$$ .task-section { margin-top: .7rem; padding-top: .55rem; border-top: 1px solid #e8edf1; }
@@ -250,12 +250,13 @@ card.
 {{""}}#myForm$$ .activity-entry { padding-bottom: .35rem; border-bottom: 1px solid #e5ebef; }
 {{""}}#myForm$$ .activity-meta { display: flex; justify-content: space-between; gap: .4rem; }
 {{""}}#myForm$$ .activity-meta input { width: auto; max-width: 55%; padding: .1rem !important; border: 0 !important; background: transparent !important; font-size: .7rem !important; font-weight: 700; }
-{{""}}#myForm$$ .activity-entry textarea { min-height: 2.4rem; padding: .2rem !important; border: 0 !important; background: transparent !important; font-size: .72rem !important; }
+{{""}}#myForm$$ .activity-entry textarea { min-height: 2.4rem; padding: .2rem !important; border: 0 !important; background: transparent !important; font-size: .72rem !important; resize: vertical; }
 {{""}}#myForm$$ .attachments { display: grid; gap: .25rem; }
 {{""}}#myForm$$ .attachment-item input { padding: .3rem !important; font-size: .7rem !important; }
 {{""}}#myForm$$ .card-actions { position: relative; display: flex; flex: 0 0 auto; }
 {{""}}#myForm$$ .card-menu-trigger { min-width: 1.8rem; min-height: 1.8rem; border: 1px solid #dbe2e8; border-radius: .4rem; background: white; color: var(--accent); cursor: grab; }
 {{""}}#myForm$$ .card-menu { display: none; position: absolute; top: calc(100% + .2rem); right: 0; z-index: 10; min-width: 11.5rem; padding: .25rem; border: 1px solid #ccd6de; border-radius: .55rem; background: white; box-shadow: 0 .4rem 1rem #20304424; }
+{{""}}#myForm$$ .card-actions.menu-open-up .card-menu { top: auto; bottom: calc(100% + .2rem); }
 {{""}}#myForm$$ .card-actions.menu-open .card-menu,
 {{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
 {{""}}#myForm$$ .card-menu button { display: block; width: 100%; padding: .35rem .45rem; border: 0; border-radius: .3rem; background: transparent; color: var(--ink); text-align: left; cursor: pointer; font-size: .75rem; }
@@ -265,9 +266,37 @@ card.
 {{""}}#myForm$$ .board-footnote { margin: .8rem 0 0; color: #586a79; font-size: .75rem; }
 {{""}}#myForm$$ [data-hotkey] { position: relative; }
 {{""}}#myForm$$ [data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; bottom: 100%; left: 0; padding: 1px 3px; border-radius: 3px; background: #243546; color: white; font-size: .55rem; white-space: nowrap; }
+{{""}}#myForm$$ { padding: .4rem; font-size: .78rem; line-height: 1.3; }
+{{""}}#myForm$$ .project-app { padding: .45rem; }
+{{""}}#myForm$$ .project-header { margin-bottom: .45rem; }
+{{""}}#myForm$$ .project-header h2 { font-size: 1.1rem; }
+{{""}}#myForm$$ .kanban-board { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .3rem; }
+{{""}}#myForm$$ .kanban-column { min-width: 0; padding: .3rem; }
+{{""}}#myForm$$ .column-heading { padding: .2rem .1rem .35rem; }
+{{""}}#myForm$$ .column-heading h3 { font-size: .85rem; }
+{{""}}#myForm$$ .column-heading p { margin-left: .9rem; font-size: .65rem; }
+{{""}}#myForm$$ .task-list { gap: .35rem; }
+{{""}}#myForm$$ .task-list-toolbar { gap: .2rem; padding-bottom: .3rem; font-size: .68rem; }
+{{""}}#myForm$$ .task-list-toolbar button,
+{{""}}#myForm$$ .section-actions button { padding: .2rem .3rem; font-size: .68rem; }
+{{""}}#myForm$$ .task-card { padding: .35rem; }
+{{""}}#myForm$$ .task-summary { gap: .2rem; }
+{{""}}#myForm$$ .task-position { font-size: .65rem; }
+{{""}}#myForm$$ .task-summary input { max-width: none; padding: .1rem; font-size: .75rem; }
+{{""}}#myForm$$ .card-menu-trigger { min-width: 1.55rem; min-height: 1.55rem; padding: .1rem; }
+{{""}}#myForm$$ .task-details { padding-top: .3rem; }
+{{""}}#myForm$$ .task-details label { font-size: .68rem; }
+{{""}}#myForm$$ .task-details input:not([type="checkbox"], [type="file"]),
+{{""}}#myForm$$ .task-details select,
+{{""}}#myForm$$ .task-details textarea { width: 100%; padding: .3rem; font-size: .72rem; }
+{{""}}#myForm$$ .task-section { margin-top: .45rem; padding-top: .35rem; }
+{{""}}#myForm$$ .section-heading h4 { font-size: .72rem; }
+{{""}}#myForm$$ .section-hint { font-size: .58rem; }
+{{""}}#myForm$$ .section-actions { gap: .2rem; }
+{{""}}#myForm$$ .activity-scroll { max-height: 7rem; }
 {{""}}@media (max-width: 36rem) {
 {{""}}  #myForm$$ .project-header { align-items: flex-start; flex-direction: column; }
-{{""}}  #myForm$$ .kanban-column { padding: .45rem; }
+{{""}}  #myForm$$ .kanban-column { padding: .3rem; }
 {{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -276,6 +305,37 @@ card.
 /* SmarkForm owns the actions and hotkeys; this manages the task-action disclosure. */
 {
     const root = myForm.targetNode;
+    const positionMenus = () => {
+        const board = root.querySelector('.kanban-board');
+        if (! board) return;
+        const boardRect = board.getBoundingClientRect();
+        const clipTop = boardRect.top + board.clientTop;
+        const clipBottom = clipTop + board.clientHeight;
+        for (const actions of root.querySelectorAll('.card-actions')) {
+            const menu = actions.querySelector('.card-menu');
+            if (getComputedStyle(menu).display === 'none') {
+                actions.classList.remove('menu-open-up');
+                continue;
+            };
+            actions.classList.remove('menu-open-up');
+            let menuRect = menu.getBoundingClientRect();
+            let actionsRect = actions.getBoundingClientRect();
+            let roomAbove = actionsRect.top - clipTop;
+            if (menuRect.bottom > clipBottom && roomAbove < menuRect.height + 8) {
+                const shift = menuRect.height + 8 - roomAbove;
+                const roomBelow = clipBottom - actionsRect.bottom;
+                if (shift <= roomBelow && board.scrollTop >= shift) {
+                    board.scrollTop -= shift;
+                    menuRect = menu.getBoundingClientRect();
+                    actionsRect = actions.getBoundingClientRect();
+                    roomAbove = actionsRect.top - clipTop;
+                };
+            };
+            if (menuRect.bottom > clipBottom && roomAbove >= menuRect.height + 8) {
+                actions.classList.add('menu-open-up');
+            };
+        };
+    };
     const syncMenus = () => {
         for (const actions of root.querySelectorAll('.card-actions')) {
             const expanded = (
@@ -288,10 +348,11 @@ card.
                 action.tabIndex = expanded ? 0 : -1;
             };
         };
+        positionMenus();
     };
     const closeMenus = () => {
         root.querySelectorAll('.card-actions.menu-open')
-            .forEach(actions => actions.classList.remove('menu-open'));
+            .forEach(actions => actions.classList.remove('menu-open', 'menu-open-up'));
         syncMenus();
     };
 
@@ -303,7 +364,11 @@ card.
             const opening = actions.classList.toggle('menu-open');
             if (opening) {
                 root.querySelectorAll('.card-actions.menu-open')
-                    .forEach(other => { if (other !== actions) other.classList.remove('menu-open'); });
+                    .forEach(other => {
+                        if (other !== actions) other.classList.remove('menu-open', 'menu-open-up');
+                    });
+            } else {
+                actions.classList.remove('menu-open-up');
             };
             syncMenus();
             return;
@@ -514,6 +579,25 @@ export default async ({ expect, root, readField, writeField, page }) => {
     );
     expect(activityScrolls).toBe(true);
 
+    const board = root.locator('.kanban-board');
+    await board.evaluate(node => { node.scrollTop = node.scrollHeight; });
+    const bottomCard = root.locator('.column-todo .task-card').last();
+    const bottomMenuTrigger = bottomCard.getByRole('button', {name: 'Task actions'});
+    await bottomMenuTrigger.click();
+    const bottomActions = bottomCard.locator('.card-actions');
+    const bottomMenu = bottomCard.locator('.card-menu');
+    await expect(bottomActions).toHaveClass(/menu-open-up/);
+    const menuFitsBoard = await bottomMenu.evaluate(menu => {
+        const board = menu.closest('.kanban-board');
+        const menuRect = menu.getBoundingClientRect();
+        const boardRect = board.getBoundingClientRect();
+        const top = boardRect.top + board.clientTop;
+        const bottom = top + board.clientHeight;
+        return menuRect.top >= top - 1 && menuRect.bottom <= bottom + 1;
+    });
+    expect(menuFitsBoard).toBe(true);
+    await page.keyboard.press('Escape');
+
     await firstCard.getByRole('button', {name: /Add tag/}).click();
     const tagInputs = firstCard.locator('.tag-item input');
     await expect(tagInputs).toHaveCount(3);
@@ -527,6 +611,30 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await expect.poll(() => readField('/project/progress')).toHaveLength(2);
     await expect.poll(() => readField('/project/progress/1/title')).toBe('Publish the migration guide');
     await expect(root.locator('.column-progress .task-position')).toHaveText(['1', '2']);
+
+    const measureBoardLayout = () => root.evaluate(form => {
+        const board = form.querySelector('.kanban-board');
+        const columns = [...board.querySelectorAll('.kanban-column')];
+        return {
+            boardWidth: board.clientWidth,
+            boardScrollWidth: board.scrollWidth,
+            columnWidths: columns.map(column => column.getBoundingClientRect().width),
+            gridColumns: getComputedStyle(board).gridTemplateColumns,
+        };
+    });
+    const assertBoardFits = layout => {
+        expect(layout.columnWidths).toHaveLength(3);
+        expect(layout.columnWidths.every(width => width > 0)).toBe(true);
+        expect(layout.gridColumns.trim().split(/\s+/)).toHaveLength(3);
+        expect(layout.boardScrollWidth).toBeLessThanOrEqual(layout.boardWidth + 1);
+    };
+    for (const width of [320, 390, 768]) {
+        await page.setViewportSize({width, height: 844});
+        await page.evaluate(() => document.body.classList.remove('smarkform-maximized'));
+        assertBoardFits(await measureBoardLayout());
+        await page.evaluate(() => document.body.classList.add('smarkform-maximized'));
+        assertBoardFits(await measureBoardLayout());
+    }
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

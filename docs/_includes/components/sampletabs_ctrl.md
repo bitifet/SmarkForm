@@ -537,9 +537,10 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
           + 'body.smarkform-maximized.smarkform-has-editor .smarkform-editor-stack{display:flex;flex:1 1 auto;flex-direction:column;gap:.5rem;width:100%;height:100%;min-height:0;box-sizing:border-box;}'
           + 'body.smarkform-maximized.smarkform-has-editor .smarkform-editor-demo{flex:1 1 0;min-height:0;overflow:auto;}'
           + 'body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions{display:flex;flex:0 0 auto;justify-content:space-evenly;}'
-          + 'body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor{display:flex;flex:1 1 35%;flex-direction:column;min-height:0;width:100%;}'
-          + 'body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor-input{flex:1 1 auto;width:100%!important;height:100%;min-height:0!important;max-height:none!important;resize:none;}'
-          + '@media (orientation:landscape){body.smarkform-maximized.smarkform-has-editor #myForm>.smarkform-editor-stack{display:grid;grid-template-columns:minmax(0,1fr) 3rem minmax(16rem,34vw);grid-template-rows:minmax(0,1fr);gap:0;align-items:stretch;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-demo{grid-column:1;grid-row:1;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions-rail{position:relative;grid-column:2;grid-row:1;min-height:0;overflow:visible;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions{position:absolute;top:50%;left:50%;width:min(74vh,calc(100vw - 2rem));transform:translate(-50%,-50%) rotate(-90deg);transform-origin:center;white-space:nowrap;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions>span{display:flex;flex:1 1 auto;justify-content:center;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions button{width:100%;white-space:nowrap;}body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor{grid-column:3;grid-row:1;width:100%;height:100%;overflow:hidden;}}';
+           + 'body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor{display:flex;flex:1 1 35%;flex-direction:column;min-height:0;width:100%;}'
+           + 'body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor-input{flex:1 1 auto;width:100%!important;height:100%;min-height:0!important;max-height:none!important;resize:none;}'
+           + '@media (orientation:landscape){body.smarkform-maximized.smarkform-has-editor #myForm>.smarkform-editor-stack{display:grid;grid-template-columns:minmax(0,1fr) 3rem minmax(16rem,34vw);grid-template-rows:minmax(0,1fr);gap:0;align-items:stretch;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-demo{grid-column:1;grid-row:1;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions-rail{position:relative;grid-column:2;grid-row:1;min-height:0;overflow:visible;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions{position:absolute;top:50%;left:50%;width:min(74vh,calc(100vw - 2rem));transform:translate(-50%,-50%) rotate(-90deg);transform-origin:center;white-space:nowrap;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions>span{display:flex;flex:1 1 auto;justify-content:center;}body.smarkform-maximized.smarkform-has-editor .smarkform-editor-actions button{width:100%;white-space:nowrap;}body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor{grid-column:3;grid-row:1;width:100%;height:100%;overflow:hidden;}}'
+           + '@media (orientation:portrait){body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor{flex:0 1 40vh;max-height:40vh;flex-basis:40dvh;max-height:40dvh;overflow:hidden;}body.smarkform-maximized.smarkform-has-editor .smarkform-json-editor-input{max-height:100%!important;}}';
     var S = 'script';
     var jsSrc = srcs.js || '';
     var sTag = jsSrc ? '\u003c' + S + '\u003e(function(){\n' + jsSrc + '\n})();\u003c/' + S + '\u003e' : '';
@@ -1237,6 +1238,7 @@ body.smarkform-has-maximized-sampletab {
 .tab-container.smarkform-maximized .smarkform-maximized-brand {
   display: flex;
   flex: 0 0 auto;
+  align-self: stretch;
   align-items: center;
   justify-content: flex-end;
   margin-left: auto;
