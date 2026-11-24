@@ -200,10 +200,10 @@ sentence.
 {{""}}#myForm$$ .task-footer button, #myForm$$ .guest-controls button { padding: .4rem .7rem; border: 1px solid var(--line); border-radius: .6rem; background: white; color: var(--ink); cursor: pointer; }
 {{""}}#myForm$$ .task-footer button:hover, #myForm$$ .guest-controls button:hover { border-color: #77b59d; }
 {{""}}#myForm$$ .guest-panel { display: grid; grid-template-columns: minmax(9rem, .7fr) minmax(0, 1.5fr); align-items: center; gap: .3rem 1rem; margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: 1rem; background: #fbfdfc; }
-{{""}}#myForm$$ .guest-controls { display: flex; align-items: center; gap: .4rem; min-width: 0; }
-{{""}}#myForm$$ .guest-prefix { color: var(--muted); white-space: nowrap; }
-{{""}}#myForm$$ .guest-list { display: inline-flex; align-items: center; gap: .15rem; min-width: 0; }
-{{""}}#myForm$$ .guest-list input { width: 7.5em; max-width: 100%; padding: .3rem; border: 1px solid transparent; border-bottom-color: #b7c8c1; background: transparent; color: inherit; font: inherit; }
+{{""}}#myForm$$ .guest-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; min-width: 0; }
+{{""}}#myForm$$ .guest-prefix { flex: 0 0 auto; color: var(--muted); white-space: nowrap; }
+{{""}}#myForm$$ .guest-list { display: flex; flex: 1 1 13rem; flex-wrap: wrap; align-items: center; gap: .15rem; min-width: 0; }
+{{""}}#myForm$$ .guest-list input { flex: 0 1 7.5em; width: 7.5em; min-width: 6.5em; max-width: 100%; padding: .3rem; border: 1px solid transparent; border-bottom-color: #b7c8c1; background: transparent; color: inherit; font: inherit; }
 {{""}}#myForm$$ .guest-empty { color: var(--muted); font-style: italic; }
 {{""}}#myForm$$ .syntax-note { grid-column: 2; font-size: .75rem; }
 {{""}}@media (max-width: 36rem) {
@@ -271,6 +271,22 @@ export default async ({ expect, root, readField, writeField }) => {
             .join('')
     );
     expect(guestText).toBe('Ada, Grace and Lin');
+
+    const guestControls = await root.locator('.guest-controls').evaluate(controls => {
+        controls.style.width = '15rem';
+        const firstInput = controls.querySelector('.guest-list input:first-of-type').getBoundingClientRect();
+        const lastInput = controls.querySelector('.guest-list input:last-of-type').getBoundingClientRect();
+        const addButton = controls.querySelector('button[aria-label="Add guest"]').getBoundingClientRect();
+        return {
+            inputsWrap: lastInput.top > firstInput.top,
+            overlap: lastInput.left < addButton.right
+                && lastInput.right > addButton.left
+                && lastInput.top < addButton.bottom
+                && lastInput.bottom > addButton.top,
+        };
+    });
+    expect(guestControls.inputsWrap).toBe(true);
+    expect(guestControls.overlap).toBe(false);
 
     await writeField('/studio/tasks', []);
     await expect(root.locator('.task-empty')).toBeVisible();
