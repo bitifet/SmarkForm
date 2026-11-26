@@ -313,7 +313,7 @@ export default async ({ expect, root, readField, writeField }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Label auto-linking</button>
+  <button class="feature-summary">Accessibility: Label auto-linking</button>
   <div class="feature-desc">
   A <code>&lt;label <strong>data-smark</strong>&gt;</code> is automatically associated by SmarkForm with
   its adjacent field — no <code>for</code> or <code>id</code> attributes needed.  The label
@@ -780,7 +780,7 @@ itself; cache policy or browser behavior can still cause a later fetch.
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Accessible cross-list movement</button>
+  <button class="feature-summary">Accessibility: Cross-list keyboard and drag movement</button>
   <div class="feature-desc">
   Task cards can be dragged or moved between these three columns with the
   <code>next</code> / <code>previous</code> actions. Each list has
@@ -816,7 +816,7 @@ itself; cache policy or browser behavior can still cause a later fetch.
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Context-scoped hotkeys</button>
+  <button class="feature-summary">Accessibility: Context-scoped hotkeys</button>
   <div class="feature-desc">
   Hold <kbd>Ctrl</kbd> to reveal <kbd>+</kbd> and <kbd>-</kbd> shortcuts.  The
   same hotkey triggers different Add/Remove buttons depending on which column
@@ -841,12 +841,15 @@ itself; cache policy or browser behavior can still cause a later fetch.
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Label components as drag handles</button>
+  <button class="feature-summary">Accessibility: Named drag handle</button>
   <div class="feature-desc">
-  The <strong>☰</strong> icon is a <code>label</code> component, which carries no
-  value of its own. With list sorting enabled, it marks where dragging starts.
+  The native <strong>☰</strong> button has the accessible name “Task actions”
+  and is marked with <code>data-smark-role="drag-handle"</code>. It remains a
+  regular button for keyboard and assistive-technology users while also marking
+  the task's drag handle.
 
-  See <a href="{{ "/component_reference/label" | relative_url }}">Label Type</a>.
+  See <a href="{{ "/accessibility/accessible_labels_and_names" | relative_url }}">Accessible Labels and Names</a>,
+  <a href="{{ "/guides/roles" | relative_url }}">Component Roles</a>.
   </div>
 </div>
 
@@ -867,9 +870,9 @@ itself; cache policy or browser behavior can still cause a later fetch.
 
 ## Race Registration System
 
-Register a family for a race event.  Fill the first member, then ✨ duplicate
-for siblings — only edit what differs.  Each member gets a race bib, meal
-selection, and emergency contact.
+Register a family for a race event. Fill the first member, then ✨ duplicate
+for siblings — only edit what differs. Each member gets a race bib, meal
+selection, emergency contact, and a comments field for the organizers.
 
 The form auto-numbers bibs and exports structured data. Age uses native number
 input constraints; the example does not implement a race-distance business rule.
@@ -968,6 +971,10 @@ input constraints; the example does not implement a race-distance business rule.
             <label><input type="radio" data-smark name="meal" value="Vegan"> Vegan</label>
           </span>
         </p>
+        <p class="member-comments">
+          <label data-smark>Comments:</label>
+          <textarea data-smark name="comments" rows="2" placeholder="Notes for the race organizers"></textarea>
+        </p>
         <button data-smark='{"action":"addItem","source":".-1","hotkey":"*"}' title="Duplicate this member">✨ Duplicate</button>
         <button data-smark='{"action":"removeItem","failback":"clear","hotkey":"-"}' title="Remove this member">➖</button>
       </div>
@@ -985,8 +992,11 @@ input constraints; the example does not implement a race-distance business rule.
 {{""}}#myForm$$ ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5em; }
 {{""}}#myForm$$ li { border: 1px solid #ddd; border-radius: 6px; padding: 0.6em; }
 {{""}}#myForm$$ li p { display: flex; align-items: center; gap: 0.5em; margin: 0.3em 0; }
+{{""}}#myForm$$ li p.member-comments { align-items: flex-start; }
 {{""}}#myForm$$ li label { font-weight: 500; min-width: 6em; }
 {{""}}#myForm$$ li input[type="text"], {{""}}#myForm$$ li input[type="tel"], {{""}}#myForm$$ li input[type="number"] { flex: 1; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
+{{""}}#myForm$$ li textarea { flex: 1; min-width: 0; min-height: 3.5em; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; font: inherit; resize: vertical; }
+{{""}}#myForm$$ li p.member-comments label { padding-top: 0.25em; }
 {{""}}#myForm$$ li input.fee { flex: 1; min-width: 0; }
 {{""}}#myForm$$ li select { padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
 {{""}}#myForm$$ li details { margin-top: 0.3em; }
@@ -1021,6 +1031,10 @@ button { position: relative; }
 places, while export keeps it as a number. On mobile, the field opens a decimal
 keypad.
 
+👉 **Comments and keyboard navigation.** Plain <kbd>Enter</kbd> inserts a new
+line in Comments; <kbd>Ctrl</kbd>+<kbd>Enter</kbd> advances to the next member's
+name, and <kbd>Shift</kbd>+<kbd>Enter</kbd> moves backward.
+
 👉 **Type-specific values.** Age exports as a number. Empty Number and Radio
 fields may export <code>null</code>; text and native select values can be empty
 strings. The Color field has an authored default value.
@@ -1038,7 +1052,7 @@ strings. The Color field has an authored default value.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% capture demoValue -%}
-{"members":[{"name":"Alice Johnson","age":34,"fee":45.5,"sex":"F","emergency_name":"Bob Johnson","emergency_phone":"555-1234","tshirt":"M","tshirt_color":"#3498db","meal":"Vegetarian"}]}
+{"members":[{"name":"Alice Johnson","age":34,"fee":45.5,"sex":"F","emergency_name":"Bob Johnson","emergency_phone":"555-1234","tshirt":"M","tshirt_color":"#3498db","meal":"Vegetarian","comments":"Please seat our family together."}]}
 {%- endcapture %}
 
 {% raw %}<!-- race_js {{{ -->{% endraw %}
@@ -1065,12 +1079,15 @@ export default async ({ expect, root, readField, page }) => {
 
     await root.locator('input[name="name"]').first().fill('Alice Johnson');
     await root.locator('input[name="age"]').first().fill('34');
+    const firstComments = root.locator('textarea[name="comments"]').first();
+    await firstComments.fill('Please seat our family together.');
     await root.evaluate(async () => {
         await myForm.find('/members/0/fee').import(1234.5, {set_default: false});
     });
 
     const before = await readField('/members');
     expect(before[0].age).toBe(34);
+    expect(before[0].comments).toBe('Please seat our family together.');
     expect(before[0].fee).toBe(1234.5);
     await expect(root.locator('input.fee').first()).toHaveValue('1 234.50');
 
@@ -1078,6 +1095,15 @@ export default async ({ expect, root, readField, page }) => {
     const duplicated = await readField('/members');
     expect(duplicated).toHaveLength(2);
     expect(duplicated[1]).toMatchObject(duplicated[0]);
+    expect(duplicated[1].comments).toBe('Please seat our family together.');
+
+    await firstComments.focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Enter');
+    await expect(firstComments).toHaveValue('Please seat our family together.\n');
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(root.locator('input[name="name"]').nth(1)).toBeFocused();
 
     await root.locator('li').nth(1).locator('button[title="Remove this member"]').click();
     await expect(root.locator('li')).toHaveCount(1);
@@ -1132,7 +1158,19 @@ export default async ({ expect, root, readField, page }) => {
 </div>
 
 <div class="feature">
-  <button class="feature-summary">Keyboard navigation through collapsed sections</button>
+  <button class="feature-summary">Accessibility: Textarea field navigation</button>
+  <div class="feature-desc">
+  In the Comments textarea, plain <kbd>Enter</kbd> inserts a newline;
+  <kbd>Ctrl</kbd>+<kbd>Enter</kbd> moves to the next member's name, and
+  <kbd>Shift</kbd>+<kbd>Enter</kbd> moves backward. This keeps multiline editing
+  available while providing a keyboard route between fields.
+
+  See <a href="{{ "/accessibility/keyboard_navigation" | relative_url }}#enter-shiftenter-navigation">Keyboard Navigation — Enter / Shift+Enter</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Accessibility: Keyboard navigation through collapsed sections</button>
   <div class="feature-desc">
   Native <code>&lt;details&gt;</code> and <code>&lt;summary&gt;</code> elements
   provide the disclosure. SmarkForm navigation can open a collapsed section
@@ -1148,6 +1186,18 @@ export default async ({ expect, root, readField, page }) => {
   a field in the open body, it closes the section and returns focus to the summary.
 
   See <a href="{{ "/accessibility/keyboard_navigation" | relative_url }}">Keyboard Navigation</a>.
+  </div>
+</div>
+
+<div class="feature">
+  <button class="feature-summary">Accessibility: Context-aware hotkeys</button>
+  <div class="feature-desc">
+  Hold <kbd>Ctrl</kbd> to reveal the member actions. Row-level duplicate/remove
+  buttons have shortcuts and are skipped by <kbd>Tab</kbd>; the outer Add and
+  Clear buttons remain in the Tab order. The shortcuts remain available
+  alongside ordinary keyboard navigation.
+
+  See <a href="{{ "/accessibility/hotkeys" | relative_url }}">Hotkeys</a>.
   </div>
 </div>
 
