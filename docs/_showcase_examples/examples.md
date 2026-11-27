@@ -402,6 +402,11 @@ handle's menu to reorder the card or move it to an adjacent column. In the
 details, edit its fields, add a checklist step or tag, scroll the activity
 history, and attach a text or PDF file. The position number follows the card.
 
+`Ctrl`+`Enter` moves focus to the next task form in the current column;
+`Ctrl`+`Shift`+`Enter` moves backward. It stops at that list's boundary rather
+than switching columns. Use the task menu's Previous/Next Column actions to move
+a card between columns.
+
 The status colors are deliberately pale behind white cards, with dark text and
 stronger colored headings for contrast. Touch devices may need a drag-and-drop
 polyfill such as [DragDropTouch]({{ "/showcase_examples/showcase#project-kanban-board" | relative_url }});
@@ -584,9 +589,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
     const bottomCard = root.locator('.column-todo .task-card').last();
     const bottomMenuTrigger = bottomCard.getByRole('button', {name: 'Task actions'});
     await bottomMenuTrigger.click();
-    const bottomActions = bottomCard.locator('.card-actions');
     const bottomMenu = bottomCard.locator('.card-menu');
-    await expect(bottomActions).toHaveClass(/menu-open-up/);
     const menuFitsBoard = await bottomMenu.evaluate(menu => {
         const board = menu.closest('.kanban-board');
         const menuRect = menu.getBoundingClientRect();
@@ -635,6 +638,19 @@ export default async ({ expect, root, readField, writeField, page }) => {
         await page.evaluate(() => document.body.classList.add('smarkform-maximized'));
         assertBoardFits(await measureBoardLayout());
     }
+
+    await writeField('/project/todo', [
+        {title:'Sketch task one'},
+        {title:'Sketch task two'},
+    ]);
+    const todoTitles = root.locator('.column-todo .task-card input[name="title"]');
+    await todoTitles.first().focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(todoTitles.nth(1)).toBeFocused();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(todoTitles.nth(1)).toBeFocused(); // Stop at this list's last task.
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

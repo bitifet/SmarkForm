@@ -692,6 +692,19 @@ export default async ({ expect, root, readField, writeField, page }) => {
     expect(done).toBe(2);
     await root.locator('.clear-empties').click();
     expect(await page.evaluate(() => myForm.find('/done').children.length)).toBe(1);
+
+    await writeField('/todo', [
+        { title: 'Sketch task one' },
+        { title: 'Sketch task two' },
+    ]);
+    const todoTitles = root.locator('.column').first().locator('.card input[name="title"]');
+    await todoTitles.first().focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(todoTitles.nth(1)).toBeFocused();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(todoTitles.nth(1)).toBeFocused(); // Stop at this list's last task.
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -738,6 +751,8 @@ the browser's HTTP cache without enabling the polyfill on the Showcase page
 itself; cache policy or browser behavior can still cause a later fetch.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
+
+👉 **Field navigation.** <kbd>Ctrl</kbd>+<kbd>Enter</kbd> moves focus to the next task form in the current column; <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> moves backward. Navigation stops at that column list's boundary. Use the task menu's <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> actions to move a task between columns.
 
 👉 **Empty-list placeholders** show "No tasks" when a column is empty (<code>min_items:0</code>).
 
