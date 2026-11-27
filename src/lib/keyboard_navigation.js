@@ -84,15 +84,17 @@ export function findAdjacentFormOrList(context, backwards = false) {
     return null;
 }
 
-export function findAdjacentJumpBoundary(context, backwards = false) {
+export function findJumpBoundaryDestination(context, backwards = false) {
     // Explicit jump boundaries take precedence over implicit list-item
     // boundaries, allowing a form/list subtree to jump between outer peers.
     for (let boundary = context; boundary; boundary = boundary.parent) {
         if (
             ! isFormOrList(boundary)
             || boundary.options.role !== 'jump-boundary'
-            || ! isFormOrList(boundary.parent)
         ) continue;
+        if (! isFormOrList(boundary.parent)) {
+            return {found: true, destination: null};
+        };
 
         const siblings = childrenOf(boundary.parent);
         const index = siblings.indexOf(boundary);
@@ -103,10 +105,13 @@ export function findAdjacentJumpBoundary(context, backwards = false) {
                 isFormOrList(candidate)
                 && candidate.options.role === 'jump-boundary'
                 && getAvailableFields(candidate).length > 0
-            ) return candidate;
+            ) return {found: true, destination: candidate};
         };
+        // A marked boundary is an explicit scope: at its edge, don't fall back
+        // to implicit sibling traversal inside the marked component.
+        return {found: true, destination: null};
     };
-    return null;
+    return {found: false, destination: null};
 }
 
 export function focusAvailableField(component, backwards = false) {

@@ -8,7 +8,7 @@ import {parseJSON, isHiddenByClosedDetails} from "../lib/helpers.js";
 import {
     enableLastFocusedMemory,
     findAdjacentFormOrList,
-    findAdjacentJumpBoundary,
+    findJumpBoundaryDestination,
     focusAvailableField,
 } from "../lib/keyboard_navigation.js";
 
@@ -83,10 +83,10 @@ export class input extends form {
                         ev.originalEvent.preventDefault();
                         ev.originalEvent.stopPropagation();
                         const backwards = ev.originalEvent.shiftKey;
-                        const destination = (
-                            findAdjacentJumpBoundary(ev.context, backwards)
-                            || findAdjacentFormOrList(ev.context, backwards)
-                        );
+                        const jumpBoundary = findJumpBoundaryDestination(ev.context, backwards);
+                        const destination = jumpBoundary.found
+                            ? jumpBoundary.destination
+                            : findAdjacentFormOrList(ev.context, backwards);
                         if (destination) {
                             focusAvailableField(destination, backwards);
                         };

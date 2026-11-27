@@ -59,8 +59,9 @@ navigation boundary. When a field inside it receives `Ctrl`+`Enter` or
 sibling component with the same role and focuses its remembered field. Disabled
 and hidden fields are skipped; if the remembered field no longer exists,
 SmarkForm restores to the nearest available field by position. If there is no
-available sibling boundary in that direction, normal hierarchical navigation
-applies.
+available sibling boundary in that direction, navigation does nothing rather
+than falling back to an inner list. Without a jump-boundary ancestor, normal
+hierarchical navigation applies.
 
 ```html
 <div data-smark='{"type":"form","name":"todo","role":"jump-boundary"}'>

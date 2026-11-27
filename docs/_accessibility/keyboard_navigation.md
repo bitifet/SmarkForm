@@ -76,8 +76,10 @@ Add the SmarkForm option `role:"jump-boundary"` to sibling form/list containers
 when navigation should jump between those containers before following the
 ordinary inner boundary. For example, column lists with that role let a task
 field move focus to the corresponding remembered field in the next column.
-When there is no available sibling jump boundary in that direction, ordinary
-hierarchical navigation is used.
+When a focused field is inside a jump boundary, reaching either end of its
+marked sibling group does nothing; it does not fall back to moving within the
+inner list. Ordinary hierarchical navigation is used only when there is no
+jump-boundary ancestor.
 
 Inside a `<textarea>`, these keys keep their field-navigation behavior:
 `Ctrl`+`Enter` moves forward and `Ctrl`+`Shift`+`Enter` moves backward. Plain
@@ -122,6 +124,14 @@ Inside a `<textarea>`, these keys keep their field-navigation behavior:
       <input data-smark name="detail" placeholder="Section detail">
     </li>
   </ul>
+  <div data-smark='{"type":"form","name":"north","role":"jump-boundary"}'>
+    <input data-smark id="north-first" name="first" placeholder="North first field">
+    <input data-smark id="north-last" name="last" placeholder="North last field">
+  </div>
+  <div data-smark='{"type":"form","name":"south","role":"jump-boundary"}'>
+    <input data-smark id="south-first" name="first" placeholder="South first field">
+    <input data-smark id="south-last" name="last" placeholder="South last field">
+  </div>
 </div>
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -144,7 +154,9 @@ Inside a `<textarea>`, these keys keep their field-navigation behavior:
   "sections": [
     {"section":"Entry","detail":"North gate"},
     {"section":"Finish","detail":"Main field"}
-  ]
+  ],
+  "north":{"first":"One","last":"Two"},
+  "south":{"first":"Three","last":"Four"}
 }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -233,6 +245,19 @@ export default async ({ page, expect, root }) => {
     await focus('/standby/title');
     await page.keyboard.press('Control+Enter');
     await expect(sections.nth(0).locator('input[name="detail"]')).toBeFocused(); // Nearest field after removal.
+
+    await focus('/north/first');
+    await page.keyboard.press('Control+Enter');
+    await expect(root.locator('#south-first')).toBeFocused();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(root.locator('#north-first')).toBeFocused();
+    await focus('/south/first');
+    await page.keyboard.press('Control+Enter');
+    await expect(root.locator('#south-first')).toBeFocused(); // No fallback to the next field at the boundary.
+    await focus('/north/first');
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(root.locator('#north-first')).toBeFocused(); // Nor to the previous outer context.
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
