@@ -84,6 +84,7 @@ card.
           <div class="card-actions">
             <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" aria-label="Task actions" title="Task actions">☰</button>
             <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
+              <button type="button" data-smark='{"action":"addItem","hotkey":"+"}' title="Add a task after this one"><span aria-hidden="true">＋</span> Add After</button>
               <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move task up"><span aria-hidden="true">↑</span> Move Up</button>
               <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move task down"><span aria-hidden="true">↓</span> Move Down</button>
               <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Move to previous column"><span aria-hidden="true">←</span> Previous Column</button>
@@ -321,7 +322,20 @@ card.
             let menuRect = menu.getBoundingClientRect();
             let actionsRect = actions.getBoundingClientRect();
             let roomAbove = actionsRect.top - clipTop;
-            if (menuRect.bottom > clipBottom && roomAbove < menuRect.height + 8) {
+            if (menuRect.bottom > clipBottom + 1) {
+                const remainingScroll = Math.max(
+                    0,
+                    board.scrollHeight - board.clientHeight - board.scrollTop
+                );
+                const scrollDown = Math.min(menuRect.bottom - clipBottom, remainingScroll);
+                if (scrollDown > 0) {
+                    board.scrollTop += scrollDown;
+                    menuRect = menu.getBoundingClientRect();
+                    actionsRect = actions.getBoundingClientRect();
+                    roomAbove = actionsRect.top - clipTop;
+                };
+            };
+            if (menuRect.bottom > clipBottom + 1 && roomAbove < menuRect.height + 8) {
                 const shift = menuRect.height + 8 - roomAbove;
                 const roomBelow = clipBottom - actionsRect.bottom;
                 if (shift <= roomBelow && board.scrollTop >= shift) {
@@ -331,7 +345,7 @@ card.
                     roomAbove = actionsRect.top - clipTop;
                 };
             };
-            if (menuRect.bottom > clipBottom && roomAbove >= menuRect.height + 8) {
+            if (menuRect.bottom > clipBottom + 1 && roomAbove >= menuRect.height + 8) {
                 actions.classList.add('menu-open-up');
             };
         };
@@ -402,10 +416,15 @@ handle's menu to reorder the card or move it to an adjacent column. In the
 details, edit its fields, add a checklist step or tag, scroll the activity
 history, and attach a text or PDF file. The position number follows the card.
 
+Choose **Add After** in a card's menu—or press <kbd>Ctrl</kbd>+<kbd>+</kbd>
+while focused in that card—to insert a task immediately after it. The column
+toolbar's Add task button continues to append at the end.
+
 The column task lists use <code>role:"jump-boundary"</code>, so
 `Ctrl`+`Enter` / `Ctrl`+`Shift`+`Enter` move focus between columns, restoring the
 last focused field. Textareas retain their field-navigation behavior. If there
-is no available sibling boundary, navigation falls back to the current task list.
+is no sibling boundary in that direction, navigation does nothing rather than
+moving within the column's task list.
 
 The status colors are deliberately pale behind white cards, with dark text and
 stronger colored headings for contrast. Touch devices may need a drag-and-drop
@@ -573,7 +592,7 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await expect(taskDetails).toHaveAttribute('open', '');
     await expect(firstCard.locator('textarea[name="description"]')).toBeVisible();
     const boardScrollsVertically = await root.locator('.kanban-board').evaluate(board => {
-        board.style.maxHeight = '12rem';
+        board.style.maxHeight = '18rem';
         return getComputedStyle(board).overflowY === 'auto'
             && board.scrollHeight > board.clientHeight;
     });
@@ -586,19 +605,38 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
     const board = root.locator('.kanban-board');
     await board.evaluate(node => { node.scrollTop = node.scrollHeight; });
+    const scrollBeforeMenu = await board.evaluate(node => node.scrollTop);
     const bottomCard = root.locator('.column-todo .task-card').last();
     const bottomMenuTrigger = bottomCard.getByRole('button', {name: 'Task actions'});
     await bottomMenuTrigger.click();
     const bottomMenu = bottomCard.locator('.card-menu');
-    const menuFitsBoard = await bottomMenu.evaluate(menu => {
+    const menuBounds = await bottomMenu.evaluate((menu, scrollBeforeMenu) => {
         const board = menu.closest('.kanban-board');
         const menuRect = menu.getBoundingClientRect();
         const boardRect = board.getBoundingClientRect();
         const top = boardRect.top + board.clientTop;
         const bottom = top + board.clientHeight;
-        return menuRect.top >= top - 1 && menuRect.bottom <= bottom + 1;
-    });
-    expect(menuFitsBoard).toBe(true);
+        return {
+            top: menuRect.top,
+            bottom: menuRect.bottom,
+            boardTop: top,
+            boardBottom: bottom,
+            scrollTop: board.scrollTop,
+            scrollBeforeMenu,
+            scrollHeight: board.scrollHeight,
+            clientHeight: board.clientHeight,
+            actions: {
+                className: menu.parentElement.className,
+                top: menu.parentElement.getBoundingClientRect().top,
+                bottom: menu.parentElement.getBoundingClientRect().bottom,
+            },
+        };
+    }, scrollBeforeMenu);
+    expect(
+        menuBounds.top >= menuBounds.boardTop - 1
+        && menuBounds.bottom <= menuBounds.boardBottom + 1,
+        JSON.stringify(menuBounds)
+    ).toBe(true);
     await page.keyboard.press('Escape');
 
     await firstCard.getByRole('button', {name: /Add tag/}).click();
@@ -654,6 +692,59 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await page.waitForTimeout(25);
     await page.keyboard.press('Control+Shift+Enter');
     await expect(todoTitles.first()).toBeFocused();
+
+    await todoTitles.nth(1).focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(todoTitles.nth(1)).toBeFocused(); // Don't fall back inside the first boundary.
+    await writeField('/project/done', [
+        {title:'Finished task one'},
+        {title:'Finished task two'},
+    ]);
+    const doneTitles = root.locator('.column-done .task-card input[name="title"]');
+    await doneTitles.first().focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(doneTitles.first()).toBeFocused(); // Don't fall back inside the last boundary.
+
+    await writeField('/project/todo', [
+        {title:'First task'},
+        {title:'Second task'},
+    ]);
+    let todoCards = root.locator('.column-todo .task-card');
+    await todoCards.first().getByRole('button', {name:'Task actions'}).click();
+    await todoCards.first().locator('.card-menu').getByRole('button', {name:/Add After/}).click();
+    await expect(todoCards).toHaveCount(3);
+    const todoCardTitles = () => todoCards.locator('input[name="title"]')
+        .evaluateAll(inputs => inputs.map(input => input.value));
+    expect(await todoCardTitles()).toEqual(['First task', '', 'Second task']);
+    await todoCards.nth(1).locator('input[name="title"]').fill('Inserted from menu');
+    await todoCards.nth(1).getByRole('button', {name:'Task actions'}).focus();
+    await page.keyboard.press('Enter');
+    const addAfter = todoCards.nth(1).locator('.card-menu').getByRole('button', {name:/Add After/});
+    await todoCards.nth(1).locator('input[name="title"]').focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.down('Control');
+    await expect(addAfter).toHaveAttribute('data-hotkey', '+');
+    await page.keyboard.press('Shift+Equal');
+    await page.keyboard.up('Control');
+    await expect(todoCards).toHaveCount(4);
+    await expect(todoCards.nth(2).locator('input[name="title"]')).toBeFocused();
+    expect(await todoCardTitles()).toEqual([
+        'First task', 'Inserted from menu', '', 'Second task',
+    ]);
+    const globalAdd = root.locator('.column-todo .task-list-toolbar')
+        .getByRole('button', {name:/Add task/});
+    await globalAdd.focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.down('Control');
+    await expect(globalAdd).toHaveAttribute('data-hotkey', '+');
+    await page.keyboard.press('Shift+Equal');
+    await page.keyboard.up('Control');
+    await expect(todoCards).toHaveCount(5);
+    expect(await todoCardTitles()).toEqual([
+        'First task', 'Inserted from menu', '', 'Second task', '',
+    ]);
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

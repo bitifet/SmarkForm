@@ -440,6 +440,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
       <div class="card-actions">
         <button type="button" class="card-menu-trigger" data-smark-role="drag-handle" aria-expanded="false" title="Task actions" aria-label="Task actions">☰</button>
         <div class="card-menu" data-card-menu role="group" aria-label="Task actions">
+          <button type="button" data-smark='{"action":"addItem","hotkey":"+"}' title="Add a task after this one"><span aria-hidden="true">＋</span> Add After</button>
           <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Go to the next column"><span aria-hidden="true">→</span> Go Next</button>
           <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Go to the previous column"><span aria-hidden="true">←</span> Go Previous</button>
           <button type="button" data-smark='{"action":"previous","depth":0,"hotkey":","}' title="Move up one position"><span aria-hidden="true">↑</span> Move Up</button>
@@ -708,6 +709,58 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await page.waitForTimeout(25);
     await page.keyboard.press('Control+Shift+Enter');
     await expect(todoTitles.first()).toBeFocused();
+
+    await todoTitles.nth(1).focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(todoTitles.nth(1)).toBeFocused(); // Don't fall back inside the first boundary.
+    await writeField('/done', [
+        {title:'Finished task one'},
+        {title:'Finished task two'},
+    ]);
+    const doneTitles = root.locator('.column').nth(2).locator('.card input[name="title"]');
+    await doneTitles.first().focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Enter');
+    await expect(doneTitles.first()).toBeFocused(); // Don't fall back inside the last boundary.
+
+    await writeField('/todo', [
+        {title:'First task'},
+        {title:'Second task'},
+    ]);
+    let todoCards = root.locator('.column').first().locator('.card');
+    await todoCards.first().getByRole('button', {name:'Task actions'}).click();
+    await todoCards.first().locator('.card-menu').getByRole('button', {name:/Add After/}).click();
+    await expect(todoCards).toHaveCount(3);
+    const todoCardTitles = () => todoCards.locator('input[name="title"]')
+        .evaluateAll(inputs => inputs.map(input => input.value));
+    expect(await todoCardTitles()).toEqual(['First task', '', 'Second task']);
+    await todoCards.nth(1).locator('input[name="title"]').fill('Inserted from menu');
+    await todoCards.nth(1).locator('.card-menu-trigger').focus();
+    await page.keyboard.press('Enter');
+    const addAfter = todoCards.nth(1).locator('.card-menu').getByRole('button', {name:/Add After/});
+    await todoCards.nth(1).locator('input[name="title"]').focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.down('Control');
+    await expect(addAfter).toHaveAttribute('data-hotkey', '+');
+    await page.keyboard.press('Shift+Equal');
+    await page.keyboard.up('Control');
+    await expect(todoCards).toHaveCount(4);
+    await expect(todoCards.nth(2).locator('input[name="title"]')).toBeFocused();
+    expect(await todoCardTitles()).toEqual([
+        'First task', 'Inserted from menu', '', 'Second task',
+    ]);
+    const globalAdd = root.getByTitle('Add task').first();
+    await globalAdd.focus();
+    await page.waitForTimeout(25);
+    await page.keyboard.down('Control');
+    await expect(globalAdd).toHaveAttribute('data-hotkey', '+');
+    await page.keyboard.press('Shift+Equal');
+    await page.keyboard.up('Control');
+    await expect(todoCards).toHaveCount(5);
+    expect(await todoCardTitles()).toEqual([
+        'First task', 'Inserted from menu', '', 'Second task', '',
+    ]);
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -755,11 +808,13 @@ itself; cache policy or browser behavior can still cause a later fetch.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 
+From a focused task, <kbd>Ctrl</kbd>+<kbd>+</kbd> inserts a task immediately after it; the column header's Add button still appends at the end.
+
 👉 **Field navigation.** The column lists use <code>role:"jump-boundary"</code>,
 so <kbd>Ctrl</kbd>+<kbd>Enter</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd>
 move focus between columns, restoring the last focused field. Textareas retain
-their field-navigation behavior. If there is no available sibling boundary,
-navigation falls back to the current task list.
+their field-navigation behavior. Reaching either end of the marked column group
+does nothing rather than moving within the column's task list.
 
 👉 **Empty-list placeholders** show "No tasks" when a column is empty (<code>min_items:0</code>).
 
