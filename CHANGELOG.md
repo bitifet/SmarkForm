@@ -12,13 +12,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
-## Unreleased
+## [Unreleased]
 
-### Changed
+<!-- Add new entries here when preparing the next release. -->
 
-- **Role annotations and drag handles**: `role` alone is passive metadata and does not create a SmarkForm component. Use `data-smark-role="drag-handle"` (or the `role` property in `data-smark` JSON) for explicit sortable handles.
-- **Examples**: replaced the old selector page with a realistic, playable Examples page; retained the original standalone forms in a hidden, noindex legacy archive and retired their Pug/Sass build pipeline. Pug remains a test-fixture dependency; the unused root Sass dependency is removed.
-- Added `docs/_guides/roles.md` to explain role discovery, list-template roles, and drag-handle roles.
+---
+
+## [0.27.0] — 2026-11-27
+
+Keyboard navigation now follows nested forms and lists with remembered focus and opt-in jump boundaries. The documentation also adds realistic Kanban workflows and a hidden archive of the former Examples page.
+
+### Features
+
+- **Hierarchical keyboard navigation**: `Ctrl`+`Enter` and `Ctrl`+`Shift`+`Enter` move between adjacent form/list contexts. Textareas keep their existing field navigation; disabled and hidden fields are skipped.
+- **Jump-boundary role**: `role:"jump-boundary"` lets a form/list group define an outer keyboard-navigation boundary, with remembered focus restored when moving between siblings.
+- **Passive drag-handle annotations**: role-only `data-smark-role="drag-handle"` can select a native control as a sortable drag handle without making that annotation a SmarkForm component.
+
+### Bug Fixes
+
+- **Focus restoration**: navigation remembers the last focused field in each form/list and falls back to the nearest available field if it is removed, hidden, or disabled.
+- **Sampletab textareas**: normal-preview editor sizing no longer overrides flex sizing on example-owned textareas; the JSON playground keeps its 16em–24em bounds.
+
+### Documentation
+
+- Replaced the old Examples selector with a realistic, playable Kanban and preserved the former standalone examples in a hidden, noindex archive.
+- Added keyboard-navigation coverage for nested forms/lists, jump boundaries, textarea behavior, and focus restoration; expanded the Showcase Kanbans with per-task Add After actions.
+- Retired the standalone Pug/Sass examples build pipeline while retaining Pug for test fixtures.
+
+[GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.27.0)
+
+---
 
 ## 0.26.0 — 2026-11-21
 
