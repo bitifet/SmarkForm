@@ -36,7 +36,7 @@ Keyboard navigation now follows nested forms and lists with remembered focus and
 ### Documentation
 
 - Replaced the old Examples selector with a realistic, playable Kanban and preserved the former standalone examples in a hidden, noindex archive.
-- Added keyboard-navigation coverage for nested forms/lists, jump boundaries, textarea behavior, and focus restoration; expanded the Showcase Kanbans with per-task Add After actions.
+- Added a Keyboard Navigation shortcut table with playable examples for nested forms/lists, jump boundaries, textarea behavior, and focus restoration; expanded the Showcase Kanbans with per-task Add After actions.
 - Retired the standalone Pug/Sass examples build pipeline while retaining Pug for test fixtures.
 
 [GitHub Release](https://github.com/bitifet/SmarkForm/releases/tag/0.27.0)

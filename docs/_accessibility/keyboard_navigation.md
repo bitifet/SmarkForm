@@ -1,7 +1,7 @@
 ---
 title: "Keyboard Navigation"
 layout: chapter
-description: "Use Enter-based field navigation, native Tab order and SmarkForm shortcuts where forms provide them."
+description: "Use Enter-based field navigation, Ctrl+Enter form/list traversal, disclosure shortcuts, and native Tab order."
 permalink: "/accessibility/keyboard_navigation"
 nav_order: 1
 redirect_from:
@@ -16,6 +16,27 @@ redirect_from:
 
 SmarkForm adds keyboard navigation to supported fields. The exact behavior also
 depends on the form's markup, native controls, browser, and enabled features.
+
+## Keyboard shortcut reference
+
+Use the shortcut according to the focused control and the form structure. Each
+example link opens a small playable preview below.
+
+| Shortcut and context | Result | Try it |
+|---|---|---|
+| `Enter` / `Shift`+`Enter` in a single-line SmarkForm field | Move to the next/previous SmarkForm field; triggers are skipped. | [Field sequence](#example-nav-enter:preview) |
+| Plain `Enter` in a `<textarea>` | Insert a newline. | [Textarea example](#example-nav-enter:preview) |
+| `Shift`+`Enter` in a `<textarea>` | Move backward to the previous field. No `Ctrl` is needed. | [Textarea example](#example-nav-enter:preview) |
+| `Ctrl`+`Enter` / `Ctrl`+`Shift`+`Enter` in a `<textarea>` | Move forward/backward through fields; this does not jump between outer form/list contexts. | [Textarea example](#example-nav-enter:preview) |
+| `Ctrl`+`Enter` / `Ctrl`+`Shift`+`Enter` outside a textarea, without a jump boundary | Move to the next/previous sibling form/list context, following the nearest available component boundary. Scalar and singleton list items are treated as fields; at an edge, navigation stops. | [Nested contexts](#example-nav-composite:preview) |
+| The same `Ctrl` shortcuts inside a `role:"jump-boundary"` component | Move to the next/previous available sibling with that role and restore its last focused field. At the role boundary's edge, do nothing—do not fall back to inner navigation. | [Jump boundaries](#example-nav-composite:preview) |
+| `Alt`+`Enter` / `Alt`+`Shift`+`Enter` | Open a collapsed `<details>` while moving forward/backward into its fields. From a textarea, use `Ctrl`+`Alt`+`Enter` to move forward; `Alt`+`Shift`+`Enter` moves backward. | [Collapsed sections](#example-nav-details:preview) |
+| `Shift`+`Space` on a SmarkForm field in a `<summary>` or open details body | Toggle the disclosure; from the open body, focus returns to its summary field. | [Details list](#example-collapsible_sections:preview) |
+| `Tab` / `Shift`+`Tab` | Use the browser's normal sequential focus order. Hotkey-equipped list-item Add/Remove triggers are skipped; outer controls remain reachable. | [Tab flow and hotkeys](#example-nav-tabflow:preview) |
+
+Hold `Ctrl` by itself to reveal configured action hotkeys where the example
+includes the corresponding hint CSS. These action hotkeys are separate from the
+field-navigation shortcuts in the table.
 
 ## Enter / Shift+Enter Navigation
 
