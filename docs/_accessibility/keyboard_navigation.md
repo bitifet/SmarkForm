@@ -72,6 +72,13 @@ as one field in its surrounding context. Disabled or hidden destinations are
 skipped. At the edge of the nearest sibling group, navigation stops rather than
 wrapping or jumping to a more distant parent.
 
+Add the SmarkForm option `role:"jump-boundary"` to sibling form/list containers
+when navigation should jump between those containers before following the
+ordinary inner boundary. For example, column lists with that role let a task
+field move focus to the corresponding remembered field in the next column.
+When there is no available sibling jump boundary in that direction, ordinary
+hierarchical navigation is used.
+
 Inside a `<textarea>`, these keys keep their field-navigation behavior:
 `Ctrl`+`Enter` moves forward and `Ctrl`+`Shift`+`Enter` moves backward. Plain
 `Enter` still inserts a newline.

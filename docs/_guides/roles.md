@@ -1,7 +1,7 @@
 ---
 title: "SmarkForm Roles"
 layout: chapter
-description: "Understand SmarkForm's role option, passive role annotations, list-template roles, and sortable drag handles."
+description: "Understand SmarkForm's role option, list-template roles, jump boundaries, and sortable drag handles."
 permalink: "/guides/roles"
 nav_order: 10
 ---
@@ -50,6 +50,31 @@ which continues to control ARIA semantics:
 ```html
 <button role="button" data-smark-role="drag-handle">☰</button>
 ```
+
+## The `jump-boundary` role
+
+The `jump-boundary` role marks a **form or list component** as a keyboard
+navigation boundary. When a field inside it receives `Ctrl`+`Enter` or
+`Ctrl`+`Shift`+`Enter`, SmarkForm first looks for the next or previous available
+sibling component with the same role and focuses its remembered field. Disabled
+and hidden fields are skipped; if the remembered field no longer exists,
+SmarkForm restores to the nearest available field by position. If there is no
+available sibling boundary in that direction, normal hierarchical navigation
+applies.
+
+```html
+<div data-smark='{"type":"form","name":"todo","role":"jump-boundary"}'>
+  <input data-smark name="task" placeholder="To do">
+</div>
+<div data-smark='{"type":"form","name":"progress","role":"jump-boundary"}'>
+  <input data-smark name="task" placeholder="In progress">
+</div>
+```
+
+The role is passive metadata on a component that already has a `type`; it does
+not add a value or change the exported data shape. See
+[Keyboard Navigation]({{ "/accessibility/keyboard_navigation" | relative_url }}#ctrlenter-between-forms-and-lists)
+for the key behavior and a playable example.
 
 ## List-template roles
 

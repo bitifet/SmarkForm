@@ -71,7 +71,7 @@ card.
 </div>
 
 <template id="projectTaskColumn">
-  <div class="task-list" data-smark='{"type":"list","of":"form","sortable":true,"moving_depth":1,"min_items":0,"max_items":12}'>
+  <div class="task-list" data-smark='{"type":"list","role":"jump-boundary","of":"form","sortable":true,"moving_depth":1,"min_items":0,"max_items":12}'>
     <div class="task-list-toolbar" data-smark='{"role":"header"}'>
       <span><strong data-smark-action="count"></strong> tasks</span>
       <button type="button" data-smark='{"action":"addItem","hotkey":"+"}'>＋ Add task</button>
@@ -402,10 +402,10 @@ handle's menu to reorder the card or move it to an adjacent column. In the
 details, edit its fields, add a checklist step or tag, scroll the activity
 history, and attach a text or PDF file. The position number follows the card.
 
-`Ctrl`+`Enter` moves focus to the next task form in the current column;
-`Ctrl`+`Shift`+`Enter` moves backward. It stops at that list's boundary rather
-than switching columns. Use the task menu's Previous/Next Column actions to move
-a card between columns.
+The column task lists use <code>role:"jump-boundary"</code>, so
+`Ctrl`+`Enter` / `Ctrl`+`Shift`+`Enter` move focus between columns, restoring the
+last focused field. Textareas retain their field-navigation behavior. If there
+is no available sibling boundary, navigation falls back to the current task list.
 
 The status colors are deliberately pale behind white cards, with dark text and
 stronger colored headings for contrast. Touch devices may need a drag-and-drop
@@ -643,14 +643,17 @@ export default async ({ expect, root, readField, writeField, page }) => {
         {title:'Sketch task one'},
         {title:'Sketch task two'},
     ]);
+    await writeField('/project/progress', [{title:'Review the release notes'}]);
+    await writeField('/project/done', [{title:'Publish the build'}]);
     const todoTitles = root.locator('.column-todo .task-card input[name="title"]');
+    const progressTitle = root.locator('.column-progress .task-card input[name="title"]').first();
     await todoTitles.first().focus();
     await page.waitForTimeout(25);
     await page.keyboard.press('Control+Enter');
-    await expect(todoTitles.nth(1)).toBeFocused();
+    await expect(progressTitle).toBeFocused();
     await page.waitForTimeout(25);
-    await page.keyboard.press('Control+Enter');
-    await expect(todoTitles.nth(1)).toBeFocused(); // Stop at this list's last task.
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(todoTitles.first()).toBeFocused();
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

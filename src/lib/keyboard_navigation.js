@@ -84,6 +84,31 @@ export function findAdjacentFormOrList(context, backwards = false) {
     return null;
 }
 
+export function findAdjacentJumpBoundary(context, backwards = false) {
+    // Explicit jump boundaries take precedence over implicit list-item
+    // boundaries, allowing a form/list subtree to jump between outer peers.
+    for (let boundary = context; boundary; boundary = boundary.parent) {
+        if (
+            ! isFormOrList(boundary)
+            || boundary.options.role !== 'jump-boundary'
+            || ! isFormOrList(boundary.parent)
+        ) continue;
+
+        const siblings = childrenOf(boundary.parent);
+        const index = siblings.indexOf(boundary);
+        const step = backwards ? -1 : 1;
+        for (let i = index + step; i >= 0 && i < siblings.length; i += step) {
+            const candidate = siblings[i];
+            if (
+                isFormOrList(candidate)
+                && candidate.options.role === 'jump-boundary'
+                && getAvailableFields(candidate).length > 0
+            ) return candidate;
+        };
+    };
+    return null;
+}
+
 export function focusAvailableField(component, backwards = false) {
     const fields = getAvailableFields(component);
     if (! fields.length) return false;

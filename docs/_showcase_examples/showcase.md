@@ -429,7 +429,7 @@ and **Done**.  Hold <code>Ctrl</code> to discover hotkeys.
     .kanban-mixin .card input { flex: 1; }
     .kanban-mixin .empty { color: #999; font-style: italic; padding: 1em; text-align: center; }
   </style>
-  <div data-smark='{"type":"list","sortable":true,"min_items":0,"moving_depth":1}' class="kanban-mixin">
+  <div data-smark='{"type":"list","role":"jump-boundary","sortable":true,"min_items":0,"moving_depth":1}' class="kanban-mixin">
     <div data-smark='{"role":"header"}'>
       <strong id="colLabel">Column</strong>
       <button data-smark='{"action":"addItem","hotkey":"+"}' title="Add task">➕</button>
@@ -697,14 +697,17 @@ export default async ({ expect, root, readField, writeField, page }) => {
         { title: 'Sketch task one' },
         { title: 'Sketch task two' },
     ]);
+    await writeField('/progress', [{title:'Review the release notes'}]);
+    await writeField('/done', [{title:'Publish the build'}]);
     const todoTitles = root.locator('.column').first().locator('.card input[name="title"]');
+    const progressTitle = root.locator('.column').nth(1).locator('.card input[name="title"]').first();
     await todoTitles.first().focus();
     await page.waitForTimeout(25);
     await page.keyboard.press('Control+Enter');
-    await expect(todoTitles.nth(1)).toBeFocused();
+    await expect(progressTitle).toBeFocused();
     await page.waitForTimeout(25);
-    await page.keyboard.press('Control+Enter');
-    await expect(todoTitles.nth(1)).toBeFocused(); // Stop at this list's last task.
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(todoTitles.first()).toBeFocused();
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -752,7 +755,11 @@ itself; cache policy or browser behavior can still cause a later fetch.
 
 👉 **Hotkeys.** Hold <code>Ctrl</code> to reveal the available actions. Use <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> for the next/previous column, <kbd>Ctrl</kbd>+<kbd>.</kbd> / <kbd>Ctrl</kbd>+<kbd>,</kbd> to move down/up, and <kbd>Ctrl</kbd>+<kbd>-</kbd> to remove. The shortcuts adapt to the focused task. Use <kbd>Ctrl</kbd>+<kbd>+</kbd> to add a task.
 
-👉 **Field navigation.** <kbd>Ctrl</kbd>+<kbd>Enter</kbd> moves focus to the next task form in the current column; <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> moves backward. Navigation stops at that column list's boundary. Use the task menu's <kbd>Ctrl</kbd>+<kbd>]</kbd> / <kbd>Ctrl</kbd>+<kbd>[</kbd> actions to move a task between columns.
+👉 **Field navigation.** The column lists use <code>role:"jump-boundary"</code>,
+so <kbd>Ctrl</kbd>+<kbd>Enter</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd>
+move focus between columns, restoring the last focused field. Textareas retain
+their field-navigation behavior. If there is no available sibling boundary,
+navigation falls back to the current task list.
 
 👉 **Empty-list placeholders** show "No tasks" when a column is empty (<code>min_items:0</code>).
 
