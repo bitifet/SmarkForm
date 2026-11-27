@@ -12,7 +12,7 @@ if (!controllerScript || !controllerStyles) {
     throw new Error('Could not extract the sampletabs controller script and styles');
 }
 
-function sampletabsFixture() {
+function sampletabsFixture(exampleHtml = '<div id="myForm$$"><p>Preview content</p></div>') {
     const logoSvg = (width, height) => `data:image/svg+xml,${encodeURIComponent(
         `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"></svg>`
     )}`;
@@ -23,8 +23,8 @@ function sampletabsFixture() {
         compactDark: logoSvg(111, 100),
     };
     const data = {
-        html: '<div id="myForm$$"><p>Preview content</p></div>',
-        htmlSource: '<div id="myForm$$"><p>Preview content</p></div>',
+        html: exampleHtml,
+        htmlSource: exampleHtml,
         css: '-',
         cssHidden: '-',
         jsHead: '-',
@@ -156,6 +156,42 @@ test('sampletabs keeps the editor stacked in a maximized portrait preview', asyn
     expect(portraitEditorLayout.editorHeight)
         .toBeLessThanOrEqual(portraitEditorLayout.viewportHeight * 0.4 + 2);
     expect(portraitEditorLayout.demoHeight).toBeGreaterThan(100);
+});
+
+test('normal sampletab editor does not constrain authored textarea flex sizing', async ({ page }) => {
+    const exampleHtml = `<div id="myForm$$">
+      <div style="display:flex;gap:8px;width:100%">
+        <label for="comments">Comments</label>
+        <textarea id="comments" data-smark name="comments" style="flex:1;min-width:0"></textarea>
+      </div>
+    </div>`;
+    await page.setContent(sampletabsFixture(exampleHtml).html);
+
+    const frame = page.frameLocator('.smarkform-preview-frame');
+    const authoredTextarea = frame.locator('textarea[name="comments"]');
+    const editorTextarea = frame.locator('.smarkform-json-editor-input');
+    await expect(authoredTextarea).toBeVisible();
+    await expect(editorTextarea).toBeVisible();
+    const layout = await frame.locator('body').evaluate(body => {
+        const authored = body.querySelector('textarea[name="comments"]');
+        const editor = body.querySelector('.smarkform-json-editor-input');
+        return {
+            authoredWidth: authored.getBoundingClientRect().width,
+            rowWidth: authored.parentElement.getBoundingClientRect().width,
+            authoredFlexGrow: getComputedStyle(authored).flexGrow,
+            authoredMaxHeight: getComputedStyle(authored).maxHeight,
+            editorFontSize: getComputedStyle(editor).fontSize,
+            editorMinHeight: getComputedStyle(editor).minHeight,
+            editorMaxHeight: getComputedStyle(editor).maxHeight,
+        };
+    });
+    expect(layout.authoredWidth).toBeGreaterThan(layout.rowWidth * 0.5);
+    expect(layout.authoredFlexGrow).toBe('1');
+    expect(layout.authoredMaxHeight).toBe('none');
+    expect(parseFloat(layout.editorMinHeight))
+        .toBeCloseTo(parseFloat(layout.editorFontSize) * 16, 1);
+    expect(parseFloat(layout.editorMaxHeight))
+        .toBeCloseTo(parseFloat(layout.editorFontSize) * 24, 1);
 });
 
 test('maximized tabbar moves Notes left and chooses the logo variant that fits', async ({ page }) => {

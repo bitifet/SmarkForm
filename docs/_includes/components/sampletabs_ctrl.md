@@ -524,7 +524,7 @@ function smarkformRenderIframe(iframe, data, srcs, done) {
         + 'input,textarea,select,button{background:#3a3a3a!important;color:#e9e9e9!important;border-color:#44434d!important}'
         + 'a{color:#8c7aff!important}';
       var editorCss = hasEditor
-          ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}body:not(.smarkform-maximized) .smarkform-editor-stack{display:flex;flex-direction:column;align-items:stretch;gap:1em;width:98vw;box-sizing:border-box;}body:not(.smarkform-maximized) .smarkform-editor-demo{flex:1 1 auto;} .smarkform-editor-actions{display:flex;justify-content:space-evenly;}body:not(.smarkform-maximized) .smarkform-json-editor-input{resize:vertical;min-height:16em;flex:1 1 auto;width:98vw;box-sizing:border-box;}body:not(.smarkform-maximized) #myForm textarea[data-smark]{flex-grow:0;max-height:24em;}'
+          ? 'html,body{height:100%;margin:0;padding:0;overflow:hidden;}#myForm{height:100%;}body:not(.smarkform-maximized) .smarkform-editor-stack{display:flex;flex-direction:column;align-items:stretch;gap:1em;width:98vw;box-sizing:border-box;}body:not(.smarkform-maximized) .smarkform-editor-demo{flex:1 1 auto;} .smarkform-editor-actions{display:flex;justify-content:space-evenly;}body:not(.smarkform-maximized) .smarkform-json-editor-input{resize:vertical;min-height:16em;max-height:24em;flex:1 1 auto;width:98vw;box-sizing:border-box;}'
           : '';
       var outerContainer = iframe.closest('.tab-container');
       var isMaximized = !!(outerContainer && outerContainer.classList.contains('smarkform-maximized'));
