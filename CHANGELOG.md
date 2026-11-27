@@ -20,7 +20,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [0.27.0] — 2026-11-27
 
-Keyboard navigation now follows nested forms and lists with remembered focus and opt-in jump boundaries. The documentation also adds realistic Kanban workflows and a hidden archive of the former Examples page.
+Keyboard navigation now follows nested forms and lists with remembered focus and opt-in jump boundaries. The documentation also adds realistic Kanban workflows and a hidden archive of the former Examples page. This release removes the legacy sortable drag-handle marker; update existing markup as described below.
+
+### Breaking Changes
+
+- **Sortable drag-handle marker**: `data-sf-drag-handle` is no longer recognized. Replace it with `data-smark-role="drag-handle"` or `data-smark='{"role":"drag-handle"}'`. This is SmarkForm role metadata, not the standard HTML `role` attribute.
 
 ### Features
 

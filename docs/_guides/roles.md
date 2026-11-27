@@ -118,6 +118,11 @@ specific starting point for a drag:
 </ul>
 ```
 
+> **Upgrade from 0.26.0:** SmarkForm 0.27.0 removes the legacy
+> `data-sf-drag-handle` marker. Replace it with
+> `data-smark-role="drag-handle"` or the `role` option in `data-smark` JSON.
+> This is SmarkForm metadata, not the standard HTML `role` attribute.
+
 The button's role-only annotation does not turn it into a SmarkForm component.
 An interactive handle can still be used normally when the user is not dragging;
 interactive descendants inside a marked wrapper remain blocked as drag origins.

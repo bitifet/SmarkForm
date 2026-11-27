@@ -795,6 +795,12 @@ SmarkForm chooses drag handles per list item:
   label handles with `data-smark-label`. Use the `data-smark-role` shorthand or
   a class to style an explicit handle.
 
+{: .warning}
+> **Upgrade from 0.26.0:** `data-sf-drag-handle` is no longer recognized in
+> SmarkForm 0.27.0. Replace it with `data-smark-role="drag-handle"` or
+> `data-smark='{"role":"drag-handle"}'`. This is distinct from the standard
+> HTML `role` attribute.
+
 If an item has no label or explicit `drag-handle` role inside it, SmarkForm
 falls back to the original behaviour: the entire item root is a drag handle
 (backward compatible). Interactive fields and controls remain excluded as

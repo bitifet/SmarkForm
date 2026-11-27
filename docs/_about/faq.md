@@ -513,6 +513,11 @@ inside the input.
 **The fix: give each list item a clear drag handle.** Use a SmarkForm label
 component or assign `role: "drag-handle"` with `data-smark-role`.
 
+When upgrading from SmarkForm 0.26.0, replace the removed
+`data-sf-drag-handle` marker with `data-smark-role="drag-handle"` (or
+`data-smark='{"role":"drag-handle"}'`). The SmarkForm `role` option is not the
+HTML `role` attribute.
+
 SmarkForm detects rendered label components (`<label data-smark>`, `<legend
 data-smark>`, or another element with `data-smark='{"type":"label"}'`) and
 explicit `drag-handle` roles. A role-only annotation does not create a
