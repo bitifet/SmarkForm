@@ -130,7 +130,8 @@ Escape/outside-pointer closing and ensure actions stay out of the Tab sequence
 while the disclosure is closed.
 Both Showcase Kanbans offer an `addItem` menu action with `hotkey:"+"` targeted
 at the current task, inserting immediately after it; the list-header Add action
-continues to append.
+continues to append. Menu hotkey badges are positioned at the right of their
+corresponding action row, with reserved padding so they do not overlap its label.
 
 Sortable lists normally use SmarkForm label components as drag handles. For a
 dual-purpose interactive handle (such as the native Kanban menu button), mark

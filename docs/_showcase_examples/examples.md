@@ -89,7 +89,7 @@ card.
               <button type="button" data-smark='{"action":"next","depth":0,"hotkey":"."}' title="Move task down"><span aria-hidden="true">↓</span> Move Down</button>
               <button type="button" data-smark='{"action":"previous","depth":1,"hotkey":"["}' title="Move to previous column"><span aria-hidden="true">←</span> Previous Column</button>
               <button type="button" data-smark='{"action":"next","depth":1,"hotkey":"]"}' title="Move to next column"><span aria-hidden="true">→</span> Next Column</button>
-              <button type="button" data-smark-action="removeItem" title="Remove task"><span aria-hidden="true">×</span> Remove Task</button>
+              <button type="button" data-smark='{"action":"removeItem","hotkey":"-"}' title="Remove task"><span aria-hidden="true">×</span> Remove Task</button>
             </div>
           </div>
         </summary>
@@ -267,6 +267,8 @@ card.
 {{""}}#myForm$$ .board-footnote { margin: .8rem 0 0; color: #586a79; font-size: .75rem; }
 {{""}}#myForm$$ [data-hotkey] { position: relative; }
 {{""}}#myForm$$ [data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; bottom: 100%; left: 0; padding: 1px 3px; border-radius: 3px; background: #243546; color: white; font-size: .55rem; white-space: nowrap; }
+{{""}}#myForm$$ .card-menu button[data-hotkey] { padding-right: 5.5em; }
+{{""}}#myForm$$ .card-menu button[data-hotkey]::after { top: 50%; right: .45rem; bottom: auto; left: auto; transform: translateY(-50%); }
 {{""}}#myForm$$ { padding: .4rem; font-size: .78rem; line-height: 1.3; }
 {{""}}#myForm$$ .project-app { padding: .45rem; }
 {{""}}#myForm$$ .project-header { margin-bottom: .45rem; }
@@ -726,6 +728,34 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await page.waitForTimeout(25);
     await page.keyboard.down('Control');
     await expect(addAfter).toHaveAttribute('data-hotkey', '+');
+    await expect(addAfter).toBeVisible();
+    const readHintStyle = button => {
+        const hint = getComputedStyle(button, '::after');
+        return {
+            content: hint.content,
+            position: hint.position,
+            top: hint.top,
+            right: hint.right,
+            bottom: hint.bottom,
+            left: hint.left,
+            transform: hint.transform,
+        };
+    };
+    const addHint = await addAfter.evaluate(readHintStyle);
+    expect(addHint.content).toContain('Ctrl+');
+    expect(addHint.position).toBe('absolute');
+    expect(parseFloat(addHint.top)).toBeGreaterThan(0);
+    expect(parseFloat(addHint.left)).toBeGreaterThan(0);
+    expect(parseFloat(addHint.right)).toBeGreaterThan(0);
+    expect(addHint.transform).not.toBe('none');
+    const removeAfter = todoCards.nth(1).locator('.card-menu').getByRole('button', {name:/Remove Task/i});
+    await expect(removeAfter).toHaveAttribute('data-hotkey', '-');
+    const removeHint = await removeAfter.evaluate(readHintStyle);
+    expect(removeHint.content.replace(/["\s]/g, '')).toContain('Ctrl+-');
+    expect(removeHint.position).toBe('absolute');
+    expect(parseFloat(removeHint.left)).toBeGreaterThan(0);
+    expect(parseFloat(removeHint.right)).toBeGreaterThan(0);
+    expect(removeHint.transform).not.toBe('none');
     await page.keyboard.press('Shift+Equal');
     await page.keyboard.up('Control');
     await expect(todoCards).toHaveCount(4);

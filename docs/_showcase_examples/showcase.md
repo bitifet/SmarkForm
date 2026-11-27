@@ -743,6 +743,41 @@ export default async ({ expect, root, readField, writeField, page }) => {
     await page.waitForTimeout(25);
     await page.keyboard.down('Control');
     await expect(addAfter).toHaveAttribute('data-hotkey', '+');
+    await expect(addAfter).toBeVisible();
+    const addAfterHint = await addAfter.evaluate(button => {
+        const style = getComputedStyle(button, '::after');
+        return {
+            content: style.content,
+            position: style.position,
+            left: style.left,
+            right: style.right,
+            top: style.top,
+            transform: style.transform,
+        };
+    });
+    expect(addAfterHint.content).toContain('Ctrl+');
+    expect(addAfterHint.position).toBe('absolute');
+    expect(parseFloat(addAfterHint.left)).toBeGreaterThan(0);
+    expect(parseFloat(addAfterHint.right)).toBeGreaterThan(0);
+    expect(parseFloat(addAfterHint.top)).toBeGreaterThan(0);
+    expect(addAfterHint.transform).not.toBe('none');
+    const removeAfter = todoCards.nth(1).locator('.card-menu').getByRole('button', {name:/Remove/});
+    await expect(removeAfter).toHaveAttribute('data-hotkey', '-');
+    const removeAfterHint = await removeAfter.evaluate(button => {
+        const style = getComputedStyle(button, '::after');
+        return {
+            content:style.content,
+            position:style.position,
+            left:style.left,
+            right:style.right,
+            transform:style.transform,
+        };
+    });
+    expect(removeAfterHint.content.replace(/["\s]/g, '')).toContain('Ctrl+-');
+    expect(removeAfterHint.position).toBe('absolute');
+    expect(parseFloat(removeAfterHint.left)).toBeGreaterThan(0);
+    expect(parseFloat(removeAfterHint.right)).toBeGreaterThan(0);
+    expect(removeAfterHint.transform).not.toBe('none');
     await page.keyboard.press('Shift+Equal');
     await page.keyboard.up('Control');
     await expect(todoCards).toHaveCount(4);
@@ -789,6 +824,11 @@ button { position: relative; }
 {{""}}#myForm$$ .card-menu button {
 {{""}}  display: block; width: 100%; text-align: left;
 {{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
+{{""}}}
+{{""}}#myForm$$ .card-menu button[data-hotkey] { padding-right: 5.5em; }
+{{""}}#myForm$$ .card-menu button[data-hotkey]::after {
+{{""}}  top: 50%; right: 0.45em; bottom: auto; left: auto;
+{{""}}  transform: translateY(-50%); font-size: 0.6em;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
 {{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
