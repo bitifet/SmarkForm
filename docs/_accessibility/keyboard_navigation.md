@@ -151,7 +151,10 @@ forward from one of its items skips its other scalar items and reaches Standby.
 
 Try `Ctrl`+`Enter` in the Notes textarea: it moves to the next field in East;
 plain `Enter` inserts a newline. `Ctrl`+`Shift`+`Enter` moves backward between
-composite contexts.
+composite contexts. Forms and lists remember their last focused field, so
+re-entering a context restores that position. If the remembered field has been
+removed, hidden, or disabled, focus falls back to the nearest remaining
+available field in the context.
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- nav_composite_tests {{{ -->{% endraw %}
@@ -179,7 +182,7 @@ export default async ({ page, expect, root }) => {
     await expect(root.locator('#west-lane')).toBeFocused(); // Skip hidden and disabled forms.
     await page.waitForTimeout(25);
     await page.keyboard.press('Control+Shift+Enter');
-    await expect(root.locator('.task-list > li').nth(1).locator('input[name="owner"]')).toBeFocused();
+    await expect(root.locator('#east-lane')).toBeFocused(); // Restore the last East field.
 
     await focus('/east/notes');
     await page.keyboard.press('Control+Enter');
@@ -192,6 +195,9 @@ export default async ({ page, expect, root }) => {
     await focus('/east/tasks/1/owner');
     await page.keyboard.press('Control+Enter');
     await expect(tasks.nth(1).locator('input[name="owner"]')).toBeFocused(); // Stop at the list boundary.
+    await focus('/east/tasks/0/task');
+    await page.keyboard.press('Control+Enter');
+    await expect(tasks.nth(1).locator('input[name="owner"]')).toBeFocused(); // Restore the item's last field.
 
     const values = root.locator('.scalar-list > li');
     await focus('/west/values/0');
@@ -199,7 +205,11 @@ export default async ({ page, expect, root }) => {
     await expect(root.locator('#standby-title')).toBeFocused(); // Skip scalar siblings.
     await page.waitForTimeout(25);
     await page.keyboard.press('Control+Shift+Enter');
-    await expect(values.nth(1).locator('input[name="value"]')).toBeFocused();
+    await expect(values.nth(0).locator('input[name="value"]')).toBeFocused(); // Restore the last West field.
+    await values.nth(0).locator('input[name="value"]').evaluate(node => { node.disabled = true; });
+    await focus('/standby/title');
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(values.nth(1).locator('input[name="value"]')).toBeFocused(); // Skip the disabled remembered field.
 
     const sections = root.locator('.sections-list > li');
     await focus('/sections/0/section');
@@ -215,7 +225,7 @@ export default async ({ page, expect, root }) => {
     });
     await focus('/standby/title');
     await page.keyboard.press('Control+Enter');
-    await expect(sections.nth(0).locator('input[name="section"]')).toBeFocused();
+    await expect(sections.nth(0).locator('input[name="detail"]')).toBeFocused(); // Nearest field after removal.
 };
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 

@@ -6,6 +6,7 @@ import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {parseJSON, isHiddenByClosedDetails} from "../lib/helpers.js";
 import {
+    enableLastFocusedMemory,
     findAdjacentFormOrList,
     focusAvailableField,
 } from "../lib/keyboard_navigation.js";
@@ -47,6 +48,7 @@ export class input extends form {
     constructor(...args) {//{{{
         super(...args);
         const me = this;
+        enableLastFocusedMemory(me.root);
         me.defaultValue = "";
         me.emptyValue = ""; // Type-level empty state for clear action
         me.eventHooks.keydown.push(
