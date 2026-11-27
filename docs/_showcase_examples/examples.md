@@ -191,20 +191,75 @@ card.
 {% raw %}<!-- examples_kanban_css {{{ -->{% endraw %}
 {% capture examples_kanban_css -%}
 {{""}}#myForm$$ {
-{{""}}  --ink: #203044; --muted: #5c6d7d; --line: #d8e0e7; --card: #fff;
-{{""}}  box-sizing: border-box; max-width: 90rem; margin: 0 auto; padding: 1rem;
-{{""}}  color: var(--ink); font: 1rem/1.45 system-ui, sans-serif;
+{{""}}  --ink: #203044;
+{{""}}  --muted: #5c6d7d;
+{{""}}  --line: #d8e0e7;
+{{""}}  --card: #fff;
+{{""}}  box-sizing: border-box;
+{{""}}  max-width: 90rem;
+{{""}}  margin: 0 auto;
+{{""}}  padding: 1rem;
+{{""}}  color: var(--ink);
+{{""}}  font: 1rem/1.45 system-ui, sans-serif;
 {{""}}}
-{{""}}#myForm$$ *, #myForm$$ *::before, #myForm$$ *::after { box-sizing: inherit; }
-{{""}}#myForm$$ .project-app { padding: clamp(.8rem, 2.5vw, 1.5rem); border: 1px solid var(--line); border-radius: 1rem; background: #f6f8fa; }
-{{""}}#myForm$$ .project-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.2rem; }
+{{""}}#myForm$$ *,
+{{""}}#myForm$$ *::before,
+{{""}}#myForm$$ *::after { box-sizing: inherit; }
+
+{{""}}/* Board frame and three status columns. */
+{{""}}#myForm$$ .project-app {
+{{""}}  padding: clamp(.8rem, 2.5vw, 1.5rem);
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: 1rem;
+{{""}}  background: #f6f8fa;
+{{""}}}
+{{""}}#myForm$$ .project-header {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  justify-content: space-between;
+{{""}}  gap: 1rem;
+{{""}}  margin-bottom: 1.2rem;
+{{""}}}
 {{""}}#myForm$$ .project-header h2 { margin: .15rem 0; font-size: clamp(1.3rem, 2vw, 1.8rem); }
 {{""}}#myForm$$ .project-header p { margin: 0; color: var(--muted); }
 {{""}}#myForm$$ .project-eyebrow { color: #56687b; font-size: .7rem; font-weight: 800; letter-spacing: .13em; }
-{{""}}#myForm$$ .sprint-status { flex: 0 0 auto; padding: .5rem .8rem; border: 1px solid #ccd7df; border-radius: 99px; background: white; color: #3b5063; font-size: .8rem; font-weight: 700; }
-{{""}}#myForm$$ .status-dot { display: inline-block; width: .55rem; height: .55rem; margin-right: .35rem; border-radius: 50%; background: #2f855a; }
-{{""}}#myForm$$ .kanban-board { display: grid; grid-template-columns: repeat(3, minmax(15rem, 1fr)); gap: .65rem; align-items: start; max-height: 70vh; overflow: auto; overscroll-behavior: contain; padding: 1rem .5rem 10rem .5rem; }
-{{""}}#myForm$$ .kanban-column { --accent: #43556a; --wash: #f4f6f8; min-width: 0; padding: .65rem; border: 1px solid var(--line); border-radius: .9rem; background: linear-gradient(155deg, var(--wash), white 72%); }
+{{""}}#myForm$$ .sprint-status {
+{{""}}  flex: 0 0 auto;
+{{""}}  padding: .5rem .8rem;
+{{""}}  border: 1px solid #ccd7df;
+{{""}}  border-radius: 99px;
+{{""}}  background: white;
+{{""}}  color: #3b5063;
+{{""}}  font-size: .8rem;
+{{""}}  font-weight: 700;
+{{""}}}
+{{""}}#myForm$$ .status-dot {
+{{""}}  display: inline-block;
+{{""}}  width: .55rem;
+{{""}}  height: .55rem;
+{{""}}  margin-right: .35rem;
+{{""}}  border-radius: 50%;
+{{""}}  background: #2f855a;
+{{""}}}
+{{""}}#myForm$$ .kanban-board {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: repeat(3, minmax(15rem, 1fr));
+{{""}}  align-items: start;
+{{""}}  gap: .65rem;
+{{""}}  max-height: 70vh;
+{{""}}  overflow: auto;
+{{""}}  overscroll-behavior: contain;
+{{""}}  padding: 1rem .5rem 12rem;
+{{""}}}
+{{""}}#myForm$$ .kanban-column {
+{{""}}  --accent: #43556a;
+{{""}}  --wash: #f4f6f8;
+{{""}}  min-width: 0;
+{{""}}  padding: .65rem;
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: .9rem;
+{{""}}  background: linear-gradient(155deg, var(--wash), white 72%);
+{{""}}}
 {{""}}#myForm$$ .column-todo { --accent: #8a2c2c; --wash: #fff0ee; border-color: #e5b7b2; }
 {{""}}#myForm$$ .column-progress { --accent: #78540b; --wash: #fff7df; border-color: #e5d39a; }
 {{""}}#myForm$$ .column-done { --accent: #216343; --wash: #eaf7ef; border-color: #b5d8c2; }
@@ -214,20 +269,69 @@ card.
 {{""}}#myForm$$ .column-heading p { margin: .15rem 0 0 1.15rem; color: var(--muted); font-size: .75rem; }
 {{""}}#myForm$$ .column-indicator { width: .65rem; height: .65rem; border-radius: .2rem; background: var(--accent); }
 {{""}}#myForm$$ .task-list { display: grid; gap: .6rem; }
-{{""}}#myForm$$ .task-list-toolbar { display: flex; align-items: center; justify-content: space-between; gap: .4rem; padding: .2rem .1rem .45rem; color: var(--muted); font-size: .8rem; }
+{{""}}#myForm$$ .task-list-toolbar {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  justify-content: space-between;
+{{""}}  gap: .4rem;
+{{""}}  padding: .2rem .1rem .45rem;
+{{""}}  color: var(--muted);
+{{""}}  font-size: .8rem;
+{{""}}}
 {{""}}#myForm$$ .task-list-toolbar strong { color: var(--accent); }
 {{""}}#myForm$$ button { font: inherit; }
-{{""}}#myForm$$ .task-list-toolbar button, #myForm$$ .section-actions button { padding: .25rem .5rem; border: 1px solid #cbd5dc; border-radius: .45rem; background: white; color: var(--ink); font-size: .75rem; cursor: pointer; }
-{{""}}#myForm$$ .task-card { min-width: 0; padding: .6rem; border: 1px solid #dbe2e8; border-left: .25rem solid var(--accent); border-radius: .7rem; background: var(--card); box-shadow: 0 .2rem .6rem #1f29370c; }
+{{""}}#myForm$$ .task-list-toolbar button,
+{{""}}#myForm$$ .section-actions button {
+{{""}}  padding: .25rem .5rem;
+{{""}}  border: 1px solid #cbd5dc;
+{{""}}  border-radius: .45rem;
+{{""}}  background: white;
+{{""}}  color: var(--ink);
+{{""}}  font-size: .75rem;
+{{""}}  cursor: pointer;
+{{""}}}
+
+{{""}}/* Compact cards expose the task title; details expand below the summary. */
+{{""}}#myForm$$ .task-card {
+{{""}}  min-width: 0;
+{{""}}  padding: .6rem;
+{{""}}  border: 1px solid #dbe2e8;
+{{""}}  border-left: .25rem solid var(--accent);
+{{""}}  border-radius: .7rem;
+{{""}}  background: var(--card);
+{{""}}  box-shadow: 0 .2rem .6rem #1f29370c;
+{{""}}}
 {{""}}#myForm$$ .task-summary { display: flex; align-items: center; gap: .35rem; min-width: 0; cursor: pointer; list-style: none; }
 {{""}}#myForm$$ .task-summary::-webkit-details-marker { display: none; }
 {{""}}#myForm$$ .task-summary::before { content: "▸"; flex: 0 0 auto; color: var(--accent); transition: transform .15s; }
 {{""}}#myForm$$ details[open] > .task-summary::before { transform: rotate(90deg); }
 {{""}}#myForm$$ .task-position { flex: 0 0 auto; color: var(--accent); font-size: .75rem; font-weight: 800; }
-{{""}}#myForm$$ .task-summary input { flex: 1 1 auto; width: 4em; max-width: 12em; min-width: 0; padding: .2rem; border: 0; background: transparent; color: var(--ink); font: inherit; font-weight: 700; }
+{{""}}#myForm$$ .task-summary input {
+{{""}}  flex: 1 1 auto;
+{{""}}  width: 4em;
+{{""}}  max-width: 12em;
+{{""}}  min-width: 0;
+{{""}}  padding: .2rem;
+{{""}}  border: 0;
+{{""}}  background: transparent;
+{{""}}  color: var(--ink);
+{{""}}  font: inherit;
+{{""}}  font-weight: 700;
+{{""}}}
 {{""}}#myForm$$ .task-details { padding: .55rem .1rem .1rem; }
 {{""}}#myForm$$ .task-details label { display: grid; gap: .2rem; color: #44576a; font-size: .75rem; font-weight: 700; }
-{{""}}#myForm$$ .task-details input:not([type="checkbox"]), #myForm$$ .task-details select, #myForm$$ .task-details textarea { width: 95%; min-width: 0; padding: .4rem .5rem; border: 1px solid #d4dde4; border-radius: .4rem; background: white; color: var(--ink); font: .82rem/1.4 system-ui, sans-serif; }
+{{""}}#myForm$$ .task-details input:not([type="checkbox"]),
+{{""}}#myForm$$ .task-details select,
+{{""}}#myForm$$ .task-details textarea {
+{{""}}  width: 95%;
+{{""}}  min-width: 0;
+{{""}}  padding: .4rem .5rem;
+{{""}}  border: 1px solid #d4dde4;
+{{""}}  border-radius: .4rem;
+{{""}}  background: white;
+{{""}}  color: var(--ink);
+{{""}}  font: .82rem/1.4 system-ui, sans-serif;
+{{""}}}
 {{""}}#myForm$$ .task-description textarea { resize: vertical; }
 {{""}}#myForm$$ .task-fields { display: grid; grid-template-columns: 1fr; gap: .4rem; margin-top: .5rem; }
 {{""}}#myForm$$ .task-section { margin-top: .7rem; padding-top: .55rem; border-top: 1px solid #e8edf1; }
@@ -235,40 +339,149 @@ card.
 {{""}}#myForm$$ .section-heading h4 { margin: 0; color: var(--ink); font-size: .8rem; }
 {{""}}#myForm$$ .section-hint { color: var(--muted); font-size: .65rem; text-align: right; }
 {{""}}#myForm$$ .tag-list { display: flex; flex-wrap: wrap; gap: .3rem; min-height: 1.8rem; margin: 0; padding: 0; list-style: none; }
-{{""}}#myForm$$ .tag-item { display: inline-flex; align-items: center; gap: .15rem; max-width: 100%; padding: .1rem .25rem .1rem .45rem; border-radius: 99px; background: #edf3f6; }
-{{""}}#myForm$$ .tag-item input { flex: 0 1 7em; width: 7em; min-width: 3.5em; padding: .15rem 0 !important; border: 0 !important; background: transparent !important; font-size: .7rem !important; }
-{{""}}#myForm$$ .tag-item button { padding: .1rem .15rem; border: 0; background: transparent; color: #5c6d7d; cursor: pointer; font-size: .7rem; }
+{{""}}#myForm$$ .tag-item {
+{{""}}  display: inline-flex;
+{{""}}  align-items: center;
+{{""}}  gap: .15rem;
+{{""}}  max-width: 100%;
+{{""}}  padding: .1rem .25rem .1rem .45rem;
+{{""}}  border-radius: 99px;
+{{""}}  background: #edf3f6;
+{{""}}}
+{{""}}#myForm$$ .tag-item input {
+{{""}}  flex: 0 1 7em;
+{{""}}  width: 7em;
+{{""}}  min-width: 3.5em;
+{{""}}  padding: .15rem 0 !important;
+{{""}}  border: 0 !important;
+{{""}}  background: transparent !important;
+{{""}}  font-size: .7rem !important;
+{{""}}}
+{{""}}#myForm$$ .tag-item button {
+{{""}}  padding: .1rem .15rem;
+{{""}}  border: 0;
+{{""}}  background: transparent;
+{{""}}  color: #5c6d7d;
+{{""}}  cursor: pointer;
+{{""}}  font-size: .7rem;
+{{""}}}
 {{""}}#myForm$$ .tag-item button:hover { color: #9b3731; }
-{{""}}#myForm$$ .tags-empty, #myForm$$ .checklist-empty, #myForm$$ .activity-empty, #myForm$$ .attachments-empty { color: var(--muted); font-size: .75rem; font-style: italic; }
+{{""}}#myForm$$ .tags-empty,
+{{""}}#myForm$$ .checklist-empty,
+{{""}}#myForm$$ .activity-empty,
+{{""}}#myForm$$ .attachments-empty {
+{{""}}  color: var(--muted);
+{{""}}  font-size: .75rem;
+{{""}}  font-style: italic;
+{{""}}}
 {{""}}#myForm$$ .section-actions { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .35rem; }
 {{""}}#myForm$$ .checklist { display: grid; gap: .25rem; margin: 0; padding: 0; list-style: none; }
 {{""}}#myForm$$ .checklist-item { display: grid; grid-template-columns: auto minmax(0,1fr) auto; align-items: center; gap: .35rem; }
 {{""}}#myForm$$ .checklist-item input[type="checkbox"] { accent-color: var(--accent); }
 {{""}}#myForm$$ .checklist-item input[type="text"] { padding: .25rem .35rem; font-size: .75rem; }
 {{""}}#myForm$$ .checklist-item button { border: 0; background: transparent; color: var(--muted); cursor: pointer; }
-{{""}}#myForm$$ .activity-scroll { max-height: 9rem; overflow-y: auto; overscroll-behavior: contain; padding: .25rem .35rem; border: 1px solid #e0e7ec; border-radius: .45rem; background: #f8fafb; }
+{{""}}#myForm$$ .activity-scroll {
+{{""}}  max-height: 9rem;
+{{""}}  overflow-y: auto;
+{{""}}  overscroll-behavior: contain;
+{{""}}  padding: .25rem .35rem;
+{{""}}  border: 1px solid #e0e7ec;
+{{""}}  border-radius: .45rem;
+{{""}}  background: #f8fafb;
+{{""}}}
 {{""}}#myForm$$ .activity-list { display: grid; gap: .4rem; }
 {{""}}#myForm$$ .activity-entry { padding-bottom: .35rem; border-bottom: 1px solid #e5ebef; }
 {{""}}#myForm$$ .activity-meta { display: flex; justify-content: space-between; gap: .4rem; }
-{{""}}#myForm$$ .activity-meta input { width: auto; max-width: 55%; padding: .1rem !important; border: 0 !important; background: transparent !important; font-size: .7rem !important; font-weight: 700; }
-{{""}}#myForm$$ .activity-entry textarea { min-height: 2.4rem; padding: .2rem !important; border: 0 !important; background: transparent !important; font-size: .72rem !important; resize: vertical; }
+{{""}}#myForm$$ .activity-meta input {
+{{""}}  width: auto;
+{{""}}  max-width: 55%;
+{{""}}  padding: .1rem !important;
+{{""}}  border: 0 !important;
+{{""}}  background: transparent !important;
+{{""}}  font-size: .7rem !important;
+{{""}}  font-weight: 700;
+{{""}}}
+{{""}}#myForm$$ .activity-entry textarea {
+{{""}}  min-height: 2.4rem;
+{{""}}  padding: .2rem !important;
+{{""}}  border: 0 !important;
+{{""}}  background: transparent !important;
+{{""}}  font-size: .72rem !important;
+{{""}}  resize: vertical;
+{{""}}}
 {{""}}#myForm$$ .attachments { display: grid; gap: .25rem; }
 {{""}}#myForm$$ .attachment-item input { padding: .3rem !important; font-size: .7rem !important; }
 {{""}}#myForm$$ .card-actions { position: relative; display: flex; flex: 0 0 auto; }
-{{""}}#myForm$$ .card-menu-trigger { min-width: 1.8rem; min-height: 1.8rem; border: 1px solid #dbe2e8; border-radius: .4rem; background: white; color: var(--accent); cursor: grab; }
-{{""}}#myForm$$ .card-menu { display: none; position: absolute; top: calc(100% + .2rem); right: 0; z-index: 10; min-width: 11.5rem; padding: .25rem; border: 1px solid #ccd6de; border-radius: .55rem; background: white; box-shadow: 0 .4rem 1rem #20304424; }
+{{""}}#myForm$$ .card-menu-trigger {
+{{""}}  min-width: 1.8rem;
+{{""}}  min-height: 1.8rem;
+{{""}}  border: 1px solid #dbe2e8;
+{{""}}  border-radius: .4rem;
+{{""}}  background: white;
+{{""}}  color: var(--accent);
+{{""}}  cursor: grab;
+{{""}}}
+{{""}}#myForm$$ .card-menu {
+{{""}}  display: none;
+{{""}}  position: absolute;
+{{""}}  top: calc(100% + .2rem);
+{{""}}  right: 0;
+{{""}}  z-index: 10;
+{{""}}  min-width: 11.5rem;
+{{""}}  padding: .25rem;
+{{""}}  border: 1px solid #ccd6de;
+{{""}}  border-radius: .55rem;
+{{""}}  background: white;
+{{""}}  box-shadow: 0 .4rem 1rem #20304424;
+{{""}}}
 {{""}}#myForm$$ .card-actions.menu-open-up .card-menu { top: auto; bottom: calc(100% + .2rem); }
 {{""}}#myForm$$ .card-actions.menu-open .card-menu,
 {{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
-{{""}}#myForm$$ .card-menu button { display: block; width: 100%; padding: .35rem .45rem; border: 0; border-radius: .3rem; background: transparent; color: var(--ink); text-align: left; cursor: pointer; font-size: .75rem; }
+{{""}}#myForm$$ .card-menu button {
+{{""}}  display: block;
+{{""}}  width: 100%;
+{{""}}  padding: .35rem .45rem;
+{{""}}  border: 0;
+{{""}}  border-radius: .3rem;
+{{""}}  background: transparent;
+{{""}}  color: var(--ink);
+{{""}}  text-align: left;
+{{""}}  cursor: pointer;
+{{""}}  font-size: .75rem;
+{{""}}}
 {{""}}#myForm$$ .card-menu button:hover { background: #edf2f5; }
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
-{{""}}#myForm$$ .task-list-empty { padding: 1rem .5rem; border: 1px dashed #b8c2ca; border-radius: .6rem; color: var(--muted); font-size: .8rem; text-align: center; }
+{{""}}#myForm$$ .task-list-empty {
+{{""}}  padding: 1rem .5rem;
+{{""}}  border: 1px dashed #b8c2ca;
+{{""}}  border-radius: .6rem;
+{{""}}  color: var(--muted);
+{{""}}  font-size: .8rem;
+{{""}}  text-align: center;
+{{""}}}
 {{""}}#myForm$$ .board-footnote { margin: .8rem 0 0; color: #586a79; font-size: .75rem; }
 {{""}}#myForm$$ [data-hotkey] { position: relative; }
-{{""}}#myForm$$ [data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; bottom: 100%; left: 0; padding: 1px 3px; border-radius: 3px; background: #243546; color: white; font-size: .55rem; white-space: nowrap; }
+{{""}}/* Hints float above page controls and align to the right inside menu rows. */
+{{""}}#myForm$$ [data-hotkey]::after {
+{{""}}  position: absolute;
+{{""}}  bottom: 100%;
+{{""}}  left: 0;
+{{""}}  padding: 1px 3px;
+{{""}}  border-radius: 3px;
+{{""}}  background: #243546;
+{{""}}  color: white;
+{{""}}  content: "Ctrl+" attr(data-hotkey);
+{{""}}  font-size: .55rem;
+{{""}}  white-space: nowrap;
+{{""}}}
 {{""}}#myForm$$ .card-menu button[data-hotkey] { padding-right: 5.5em; }
-{{""}}#myForm$$ .card-menu button[data-hotkey]::after { top: 50%; right: .45rem; bottom: auto; left: auto; transform: translateY(-50%); }
+{{""}}#myForm$$ .card-menu button[data-hotkey]::after {
+{{""}}  top: 50%;
+{{""}}  right: .45rem;
+{{""}}  bottom: auto;
+{{""}}  left: auto;
+{{""}}  transform: translateY(-50%);
+{{""}}}
 {{""}}#myForm$$ { padding: .4rem; font-size: .78rem; line-height: 1.3; }
 {{""}}#myForm$$ .project-app { padding: .45rem; }
 {{""}}#myForm$$ .project-header { margin-bottom: .45rem; }
@@ -308,6 +521,7 @@ card.
 /* SmarkForm owns the actions and hotkeys; this manages the task-action disclosure. */
 {
     const root = myForm.targetNode;
+    // The board is its own scrollport: use its trailing padding before flipping a menu upward.
     const positionMenus = () => {
         const board = root.querySelector('.kanban-board');
         if (! board) return;
@@ -325,6 +539,7 @@ card.
             let actionsRect = actions.getBoundingClientRect();
             let roomAbove = actionsRect.top - clipTop;
             if (menuRect.bottom > clipBottom + 1) {
+                // Scroll any remaining bottom padding to reveal the full menu below its handle.
                 const remainingScroll = Math.max(
                     0,
                     board.scrollHeight - board.clientHeight - board.scrollTop
@@ -337,6 +552,7 @@ card.
                     roomAbove = actionsRect.top - clipTop;
                 };
             };
+            // If the trailing space is insufficient, use the available space above the handle.
             if (menuRect.bottom > clipBottom + 1 && roomAbove < menuRect.height + 8) {
                 const shift = menuRect.height + 8 - roomAbove;
                 const roomBelow = clipBottom - actionsRect.bottom;
@@ -353,6 +569,7 @@ card.
         };
     };
     const syncMenus = () => {
+        // Mirror the manual/Ctrl disclosure state in ARIA and sequential focus.
         for (const actions of root.querySelectorAll('.card-actions')) {
             const expanded = (
                 actions.classList.contains('menu-open')
@@ -367,6 +584,7 @@ card.
         positionMenus();
     };
     const closeMenus = () => {
+        // Remove only manual-open state; syncMenus preserves any Ctrl reveal.
         root.querySelectorAll('.card-actions.menu-open')
             .forEach(actions => actions.classList.remove('menu-open', 'menu-open-up'));
         syncMenus();
@@ -399,12 +617,14 @@ card.
         if (event.key !== 'Escape') return;
         const trigger = root.querySelector('.card-actions.menu-open .card-menu-trigger');
         if (! trigger) return;
+        // Escape closes the manual disclosure and restores focus to its trigger.
         event.preventDefault();
         event.stopPropagation();
         closeMenus();
         trigger.focus();
     });
     document.addEventListener('pointerdown', event => {
+        // A pointer press outside the form dismisses manually opened menus.
         if (! root.contains(event.target)) closeMenus();
     });
 };

@@ -71,11 +71,36 @@ demo uses `eval` after removing characters outside the arithmetic set, so even
 
 {% raw %} <!-- calculator_css {{{ --> {% endraw %}
 {% capture calculator_css -%}
-{{""}}#myForm$$ .calculator { background-color: #333; border-radius: 10px; padding: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); width: 300px; }
-{{""}}#myForm$$ .display { width: 100%; box-sizing: border-box; background: #fff; border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-bottom: 10px; font-size: 24px; text-align: right; }
+{{""}}/* Calculator frame and readout. */
+{{""}}#myForm$$ .calculator {
+{{""}}  width: 300px;
+{{""}}  padding: 20px;
+{{""}}  border-radius: 10px;
+{{""}}  background-color: #333;
+{{""}}  box-shadow: 0 4px 10px rgba(0, 0, 0, .3);
+{{""}}}
+{{""}}#myForm$$ .display {
+{{""}}  width: 100%;
+{{""}}  box-sizing: border-box;
+{{""}}  margin-bottom: 10px;
+{{""}}  padding: 10px;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: 5px;
+{{""}}  background: #fff;
+{{""}}  font-size: 24px;
+{{""}}  text-align: right;
+{{""}}}
 {{""}}#myForm$$ .display:invalid { background-color: #fcc; }
 {{""}}#myForm$$ .buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
-{{""}}#myForm$$ button { padding: 15px; font-size: 18px; border: none; border-radius: 5px; cursor: pointer; background-color: #555; color: white; }
+{{""}}#myForm$$ button {
+{{""}}  padding: 15px;
+{{""}}  border: none;
+{{""}}  border-radius: 5px;
+{{""}}  background-color: #555;
+{{""}}  color: white;
+{{""}}  cursor: pointer;
+{{""}}  font-size: 18px;
+{{""}}}
 {{""}}#myForm$$ button:hover { background-color: #777; }
 {{""}}#myForm$$ .operator { background-color: #f9a825; }
 {{""}}#myForm$$ .operator:hover { background-color: #ffb300; }
@@ -84,12 +109,19 @@ demo uses `eval` after removing characters outside the arithmetic set, so even
 {{""}}#myForm$$ .clear { background-color: #d32f2f; }
 {{""}}#myForm$$ .clear:hover { background-color: #ef5350; }
 {{""}}#myForm$$ button { position: relative; }
+{{""}}/* Ctrl hints are anchored to their calculator keys. */
 {{""}}#myForm$$ [data-hotkey]::after {
-    content: "Ctrl+" attr(data-hotkey);
-    position: absolute; top: 0.75em; left: 0;
-    font-size: 0.7em; background: #333; color: #fff;
-    padding: 1px 4px; border-radius: 3px; white-space: nowrap;
-}
+{{""}}  position: absolute;
+{{""}}  top: .75em;
+{{""}}  left: 0;
+{{""}}  padding: 1px 4px;
+{{""}}  border-radius: 3px;
+{{""}}  background: #333;
+{{""}}  color: #fff;
+{{""}}  content: "Ctrl+" attr(data-hotkey);
+{{""}}  font-size: .7em;
+{{""}}  white-space: nowrap;
+{{""}}}
 {%- endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
 
@@ -97,6 +129,7 @@ demo uses `eval` after removing characters outside the arithmetic set, so even
 {% capture calculator_js -%}
 const invalidChars = /[^0-9+\-*\/().]+/g;
 
+// Each button imports one token; reduce it to the next display value.
 myForm.on("BeforeAction_import", async (ev)=>{
     const prevValue = await ev.context.export();
     const key = ev.data;
@@ -200,6 +233,7 @@ disabled here for the same reason as in the first example.
 {% capture supercalculator_js -%}
 var invalidChars = /[^0-9+\-*\/().]+/g;
 
+// Reuse the same reducer for button imports and physical keyboard input.
 function updateDisplay(prevValue, key) {
     switch (key.toLowerCase()) {
         case "c":
@@ -236,6 +270,7 @@ myForm.on("BeforeAction_import", async (ev)=>{
     ev.data = updateDisplay(prevValue, key);
 });
 
+// Handle calculator keys, but leave unrelated keys such as Tab to the browser.
 myForm.on("keydown", async (ev)=>{
     const prevValue = await ev.context.export();
     const key = ev.originalEvent.key;

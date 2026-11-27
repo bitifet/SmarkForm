@@ -209,32 +209,150 @@ sentence.
 {{""}}  padding: 1rem; color: var(--ink); font: 1rem/1.45 system-ui, sans-serif;
 {{""}}}
 {{""}}#myForm$$ *, #myForm$$ *::before, #myForm$$ *::after { box-sizing: inherit; }
-{{""}}#myForm$$ .role-studio { padding: clamp(1rem, 4vw, 2rem); border: 1px solid var(--line); border-radius: 1.25rem; background: radial-gradient(circle at 95% 0%, #e0f8ef 0, transparent 14rem), white; box-shadow: 0 1rem 3rem #20344712; }
+{{""}}/* Workbench frame and heading. */
+{{""}}#myForm$$ .role-studio {
+{{""}}  padding: clamp(1rem, 4vw, 2rem);
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: 1.25rem;
+{{""}}  background: radial-gradient(circle at 95% 0%, #e0f8ef 0, transparent 14rem), white;
+{{""}}  box-shadow: 0 1rem 3rem #20344712;
+{{""}}}
 {{""}}#myForm$$ .studio-heading { margin-bottom: 1.4rem; }
 {{""}}#myForm$$ .studio-heading h2, #myForm$$ .guest-panel h3 { margin: .15rem 0 .35rem; }
 {{""}}#myForm$$ .studio-heading p:last-child, #myForm$$ .syntax-note { margin: 0; color: var(--muted); }
 {{""}}#myForm$$ .studio-kicker { margin: 0; color: var(--mint-ink); font-size: .7rem; font-weight: 800; letter-spacing: .12em; }
-{{""}}#myForm$$ .task-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .55rem; padding: .75rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--paper); }
-{{""}}#myForm$$ .task-list-heading, #myForm$$ .task-empty, #myForm$$ .task-footer { grid-column: 1 / -1; }
-{{""}}#myForm$$ .task-list-heading { display: flex; align-items: center; justify-content: space-between; padding: .25rem .25rem .6rem; }
+{{""}}/* Two-column task grid; list-wide templates span both tracks. */
+{{""}}#myForm$$ .task-list {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: repeat(2, minmax(0, 1fr));
+{{""}}  gap: .55rem;
+{{""}}  padding: .75rem;
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: 1rem;
+{{""}}  background: var(--paper);
+{{""}}}
+{{""}}#myForm$$ .task-list-heading,
+{{""}}#myForm$$ .task-empty,
+{{""}}#myForm$$ .task-footer { grid-column: 1 / -1; }
+{{""}}#myForm$$ .task-list-heading {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  justify-content: space-between;
+{{""}}  padding: .25rem .25rem .6rem;
+{{""}}}
 {{""}}#myForm$$ .task-list-heading strong { display: block; font-size: 1.1rem; }
-{{""}}#myForm$$ .task-count { padding: .3rem .6rem; border-radius: 99px; background: var(--mint); color: var(--mint-ink); font-size: .8rem; font-weight: 700; }
-{{""}}#myForm$$ .task-card { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .45rem; min-width: 0; padding: .45rem; border: 1px solid var(--line); border-radius: .75rem; background: white; box-shadow: 0 .2rem .5rem #2034470a; }
-{{""}}#myForm$$ .task-card input { width: 100%; min-width: 0; padding: .45rem; border: 0; background: transparent; color: inherit; font: inherit; }
+{{""}}#myForm$$ .task-count {
+{{""}}  padding: .3rem .6rem;
+{{""}}  border-radius: 99px;
+{{""}}  background: var(--mint);
+{{""}}  color: var(--mint-ink);
+{{""}}  font-size: .8rem;
+{{""}}  font-weight: 700;
+{{""}}}
+{{""}}#myForm$$ .task-card {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: auto minmax(0, 1fr) auto;
+{{""}}  align-items: center;
+{{""}}  gap: .45rem;
+{{""}}  min-width: 0;
+{{""}}  padding: .45rem;
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: .75rem;
+{{""}}  background: white;
+{{""}}  box-shadow: 0 .2rem .5rem #2034470a;
+{{""}}}
+{{""}}#myForm$$ .task-card input {
+{{""}}  width: 100%;
+{{""}}  min-width: 0;
+{{""}}  padding: .45rem;
+{{""}}  border: 0;
+{{""}}  background: transparent;
+{{""}}  color: inherit;
+{{""}}  font: inherit;
+{{""}}}
 {{""}}#myForm$$ .task-grip { color: #8395a2; cursor: grab; font-size: 1.35rem; line-height: 1; }
-{{""}}#myForm$$ .task-remove { width: 2rem; height: 2rem; border: 0; border-radius: .55rem; background: #fff0ee; color: #a54438; cursor: grab; font-size: 1.2rem; }
-{{""}}#myForm$$ .task-empty { padding: 1rem; border: 1px dashed #adc5bd; border-radius: .75rem; color: var(--muted); text-align: center; }
+{{""}}#myForm$$ .task-remove {
+{{""}}  width: 2rem;
+{{""}}  height: 2rem;
+{{""}}  border: 0;
+{{""}}  border-radius: .55rem;
+{{""}}  background: #fff0ee;
+{{""}}  color: #a54438;
+{{""}}  cursor: grab;
+{{""}}  font-size: 1.2rem;
+{{""}}}
+{{""}}#myForm$$ .task-empty {
+{{""}}  padding: 1rem;
+{{""}}  border: 1px dashed #adc5bd;
+{{""}}  border-radius: .75rem;
+{{""}}  color: var(--muted);
+{{""}}  text-align: center;
+{{""}}}
 {{""}}#myForm$$ .task-empty span { color: var(--mint-ink); font-size: 1.25rem; }
-{{""}}#myForm$$ .task-placeholder { min-height: 3.4rem; padding: .9rem .5rem; border: 1px dashed #cbd8de; border-radius: .75rem; color: #94a3ad; font-size: .8rem; text-align: center; }
-{{""}}#myForm$$ .task-footer { display: flex; align-items: center; justify-content: space-between; gap: .5rem; padding: .25rem; color: var(--muted); font-size: .8rem; }
+{{""}}#myForm$$ .task-placeholder {
+{{""}}  min-height: 3.4rem;
+{{""}}  padding: .9rem .5rem;
+{{""}}  border: 1px dashed #cbd8de;
+{{""}}  border-radius: .75rem;
+{{""}}  color: #94a3ad;
+{{""}}  font-size: .8rem;
+{{""}}  text-align: center;
+{{""}}}
+{{""}}#myForm$$ .task-footer {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  justify-content: space-between;
+{{""}}  gap: .5rem;
+{{""}}  padding: .25rem;
+{{""}}  color: var(--muted);
+{{""}}  font-size: .8rem;
+{{""}}}
 {{""}}#myForm$$ button { font: inherit; }
-{{""}}#myForm$$ .task-footer button, #myForm$$ .guest-controls button { padding: .4rem .7rem; border: 1px solid var(--line); border-radius: .6rem; background: white; color: var(--ink); cursor: pointer; }
-{{""}}#myForm$$ .task-footer button:hover, #myForm$$ .guest-controls button:hover { border-color: #77b59d; }
-{{""}}#myForm$$ .guest-panel { display: grid; grid-template-columns: minmax(9rem, .7fr) minmax(0, 1.5fr); align-items: center; gap: .3rem 1rem; margin-top: 1rem; padding: 1rem; border: 1px solid var(--line); border-radius: 1rem; background: #fbfdfc; }
+{{""}}#myForm$$ .task-footer button,
+{{""}}#myForm$$ .guest-controls button {
+{{""}}  padding: .4rem .7rem;
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: .6rem;
+{{""}}  background: white;
+{{""}}  color: var(--ink);
+{{""}}  cursor: pointer;
+{{""}}}
+{{""}}#myForm$$ .task-footer button:hover,
+{{""}}#myForm$$ .guest-controls button:hover { border-color: #77b59d; }
+{{""}}/* Inline scalar list below the composite task list. */
+{{""}}#myForm$$ .guest-panel {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: minmax(9rem, .7fr) minmax(0, 1.5fr);
+{{""}}  align-items: center;
+{{""}}  gap: .3rem 1rem;
+{{""}}  margin-top: 1rem;
+{{""}}  padding: 1rem;
+{{""}}  border: 1px solid var(--line);
+{{""}}  border-radius: 1rem;
+{{""}}  background: #fbfdfc;
+{{""}}}
 {{""}}#myForm$$ .guest-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; min-width: 0; }
 {{""}}#myForm$$ .guest-prefix { flex: 0 0 auto; color: var(--muted); white-space: nowrap; }
-{{""}}#myForm$$ .guest-list { display: flex; flex: 1 1 13rem; flex-wrap: wrap; align-items: center; gap: .15rem; min-width: 0; }
-{{""}}#myForm$$ .guest-list input { flex: 0 1 7.5em; width: 7.5em; min-width: 6.5em; max-width: 100%; padding: .3rem; border: 1px solid transparent; border-bottom-color: #b7c8c1; background: transparent; color: inherit; font: inherit; }
+{{""}}#myForm$$ .guest-list {
+{{""}}  display: flex;
+{{""}}  flex: 1 1 13rem;
+{{""}}  flex-wrap: wrap;
+{{""}}  align-items: center;
+{{""}}  gap: .15rem;
+{{""}}  min-width: 0;
+{{""}}}
+{{""}}#myForm$$ .guest-list input {
+{{""}}  flex: 0 1 7.5em;
+{{""}}  width: 7.5em;
+{{""}}  min-width: 6.5em;
+{{""}}  max-width: 100%;
+{{""}}  padding: .3rem;
+{{""}}  border: 1px solid transparent;
+{{""}}  border-bottom-color: #b7c8c1;
+{{""}}  background: transparent;
+{{""}}  color: inherit;
+{{""}}  font: inherit;
+{{""}}}
 {{""}}#myForm$$ .guest-empty { color: var(--muted); font-style: italic; }
 {{""}}#myForm$$ .syntax-note { grid-column: 2; font-size: .75rem; }
 {{""}}@media (max-width: 36rem) {

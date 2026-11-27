@@ -449,12 +449,28 @@ finishes. Add a task, then remove one to see both lifecycle events in action.
 {% raw %}<!-- events_animated_tasks_css {{{ -->{% endraw %}
 {% capture events_animated_tasks_css -%}
 {{""}}#myForm$$ .task-list { list-style: none; padding: 0; }
-{{""}}#myForm$$ .task-row { display: flex; align-items: center; gap: .5rem; margin-block: .4rem; padding: .5rem; border: 1px solid #ccc; border-radius: .4rem; }
+{{""}}#myForm$$ .task-row {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  gap: .5rem;
+{{""}}  margin-block: .4rem;
+{{""}}  padding: .5rem;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: .4rem;
+{{""}}}
 {{""}}#myForm$$ .task-row label { display: flex; align-items: center; gap: .5rem; flex: 1; }
 {{""}}#myForm$$ .task-row input { flex: 1; min-width: 0; }
-{{""}}#myForm$$ .task-row.task-entering { transform: translateX(-2rem); opacity: 0; transition: transform 220ms ease-out, opacity 220ms ease-out; }
+{{""}}#myForm$$ .task-row.task-entering {
+{{""}}  transform: translateX(-2rem);
+{{""}}  opacity: 0;
+{{""}}  transition: transform 220ms ease-out, opacity 220ms ease-out;
+{{""}}}
 {{""}}#myForm$$ .task-row.task-visible { transform: translateX(0); opacity: 1; }
-{{""}}#myForm$$ .task-row.task-leaving { transform: translateX(1rem); opacity: 0; transition: transform 220ms ease-in, opacity 220ms ease-in; }
+{{""}}#myForm$$ .task-row.task-leaving {
+{{""}}  transform: translateX(1rem);
+{{""}}  opacity: 0;
+{{""}}  transition: transform 220ms ease-in, opacity 220ms ease-in;
+{{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- events_animated_tasks_js {{{ -->{% endraw %}

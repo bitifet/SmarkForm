@@ -109,7 +109,14 @@ Thanks to the Mixkit contributors for these freely available demo clips.
 
 {% raw %}<!-- video_singleton_css {{{ -->{% endraw %}
 {% capture video_singleton_css -%}
-{{""}}#myForm$$ .video-card { max-width: 360px; padding: 1rem; border: 2px dashed #999; text-align: center; background: #fafafa; border-radius: .5rem; }
+{{""}}#myForm$$ .video-card {
+{{""}}  max-width: 360px;
+{{""}}  padding: 1rem;
+{{""}}  border: 2px dashed #999;
+{{""}}  border-radius: .5rem;
+{{""}}  background: #fafafa;
+{{""}}  text-align: center;
+{{""}}}
 {{""}}#myForm$$ video { display: block; width: 100%; height: auto; }
 {{""}}#myForm$$ figcaption { margin: .75rem 0; padding: .25rem; }
 {{""}}#myForm$$ button { margin: .25rem; }
@@ -211,7 +218,16 @@ the video plus title, notes, or any other related fields.
 {% raw %}<!-- video_form_list_css {{{ -->{% endraw %}
 {% capture video_form_list_css -%}
 {{""}}#myForm$$ ul { display: grid; gap: .75rem; padding: 0; list-style: none; }
-{{""}}#myForm$$ li { display: grid; grid-template-columns: 240px minmax(0, 1fr); grid-template-areas: "video title" "video notes" "video remove"; gap: .5rem .75rem; align-items: start; padding: .75rem; border: 1px solid #ccc; border-radius: .5rem; }
+{{""}}#myForm$$ li {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: 240px minmax(0, 1fr);
+{{""}}  grid-template-areas: "video title" "video notes" "video remove";
+{{""}}  align-items: start;
+{{""}}  gap: .5rem .75rem;
+{{""}}  padding: .75rem;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: .5rem;
+{{""}}}
 {{""}}#myForm$$ video { grid-area: video; width: 240px; max-width: 100%; height: auto; }
 {{""}}#myForm$$ input { grid-area: title; box-sizing: border-box; width: 100%; padding: .4rem; }
 {{""}}#myForm$$ textarea { grid-area: notes; box-sizing: border-box; width: 100%; min-height: 5rem; padding: .4rem; resize: vertical; }

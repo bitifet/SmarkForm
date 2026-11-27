@@ -173,17 +173,57 @@ endcapture %}
 
 {% raw %}<!-- just_form_css {{{ -->{% endraw %}
 {% capture just_form_css -%}
-{{""}}#myForm$$ .profile-form { display: grid; grid-template-columns: minmax(0, 1fr) 7rem; grid-template-areas: "fields photo" "resume resume"; align-items: start; gap: .35rem 1rem; }
+{{""}}/* Keep the profile fields, photo, and résumé in a compact two-column card. */
+{{""}}#myForm$$ .profile-form {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: minmax(0, 1fr) 7rem;
+{{""}}  grid-template-areas: "fields photo" "resume resume";
+{{""}}  align-items: start;
+{{""}}  gap: .35rem 1rem;
+{{""}}}
 {{""}}#myForm$$ .profile-fields { grid-area: fields; min-width: 0; }
-{{""}}#myForm$$ .profile-fields p { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr); align-items: center; gap: .45rem; margin: 0 0 .4rem; }
-{{""}}#myForm$$ .profile-fields p > span { display: flex; align-items: center; gap: .25rem; min-width: 0; }
+{{""}}#myForm$$ .profile-fields p {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: 7.5rem minmax(0, 1fr);
+{{""}}  align-items: center;
+{{""}}  gap: .45rem;
+{{""}}  margin: 0 0 .4rem;
+{{""}}}
+{{""}}#myForm$$ .profile-fields p > span {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  gap: .25rem;
+{{""}}  min-width: 0;
+{{""}}}
 {{""}}#myForm$$ .profile-fields p > span input { flex: 1; min-width: 0; }
+
+{{""}}/* Reserve the photo and résumé areas without forcing either field to overflow. */
 {{""}}#myForm$$ .media-field { display: grid; gap: .35rem; min-width: 0; }
 {{""}}#myForm$$ .profile-photo-field { grid-area: photo; justify-items: center; }
-{{""}}#myForm$$ .profile-photo { display: block; width: 96px; height: 96px; max-width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 50%; background: #e8edf4; object-fit: cover; }
+{{""}}#myForm$$ .profile-photo {
+{{""}}  display: block;
+{{""}}  width: 96px;
+{{""}}  height: 96px;
+{{""}}  max-width: 100%;
+{{""}}  box-sizing: border-box;
+{{""}}  border: 1px solid #cbd5e1;
+{{""}}  border-radius: 50%;
+{{""}}  background: #e8edf4;
+{{""}}  object-fit: cover;
+{{""}}}
 {{""}}#myForm$$ .resume-field { grid-area: resume; }
 {{""}}#myForm$$ .resume-field input { width: 100%; min-width: 0; box-sizing: border-box; }
-{{""}}@media (max-width: 28rem) { #myForm$$ .profile-form { grid-template-columns: minmax(0, 1fr) 6.5rem; column-gap: .5rem; } #myForm$$ .profile-fields p { grid-template-columns: 5rem minmax(0, 1fr); gap: .25rem; } }
+
+{{""}}@media (max-width: 28rem) {
+{{""}}  #myForm$$ .profile-form {
+{{""}}    grid-template-columns: minmax(0, 1fr) 6.5rem;
+{{""}}    column-gap: .5rem;
+{{""}}  }
+{{""}}  #myForm$$ .profile-fields p {
+{{""}}    grid-template-columns: 5rem minmax(0, 1fr);
+{{""}}    gap: .25rem;
+{{""}}  }
+{{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- just_form_notes {{{ --> {% endraw %}
@@ -468,6 +508,8 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
 /* SmarkForm owns the actions/hotkeys; this only toggles the disclosure. */
 {
   const root = myForm.targetNode;
+
+  // Ctrl-revealed hotkeys expose the menu without changing the component's actions.
   const sync = () => {
     for (const actions of root.querySelectorAll(".card-actions")) {
       const expanded = (
@@ -481,6 +523,8 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
       };
     };
   };
+
+  // Close only the manual disclosure; Ctrl may still reveal a hotkey menu.
   const close = () => {
     root.querySelectorAll(".card-actions.menu-open")
       .forEach(actions => actions.classList.remove("menu-open"));
@@ -492,6 +536,7 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
     if (trigger && root.contains(trigger)) {
       const actions = trigger.parentElement;
       const opening = actions.classList.toggle("menu-open");
+      // Keep at most one manually opened action group in the viewport.
       if (opening) root.querySelectorAll(".card-actions.menu-open")
         .forEach(other => { if (other !== actions) other.classList.remove("menu-open"); });
       sync();
@@ -506,6 +551,7 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
     if (ev.key === "Escape") {
       const trigger = root.querySelector(".card-actions.menu-open .card-menu-trigger");
       if (!trigger) return;
+      // Escape returns keyboard focus to the disclosure button.
       ev.preventDefault();
       ev.stopPropagation();
       close();
@@ -513,6 +559,7 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
     };
   });
   document.addEventListener("pointerdown", ev => {
+    // Pointer interaction outside the form dismisses a manually opened menu.
     if (!root.contains(ev.target)) close();
   });
 };
@@ -801,29 +848,73 @@ export default async ({ expect, root, readField, writeField, page }) => {
 
 {% raw %} <!-- kanban_css {{{ --> {% endraw %}
 {% capture kanban_css -%}
-{{""}}#myForm$$ .kanban { display: flex; gap: 1em; align-items: stretch; }
-{{""}}#myForm$$ .column { flex: 1; min-width: 200px; border: 1px solid #ddd; border-radius: 6px; padding: 0.5em; display: flex; flex-direction: column; }
+{{""}}/* Three equal columns; each list fills the height of its column. */
+{{""}}#myForm$$ .kanban {
+{{""}}  display: flex;
+{{""}}  align-items: stretch;
+{{""}}  gap: 1em;
+{{""}}}
+{{""}}#myForm$$ .column {
+{{""}}  display: flex;
+{{""}}  flex: 1;
+{{""}}  flex-direction: column;
+{{""}}  min-width: 200px;
+{{""}}  padding: .5em;
+{{""}}  border: 1px solid #ddd;
+{{""}}  border-radius: 6px;
+{{""}}}
 {{""}}#myForm$$ .column > [data-smark] { flex: 1; min-height: 0; }
-{{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
-{{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
-{{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
-button { position: relative; }
-{{""}}#myForm$$ .kanban input{ width: 4em; }
+
+{{""}}/* Keep the task input compact and leave the clear-empty action below the board. */
+{{""}}#myForm$$ .kanban input { width: 4em; }
+{{""}}#myForm$$ .clear-empties { display: block; margin: .5em auto 0; }
+{{""}}#myForm$$ .hint { margin-top: 1em; color: #888; font-size: .82em; }
+{{""}}#myForm$$ .hint kbd {
+{{""}}  padding: 1px 4px;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: 3px;
+{{""}}  background: rgba(0, 0, 0, .06);
+{{""}}}
+
+{{""}}/* Anchor each disclosure menu to its task handle. */
 {{""}}#myForm$$ .card-actions { position: relative; display: flex; }
-{{""}}#myForm$$ .card-menu-trigger { padding: 0 0.4em; }
+{{""}}#myForm$$ .card-menu-trigger { padding: 0 .4em; }
+{{""}}button { position: relative; }
+{{""}}button[data-hotkey]::after {
+{{""}}  position: absolute;
+{{""}}  top: .75em;
+{{""}}  left: 0;
+{{""}}  padding: 1px 4px;
+{{""}}  border-radius: 3px;
+{{""}}  background: #333;
+{{""}}  color: #fff;
+{{""}}  content: "Ctrl+" attr(data-hotkey);
+{{""}}  font-size: .7em;
+{{""}}  white-space: nowrap;
+{{""}}}
 {{""}}#myForm$$ .card-menu {
-{{""}}  display: none; position: absolute; top: 100%; right: 0; z-index: 10;
-{{""}}  min-width: 13em; padding: 0.25em;
-{{""}}  background: Canvas; color: CanvasText;
-{{""}}  border: 1px solid ButtonBorder; border-radius: 4px;
-{{""}}  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+{{""}}  position: absolute;
+{{""}}  top: 100%;
+{{""}}  right: 0;
+{{""}}  z-index: 10;
+{{""}}  display: none;
+{{""}}  min-width: 13em;
+{{""}}  padding: .25em;
+{{""}}  border: 1px solid ButtonBorder;
+{{""}}  border-radius: 4px;
+{{""}}  background: Canvas;
+{{""}}  color: CanvasText;
+{{""}}  box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
 {{""}}}
 {{""}}#myForm$$ .card-actions.menu-open .card-menu,
 {{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
 {{""}}#myForm$$ .card-menu button {
-{{""}}  display: block; width: 100%; text-align: left;
-{{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
+{{""}}  display: block;
+{{""}}  width: 100%;
+{{""}}  padding: .35em .5em;
+{{""}}  border: 0;
+{{""}}  background: transparent;
+{{""}}  text-align: left;
 {{""}}}
 {{""}}#myForm$$ .card-menu button[data-hotkey] { padding-right: 5.5em; }
 {{""}}#myForm$$ .card-menu button[data-hotkey]::after {
@@ -1103,35 +1194,104 @@ input constraints; the example does not implement a race-distance business rule.
 
 {% raw %} <!-- race_css {{{ --> {% endraw %}
 {% capture race_css -%}
-{{""}}#myForm$$ { max-width: 520px; font-size: 0.95em; }
-{{""}}#myForm$$ h3 { margin: 0 0 0.3em; }
-{{""}}#myForm$$ header { display: flex; gap: 0.5em; align-items: center; margin-bottom: 0.8em; }
-{{""}}#myForm$$ ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5em; }
-{{""}}#myForm$$ li { border: 1px solid #ddd; border-radius: 6px; padding: 0.6em; }
-{{""}}#myForm$$ li p { display: flex; align-items: center; gap: 0.5em; margin: 0.3em 0; }
+{{""}}#myForm$$ { max-width: 520px; font-size: .95em; }
+{{""}}#myForm$$ h3 { margin: 0 0 .3em; }
+{{""}}#myForm$$ header {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  gap: .5em;
+{{""}}  margin-bottom: .8em;
+{{""}}}
+
+{{""}}/* Repeated form records and their native fields. */
+{{""}}#myForm$$ ul {
+{{""}}  display: flex;
+{{""}}  flex-direction: column;
+{{""}}  gap: .5em;
+{{""}}  padding: 0;
+{{""}}  list-style: none;
+{{""}}}
+{{""}}#myForm$$ li {
+{{""}}  padding: .6em;
+{{""}}  border: 1px solid #ddd;
+{{""}}  border-radius: 6px;
+{{""}}}
+{{""}}#myForm$$ li p {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  gap: .5em;
+{{""}}  margin: .3em 0;
+{{""}}}
 {{""}}#myForm$$ li p.member-comments { align-items: flex-start; }
-{{""}}#myForm$$ li label { font-weight: 500; min-width: 6em; }
-{{""}}#myForm$$ li input[type="text"], {{""}}#myForm$$ li input[type="tel"], {{""}}#myForm$$ li input[type="number"] { flex: 1; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
-{{""}}#myForm$$ li textarea { flex: 1; min-width: 0; min-height: 3.5em; padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; font: inherit; resize: vertical; }
-{{""}}#myForm$$ li p.member-comments label { padding-top: 0.25em; }
+{{""}}#myForm$$ li label { min-width: 6em; font-weight: 500; }
+{{""}}#myForm$$ li input[type="text"],
+{{""}}#myForm$$ li input[type="tel"],
+{{""}}#myForm$$ li input[type="number"] {
+{{""}}  flex: 1;
+{{""}}  padding: .3em .5em;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: 4px;
+{{""}}}
+{{""}}#myForm$$ li textarea {
+{{""}}  flex: 1;
+{{""}}  min-width: 0;
+{{""}}  min-height: 3.5em;
+{{""}}  padding: .3em .5em;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: 4px;
+{{""}}  font: inherit;
+{{""}}  resize: vertical;
+{{""}}}
+{{""}}#myForm$$ li p.member-comments label { padding-top: .25em; }
 {{""}}#myForm$$ li input.fee { flex: 1; min-width: 0; }
-{{""}}#myForm$$ li select { padding: 0.3em 0.5em; border: 1px solid #ccc; border-radius: 4px; }
-{{""}}#myForm$$ li details { margin-top: 0.3em; }
+{{""}}#myForm$$ li select { padding: .3em .5em; border: 1px solid #ccc; border-radius: 4px; }
+
+{{""}}/* Emergency contact uses a native disclosure with its key field in summary. */
+{{""}}#myForm$$ li details { margin-top: .3em; }
 {{""}}#myForm$$ li summary { cursor: default; user-select: none; font-weight: 500; }
-{{""}}#myForm$$ li details > summary { display: flex; align-items: center; gap: 0.4em; list-style: none; }
+{{""}}#myForm$$ li details > summary {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  gap: .4em;
+{{""}}  list-style: none;
+{{""}}}
 {{""}}#myForm$$ li details > summary::-webkit-details-marker { display: none; }
-{{""}}#myForm$$ li details > summary::before { content: "▸"; flex: 0 0 auto; transition: transform .15s; }
+{{""}}#myForm$$ li details > summary::before {
+{{""}}  flex: 0 0 auto;
+{{""}}  content: "▸";
+{{""}}  transition: transform .15s;
+{{""}}}
 {{""}}#myForm$$ li details[open] > summary::before { transform: rotate(90deg); }
 {{""}}#myForm$$ li details > summary input[name="emergency_name"] { flex: 1; min-width: 0; }
-{{""}}#myForm$$ li details[open] { border: 1px solid #eee; border-radius: 4px; padding: 0.3em 0.5em; }
-{{""}}#myForm$$ .bib { font-weight: bold; min-width: 1.5em; text-align: center; background: #f0f0f0; border-radius: 4px; padding: 0.1em 0.4em; }
-{{""}}#myForm$$ .row { display: flex; gap: 0.5em; align-items: center; margin: 0.3em 0; flex-wrap: wrap; }
-{{""}}#myForm$$ .radio-group { display: flex; gap: 0.8em; }
+{{""}}#myForm$$ li details[open] { padding: .3em .5em; border: 1px solid #eee; border-radius: 4px; }
+
+{{""}}/* Small visual cues for position, grouped controls, and shortcuts. */
+{{""}}#myForm$$ .bib {
+{{""}}  min-width: 1.5em;
+{{""}}  padding: .1em .4em;
+{{""}}  border-radius: 4px;
+{{""}}  background: #f0f0f0;
+{{""}}  font-weight: bold;
+{{""}}  text-align: center;
+{{""}}}
+{{""}}#myForm$$ .row { display: flex; flex-wrap: wrap; align-items: center; gap: .5em; margin: .3em 0; }
+{{""}}#myForm$$ .radio-group { display: flex; gap: .8em; }
 {{""}}#myForm$$ .radio-group label { min-width: auto; font-weight: 400; cursor: pointer; }
-{{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
-{{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
-button { position: relative; }
+{{""}}#myForm$$ .hint { margin-top: 1em; color: #888; font-size: .82em; }
+{{""}}#myForm$$ .hint kbd { padding: 1px 4px; border: 1px solid #ccc; border-radius: 3px; background: rgba(0, 0, 0, .06); }
+{{""}}button { position: relative; }
+{{""}}button[data-hotkey]::after {
+{{""}}  position: absolute;
+{{""}}  top: .75em;
+{{""}}  left: 0;
+{{""}}  padding: 1px 4px;
+{{""}}  border-radius: 3px;
+{{""}}  background: #333;
+{{""}}  color: #fff;
+{{""}}  content: "Ctrl+" attr(data-hotkey);
+{{""}}  font-size: .7em;
+{{""}}  white-space: nowrap;
+{{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %} <!-- race_notes {{{ --> {% endraw %}
@@ -1461,29 +1621,95 @@ schedule; remove all a service's intervals to mark it closed for that period.
 
 {% raw %}<!-- hotel_schedule_css {{{ -->{% endraw %}
 {% capture hotel_schedule_css -%}
+{{""}}/* Period list and collapsible summary layout. */
 {{""}}#myForm$$ .hotel-planner { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
 {{""}}#myForm$$ .hotel-planner ul { list-style: none; margin: 0; padding: 0; }
-{{""}}#myForm$$ .hotel-planner > ul { display: grid; width: 100%; min-width: 0; box-sizing: border-box; gap: .75rem; }
+{{""}}#myForm$$ .hotel-planner > ul {
+{{""}}  display: grid;
+{{""}}  width: 100%;
+{{""}}  min-width: 0;
+{{""}}  box-sizing: border-box;
+{{""}}  gap: .75rem;
+{{""}}}
 {{""}}#myForm$$ .hotel-planner > ul > li { min-width: 0; }
-{{""}}#myForm$$ .no-periods { padding: 1.25rem; text-align: center; color: #64748b; border: 1px dashed #94a3b8; border-radius: .75rem; }
-{{""}}#myForm$$ .period-card { width: 100%; min-width: 0; box-sizing: border-box; overflow: hidden; border: 1px solid #cbd5e1; border-radius: .9rem; background: linear-gradient(135deg, #fff, #f4f7fb); box-shadow: 0 3px 12px rgba(15, 23, 42, .08); }
-{{""}}#myForm$$ .period-card > summary { display: flex; width: 100%; min-width: 0; box-sizing: border-box; flex-wrap: nowrap; align-items: center; gap: .5rem; padding: .75rem 1rem; background: linear-gradient(100deg, #e0e7ff, #ecfeff); cursor: pointer; white-space: nowrap; overflow: hidden; }
-{{""}}#myForm$$ .period-handle { cursor: grab; color: #475569; user-select: none; }
+{{""}}#myForm$$ .no-periods {
+{{""}}  padding: 1.25rem;
+{{""}}  border: 1px dashed #94a3b8;
+{{""}}  border-radius: .75rem;
+{{""}}  color: #64748b;
+{{""}}  text-align: center;
+{{""}}}
+{{""}}#myForm$$ .period-card {
+{{""}}  width: 100%;
+{{""}}  min-width: 0;
+{{""}}  box-sizing: border-box;
+{{""}}  overflow: hidden;
+{{""}}  border: 1px solid #cbd5e1;
+{{""}}  border-radius: .9rem;
+{{""}}  background: linear-gradient(135deg, #fff, #f4f7fb);
+{{""}}  box-shadow: 0 3px 12px rgba(15, 23, 42, .08);
+{{""}}}
+{{""}}#myForm$$ .period-card > summary {
+{{""}}  display: flex;
+{{""}}  width: 100%;
+{{""}}  min-width: 0;
+{{""}}  box-sizing: border-box;
+{{""}}  flex-wrap: nowrap;
+{{""}}  align-items: center;
+{{""}}  gap: .5rem;
+{{""}}  padding: .75rem 1rem;
+{{""}}  overflow: hidden;
+{{""}}  background: linear-gradient(100deg, #e0e7ff, #ecfeff);
+{{""}}  cursor: pointer;
+{{""}}  white-space: nowrap;
+{{""}}}
+{{""}}#myForm$$ .period-handle { color: #475569; cursor: grab; user-select: none; }
 {{""}}#myForm$$ .period-count { flex: 0 0 auto; color: #4338ca; font-size: .8rem; font-weight: 700; }
 {{""}}#myForm$$ .period-name { flex: 1 1 10rem; min-width: 7rem; font-size: 1.05rem; font-weight: 700; text-align: left; }
-{{""}}#myForm$$ .period-summary-date { flex: 0 1 10rem; min-width: 0; display: flex; align-items: center; gap: .25rem; font-size: .75rem; font-weight: 600; overflow: hidden; }
-{{""}}#myForm$$ .period-summary-date input { box-sizing: border-box; width: 100%; min-width: 0; }
+{{""}}#myForm$$ .period-summary-date {
+{{""}}  display: flex;
+{{""}}  flex: 0 1 10rem;
+{{""}}  min-width: 0;
+{{""}}  align-items: center;
+{{""}}  gap: .25rem;
+{{""}}  overflow: hidden;
+{{""}}  font-size: .75rem;
+{{""}}  font-weight: 600;
+{{""}}}
+{{""}}#myForm$$ .period-summary-date input { width: 100%; min-width: 0; box-sizing: border-box; }
 {{""}}#myForm$$ .period-card > summary > button { flex: 0 0 auto; margin-left: auto; }
 {{""}}#myForm$$ .period-content { padding: .85rem; }
+
+{{""}}/* Service grids and their add/remove controls. */
 {{""}}#myForm$$ .service-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
-{{""}}#myForm$$ .hotel-service { min-width: 0; padding: .7rem; border: 1px solid #dbe3ed; border-radius: .7rem; background: rgba(255, 255, 255, .82); }
-{{""}}#myForm$$ .service-heading { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; padding-bottom: .45rem; border-bottom: 1px solid #e2e8f0; }
+{{""}}#myForm$$ .hotel-service {
+{{""}}  min-width: 0;
+{{""}}  padding: .7rem;
+{{""}}  border: 1px solid #dbe3ed;
+{{""}}  border-radius: .7rem;
+{{""}}  background: rgba(255, 255, 255, .82);
+{{""}}}
+{{""}}#myForm$$ .service-heading {
+{{""}}  display: flex;
+{{""}}  align-items: baseline;
+{{""}}  justify-content: space-between;
+{{""}}  gap: .5rem;
+{{""}}  padding-bottom: .45rem;
+{{""}}  border-bottom: 1px solid #e2e8f0;
+{{""}}}
 {{""}}#myForm$$ .service-heading strong { color: #334155; }
 {{""}}#myForm$$ .service-heading span { color: #64748b; font-size: .65rem; font-weight: 700; letter-spacing: .08em; }
 {{""}}#myForm$$ .service-closed { padding: .7rem .25rem; color: #64748b; font-style: italic; text-align: center; }
-{{""}}#myForm$$ .hours-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; align-items: end; gap: .4rem; padding: .45rem 0; border-bottom: 1px solid #eef2f7; }
+{{""}}#myForm$$ .hours-row {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+{{""}}  align-items: end;
+{{""}}  gap: .4rem;
+{{""}}  padding: .45rem 0;
+{{""}}  border-bottom: 1px solid #eef2f7;
+{{""}}}
 {{""}}#myForm$$ .hours-row label { display: grid; gap: .2rem; font-size: .75rem; }
-{{""}}#myForm$$ .hours-row input { box-sizing: border-box; width: 100%; min-width: 0; }
+{{""}}#myForm$$ .hours-row input { width: 100%; min-width: 0; box-sizing: border-box; }
 {{""}}#myForm$$ .hours-row button { padding: .25rem .45rem; }
 {{""}}#myForm$$ .service-footer { padding-top: .5rem; }
 {{""}}#myForm$$ .service-footer button { width: 100%; padding: .35rem; }

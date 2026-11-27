@@ -183,18 +183,50 @@ re-used in different parts of the form without conflict:
 {{""}}#myForm$$ .phonebook { max-width: 34rem; font-family: system-ui, sans-serif; }
 {{""}}#myForm$$ .contact-list, {{""}}#myForm$$ .phone-list { list-style: none; margin: 0; padding: 0; }
 {{""}}#myForm$$ .contact-list { display: grid; gap: .65rem; }
-{{""}}#myForm$$ .contact-card { padding: .55rem .75rem .75rem; border: 1px solid #d7dfeb; border-radius: .65rem; background: linear-gradient(135deg, #fff, #f8fafc); }
-{{""}}#myForm$$ .contact-heading { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-bottom: .5rem; color: #334155; }
+{{""}}#myForm$$ .contact-card {
+{{""}}  padding: .55rem .75rem .75rem;
+{{""}}  border: 1px solid #d7dfeb;
+{{""}}  border-radius: .65rem;
+{{""}}  background: linear-gradient(135deg, #fff, #f8fafc);
+{{""}}}
+{{""}}#myForm$$ .contact-heading {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  justify-content: space-between;
+{{""}}  gap: .5rem;
+{{""}}  margin-bottom: .5rem;
+{{""}}  color: #334155;
+{{""}}}
 {{""}}#myForm$$ .contact-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
 {{""}}#myForm$$ .contact-fields label { display: grid; gap: .2rem; color: #475569; font-size: .8rem; }
 {{""}}#myForm$$ .contact-fields input, {{""}}#myForm$$ .phone-row input { width: 100%; min-width: 0; box-sizing: border-box; }
 {{""}}#myForm$$ .phone-section { margin-top: .65rem; padding-top: .55rem; border-top: 1px solid #e2e8f0; }
 {{""}}#myForm$$ .phone-section > strong { display: block; margin-bottom: .25rem; color: #475569; font-size: .85rem; }
-{{""}}#myForm$$ .phone-row { display: grid; grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr) auto; align-items: center; gap: .4rem; padding: .25rem 0; }
+{{""}}#myForm$$ .phone-row {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr) auto;
+{{""}}  align-items: center;
+{{""}}  gap: .4rem;
+{{""}}  padding: .25rem 0;
+{{""}}}
 {{""}}#myForm$$ .phone-label { color: #475569; white-space: nowrap; }
 {{""}}#myForm$$ .phonebook button { padding: .25rem .5rem; }
-{{""}}#myForm$$ .phonebook-footer { display: flex; justify-content: space-between; align-items: center; gap: .5rem; margin-top: .55rem; color: #64748b; font-size: .85rem; }
-{{""}}@media (max-width: 26rem) { #myForm$$ .contact-fields { grid-template-columns: 1fr; } #myForm$$ .phone-row { grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr) auto; gap: .25rem; } }
+{{""}}#myForm$$ .phonebook-footer {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  justify-content: space-between;
+{{""}}  gap: .5rem;
+{{""}}  margin-top: .55rem;
+{{""}}  color: #64748b;
+{{""}}  font-size: .85rem;
+{{""}}}
+{{""}}@media (max-width: 26rem) {
+{{""}}  #myForm$$ .contact-fields { grid-template-columns: 1fr; }
+{{""}}  #myForm$$ .phone-row {
+{{""}}    grid-template-columns: minmax(6.5rem, auto) minmax(0, 1fr) auto;
+{{""}}    gap: .25rem;
+{{""}}  }
+{{""}}}
 /* Hold Ctrl to reveal hotkey hints */
 {{""}}#myForm$$ button { position: relative; }
 {{""}}#myForm$$ [data-hotkey]::after {
@@ -333,7 +365,14 @@ keeping their hotkeys working.
 {{""}}#myForm$$ .phone-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-bottom: .3rem; color: #334155; }
 {{""}}#myForm$$ .phone-controls strong { margin-right: auto; }
 {{""}}#myForm$$ .phone-number-list { list-style: none; margin: 0; padding: 0; }
-{{""}}#myForm$$ .phone-row { display: grid; grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr) auto auto; align-items: center; gap: .4rem; padding: .3rem 0; border-bottom: 1px solid #e2e8f0; }
+{{""}}#myForm$$ .phone-row {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: minmax(7.5rem, auto) minmax(0, 1fr) auto auto;
+{{""}}  align-items: center;
+{{""}}  gap: .4rem;
+{{""}}  padding: .3rem 0;
+{{""}}  border-bottom: 1px solid #e2e8f0;
+{{""}}}
 {{""}}#myForm$$ .phone-row label { color: #475569; white-space: nowrap; }
 {{""}}#myForm$$ .phone-row input { min-width: 0; box-sizing: border-box; }
 /* Hide the per-row ➕/➖ buttons, but keep their hotkeys and hints alive */

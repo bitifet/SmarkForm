@@ -107,7 +107,14 @@ The example starts with the opening of Beethoven's 5th Symphony loaded by
 
 {% raw %}<!-- audio_singleton_css {{{ -->{% endraw %}
 {% capture audio_singleton_css -%}
-{{""}}#myForm$$ .audio-card { max-width: 360px; padding: 1rem; border: 2px dashed #999; text-align: center; background: #fafafa; border-radius: .5rem; }
+{{""}}#myForm$$ .audio-card {
+{{""}}  max-width: 360px;
+{{""}}  padding: 1rem;
+{{""}}  border: 2px dashed #999;
+{{""}}  border-radius: .5rem;
+{{""}}  background: #fafafa;
+{{""}}  text-align: center;
+{{""}}}
 {{""}}#myForm$$ audio { display: block; width: 100%; }
 {{""}}#myForm$$ figcaption { margin: .75rem 0; padding: .25rem; }
 {{""}}#myForm$$ button { margin: .25rem; }
@@ -206,7 +213,14 @@ in a singleton container to provide an empty-state label and upload affordance.
 
 {% raw %}<!-- audio_empty_css {{{ -->{% endraw %}
 {% capture audio_empty_css -%}
-{{""}}#myForm$$ .audio-upload { max-width: 360px; padding: 1.5rem; border: 2px dashed #999; text-align: center; background: #fafafa; border-radius: .5rem; }
+{{""}}#myForm$$ .audio-upload {
+{{""}}  max-width: 360px;
+{{""}}  padding: 1.5rem;
+{{""}}  border: 2px dashed #999;
+{{""}}  border-radius: .5rem;
+{{""}}  background: #fafafa;
+{{""}}  text-align: center;
+{{""}}}
 {{""}}#myForm$$ .audio-hint { margin: 0 0 .75rem; }
 {{""}}#myForm$$ button { margin: .25rem; }
 {{""}}#myForm$$ [data-smark] { margin-right: .25rem; }

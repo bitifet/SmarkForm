@@ -124,11 +124,25 @@ data; change them freely.
 {% raw %}<!-- guided_form_css {{{ -->{% endraw %}
 {% capture guided_form_css -%}
 {{""}}#myForm$$ .event-plan { max-width: 42rem; margin-inline: auto; }
-{{""}}#myForm$$ .event-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .75rem; }
+{{""}}#myForm$$ .event-fields {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+{{""}}  gap: .75rem;
+{{""}}}
 {{""}}#myForm$$ label { display: grid; gap: .25rem; }
-{{""}}#myForm$$ input, #myForm$$ select { box-sizing: border-box; width: 100%; }
+{{""}}#myForm$$ input,
+{{""}}#myForm$$ select { box-sizing: border-box; width: 100%; }
 {{""}}#myForm$$ ul { list-style: none; padding: 0; }
-{{""}}#myForm$$ .guest-card { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); align-items: end; gap: .75rem; margin-block: .5rem; padding: .75rem; border: 1px solid #ccc; border-radius: .5rem; }
+{{""}}#myForm$$ .guest-card {
+{{""}}  display: grid;
+{{""}}  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+{{""}}  align-items: end;
+{{""}}  gap: .75rem;
+{{""}}  margin-block: .5rem;
+{{""}}  padding: .75rem;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: .5rem;
+{{""}}}
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
 {% raw %}<!-- guided_form_js {{{ -->{% endraw %}

@@ -369,11 +369,24 @@ to, so the button always acts on its immediate neighbours.
 
 {% raw %} <!-- form_trav_copy_adjacent_css {{{ --> {% endraw %}
 {% capture form_trav_copy_adjacent_css -%}
-{{""}}#myForm$$ ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .4em; }
-{{""}}#myForm$$ li { display: flex; gap: .4em; align-items: center; }
-{{""}}#myForm$$ li input { padding: .35em .5em; border: 1px solid #ccc; border-radius: 4px; min-width: 0; }
+{{""}}#myForm$$ ul {
+{{""}}  display: flex;
+{{""}}  flex-direction: column;
+{{""}}  gap: .4em;
+{{""}}  margin: 0;
+{{""}}  padding: 0;
+{{""}}  list-style: none;
+{{""}}}
+{{""}}#myForm$$ li { display: flex; align-items: center; gap: .4em; }
+{{""}}#myForm$$ li input {
+{{""}}  min-width: 0;
+{{""}}  padding: .35em .5em;
+{{""}}  border: 1px solid #ccc;
+{{""}}  border-radius: 4px;
+{{""}}}
 {{""}}#myForm$$ input[name="day"] { flex: 0 0 6em; font-weight: 600; }
-{{""}}#myForm$$ input[name="main"], {{""}}#myForm$$ input[name="side"] { flex: 1; }
+{{""}}#myForm$$ input[name="main"],
+{{""}}#myForm$$ input[name="side"] { flex: 1; }
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
 
 {% include components/sampletabs_tpl.md
@@ -432,7 +445,15 @@ resolved — useful once an item grows its own navigation toolbar:
 
 {% raw %} <!-- form_trav_navigation_ui_css {{{ --> {% endraw %}
 {% capture form_trav_navigation_ui_css -%}
-{{""}}#myForm$$ .stop { display: flex; flex-direction: column; gap: .4em; border: 1px solid #ddd; border-radius: 6px; padding: .6em; margin-bottom: .5em; }
+{{""}}#myForm$$ .stop {
+{{""}}  display: flex;
+{{""}}  flex-direction: column;
+{{""}}  gap: .4em;
+{{""}}  margin-bottom: .5em;
+{{""}}  padding: .6em;
+{{""}}  border: 1px solid #ddd;
+{{""}}  border-radius: 6px;
+{{""}}}
 {{""}}#myForm$$ .stop input { padding: .35em .5em; border: 1px solid #ccc; border-radius: 4px; }
 {{""}}#myForm$$ .navigation { display: flex; gap: .4em; }
 {%- endcapture %}{% raw %} <!-- }}} --> {% endraw %}
@@ -559,28 +580,59 @@ The board below is three independent lists laid out as columns, sharing a single
 
 {% raw %} <!-- form_trav_kanban_css {{{ --> {% endraw %}
 {% capture form_trav_kanban_css -%}
-{{""}}#myForm$$ .kanban { display: flex; gap: 1em; align-items: stretch; }
-{{""}}#myForm$$ .column { flex: 1; min-width: 200px; border: 1px solid #ddd; border-radius: 6px; padding: 0.5em; display: flex; flex-direction: column; }
+{{""}}/* Lay the independent lists out as equal-height Kanban columns. */
+{{""}}#myForm$$ .kanban { display: flex; align-items: stretch; gap: 1em; }
+{{""}}#myForm$$ .column {
+{{""}}  display: flex;
+{{""}}  flex: 1;
+{{""}}  flex-direction: column;
+{{""}}  min-width: 200px;
+{{""}}  padding: .5em;
+{{""}}  border: 1px solid #ddd;
+{{""}}  border-radius: 6px;
+{{""}}}
 {{""}}#myForm$$ .column > [data-smark] { flex: 1; min-height: 0; }
 {{""}}#myForm$$ .hint { font-size: 0.82em; color: #888; margin-top: 1em; }
 {{""}}#myForm$$ .hint kbd { background: rgba(0,0,0,.06); border: 1px solid #ccc; border-radius: 3px; padding: 1px 4px; }
 {{""}}#myForm$$ .clear-empties { display: block; margin: 0.5em auto 0; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: 0.75em; left: 0; font-size: 0.7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button[data-hotkey]::after {
+    position: absolute;
+    top: .75em;
+    left: 0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #333;
+    color: #fff;
+    content: "Ctrl+" attr(data-hotkey);
+    font-size: .7em;
+    white-space: nowrap;
+}
 button { position: relative; }
 {{""}}#myForm$$ .card-actions { position: relative; display: flex; }
 {{""}}#myForm$$ .card-menu-trigger { padding: 0 0.4em; }
 {{""}}#myForm$$ .card-menu {
-{{""}}  display: none; position: absolute; top: 100%; right: 0; z-index: 10;
-{{""}}  min-width: 13em; padding: 0.25em;
-{{""}}  background: Canvas; color: CanvasText;
-{{""}}  border: 1px solid ButtonBorder; border-radius: 4px;
-{{""}}  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+{{""}}  display: none;
+{{""}}  position: absolute;
+{{""}}  top: 100%;
+{{""}}  right: 0;
+{{""}}  z-index: 10;
+{{""}}  min-width: 13em;
+{{""}}  padding: .25em;
+{{""}}  border: 1px solid ButtonBorder;
+{{""}}  border-radius: 4px;
+{{""}}  background: Canvas;
+{{""}}  color: CanvasText;
+{{""}}  box-shadow: 0 2px 8px rgba(0, 0, 0, .2);
 {{""}}}
 {{""}}#myForm$$ .card-actions.menu-open .card-menu,
 {{""}}#myForm$$ .card-actions:has([data-hotkey]) .card-menu { display: block; }
 {{""}}#myForm$$ .card-menu button {
-{{""}}  display: block; width: 100%; text-align: left;
-{{""}}  border: 0; background: transparent; padding: 0.35em 0.5em;
+{{""}}  display: block;
+{{""}}  width: 100%;
+{{""}}  padding: .35em .5em;
+{{""}}  border: 0;
+{{""}}  background: transparent;
+{{""}}  text-align: left;
 {{""}}}
 {{""}}#myForm$$ .card-menu button:disabled { opacity: .45; }
 {{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
@@ -590,6 +642,7 @@ button { position: relative; }
 
 {% raw %} <!-- form_trav_kanban_js {{{ --> {% endraw %}
 {% capture form_trav_kanban_js -%}
+// Confirm non-empty removals, but allow bulk cleanup and empty tasks through.
 myForm.on("BeforeAction_removeItem", async (ev) => {
   // Never confirm for bulk operations (target:*) or preserve_non_empty
   if (
@@ -603,6 +656,8 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
 /* SmarkForm owns the actions/hotkeys; this only toggles the disclosure. */
 {
   const root = myForm.targetNode;
+
+  // Keep ARIA and the menu's Tab stops aligned with manual/Ctrl visibility.
   const sync = () => {
     for (const actions of root.querySelectorAll(".card-actions")) {
       const expanded = (
@@ -617,6 +672,7 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
     };
   };
   const close = () => {
+    // Clear manual-open state without interfering with Ctrl-revealed hints.
     root.querySelectorAll(".card-actions.menu-open")
       .forEach(actions => actions.classList.remove("menu-open"));
     sync();
@@ -640,12 +696,14 @@ myForm.on("BeforeAction_removeItem", async (ev) => {
     if (ev.key !== "Escape") return;
     const trigger = root.querySelector(".card-actions.menu-open .card-menu-trigger");
     if (!trigger) return;
+    // Escape dismisses the disclosure and restores focus to its handle.
     ev.preventDefault();
     ev.stopPropagation();
     close();
     trigger.focus();
   });
   document.addEventListener("pointerdown", ev => {
+    // A click outside the form dismisses manually opened menus.
     if (!root.contains(ev.target)) close();
   });
 };

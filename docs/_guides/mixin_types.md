@@ -513,7 +513,13 @@ reusable markup.
 {% capture mixin_nested_composition_css -%}
 {{""}}#myForm$$ { display: flex; flex-direction: column; align-items: stretch; gap: .75rem; width: 100%; box-sizing: border-box; }
 {{""}}#myForm$$ > * { width: 100%; box-sizing: border-box; }
-{{""}}#myForm$$ .period-card { min-width: 0; padding: .65rem .8rem; border-left: 3px solid #6366f1; border-radius: .45rem; background: #f8fafc; }
+{{""}}#myForm$$ .period-card {
+{{""}}  min-width: 0;
+{{""}}  padding: .65rem .8rem;
+{{""}}  border-left: 3px solid #6366f1;
+{{""}}  border-radius: .45rem;
+{{""}}  background: #f8fafc;
+{{""}}}
 {{""}}#myForm$$ .period-heading { display: flex; align-items: center; gap: .45rem; margin-bottom: .45rem; color: #4338ca; }
 {{""}}#myForm$$ .period-heading h4 { margin: 0; font-size: 1rem; font-weight: 650; }
 {{""}}#myForm$$ .time-range { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }

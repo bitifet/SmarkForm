@@ -540,9 +540,23 @@ with them.
 {{""}}#myForm$$ .tutor input { flex: 1; min-width: 0; }
 {{""}}#myForm$$ .students { margin-top: .3em; }
 {{""}}#myForm$$ .students > strong { display: block; font-size: .85em; margin-bottom: .2em; }
-{{""}}#myForm$$ .students ul { max-height: 240px; overflow-y: auto; border: 1px solid #eee; border-radius: 4px; padding: .2em .3em; background: #fff; }
+{{""}}#myForm$$ .students ul {
+{{""}}  max-height: 240px;
+{{""}}  overflow-y: auto;
+{{""}}  padding: .2em .3em;
+{{""}}  border: 1px solid #eee;
+{{""}}  border-radius: 4px;
+{{""}}  background: #fff;
+{{""}}}
 {{""}}#myForm$$ .students li { margin: .15em 0; }
-{{""}}#myForm$$ .students summary { display: flex; align-items: center; gap: .3em; padding: .2em .3em; background: #fafafa; border: 1px solid #eee; }
+{{""}}#myForm$$ .students summary {
+{{""}}  display: flex;
+{{""}}  align-items: center;
+{{""}}  gap: .3em;
+{{""}}  padding: .2em .3em;
+{{""}}  border: 1px solid #eee;
+{{""}}  background: #fafafa;
+{{""}}}
 {{""}}#myForm$$ .students summary input { flex: 1; min-width: 0; }
 {{""}}#myForm$$ .grades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: .3em; }
 {{""}}#myForm$$ .grade-column { display: flex; flex-direction: column; gap: 2px; }
@@ -569,7 +583,18 @@ with them.
 {{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
 {{""}}#myForm$$ .school-groups input,
 {{""}}#myForm$$ .school-groups button { cursor: auto; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button[data-hotkey]::after {
+    position: absolute;
+    top: .75em;
+    left: 0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #333;
+    color: #fff;
+    content: "Ctrl+" attr(data-hotkey);
+    font-size: .7em;
+    white-space: nowrap;
+}
 button { position: relative; }
 {%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
 
@@ -617,6 +642,7 @@ then add a grade. The JSON editor shows the updated nested value.
 {
   const root = myForm.targetNode;
   const sync = () => {
+    // Mirror the manual/Ctrl disclosure state in ARIA and sequential focus.
     for (const actions of root.querySelectorAll(".card-actions")) {
       const expanded = (
         actions.classList.contains("menu-open")
@@ -630,6 +656,7 @@ then add a grade. The JSON editor shows the updated nested value.
     };
   };
   const close = () => {
+    // Remove only manual-open state; sync() preserves any Ctrl reveal.
     root.querySelectorAll(".card-actions.menu-open")
       .forEach(actions => actions.classList.remove("menu-open"));
     sync();
@@ -653,6 +680,7 @@ then add a grade. The JSON editor shows the updated nested value.
     if (ev.key !== "Escape") return;
     const trigger = root.querySelector(".card-actions.menu-open .card-menu-trigger");
     if (!trigger) return;
+    // Escape closes the disclosure and returns focus to the control that opened it.
     ev.preventDefault();
     ev.stopPropagation();
     close();
@@ -1032,7 +1060,18 @@ endcapture %}
 {{""}}#myForm$$ .card-menu-trigger[data-smark-role="drag-handle"] { cursor: grab; }
 {{""}}#myForm$$ .cdd input,
 {{""}}#myForm$$ .cdd button { cursor: auto; }
-button[data-hotkey]::after { content: "Ctrl+" attr(data-hotkey); position: absolute; top: .75em; left: 0; font-size: .7em; background: #333; color: #fff; padding: 1px 4px; border-radius: 3px; white-space: nowrap; }
+button[data-hotkey]::after {
+    position: absolute;
+    top: .75em;
+    left: 0;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #333;
+    color: #fff;
+    content: "Ctrl+" attr(data-hotkey);
+    font-size: .7em;
+    white-space: nowrap;
+}
 button { position: relative; }{%
 endcapture %}
 {% raw %} <!-- }}} --> {% endraw %}
@@ -1069,6 +1108,8 @@ endcapture %}
 /* SmarkForm owns the actions/hotkeys; this only toggles the disclosure. */
 {
   const root = myForm.targetNode;
+
+  // Keep the trigger's ARIA state and menu Tab stops in sync with Ctrl hints.
   const sync = () => {
     for (const actions of root.querySelectorAll(".card-actions")) {
       const expanded = (
@@ -1083,6 +1124,7 @@ endcapture %}
     };
   };
   const close = () => {
+    // Close only manually opened groups; Ctrl can reveal them again.
     root.querySelectorAll(".card-actions.menu-open")
       .forEach(actions => actions.classList.remove("menu-open"));
     sync();
@@ -1106,12 +1148,14 @@ endcapture %}
     if (ev.key !== "Escape") return;
     const trigger = root.querySelector(".card-actions.menu-open .card-menu-trigger");
     if (!trigger) return;
+    // Escape closes the manual disclosure and restores focus to its trigger.
     ev.preventDefault();
     ev.stopPropagation();
     close();
     trigger.focus();
   });
   document.addEventListener("pointerdown", ev => {
+    // Dismiss a manual disclosure when the pointer moves outside the form.
     if (!root.contains(ev.target)) close();
   });
 };
