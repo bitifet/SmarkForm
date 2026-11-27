@@ -5,6 +5,10 @@ import {action} from "./trigger.type.js";
 import {export_to_target} from "../decorators/export_to_target.deco.js";
 import {import_from_target} from "../decorators/import_from_target.deco.js";
 import {parseJSON, isHiddenByClosedDetails} from "../lib/helpers.js";
+import {
+    findAdjacentFormOrList,
+    focusAvailableField,
+} from "../lib/keyboard_navigation.js";
 
 // Symbol used to mark a native keydown event as already handled for Enter
 // navigation.  Guards against the same event object being dispatched to our
@@ -67,6 +71,23 @@ export class input extends form {
                     // Illustrative canonical form of the check below:
                     // if (ev.originalEvent && ev.originalEvent._sfImeAdvanced) return;
                     if (ev.originalEvent._sfImeAdvanced) return;
+                    const textarea = ev.context.targetFieldNode || ev.context.targetNode;
+                    if (
+                        ev.originalEvent.ctrlKey
+                        && ! ev.originalEvent.altKey
+                        && textarea?.tagName !== "TEXTAREA"
+                    ) {
+                        ev.originalEvent.preventDefault();
+                        ev.originalEvent.stopPropagation();
+                        const destination = findAdjacentFormOrList(
+                            ev.context,
+                            ev.originalEvent.shiftKey
+                        );
+                        if (destination) {
+                            focusAvailableField(destination, ev.originalEvent.shiftKey);
+                        };
+                        return;
+                    };
                     const backwards = ev.originalEvent.shiftKey;
                     const altKey = ev.originalEvent.altKey;
                     if (

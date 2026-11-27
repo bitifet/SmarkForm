@@ -62,6 +62,173 @@ disabled so its controls do not add extra steps to this navigation sequence.
    tests=false
 %}
 
+## Ctrl+Enter Between Forms and Lists
+
+Outside a `<textarea>`, `Ctrl`+`Enter` moves to the next available sibling
+form or list; `Ctrl`+`Shift`+`Enter` moves backward. SmarkForm follows the
+component hierarchy, not page-specific concepts: a list of form items moves
+between its sibling items, while a list of scalar or singleton items is treated
+as one field in its surrounding context. Disabled or hidden destinations are
+skipped. At the edge of the nearest sibling group, navigation stops rather than
+wrapping or jumping to a more distant parent.
+
+Inside a `<textarea>`, these keys keep their field-navigation behavior:
+`Ctrl`+`Enter` moves forward and `Ctrl`+`Shift`+`Enter` moves backward. Plain
+`Enter` still inserts a newline.
+
+{% raw %}<!-- nav_composite_html {{{ -->{% endraw %}
+{% capture nav_composite_html -%}
+<div id="myForm$$">
+  <div data-smark='{"type":"form","name":"east"}'>
+    <label data-smark>East section:</label>
+    <input data-smark id="east-lane" name="lane" placeholder="Section name">
+    <textarea data-smark id="east-notes" name="notes" placeholder="Multiline notes"></textarea>
+    <input data-smark id="east-after-notes" name="after_notes" placeholder="Next field">
+    <ul class="task-list" data-smark='{"type":"list","name":"tasks","of":"form","min_items":1}'>
+      <li>
+        <input data-smark name="task" placeholder="Task">
+        <input data-smark name="owner" placeholder="Owner">
+      </li>
+    </ul>
+  </div>
+  <div data-smark='{"type":"form","name":"hidden"}' style="display:none">
+    <input data-smark name="title" placeholder="Hidden destination">
+  </div>
+  <div data-smark='{"type":"form","name":"disabled"}'>
+    <fieldset disabled>
+      <input data-smark name="title" placeholder="Disabled destination">
+    </fieldset>
+  </div>
+  <div data-smark='{"type":"form","name":"west"}'>
+    <label data-smark>West section:</label>
+    <input data-smark id="west-lane" name="lane" placeholder="Section name">
+    <ul class="scalar-list" data-smark='{"type":"list","name":"values","of":"input","min_items":2}'>
+      <li><input data-smark name="value" placeholder="Scalar list value"></li>
+    </ul>
+  </div>
+  <div data-smark='{"type":"form","name":"standby"}'>
+    <input data-smark id="standby-title" name="title" placeholder="Standby section">
+  </div>
+  <ul class="sections-list" data-smark='{"type":"list","name":"sections","of":"form","min_items":1}'>
+    <li>
+      <input data-smark name="section" placeholder="Section">
+      <input data-smark name="detail" placeholder="Section detail">
+    </li>
+  </ul>
+</div>
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- nav_composite_demoValue {{{ -->{% endraw %}
+{% capture nav_composite_demoValue -%}
+{
+  "east": {
+    "lane": "North",
+    "notes": "Keep the delivery entrance clear.\nCall before arrival.",
+    "after_notes": "Ready",
+    "tasks": [
+      {"task":"Mark the route","owner":"Ari"},
+      {"task":"Set up signs","owner":"Noah"}
+    ]
+  },
+  "hidden": {"title":"Hidden destination"},
+  "disabled": {"title":"Disabled destination"},
+  "west": {"lane":"South","values":["One","Two"]},
+  "standby": {"title":"Backup"},
+  "sections": [
+    {"section":"Entry","detail":"North gate"},
+    {"section":"Finish","detail":"Main field"}
+  ]
+}
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- nav_composite_notes {{{ -->{% endraw %}
+{% capture nav_composite_notes -%}
+From East section, press `Ctrl`+`Enter` to skip the hidden and disabled forms
+and reach West section. From a task row, the same shortcut moves to the next
+task form; at the last row it stops instead of escaping to West. The scalar
+Values list behaves as one field in its surrounding form hierarchy, so moving
+forward from one of its items skips its other scalar items and reaches Standby.
+
+Try `Ctrl`+`Enter` in the Notes textarea: it moves to the next field in East;
+plain `Enter` inserts a newline. `Ctrl`+`Shift`+`Enter` moves backward between
+composite contexts.
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% raw %}<!-- nav_composite_tests {{{ -->{% endraw %}
+{% capture nav_composite_tests -%}
+export default async ({ page, expect, root }) => {
+    await expect(root).toBeVisible();
+    await page.evaluate(async () => {
+        await myForm.find('/east/tasks').addItem(
+            {task:'Set up signs', owner:'Noah'}, {silent:true}
+        );
+        await myForm.find('/sections').addItem(
+            {section:'Finish', detail:'Main field'}, {silent:true}
+        );
+    });
+    const focus = async path => {
+        await page.evaluate(path => myForm.find(path).focus(), path);
+        await page.waitForTimeout(25); // Stay outside the IME-advance guard window.
+    };
+
+    await focus('/east/lane');
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(root.locator('#east-lane')).toBeFocused(); // No wrap at the first sibling.
+
+    await page.keyboard.press('Control+Enter');
+    await expect(root.locator('#west-lane')).toBeFocused(); // Skip hidden and disabled forms.
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(root.locator('.task-list > li').nth(1).locator('input[name="owner"]')).toBeFocused();
+
+    await focus('/east/notes');
+    await page.keyboard.press('Control+Enter');
+    await expect(root.locator('#east-after-notes')).toBeFocused(); // Textareas keep field navigation.
+
+    const tasks = root.locator('.task-list > li');
+    await focus('/east/tasks/0/task');
+    await page.keyboard.press('Control+Enter');
+    await expect(tasks.nth(1).locator('input[name="task"]')).toBeFocused();
+    await focus('/east/tasks/1/owner');
+    await page.keyboard.press('Control+Enter');
+    await expect(tasks.nth(1).locator('input[name="owner"]')).toBeFocused(); // Stop at the list boundary.
+
+    const values = root.locator('.scalar-list > li');
+    await focus('/west/values/0');
+    await page.keyboard.press('Control+Enter');
+    await expect(root.locator('#standby-title')).toBeFocused(); // Skip scalar siblings.
+    await page.waitForTimeout(25);
+    await page.keyboard.press('Control+Shift+Enter');
+    await expect(values.nth(1).locator('input[name="value"]')).toBeFocused();
+
+    const sections = root.locator('.sections-list > li');
+    await focus('/sections/0/section');
+    await page.keyboard.press('Control+Enter');
+    await expect(sections.nth(1).locator('input[name="section"]')).toBeFocused();
+    await focus('/sections/1/detail');
+    await page.keyboard.press('Control+Enter');
+    await expect(sections.nth(1).locator('input[name="detail"]')).toBeFocused(); // Do not escape the list.
+
+    await page.evaluate(async () => {
+        const sections = myForm.find('/sections');
+        await sections.removeItem(null, {target:sections.children[1], silent:true});
+    });
+    await focus('/standby/title');
+    await page.keyboard.press('Control+Enter');
+    await expect(sections.nth(0).locator('input[name="section"]')).toBeFocused();
+};
+{%- endcapture %}{% raw %}<!-- }}} -->{% endraw %}
+
+{% include components/sampletabs_tpl.md
+   formId="nav-composite"
+   htmlSource=nav_composite_html
+   notes=nav_composite_notes
+   demoValue=nav_composite_demoValue
+   tests=nav_composite_tests
+   selected="preview"
+   showEditor=true
+%}
+
 ## Tab-Flow Exclusion for Hotkey-Equipped Buttons
 
 Hotkey-equipped `addItem` and `removeItem` triggers inside their list context
